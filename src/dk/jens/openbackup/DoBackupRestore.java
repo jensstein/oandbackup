@@ -76,11 +76,12 @@ public class DoBackupRestore
     }
     public void doRestore(File backupDir, String packageName)
     {
-        String packageData = ""; // TODO: tjek om packageData får en menigsfuld værdi 
+        String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
         ArrayList<String> logLines = readLogFile(backupDir, packageName);
-        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
+//        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
         packageApk = logLines.get(3);
+        packageData = logLines.get(4);
         String[] apk = packageApk.split("/");
         packageApk = apk[apk.length - 1];
         Log.i(TAG, "doRestore: " + packageData + " : " + packageApk);
@@ -402,7 +403,6 @@ public class DoBackupRestore
             map.put("stdout", out);
             map.put("stderr", err);
             return map;
-//            return out;
         }
         catch(IOException e)
         {

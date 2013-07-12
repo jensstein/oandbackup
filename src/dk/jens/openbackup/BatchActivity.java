@@ -107,11 +107,6 @@ public class BatchActivity extends Activity implements OnClickListener
             rg.addView(rbBoth);
             linearLayout.addView(rg);
         }
-//        rb = (RadioButton) findViewById(R.id.radioData);
-//        rb.toggle();
-
-//        PackageManager pm = getPackageManager();
-//        List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         for(PackageInfo pinfo : pinfoList)
         {
             pinfoMap.put(pinfo.packageName, pinfo);
@@ -196,7 +191,6 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             Log.i(TAG, "restore: " + packageName);
                             ArrayList<String> readlog = doBackupRestore.readLogFile(backupSubDir, packageName);
-//                            String dataDir = "/data/data/" + readlog.get(2); // hele stien skal skrives til log
                             String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
                             String apk = readlog.get(3);
                             String[] apkArray = apk.split("/");
@@ -305,12 +299,12 @@ public class BatchActivity extends Activity implements OnClickListener
     };
     public void showNotification(int id, String title, String text)
     {
-        // bør nok være det eksterne android.support.v4.app og NotificationCompat.Builder: http://developer.android.com/guide/topics/ui/notifiers/notifications.html
 //        Notification.Builder mBuilder = new Notification.Builder(this)
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
             .setSmallIcon(R.drawable.backup_small)
             .setContentTitle(title)
             .setContentText(text);
+        // resultIntent og taskstackbuilder er for bagudkompabilitet
         Intent resultIntent = new Intent(this, BatchActivity.class);        
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(BatchActivity.class);

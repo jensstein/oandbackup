@@ -11,8 +11,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
 
-// http://developer.android.com/guide/topics/ui/dialogs.html
-
 public class BackupRestoreDialogFragment extends DialogFragment
 {
     final String TAG = "obackup";
@@ -42,7 +40,6 @@ public class BackupRestoreDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    // finde activity uden at initialisere: http://stackoverflow.com/a/12623683
                     OBackup obackup = (OBackup) getActivity();
                     obackup.callBackup(appInfo);
                 }

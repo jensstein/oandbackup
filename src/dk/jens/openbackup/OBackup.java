@@ -71,7 +71,6 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     boolean showOnlyUser = false;
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
-    // taget herfra: https://github.com/sanathe06/AndroidGuide/blob/master/ExampleCompatNotificationBuilder/src/com/android/guide/compatnotificationbuilder/MainActivity.java#L41
 
     DoBackupRestore doBackupRestore = new DoBackupRestore();
 
@@ -186,7 +185,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         }
                         else
                         {
-                            Log.i(TAG, "kan ikke doRestore uden restoreApk: " + appInfo.getPackageName() + " er ikke installeret");
+                            Log.i(TAG, R.string.restoreDataWithoutApkError + appInfo.getPackageName());
                         }
                         break;
                     case 3:
@@ -209,7 +208,6 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
             }
         }).start();
     }
-    // http://www.helloandroid.com/tutorials/using-threads-and-progressdialog
     private Handler handler = new Handler()
     {
         @Override
@@ -241,8 +239,6 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     };
     public void showNotification(int id, String title, String text)
     {
-        // bør nok være det eksterne android.support.v4.app og NotificationCompat.Builder: http://developer.android.com/guide/topics/ui/notifiers/notifications.html
-        // http://developer.android.com/training/basics/fragments/support-lib.html
 //        Notification.Builder mBuilder = new Notification.Builder(this)
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
             .setSmallIcon(R.drawable.backup_small)
@@ -262,12 +258,6 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     public void getPackageInfo()
     {
         pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
-
-        // overføre store datamængder fx ved hjælp af static fields:
-        // http://developer.android.com/guide/faq/framework.html
-        // http://stackoverflow.com/a/12848199
-        // http://stackoverflow.com/questions/1441871/passing-data-of-a-non-primitive-type-between-activities-in-android
-
         BatchActivity.pinfoList = pinfoList;
 
         for(PackageInfo pinfo : pinfoList)
@@ -345,9 +335,6 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             mSearchItem = menu.findItem(R.id.search);
-            // taget fra mms: http://androidxref.com/source/xref/packages/apps/Mms/src/com/android/mms/ui/ConversationList.java
-
-            // http://developer.android.com/guide/topics/ui/actionbar.html#ActionView
             SearchView search = (SearchView) mSearchItem.getActionView();
             search.setIconifiedByDefault(true);
             search.setOnQueryTextListener(new OnQueryTextListener()

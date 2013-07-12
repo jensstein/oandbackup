@@ -10,8 +10,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
 
-// http://developer.android.com/guide/topics/ui/dialogs.html
-
 public class RestoreOptionsDialogFragment extends DialogFragment
 {
     final String TAG = "obackup";
