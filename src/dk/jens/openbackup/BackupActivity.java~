@@ -1,0 +1,50 @@
+package dk.jens.openbackup;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
+import android.content.pm.ApplicationInfo;
+import android.widget.LinearLayout;
+import android.widget.CheckBox;
+import android.util.Log;
+import android.widget.TextView;
+
+import java.util.List;
+
+
+public class BackupActivity extends Activity
+{
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.backuprestorelayout);
+
+        Bundle extra = getIntent().getExtras();
+        if(extra != null)
+        {
+            Log.i("ob", "" +extra.getBoolean("extraname"));
+        }
+
+        TextView tv = (TextView) findViewById(R.id.backupTextView);
+        tv.setText(R.string.backupTextView);
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.backupLinear);
+        PackageManager pm = getPackageManager();
+        List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+        //                tvPackages.append("packages:\n");
+        for(PackageInfo pinfo : pinfoList)
+        {
+            final String packageName = pinfo.packageName; 
+            ApplicationInfo ainfo = pinfo.applicationInfo;
+            String dataDir = ainfo.dataDir;
+            String apk = ainfo.sourceDir;
+            Log.i("backact", pinfo.packageName);
+            CheckBox chDyn = new CheckBox(this);
+            chDyn.setText(packageName);
+            linearLayout.addView(chDyn);
+        }
+    }
+}

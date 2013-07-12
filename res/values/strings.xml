@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">openbackup</string>
+    <string name="backupButton">backup</string>
+    <string name="restoreButton">restore</string>
+    <string name="radioApk">Apk</string>
+    <string name="radioData">Data</string>
+    <string name="radioBoth">Data + Apk</string>
+    <string name="de_selectAll">de/select all</string>
+    <string name="refresh">refresh</string>
+    <string name="batchbackup">batch backup</string>
+    <string name="batchrestore">batch restore</string>
+    <string name="search">search</string>
+    <string name="deleteBackup">delete backup</string>
+    <string name="uninstall">uninstall app</string>
+    <string name="showAll">show all apps</string>
+    <string name="showOnlySystem">show only system apps</string>
+    <string name="showOnlyUser">show only user apps</string>
+    <string name="sortByLabel">sort by label</string>
+    <string name="sortByPackageName">sort by packagename</string>
+    <string name="sort">sort</string>
+    <string name="uninstallDialogMessage">uninstall?</string>
+    <string name="uninstallDialogYes">yes</string>
+    <string name="uninstallDialogNo">no</string>
+    <string name="deleteBackupDialogMessage">delete backup files?</string>
+    <string name="deleteBackupDialogYes">yes</string>
+    <string name="deleteBackupDialogNo">no</string>
+    <string name="noBackupYet">no backup yet</string>
+</resources>

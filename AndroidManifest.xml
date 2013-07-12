@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="dk.jens.openbackup"
+      android:versionCode="1"
+      android:versionName="0.1.10">
+    <uses-sdk android:minSdkVersion="7"
+        android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"></uses-permission>
+    <application android:label="@string/app_name" android:icon="@drawable/backup">
+    <!-- android:configChanges gør at aktiviteten ikke genskabes ved rotation etc, men er ikke en anbefalet måde at håndtere det på: http://stackoverflow.com/a/3689572/2320781 
+    http://blog.doityourselfandroid.com/2010/11/14/handling-progress-dialogs-and-screen-orientation-changes/
+    --> 
+        <activity android:name="OBackup"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="BatchActivity"
+            android:label="@string/app_name"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+    </application>
+</manifest>

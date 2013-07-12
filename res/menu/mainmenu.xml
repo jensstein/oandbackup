@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/refresh"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        android:showAsAction="ifRoom" />
+    <item android:id="@+id/batchbackup"
+        android:title="@string/batchbackup" />
+    <item android:id="@+id/batchrestore"
+        android:title="@string/batchrestore" />
+    <item android:id="@+id/search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search_category_default"
+        android:showAsAction="always|collapseActionView"
+        android:actionViewClass="android.widget.SearchView"
+        android:iconifiedByDefault="true"
+    />
+    <item android:id="@+id/sortingsubmenu"
+        android:title="@string/sort" >
+        <menu>
+            <item android:id="@+id/showAll"
+                android:title="@string/showAll" />
+            <item android:id="@+id/showOnlyUser"
+                android:title="@string/showOnlyUser" />
+            <item android:id="@+id/showOnlySystem"
+                android:title="@string/showOnlySystem" />
+            <item android:id="@+id/sortByLabel"
+                android:title="@string/sortByLabel" />
+            <item android:id="@+id/sortByPackageName"
+                android:title="@string/sortByPackageName" />
+        </menu>
+    </item>
+</menu>
