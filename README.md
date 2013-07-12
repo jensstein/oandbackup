@@ -1,3 +1,11 @@
+openbackup
+=======
+a backup program for android. requires root and allows you to backup individual app data
+
+author
+======
+jens stein
+
 license
 =======
 openbackup is licensed under the MIT license (see LICENSE.txt)
