@@ -1,6 +1,6 @@
 openbackup
 =======
-a backup program for android. requires root and allows you to backup individual app data
+a backup program for android. requires root and allows you to backup individual apps and their data
 
 author
 ======
