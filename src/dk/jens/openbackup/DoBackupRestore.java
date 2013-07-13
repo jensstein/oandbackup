@@ -433,4 +433,107 @@ public class DoBackupRestore
             Log.i(TAG, e.toString());
         }
     }
+    public boolean checkSuperUser()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+//            dos.writeBytes("echo hello\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            p.waitFor();
+            if(p.exitValue() != 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+    }
+    public boolean checkRsync()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("sh");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("rsync\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int rsyncReturn = p.waitFor();
+            if(rsyncReturn == 1)
+            {
+                return true;
+            }
+            else
+            {
+                ArrayList<String> stderr = getOutput(p).get("stderr");
+                for(String line : stderr)
+                {
+                    writeErrorLog(line);
+                }
+                return false;
+            }
+//            Log.i(TAG, "rsyncReturn: " + rsyncReturn);
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+    }
+    public boolean checkBusybox()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("sh");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("busybox\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int bboxReturn = p.waitFor();
+            if(bboxReturn == 0)
+            {
+                return true;
+            }
+            else
+            {
+                ArrayList<String> stderr = getOutput(p).get("stderr");
+                for(String line : stderr)
+                {
+                    writeErrorLog(line);
+                }
+                return false;
+            }
+//            Log.i(TAG, "busyboxReturn: " + bboxReturn);
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return false;
+        }
+    }
+
 }

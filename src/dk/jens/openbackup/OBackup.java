@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 //import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +15,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
@@ -33,11 +30,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -54,14 +51,10 @@ import java.util.List;
 public class OBackup extends FragmentActivity // FragmentActivity i stedet for Activity for at kunne bruge ting fra support-bibliotekerne
 {
     final static String TAG = "obackup";
-    final static int SHOW_DIALOG = 0;
-    final static int CHANGE_DIALOG = 1;
-    final static int DISMISS_DIALOG = 2;
 
     PackageManager pm;
     File backupDir;
     List<PackageInfo> pinfoList;
-    ProgressDialog progress;
     MenuItem mSearchItem;
 
     AppInfoAdapter adapter;
@@ -73,6 +66,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
 
     DoBackupRestore doBackupRestore = new DoBackupRestore();
+    HandleMessages handleMessages = new HandleMessages(this);
 
     ListView listView;
 
@@ -84,7 +78,32 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
         new Thread(new Runnable(){
             public void run()
             {
-                collectingDataMessage(1);
+                handleMessages.showMessage("", getString(R.string.suCheck));
+                boolean haveSu = doBackupRestore.checkSuperUser();
+                if(!haveSu)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            Toast.makeText(OBackup.this, getString(R.string.noSu), Toast.LENGTH_LONG).show();
+                        }
+                    });                    
+                }
+                boolean rsyncInstalled = doBackupRestore.checkRsync();
+                boolean bboxInstalled = doBackupRestore.checkBusybox();
+                if(!rsyncInstalled || !bboxInstalled)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            Toast.makeText(OBackup.this, getString(R.string.rsyncOrBusyboxProblem), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                handleMessages.endMessage();
+                handleMessages.showMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
                 
                 backupDir = new File(Environment.getExternalStorageDirectory() + "/obackups");
@@ -95,7 +114,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
 
                 appInfoList = new ArrayList<AppInfo>();
                 getPackageInfo();
-                collectingDataMessage(2);
+                handleMessages.endMessage();
                 listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
 
@@ -131,11 +150,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
         {
             public void run()
             {
-                String[] string = {appInfo.getLabel(), "backup"};
-                Message startMessage = Message.obtain();
-                startMessage.what = SHOW_DIALOG;
-                startMessage.obj = string;
-                handler.sendMessage(startMessage);
+                handleMessages.showMessage(appInfo.getLabel(), "backup");
                 File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                 if(!backupSubDir.exists())
                 {
@@ -157,9 +172,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         refresh(appInfo);
                     }
                 });
-                Message endMessage = Message.obtain();
-                endMessage.what = DISMISS_DIALOG;
-                handler.sendMessage(endMessage);
+                handleMessages.endMessage();
                 showNotification(notificationId++, "backup complete", appInfo.getLabel());
             }
         }).start();
@@ -172,11 +185,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
             {          
                 File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                 // error handling, hvis backupSubDir ikke findes
-                String[] string = {appInfo.getLabel(), "restore"};
-                Message startMessage = Message.obtain();
-                startMessage.what = SHOW_DIALOG;
-                startMessage.obj = string;
-                handler.sendMessage(startMessage);
+                handleMessages.showMessage(appInfo.getLabel(), "restore");
 
                 ArrayList<String> log = doBackupRestore.readLogFile(backupSubDir, appInfo.getPackageName());
                 String dataDir = log.get(4);
@@ -212,42 +221,11 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         refresh();
                     }
                 });
-                Message endMessage = Message.obtain();
-                endMessage.what = DISMISS_DIALOG;
-                handler.sendMessage(endMessage);
+                handleMessages.endMessage();
                 showNotification(notificationId++, "restore complete", appInfo.getLabel());
             }
         }).start();
     }
-    private Handler handler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message message)
-        {
-            String[] array = (String[]) message.obj; // måske ikke den bedste måde at sende en samling af data på
-            switch(message.what)
-            {
-                case SHOW_DIALOG:
-//                    Log.i(TAG, "show");
-                    progress = ProgressDialog.show(OBackup.this, array[0].toString(), array[1].toString(), true, false); // den sidste boolean er cancelable -> sættes til true, når der er skrevet en måde at afbryde handlingen (threaden) på
-                    break;
-                case CHANGE_DIALOG:
-                    if(progress != null)
-                    {
-                        progress.setTitle(array[0].toString());
-                        progress.setMessage("(" + array[1].toString() + "/" + array[2].toString() + ")");
-                    }
-                    break;
-                case DISMISS_DIALOG:
-//                    Log.i(TAG, "dismiss");
-                    if(progress != null)
-                    {
-                        progress.dismiss();
-                    }
-                    break;
-            }
-        }
-    };
     public void showNotification(int id, String title, String text)
     {
 //        Notification.Builder mBuilder = new Notification.Builder(this)
@@ -326,7 +304,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
         new Thread(new Runnable(){
             public void run()
             {
-                collectingDataMessage(1);
+                handleMessages.showMessage("", getString(R.string.collectingData));
                 showAll = true;
                 appInfoList.clear();
                 getPackageInfo();
@@ -336,7 +314,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         adapter.notifyDataSetChanged();
                     }
                 });
-                collectingDataMessage(2);
+                handleMessages.endMessage();
             }
         }).start();
     }
@@ -485,12 +463,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                             public void run()
                             {
                                 Log.i(TAG, "uninstalling " + appInfoList.get(info.position).getLabel());
-                                String[] string = {appInfoList.get(info.position).getLabel(), "uninstall"};
-                                Message startMessage = Message.obtain();
-                                startMessage.what = SHOW_DIALOG;
-                                startMessage.obj = string;
-                                handler.sendMessage(startMessage);
-
+                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), "uninstall");
                                 doBackupRestore.uninstall(appInfoList.get(info.position).getPackageName());
                                 runOnUiThread(new Runnable()
                                 {
@@ -499,10 +472,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                                         refresh();
                                     }
                                 });
-
-                                Message endMessage = Message.obtain();
-                                endMessage.what = DISMISS_DIALOG;
-                                handler.sendMessage(endMessage);
+                                handleMessages.endMessage();
                             }
                         }).start();
                     }
@@ -523,12 +493,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         {
                             public void run()
                             {
-                                String[] string = {appInfoList.get(info.position).getLabel(), "delete backup files"};
-                                Message startMessage = Message.obtain();
-                                startMessage.what = SHOW_DIALOG;
-                                startMessage.obj = string;
-                                handler.sendMessage(startMessage);
-
+                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), "delete backup files");
                                 File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfoList.get(info.position).getPackageName());
                                 doBackupRestore.deleteBackup(backupSubDir);
                                 runOnUiThread(new Runnable()
@@ -538,10 +503,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                                         refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
                                     }
                                 });
-
-                                Message endMessage = Message.obtain();
-                                endMessage.what = DISMISS_DIALOG;
-                                handler.sendMessage(endMessage);
+                                handleMessages.endMessage();
                             }
                         }).start();
                     }
@@ -560,23 +522,5 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
             mSearchItem.expandActionView();
         }
         return true;
-    }
-    public void collectingDataMessage(int state)
-    {
-        switch(state)
-        {
-            case 1:
-                String[] string = {"", getString(R.string.collectingData)};
-                Message startMessage = Message.obtain();
-                startMessage.what = SHOW_DIALOG;
-                startMessage.obj = string;
-                handler.sendMessage(startMessage);
-                break;
-            case 2:
-                Message endMessage = Message.obtain();
-                endMessage.what = DISMISS_DIALOG;
-                handler.sendMessage(endMessage);
-                break;
-        }
     }
 }
