@@ -64,7 +64,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     ProgressDialog progress;
     MenuItem mSearchItem;
 
-    TextAdapter adapter;
+    AppInfoAdapter adapter;
     ArrayList<AppInfo> appInfoList;
 
     boolean showAll = true;
@@ -94,7 +94,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
         listView = (ListView) findViewById(R.id.listview);
         registerForContextMenu(listView);
 
-        adapter = new TextAdapter(this, R.layout.listlayout, appInfoList);
+        adapter = new AppInfoAdapter(this, R.layout.listlayout, appInfoList);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
