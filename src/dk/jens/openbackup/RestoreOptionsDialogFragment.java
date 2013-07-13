@@ -1,18 +1,16 @@
 package dk.jens.openbackup;
 
-import android.os.Bundle;
-import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
-//import android.app.DialogFragment;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+//import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 public class RestoreOptionsDialogFragment extends DialogFragment
 {
-    final String TAG = "obackup";
+    final static String TAG = OBackup.TAG; 
     String packageName, label;
     AppInfo appInfo;
     public RestoreOptionsDialogFragment(AppInfo appInfo)

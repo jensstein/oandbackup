@@ -1,12 +1,8 @@
 package dk.jens.openbackup;
 
-import android.support.v4.app.FragmentActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 //import android.app.FragmentManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 //import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,6 +18,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -53,7 +53,7 @@ import java.util.List;
 
 public class OBackup extends FragmentActivity // FragmentActivity i stedet for Activity for at kunne bruge ting fra support-bibliotekerne
 {
-    static final String TAG = "obackup";
+    final static String TAG = "obackup";
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
     final static int DISMISS_DIALOG = 2;
@@ -81,31 +81,42 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        pm = getPackageManager();
-        
-        backupDir = new File(Environment.getExternalStorageDirectory() + "/obackups");
-        if(!backupDir.exists())
-        {
-            backupDir.mkdirs();
-        }
-
-        appInfoList = new ArrayList<AppInfo>();
-        getPackageInfo();
-        listView = (ListView) findViewById(R.id.listview);
-        registerForContextMenu(listView);
-
-        adapter = new AppInfoAdapter(this, R.layout.listlayout, appInfoList);
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
+        new Thread(new Runnable(){
+            public void run()
             {
-                AppInfo appInfo = appInfoList.get(pos);
-                displayDialog(appInfo);
+                collectingDataMessage(1);
+                pm = getPackageManager();
+                
+                backupDir = new File(Environment.getExternalStorageDirectory() + "/obackups");
+                if(!backupDir.exists())
+                {
+                    backupDir.mkdirs();
+                }
+
+                appInfoList = new ArrayList<AppInfo>();
+                getPackageInfo();
+                collectingDataMessage(2);
+                listView = (ListView) findViewById(R.id.listview);
+                registerForContextMenu(listView);
+
+                adapter = new AppInfoAdapter(OBackup.this, R.layout.listlayout, appInfoList);
+                runOnUiThread(new Runnable(){
+                    public void run()
+                    {
+                        listView.setAdapter(adapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                        {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
+                            {
+                                AppInfo appInfo = appInfoList.get(pos);
+                                displayDialog(appInfo);
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }).start();
     }
     public void displayDialog(AppInfo appInfo)
     {
@@ -185,7 +196,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         }
                         else
                         {
-                            Log.i(TAG, R.string.restoreDataWithoutApkError + appInfo.getPackageName());
+                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
                         }
                         break;
                     case 3:
@@ -312,10 +323,22 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     }
     public void refresh()
     {
-        showAll = true;
-        appInfoList.clear();
-        getPackageInfo();
-        adapter.notifyDataSetChanged();
+        new Thread(new Runnable(){
+            public void run()
+            {
+                collectingDataMessage(1);
+                showAll = true;
+                appInfoList.clear();
+                getPackageInfo();
+                runOnUiThread(new Runnable(){
+                    public void run()
+                    {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                collectingDataMessage(2);
+            }
+        }).start();
     }
     public void refresh(AppInfo appInfo)
     {
@@ -352,6 +375,10 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                     return true;
                 }
             });
+        }
+        else
+        {
+            menu.removeItem(R.id.search);
         }
         return true;
     }
@@ -533,5 +560,23 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
             mSearchItem.expandActionView();
         }
         return true;
+    }
+    public void collectingDataMessage(int state)
+    {
+        switch(state)
+        {
+            case 1:
+                String[] string = {"", getString(R.string.collectingData)};
+                Message startMessage = Message.obtain();
+                startMessage.what = SHOW_DIALOG;
+                startMessage.obj = string;
+                handler.sendMessage(startMessage);
+                break;
+            case 2:
+                Message endMessage = Message.obtain();
+                endMessage.what = DISMISS_DIALOG;
+                handler.sendMessage(endMessage);
+                break;
+        }
     }
 }

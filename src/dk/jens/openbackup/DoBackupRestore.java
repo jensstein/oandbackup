@@ -1,28 +1,28 @@
 package dk.jens.openbackup;
 
-import android.util.Log;
 import android.os.Environment;
 import android.os.Build;
+import android.util.Log;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.FileReader;
 import java.io.BufferedReader;
-import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DoBackupRestore
 {
-    final static String TAG = "obackup"; 
+    final static String TAG = OBackup.TAG; 
     Process p;
     DataOutputStream dos;
     public void doBackup(File backupDir, String packageData, String packageApk)

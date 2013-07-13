@@ -3,46 +3,44 @@ package dk.jens.openbackup;
 import android.support.v4.app.TaskStackBuilder;
 
 import android.app.Activity;
+//import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.os.Bundle;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageInfo;
 import android.content.pm.ApplicationInfo;
-import android.widget.LinearLayout;
-import android.widget.CheckBox;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.view.View.OnClickListener;
-import android.view.View;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.app.ProgressDialog;
-import android.os.Handler;
-import android.os.Message;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
-
-import android.graphics.Color;
-import android.support.v4.app.NotificationCompat;
-//import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 public class BatchActivity extends Activity implements OnClickListener
 {
     public static List<PackageInfo> pinfoList;
-    final String TAG = "obackup";
+    final static String TAG = OBackup.TAG; 
     boolean backupBoolean;
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
