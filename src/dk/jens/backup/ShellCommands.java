@@ -1,4 +1,4 @@
-package dk.jens.openbackup;
+package dk.jens.backup;
 
 import android.os.Environment;
 import android.os.Build;
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DoBackupRestore
+public class ShellCommands
 {
     final static String TAG = OBackup.TAG; 
     Process p;

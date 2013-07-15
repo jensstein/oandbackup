@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="2sp">
+<!--
+    <CheckedTextView
+        android:id="@+id/ctv"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:checkMark="?android:attr/textCheckMark"
+        />
+-->
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:focusable="false"
+        android:clickable="false"
+        />
+    <TextView
+        android:id="@+id/tv"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="12sp"
+        android:gravity="right"
+        />
+</LinearLayout>
