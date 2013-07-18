@@ -20,11 +20,9 @@
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort</string>
     <string name="uninstallDialogMessage">uninstall this package?</string>
-    <string name="uninstallDialogYes">yes</string>
-    <string name="uninstallDialogNo">no</string>
     <string name="deleteBackupDialogMessage">delete backup files?</string>
-    <string name="deleteBackupDialogYes">yes</string>
-    <string name="deleteBackupDialogNo">no</string>
+    <string name="dialogYes">yes</string>
+    <string name="dialogNo">no</string>
     <string name="noBackupYet">no backup yet</string>
     <string name="restoreDataWithoutApkError">cannot restore data without restoring apk, package is not installed: </string>
     <string name="collectingData">collecting package infos</string>

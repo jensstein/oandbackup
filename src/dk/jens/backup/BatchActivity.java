@@ -3,10 +3,12 @@ package dk.jens.backup;
 import android.support.v4.app.TaskStackBuilder;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 //import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -147,106 +149,24 @@ public class BatchActivity extends Activity implements OnClickListener
     @Override
     public void onClick(View v)
     {
+/*
         new Thread(new Runnable()
         {
             public void run()
             {
-                int i = 0;
+*/
+                ArrayList<AppInfo> selectedList = new ArrayList<AppInfo>();
                 for(AppInfo appInfo : list)
                 {
                     if(appInfo.isChecked)
                     {
-                        Log.i(TAG, appInfo.toString());
-                        i++;
+                        selectedList.add(appInfo);
                     }
                 }
-                int id = (int) Calendar.getInstance().getTimeInMillis();
-                int total = i;
-                i = 0;
-                for(final AppInfo appInfo: list)
-                {
-                    if(appInfo.isChecked)
-                    {
-                        i++;
-                        String log;
-                        String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                        File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                        String title = backupBoolean ? "backing up" : "restoring";
-                        showNotification(id, title, appInfo.getLabel());
-                        if(i == 1)
-                        {
-                            handleMessages.showMessage(appInfo.getLabel(), message);
-                        }
-                        else
-                        {
-                            handleMessages.changeMessage(appInfo.getLabel(), message);
-                        }
-                        if(backupBoolean)
-                        {
-                            log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
-                            if(!backupSubDir.exists())
-                            {
-                                backupSubDir.mkdirs();
-                            }
-                            else
-                            {
-                                shellCommands.deleteBackup(backupSubDir);
-                                backupSubDir.mkdirs();
-                            }
-                            shellCommands.doBackup(backupSubDir, appInfo.getDataDir(), appInfo.getSourceDir());
-                            shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-                            Log.i(TAG, "backup: " + appInfo.getLabel());
-                        }
-                        else
-                        {
-                            Log.i(TAG, "restore: " + appInfo.getPackageName());
-                            ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-                            String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
-                            String apk = readlog.get(3);
-                            String[] apkArray = apk.split("/");
-                            apk = apkArray[apkArray.length - 1];
-
-                            if(rbApk.isChecked())
-                            {
-                                shellCommands.restoreApk(backupSubDir, apk);
-                            }
-                            else if(rbData.isChecked())
-                            {
-                                if(appInfo.isInstalled)
-                                {
-                                    shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
-                                    shellCommands.setPermissions(dataDir);
-                                }
-                                else
-                                {
-                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-                                }
-                            }
-                            else if(rbBoth.isChecked())
-                            {
-                                shellCommands.restoreApk(backupSubDir, apk);
-                                shellCommands.doRestore(backupSubDir, appInfo.getPackageName());                                
-                                shellCommands.setPermissions(dataDir);
-                            }
-                        }
-                        if(i == total)
-                        {
-                            String msg = backupBoolean ? "backup" : "restore";
-                            showNotification(id, "operation complete", "batch " + msg);
-                            handleMessages.endMessage();
-                        }
-                    }
-                }
-            }
-        }).start();
-    }
-    public void setCheckBoxes(String string, int color)
-    {
-        CheckBox cb = new CheckBox(this);
-        cb.setText(string);
-        cb.setTextColor(color);
-        checkboxList.add(cb);
-        linearLayout.addView(cb);
+                showConfirmDialog(BatchActivity.this, selectedList);
+//                doAction(selectedList);
+//            }
+//        }).start();
     }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
@@ -274,6 +194,113 @@ public class BatchActivity extends Activity implements OnClickListener
                 break;
         }
         return true;
+    }
+    public void showConfirmDialog(Context context, final ArrayList<AppInfo> selectedList)
+    {
+        String title = backupBoolean ? "backup?" : "restore?";
+        String message = "";
+        for(AppInfo appInfo : selectedList)
+        {
+            message = message + appInfo.getLabel() + "\n";
+        }
+        new AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                new Thread(new Runnable()
+                {
+                    public void run()
+                    {
+                        doAction(selectedList);
+                    }
+                }).start();
+            }
+        })
+        .setNegativeButton(R.string.dialogNo, null)
+        .show();
+    }
+    public void doAction(ArrayList<AppInfo> selectedList)
+    {
+        int id = (int) Calendar.getInstance().getTimeInMillis();
+        int total = selectedList.size();
+        int i = 0;
+        for(AppInfo appInfo: selectedList)
+        {
+            if(appInfo.isChecked)
+            {
+                i++;
+                String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
+                File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
+                String title = backupBoolean ? "backing up" : "restoring";
+                showNotification(id, title, appInfo.getLabel());
+                if(i == 1)
+                {
+                    handleMessages.showMessage(appInfo.getLabel(), message);
+                }
+                else
+                {
+                    handleMessages.changeMessage(appInfo.getLabel(), message);
+                }
+                if(backupBoolean)
+                {
+                    String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
+                    if(!backupSubDir.exists())
+                    {
+                        backupSubDir.mkdirs();
+                    }
+                    else
+                    {
+                        shellCommands.deleteBackup(backupSubDir);
+                        backupSubDir.mkdirs();
+                    }
+                    shellCommands.doBackup(backupSubDir, appInfo.getDataDir(), appInfo.getSourceDir());
+                    shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                    Log.i(TAG, "backup: " + appInfo.getLabel());
+                }
+                else
+                {
+                    Log.i(TAG, "restore: " + appInfo.getPackageName());
+                    ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+                    String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
+                    String apk = readlog.get(3);
+                    String[] apkArray = apk.split("/");
+                    apk = apkArray[apkArray.length - 1];
+
+                    if(rbApk.isChecked())
+                    {
+                        shellCommands.restoreApk(backupSubDir, apk);
+                    }
+                    else if(rbData.isChecked())
+                    {
+                        if(appInfo.isInstalled)
+                        {
+                            shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
+                            shellCommands.setPermissions(dataDir);
+                        }
+                        else
+                        {
+                    Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                        }
+                    }
+                    else if(rbBoth.isChecked())
+                    {
+                        shellCommands.restoreApk(backupSubDir, apk);
+                        shellCommands.doRestore(backupSubDir, appInfo.getPackageName());                                
+                        shellCommands.setPermissions(dataDir);
+                    }
+                }
+                if(i == total)
+                {
+                    String msg = backupBoolean ? "backup" : "restore";
+                    showNotification(id, "operation complete", "batch " + msg);
+                    handleMessages.endMessage();
+                }
+            }
+        }
     }
     public void showNotification(int id, String title, String text)
     {

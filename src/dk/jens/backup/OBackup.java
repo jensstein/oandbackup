@@ -452,7 +452,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                 new AlertDialog.Builder(this)
                 .setTitle(appInfoList.get(info.position).getLabel())
                 .setMessage(R.string.uninstallDialogMessage)
-                .setPositiveButton(R.string.uninstallDialogYes, new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -476,14 +476,14 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         }).start();
                     }
                 })
-                .setNegativeButton(R.string.uninstallDialogNo, null)
+                .setNegativeButton(R.string.dialogNo, null)
                 .show();
                 return true;
             case R.id.deleteBackup:
                 new AlertDialog.Builder(this)
                 .setTitle(appInfoList.get(info.position).getLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
-                .setPositiveButton(R.string.deleteBackupDialogYes, new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -507,7 +507,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                         }).start();
                     }
                 })
-                .setNegativeButton(R.string.deleteBackupDialogNo, null)
+                .setNegativeButton(R.string.dialogNo, null)
                 .show();
                 return true;
             default:
