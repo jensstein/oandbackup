@@ -79,7 +79,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         pm = getPackageManager();
 
-        backupDir = new File(Environment.getExternalStorageDirectory() + "/obackups");
+        backupDir = new File(Environment.getExternalStorageDirectory() + "/oabackups");
         if(!backupDir.exists())
         {
             backupDir.mkdirs();

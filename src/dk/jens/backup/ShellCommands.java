@@ -468,7 +468,7 @@ public class ShellCommands
         // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
         try
         {
-            File outFile = new File(Environment.getExternalStorageDirectory() + "/obackup.log");
+            File outFile = new File(Environment.getExternalStorageDirectory() + "/oabackup.log");
             if(!outFile.exists())
             {
                 outFile.createNewFile();

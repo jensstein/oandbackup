@@ -105,7 +105,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
                 
-                backupDir = new File(Environment.getExternalStorageDirectory() + "/obackups");
+                backupDir = new File(Environment.getExternalStorageDirectory() + "/oabackups");
                 if(!backupDir.exists())
                 {
                     backupDir.mkdirs();
