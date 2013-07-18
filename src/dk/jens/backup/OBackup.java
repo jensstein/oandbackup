@@ -65,7 +65,7 @@ public class OBackup extends FragmentActivity // FragmentActivity i stedet for A
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
 
-    ShellCommands shellCommands = new ShellCommands();
+    ShellCommands shellCommands = new ShellCommands(this);
     HandleMessages handleMessages = new HandleMessages(this);
 
     ListView listView;

@@ -1,5 +1,7 @@
 package dk.jens.backup;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Environment;
 import android.os.Build;
 import android.util.Log;
@@ -18,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShellCommands
@@ -25,6 +28,11 @@ public class ShellCommands
     final static String TAG = OBackup.TAG; 
     Process p;
     DataOutputStream dos;
+    Context mContext;
+    public ShellCommands(Context context)
+    {
+        this.mContext = context;
+    }
     public void doBackup(File backupDir, String packageData, String packageApk)
     {
         Log.i(TAG, "doBackup: " + packageData);
@@ -88,6 +96,10 @@ public class ShellCommands
 
         try
         {
+            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            {
+                killPackage(packageName);
+            }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
@@ -152,15 +164,16 @@ public class ShellCommands
             String awk = busybox + "awk";
             String stat = busybox + "stat";
             String sed = busybox + "sed";
+            String grep = busybox + "grep";
             Process p = Runtime.getRuntime().exec("sh"); // man behøver vist ikke su til stat - det gør man til ls -l /data/
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             //uid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
-            dos.writeBytes(stat + " " + packageDir + " | grep Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
             //gid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
-            dos.writeBytes(stat + " " + packageDir + " | grep Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
@@ -175,9 +188,7 @@ public class ShellCommands
             ArrayList<String> uid_gid = new ArrayList<String>();
             while((line = stdin.readLine()) != null)
             {
-                // tjek om man faktisk får noget brugbart 
                 uid_gid.add(line);
-//                Log.i(TAG, "uid_gid: " + line);
             }
             if(!uid_gid.isEmpty())
             {
@@ -329,6 +340,45 @@ public class ShellCommands
             else
             {
                 file.delete();
+            }
+        }
+    }
+    public void killPackage(String packageName)
+    {
+        List<ActivityManager.RunningAppProcessInfo> runningList;
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        runningList = manager.getRunningAppProcesses();
+        for(ActivityManager.RunningAppProcessInfo process : runningList)
+        {
+            if(process.processName.equals(packageName) && process.pid != android.os.Process.myPid())
+            {
+                try
+                {
+                    p = Runtime.getRuntime().exec("su");
+                    dos = new DataOutputStream(p.getOutputStream());
+                    // tjek med File.exists() ser ikke ud til at virke
+                    dos.writeBytes("kill " + process.pid + "\n");
+                    dos.flush();
+                    dos.writeBytes("exit\n");
+                    dos.flush();
+                    int ret = p.waitFor();
+                    if(ret != 0)
+                    {
+                        ArrayList<String> err = getOutput(p).get("stderr");
+                        for(String line : err)
+                        {
+                            writeErrorLog(line);
+                        }
+                    }
+                }
+                catch(IOException e)
+                {
+                    Log.i(TAG, e.toString());
+                }
+                catch(InterruptedException e)
+                {
+                    Log.i(TAG, e.toString());
+                }           
             }
         }
     }

@@ -56,7 +56,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
     boolean checkboxSelectAllBoolean = true;
 
-    ShellCommands shellCommands = new ShellCommands();
+    ShellCommands shellCommands = new ShellCommands(this);
     File backupDir;
     ProgressDialog progress;
     PackageManager pm;

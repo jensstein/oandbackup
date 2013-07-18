@@ -1,6 +1,8 @@
 oandbackup
 =======
-a backup program for android. requires root and allows you to backup individual apps and their data
+a backup program for android. requires root and allows you to backup individual apps and their data.
+
+(as this app is still in an early phase, please don't rely on it solely unless you know what you are doing.)
 
 author
 ======
