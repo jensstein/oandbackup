@@ -2,7 +2,9 @@ oandbackup
 =======
 a backup program for android. requires root and allows you to backup individual apps and their data.
 
-(as this app is still in an early phase, please don't rely on it solely unless you know what you are doing.)
+a working busybox and rsync installation is required at the moment. 
+
+(as this app is still in an early phase, please don't rely on it solely unless you know what you are doing. the logfile format may be subject to change.)
 
 author
 ======
