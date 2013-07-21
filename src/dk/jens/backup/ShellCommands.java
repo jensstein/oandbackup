@@ -35,7 +35,7 @@ public class ShellCommands
     }
     public void doBackup(File backupDir, String packageData, String packageApk)
     {
-        Log.i(TAG, "doBackup: " + packageData);
+        Log.i(TAG, "backup: " + packageData);
         try
         {
             p = Runtime.getRuntime().exec("su");
@@ -47,20 +47,6 @@ public class ShellCommands
             dos.flush();
             dos.writeBytes("exit\n");
             dos.flush();
-
-            // hvis waitFor() ikke giver nogen return:
-            //http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
-            //http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html
-/*
-            InputStream stderr = p.getInputStream();
-            InputStreamReader isr = new InputStreamReader(stderr);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while((line = br.readLine()) != null)
-            {
-                Log.i(TAG, line);
-            }
-*/
 
             int retval = p.waitFor();
             Log.i(TAG, "return: " + retval);
@@ -92,7 +78,7 @@ public class ShellCommands
         packageData = logLines.get(4);
         String[] apk = packageApk.split("/");
         packageApk = apk[apk.length - 1];
-        Log.i(TAG, "doRestore: " + packageData + " : " + packageApk);
+        Log.i(TAG, "restoring: " + packageName);
 
         try
         {
@@ -112,19 +98,6 @@ public class ShellCommands
             dos.writeBytes("exit\n");
             dos.flush();
 
-            // hvis waitFor() ikke giver nogen return:
-            //http://stackoverflow.com/questions/5483830/process-waitfor-never-returns
-            //http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html
-/*
-            InputStream stderr = p.getInputStream();
-            InputStreamReader isr = new InputStreamReader(stderr);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while((line = br.readLine()) != null)
-            {
-                Log.i(TAG, line);
-            }
-*/
             int retval = p.waitFor();
             if(retval != 0)
             {
@@ -149,6 +122,7 @@ public class ShellCommands
     {
         try
         {
+/*
             // busybox location
             String busybox;
             if(android.os.Build.MODEL.equals("sdk")) // tjekke for emulator -> erstat med rigtigt tjek efter busybox
@@ -165,15 +139,18 @@ public class ShellCommands
             String stat = busybox + "stat";
             String sed = busybox + "sed";
             String grep = busybox + "grep";
-            Process p = Runtime.getRuntime().exec("sh"); // man behøver vist ikke su til stat - det gør man til ls -l /data/
+*/
+            Process p = Runtime.getRuntime().exec("sh"); // man behøver ikke su til stat - det gør man til ls -l /data/
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             //uid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
-            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+//            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes("busybox stat " + packageDir + " | busybox grep Uid | busybox awk '{print $4}' | busybox sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
             //gid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
-            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+//            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes("busybox stat " + packageDir + " | busybox grep Gid | busybox awk '{print $4}' | busybox sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
@@ -195,9 +172,11 @@ public class ShellCommands
 
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+//                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+                dos.writeBytes("busybox chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
                 dos.flush();
-                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
+//                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
+                dos.writeBytes("busybox chmod -R 755 " + packageDir + "\n");
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
                 dos.flush();
                 dos.writeBytes("exit\n");
@@ -243,7 +222,7 @@ public class ShellCommands
                 dos.writeBytes("exit\n");
                 dos.flush();
                 int ret = p.waitFor();
-                Log.i(TAG, "restoreApk return: " + ret);
+//                Log.i(TAG, "restoreApk return: " + ret);
                 // det ser ud til at pm install giver 0 som return selvom der sker en fejl
                 if(ret != 0)
                 {
@@ -318,7 +297,6 @@ public class ShellCommands
     {
         if(file.exists())
         {
-//            Log.i(TAG, "deleting backup: " + file.getAbsolutePath());
             if(file.isDirectory())
             {
                 if(file.list().length > 0)
@@ -489,7 +467,6 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-//            dos.writeBytes("echo hello\n");
             dos.writeBytes("exit\n");
             dos.flush();
             p.waitFor();
