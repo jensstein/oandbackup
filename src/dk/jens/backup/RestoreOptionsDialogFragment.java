@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class RestoreOptionsDialogFragment extends DialogFragment
 {
-    final static String TAG = OBackup.TAG; 
+    final static String TAG = OAndBackup.TAG; 
     String packageName, label;
     AppInfo appInfo;
     public RestoreOptionsDialogFragment(AppInfo appInfo)
@@ -29,7 +29,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                OBackup obackup = (OBackup) getActivity();
+                OAndBackup obackup = (OAndBackup) getActivity();
                 obackup.callRestore(appInfo, 1);
             }
         });
@@ -39,7 +39,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OBackup obackup = (OBackup) getActivity();
+                    OAndBackup obackup = (OAndBackup) getActivity();
                     obackup.callRestore(appInfo, 2);
                 }
             });
@@ -48,7 +48,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                OBackup obackup = (OBackup) getActivity();
+                OAndBackup obackup = (OAndBackup) getActivity();
                 obackup.callRestore(appInfo, 3);
             }
         });

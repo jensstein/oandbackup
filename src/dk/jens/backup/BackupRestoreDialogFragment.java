@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class BackupRestoreDialogFragment extends DialogFragment
 {
-    final static String TAG = OBackup.TAG; 
+    final static String TAG = OAndBackup.TAG; 
     String packageName, label;
     Context context;
     boolean isInstalled;
@@ -38,7 +38,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OBackup obackup = (OBackup) getActivity();
+                    OAndBackup obackup = (OAndBackup) getActivity();
                     obackup.callBackup(appInfo);
                 }
             });

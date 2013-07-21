@@ -46,7 +46,7 @@ public class BatchActivity extends Activity implements OnClickListener
 {
     public static List<PackageInfo> pinfoList;
     public static ArrayList<AppInfo> appInfoList;
-    final static String TAG = OBackup.TAG; 
+    final static String TAG = OAndBackup.TAG; 
     boolean backupBoolean;
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
@@ -79,7 +79,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         pm = getPackageManager();
 
-        backupDir = new File(Environment.getExternalStorageDirectory() + "/oabackups");
+        backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
         if(!backupDir.exists())
         {
             backupDir.mkdirs();

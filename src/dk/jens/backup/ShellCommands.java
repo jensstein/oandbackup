@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ShellCommands
 {
-    final static String TAG = OBackup.TAG; 
+    final static String TAG = OAndBackup.TAG; 
     Process p;
     DataOutputStream dos;
     Context mContext;
@@ -468,7 +468,7 @@ public class ShellCommands
         // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
         try
         {
-            File outFile = new File(Environment.getExternalStorageDirectory() + "/oabackup.log");
+            File outFile = new File(Environment.getExternalStorageDirectory() + "/oandbackup.log");
             if(!outFile.exists())
             {
                 outFile.createNewFile();
