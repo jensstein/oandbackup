@@ -42,6 +42,7 @@ public class ShellCommands
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
             dos.writeBytes("rsync -r --exclude=/lib " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
             dos.flush();
             dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
             dos.flush();
