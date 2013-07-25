@@ -230,6 +230,22 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         notifyDataSetChanged();
     }
+    public void filterIsBackedup()
+    {
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        clear();
+        for(AppInfo appInfo : originalValues)
+        {
+            if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+            {
+                add(appInfo);
+            }
+        }
+        notifyDataSetChanged();
+    }
     public void sortByLabel()
     {
         Collections.sort(items, labelComparator);

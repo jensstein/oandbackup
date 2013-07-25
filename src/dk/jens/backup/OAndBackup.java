@@ -12,9 +12,11 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class OAndBackup extends FragmentActivity // FragmentActivity i stedet for Activity for at kunne bruge ting fra support-bibliotekerne
+implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     final static String TAG = OAndBackup.class.getSimpleName().toLowerCase();
 
@@ -56,6 +59,7 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
     File backupDir;
     List<PackageInfo> pinfoList;
     MenuItem mSearchItem;
+    SharedPreferences prefs;
 
     AppInfoAdapter adapter;
     ArrayList<AppInfo> appInfoList;
@@ -65,8 +69,8 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
 
-    ShellCommands shellCommands = new ShellCommands(this);
-    HandleMessages handleMessages = new HandleMessages(this);
+    ShellCommands shellCommands;
+    HandleMessages handleMessages;
 
     ListView listView;
 
@@ -75,6 +79,8 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        handleMessages = new HandleMessages(this);
+        shellCommands = new ShellCommands(this);
         new Thread(new Runnable(){
             public void run()
             {
@@ -104,6 +110,8 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
+                prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+                prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 
                 backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
                 if(!backupDir.exists())
@@ -157,10 +165,11 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
                 }
                 else
                 {
-                    shellCommands.deleteBackup(backupSubDir);
-                    backupSubDir.mkdirs();
+                    shellCommands.deleteOldApk(backupSubDir);
+//                    shellCommands.deleteBackup(backupSubDir);
+//                    backupSubDir.mkdirs();
                 }
-                shellCommands.doBackup(backupSubDir, appInfo.getDataDir(), appInfo.getSourceDir());
+                shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
                 shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                 
                 // køre på uitråd for at undgå WindowLeaked
@@ -393,6 +402,9 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
                 showAll = false;
                 adapter.filterAppType(1);
                 break;
+            case R.id.showNotBackedup:
+                adapter.filterIsBackedup();
+                break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
                 // på grund af mObjects og mOriginalValues i ArrayAdapter bliver man nødt til at foretage en filtrering hver gang man vil ændre sin adapters dataset efter den første filtrering:
@@ -431,6 +443,9 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
                 {
                     adapter.getFilter().filter("");
                 }
+                break;
+            case R.id.preferences:
+                startActivity(new Intent(this, Preferences.class));
                 break;
         }
         return true;
@@ -513,6 +528,10 @@ public class OAndBackup extends FragmentActivity // FragmentActivity i stedet fo
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
+    {
     }
     public boolean onSearchRequested()
     {

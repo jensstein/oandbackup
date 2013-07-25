@@ -2,20 +2,24 @@ package dk.jens.backup;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,19 +33,21 @@ public class ShellCommands
     Process p;
     DataOutputStream dos;
     Context mContext;
+    SharedPreferences prefs;
     public ShellCommands(Context context)
     {
         this.mContext = context;
+        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
-    public void doBackup(File backupDir, String packageData, String packageApk)
+    public void doBackup(File backupDir, String label, String packageData, String packageApk)
     {
-        Log.i(TAG, "backup: " + packageData);
+        Log.i(TAG, "backup: " + label);
         try
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes("rsync -r --exclude=/lib " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes("rsync -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
             dos.flush();
             dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
@@ -123,24 +129,6 @@ public class ShellCommands
     {
         try
         {
-/*
-            // busybox location
-            String busybox;
-            if(android.os.Build.MODEL.equals("sdk")) // tjekke for emulator -> erstat med rigtigt tjek efter busybox
-            {
-                busybox = "/data/busybox/";
-            }
-            else
-            {
-                busybox = "/system/xbin/";
-            }
-            String chown = busybox + "chown";
-            String chmod = busybox + "chmod";
-            String awk = busybox + "awk";
-            String stat = busybox + "stat";
-            String sed = busybox + "sed";
-            String grep = busybox + "grep";
-*/
             Process p = Runtime.getRuntime().exec("sh"); // man behøver ikke su til stat - det gør man til ls -l /data/
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             //uid:
@@ -322,6 +310,20 @@ public class ShellCommands
             }
         }
     }
+    public void deleteOldApk(File backupfolder)
+    {
+        File[] files = backupfolder.listFiles(new FilenameFilter()
+        {
+            public boolean accept(File dir, String filename)
+            {
+                return filename.endsWith(".apk");
+            }
+        });
+        for(File file : files)
+        {
+            file.delete();
+        }
+    }
     public void killPackage(String packageName)
     {
         List<ActivityManager.RunningAppProcessInfo> runningList;
@@ -391,8 +393,17 @@ public class ShellCommands
     public void writeLogFile(String filePath, String content)
     {
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
-        String dateFormated = dateFormat.format(date);
+        String dateFormated;
+        if(prefs.getBoolean("timestamp", true))
+        {
+            DateFormat dateFormat = DateFormat.getDateTimeInstance();
+            dateFormated = dateFormat.format(date);
+        }
+        else
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
+            dateFormated = dateFormat.format(date);
+        }
         content = content + "\n" + dateFormated + "\n";
         try
         {
@@ -563,5 +574,4 @@ public class ShellCommands
             return false;
         }
     }
-
 }

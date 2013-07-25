@@ -56,7 +56,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
     boolean checkboxSelectAllBoolean = true;
 
-    ShellCommands shellCommands = new ShellCommands(this);
+    ShellCommands shellCommands;
     File backupDir;
     ProgressDialog progress;
     PackageManager pm;
@@ -69,7 +69,7 @@ public class BatchActivity extends Activity implements OnClickListener
     RadioButton rb, rbData, rbApk, rbBoth;
     ArrayList<CheckBox> checkboxList = new ArrayList<CheckBox>();
     HashMap<String, PackageInfo> pinfoMap = new HashMap<String, PackageInfo>();
-    HandleMessages handleMessages = new HandleMessages(this);
+    HandleMessages handleMessages;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -78,7 +78,9 @@ public class BatchActivity extends Activity implements OnClickListener
         setContentView(R.layout.backuprestorelayout);
 
         pm = getPackageManager();
-
+        shellCommands = new ShellCommands(this);
+        handleMessages = new HandleMessages(this);
+        
         backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
         if(!backupDir.exists())
         {
@@ -254,16 +256,17 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                     else
                     {
-                        shellCommands.deleteBackup(backupSubDir);
-                        backupSubDir.mkdirs();
+                        shellCommands.deleteOldApk(backupSubDir);
+//                        shellCommands.deleteBackup(backupSubDir);
+//                        backupSubDir.mkdirs();
                     }
-                    shellCommands.doBackup(backupSubDir, appInfo.getDataDir(), appInfo.getSourceDir());
+                    shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
                     shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-                    Log.i(TAG, "backup: " + appInfo.getLabel());
+//                    Log.i(TAG, "backup: " + appInfo.getLabel());
                 }
                 else
                 {
-                    Log.i(TAG, "restore: " + appInfo.getPackageName());
+//                    Log.i(TAG, "restore: " + appInfo.getPackageName());
                     ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
                     String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
                     String apk = readlog.get(3);
