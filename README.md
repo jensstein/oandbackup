@@ -2,10 +2,10 @@ oandbackup
 =======
 a backup program for android. requires root and allows you to backup individual apps and their data.
 
-a working busybox and rsync installation is required at the moment. 
+a working busybox and rsync installation is required at the moment.   
 instructions for optaining an rsync binary can be found here: http://linux.wxs.ro/2011/08/05/rsync-your-android/  
-a busybox executable can be obtained from various sources. here a instructions for building it from source: http://mobisocial.stanford.edu/news/2011/02/compile-busybox-on-android-os/   
-unfortunately i cannot vouch for the quality of either.
+a busybox executable can be obtained from various sources. here are instructions for building it from source: http://mobisocial.stanford.edu/news/2011/02/compile-busybox-on-android-os/   
+unfortunately i cannot vouch for the quality of either web page.
 
 an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
 
