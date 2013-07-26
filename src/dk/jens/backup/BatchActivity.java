@@ -13,12 +13,14 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,10 +59,10 @@ public class BatchActivity extends Activity implements OnClickListener
 
     boolean checkboxSelectAllBoolean = true;
 
-    ShellCommands shellCommands;
     File backupDir;
     ProgressDialog progress;
     PackageManager pm;
+    SharedPreferences prefs;
 
     ListView listView;
     BatchAdapter adapter;
@@ -69,7 +72,10 @@ public class BatchActivity extends Activity implements OnClickListener
     RadioButton rb, rbData, rbApk, rbBoth;
     ArrayList<CheckBox> checkboxList = new ArrayList<CheckBox>();
     HashMap<String, PackageInfo> pinfoMap = new HashMap<String, PackageInfo>();
+
     HandleMessages handleMessages;
+    ShellCommands shellCommands;
+    FileCreationHelper fileCreator;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -80,12 +86,19 @@ public class BatchActivity extends Activity implements OnClickListener
         pm = getPackageManager();
         shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
+        fileCreator = new FileCreationHelper(this);
         
+        /*        
         backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
         if(!backupDir.exists())
         {
             backupDir.mkdirs();
         }
+        */
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
+        createBackupDir(backupDirPath);
+
 
         Bundle extra = getIntent().getExtras();
         if(extra != null)
@@ -227,80 +240,83 @@ public class BatchActivity extends Activity implements OnClickListener
     }
     public void doAction(ArrayList<AppInfo> selectedList)
     {
-        int id = (int) Calendar.getInstance().getTimeInMillis();
-        int total = selectedList.size();
-        int i = 0;
-        for(AppInfo appInfo: selectedList)
+        if(backupDir != null)
         {
-            if(appInfo.isChecked)
+            int id = (int) Calendar.getInstance().getTimeInMillis();
+            int total = selectedList.size();
+            int i = 0;
+            for(AppInfo appInfo: selectedList)
             {
-                i++;
-                String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                String title = backupBoolean ? "backing up" : "restoring";
-                showNotification(id, title, appInfo.getLabel());
-                if(i == 1)
+                if(appInfo.isChecked)
                 {
-                    handleMessages.showMessage(appInfo.getLabel(), message);
-                }
-                else
-                {
-                    handleMessages.changeMessage(appInfo.getLabel(), message);
-                }
-                if(backupBoolean)
-                {
-                    String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
-                    if(!backupSubDir.exists())
+                    i++;
+                    String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
+                    File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
+                    String title = backupBoolean ? "backing up" : "restoring";
+                    showNotification(id, title, appInfo.getLabel());
+                    if(i == 1)
                     {
-                        backupSubDir.mkdirs();
+                        handleMessages.showMessage(appInfo.getLabel(), message);
                     }
                     else
                     {
-                        shellCommands.deleteOldApk(backupSubDir);
-//                        shellCommands.deleteBackup(backupSubDir);
-//                        backupSubDir.mkdirs();
+                        handleMessages.changeMessage(appInfo.getLabel(), message);
                     }
-                    shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-//                    Log.i(TAG, "backup: " + appInfo.getLabel());
-                }
-                else
-                {
-//                    Log.i(TAG, "restore: " + appInfo.getPackageName());
-                    ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-                    String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
-                    String apk = readlog.get(3);
-                    String[] apkArray = apk.split("/");
-                    apk = apkArray[apkArray.length - 1];
-
-                    if(rbApk.isChecked())
+                    if(backupBoolean)
                     {
-                        shellCommands.restoreApk(backupSubDir, apk);
-                    }
-                    else if(rbData.isChecked())
-                    {
-                        if(appInfo.isInstalled)
+                        String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
+                        if(!backupSubDir.exists())
                         {
-                            shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
-                            shellCommands.setPermissions(dataDir);
+                            backupSubDir.mkdirs();
                         }
                         else
                         {
-                    Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                            shellCommands.deleteOldApk(backupSubDir);
+    //                        shellCommands.deleteBackup(backupSubDir);
+    //                        backupSubDir.mkdirs();
+                        }
+                        shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
+                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+    //                    Log.i(TAG, "backup: " + appInfo.getLabel());
+                    }
+                    else
+                    {
+    //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
+                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+                        String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
+                        String apk = readlog.get(3);
+                        String[] apkArray = apk.split("/");
+                        apk = apkArray[apkArray.length - 1];
+
+                        if(rbApk.isChecked())
+                        {
+                            shellCommands.restoreApk(backupSubDir, apk);
+                        }
+                        else if(rbData.isChecked())
+                        {
+                            if(appInfo.isInstalled)
+                            {
+                                shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
+                                shellCommands.setPermissions(dataDir);
+                            }
+                            else
+                            {
+                        Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                            }
+                        }
+                        else if(rbBoth.isChecked())
+                        {
+                            shellCommands.restoreApk(backupSubDir, apk);
+                            shellCommands.doRestore(backupSubDir, appInfo.getPackageName());                                
+                            shellCommands.setPermissions(dataDir);
                         }
                     }
-                    else if(rbBoth.isChecked())
+                    if(i == total)
                     {
-                        shellCommands.restoreApk(backupSubDir, apk);
-                        shellCommands.doRestore(backupSubDir, appInfo.getPackageName());                                
-                        shellCommands.setPermissions(dataDir);
+                        String msg = backupBoolean ? "backup" : "restore";
+                        showNotification(id, "operation complete", "batch " + msg);
+                        handleMessages.endMessage();
                     }
-                }
-                if(i == total)
-                {
-                    String msg = backupBoolean ? "backup" : "restore";
-                    showNotification(id, "operation complete", "batch " + msg);
-                    handleMessages.endMessage();
                 }
             }
         }
@@ -322,5 +338,26 @@ public class BatchActivity extends Activity implements OnClickListener
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(id, mBuilder.build());
+    }
+    public void createBackupDir(String path)
+    {
+        if(path.trim().length() > 0)
+        {
+            backupDir = fileCreator.createBackupFolder(path);
+        }
+        else
+        {
+            backupDir = fileCreator.createBackupFolder(fileCreator.getDefaultBackupDirPath());
+        }
+        if(backupDir == null)
+        {
+            runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
+                    Toast.makeText(BatchActivity.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+                }
+            });                    
+        }
     }
 }

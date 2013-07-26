@@ -32,12 +32,25 @@ public class ShellCommands
     final static String TAG = OAndBackup.TAG; 
     Process p;
     DataOutputStream dos;
-    Context mContext;
+    Context context;
     SharedPreferences prefs;
+    String busybox, rsync;
+    FileCreationHelper fileCreator;
     public ShellCommands(Context context)
     {
-        this.mContext = context;
-        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        this.context = context;
+        fileCreator = new FileCreationHelper(context);
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        busybox = prefs.getString("pathBusybox", "busybox").trim();
+        rsync = prefs.getString("pathRsync", "rsync").trim();
+        if(busybox.length() == 0)
+        {
+            busybox = "busybox";
+        }
+        if(rsync.length() == 0)
+        {
+            rsync = "rsync";
+        }
     }
     public void doBackup(File backupDir, String label, String packageData, String packageApk)
     {
@@ -47,7 +60,7 @@ public class ShellCommands
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes("rsync -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
             dos.flush();
             dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
@@ -134,12 +147,12 @@ public class ShellCommands
             //uid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
 //            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
-            dos.writeBytes("busybox stat " + packageDir + " | busybox grep Uid | busybox awk '{print $4}' | busybox sed -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
             //gid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
 //            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
-            dos.writeBytes("busybox stat " + packageDir + " | busybox grep Gid | busybox awk '{print $4}' | busybox sed -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
@@ -162,10 +175,10 @@ public class ShellCommands
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
 //                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-                dos.writeBytes("busybox chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
                 dos.flush();
 //                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
-                dos.writeBytes("busybox chmod -R 755 " + packageDir + "\n");
+                dos.writeBytes(busybox + " chmod -R 755 " + packageDir + "\n");
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
                 dos.flush();
                 dos.writeBytes("exit\n");
@@ -327,7 +340,7 @@ public class ShellCommands
     public void killPackage(String packageName)
     {
         List<ActivityManager.RunningAppProcessInfo> runningList;
-        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         runningList = manager.getRunningAppProcesses();
         for(ActivityManager.RunningAppProcessInfo process : runningList)
         {
@@ -458,15 +471,22 @@ public class ShellCommands
         // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
         try
         {
-            File outFile = new File(Environment.getExternalStorageDirectory() + "/oandbackup.log");
+            String logFilePath = prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath());
+//            File outFile = new File(logFilePath);
+            File outFile = fileCreator.createLogFile(logFilePath);
+            /*
             if(!outFile.exists())
             {
                 outFile.createNewFile();
             }
-		    FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
-		    BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(err + "\n");
-            bw.close();        
+            */
+            if(outFile != null)
+            {
+                FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(err + "\n");
+                bw.close();        
+            }
         }
         catch(IOException e)
         {
@@ -508,7 +528,7 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("sh");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("rsync\n");
+            dos.writeBytes(rsync + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
             int rsyncReturn = p.waitFor();
@@ -544,7 +564,7 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("sh");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("busybox\n");
+            dos.writeBytes(busybox + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
             int bboxReturn = p.waitFor();

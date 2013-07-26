@@ -30,7 +30,17 @@
     <string name="suCheck">checking for superuser and busybox</string>
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="rsyncOrBusyboxProblem">couldn\'t find rsync or busybox. please check error log</string>
+    <string name="mkfileError">couldn\'t create</string>
 
     <string name="prefs_title">preferences</string>    
     <string name="prefs_timestamp">use local date format</string>
+    <string name="prefs_pathscategory">custom paths</string>
+    <string name="prefs_pathBackupFolder">backup folder</string>
+    <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>
+    <string name="prefs_pathLogfile">logfile</string>
+    <string name="prefs_summaryLogfile">path to logfile. leave blank for default.</string>
+    <string name="prefs_pathBusybox">busybox</string>
+    <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
+    <string name="prefs_pathRsync">rsync</string>
+    <string name="prefs_summaryRsync">path to rsync executable. be sure it\'s correct. leave blank for default.</string>
 </resources>

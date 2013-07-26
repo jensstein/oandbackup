@@ -71,6 +71,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
     ShellCommands shellCommands;
     HandleMessages handleMessages;
+    FileCreationHelper fileCreator;
 
     ListView listView;
 
@@ -81,6 +82,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         setContentView(R.layout.main);
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
+        fileCreator = new FileCreationHelper(this);
+        
         new Thread(new Runnable(){
             public void run()
             {
@@ -112,13 +115,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 pm = getPackageManager();
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
+                String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
+                createBackupDir(backupDirPath);
                 
-                backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
-                if(!backupDir.exists())
-                {
-                    backupDir.mkdirs();
-                }
-
                 appInfoList = new ArrayList<AppInfo>();
                 getPackageInfo();
                 handleMessages.endMessage();
@@ -259,15 +258,18 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
         for(PackageInfo pinfo : pinfoList)
         {
-            String lastBackup;
-            ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
-            try
+            String lastBackup = getString(R.string.noBackupYet);
+            if(backupDir != null)
             {
-                lastBackup = loglines.get(5);
-            }
-            catch(IndexOutOfBoundsException e)
-            {
-                lastBackup = this.getString(R.string.noBackupYet);
+                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+                try
+                {
+                    lastBackup = loglines.get(5);
+                }
+                catch(IndexOutOfBoundsException e)
+                {
+                    lastBackup = this.getString(R.string.noBackupYet);
+                }
             }
 
             boolean isSystem = false;
@@ -279,28 +281,31 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             appInfoList.add(appInfo);
 
         }
-        for(String folder : backupDir.list())
+        if(backupDir != null && backupDir.exists())
         {
-            boolean found = false;
-            for(PackageInfo pinfo : pinfoList)
+            for(String folder : backupDir.list())
             {
-                if(pinfo.packageName.equals(folder))
+                boolean found = false;
+                for(PackageInfo pinfo : pinfoList)
                 {
-                    found = true;
+                    if(pinfo.packageName.equals(folder))
+                    {
+                        found = true;
+                    }
                 }
-            }
-            if(!found)
-            {
-                try
+                if(!found)
                 {
-                    ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
-                    AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0),loginfo.get(1), loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
-                    // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
-                    appInfoList.add(appInfo);
-                }
-                catch(IndexOutOfBoundsException e)
-                {
-                    // mappen er enten ikke en backupmappe eller noget er galt
+                    try
+                    {
+                        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                        AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0),loginfo.get(1), loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
+                        // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
+                        appInfoList.add(appInfo);
+                    }
+                    catch(IndexOutOfBoundsException e)
+                    {
+                        // mappen er enten ikke en backupmappe eller noget er galt
+                    }
                 }
             }
         }
@@ -532,6 +537,17 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
     {
+        if(key.equals("pathBackupFolder"))
+        {
+            String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
+//            backupDir = new File(backupDirPath);
+            createBackupDir(backupDirPath);
+            refresh();
+        }
+        if(key.equals("pathRsync") || key.equals("pathBusybox"))
+        {
+            shellCommands = new ShellCommands(this);
+        }
     }
     public boolean onSearchRequested()
     {
@@ -540,5 +556,26 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             mSearchItem.expandActionView();
         }
         return true;
+    }
+    public void createBackupDir(String path)
+    {
+        if(path.trim().length() > 0)
+        {
+            backupDir = fileCreator.createBackupFolder(path);
+        }
+        else
+        {
+            backupDir = fileCreator.createBackupFolder(fileCreator.getDefaultBackupDirPath());
+        }
+        if(backupDir == null)
+        {
+            runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
+                    Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+                }
+            });                    
+        }
     }
 }
