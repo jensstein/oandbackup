@@ -58,6 +58,7 @@ public class BatchActivity extends Activity implements OnClickListener
     final static int RESULT_OK = 0;
 
     boolean checkboxSelectAllBoolean = true;
+    boolean changesMade;
 
     File backupDir;
     ProgressDialog progress;
@@ -220,7 +221,7 @@ public class BatchActivity extends Activity implements OnClickListener
         }
         new AlertDialog.Builder(context)
         .setTitle(title)
-        .setMessage(message)
+        .setMessage(message.trim())
         .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
         {
             @Override
@@ -242,6 +243,7 @@ public class BatchActivity extends Activity implements OnClickListener
     {
         if(backupDir != null)
         {
+            changesMade = true;
             int id = (int) Calendar.getInstance().getTimeInMillis();
             int total = selectedList.size();
             int i = 0;
@@ -319,6 +321,9 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                 }
             }
+            Intent result = new Intent();
+            result.putExtra("changesMade", changesMade);
+            setResult(RESULT_OK, result);
         }
     }
     public void showNotification(int id, String title, String text)

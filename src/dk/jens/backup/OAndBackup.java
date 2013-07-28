@@ -53,7 +53,8 @@ import java.util.List;
 public class OAndBackup extends FragmentActivity // FragmentActivity i stedet for Activity for at kunne bruge ting fra support-bibliotekerne
 implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    final static String TAG = OAndBackup.class.getSimpleName().toLowerCase();
+    static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
+    static final int BATCH_REQUEST = 1;
 
     PackageManager pm;
     File backupDir;
@@ -341,6 +342,28 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         adapter.notifyDataSetChanged();
     }
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(requestCode == BATCH_REQUEST)
+        {
+            if(data != null)
+            {
+                boolean changesMade = data.getBooleanExtra("changesMade", false);
+                if(changesMade)
+                {
+                    refresh();
+                }
+            }
+            for(AppInfo appInfo : appInfoList)
+            {
+                if(appInfo.isChecked)
+                {
+                    appInfo.toggle();
+                }
+            }
+        }
+    }
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) // onPrepare i stedet for onCreate, så menuen kan være forskellig i de to aktiviteter - menu.clear() så menuen ikke duplikerer sig ved hvert tryk på menuknappen
     {
         menu.clear();
@@ -385,12 +408,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 // sende extra med intent: http://stackoverflow.com/a/4828453
                 Intent backupIntent = new Intent(this, BatchActivity.class);
                 backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
-                startActivity(backupIntent);
+                startActivityForResult(backupIntent, BATCH_REQUEST);
                 break;
             case R.id.batchrestore:
                 Intent restoreIntent = new Intent(this, BatchActivity.class);
                 restoreIntent.putExtra("dk.jens.backup.backupBoolean", false);
-                startActivity(restoreIntent);
+                startActivityForResult(restoreIntent, BATCH_REQUEST);
                 break;
             case R.id.showAll:
                 showAll = true;

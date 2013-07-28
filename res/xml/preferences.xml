@@ -12,13 +12,11 @@
             android:key="pathBackupFolder"
             android:title="@string/prefs_pathBackupFolder"
             android:summary="@string/prefs_summaryBackupFolder"
-            android:defaultValue="/sdcard/oandbackups/"
         />
         <EditTextPreference
             android:key="pathLogfile"
             android:title="@string/prefs_pathLogfile"
             android:summary="@string/prefs_summaryLogfile"
-            android:defaultValue="/sdcard/oandbackup.log"
         />            
         <EditTextPreference
             android:key="pathBusybox"
