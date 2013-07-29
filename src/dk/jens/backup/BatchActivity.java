@@ -298,18 +298,18 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             if(appInfo.isInstalled)
                             {
-                                shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
+                                shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                                 shellCommands.setPermissions(dataDir);
                             }
                             else
                             {
-                        Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                                Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
                             }
                         }
                         else if(rbBoth.isChecked())
                         {
                             shellCommands.restoreApk(backupSubDir, apk);
-                            shellCommands.doRestore(backupSubDir, appInfo.getPackageName());                                
+                            shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());                                
                             shellCommands.setPermissions(dataDir);
                         }
                     }

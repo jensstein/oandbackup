@@ -63,7 +63,8 @@ public class ShellCommands
             dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
             dos.flush();
-            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+//            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
             dos.flush();
@@ -88,7 +89,7 @@ public class ShellCommands
             Log.i(TAG, e.toString());
         }
     }
-    public void doRestore(File backupDir, String packageName)
+    public void doRestore(File backupDir, String label, String packageName)
     {
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
@@ -98,21 +99,20 @@ public class ShellCommands
         packageData = logLines.get(4);
         String[] apk = packageApk.split("/");
         packageApk = apk[apk.length - 1];
-        Log.i(TAG, "restoring: " + packageName);
+        Log.i(TAG, "restoring: " + label);
 
         try
         {
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            {
+//            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+//            {
                 killPackage(packageName);
-            }
+//            }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
+            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
+//            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
 /*
             dos.writeBytes("am force-stop " + packageName + "\n");
-            dos.flush();
-            dos.writeBytes("rsync -r --exclude=/lib " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
 */
             dos.flush();
             dos.writeBytes("exit\n");

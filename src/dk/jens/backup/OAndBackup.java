@@ -208,7 +208,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     case 2:
                         if(appInfo.isInstalled)
                         {
-                            shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
+                            shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                             shellCommands.setPermissions(dataDir);
                         }
                         else
@@ -218,7 +218,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         break;
                     case 3:
                         shellCommands.restoreApk(backupSubDir, apk);
-                        shellCommands.doRestore(backupSubDir, appInfo.getPackageName());
+                        shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                         shellCommands.setPermissions(dataDir);
                         break;
                 }
