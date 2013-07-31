@@ -32,10 +32,10 @@ public class HandleAlarms
     }
     public long timeUntilNextEvent(int interval, int hour)
     {
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_MONTH, interval);
-        now.set(Calendar.HOUR_OF_DAY, hour);
-        now.set(Calendar.MINUTE, 0);
-        return now.getTimeInMillis() - System.currentTimeMillis();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, interval);
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, 0);
+        return c.getTimeInMillis() - System.currentTimeMillis();
     }
 }

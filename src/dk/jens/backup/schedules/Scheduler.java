@@ -30,9 +30,6 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
     HandleAlarms handleAlarms;
 
     long intervalInDays = AlarmManager.INTERVAL_DAY;
-//    long offsetInHours = AlarmManager.INTERVAL_HOUR;
-//    long intervalInDays = 1000;
-//    long offsetInHours = 1000;
 
     Integer hourOfDay, repeatTime;
 
@@ -67,6 +64,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        spinner.setSelection(prefs.getInt("scheduleMode", 0));
         
 //        handleAlarms.setAlarm(0, 0, 0);
     }

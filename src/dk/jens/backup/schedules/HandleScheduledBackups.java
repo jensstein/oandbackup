@@ -102,8 +102,7 @@ public class HandleScheduledBackups
                 {
                     i++;
                     String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
-                    String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                    String title = "backing up";
+                    String title = "backing up (" + i + "/" + total + ")";
                     notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel());
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                     if(!backupSubDir.exists())
