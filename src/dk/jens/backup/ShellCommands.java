@@ -70,7 +70,8 @@ public class ShellCommands
             dos.flush();
 
             int retval = p.waitFor();
-            Log.i(TAG, "return: " + retval);
+            String returnMessages = retval == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            Log.i(TAG, "return: " + retval + " / " + returnMessages);
             if(prefs.getBoolean("rsyncOutput", false))
             {
                 ArrayList<String> stdout = getOutput(p).get("stdout");
