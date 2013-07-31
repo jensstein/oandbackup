@@ -60,10 +60,10 @@ public class ShellCommands
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
             dos.flush();
-            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(rsync + " -vt " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
 //            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
@@ -71,6 +71,14 @@ public class ShellCommands
 
             int retval = p.waitFor();
             Log.i(TAG, "return: " + retval);
+            if(prefs.getBoolean("rsyncOutput", false))
+            {
+                ArrayList<String> stdout = getOutput(p).get("stdout");
+                for(String line : stdout)
+                {
+                    Log.i(TAG, line);
+                }
+            }
             if(retval != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
@@ -109,7 +117,7 @@ public class ShellCommands
 //            }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
+            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
 //            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
 /*
             dos.writeBytes("am force-stop " + packageName + "\n");
@@ -119,6 +127,14 @@ public class ShellCommands
             dos.flush();
 
             int retval = p.waitFor();
+            if(prefs.getBoolean("rsyncOutput", false))
+            {
+                ArrayList<String> stdout = getOutput(p).get("stdout");
+                for(String line : stdout)
+                {
+                    Log.i(TAG, line);
+                }
+            }
             if(retval != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");

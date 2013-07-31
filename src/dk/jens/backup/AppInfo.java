@@ -1,6 +1,6 @@
 package dk.jens.backup;
 
-public class AppInfo
+public class AppInfo implements Comparable<AppInfo>
 {
     String label, packageName, version, sourceDir, dataDir, lastBackup;
     public boolean isSystem, isInstalled, isChecked;
@@ -43,6 +43,10 @@ public class AppInfo
     public void toggle()
     {
         isChecked = isChecked ? false : true;
+    }
+    public int compareTo(AppInfo appInfo)
+    {
+        return label.compareToIgnoreCase(appInfo.getLabel());
     }
     public String toString()
     {

@@ -1,12 +1,7 @@
 package dk.jens.backup;
 
-import android.support.v4.app.TaskStackBuilder;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +16,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,6 +71,7 @@ public class BatchActivity extends Activity implements OnClickListener
     HandleMessages handleMessages;
     ShellCommands shellCommands;
     FileCreationHelper fileCreator;
+    NotificationHelper notificationHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -88,6 +83,7 @@ public class BatchActivity extends Activity implements OnClickListener
         shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
+        notificationHelper = new NotificationHelper(this);
         
         /*        
         backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
@@ -255,7 +251,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                     String title = backupBoolean ? "backing up" : "restoring";
-                    showNotification(id, title, appInfo.getLabel());
+                    notificationHelper.showNotification(BatchActivity.class, id, title, appInfo.getLabel());
                     if(i == 1)
                     {
                         handleMessages.showMessage(appInfo.getLabel(), message);
@@ -316,7 +312,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     if(i == total)
                     {
                         String msg = backupBoolean ? "backup" : "restore";
-                        showNotification(id, "operation complete", "batch " + msg);
+                        notificationHelper.showNotification(BatchActivity.class, id, "operation complete", "batch " + msg);
                         handleMessages.endMessage();
                     }
                 }
@@ -325,24 +321,6 @@ public class BatchActivity extends Activity implements OnClickListener
             result.putExtra("changesMade", changesMade);
             setResult(RESULT_OK, result);
         }
-    }
-    public void showNotification(int id, String title, String text)
-    {
-//        Notification.Builder mBuilder = new Notification.Builder(this)
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.backup_small)
-            .setContentTitle(title)
-            .setContentText(text);
-        // resultIntent og taskstackbuilder er for bagudkompabilitet
-        Intent resultIntent = new Intent(this, BatchActivity.class);        
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(BatchActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, mBuilder.build());
     }
     public void createBackupDir(String path)
     {

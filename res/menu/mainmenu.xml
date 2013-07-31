@@ -34,4 +34,6 @@
     </item>
     <item android:id="@+id/preferences"
         android:title="@string/prefs_title"/>
+    <item android:id="@+id/schedules"
+        android:title="schedules"/>
 </menu>

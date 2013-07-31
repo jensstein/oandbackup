@@ -4,7 +4,13 @@
         android:key="timestamp"
         android:title="@string/prefs_timestamp"
         android:defaultValue="true"
-    />
+        />
+    <CheckBoxPreference
+        android:key="rsyncOutput"
+        android:title="@string/prefs_rsyncOutput"
+        android:summary="@string/prefs_summaryRsyncOutput"
+        android:defaultValue="false"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
@@ -12,21 +18,21 @@
             android:key="pathBackupFolder"
             android:title="@string/prefs_pathBackupFolder"
             android:summary="@string/prefs_summaryBackupFolder"
-        />
+            />
         <EditTextPreference
             android:key="pathLogfile"
             android:title="@string/prefs_pathLogfile"
             android:summary="@string/prefs_summaryLogfile"
-        />            
+            />            
         <EditTextPreference
             android:key="pathBusybox"
             android:title="@string/prefs_pathBusybox"
             android:summary="@string/prefs_summaryBusybox"
-        />
+            />
         <EditTextPreference
             android:key="pathRsync"
             android:title="@string/prefs_pathRsync"
             android:summary="@string/prefs_summaryRsync"
-        />            
+            />            
     </PreferenceCategory>
 </PreferenceScreen>

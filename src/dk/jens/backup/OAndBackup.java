@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 //import android.app.FragmentManager;
 //import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,8 +17,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -73,6 +69,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     FileCreationHelper fileCreator;
+    NotificationHelper notificationHelper;
 
     ListView listView;
 
@@ -84,6 +81,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
+        notificationHelper = new NotificationHelper(this);
         
         new Thread(new Runnable(){
             public void run()
@@ -181,7 +179,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 });
                 handleMessages.endMessage();
-                showNotification(notificationId++, "backup complete", appInfo.getLabel());
+                notificationHelper.showNotification(OAndBackup.class, notificationId++, "backup complete", appInfo.getLabel());
             }
         }).start();
     }
@@ -230,27 +228,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 });
                 handleMessages.endMessage();
-                showNotification(notificationId++, "restore complete", appInfo.getLabel());
+                notificationHelper.showNotification(OAndBackup.class, notificationId++, "restore complete", appInfo.getLabel());
             }
         }).start();
-    }
-    public void showNotification(int id, String title, String text)
-    {
-//        Notification.Builder mBuilder = new Notification.Builder(this)
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.backup_small)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setNumber(++notificationNumber);
-        Intent resultIntent = new Intent(this, OAndBackup.class);        
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(OAndBackup.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, mBuilder.build());
     }
     public void getPackageInfo()
     {
@@ -474,6 +454,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 break;
             case R.id.preferences:
                 startActivity(new Intent(this, Preferences.class));
+                break;
+            case R.id.schedules:
+                startActivity(new Intent(this, Scheduler.class));
                 break;
         }
         return true;
