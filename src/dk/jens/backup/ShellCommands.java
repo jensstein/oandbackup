@@ -227,13 +227,14 @@ public class ShellCommands
             Log.i(TAG, e.toString());
         }                   
     }
-    public int restoreApk(File backupDir, String apk) 
+    public int restoreApk(File backupDir, String label, String apk) 
     {
         File checkDataPath = new File("/data/app/" + apk);
         if(!checkDataPath.exists())
         {
             try
             {
+                Log.i(TAG, "restoring " + label);
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm install " + backupDir.getAbsolutePath() + "/" + apk + "\n");
@@ -243,9 +244,9 @@ public class ShellCommands
                 int ret = p.waitFor();
 //                Log.i(TAG, "restoreApk return: " + ret);
                 // det ser ud til at pm install giver 0 som return selvom der sker en fejl
-                if(ret != 0)
+                ArrayList<String> err = getOutput(p).get("stderr");
+                if(err.size() > 1)
                 {
-                    ArrayList<String> err = getOutput(p).get("stderr");
                     for(String line : err)
                     {
                         writeErrorLog(line);

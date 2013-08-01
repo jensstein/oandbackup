@@ -290,14 +290,14 @@ public class BatchActivity extends Activity implements OnClickListener
                     {
     //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
                         ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-                        String dataDir = readlog.get(4); // når alle logfilerne er genskrevet
+                        String dataDir = appInfo.getDataDir();
                         String apk = readlog.get(3);
                         String[] apkArray = apk.split("/");
                         apk = apkArray[apkArray.length - 1];
 
                         if(rbApk.isChecked())
                         {
-                            shellCommands.restoreApk(backupSubDir, apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
                         }
                         else if(rbData.isChecked())
                         {
@@ -313,7 +313,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         }
                         else if(rbBoth.isChecked())
                         {
-                            shellCommands.restoreApk(backupSubDir, apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
                             shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());                                
                             shellCommands.setPermissions(dataDir);
                         }

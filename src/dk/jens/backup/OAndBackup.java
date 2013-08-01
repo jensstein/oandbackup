@@ -194,14 +194,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.showMessage(appInfo.getLabel(), "restore");
 
                 ArrayList<String> log = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-                String dataDir = log.get(4);
+                String dataDir = appInfo.getDataDir();
                 String apk = log.get(3);
                 String[] apkArray = apk.split("/");
                 apk = apkArray[apkArray.length - 1];
                 switch(options)
                 {
                     case 1:
-                        shellCommands.restoreApk(backupSubDir, apk);
+                        shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
                         break;
                     case 2:
                         if(appInfo.isInstalled)
@@ -215,7 +215,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         }
                         break;
                     case 3:
-                        shellCommands.restoreApk(backupSubDir, apk);
+                        shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
                         shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                         shellCommands.setPermissions(dataDir);
                         break;
@@ -370,6 +370,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     return true;
                 }
             });
+            // man kan ikke bruge onCloseListener efter 3.2: http://code.google.com/p/android/issues/detail?id=25758
             mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
             {
                 @Override
