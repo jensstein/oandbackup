@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -57,6 +58,7 @@ public class BatchActivity extends Activity implements OnClickListener
     File backupDir;
     ProgressDialog progress;
     PackageManager pm;
+    PowerManager powerManager;
     SharedPreferences prefs;
 
     ListView listView;
@@ -80,6 +82,7 @@ public class BatchActivity extends Activity implements OnClickListener
         setContentView(R.layout.backuprestorelayout);
 
         pm = getPackageManager();
+        powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
@@ -239,6 +242,12 @@ public class BatchActivity extends Activity implements OnClickListener
     {
         if(backupDir != null)
         {
+            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            if(prefs.getBoolean("acquireWakelock", true))
+            {
+                wl.acquire();
+                Log.i(TAG, "wakelock acquired");
+            }
             changesMade = true;
             int id = (int) Calendar.getInstance().getTimeInMillis();
             int total = selectedList.size();
@@ -316,6 +325,11 @@ public class BatchActivity extends Activity implements OnClickListener
                         handleMessages.endMessage();
                     }
                 }
+            }
+            if(wl.isHeld())
+            {
+                wl.release();
+                Log.i(TAG, "wakelock released");
             }
             Intent result = new Intent();
             result.putExtra("changesMade", changesMade);

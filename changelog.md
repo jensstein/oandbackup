@@ -3,8 +3,9 @@ changelog
 
 0.1.14 (development)
 --------------------
+ * option to acquire wakelock: new permission - android.permission.WAKE_LOCK
  * started scheduling
- * new permission: RECEIVE_BOOT_COMPLETED to have schedules persist over reboots
+ * new permission: RECEIVE_BOOT_COMPLETED to have schedules persist across reboots
  * smarter rsync arguments
  * now killing apps before restore on all platforms (needed when rsync is used for restore instead of cp)
  * started preferences: custom paths for backupfolder, logfile, rsync binary and busybox binary

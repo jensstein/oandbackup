@@ -27,6 +27,7 @@ public class BootReceiver extends BroadcastReceiver
             long diff = repeat - timePassed;
             int hourOfDay = prefs.getInt("hourOfDay", 0);
             long startTime = handleAlarms.timeUntilNextEvent(0, hourOfDay);
+            Log.i(TAG, "boot starttime: " + (startTime / 1000 / 60 / 60f));
 
             Log.i(TAG, "time placed: " + timePlaced + " timePassed: " + timePassed + " diff: " + diff);
             if(diff < (5 * 60000))
@@ -36,7 +37,6 @@ public class BootReceiver extends BroadcastReceiver
             else if(diff < (24 * AlarmManager.INTERVAL_HOUR))
             {
                 handleAlarms.setAlarm(0, startTime, repeat);
-                Log.i(TAG, "boot starttime: " + startTime);
             }
             else
             {

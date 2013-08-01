@@ -38,6 +38,8 @@
     <string name="prefs_timestamp">use local date format</string>
     <string name="prefs_rsyncOutput">rsync output</string>
     <string name="prefs_summaryRsyncOutput">print output from rsync to logcat</string>
+    <string name="prefs_acquireWakelock">acquire wakelock</string>
+    <string name="prefs_summaryAcquireWakelock">will speed up backups running in the background considerably but will consume more energy</string>
     <string name="prefs_pathscategory">custom paths</string>
     <string name="prefs_pathBackupFolder">backup folder</string>
     <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>

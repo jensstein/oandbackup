@@ -18,9 +18,6 @@ import android.widget.Spinner;
 
 import java.util.Calendar;
 
-// TODO:
-// flere schedules: sætte i preferences som "schedule + $id + $var"
-
 public class Scheduler extends Activity implements OnClickListener, AdapterView.OnItemSelectedListener
 {
     static final String TAG = OAndBackup.TAG;
@@ -55,7 +52,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
         String repeatString = Integer.toString(prefs.getInt("repeatTime", 0));
         intervalDays.setText(repeatString);
         timeOfDay = (EditText) findViewById(R.id.timeOfDay);
-        String timeOfDayString = Integer.toString(prefs.getInt("timeOfDay", 0));
+        String timeOfDayString = Integer.toString(prefs.getInt("hourOfDay", 0));
         timeOfDay.setText(timeOfDayString);
         cb = (CheckBox) findViewById(R.id.checkbox);
         cb.setChecked(prefs.getBoolean("enabled", false));
@@ -77,10 +74,11 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
             repeatTime = Integer.valueOf(intervalDays.getText().toString());
             hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
             long startTime = handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue());
+            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
             handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
             edit.putLong("timePlaced", System.currentTimeMillis());
             edit.putInt("repeatTime", repeatTime);
-            edit.putInt("timeOfDay", hourOfDay);
+            edit.putInt("hourOfDay", hourOfDay);
             edit.commit();
 //            handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
         }
@@ -105,8 +103,8 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
                 if(prefs.getBoolean("enabled", false))
                 {
                     long startTime = handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue());
+                    Log.i(TAG, "starttime update: " + (startTime / 1000 / 60 / 60f));
                     handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
-
                 }
 //                Log.i(TAG, "handleAlarms.timeUntilNextEvent: " + handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue()));
                 break;

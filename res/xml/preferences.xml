@@ -11,6 +11,12 @@
         android:summary="@string/prefs_summaryRsyncOutput"
         android:defaultValue="false"
         />
+    <CheckBoxPreference
+        android:key="acquireWakelock"
+        android:title="@string/prefs_acquireWakelock"
+        android:summary="@string/prefs_summaryAcquireWakelock"
+        android:defaultValue="true"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >

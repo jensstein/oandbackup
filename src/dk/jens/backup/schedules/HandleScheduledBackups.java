@@ -5,7 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -20,6 +20,7 @@ public class HandleScheduledBackups
     static final String TAG = OAndBackup.TAG;
 
     Context context;
+    PowerManager powerManager;
     ShellCommands shellCommands;
     FileCreationHelper fileCreator;
     HandleMessages handleMessages;
@@ -34,6 +35,7 @@ public class HandleScheduledBackups
         handleMessages = new HandleMessages(context);
         notificationHelper = new NotificationHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
     public void initiateBackup(final int mode)
     {
@@ -95,6 +97,12 @@ public class HandleScheduledBackups
         {
             public void run()
             {
+                PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+                if(prefs.getBoolean("acquireWakelock", true))
+                {
+                    wl.acquire();
+                    Log.i(TAG, "wakelock acquired");
+                }
                 int id = (int) Calendar.getInstance().getTimeInMillis();
                 int total = backupList.size();
                 int i = 0;
@@ -119,6 +127,11 @@ public class HandleScheduledBackups
                     {
                         notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup");
                     }
+                }
+                if(wl.isHeld())
+                {
+                    wl.release();
+                    Log.i(TAG, "wakelock released");
                 }
             }
         }).start();
