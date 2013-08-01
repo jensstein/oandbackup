@@ -186,7 +186,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         switch(options)
         {
-            case 1:               
+            case 1:
                 for(AppInfo appInfo : originalValues)
                 {
                     if(!appInfo.isSystem)
@@ -255,5 +255,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     {
         Collections.sort(items, packageNameComparator);
         notifyDataSetChanged();
+    }
+    public void invalidateOriginalValues()
+    {
+        originalValues = null;
     }
 }

@@ -27,12 +27,5 @@ public class AlarmReceiver extends BroadcastReceiver
         int mode = prefs.getInt("scheduleMode", 1);
         HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
         handleScheduledBackups.initiateBackup(mode);
-        /*
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
-        String dateFormated = dateFormat.format(date);
-
-        Log.i(TAG, "received: " + dateFormated);
-        */
     }
 }

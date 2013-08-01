@@ -299,6 +299,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
+                adapter.invalidateOriginalValues();
                 showAll = true;
                 appInfoList.clear();
                 getPackageInfo();
@@ -369,6 +370,22 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     return true;
                 }
             });
+            mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
+            {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item)
+                {
+//                    adapter.invalidateOriginalValues();
+                    return true;
+                }
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item)
+                {
+//                    adapter.invalidateOriginalValues();
+                    adapter.getFilter().filter("");
+                    return true;
+                }
+            });
         }
         else
         {
@@ -385,7 +402,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 refresh();
                 break;
             case R.id.batchbackup:
-                // sende extra med intent: http://stackoverflow.com/a/4828453
                 Intent backupIntent = new Intent(this, BatchActivity.class);
                 backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
                 startActivityForResult(backupIntent, BATCH_REQUEST);
@@ -414,6 +430,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 adapter.filterIsBackedup();
                 break;
             case R.id.sortByLabel:
+                adapter.invalidateOriginalValues();
                 adapter.sortByLabel();
                 // på grund af mObjects og mOriginalValues i ArrayAdapter bliver man nødt til at foretage en filtrering hver gang man vil ændre sin adapters dataset efter den første filtrering:
                 // http://code.google.com/p/android/issues/detail?id=9666
@@ -435,6 +452,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 break;
             case R.id.sortByPackageName:
+                adapter.invalidateOriginalValues();
                 adapter.sortByPackageName();
                 if(!showAll)
                 {
