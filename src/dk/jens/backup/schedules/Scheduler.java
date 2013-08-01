@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -35,6 +36,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
     EditText intervalDays;
     EditText timeOfDay;
     Spinner spinner;
+    TextView timeLeftTextView;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -62,8 +64,16 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(prefs.getInt("scheduleMode", 0));
-        
-//        handleAlarms.setAlarm(0, 0, 0);
+        timeLeftTextView = (TextView) findViewById(R.id.sched_timeLeft);
+    }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if(prefs.getBoolean("enabled", false))
+        {
+            setTimeLeftTextView();
+        }
     }
     public void checkboxOnClick(View view)
     {
@@ -88,6 +98,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
             edit.commit();
             handleAlarms.cancelAlarm(0);
         }
+        setTimeLeftTextView();
     }
     public void onClick(View v)
     {
@@ -97,6 +108,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
                 hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
                 repeatTime = Integer.valueOf(intervalDays.getText().toString());
 //                long startTime = System.currentTimeMillis() + (long)(repeatTime * intervalInDays) + (long)(offset * offsetInHours);
+                edit.putLong("timePlaced", System.currentTimeMillis());
                 edit.putInt("hourOfDay", hourOfDay);
                 edit.putInt("repeatTime", repeatTime);
                 edit.commit();
@@ -107,6 +119,7 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
                     handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
                 }
 //                Log.i(TAG, "handleAlarms.timeUntilNextEvent: " + handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue()));
+                setTimeLeftTextView();
                 break;
         }
     }
@@ -117,4 +130,33 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
     }
     public void onNothingSelected(AdapterView<?> parent)
     {}
+    public void setTimeLeftTextView()
+    {
+        long timePlaced = prefs.getLong("timePlaced", 0);
+        long repeat = (long)(prefs.getInt("repeatTime", 0) * AlarmManager.INTERVAL_DAY);
+        long timePassed = System.currentTimeMillis() - timePlaced;
+        int hourOfDay = prefs.getInt("hourOfDay", 0);
+        long timeOfDay = handleAlarms.timeUntilNextEvent(0, hourOfDay);
+        if(!prefs.getBoolean("enabled", false) || repeat < 0)
+        {
+            timeLeftTextView.setText("");
+        }
+        else if(repeat == 0)
+        {
+            long timeLeft = timeOfDay;
+            if(timeLeft > 0)
+            {
+                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
+            }
+            else
+            {
+                timeLeftTextView.setText("");                
+            }
+        }
+        else if(repeat > 0)
+        {
+            long timeLeft = repeat - timePassed + timeOfDay;
+            timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
+        }
+    }
 }

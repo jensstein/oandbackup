@@ -20,8 +20,15 @@ public class HandleAlarms
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
-//        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
+        if(repeat > 0)
+        {
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);            
+        //        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
+        }
+        else
+        {
+            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
+        }
     }
     public void cancelAlarm(int id)
     {

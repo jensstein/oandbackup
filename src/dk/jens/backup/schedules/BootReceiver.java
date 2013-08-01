@@ -19,28 +19,31 @@ public class BootReceiver extends BroadcastReceiver
     {
         handleAlarms = new HandleAlarms(context);
         prefs = context.getSharedPreferences("schedules", 0);
-        if(prefs.getBoolean("enabled", false))
+        if(prefs.getBoolean("enabled", false) && prefs.getInt("repeatTime", 0) > 0)
         {
             long timePlaced = prefs.getLong("timePlaced", 0);
             long repeat = (long)(prefs.getInt("repeatTime", 0) * AlarmManager.INTERVAL_DAY);
-            long timePassed = System.currentTimeMillis() - timePlaced;
-            long diff = repeat - timePassed;
             int hourOfDay = prefs.getInt("hourOfDay", 0);
-            long startTime = handleAlarms.timeUntilNextEvent(0, hourOfDay);
-            Log.i(TAG, "boot starttime: " + (startTime / 1000 / 60 / 60f));
-
-            Log.i(TAG, "time placed: " + timePlaced + " timePassed: " + timePassed + " diff: " + diff);
-            if(diff < (5 * 60000))
+            long timePassed = System.currentTimeMillis() - timePlaced;
+            long timeOfDay = handleAlarms.timeUntilNextEvent(0, hourOfDay);
+            long timeLeft = repeat - timePassed + timeOfDay;
+            Log.i(TAG, "time placed: " + timePlaced + " timePassed: " + timePassed + " timeOfDay: " + timeOfDay + " timeLeft: " + (timeLeft / 1000 / 60 / 60f) + " (" + timeLeft + ")");
+            if(timeLeft < (5 * 60000))
             {
                 handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
             }
-            else if(diff < (24 * AlarmManager.INTERVAL_HOUR))
+/*
+            else if(timeLeft < (24 * AlarmManager.INTERVAL_HOUR))
             {
+                long startTime = handleAlarms.timeUntilNextEvent(0, hourOfDay);
+                Log.i(TAG, "boot starttime: " + (startTime / 1000 / 60 / 60f));
+//                handleAlarms.setAlarm(0, 0, repeat);
                 handleAlarms.setAlarm(0, startTime, repeat);
             }
+            */
             else
             {
-                handleAlarms.setAlarm(0, startTime + diff, repeat);
+                handleAlarms.setAlarm(0, timeLeft, repeat);
             }
         }
     }

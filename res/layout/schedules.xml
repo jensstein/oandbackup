@@ -66,6 +66,14 @@
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>
+    <TextView
+        android:id="@+id/sched_timeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:textSize="14sp"
+        android:textColor="#fff"
+        android:padding="5sp"
+        />
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
