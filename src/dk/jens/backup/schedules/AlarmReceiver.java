@@ -19,8 +19,11 @@ public class AlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
+        HandleAlarms handleAlarms = new HandleAlarms(context);
         prefs = context.getSharedPreferences("schedules", 0);
         edit = prefs.edit();
+        long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime", 0), prefs.getInt("hourOfDay", 0));
+        edit.putLong("timeUntilNextEvent", timeUntilNextEvent);
         edit.putLong("timePlaced", System.currentTimeMillis());
         edit.commit();
         Log.i(TAG, context.getString(R.string.sched_startingbackup));

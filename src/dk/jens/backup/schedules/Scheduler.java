@@ -83,10 +83,11 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
             edit.putBoolean("enabled", true);
             repeatTime = Integer.valueOf(intervalDays.getText().toString());
             hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-            long startTime = handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue());
+            long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
 //            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
             handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
             edit.putLong("timePlaced", System.currentTimeMillis());
+            edit.putLong("timeUntilNextEvent", startTime);
             edit.putInt("repeatTime", repeatTime);
             edit.putInt("hourOfDay", hourOfDay);
             edit.commit();
@@ -111,14 +112,15 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
                 edit.putLong("timePlaced", System.currentTimeMillis());
                 edit.putInt("hourOfDay", hourOfDay);
                 edit.putInt("repeatTime", repeatTime);
-                edit.commit();
                 if(prefs.getBoolean("enabled", false))
                 {
-                    long startTime = handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue());
+                    long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
+                    edit.putLong("timeUntilNextEvent", startTime);
 //                    Log.i(TAG, "starttime update: " + (startTime / 1000 / 60 / 60f));
                     handleAlarms.setAlarm(0, startTime, repeatTime.longValue() * intervalInDays);
                 }
 //                Log.i(TAG, "handleAlarms.timeUntilNextEvent: " + handleAlarms.timeUntilNextEvent(repeatTime.intValue(), hourOfDay.intValue()));
+                edit.commit();
                 setTimeLeftTextView();
                 break;
         }
@@ -135,27 +137,25 @@ public class Scheduler extends Activity implements OnClickListener, AdapterView.
         long timePlaced = prefs.getLong("timePlaced", 0);
         long repeat = (long)(prefs.getInt("repeatTime", 0) * AlarmManager.INTERVAL_DAY);
         long timePassed = System.currentTimeMillis() - timePlaced;
-        int hourOfDay = prefs.getInt("hourOfDay", 0);
-        long timeOfDay = handleAlarms.timeUntilNextEvent(0, hourOfDay);
+        long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay", 0));
+        long timeLeft = prefs.getLong("timeUntilNextEvent", 0) - timePassed;
         if(!prefs.getBoolean("enabled", false) || repeat < 0)
         {
             timeLeftTextView.setText("");
         }
         else if(repeat == 0)
         {
-            long timeLeft = timeOfDay;
-            if(timeLeft > 0)
+            if(hourOfDay > 0)
             {
-                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
+                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (hourOfDay / 1000 / 60 / 60f));
             }
             else
             {
-                timeLeftTextView.setText("");                
+                timeLeftTextView.setText("");
             }
         }
         else if(repeat > 0)
         {
-            long timeLeft = repeat - timePassed + timeOfDay;
             timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
         }
     }

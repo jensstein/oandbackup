@@ -4,11 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.Calendar;
 
 public class HandleAlarms
 {
+    static final String TAG = OAndBackup.TAG;
+
     Context context;
     public HandleAlarms(Context context)
     {
@@ -22,13 +25,14 @@ public class HandleAlarms
         am.cancel(pendingIntent);
         if(repeat > 0)
         {
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);            
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
         //        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
         }
         else
         {
             am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
         }
+        Log.i(TAG, "backup starting in: " + (start / 1000 / 60 / 60f));
     }
     public void cancelAlarm(int id)
     {
