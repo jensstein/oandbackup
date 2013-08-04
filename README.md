@@ -9,7 +9,7 @@ unfortunately i cannot vouch for the quality of either web page.
 
 an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
 
-if you have any questions, critique, bug repports or suggestions, please write me an email: j.stn.oab@gmail.com 
+if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com 
 
 (as this app is still in an early phase, please don't rely on it solely unless you know what you are doing. the logfile format may be subject to change.)
 
