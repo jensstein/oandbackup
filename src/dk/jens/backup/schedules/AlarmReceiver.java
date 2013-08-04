@@ -20,6 +20,7 @@ public class AlarmReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         HandleAlarms handleAlarms = new HandleAlarms(context);
+        HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
         prefs = context.getSharedPreferences("schedules", 0);
         edit = prefs.edit();
         long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime", 0), prefs.getInt("hourOfDay", 0));
@@ -28,7 +29,6 @@ public class AlarmReceiver extends BroadcastReceiver
         edit.commit();
         Log.i(TAG, context.getString(R.string.sched_startingbackup));
         int mode = prefs.getInt("scheduleMode", 1);
-        HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
         handleScheduledBackups.initiateBackup(mode);
     }
 }

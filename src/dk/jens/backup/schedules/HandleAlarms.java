@@ -26,7 +26,6 @@ public class HandleAlarms
         if(repeat > 0)
         {
             am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
-        //        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
         }
         else
         {
@@ -40,6 +39,7 @@ public class HandleAlarms
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
     public long timeUntilNextEvent(int interval, int hour)
     {

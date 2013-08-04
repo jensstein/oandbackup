@@ -20,7 +20,8 @@ public class NotificationHelper
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
             .setSmallIcon(R.drawable.backup_small)
             .setContentTitle(title)
-            .setContentText(text);
+            .setContentText(text)
+            .setAutoCancel(true);
         // resultIntent og taskstackbuilder er for bagudkompabilitet
         Intent resultIntent = new Intent(context, c);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
