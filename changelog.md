@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.1.14 (development)
+0.1.14 (2013-08-04)
 --------------------
  * option to acquire wakelock. new permission: android.permission.WAKE_LOCK
  * started scheduling
