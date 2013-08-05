@@ -260,7 +260,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                     String title = backupBoolean ? "backing up" : "restoring";
-                    notificationHelper.showNotification(BatchActivity.class, id, title, appInfo.getLabel());
+                    notificationHelper.showNotification(BatchActivity.class, id, title, appInfo.getLabel(), false);
                     if(i == 1)
                     {
                         handleMessages.showMessage(appInfo.getLabel(), message);
@@ -321,7 +321,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     if(i == total)
                     {
                         String msg = backupBoolean ? "backup" : "restore";
-                        notificationHelper.showNotification(BatchActivity.class, id, "operation complete", "batch " + msg);
+                        notificationHelper.showNotification(BatchActivity.class, id, "operation complete", "batch " + msg, true);
                         handleMessages.endMessage();
                     }
                 }

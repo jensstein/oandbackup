@@ -179,7 +179,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 });
                 handleMessages.endMessage();
-                notificationHelper.showNotification(OAndBackup.class, notificationId++, "backup complete", appInfo.getLabel());
+                notificationHelper.showNotification(OAndBackup.class, notificationId++, "backup complete", appInfo.getLabel(), true);
             }
         }).start();
     }
@@ -228,7 +228,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 });
                 handleMessages.endMessage();
-                notificationHelper.showNotification(OAndBackup.class, notificationId++, "restore complete", appInfo.getLabel());
+                notificationHelper.showNotification(OAndBackup.class, notificationId++, "restore complete", appInfo.getLabel(), true);
             }
         }).start();
     }

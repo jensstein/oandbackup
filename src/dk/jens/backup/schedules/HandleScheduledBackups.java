@@ -111,7 +111,7 @@ public class HandleScheduledBackups
                     i++;
                     String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
                     String title = "backing up (" + i + "/" + total + ")";
-                    notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel());
+                    notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                     if(!backupSubDir.exists())
                     {
@@ -125,7 +125,7 @@ public class HandleScheduledBackups
                     shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                     if(i == total)
                     {
-                        notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup");
+                        notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup", true);
                     }
                 }
                 if(wl.isHeld())

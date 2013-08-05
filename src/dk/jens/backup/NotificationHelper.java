@@ -14,14 +14,14 @@ public class NotificationHelper
     {
         this.context = context;
     }
-    public void showNotification(Class c, int id, String title, String text)
+    public void showNotification(Class c, int id, String title, String text, boolean autocancel)
     {
 //        Notification.Builder mBuilder = new Notification.Builder(this)
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
             .setSmallIcon(R.drawable.backup_small)
             .setContentTitle(title)
             .setContentText(text)
-            .setAutoCancel(true);
+            .setAutoCancel(autocancel);
         // resultIntent og taskstackbuilder er for bagudkompabilitet
         Intent resultIntent = new Intent(context, c);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
