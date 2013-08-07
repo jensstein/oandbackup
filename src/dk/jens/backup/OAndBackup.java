@@ -295,17 +295,19 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void refresh()
     {
+//        adapter.getFilter().filter("");
         new Thread(new Runnable(){
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
-                adapter.invalidateOriginalValues();
                 showAll = true;
                 appInfoList.clear();
                 getPackageInfo();
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
+//                        adapter.invalidateOriginalValues();
+                        adapter.setNewOriginalValues(appInfoList);
                         adapter.notifyDataSetChanged();
                     }
                 });

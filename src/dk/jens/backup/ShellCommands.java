@@ -186,6 +186,29 @@ public class ShellCommands
             {
                 uid_gid.add(line);
             }
+            if(uid_gid.get(0).trim().length() == 0 || uid_gid.get(1).trim().length() == 0)
+            {
+                uid_gid = new ArrayList<String>();
+                p = Runtime.getRuntime().exec("sh");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4$5}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+                dos.flush();
+                dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $8$9}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+                dos.flush();
+
+                dos.writeBytes("exit\n");
+                dos.flush();
+                ret = p.waitFor();
+          
+                Log.i(TAG, "setPermissions return 1.5: " + ret);
+
+                isr = new InputStreamReader(p.getInputStream());
+                stdin = new BufferedReader(isr);
+                while((line = stdin.readLine()) != null)
+                {
+                    uid_gid.add(line);
+                }
+            }
             if(!uid_gid.isEmpty())
             {
 
@@ -234,7 +257,7 @@ public class ShellCommands
         {
             try
             {
-                Log.i(TAG, "restoring " + label);
+//                Log.i(TAG, "restoring " + label);
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm install " + backupDir.getAbsolutePath() + "/" + apk + "\n");

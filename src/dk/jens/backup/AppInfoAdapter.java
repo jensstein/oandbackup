@@ -260,4 +260,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     {
         originalValues = null;
     }
+    public void setNewOriginalValues(ArrayList newList)
+    {
+        if(originalValues != null)
+        {
+            originalValues = new ArrayList<AppInfo>(newList);
+        }
+    }
 }
