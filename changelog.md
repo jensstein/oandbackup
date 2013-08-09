@@ -8,7 +8,7 @@ changelog
     * sorting 
     * searching after a restoring with apk or uninstalling
     * chown bug if uid less than five characters
-    * chown and chmod bug where certain packages were not recognised by the system after are restore due to the lib folder  
+    * chown and chmod bug where certain packages were not recognised by the system after restore due to the lib folder  
 
 0.1.14 (2013-08-04)
 --------------------

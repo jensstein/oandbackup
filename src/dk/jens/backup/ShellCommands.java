@@ -219,7 +219,7 @@ public class ShellCommands
 //                dos.flush();
 //                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
 //                dos.writeBytes(busybox + " chmod -R 755 " + packageDir + "\n");
-                dos.writeBytes("for dir in " + packageDir + "/*; do if [[ ! `" + busybox + " basename $dir` == \"lib\" ]]; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
+                dos.writeBytes("for dir in " + packageDir + "/*; do if " + busybox + " [[ ! `" + busybox + " basename $dir` == \"lib\" ]]; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
 //                dos.flush();
                 dos.writeBytes("exit\n");
