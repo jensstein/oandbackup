@@ -215,12 +215,13 @@ public class ShellCommands
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
 //                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-                dos.flush();
+//                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+//                dos.flush();
 //                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
-                dos.writeBytes(busybox + " chmod -R 755 " + packageDir + "\n");
+//                dos.writeBytes(busybox + " chmod -R 755 " + packageDir + "\n");
+                dos.writeBytes("for dir in " + packageDir + "/*; do if [[ ! `" + busybox + " basename $dir` == \"lib\" ]]; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
-                dos.flush();
+//                dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
                 ret = p.waitFor();
