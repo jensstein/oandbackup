@@ -291,11 +291,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
         BatchActivity.appInfoList = appInfoList;
-        // måske bruges hvis BatchActivity skal have listview
     }
     public void refresh()
     {
-//        adapter.getFilter().filter("");
         new Thread(new Runnable(){
             public void run()
             {
@@ -306,7 +304,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
-//                        adapter.invalidateOriginalValues();
                         adapter.setNewOriginalValues(appInfoList);
                         adapter.notifyDataSetChanged();
                     }
@@ -378,13 +375,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item)
                 {
-//                    adapter.invalidateOriginalValues();
                     return true;
                 }
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item)
                 {
-//                    adapter.invalidateOriginalValues();
                     adapter.getFilter().filter("");
                     return true;
                 }
@@ -433,11 +428,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 adapter.filterIsBackedup();
                 break;
             case R.id.sortByLabel:
-                adapter.invalidateOriginalValues();
                 adapter.sortByLabel();
-                // på grund af mObjects og mOriginalValues i ArrayAdapter bliver man nødt til at foretage en filtrering hver gang man vil ændre sin adapters dataset efter den første filtrering:
-                // http://code.google.com/p/android/issues/detail?id=9666
-                // http://stackoverflow.com/a/3418939/2320781
                 if(!showAll)
                 {
                     if(showOnlyUser)
@@ -455,7 +446,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 break;
             case R.id.sortByPackageName:
-                adapter.invalidateOriginalValues();
                 adapter.sortByPackageName();
                 if(!showAll)
                 {

@@ -248,17 +248,21 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void sortByLabel()
     {
-        Collections.sort(items, labelComparator);
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        Collections.sort(originalValues, labelComparator);
         notifyDataSetChanged();
     }
     public void sortByPackageName()
     {
-        Collections.sort(items, packageNameComparator);
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        Collections.sort(originalValues, packageNameComparator);
         notifyDataSetChanged();
-    }
-    public void invalidateOriginalValues()
-    {
-        originalValues = null;
     }
     public void setNewOriginalValues(ArrayList newList)
     {
