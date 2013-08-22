@@ -36,10 +36,12 @@ public class ShellCommands
     SharedPreferences prefs;
     String busybox, rsync;
     FileCreationHelper fileCreator;
+    LogFile logFile;
     public ShellCommands(Context context)
     {
         this.context = context;
         fileCreator = new FileCreationHelper(context);
+        logFile = new LogFile(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
         rsync = prefs.getString("pathRsync", "rsync").trim();
@@ -102,7 +104,8 @@ public class ShellCommands
     {
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
-        ArrayList<String> logLines = readLogFile(backupDir, packageName);
+//        ArrayList<String> logLines = readLogFile(backupDir, packageName);
+        ArrayList<String> logLines = logFile.readLogFile(backupDir, packageName);
 //        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
         packageApk = logLines.get(3);
         packageData = logLines.get(4);
@@ -365,13 +368,15 @@ public class ShellCommands
             }
         }
     }
-    public void deleteOldApk(File backupfolder)
+    public void deleteOldApk(File backupfolder, String newApkPath)
     {
+        final String apk = new File(newApkPath).getName();
         File[] files = backupfolder.listFiles(new FilenameFilter()
         {
             public boolean accept(File dir, String filename)
             {
-                return filename.endsWith(".apk");
+                Log.i(TAG, "accept: " + filename + " : " + apk);
+                return (!filename.equals(apk) && filename.endsWith(".apk"));
             }
         });
         for(File file : files)
@@ -418,6 +423,7 @@ public class ShellCommands
             }
         }
     }
+    /*
     public ArrayList<String> readLogFile(File backupDir, String packageName)
     {
         ArrayList<String> logLines = new ArrayList<String>();
@@ -474,6 +480,7 @@ public class ShellCommands
             Log.i(TAG, e.toString());
         }
     }
+    */
     public Map<String, ArrayList<String>> getOutput(Process p)
     {
         ArrayList<String> out = new ArrayList<String>();

@@ -23,6 +23,7 @@ public class HandleScheduledBackups
     PowerManager powerManager;
     ShellCommands shellCommands;
     FileCreationHelper fileCreator;
+    LogFile logFile;
     HandleMessages handleMessages;
     NotificationHelper notificationHelper;
     SharedPreferences prefs;
@@ -32,6 +33,7 @@ public class HandleScheduledBackups
         this.context = context;
         shellCommands = new ShellCommands(context);
         fileCreator = new FileCreationHelper(context);
+        logFile = new LogFile(context);
         handleMessages = new HandleMessages(context);
         notificationHelper = new NotificationHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -109,7 +111,7 @@ public class HandleScheduledBackups
                 for(AppInfo appInfo : backupList)
                 {
                     i++;
-                    String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
+                    String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
                     String title = "backing up (" + i + "/" + total + ")";
                     notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
@@ -119,10 +121,11 @@ public class HandleScheduledBackups
                     }
                     else
                     {
-                        shellCommands.deleteOldApk(backupSubDir);
+                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+//                    shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                    logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                     if(i == total)
                     {
                         notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup", true);
@@ -149,7 +152,8 @@ public class HandleScheduledBackups
             String lastBackup = context.getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+//                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
                 try
                 {
                     lastBackup = loglines.get(5);
@@ -165,7 +169,7 @@ public class HandleScheduledBackups
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
         }
         return appInfoList;

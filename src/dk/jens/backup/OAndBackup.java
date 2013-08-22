@@ -69,6 +69,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     FileCreationHelper fileCreator;
+    LogFile logFile;
     NotificationHelper notificationHelper;
 
     ListView listView;
@@ -81,6 +82,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
+        logFile = new LogFile(this);
         notificationHelper = new NotificationHelper(this);
         
         new Thread(new Runnable(){
@@ -150,7 +152,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void callBackup(final AppInfo appInfo)
     {
-        final String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
+        final String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
         new Thread(new Runnable()
         {
             public void run()
@@ -163,12 +165,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 else
                 {
-                    shellCommands.deleteOldApk(backupSubDir);
+                    shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
 //                    shellCommands.deleteBackup(backupSubDir);
 //                    backupSubDir.mkdirs();
                 }
                 shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+//                shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                 
                 // køre på uitråd for at undgå WindowLeaked
                 runOnUiThread(new Runnable()
@@ -193,9 +196,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 // error handling, hvis backupSubDir ikke findes
                 handleMessages.showMessage(appInfo.getLabel(), "restore");
 
-                ArrayList<String> log = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+//                ArrayList<String> log = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+//                ArrayList<String> log = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
+                LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
                 String dataDir = appInfo.getDataDir();
-                String apk = log.get(3);
+//                String apk = log.get(3);
+                String apk = logInfo.getApk();
                 String[] apkArray = apk.split("/");
                 apk = apkArray[apkArray.length - 1];
                 switch(options)
@@ -242,7 +248,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             String lastBackup = getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+//                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
                 try
                 {
                     lastBackup = loglines.get(5);
@@ -258,7 +265,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
 
         }
@@ -278,8 +285,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 {
                     try
                     {
-                        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
-                        AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0),loginfo.get(1), loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
+//                        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+//                        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+//                        AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0), loginfo.get(1), 0 /*versionCode*/, loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
+                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
                         // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
                         appInfoList.add(appInfo);
                     }
@@ -314,10 +324,16 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void refresh(AppInfo appInfo)
     {
-        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
+//        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
+//        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
+        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
         int pos = appInfoList.indexOf(appInfo);
+        /*
         appInfo.label = loginfo.get(0);
         appInfo.lastBackup = loginfo.get(5);
+        */
+        appInfo.label = logInfo.getLabel();
+        appInfo.lastBackup = logInfo.getLastBackupTimestamp();
         appInfoList.set(pos, appInfo);
         adapter.notifyDataSetChanged();
     }

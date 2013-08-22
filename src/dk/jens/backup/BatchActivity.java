@@ -73,6 +73,7 @@ public class BatchActivity extends Activity implements OnClickListener
     HandleMessages handleMessages;
     ShellCommands shellCommands;
     FileCreationHelper fileCreator;
+    LogFile logFile;
     NotificationHelper notificationHelper;
 
     @Override
@@ -86,6 +87,7 @@ public class BatchActivity extends Activity implements OnClickListener
         shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
+        logFile = new LogFile(this);
         notificationHelper = new NotificationHelper(this);
         
         /*        
@@ -271,25 +273,27 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                     if(backupBoolean)
                     {
-                        String log = appInfo.getLabel() + "\n" + appInfo.getVersion() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
+                        String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
                         if(!backupSubDir.exists())
                         {
                             backupSubDir.mkdirs();
                         }
                         else
                         {
-                            shellCommands.deleteOldApk(backupSubDir);
+                            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
     //                        shellCommands.deleteBackup(backupSubDir);
     //                        backupSubDir.mkdirs();
                         }
                         shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+//                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                        logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
     //                    Log.i(TAG, "backup: " + appInfo.getLabel());
                     }
                     else
                     {
     //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
-                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+//                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
+                        ArrayList<String> readlog = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
                         String dataDir = appInfo.getDataDir();
                         String apk = readlog.get(3);
                         String[] apkArray = apk.split("/");
