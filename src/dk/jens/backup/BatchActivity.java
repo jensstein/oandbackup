@@ -293,11 +293,12 @@ public class BatchActivity extends Activity implements OnClickListener
                     {
     //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
 //                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-                        ArrayList<String> readlog = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
+//                        ArrayList<String> readlog = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
+                        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
                         String dataDir = appInfo.getDataDir();
-                        String apk = readlog.get(3);
-                        String[] apkArray = apk.split("/");
-                        apk = apkArray[apkArray.length - 1];
+//                        String apk = readlog.get(3);
+//                        String[] apkArray = apk.split("/");
+//                        apk = apkArray[apkArray.length - 1];
 
                         if(rbApk.isChecked())
                         {

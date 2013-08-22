@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LogFile
 {
     final static String TAG = OAndBackup.TAG; 
@@ -30,14 +33,50 @@ public class LogFile
     }
     public LogFile(File backupSubDir, String packageName)
     {
-        ArrayList<String> log = readLogFile(backupSubDir, packageName);
-        this.label = log.get(0);
-        this.packageName = log.get(2);
-        this.versionName = log.get(1);
-        this.sourceDir = log.get(3);
-        this.dataDir = log.get(4);
-        this.lastBackup = log.get(5);
-        this.versionCode = 0; // indtil skrevet i log
+        String json = readLogFile(backupSubDir, packageName);
+        try
+        {
+//            Log.i(TAG, "json: " + json);
+            JSONObject jsonObject = new JSONObject(json);
+            // kan bruges, når alle writeLogFile skriver json
+            /*
+            this.label = jsonObject.getString("label");
+            this.packageName = jsonObject.getString("packageName");
+            this.versionName = jsonObject.getString("versionName");
+            this.sourceDir = jsonObject.getString("sourceDir");
+            this.dataDir = jsonObject.getString("dataDir");
+            this.lastBackup = jsonObject.getString("lastBackup");
+            this.versionCode = jsonObject.getInt("versionCode");
+            */
+        }
+        catch(JSONException e)
+        {
+//            Log.i(TAG, e.toString());
+            ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
+            this.label = log.get(0);
+            this.packageName = log.get(2);
+            this.versionName = log.get(1);
+            this.sourceDir = log.get(3);
+            this.dataDir = log.get(4);
+            this.lastBackup = log.get(5);
+            this.versionCode = 0; // indtil skrevet i log
+            try
+            {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("label", label);
+                jsonObject.put("versionName", versionName);
+                jsonObject.put("versionCode", 0);
+                jsonObject.put("packageName", packageName);
+                jsonObject.put("sourceDir", sourceDir);
+                jsonObject.put("dataDir", dataDir);
+                jsonObject.put("lastBackup", lastBackup);
+//                writeJsonLog(backupSubDir, packageName, jsonObject.toString(4));
+            }
+            catch(JSONException je)
+            {
+                Log.i(TAG, je.toString());
+            }
+        }
     }
     public String getLabel()
     {
@@ -72,7 +111,47 @@ public class LogFile
     {
         return lastBackup;
     }
-    public ArrayList<String> readLogFile(File backupDir, String packageName)
+    private String readLogFile(File backupDir, String packageName)
+    {
+        BufferedReader reader = null;
+        try
+        {
+            File logFile = new File(backupDir.getAbsolutePath() + "/" + packageName + ".log");
+            FileReader fr = new FileReader(logFile);
+            reader = new BufferedReader(fr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null)
+            {
+                sb.append(line);
+            }
+            return sb.toString();
+        }
+        catch(FileNotFoundException e)
+        {
+            return e.toString();
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return e.toString();
+        }
+        finally
+        {
+            try
+            {
+                if(reader != null)
+                {
+                    reader.close();
+                }
+            }
+            catch(IOException e)
+            {
+                return e.toString();
+            }
+        }
+    }
+    private ArrayList<String> readLegacyLogFile(File backupDir, String packageName)
     {
         ArrayList<String> logLines = new ArrayList<String>();
         try
@@ -116,14 +195,30 @@ public class LogFile
         {
             File outFile = new File(filePath);
             outFile.createNewFile();
-		    FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-		    BufferedWriter bw = new BufferedWriter(fw);
+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
             bw.write(content);
-            bw.close();        
+            bw.close();
         }
         catch(IOException e)
         {
             Log.i(TAG, e.toString());
         }
+    }
+    public void writeJsonLog(File backupSubDir, String packageName, String json)
+    {
+        try
+        {
+            File outFile = new File(backupSubDir.getAbsolutePath() + "/" + packageName + ".log.json");
+            outFile.createNewFile();
+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(json);
+            bw.close();
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+        }        
     }
 }

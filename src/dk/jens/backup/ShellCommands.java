@@ -105,12 +105,15 @@ public class ShellCommands
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
 //        ArrayList<String> logLines = readLogFile(backupDir, packageName);
-        ArrayList<String> logLines = logFile.readLogFile(backupDir, packageName);
+//        ArrayList<String> logLines = logFile.readLogFile(backupDir, packageName);
 //        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
-        packageApk = logLines.get(3);
-        packageData = logLines.get(4);
-        String[] apk = packageApk.split("/");
-        packageApk = apk[apk.length - 1];
+        LogFile logInfo = new LogFile(backupDir, packageName);
+        packageApk = logInfo.getApk();
+        packageData = logInfo.getDataDir();
+//        packageApk = logLines.get(3);
+//        packageData = logLines.get(4);
+//        String[] apk = packageApk.split("/");
+//        packageApk = apk[apk.length - 1];
         Log.i(TAG, "restoring: " + label);
 
         try
@@ -375,7 +378,6 @@ public class ShellCommands
         {
             public boolean accept(File dir, String filename)
             {
-                Log.i(TAG, "accept: " + filename + " : " + apk);
                 return (!filename.equals(apk) && filename.endsWith(".apk"));
             }
         });

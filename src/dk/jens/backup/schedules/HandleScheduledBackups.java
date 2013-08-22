@@ -153,10 +153,11 @@ public class HandleScheduledBackups
             if(backupDir != null)
             {
 //                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
-                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
+//                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
                 try
                 {
-                    lastBackup = loglines.get(5);
+//                    lastBackup = loglines.get(5);
+                    lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName).getLastBackupTimestamp();
                 }
                 catch(IndexOutOfBoundsException e)
                 {
