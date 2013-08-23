@@ -63,6 +63,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
     boolean showAll = true;
     boolean showOnlyUser = false;
+    boolean localTimestampFormat;
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
 
@@ -82,8 +83,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
-        logFile = new LogFile(this);
         notificationHelper = new NotificationHelper(this);
+        logFile = new LogFile(this);        
         
         new Thread(new Runnable(){
             public void run()
@@ -118,9 +119,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
                 createBackupDir(backupDirPath);
+                localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
+                long stime = System.currentTimeMillis();
                 getPackageInfo();
+                long etime = System.currentTimeMillis();
+                Log.i(TAG, "total time: " + ((etime - stime) / 1000f));
                 handleMessages.endMessage();
                 listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
@@ -152,7 +157,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void callBackup(final AppInfo appInfo)
     {
-        final String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
+//        final String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
         new Thread(new Runnable()
         {
             public void run()
@@ -171,7 +176,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
 //                shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-                logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+//                logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
                 
                 // køre på uitråd for at undgå WindowLeaked
                 runOnUiThread(new Runnable()
@@ -198,7 +204,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
 //                ArrayList<String> log = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
 //                ArrayList<String> log = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
-                LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
+                LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
                 String dataDir = appInfo.getDataDir();
 //                String apk = log.get(3);
                 String apk = logInfo.getApk();
@@ -253,7 +259,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 try
                 {
 //                    lastBackup = loglines.get(5);
-                    lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName).getLastBackupTimestamp();
+                    lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
                 }
                 catch(IndexOutOfBoundsException e)
                 {
@@ -289,7 +295,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 //                        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
 //                        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
 //                        AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0), loginfo.get(1), 0 /*versionCode*/, loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
-                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                         AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
                         // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
                         appInfoList.add(appInfo);
@@ -327,7 +333,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
 //        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
 //        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
-        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
+        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
         int pos = appInfoList.indexOf(appInfo);
         /*
         appInfo.label = loginfo.get(0);

@@ -37,12 +37,14 @@ public class ShellCommands
     String busybox, rsync;
     FileCreationHelper fileCreator;
     LogFile logFile;
+    boolean localTimestampFormat;
     public ShellCommands(Context context)
     {
         this.context = context;
         fileCreator = new FileCreationHelper(context);
         logFile = new LogFile(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
         rsync = prefs.getString("pathRsync", "rsync").trim();
         if(busybox.length() == 0)
@@ -107,7 +109,7 @@ public class ShellCommands
 //        ArrayList<String> logLines = readLogFile(backupDir, packageName);
 //        ArrayList<String> logLines = logFile.readLogFile(backupDir, packageName);
 //        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
-        LogFile logInfo = new LogFile(backupDir, packageName);
+        LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
         packageApk = logInfo.getApk();
         packageData = logInfo.getDataDir();
 //        packageApk = logLines.get(3);

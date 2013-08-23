@@ -75,6 +75,8 @@ public class BatchActivity extends Activity implements OnClickListener
     FileCreationHelper fileCreator;
     LogFile logFile;
     NotificationHelper notificationHelper;
+    
+    boolean localTimestampFormat;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -87,8 +89,8 @@ public class BatchActivity extends Activity implements OnClickListener
         shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
-        logFile = new LogFile(this);
         notificationHelper = new NotificationHelper(this);
+        logFile = new LogFile(this);
         
         /*        
         backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
@@ -100,7 +102,7 @@ public class BatchActivity extends Activity implements OnClickListener
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
         createBackupDir(backupDirPath);
-
+        localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         Bundle extra = getIntent().getExtras();
         if(extra != null)
@@ -273,7 +275,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                     if(backupBoolean)
                     {
-                        String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
+//                        String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
                         if(!backupSubDir.exists())
                         {
                             backupSubDir.mkdirs();
@@ -286,7 +288,9 @@ public class BatchActivity extends Activity implements OnClickListener
                         }
                         shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
 //                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-                        logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+//                        logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
+
     //                    Log.i(TAG, "backup: " + appInfo.getLabel());
                     }
                     else
@@ -294,7 +298,7 @@ public class BatchActivity extends Activity implements OnClickListener
     //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
 //                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
 //                        ArrayList<String> readlog = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
-                        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
+                        String apk = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat).getApk();
                         String dataDir = appInfo.getDataDir();
 //                        String apk = readlog.get(3);
 //                        String[] apkArray = apk.split("/");

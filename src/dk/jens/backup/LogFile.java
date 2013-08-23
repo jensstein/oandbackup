@@ -27,31 +27,34 @@ public class LogFile
     SharedPreferences prefs;
     String label, packageName, versionName, sourceDir, dataDir, lastBackup;
     int versionCode;
+    long lastBackupMillis;
+    boolean localTimestampFormat;
     public LogFile(Context context)
     {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        this.localTimestampFormat = prefs.getBoolean("timestamp", true);
     }
-    public LogFile(File backupSubDir, String packageName)
+    public LogFile(File backupSubDir, String packageName, boolean localTimestampFormat)
     {
+        this.localTimestampFormat = localTimestampFormat;
         String json = readLogFile(backupSubDir, packageName);
         try
         {
 //            Log.i(TAG, "json: " + json);
             JSONObject jsonObject = new JSONObject(json);
             // kan bruges, når alle writeLogFile skriver json
-            /*
             this.label = jsonObject.getString("label");
             this.packageName = jsonObject.getString("packageName");
             this.versionName = jsonObject.getString("versionName");
             this.sourceDir = jsonObject.getString("sourceDir");
             this.dataDir = jsonObject.getString("dataDir");
-            this.lastBackup = jsonObject.getString("lastBackup");
+            this.lastBackup = formatDate(new Date(jsonObject.getLong("lastBackupMillis")));
             this.versionCode = jsonObject.getInt("versionCode");
-            */
         }
         catch(JSONException e)
         {
 //            Log.i(TAG, e.toString());
+            long stime = System.currentTimeMillis();
             ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
             this.label = log.get(0);
             this.packageName = log.get(2);
@@ -60,22 +63,10 @@ public class LogFile
             this.dataDir = log.get(4);
             this.lastBackup = log.get(5);
             this.versionCode = 0; // indtil skrevet i log
-            try
-            {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("label", label);
-                jsonObject.put("versionName", versionName);
-                jsonObject.put("versionCode", 0);
-                jsonObject.put("packageName", packageName);
-                jsonObject.put("sourceDir", sourceDir);
-                jsonObject.put("dataDir", dataDir);
-                jsonObject.put("lastBackup", lastBackup);
-//                writeJsonLog(backupSubDir, packageName, jsonObject.toString(4));
-            }
-            catch(JSONException je)
-            {
-                Log.i(TAG, je.toString());
-            }
+            long mtime = System.currentTimeMillis();
+            writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
+            long etime = System.currentTimeMillis();
+            Log.i(TAG, packageName + ": " + ((mtime - stime) / 1000f) + " - " + ((etime - mtime) / 1000f));
         }
     }
     public String getLabel()
@@ -176,6 +167,41 @@ public class LogFile
             return logLines;
         }
     }
+    public void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated)
+    {
+        if(dateFormated == null)
+        {
+            Date date = new Date();
+            dateFormated = formatDate(date);
+        }
+        try
+        {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("label", label);
+            jsonObject.put("versionName", versionName);
+            jsonObject.put("versionCode", versionCode);
+            jsonObject.put("packageName", packageName);
+            jsonObject.put("sourceDir", sourceDir);
+            jsonObject.put("dataDir", dataDir);
+            jsonObject.put("lastBackup", dateFormated);
+            jsonObject.put("lastBackupMillis", System.currentTimeMillis());
+            String json = jsonObject.toString(4);
+            File outFile = new File(backupSubDir.getAbsolutePath() + "/" + packageName + ".log");
+            outFile.createNewFile();
+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(json);
+            bw.close();            
+        }
+        catch(JSONException e)
+        {
+            Log.i(TAG, e.toString());
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+        }
+    }
     public void writeLogFile(String filePath, String content)
     {
         Date date = new Date();
@@ -220,5 +246,20 @@ public class LogFile
         {
             Log.i(TAG, e.toString());
         }        
+    }
+    public String formatDate(Date date)
+    {
+        String dateFormated;
+        if(localTimestampFormat)
+        {
+            DateFormat dateFormat = DateFormat.getDateTimeInstance();
+            dateFormated = dateFormat.format(date);
+        }
+        else
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
+            dateFormated = dateFormat.format(date);
+        }
+        return dateFormated;
     }
 }
