@@ -122,10 +122,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
-                long stime = System.currentTimeMillis();
                 getPackageInfo();
-                long etime = System.currentTimeMillis();
-                Log.i(TAG, "total time: " + ((etime - stime) / 1000f));
                 handleMessages.endMessage();
                 listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);

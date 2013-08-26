@@ -63,10 +63,7 @@ public class LogFile
             this.dataDir = log.get(4);
             this.lastBackup = log.get(5);
             this.versionCode = 0; // indtil skrevet i log
-            long mtime = System.currentTimeMillis();
             writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
-            long etime = System.currentTimeMillis();
-            Log.i(TAG, packageName + ": " + ((mtime - stime) / 1000f) + " - " + ((etime - mtime) / 1000f));
         }
     }
     public String getLabel()

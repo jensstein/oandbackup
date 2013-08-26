@@ -92,6 +92,9 @@ public class ShellCommands
                     writeErrorLog(line);
                 }
             }
+            String folder = new File(packageData).getName();
+            tar(backupDir.getAbsolutePath(), folder);
+            deleteBackup(new File(backupDir.getAbsolutePath() + "/" + folder));
         }
         catch(IOException e)
         {
@@ -124,6 +127,7 @@ public class ShellCommands
 //            {
                 killPackage(packageName);
 //            }
+            int untarRet = untar(backupDir.getAbsolutePath(), packageName);
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
@@ -153,6 +157,10 @@ public class ShellCommands
                 }
             }
             Log.i(TAG, "return: " + retval);
+            if(untarRet == 0)
+            {
+                deleteBackup(new File(backupDir.getAbsolutePath() + "/" + packageName));
+            }
         }
         catch(IOException e)
         {
@@ -427,64 +435,6 @@ public class ShellCommands
             }
         }
     }
-    /*
-    public ArrayList<String> readLogFile(File backupDir, String packageName)
-    {
-        ArrayList<String> logLines = new ArrayList<String>();
-        try
-        {
-            File logFile = new File(backupDir.getAbsolutePath() + "/" + packageName + ".log");
-            FileReader fr = new FileReader(logFile);
-            BufferedReader breader = new BufferedReader(fr);
-            String logLine;
-            while((logLine = breader.readLine()) != null)
-            {
-                logLines.add(logLine);
-//                Log.i(TAG, logLine);
-            }
-            return logLines;
-        }
-        catch(FileNotFoundException e)
-        {
-//            Log.i(TAG, e.toString());
-            return logLines;
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return logLines;
-        }
-    }
-    public void writeLogFile(String filePath, String content)
-    {
-        Date date = new Date();
-        String dateFormated;
-        if(prefs.getBoolean("timestamp", true))
-        {
-            DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            dateFormated = dateFormat.format(date);
-        }
-        else
-        {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
-            dateFormated = dateFormat.format(date);
-        }
-        content = content + "\n" + dateFormated + "\n";
-        try
-        {
-            File outFile = new File(filePath);
-            outFile.createNewFile();
-		    FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-		    BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(content);
-            bw.close();        
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-        }
-    }
-    */
     public Map<String, ArrayList<String>> getOutput(Process p)
     {
         ArrayList<String> out = new ArrayList<String>();
@@ -646,5 +596,70 @@ public class ShellCommands
             Log.i(TAG, e.toString());
             return false;
         }
+    }
+    public int tar(String pathToBackupsubdir, String folder)
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("sh");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("tar -czf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C" + pathToBackupsubdir + " " + folder + "\n");
+            dos.flush();
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
+                {
+                    writeErrorLog(line);
+                }
+            }
+            return ret;
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }           
+    }
+    public int untar(String pathToBackupsubdir, String folder)
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("sh");
+            dos = new DataOutputStream(p.getOutputStream());
+//            dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C" + pathToBackupsubdir + "\n");
+            dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C " + pathToBackupsubdir + "\n");
+            dos.flush();
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
+                {
+                    writeErrorLog(line);
+                }
+            }
+            return ret;
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }           
     }
 }

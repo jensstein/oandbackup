@@ -60,10 +60,12 @@ public class FileCreationHelper
             try
             {
                 boolean created = file.createNewFile();
+                /*
                 if(!created)
                 {
                     Log.i(TAG, context.getString(R.string.mkfileError) + " " + file.getAbsolutePath());
                 }
+                */
                 return file;
             }
             catch(IOException e)
