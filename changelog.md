@@ -1,14 +1,14 @@
 changelog
 =========
 
-0.1.15 (development)
+0.2.0 (2013-08-30)
 --------------------
  * compression of app data backup (tar + gzip)
  * new logfile format. as the old logs are converted on the first run after updating to this version, please notice that it will take a little longer to start up (on one of my devices each log is written in approximately half a second). all timestamps for last backup will be reset in the app interface due to changes to a more flexible reading method but the original values will remain as strings in the logs (look for "lastBackup") until they are overwritten by a new backup, so if the date displayed in the app is important you can change to value of "lastBackupMillis" (milliseconds since unix epoch for desired date). this is unfortunately not possible to do automatically due to the unpredictability of various date formats.
  * bug fixes:
     * refresh while searching
     * sorting 
-    * searching after a restoring with apk or uninstalling
+    * searching after restoring with apk or uninstalling
     * chown bug if uid less than five characters
     * chown and chmod bug where certain packages were not recognised by the system after restore due to the lib folder  
 
