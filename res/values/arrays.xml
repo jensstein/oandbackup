@@ -2,8 +2,8 @@
 <resources>
     <string-array name="scheduleModes">
         <item>all apps</item>
-        <item>only user apps</item>
-        <item>only system apps</item>
-        <item>only new apps</item>
+        <item>user apps</item>
+        <item>system apps</item>
+        <item>new and updated apps</item>
     </string-array>
 </resources>

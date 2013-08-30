@@ -52,10 +52,12 @@ public class HandleScheduledBackups
                 switch(mode)
                 {
                     case 0:
+                        // all apps
                         Collections.sort(list);
                         backup(list);
                         break;
                     case 1:
+                        // user apps
                         listToBackup = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
@@ -68,6 +70,7 @@ public class HandleScheduledBackups
                         backup(listToBackup);
                         break;                        
                     case 2:
+                        // system apps
                         listToBackup = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
@@ -80,10 +83,17 @@ public class HandleScheduledBackups
                         backup(listToBackup);
                         break;                        
                     case 3:
+                        // new and updated apps
                         listToBackup = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
-                            if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+                            File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
+                            int versionCode = 0;
+                            if(backupSubDir.exists())
+                            {
+                                versionCode = new LogFile(backupSubDir, appInfo.getPackageName(), true).getVersionCode();
+                            }
+                            if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)) || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
                             {
                                 listToBackup.add(appInfo);
                             }
