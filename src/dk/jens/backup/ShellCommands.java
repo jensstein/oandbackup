@@ -112,24 +112,14 @@ public class ShellCommands
     {
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
-//        ArrayList<String> logLines = readLogFile(backupDir, packageName);
-//        ArrayList<String> logLines = logFile.readLogFile(backupDir, packageName);
-//        packageData = "/data/data/" + logLines.get(2); // midlertidig indtil logfilerne er skrevet ordentligt
         LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
         packageApk = logInfo.getApk();
         packageData = logInfo.getDataDir();
-//        packageApk = logLines.get(3);
-//        packageData = logLines.get(4);
-//        String[] apk = packageApk.split("/");
-//        packageApk = apk[apk.length - 1];
         Log.i(TAG, "restoring: " + label);
 
         try
         {
-//            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-//            {
-                killPackage(packageName);
-//            }
+            killPackage(packageName);
             int untarRet = untar(backupDir.getAbsolutePath(), packageName);
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
