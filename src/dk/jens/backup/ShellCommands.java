@@ -93,8 +93,11 @@ public class ShellCommands
                 }
             }
             String folder = new File(packageData).getName();
-            tar(backupDir.getAbsolutePath(), folder);
-            deleteBackup(new File(backupDir.getAbsolutePath() + "/" + folder));
+            int tarRet = tar(backupDir.getAbsolutePath(), folder);
+            if(tarRet == 0)
+            {
+                deleteBackup(new File(backupDir.getAbsolutePath() + "/" + folder));
+            }
         }
         catch(IOException e)
         {
