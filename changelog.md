@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.2.2 (development)
+-------------------
+ * compression has changed from gzip to zip (please redo your backups - any apps no longer installed having backups in tar format should manually be recompressed to zip format. support for uncompressing tar will be deprecated in the near future.)
+ * option for rsync output disabled due to deadlocking on apps with a high number of files
+
 0.2.1 (2013-09-3)
 ------------------
  * fixing bug where busybox tar is not compiled with support for gzip

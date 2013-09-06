@@ -96,10 +96,12 @@ public class ShellCommands
                 }
             }
             String folder = new File(packageData).getName();
-            int tarRet = tar(backupDir.getAbsolutePath(), folder);
-            if(tarRet == 0)
+//            int tarRet = tar(backupDir.getAbsolutePath(), folder);
+            int zipret = new Compression().zip(new File(backupDir, folder));
+            if(zipret == 0)
             {
-                deleteBackup(new File(backupDir.getAbsolutePath() + "/" + folder));
+                deleteBackup(new File(backupDir, folder));
+                deleteBackup(new File(backupDir, folder + ".tar.gz"));
             }
         }
         catch(IOException e)
@@ -115,6 +117,8 @@ public class ShellCommands
     {
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
+        int unzipRet = -1;
+        int untarRet = -1;
         LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
         packageApk = logInfo.getApk();
         packageData = logInfo.getDataDir();
@@ -123,7 +127,15 @@ public class ShellCommands
         try
         {
             killPackage(packageName);
-            int untarRet = untar(backupDir.getAbsolutePath(), packageName);
+            if(new File(backupDir, packageName + ".zip").exists())
+            {
+                unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
+                Log.i(TAG, "zip exists");
+            }
+            else
+            {
+                untarRet = untar(backupDir.getAbsolutePath(), packageName);
+            }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
@@ -155,7 +167,7 @@ public class ShellCommands
                 }
             }
             Log.i(TAG, "return: " + retval);
-            if(untarRet == 0)
+            if(untarRet == 0 || unzipRet == 0)
             {
                 deleteBackup(new File(backupDir.getAbsolutePath() + "/" + packageName));
             }
@@ -595,6 +607,7 @@ public class ShellCommands
             return false;
         }
     }
+    /*
     public int tar(String pathToBackupsubdir, String folder)
     {
         try
@@ -627,6 +640,7 @@ public class ShellCommands
             return 1;
         }           
     }
+    */
     public int untar(String pathToBackupsubdir, String folder)
     {
         try
