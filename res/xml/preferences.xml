@@ -5,12 +5,14 @@
         android:title="@string/prefs_timestamp"
         android:defaultValue="true"
         />
+        <!--
     <CheckBoxPreference
         android:key="rsyncOutput"
         android:title="@string/prefs_rsyncOutput"
         android:summary="@string/prefs_summaryRsyncOutput"
         android:defaultValue="false"
         />
+        -->
     <CheckBoxPreference
         android:key="acquireWakelock"
         android:title="@string/prefs_acquireWakelock"

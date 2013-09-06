@@ -64,18 +64,20 @@ public class ShellCommands
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+//            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
-            dos.flush();
-            dos.writeBytes(rsync + " -vt " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+//            dos.flush();
+            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
 //            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
-            dos.flush();
+//            dos.flush();
             dos.writeBytes("exit\n");
-            dos.flush();
+//            dos.flush();
 
             int retval = p.waitFor();
             String returnMessages = retval == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
             Log.i(TAG, "return: " + retval + " / " + returnMessages);
+            /*
             if(prefs.getBoolean("rsyncOutput", false))
             {
                 ArrayList<String> stdout = getOutput(p).get("stdout");
@@ -84,6 +86,7 @@ public class ShellCommands
                     Log.i(TAG, line);
                 }
             }
+            */
             if(retval != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
@@ -133,6 +136,7 @@ public class ShellCommands
             dos.flush();
 
             int retval = p.waitFor();
+            /*
             if(prefs.getBoolean("rsyncOutput", false))
             {
                 ArrayList<String> stdout = getOutput(p).get("stdout");
@@ -141,6 +145,7 @@ public class ShellCommands
                     Log.i(TAG, line);
                 }
             }
+            */
             if(retval != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");

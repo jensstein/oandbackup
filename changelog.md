@@ -2,6 +2,7 @@ changelog
 =========
 
 0.2.1 (2013-09-3)
+------------------
  * fixing bug where busybox tar is not compiled with support for gzip
 
 0.2.0 (2013-08-30)

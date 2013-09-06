@@ -585,6 +585,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             shellCommands = new ShellCommands(this);
         }
+        if(key.equals("timestamp"))
+        {
+            localTimestampFormat = prefs.getBoolean("timestamp", true);
+            refresh();
+        }
     }
     public boolean onSearchRequested()
     {
