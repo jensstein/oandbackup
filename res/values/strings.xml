@@ -22,6 +22,7 @@
     <string name="sort">sort</string>
     <string name="uninstallDialogMessage">uninstall this package?</string>
     <string name="deleteBackupDialogMessage">delete backup files?</string>
+    <string name="dialogOK">ok</string>
     <string name="dialogYes">yes</string>
     <string name="dialogNo">no</string>
     <string name="noBackupYet">no backup yet</string>
@@ -31,6 +32,7 @@
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="rsyncOrBusyboxProblem">couldn\'t find rsync or busybox. please check error log</string>
     <string name="mkfileError">couldn\'t create</string>
+    <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSucces">succes</string>
     <string name="shellReturnError">error</string>
 

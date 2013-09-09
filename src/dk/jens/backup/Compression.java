@@ -46,6 +46,7 @@ public class Compression
         catch(IOException e)
         {
             e.printStackTrace();
+            Log.i(TAG, e.toString());
             return 1;
         }
     }

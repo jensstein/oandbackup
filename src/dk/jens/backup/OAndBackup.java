@@ -249,14 +249,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         for(PackageInfo pinfo : pinfoList)
         {
             String lastBackup = getString(R.string.noBackupYet);
+            LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat);
+            int loggedVersionCode = logInfo.getVersionCode();
+            String loggedVersionName = logInfo.getVersionName();
             if(backupDir != null)
             {
-//                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
-//                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
                 try
                 {
-//                    lastBackup = loglines.get(5);
-                    lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
+                    lastBackup = logInfo.getLastBackupTimestamp();
                 }
                 catch(IndexOutOfBoundsException e)
                 {
@@ -269,7 +269,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), loggedVersionName, pinfo.versionName, loggedVersionCode, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
 
         }
@@ -289,11 +289,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 {
                     try
                     {
-//                        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
-//                        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
-//                        AppInfo appInfo = new AppInfo(loginfo.get(2), loginfo.get(0), loginfo.get(1), 0 /*versionCode*/, loginfo.get(3), loginfo.get(4), loginfo.get(5), false, false);
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
                         // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
                         appInfoList.add(appInfo);
                     }
@@ -615,7 +612,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             {
                 public void run()
                 {
-                    Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(OAndBackup.this)
+                        .setTitle(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath())
+                        .setMessage(R.string.backupFolderError)
+                        .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id){}})
+                        .setCancelable(false)
+                        .show();
                 }
             });                    
         }

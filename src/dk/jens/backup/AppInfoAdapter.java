@@ -53,8 +53,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(layout, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tv1 = (TextView) convertView.findViewById(R.id.text1);
-            viewHolder.tv2 = (TextView) convertView.findViewById(R.id.text2);
+            viewHolder.label = (TextView) convertView.findViewById(R.id.label);
+            viewHolder.packageName = (TextView) convertView.findViewById(R.id.packageName);
+            viewHolder.versionName = (TextView) convertView.findViewById(R.id.versionCode);
             viewHolder.lastBackup = (TextView) convertView.findViewById(R.id.lastBackup);
             convertView.setTag(viewHolder);
         }
@@ -65,27 +66,41 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         AppInfo appInfo = getItem(pos);
         if(appInfo != null)
         {
-            viewHolder.tv1.setText(appInfo.getLabel());
-            viewHolder.tv2.setText(appInfo.getPackageName());
+            viewHolder.label.setText(appInfo.getLabel());
+            viewHolder.packageName.setText(appInfo.getPackageName());
+            if(appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode())
+            {
+                String updatedVersionString = appInfo.getLoggedVersionName() + " > " + appInfo.getVersionName();
+                viewHolder.versionName.setText(updatedVersionString);
+                if(updatedVersionString.length() < 15)
+                {
+                    viewHolder.versionName.setEllipsize(null);
+                }
+            }
+            else
+            {
+                viewHolder.versionName.setText(appInfo.getVersionName());
+            }
             viewHolder.lastBackup.setText(appInfo.getLastBackupTimestamp());
             if(appInfo.isInstalled)
             {
                 int color = appInfo.isSystem ? Color.RED : Color.GREEN;
-                viewHolder.tv1.setTextColor(Color.WHITE);
-                viewHolder.tv2.setTextColor(color);
+                viewHolder.label.setTextColor(Color.WHITE);
+                viewHolder.packageName.setTextColor(color);
             }
             else
             {
-                viewHolder.tv1.setTextColor(Color.GRAY);
-                viewHolder.tv2.setTextColor(Color.GRAY);
+                viewHolder.label.setTextColor(Color.GRAY);
+                viewHolder.packageName.setTextColor(Color.GRAY);
             }
         }
         return convertView;
     }
     static class ViewHolder
     {
-        TextView tv1;
-        TextView tv2;
+        TextView label;
+        TextView packageName;
+        TextView versionName;
         TextView lastBackup;
     }
     @Override

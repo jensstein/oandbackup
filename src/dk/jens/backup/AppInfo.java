@@ -2,15 +2,17 @@ package dk.jens.backup;
 
 public class AppInfo implements Comparable<AppInfo>
 {
-    String label, packageName, versionName, sourceDir, dataDir, lastBackup;
-    int versionCode;
+    String label, packageName, loggedVersionName, versionName, sourceDir, dataDir, lastBackup;
+    int loggedVersionCode, versionCode;
     public boolean isSystem, isInstalled, isChecked;
 
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String lastBackup, boolean isSystem, boolean isInstalled)
+    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, String lastBackup, boolean isSystem, boolean isInstalled)
     {
         this.label = label;
         this.packageName = packageName;
+        this.loggedVersionName = loggedVersionName;
         this.versionName = versionName;
+        this.loggedVersionCode = loggedVersionCode;
         this.versionCode = versionCode;
         this.sourceDir = sourceDir;
         this.dataDir = dataDir;
@@ -26,9 +28,17 @@ public class AppInfo implements Comparable<AppInfo>
     {
         return label;
     }
+    public String getLoggedVersionName()
+    {
+        return loggedVersionName;
+    }
     public String getVersionName()
     {
         return versionName;
+    }
+    public int getLoggedVersionCode()
+    {
+        return loggedVersionCode;
     }
     public int getVersionCode()
     {
