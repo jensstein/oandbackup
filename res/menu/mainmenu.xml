@@ -26,6 +26,8 @@
                 android:title="@string/showOnlySystem" />
             <item android:id="@+id/showNotBackedup"
                 android:title="@string/showNotBackedup" />
+            <item android:id="@+id/showNotInstalled"
+                android:title="@string/showNotInstalled" />
             <item android:id="@+id/sortByLabel"
                 android:title="@string/sortByLabel" />
             <item android:id="@+id/sortByPackageName"

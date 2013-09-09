@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class BatchAdapter extends ArrayAdapter<AppInfo>
+public class BatchAdapter extends AppInfoAdapter
 {
     Context context;
     ArrayList<AppInfo> items;

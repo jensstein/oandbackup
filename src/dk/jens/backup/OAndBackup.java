@@ -444,6 +444,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             case R.id.showNotBackedup:
                 adapter.filterIsBackedup();
                 break;
+            case R.id.showNotInstalled:
+                adapter.filterIsInstalled();
+                break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
                 if(!showAll)

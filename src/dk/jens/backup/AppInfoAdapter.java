@@ -70,7 +70,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             viewHolder.packageName.setText(appInfo.getPackageName());
             if(appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode())
             {
-                String updatedVersionString = appInfo.getLoggedVersionName() + " > " + appInfo.getVersionName();
+                String updatedVersionString = appInfo.getLoggedVersionName() + " -> " + appInfo.getVersionName();
                 viewHolder.versionName.setText(updatedVersionString);
                 if(updatedVersionString.length() < 15)
                 {
@@ -255,6 +255,22 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         for(AppInfo appInfo : originalValues)
         {
             if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+            {
+                add(appInfo);
+            }
+        }
+        notifyDataSetChanged();
+    }
+    public void filterIsInstalled()
+    {
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        clear();
+        for(AppInfo appInfo : originalValues)
+        {
+            if(!appInfo.isInstalled)
             {
                 add(appInfo);
             }

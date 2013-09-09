@@ -3,4 +3,18 @@
     <item android:id="@+id/de_selectAll"
         android:title="@string/de_selectAll"
         android:showAsAction="ifRoom" />
+    <item android:id="@+id/showAll"
+        android:title="@string/showAll" />
+    <item android:id="@+id/showOnlyUser"
+        android:title="@string/showOnlyUser" />
+    <item android:id="@+id/showOnlySystem"
+        android:title="@string/showOnlySystem" />
+    <item android:id="@+id/showNotBackedup"
+        android:title="@string/showNotBackedup" />
+    <item android:id="@+id/showNotInstalled"
+        android:title="@string/showNotInstalled" />
+    <item android:id="@+id/sortByLabel"
+        android:title="@string/sortByLabel" />
+    <item android:id="@+id/sortByPackageName"
+        android:title="@string/sortByPackageName" />
 </menu>

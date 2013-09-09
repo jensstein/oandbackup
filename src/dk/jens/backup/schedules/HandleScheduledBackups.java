@@ -123,7 +123,6 @@ public class HandleScheduledBackups
                 for(AppInfo appInfo : backupList)
                 {
                     i++;
-//                    String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
                     String title = "backing up (" + i + "/" + total + ")";
                     notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
                     File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
@@ -136,8 +135,6 @@ public class HandleScheduledBackups
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-//                    shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-//                    logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                     logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
                     if(i == total)
                     {
@@ -165,11 +162,8 @@ public class HandleScheduledBackups
             String lastBackup = context.getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-//                ArrayList<String> loglines = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
-//                ArrayList<String> loglines = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName);
                 try
                 {
-//                    lastBackup = loglines.get(5);
                     lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
                 }
                 catch(IndexOutOfBoundsException e)

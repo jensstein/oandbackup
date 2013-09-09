@@ -17,6 +17,7 @@
     <string name="showOnlySystem">show only system apps</string>
     <string name="showOnlyUser">show only user apps</string>
     <string name="showNotBackedup">show apps not backed up yet</string>
+    <string name="showNotInstalled">show apps not installed</string>
     <string name="sortByLabel">sort by label</string>
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort</string>
