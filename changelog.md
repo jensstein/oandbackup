@@ -3,7 +3,8 @@ changelog
 
 0.2.2 (development)
 -------------------
- * compression has changed from gzip to zip (please redo your backups - any apps no longer installed having backups in tar format should manually be recompressed to zip format. support for uncompressing tar will be deprecated in the near future.)
+ * compression has changed from gzip to zip (please redo your backups - any apps no longer installed having backups in tar format should manually be recompressed to zip format. support for uncompressing tar will be deprecated in the near future.) 
+    * if the data folder of the app doesn't contain any files (or only empty directories and the lib/ folder) no zip will be created since java.util.zip can't handle empty zip files
  * option for rsync output disabled due to deadlocking on apps with a high number of files
  * batch operations now has sorting and filtering too
  

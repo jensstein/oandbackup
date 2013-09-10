@@ -103,6 +103,13 @@ public class ShellCommands
                 deleteBackup(new File(backupDir, folder));
                 deleteBackup(new File(backupDir, folder + ".tar.gz"));
             }
+            else if(zipret == 2)
+            {
+                // handling empty zip
+                deleteBackup(new File(backupDir, folder + ".zip"));
+                deleteBackup(new File(backupDir, folder + ".tar.gz"));
+            }
+
         }
         catch(IOException e)
         {
@@ -130,7 +137,6 @@ public class ShellCommands
             if(new File(backupDir, packageName + ".zip").exists())
             {
                 unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
-                Log.i(TAG, "zip exists");
             }
             else
             {
@@ -166,10 +172,11 @@ public class ShellCommands
                     writeErrorLog(line);
                 }
             }
-            Log.i(TAG, "return: " + retval);
+            String returnMessages = retval == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            Log.i(TAG, "return: " + retval + " / " + returnMessages);
             if(untarRet == 0 || unzipRet == 0)
             {
-                deleteBackup(new File(backupDir.getAbsolutePath() + "/" + packageName));
+                deleteBackup(new File(backupDir, packageName));
             }
         }
         catch(IOException e)
