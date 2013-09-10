@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">oandbackup</string>
+    <string name="backupButton">Backup</string>
+    <string name="restoreButton">Restauro</string>
+    <string name="radioApk">Apk</string>
+    <string name="radioData">Dados</string>
+    <string name="radioBoth">Dados e Apk</string>
+    <string name="de_selectAll">Marcar/desmarcar tudo</string>
+    <string name="refresh">Atualizar</string>
+    <string name="batchbackup">Backup em lote</string>
+    <string name="batchrestore">Restauro em lote</string>
+    <string name="search">Procurar</string>
+    <string name="deleteBackup">Eliminar backup</string>
+    <string name="uninstall">Desinstalar aplicação</string>
+    <string name="showAll">Mostrar todas as aplicações</string>
+    <string name="showOnlySystem">Mostrar aplicações do sistema</string>
+    <string name="showOnlyUser">Mostrar aplicações do utilizador</string>
+    <string name="showNotBackedup">Mostrar aplicações sem backup</string>
+    <string name="showNotInstalled">Mostrar aplicações não instaladas</string>
+    <string name="sortByLabel">Ordenar por nome</string>
+    <string name="sortByPackageName">Ordenar por nome do pacote</string>
+    <string name="sort">Filtrar</string>
+    <string name="uninstallDialogMessage">Desinstalar este pacote?</string>
+    <string name="deleteBackupDialogMessage">Eliminar ficheiros de backup?</string>
+    <string name="dialogOK">Ok</string>
+    <string name="dialogYes">Sim</string>
+    <string name="dialogNo">Não</string>
+    <string name="noBackupYet">Backup inexistente</string>
+    <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado: </string>
+    <string name="collectingData">A obter informação de pacotes</string>
+    <string name="suCheck">A verificar superuser e busybox</string>
+    <string name="noSu">Não foi possível obter as permissões superuser</string>
+    <string name="rsyncOrBusyboxProblem">Não foi possível encontrar rsync ou busybox. Consulte o registo de erros</string>
+    <string name="mkfileError">couldn\'t create</string>
+    <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
+    <string name="shellReturnSucces">Sucesso</string>
+    <string name="shellReturnError">Erro</string>
+
+    <string name="prefs_title">Preferências</string>    
+    <string name="prefs_timestamp">Usar formato local de data</string>
+    <string name="prefs_rsyncOutput">Saída rsync</string>
+    <string name="prefs_summaryRsyncOutput">Gravar saída de rsync para logcat</string>
+    <string name="prefs_acquireWakelock">Obter wakelock</string>
+    <string name="prefs_summaryAcquireWakelock">Acelera os backups em segundo plano mas utiliza mais energia</string>
+    <string name="prefs_pathscategory">Caminhos personalizados</string>
+    <string name="prefs_pathBackupFolder">Pasta de backup</string>
+    <string name="prefs_summaryBackupFolder">Caminho da pasta de backups. Deixe em branco para utilizar a pasta padrão.</string>
+    <string name="prefs_pathLogfile">Registos</string>
+    <string name="prefs_summaryLogfile">Caminho do ficheiro de registos. Deixe em branco para utilizar o caminho padrão.</string>
+    <string name="prefs_pathBusybox">Busybox</string>
+    <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
+    <string name="prefs_pathRsync">Rsync</string>
+    <string name="prefs_summaryRsync">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
+    
+    <string name="sched_title">Agendamento</string>
+    <string name="sched_interval">Intervalo em dias</string>
+    <string name="sched_hourOfDay">Hora do dia (0..23)</string>
+    <string name="sched_checkbox">Ativar</string>
+    <string name="sched_button">Atualizar</string>
+    <string name="sched_startingbackup">Iniciar agendamento</string>
+    <string name="sched_backupMode">Modo de backup</string>
+    <string name="sched_timeLeft">Horas até ao próximo backup</string>
+</resources>
