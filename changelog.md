@@ -4,6 +4,7 @@ changelog
 0.2.3 (development)
 ------------------
  * added portuguese translation. thanks to Sérgio Marques (smarquespt).
+ * fixing multi-user issue
 
 0.2.2 (2013-09-10)
 -------------------
