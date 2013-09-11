@@ -419,17 +419,17 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             case R.id.batchbackup:
                 Intent backupIntent = new Intent(this, BatchActivity.class);
                 backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
+                filterShowAll();
                 startActivityForResult(backupIntent, BATCH_REQUEST);
                 break;
             case R.id.batchrestore:
                 Intent restoreIntent = new Intent(this, BatchActivity.class);
                 restoreIntent.putExtra("dk.jens.backup.backupBoolean", false);
+                filterShowAll();
                 startActivityForResult(restoreIntent, BATCH_REQUEST);
                 break;
             case R.id.showAll:
-                showAll = true;
-                showOnlyUser = false;
-                adapter.getFilter().filter("");
+                filterShowAll();
                 break;
             case R.id.showOnlySystem:
                 showOnlyUser = false;
@@ -626,5 +626,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
             });                    
         }
+    }
+    public void filterShowAll()
+    {
+        showAll = true;
+        showOnlyUser = false;
+        adapter.getFilter().filter("");
     }
 }
