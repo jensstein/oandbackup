@@ -19,7 +19,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -178,6 +177,7 @@ public class ShellCommands
             {
                 deleteBackup(new File(backupDir, packageName));
             }
+            disablePackage(packageName);
         }
         catch(IOException e)
         {
@@ -196,12 +196,10 @@ public class ShellCommands
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             //uid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
-//            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Uid | " + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
             //gid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
-//            dos.writeBytes(stat + " " + packageDir + " | " + grep + " Gid |" + awk + " '{print $4}' | " + sed + " -e 's/\\///g' -e 's/(//g'\n");
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
             dos.flush();
 
@@ -294,7 +292,7 @@ public class ShellCommands
 //                Log.i(TAG, "restoring " + label);
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("pm install " + backupDir.getAbsolutePath() + "/" + apk + "\n");
+                dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
@@ -489,6 +487,9 @@ public class ShellCommands
     public void writeErrorLog(String err)
     {
         // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
+        String dateFormated = dateFormat.format(date);
         try
         {
             String logFilePath = prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath());
@@ -504,7 +505,7 @@ public class ShellCommands
             {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
                 BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(err + "\n");
+                bw.write(dateFormated + ": " + err + "\n");
                 bw.close();        
             }
         }
@@ -680,5 +681,84 @@ public class ShellCommands
             Log.i(TAG, e.toString());
             return 1;
         }           
+    }
+    public ArrayList getUsers()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
+                {
+                    writeErrorLog(line);
+                }
+                return null;
+            }
+            else
+            {
+                ArrayList<String> users = new ArrayList<String>();
+                ArrayList<String> out = getOutput(p).get("stdout");
+                for(String line : out)
+                {
+                    if(line.trim().length() != 0 && !line.trim().equals("0"))
+                    {
+                        users.add(line);
+                    }
+                }
+                return users;
+            }
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return null;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return null;
+        }
+    }
+    public void disablePackage(String packageName)
+    {
+        ArrayList<String> users = getUsers();
+        if(users != null && !users.isEmpty())
+        {
+            for(String user : users)
+            {
+                try
+                {
+                    p = Runtime.getRuntime().exec("su");
+                    dos = new DataOutputStream(p.getOutputStream());
+                    dos.writeBytes("pm disable --user " + user + " " + packageName + "\n");
+                    dos.writeBytes("exit\n");
+                    dos.flush();
+                    int ret = p.waitFor();
+                    if(ret != 0)
+                    {
+                        ArrayList<String> err = getOutput(p).get("stderr");
+                        for(String line : err)
+                        {
+                            writeErrorLog(line);
+                        }
+                    }
+                }
+                catch(IOException e)
+                {
+                    Log.i(TAG, e.toString());
+                }
+                catch(InterruptedException e)
+                {
+                    Log.i(TAG, e.toString());
+                }
+            }        
+        }
     }
 }
