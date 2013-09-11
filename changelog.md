@@ -1,6 +1,10 @@
 changelog
 =========
 
+0.2.3 (development)
+------------------
+ * added portuguese translation. thanks to Sérgio Marques (smarquespt).
+
 0.2.2 (2013-09-10)
 -------------------
  * compression has changed from gzip to zip (please redo your backups - any apps no longer installed having backups in tar format should manually be recompressed to zip format. support for uncompressing tar will be deprecated in the near future.) 
