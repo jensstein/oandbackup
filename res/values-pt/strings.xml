@@ -14,8 +14,8 @@
     <string name="deleteBackup">Eliminar backup</string>
     <string name="uninstall">Desinstalar aplicação</string>
     <string name="showAll">Mostrar todas as aplicações</string>
-    <string name="showOnlySystem">Mostrar aplicações do sistema</string>
-    <string name="showOnlyUser">Mostrar aplicações do utilizador</string>
+    <string name="showOnlySystem">Mostrar apenas aplicações do sistema</string>
+    <string name="showOnlyUser">Mostrar apenas aplicações do utilizador</string>
     <string name="showNotBackedup">Mostrar aplicações sem backup</string>
     <string name="showNotInstalled">Mostrar aplicações não instaladas</string>
     <string name="sortByLabel">Ordenar por nome</string>
@@ -51,7 +51,7 @@
     <string name="prefs_pathBusybox">Busybox</string>
     <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
     <string name="prefs_pathRsync">Rsync</string>
-    <string name="prefs_summaryRsync">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
+    <string name="prefs_summaryRsync">Caminho do executável rsync. Deixe em branco para utilizar o caminho padrão.</string>
     
     <string name="sched_title">Agendamento</string>
     <string name="sched_interval">Intervalo em dias</string>
