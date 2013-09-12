@@ -254,9 +254,12 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         for(AppInfo appInfo : originalValues)
         {
-            if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+            if(appInfo.getLastBackupTimestamp() != null)
             {
-                add(appInfo);
+                if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+                {
+                    add(appInfo);
+                }
             }
         }
         notifyDataSetChanged();

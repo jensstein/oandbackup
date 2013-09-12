@@ -254,13 +254,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             String loggedVersionName = logInfo.getVersionName();
             if(backupDir != null)
             {
-                try
+                if(logInfo.getLastBackupTimestamp() != null)
                 {
                     lastBackup = logInfo.getLastBackupTimestamp();
-                }
-                catch(IndexOutOfBoundsException e)
-                {
-                    lastBackup = this.getString(R.string.noBackupYet);
                 }
             }
 
@@ -287,16 +283,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 if(!found)
                 {
-                    try
+                    LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
+                    if(logInfo.getLastBackupTimestamp() != null)
                     {
-                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                         AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
                         // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
                         appInfoList.add(appInfo);
-                    }
-                    catch(IndexOutOfBoundsException e)
-                    {
-                        // mappen er enten ikke en backupmappe eller noget er galt
                     }
                 }
             }

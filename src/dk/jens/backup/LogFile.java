@@ -53,17 +53,19 @@ public class LogFile
         }
         catch(JSONException e)
         {
-//            Log.i(TAG, e.toString());
             long stime = System.currentTimeMillis();
             ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
-            this.label = log.get(0);
-            this.packageName = log.get(2);
-            this.versionName = log.get(1);
-            this.sourceDir = log.get(3);
-            this.dataDir = log.get(4);
-            this.lastBackup = log.get(5);
-            this.versionCode = 0; // indtil skrevet i log
-            writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
+            if(log != null)
+            {
+                this.label = log.get(0);
+                this.packageName = log.get(2);
+                this.versionName = log.get(1);
+                this.sourceDir = log.get(3);
+                this.dataDir = log.get(4);
+                this.lastBackup = log.get(5);
+                this.versionCode = 0;
+                writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
+            }
         }
     }
     public String getLabel()
@@ -156,12 +158,12 @@ public class LogFile
         }
         catch(FileNotFoundException e)
         {
-            return logLines;
+            return null;
         }
         catch(IOException e)
         {
             Log.i(TAG, e.toString());
-            return logLines;
+            return null;
         }
     }
     public void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated)
