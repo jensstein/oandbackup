@@ -18,7 +18,7 @@ public class NotificationHelper
     {
 //        Notification.Builder mBuilder = new Notification.Builder(this)
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-            .setSmallIcon(R.drawable.backup_small)
+            .setSmallIcon(R.drawable.backup2_small)
             .setContentTitle(title)
             .setContentText(text)
             .setAutoCancel(autocancel);
