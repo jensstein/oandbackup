@@ -63,12 +63,12 @@ public class ShellCommands
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-//            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDir.getAbsolutePath() + "\n");
-            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+//            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
 //            dos.flush();
-            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
-//            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+//            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
 //            dos.flush();
@@ -95,6 +95,7 @@ public class ShellCommands
                 }
             }
             String folder = new File(packageData).getName();
+            deleteBackup(new File(backupDir, folder + "/lib"));
 //            int tarRet = tar(backupDir.getAbsolutePath(), folder);
             int zipret = new Compression().zip(new File(backupDir, folder));
             if(zipret == 0)
@@ -143,8 +144,8 @@ public class ShellCommands
             }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
-//            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
+//            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
+            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
 /*
             dos.writeBytes("am force-stop " + packageName + "\n");
 */
@@ -284,46 +285,38 @@ public class ShellCommands
     }
     public int restoreApk(File backupDir, String label, String apk) 
     {
-        File checkDataPath = new File("/data/app/" + apk);
-        if(!checkDataPath.exists())
+        try
         {
-            try
-            {
 //                Log.i(TAG, "restoring " + label);
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
-                dos.flush();
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
+            dos.flush();
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
 //                Log.i(TAG, "restoreApk return: " + ret);
-                // det ser ud til at pm install giver 0 som return selvom der sker en fejl
-                ArrayList<String> err = getOutput(p).get("stderr");
-                if(err.size() > 1)
+            // det ser ud til at pm install giver 0 som return selvom der sker en fejl
+            ArrayList<String> err = getOutput(p).get("stderr");
+            if(err.size() > 1)
+            {
+                for(String line : err)
                 {
-                    for(String line : err)
-                    {
-                        writeErrorLog(line);
-                    }
+                    writeErrorLog(line);
                 }
-                return ret;
             }
-            catch(IOException e)
-            {
-                Log.i(TAG, e.toString());
-                return 1;
-            }
-            catch(InterruptedException e)
-            {
-                Log.i(TAG, e.toString());
-                return 1;
-            }           
+            return ret;
         }
-        else
+        catch(IOException e)
         {
+            Log.i(TAG, e.toString());
             return 1;
         }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }           
     }
     public int uninstall(String packageName)
     {

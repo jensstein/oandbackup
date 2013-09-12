@@ -101,9 +101,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     });                    
                 }
-                boolean rsyncInstalled = shellCommands.checkRsync();
+//                boolean rsyncInstalled = shellCommands.checkRsync();
                 boolean bboxInstalled = shellCommands.checkBusybox();
-                if(!rsyncInstalled || !bboxInstalled)
+//                if(!rsyncInstalled || !bboxInstalled)
+                if(!bboxInstalled)
                 {
                     runOnUiThread(new Runnable()
                     {
@@ -168,12 +169,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 else
                 {
                     shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-//                    shellCommands.deleteBackup(backupSubDir);
-//                    backupSubDir.mkdirs();
                 }
                 shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-//                shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-//                logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
                 logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
                 
                 // køre på uitråd for at undgå WindowLeaked

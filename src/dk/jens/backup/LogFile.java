@@ -57,14 +57,21 @@ public class LogFile
             ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
             if(log != null)
             {
-                this.label = log.get(0);
-                this.packageName = log.get(2);
-                this.versionName = log.get(1);
-                this.sourceDir = log.get(3);
-                this.dataDir = log.get(4);
-                this.lastBackup = log.get(5);
-                this.versionCode = 0;
-                writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
+                try
+                {
+                    this.label = log.get(0);
+                    this.packageName = log.get(2);
+                    this.versionName = log.get(1);
+                    this.sourceDir = log.get(3);
+                    this.dataDir = log.get(4);
+                    this.lastBackup = log.get(5);
+                    this.versionCode = 0;
+                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup);
+                }
+                catch(IndexOutOfBoundsException ie)
+                {
+                    ie.printStackTrace();
+                }
             }
         }
     }
