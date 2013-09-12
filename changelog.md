@@ -4,6 +4,7 @@ changelog
 0.2.3 (development)
 ------------------
  * added portuguese translation. thanks to Sérgio Marques (smarquespt).
+ * new icon. thanks to Anil Gulecha.
  * fixing multi-user issue
  * fix bug where having no backup of an app would result in an indexoutofboundsexception.
  
