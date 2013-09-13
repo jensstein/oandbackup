@@ -25,10 +25,7 @@ public class BootReceiver extends BroadcastReceiver
             long repeat = (long)(prefs.getInt("repeatTime", 0) * AlarmManager.INTERVAL_DAY);
             long timePassed = System.currentTimeMillis() - timePlaced;
             long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay", 0));
-//            long timeLeft = repeat - timePassed + hourOfDay;
             long timeLeft = prefs.getLong("timeUntilNextEvent", 0) - timePassed;
-//            Log.i(TAG, "boot hourofday: " + (hourOfDay / 1000 / 60 / 60f) + " boot timeLeft: " + (timeLeft / 1000 / 60 / 60f));
-//            Log.i(TAG, "time placed: " + timePlaced + " timePassed: " + (timePassed / 1000 / 60 / 60f) + " hourOfDay: " + (hourOfDay / 1000 / 60 / 60f) + " timeLeft: " + (timeLeft / 1000 / 60 / 60f) + " (" + timeLeft + ")");
             if(timeLeft < (5 * 60000))
             {
                 handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);

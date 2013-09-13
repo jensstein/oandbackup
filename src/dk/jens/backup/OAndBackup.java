@@ -155,7 +155,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void callBackup(final AppInfo appInfo)
     {
-//        final String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();
         new Thread(new Runnable()
         {
             public void run()
@@ -196,11 +195,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 // error handling, hvis backupSubDir ikke findes
                 handleMessages.showMessage(appInfo.getLabel(), "restore");
 
-//                ArrayList<String> log = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-//                ArrayList<String> log = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
                 LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
                 String dataDir = appInfo.getDataDir();
-//                String apk = log.get(3);
                 String apk = logInfo.getApk();
                 String[] apkArray = apk.split("/");
                 apk = apkArray[apkArray.length - 1];
@@ -314,14 +310,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void refresh(AppInfo appInfo)
     {
-//        ArrayList<String> loginfo = shellCommands.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
-//        ArrayList<String> loginfo = logFile.readLogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName());
         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
         int pos = appInfoList.indexOf(appInfo);
-        /*
-        appInfo.label = loginfo.get(0);
-        appInfo.lastBackup = loginfo.get(5);
-        */
         appInfo.label = logInfo.getLabel();
         appInfo.lastBackup = logInfo.getLastBackupTimestamp();
         appInfoList.set(pos, appInfo);
@@ -570,7 +560,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             createBackupDir(backupDirPath);
             refresh();
         }
-        if(key.equals("pathRsync") || key.equals("pathBusybox"))
+        if(key.equals("pathBusybox"))
         {
             shellCommands = new ShellCommands(this);
         }

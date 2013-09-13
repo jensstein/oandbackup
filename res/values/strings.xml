@@ -31,7 +31,7 @@
     <string name="collectingData">collecting package infos</string>
     <string name="suCheck">checking for superuser and busybox</string>
     <string name="noSu">couldn\'t get superuser permissions</string>
-    <string name="rsyncOrBusyboxProblem">couldn\'t find rsync or busybox. please check error log</string>
+    <string name="rsyncOrBusyboxProblem">couldn\'t find busybox. please check error log</string>
     <string name="mkfileError">couldn\'t create</string>
     <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSucces">succes</string>
