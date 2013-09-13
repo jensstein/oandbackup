@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.2.3 (development)
+0.2.3 (2013-09-13)
 ------------------
  * added portuguese translation. thanks to Sérgio Marques (smarquespt).
  * new icon. thanks to Anil Gulecha.
