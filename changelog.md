@@ -8,6 +8,7 @@ changelog
  * beginning fix of multi-user issue
  * fix bug where having no backup of an app would result in an indexoutofboundsexception.
  * reverting back to cp instead of rsync
+ * batch mode now has separate sorting and filtering
  
 0.2.2 (2013-09-10)
 -------------------
