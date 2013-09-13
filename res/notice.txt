@@ -1,6 +1,0 @@
-license for files backup2.png, backup2_small.png in drawable-mdpi, drawable-hdpi, drawable-xhdpi:
-
-CC0 - Public domain dedication:
-To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work. 
-Full license is available here: http://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
-----------------------------------------------------------------------------------------------

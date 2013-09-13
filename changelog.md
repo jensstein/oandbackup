@@ -5,8 +5,9 @@ changelog
 ------------------
  * added portuguese translation. thanks to Sérgio Marques (smarquespt).
  * new icon. thanks to Anil Gulecha.
- * fixing multi-user issue
+ * beginning fix of multi-user issue
  * fix bug where having no backup of an app would result in an indexoutofboundsexception.
+ * reverting back to cp instead of rsync
  
 0.2.2 (2013-09-10)
 -------------------

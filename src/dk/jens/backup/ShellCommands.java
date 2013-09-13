@@ -45,15 +45,17 @@ public class ShellCommands
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
-        rsync = prefs.getString("pathRsync", "rsync").trim();
+//        rsync = prefs.getString("pathRsync", "rsync").trim();
         if(busybox.length() == 0)
         {
             busybox = "busybox";
         }
+        /*
         if(rsync.length() == 0)
         {
             rsync = "rsync";
         }
+        */
     }
     public void doBackup(File backupDir, String label, String packageData, String packageApk)
     {
@@ -536,6 +538,7 @@ public class ShellCommands
             return false;
         }
     }
+    /*
     public boolean checkRsync()
     {
         try
@@ -572,6 +575,7 @@ public class ShellCommands
             return false;
         }
     }
+    */
     public boolean checkBusybox()
     {
         try
