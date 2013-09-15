@@ -241,16 +241,23 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
         for(PackageInfo pinfo : pinfoList)
         {
+            int loggedVersionCode;
+            String loggedVersionName;
             String lastBackup = getString(R.string.noBackupYet);
-            LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat);
-            int loggedVersionCode = logInfo.getVersionCode();
-            String loggedVersionName = logInfo.getVersionName();
             if(backupDir != null)
             {
+                LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat);
+                loggedVersionCode = logInfo.getVersionCode();
+                loggedVersionName = logInfo.getVersionName();
                 if(logInfo.getLastBackupTimestamp() != null)
                 {
                     lastBackup = logInfo.getLastBackupTimestamp();
                 }
+            }
+            else
+            {
+                loggedVersionCode = 0;
+                loggedVersionName = "0";
             }
 
             boolean isSystem = false;
