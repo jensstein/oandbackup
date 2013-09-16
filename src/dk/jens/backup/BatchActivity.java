@@ -324,7 +324,7 @@ public class BatchActivity extends Activity implements OnClickListener
                 {
                     i++;
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                    File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
+                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     String title = backupBoolean ? "backing up" : "restoring";
                     title = title + " (" + i + "/" + total + ")";
                     notificationHelper.showNotification(BatchActivity.class, id, title, appInfo.getLabel(), false);

@@ -164,7 +164,7 @@ public class HandleScheduledBackups
             {
                 try
                 {
-                    lastBackup = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
+                    lastBackup = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
                 }
                 catch(IndexOutOfBoundsException e)
                 {

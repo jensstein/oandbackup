@@ -190,45 +190,48 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         new Thread(new Runnable()
         {
             public void run()
-            {          
-                File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                // error handling, hvis backupSubDir ikke findes
-                handleMessages.showMessage(appInfo.getLabel(), "restore");
-
-                LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
-                String dataDir = appInfo.getDataDir();
-                String apk = logInfo.getApk();
-                String[] apkArray = apk.split("/");
-                apk = apkArray[apkArray.length - 1];
-                switch(options)
+            {
+                if(backupDir != null)
                 {
-                    case 1:
-                        shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
-                        break;
-                    case 2:
-                        if(appInfo.isInstalled)
-                        {
+                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
+                    // error handling, hvis backupSubDir ikke findes
+                    handleMessages.showMessage(appInfo.getLabel(), "restore");
+
+                    LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
+                    String dataDir = appInfo.getDataDir();
+                    String apk = logInfo.getApk();
+                    String[] apkArray = apk.split("/");
+                    apk = apkArray[apkArray.length - 1];
+                    switch(options)
+                    {
+                        case 1:
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
+                            break;
+                        case 2:
+                            if(appInfo.isInstalled)
+                            {
+                                shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                shellCommands.setPermissions(dataDir);
+                            }
+                            else
+                            {
+                                Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                            }
+                            break;
+                        case 3:
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
                             shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                             shellCommands.setPermissions(dataDir);
-                        }
-                        else
-                        {
-                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-                        }
-                        break;
-                    case 3:
-                        shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
-                        shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                        shellCommands.setPermissions(dataDir);
-                        break;
-                }
-                runOnUiThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        refresh();
+                            break;
                     }
-                });
+                    runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            refresh();
+                        }
+                    });
+                }
                 handleMessages.endMessage();
                 notificationHelper.showNotification(OAndBackup.class, notificationId++, "restore complete", appInfo.getLabel(), true);
             }
@@ -246,7 +249,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             String lastBackup = getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-                LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + pinfo.packageName), pinfo.packageName, localTimestampFormat);
+                LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
                 loggedVersionCode = logInfo.getVersionCode();
                 loggedVersionName = logInfo.getVersionName();
                 if(logInfo.getLastBackupTimestamp() != null)
@@ -317,12 +320,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void refresh(AppInfo appInfo)
     {
-        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
-        int pos = appInfoList.indexOf(appInfo);
-        appInfo.label = logInfo.getLabel();
-        appInfo.lastBackup = logInfo.getLastBackupTimestamp();
-        appInfoList.set(pos, appInfo);
-        adapter.notifyDataSetChanged();
+        if(backupDir != null)
+        {
+            LogFile logInfo = new LogFile(new File(backupDir, appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
+            int pos = appInfoList.indexOf(appInfo);
+            appInfo.label = logInfo.getLabel();
+            appInfo.lastBackup = logInfo.getLastBackupTimestamp();
+            appInfoList.set(pos, appInfo);
+            adapter.notifyDataSetChanged();
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -536,15 +542,18 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                             public void run()
                             {
                                 handleMessages.showMessage(appInfoList.get(info.position).getLabel(), "delete backup files");
-                                File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfoList.get(info.position).getPackageName());
-                                shellCommands.deleteBackup(backupSubDir);
-                                runOnUiThread(new Runnable()
+                                if(backupDir != null)
                                 {
-                                    public void run()
+                                    File backupSubDir = new File(backupDir, appInfoList.get(info.position).getPackageName());
+                                    shellCommands.deleteBackup(backupSubDir);
+                                    runOnUiThread(new Runnable()
                                     {
-                                        refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
-                                    }
-                                });
+                                        public void run()
+                                        {
+                                            refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
+                                        }
+                                    });
+                                }
                                 handleMessages.endMessage();
                             }
                         }).start();
