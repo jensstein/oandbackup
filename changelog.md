@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.2.4 (development)
+------------------
+ * fixed uninstalling and restoring system apps
+ * fixed missing error handling on folder creation
+
 0.2.3 (2013-09-13)
 ------------------
  * added portuguese translation. thanks to Sérgio Marques (smarquespt).

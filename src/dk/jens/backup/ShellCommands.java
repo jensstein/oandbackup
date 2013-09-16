@@ -70,7 +70,7 @@ public class ShellCommands
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
 //            dos.flush();
 //            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
-            dos.writeBytes("cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(busybox + " cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
 //            dos.flush();
@@ -122,7 +122,7 @@ public class ShellCommands
             Log.i(TAG, e.toString());
         }
     }
-    public void doRestore(File backupDir, String label, String packageName)
+    public int doRestore(File backupDir, String label, String packageName)
     {
         String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
         String packageApk = ""; 
@@ -155,7 +155,7 @@ public class ShellCommands
             dos.writeBytes("exit\n");
             dos.flush();
 
-            int retval = p.waitFor();
+            int ret = p.waitFor();
             /*
             if(prefs.getBoolean("rsyncOutput", false))
             {
@@ -166,7 +166,7 @@ public class ShellCommands
                 }
             }
             */
-            if(retval != 0)
+            if(ret != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
@@ -174,21 +174,24 @@ public class ShellCommands
                     writeErrorLog(line);
                 }
             }
-            String returnMessages = retval == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
-            Log.i(TAG, "return: " + retval + " / " + returnMessages);
+            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            Log.i(TAG, "return: " + ret + " / " + returnMessages);
             if(untarRet == 0 || unzipRet == 0)
             {
                 deleteBackup(new File(backupDir, packageName));
             }
             disablePackage(packageName);
+            return ret;
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            e.printStackTrace();
+            return 1;
         }
         catch(InterruptedException e)
         {
-            Log.i(TAG, e.toString());
+            Log.i(TAG, "doRestore: " + e.toString());
+            return 1;
         }
     }
     public void setPermissions(String packageDir)
@@ -276,38 +279,66 @@ public class ShellCommands
                 writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
             }
         }
+        catch(IndexOutOfBoundsException e)
+        {
+            Log.i(TAG, "error while setPermissions: " + e.toString());
+            writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
+        }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            e.printStackTrace();
         }
         catch(InterruptedException e)
         {
             Log.i(TAG, e.toString());
-        }                   
+        }
     }
-    public int restoreApk(File backupDir, String label, String apk) 
+    public int restoreApk(File backupDir, String label, String apk, boolean isSystem) 
     {
         try
         {
-//                Log.i(TAG, "restoring " + label);
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
-            dos.flush();
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-//                Log.i(TAG, "restoreApk return: " + ret);
-            // det ser ud til at pm install giver 0 som return selvom der sker en fejl
-            ArrayList<String> err = getOutput(p).get("stderr");
-            if(err.size() > 1)
+            if(!isSystem)
             {
-                for(String line : err)
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
+                dos.flush();
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+    //                Log.i(TAG, "restoreApk return: " + ret);
+                // det ser ud til at pm install giver 0 som return selvom der sker en fejl
+                ArrayList<String> err = getOutput(p).get("stderr");
+                if(err.size() > 1)
                 {
-                    writeErrorLog(line);
+                    for(String line : err)
+                    {
+                        writeErrorLog(line);
+                    }
                 }
+                return ret;
             }
-            return ret;
+            else
+            {
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("mount -o remount,rw /system\n");
+                dos.writeBytes(busybox + " cp " + apk + " /system/app/" + "\n");
+                dos.writeBytes("mount -o remount,r /system\n");
+                dos.flush();
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                if(ret != 0)
+                {
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    for(String line : err)
+                    {
+                        writeErrorLog(line);
+                    }
+                }
+                return ret;                
+            }
         }
         catch(IOException e)
         {

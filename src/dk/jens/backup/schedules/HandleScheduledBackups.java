@@ -135,7 +135,7 @@ public class HandleScheduledBackups
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
+                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
                     if(i == total)
                     {
                         notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup", true);

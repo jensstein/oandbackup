@@ -352,7 +352,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
 //                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
 //                        logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
 
     //                    Log.i(TAG, "backup: " + appInfo.getLabel());
                     }
@@ -369,7 +369,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
                         if(rbApk.isChecked())
                         {
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                         }
                         else if(rbData.isChecked())
                         {
@@ -385,7 +385,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         }
                         else if(rbBoth.isChecked())
                         {
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());                                
                             shellCommands.setPermissions(dataDir);
                         }

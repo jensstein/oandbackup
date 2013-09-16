@@ -110,7 +110,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     {
                         public void run()
                         {
-                            Toast.makeText(OAndBackup.this, getString(R.string.rsyncOrBusyboxProblem), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(OAndBackup.this, getString(R.string.rsyncOrBusyboxProblem), Toast.LENGTH_LONG).show();
+                            showWarning("", getString(R.string.rsyncOrBusyboxProblem));
                         }
                     });
                 }
@@ -172,7 +173,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
+                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
                 
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
@@ -203,12 +204,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
                     String dataDir = appInfo.getDataDir();
                     String apk = logInfo.getApk();
-                    String[] apkArray = apk.split("/");
-                    apk = apkArray[apkArray.length - 1];
                     switch(options)
                     {
                         case 1:
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             break;
                         case 2:
                             if(appInfo.isInstalled)
@@ -222,7 +221,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                             }
                             break;
                         case 3:
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk);
+                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
                             shellCommands.setPermissions(dataDir);
                             break;
@@ -292,8 +291,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                     if(logInfo.getLastBackupTimestamp() != null)
                     {
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), false, false);
-                        // kan ikke tjekke om afinstallerede programmer var system : måske gemme i log
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false);
                         appInfoList.add(appInfo);
                     }
                 }
@@ -615,16 +613,20 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 public void run()
                 {
 //                    Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
-                    new AlertDialog.Builder(OAndBackup.this)
-                        .setTitle(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath())
-                        .setMessage(R.string.backupFolderError)
-                        .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id){}})
-                        .setCancelable(false)
-                        .show();
+                    showWarning(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), getString(R.string.backupFolderError));
                 }
             });                    
         }
+    }
+    public void showWarning(String title, String message)
+    {
+        new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id){}})
+            .setCancelable(false)
+            .show();
     }
     public void filterShowAll()
     {
