@@ -13,11 +13,9 @@ author
 ======
 jens stein
 
-licenses
-=======
-oandbackup is licensed under the MIT license (see LICENSE.txt)
-
-android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs folder)
+special usage notes
+===========
+long press an item in the list of apps to get the context menu. here there is an option to uninstall the app which is somewhat more aggresive than a normal uninstall. in addition to doing a normal uninstall via android commands, uninstalling from oandbackup deletes the data of the app in /data/data/ and files the app might have left over in /data/app-lib/. this is useful, as a normal uninstall via android settings in rare circumstances can leave files in app-lib/ making a reinstall of the same app impossible while they are there.
 
 building
 ========
@@ -27,3 +25,9 @@ to compile you just need the android sdk and apache ant:
     cd $path_to_this_project
     ant debug 
 ```
+
+licenses
+=======
+oandbackup is licensed under the MIT license (see LICENSE.txt)
+
+android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs folder)

@@ -98,15 +98,19 @@ public class Compression
     }
     private void getFiles(File dir)
     {
-        for(File file : dir.listFiles())
+        // handling an uncreated directory in case of missing busybox
+        if(dir.exists())
         {
-            if(file.isDirectory())
+            for(File file : dir.listFiles())
             {
-                getFiles(file);
-            }
-            else
-            {
-                fileList.add(file.getAbsolutePath());
+                if(file.isDirectory())
+                {
+                    getFiles(file);
+                }
+                else
+                {
+                    fileList.add(file.getAbsolutePath());
+                }
             }
         }
     }

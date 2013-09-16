@@ -160,26 +160,29 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             public void run()
             {
                 handleMessages.showMessage(appInfo.getLabel(), "backup");
-                File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                if(!backupSubDir.exists())
+                if(backupDir != null)
                 {
-                    backupSubDir.mkdirs();
-                }
-                else
-                {
-                    shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-                }
-                shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
-                
-                // køre på uitråd for at undgå WindowLeaked
-                runOnUiThread(new Runnable()
-                {
-                    public void run()
+                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
+                    if(!backupSubDir.exists())
                     {
-                        refresh(appInfo);
+                        backupSubDir.mkdirs();
                     }
-                });
+                    else
+                    {
+                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+                    }
+                    shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
+                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null);
+                
+                    // køre på uitråd for at undgå WindowLeaked
+                    runOnUiThread(new Runnable()
+                    {
+                        public void run()
+                        {
+                            refresh(appInfo);
+                        }
+                    });
+                }
                 handleMessages.endMessage();
                 notificationHelper.showNotification(OAndBackup.class, notificationId++, "backup complete", appInfo.getLabel(), true);
             }
