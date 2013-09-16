@@ -320,37 +320,68 @@ public class ShellCommands
             return 1;
         }           
     }
-    public int uninstall(String packageName)
+    public int uninstall(String packageName, String sourceDir, boolean isSystem)
     {
         try
         {
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
-            // tjek med File.exists() ser ikke ud til at virke
-            dos.writeBytes("pm uninstall " + packageName + "\n");
-            dos.flush();
-            dos.writeBytes("rm -r /data/data/" + packageName + "\n");
-            dos.flush();
-            dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
-            dos.flush();
-            // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
-            // indføre tjek på pm uninstalls return 
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
+            if(!isSystem)
             {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("pm uninstall " + packageName + "\n");
+                dos.flush();
+                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
+                dos.flush();
+                dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
+                dos.flush();
+                // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
+                // indføre tjek på pm uninstalls return 
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                if(ret != 0)
                 {
-                    if(!line.contains("No such file or directory"))
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    for(String line : err)
                     {
-                        writeErrorLog(line);
-                        Log.i(TAG, "uninstall return: " + ret);
+                        if(!line.contains("No such file or directory"))
+                        {
+                            writeErrorLog(line);
+                            Log.i(TAG, "uninstall return: " + ret);
+                        }
                     }
                 }
+                return ret;
             }
-            return ret;
+            else
+            {
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("mount -o remount,rw /system\n");
+                dos.writeBytes("rm " + sourceDir + "\n");
+                dos.writeBytes("mount -o remount,r /system\n");
+                dos.flush();
+                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
+                dos.flush();
+                dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
+                dos.flush();
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                if(ret != 0)
+                {
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    for(String line : err)
+                    {
+                        if(!line.contains("No such file or directory"))
+                        {
+                            writeErrorLog(line);
+                            Log.i(TAG, "uninstall return: " + ret);
+                        }
+                    }
+                }
+                return ret;
+            }
         }
         catch(IOException e)
         {

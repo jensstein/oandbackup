@@ -510,9 +510,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         {
                             public void run()
                             {
-                                Log.i(TAG, "uninstalling " + appInfoList.get(info.position).getLabel());
-                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), "uninstall");
-                                shellCommands.uninstall(appInfoList.get(info.position).getPackageName());
+                                AppInfo appInfo = appInfoList.get(info.position);
+                                Log.i(TAG, "uninstalling " + appInfo.getLabel());
+                                handleMessages.showMessage(appInfo.getLabel(), "uninstall");
+                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.isSystem);
                                 runOnUiThread(new Runnable()
                                 {
                                     public void run()
