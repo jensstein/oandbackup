@@ -20,7 +20,7 @@
     <string name="showNotInstalled">Mostrar aplicações não instaladas</string>
     <string name="sortByLabel">Ordenar por nome</string>
     <string name="sortByPackageName">Ordenar por nome do pacote</string>
-    <string name="sort">Filtrar</string>
+    <string name="sort">Filtro e ordem</string>
     <string name="uninstallDialogMessage">Desinstalar este pacote?</string>
     <string name="deleteBackupDialogMessage">Eliminar ficheiros de backup?</string>
     <string name="dialogOK">Ok</string>
@@ -31,8 +31,8 @@
     <string name="collectingData">A obter informação de pacotes</string>
     <string name="suCheck">A verificar superuser e busybox</string>
     <string name="noSu">Não foi possível obter as permissões superuser</string>
-    <string name="rsyncOrBusyboxProblem">Não foi possível encontrar rsync ou busybox. Consulte o registo de erros</string>
-    <string name="mkfileError">couldn\'t create</string>
+    <string name="rsyncOrBusyboxProblem">Não foi possível encontrar busybox. Consulte o registo de erros</string>
+    <string name="mkfileError">Não foi possível criar</string>
     <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
     <string name="shellReturnSucces">Sucesso</string>
     <string name="shellReturnError">Erro</string>
