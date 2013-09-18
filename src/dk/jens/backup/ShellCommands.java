@@ -110,6 +110,8 @@ public class ShellCommands
                 // handling empty zip
                 deleteBackup(new File(backupDir, folder + ".zip"));
                 deleteBackup(new File(backupDir, folder + ".tar.gz"));
+                return ret;
+                // zipret == 2 shouldn't be treated as an error
             }
             return ret + zipret;
         }
