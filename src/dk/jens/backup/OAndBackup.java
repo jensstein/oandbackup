@@ -158,6 +158,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         new Thread(new Runnable()
         {
+            int backupRet = 0;
             public void run()
             {
                 handleMessages.showMessage(appInfo.getLabel(), "backup");
@@ -172,7 +173,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     {
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
-                    shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
+                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
                     logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
                 
                     // køre på uitråd for at undgå WindowLeaked
@@ -185,7 +186,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     });
                 }
                 handleMessages.endMessage();
-                notificationHelper.showNotification(OAndBackup.class, notificationId++, "backup complete", appInfo.getLabel(), true);
+                if(backupRet == 0)
+                {
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupSucces), appInfo.getLabel(), true);
+                }
+                else
+                {
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
+                }
             }
         }).start();
     }
@@ -195,6 +203,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             public void run()
             {
+                int apkRet, restoreRet, permRet;
+                apkRet = restoreRet = permRet = 0;
                 if(backupDir != null)
                 {
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
@@ -207,13 +217,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     switch(options)
                     {
                         case 1:
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             break;
                         case 2:
                             if(appInfo.isInstalled)
                             {
-                                shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                                shellCommands.setPermissions(dataDir);
+                                restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                permRet = shellCommands.setPermissions(dataDir);
                             }
                             else
                             {
@@ -221,9 +231,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                             }
                             break;
                         case 3:
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
-                            shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                            shellCommands.setPermissions(dataDir);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            permRet = shellCommands.setPermissions(dataDir);
                             break;
                     }
                     runOnUiThread(new Runnable()
@@ -235,7 +245,14 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     });
                 }
                 handleMessages.endMessage();
-                notificationHelper.showNotification(OAndBackup.class, notificationId++, "restore complete", appInfo.getLabel(), true);
+                if(apkRet == 0 && restoreRet == 0 && permRet == 0)
+                {
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreSucces), appInfo.getLabel(), true);
+                }
+                else
+                {
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
+                }
             }
         }).start();
     }

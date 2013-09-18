@@ -57,7 +57,7 @@ public class ShellCommands
         }
         */
     }
-    public void doBackup(File backupDir, String label, String packageData, String packageApk)
+    public int doBackup(File backupDir, String label, String packageData, String packageApk)
     {
         Log.i(TAG, "backup: " + label);
         try
@@ -75,9 +75,9 @@ public class ShellCommands
             dos.writeBytes("exit\n");
 //            dos.flush();
 
-            int retval = p.waitFor();
-            String returnMessages = retval == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
-            Log.i(TAG, "return: " + retval + " / " + returnMessages);
+            int ret = p.waitFor();
+            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            Log.i(TAG, "return: " + ret + " / " + returnMessages);
             /*
             if(prefs.getBoolean("rsyncOutput", false))
             {
@@ -88,7 +88,7 @@ public class ShellCommands
                 }
             }
             */
-            if(retval != 0)
+            if(ret != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
@@ -111,15 +111,17 @@ public class ShellCommands
                 deleteBackup(new File(backupDir, folder + ".zip"));
                 deleteBackup(new File(backupDir, folder + ".tar.gz"));
             }
-
+            return ret + zipret;
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            e.printStackTrace();
+            return 1;
         }
         catch(InterruptedException e)
         {
             Log.i(TAG, e.toString());
+            return 1;
         }
     }
     public int doRestore(File backupDir, String label, String packageName)
@@ -194,7 +196,7 @@ public class ShellCommands
             return 1;
         }
     }
-    public void setPermissions(String packageDir)
+    public int setPermissions(String packageDir)
     {
         try
         {
@@ -273,24 +275,29 @@ public class ShellCommands
                         Log.i(TAG, outLine);
                     }
                 }
+                return ret;
             }
             else
             {
                 writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
+                return 1;
             }
         }
         catch(IndexOutOfBoundsException e)
         {
             Log.i(TAG, "error while setPermissions: " + e.toString());
             writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
+            return 1;
         }
         catch(IOException e)
         {
             e.printStackTrace();
+            return 1;
         }
         catch(InterruptedException e)
         {
             Log.i(TAG, e.toString());
+            return 1;
         }
     }
     public int restoreApk(File backupDir, String label, String apk, boolean isSystem) 
@@ -315,8 +322,12 @@ public class ShellCommands
                     {
                         writeErrorLog(line);
                     }
+                    return 1;
                 }
-                return ret;
+                else
+                {
+                    return ret;
+                }
             }
             else
             {

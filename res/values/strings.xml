@@ -33,9 +33,16 @@
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="rsyncOrBusyboxProblem">couldn\'t find busybox. please check error log</string>
     <string name="mkfileError">couldn\'t create</string>
+        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSucces">succes</string>
     <string name="shellReturnError">error</string>
+    <string name="backupSucces">backup complete</string>
+    <string name="backupFailure">error on backup</string>
+    <string name="restoreSucces">restore complete</string>
+    <string name="restoreFailure">error on restore</string>
+    <string name="batchSucces">operation complete</string>
+    <string name="batchFailure">complete with errors</string>
 
     <string name="prefs_title">preferences</string>    
     <string name="prefs_timestamp">use local date format</string>

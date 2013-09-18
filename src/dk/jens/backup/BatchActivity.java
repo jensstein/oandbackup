@@ -318,6 +318,7 @@ public class BatchActivity extends Activity implements OnClickListener
             int id = (int) Calendar.getInstance().getTimeInMillis();
             int total = selectedList.size();
             int i = 0;
+            boolean errorFlag = false;
             for(AppInfo appInfo: selectedList)
             {
                 if(appInfo.isChecked)
@@ -338,7 +339,6 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                     if(backupBoolean)
                     {
-//                        String log = appInfo.getLabel() + "\n" + appInfo.getVersionName() + "\n" + appInfo.getPackageName() + "\n" + appInfo.getSourceDir() + "\n" + appInfo.getDataDir();                            
                         if(!backupSubDir.exists())
                         {
                             backupSubDir.mkdirs();
@@ -346,54 +346,59 @@ public class BatchActivity extends Activity implements OnClickListener
                         else
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-    //                        shellCommands.deleteBackup(backupSubDir);
-    //                        backupSubDir.mkdirs();
                         }
-                        shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-//                        shellCommands.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
-//                        logFile.writeLogFile(backupSubDir.getAbsolutePath() + "/" + appInfo.getPackageName() + ".log", log);
+                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
                         logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
-
-    //                    Log.i(TAG, "backup: " + appInfo.getLabel());
+                        if(backupRet != 0)
+                        {
+                            errorFlag = true;
+                        }
                     }
                     else
                     {
-    //                    Log.i(TAG, "restore: " + appInfo.getPackageName());
-//                        ArrayList<String> readlog = shellCommands.readLogFile(backupSubDir, appInfo.getPackageName());
-//                        ArrayList<String> readlog = logFile.readLogFile(backupSubDir, appInfo.getPackageName());
                         String apk = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat).getApk();
                         String dataDir = appInfo.getDataDir();
-//                        String apk = readlog.get(3);
-//                        String[] apkArray = apk.split("/");
-//                        apk = apkArray[apkArray.length - 1];
 
-                        if(rbApk.isChecked())
+                        if(rbApk.isChecked() && apk != null)
                         {
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            if(apkRet != 0)
+                            {
+                                errorFlag = true;
+                            }
                         }
                         else if(rbData.isChecked())
                         {
                             if(appInfo.isInstalled)
                             {
-                                shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                                shellCommands.setPermissions(dataDir);
+                                int restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                int permRet = shellCommands.setPermissions(dataDir);
+                                if(restoreRet != 0 || permRet != 0)
+                                {
+                                    errorFlag = true;
+                                }
                             }
                             else
                             {
                                 Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
                             }
                         }
-                        else if(rbBoth.isChecked())
+                        else if(rbBoth.isChecked() && apk != null)
                         {
-                            shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
-                            shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());                                
-                            shellCommands.setPermissions(dataDir);
+                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            int restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            int permRet = shellCommands.setPermissions(dataDir);
+                            if(apkRet != 0 || restoreRet != 0 || permRet != 0)
+                            {
+                                errorFlag = true;
+                            }
                         }
                     }
                     if(i == total)
                     {
-                        String msg = backupBoolean ? "backup" : "restore";
-                        notificationHelper.showNotification(BatchActivity.class, id, "operation complete", "batch " + msg, true);
+                        String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
+                        String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSucces);
+                        notificationHelper.showNotification(BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }
                 }

@@ -99,8 +99,12 @@ public class LogFile
     }
     public String getApk()
     {
-        String apk = new File(sourceDir).getName();
-        return apk;
+        if(sourceDir != null)
+        {
+            String apk = new File(sourceDir).getName();
+            return apk;
+        }
+        return null;
     }
     public String getDataDir()
     {
