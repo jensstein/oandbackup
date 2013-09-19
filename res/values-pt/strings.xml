@@ -35,11 +35,11 @@
     <string name="mkfileError">Não foi possível criar</string>
     	<!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
-    <string name="shellReturnSucces">Sucesso</string>
+    <string name="shellReturnSuccess">Sucesso</string>
     <string name="shellReturnError">Erro</string>
-    <string name="backupSucces">Backup terminado</string>
+    <string name="backupSuccess">Backup terminado</string>
     <string name="backupFailure">Erro ao copiar</string>
-    <string name="restoreSucces">Restauro terminado</string>
+    <string name="restoreSuccess">Restauro terminado</string>
     <string name="restoreFailure">Erro ao restaurar</string>
     <string name="batchSucces">Operação terminada</string>
     <string name="batchFailure">Terminada com erros</string>
