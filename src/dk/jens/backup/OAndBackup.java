@@ -531,7 +531,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                                 AppInfo appInfo = appInfoList.get(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), "uninstall");
-                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.isSystem);
+                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
                                 runOnUiThread(new Runnable()
                                 {
                                     public void run()

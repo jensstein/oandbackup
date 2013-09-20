@@ -36,7 +36,8 @@ public class ShellCommands
     String busybox, rsync;
     FileCreationHelper fileCreator;
     LogFile logFile;
-    boolean localTimestampFormat;
+    ArrayList<String> users;
+    boolean localTimestampFormat, multiuserEnabled;
     public ShellCommands(Context context)
     {
         this.context = context;
@@ -49,6 +50,11 @@ public class ShellCommands
         if(busybox.length() == 0)
         {
             busybox = "busybox";
+        }
+        users = getUsers();
+        if(users != null)
+        {
+            multiuserEnabled = (users.size() > 1) ? true : false;
         }
         /*
         if(rsync.length() == 0)
@@ -181,7 +187,10 @@ public class ShellCommands
             {
                 deleteBackup(new File(backupDir, packageName));
             }
-            disablePackage(packageName);
+            if(multiuserEnabled)
+            {
+                disablePackage(packageName);
+            }
             return ret;
         }
         catch(IOException e)
@@ -361,7 +370,7 @@ public class ShellCommands
             return 1;
         }           
     }
-    public int uninstall(String packageName, String sourceDir, boolean isSystem)
+    public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem)
     {
         try
         {
@@ -402,7 +411,7 @@ public class ShellCommands
                 dos.writeBytes("rm " + sourceDir + "\n");
                 dos.writeBytes("mount -o remount,r /system\n");
                 dos.flush();
-                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
+                dos.writeBytes("rm -r " + dataDir + "\n");
                 dos.flush();
                 dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
                 dos.flush();
@@ -720,7 +729,7 @@ public class ShellCommands
     {
         try
         {
-            int currentUser = getCurrentUser();
+//            int currentUser = getCurrentUser();
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
@@ -742,9 +751,9 @@ public class ShellCommands
                 ArrayList<String> out = getOutput(p).get("stdout");
                 for(String line : out)
                 {
-                    if(line.trim().length() != 0 && !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
+                    if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
                     {
-                        users.add(line);
+                        users.add(line.trim());
                     }
                 }
                 return users;
@@ -792,12 +801,14 @@ public class ShellCommands
             return 0;
         }
     }
+/*
     public void disablePackage(String packageName)
     {
         ArrayList<String> users = getUsers();
-        if(users != null && !users.isEmpty())
+        for(String user : users)
         {
-            for(String user : users)
+            // temporary check for owner and currentuser 
+            if(!user.equals("0") && !user.equals(Integer.toString(getCurrentUser())))
             {
                 try
                 {
@@ -824,7 +835,59 @@ public class ShellCommands
                 {
                     Log.i(TAG, e.toString());
                 }
-            }        
+            }
+        }        
+    }
+    */
+    public void disablePackage(String packageName)
+    {
+        String userString = "";
+        int currentUser = getCurrentUser();
+        for(String user : users)
+        {
+            userString += " " + user;
+        }
+        try
+        {
+            String disable = "pm disable --user $user " + packageName;
+            // if packagename is in package-restriction.xml the app i probably not installed by $user
+            String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
+            // though it could be listed as enabled
+            String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
+            // why is not ! enabled
+            String command = "for user in " + userString + "; do if [ $user != " + currentUser + " ] && " + grep + " && " + enabled + "; then " + disable + "; fi; done";
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes(command + "\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
+                {
+                    writeErrorLog(line);
+                }
+            }
+            /*
+            else
+            {
+                ArrayList<String> out = getOutput(p).get("stdout");
+                for(String line : out)
+                {
+                    Log.i(TAG, line);
+                }
+            }
+            */
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
         }
     }
 }

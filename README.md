@@ -16,7 +16,7 @@ jens stein
 special usage notes
 ===========
  * long press an item in the list of apps to get the context menu. here there is an option to uninstall the app which is somewhat more aggresive than a normal uninstall. in addition to doing a normal uninstall via android commands, uninstalling from oandbackup deletes files the app might have left over in /data/app-lib/. this is useful, as a normal uninstall via android settings in rare circumstances can leave files there making a reinstall of the same app impossible while they are there.
- * multiple users: multi-user is still somewhat experimental but should work. when restoring in a multi-user setting, `pm install -r $apk` get called an subsequently the app is disabled for all users except the owner and the current user. this workaround is necessary as i haven't found a way programatically to discover which users already have the app installed.
+ * multiple users: multi-user is still somewhat experimental but should work. when restoring in a multi-user setting, `pm install -r $apk` gets called and subsequently the app is disabled for all users except the owner and the current user. this workaround is necessary as i haven't found a way programatically to discover which users already have the app installed.
 
 building
 ========
