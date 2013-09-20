@@ -371,8 +371,8 @@ public class ShellCommands
                 dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm uninstall " + packageName + "\n");
                 dos.flush();
-                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
-                dos.flush();
+//                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
+//                dos.flush();
                 dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
                 dos.flush();
                 // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
@@ -720,39 +720,35 @@ public class ShellCommands
     {
         try
         {
-            String currentUser = getCurrentUser();
-            if(currentUser != null)
+            int currentUser = getCurrentUser();
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
-                if(ret != 0)
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
                 {
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    for(String line : err)
-                    {
-                        writeErrorLog(line);
-                    }
-                    return null;
+                    writeErrorLog(line);
                 }
-                else
-                {
-                    ArrayList<String> users = new ArrayList<String>();
-                    ArrayList<String> out = getOutput(p).get("stdout");
-                    for(String line : out)
-                    {
-                        if(line.trim().length() != 0 && !line.trim().equals("0") && !line.trim().equals(currentUser))
-                        {
-                            users.add(line);
-                        }
-                    }
-                    return users;
-                }
+                return null;
             }
-            return null;
+            else
+            {
+                ArrayList<String> users = new ArrayList<String>();
+                ArrayList<String> out = getOutput(p).get("stdout");
+                for(String line : out)
+                {
+                    if(line.trim().length() != 0 && !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
+                    {
+                        users.add(line);
+                    }
+                }
+                return users;
+            }
         }
         catch(IOException e)
         {
@@ -765,43 +761,35 @@ public class ShellCommands
             return null;
         }
     }
-    public String getCurrentUser()
+    public int getCurrentUser()
     {
         try
         {
-            p = Runtime.getRuntime().exec("sh");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("id | awk '{print $1}' | sed -e 's/(u/ /' -e 's/_/ /' | awk '{print $2}'\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
+            // using reflection to get id of calling user since method getCallingUserId of UserHandle is hidden
+            // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/os/UserHandle.java#L123
+            Class userHandle = Class.forName("android.os.UserHandle");
+            boolean muEnabled = userHandle.getField("MU_ENABLED").getBoolean(null);
+            int range = userHandle.getField("PER_USER_RANGE").getInt(null);
+            if(muEnabled)
             {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
-                {
-                    writeErrorLog(line);
-                }
+                return android.os.Binder.getCallingUid() / range;
             }
             else
             {
-                ArrayList<String> out = getOutput(p).get("stdout");
-                if(out.size() == 1)
-                {
-                    return out.get(0);
-                }
+                return 0;
             }
-            return null;
         }
-        catch(IOException e)
+        catch(ClassNotFoundException e)
         {
-            Log.i(TAG, e.toString());
-            return null;
+            return 0;
         }
-        catch(InterruptedException e)
+        catch(NoSuchFieldException e)
         {
-            Log.i(TAG, e.toString());
-            return null;
+            return 0;
+        }
+        catch(IllegalAccessException e)
+        {
+            return 0;
         }
     }
     public void disablePackage(String packageName)
