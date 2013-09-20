@@ -41,7 +41,7 @@
     <string name="backupFailure">Erro ao copiar</string>
     <string name="restoreSuccess">Restauro terminado</string>
     <string name="restoreFailure">Erro ao restaurar</string>
-    <string name="batchSucces">Operação terminada</string>
+    <string name="batchSuccess">Operação terminada</string>
     <string name="batchFailure">Terminada com erros</string>
 
     <string name="prefs_title">Preferências</string>    

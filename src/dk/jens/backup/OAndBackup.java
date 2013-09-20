@@ -188,7 +188,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.endMessage();
                 if(backupRet == 0)
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupSucces), appInfo.getLabel(), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupSuccess), appInfo.getLabel(), true);
                 }
                 else
                 {
@@ -247,7 +247,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.endMessage();
                 if(apkRet == 0 && restoreRet == 0 && permRet == 0)
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreSucces), appInfo.getLabel(), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
                 }
                 else
                 {

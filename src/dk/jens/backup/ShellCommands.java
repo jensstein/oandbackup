@@ -3,8 +3,8 @@ package dk.jens.backup;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -76,7 +76,7 @@ public class ShellCommands
 //            dos.flush();
 
             int ret = p.waitFor();
-            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
             Log.i(TAG, "return: " + ret + " / " + returnMessages);
             /*
             if(prefs.getBoolean("rsyncOutput", false))
@@ -128,13 +128,10 @@ public class ShellCommands
     }
     public int doRestore(File backupDir, String label, String packageName)
     {
-        String packageData = ""; // TODO: tjek om packageData får en meningsfuld værdi 
-        String packageApk = ""; 
         int unzipRet = -1;
         int untarRet = -1;
         LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
-        packageApk = logInfo.getApk();
-        packageData = logInfo.getDataDir();
+        String packageData = logInfo.getDataDir();
         Log.i(TAG, "restoring: " + label);
 
         try
@@ -178,7 +175,7 @@ public class ShellCommands
                     writeErrorLog(line);
                 }
             }
-            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSucces) : context.getString(R.string.shellReturnError);
+            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
             Log.i(TAG, "return: " + ret + " / " + returnMessages);
             if(untarRet == 0 || unzipRet == 0)
             {
@@ -687,47 +684,12 @@ public class ShellCommands
             return false;
         }
     }
-    /*
-    public int tar(String pathToBackupsubdir, String folder)
-    {
-        try
-        {
-            p = Runtime.getRuntime().exec("sh");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("tar -czf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C" + pathToBackupsubdir + " " + folder + "\n");
-            dos.flush();
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
-                {
-                    writeErrorLog(line);
-                }
-            }
-            return ret;
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }           
-    }
-    */
     public int untar(String pathToBackupsubdir, String folder)
     {
         try
         {
             p = Runtime.getRuntime().exec("sh");
             dos = new DataOutputStream(p.getOutputStream());
-//            dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C" + pathToBackupsubdir + "\n");
             dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C " + pathToBackupsubdir + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
@@ -758,9 +720,58 @@ public class ShellCommands
     {
         try
         {
-            p = Runtime.getRuntime().exec("su");
+            String currentUser = getCurrentUser();
+            if(currentUser != null)
+            {
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                if(ret != 0)
+                {
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    for(String line : err)
+                    {
+                        writeErrorLog(line);
+                    }
+                    return null;
+                }
+                else
+                {
+                    ArrayList<String> users = new ArrayList<String>();
+                    ArrayList<String> out = getOutput(p).get("stdout");
+                    for(String line : out)
+                    {
+                        if(line.trim().length() != 0 && !line.trim().equals("0") && !line.trim().equals(currentUser))
+                        {
+                            users.add(line);
+                        }
+                    }
+                    return users;
+                }
+            }
+            return null;
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return null;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return null;
+        }
+    }
+    public String getCurrentUser()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("sh");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+            dos.writeBytes("id | awk '{print $1}' | sed -e 's/(u/ /' -e 's/_/ /' | awk '{print $2}'\n");
             dos.writeBytes("exit\n");
             dos.flush();
             int ret = p.waitFor();
@@ -771,21 +782,16 @@ public class ShellCommands
                 {
                     writeErrorLog(line);
                 }
-                return null;
             }
             else
             {
-                ArrayList<String> users = new ArrayList<String>();
                 ArrayList<String> out = getOutput(p).get("stdout");
-                for(String line : out)
+                if(out.size() == 1)
                 {
-                    if(line.trim().length() != 0 && !line.trim().equals("0"))
-                    {
-                        users.add(line);
-                    }
+                    return out.get(0);
                 }
-                return users;
             }
+            return null;
         }
         catch(IOException e)
         {
