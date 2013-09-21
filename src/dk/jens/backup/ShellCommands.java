@@ -854,7 +854,7 @@ public class ShellCommands
             String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
             // though it could be listed as enabled
             String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
-            // why is not ! enabled
+            // why is it not ! enabled
             String command = "for user in " + userString + "; do if [ $user != " + currentUser + " ] && " + grep + " && " + enabled + "; then " + disable + "; fi; done";
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());

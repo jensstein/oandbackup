@@ -397,7 +397,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     if(i == total)
                     {
                         String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
-                        String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSucces);
+                        String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
                         notificationHelper.showNotification(BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }
