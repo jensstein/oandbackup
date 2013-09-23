@@ -849,12 +849,16 @@ public class ShellCommands
         }
         try
         {
+            // editing package-restrictions.xml directly seems to require a reboot
+            // sub=`grep $packageName package-restrictions.xml`
+            // sed -i 's|$sub|"<pkg name=\"$packageName\" inst=\"false\" />"' package-restrictions.xml
+        
             String disable = "pm disable --user $user " + packageName;
-            // if packagename is in package-restriction.xml the app i probably not installed by $user
+            // if packagename is in package-restriction.xml the app is probably not installed by $user
             String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
             // though it could be listed as enabled
             String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
-            // why is it not ! enabled
+            // why doesn't ! enabled work
             String command = "for user in " + userString + "; do if [ $user != " + currentUser + " ] && " + grep + " && " + enabled + "; then " + disable + "; fi; done";
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());

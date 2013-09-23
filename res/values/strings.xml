@@ -37,8 +37,10 @@
     <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSuccess">success</string>
     <string name="shellReturnError">error</string>
+    <string name="backupProgress">backing up</string>
     <string name="backupSuccess">backup complete</string>
     <string name="backupFailure">error on backup</string>
+    <string name="restoreProgress">restoring</string>
     <string name="restoreSuccess">restore complete</string>
     <string name="restoreFailure">error on restore</string>
     <string name="batchSuccess">operation complete</string>
@@ -61,6 +63,7 @@
     <string name="prefs_summaryRsync">path to rsync executable. be sure it\'s correct. leave blank for default.</string>
     
     <string name="sched_title">scheduling</string>
+    <string name="sched_notificationMessage">scheduled backup</string>
     <string name="sched_interval">interval in days</string>
     <string name="sched_hourOfDay">hour of day (0..23)</string>
     <string name="sched_checkbox">enable</string>

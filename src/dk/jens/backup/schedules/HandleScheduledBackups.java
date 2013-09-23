@@ -107,47 +107,56 @@ public class HandleScheduledBackups
     }
     public void backup(final ArrayList<AppInfo> backupList)
     {
-        new Thread(new Runnable()
+        if(backupDir != null)
         {
-            public void run()
+            new Thread(new Runnable()
             {
-                PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-                if(prefs.getBoolean("acquireWakelock", true))
+                public void run()
                 {
-                    wl.acquire();
-                    Log.i(TAG, "wakelock acquired");
-                }
-                int id = (int) Calendar.getInstance().getTimeInMillis();
-                int total = backupList.size();
-                int i = 0;
-                for(AppInfo appInfo : backupList)
-                {
-                    i++;
-                    String title = "backing up (" + i + "/" + total + ")";
-                    notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
-                    File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                    if(!backupSubDir.exists())
+                    PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+                    if(prefs.getBoolean("acquireWakelock", true))
                     {
-                        backupSubDir.mkdirs();
+                        wl.acquire();
+                        Log.i(TAG, "wakelock acquired");
                     }
-                    else
+                    int id = (int) Calendar.getInstance().getTimeInMillis();
+                    int total = backupList.size();
+                    int i = 0;
+                    boolean errorFlag = false;
+                    for(AppInfo appInfo : backupList)
                     {
-                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+                        i++;
+                        String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
+                        notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
+                        File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
+                        if(!backupSubDir.exists())
+                        {
+                            backupSubDir.mkdirs();
+                        }
+                        else
+                        {
+                            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+                        }
+                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
+                        if(ret != 0)
+                        {
+                            errorFlag = true;
+                        }
+                        if(i == total)
+                        {
+                            String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
+                            notificationHelper.showNotification(OAndBackup.class, id, notificationTitle, context.getString(R.string.sched_notificationMessage), true);
+                        }
                     }
-                    shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
-                    if(i == total)
+                    if(wl.isHeld())
                     {
-                        notificationHelper.showNotification(OAndBackup.class, id, "operation complete", "scheduled backup", true);
+                        wl.release();
+                        Log.i(TAG, "wakelock released");
                     }
                 }
-                if(wl.isHeld())
-                {
-                    wl.release();
-                    Log.i(TAG, "wakelock released");
-                }
-            }
-        }).start();
+            }).start();
+        }
     }
     public ArrayList gatherInfo()
     {

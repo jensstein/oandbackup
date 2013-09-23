@@ -116,7 +116,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     });
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
-                pm = getPackageManager();
+                pm = getPackageManager();                
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
