@@ -24,6 +24,7 @@
     <string name="uninstallDialogMessage">uninstall this package?</string>
     <string name="deleteBackupDialogMessage">delete backup files?</string>
     <string name="dialogOK">ok</string>
+    <string name="dialogCancel">cancel</string>
     <string name="dialogYes">yes</string>
     <string name="dialogNo">no</string>
     <string name="noBackupYet">no backup yet</string>
@@ -45,6 +46,9 @@
     <string name="restoreFailure">error on restore</string>
     <string name="batchSuccess">operation complete</string>
     <string name="batchFailure">complete with errors</string>
+    
+    <string name="enablePackage">enable</string>
+    <string name="disablePackage">disable</string>
 
     <string name="prefs_title">preferences</string>    
     <string name="prefs_timestamp">use local date format</string>

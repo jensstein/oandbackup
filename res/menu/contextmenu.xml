@@ -4,4 +4,8 @@
         android:title="@string/deleteBackup" />
     <item android:id="@+id/uninstall"
         android:title="@string/uninstall" />
+    <item android:id="@+id/enablePackage"
+        android:title="@string/enablePackage"/>
+    <item android:id="@+id/disablePackage"
+        android:title="@string/disablePackage"/>
 </menu>

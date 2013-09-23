@@ -6,6 +6,7 @@ changelog
  * fixed uninstalling and restoring system apps
  * fixed missing error handling on folder creation
  * better message feedback on errors (notifications)
+ * long press / contextmenu now has option to enable or disable app
 
 0.2.3 (2013-09-13)
 ------------------

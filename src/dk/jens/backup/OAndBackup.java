@@ -74,6 +74,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     NotificationHelper notificationHelper;
 
     ListView listView;
+    
+    ArrayList<String> userList;
+    ArrayList<String> selectedUsers;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -116,7 +119,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     });
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
-                pm = getPackageManager();                
+                pm = getPackageManager();
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
@@ -581,6 +584,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
                 return true;
+            case R.id.enablePackage:
+                displayDialogEnableDisable(appInfoList.get(info.position).getPackageName(), true);
+                return true;
+            case R.id.disablePackage:
+                displayDialogEnableDisable(appInfoList.get(info.position).getPackageName(), false);
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
@@ -650,5 +659,43 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         showAll = true;
         showOnlyUser = false;
         adapter.getFilter().filter("");
+    }
+    public void displayDialogEnableDisable(final String packageName, final boolean enable)
+    {
+        String title = enable ? "enable for users" : "disable for users";
+        selectedUsers = new ArrayList<String>();
+        userList = shellCommands.getUsers();
+        CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
+        new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMultiChoiceItems(users, null, new DialogInterface.OnMultiChoiceClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int chosen, boolean checked)
+                {
+                    if(checked)
+                    {
+                        selectedUsers.add(userList.get(chosen));
+                    }
+                    else if(selectedUsers.contains(chosen))
+                    {
+                        selectedUsers.remove(Integer.valueOf(chosen));
+                    }
+                }
+            })
+            .setPositiveButton(R.string.dialogOK, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
+                }
+            })
+            .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which){}
+            })
+            .show();
     }
 }

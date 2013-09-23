@@ -2,7 +2,9 @@ package dk.jens.backup;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -727,47 +729,54 @@ public class ShellCommands
     }
     public ArrayList getUsers()
     {
-        try
+        if(users != null && users.size() > 0)
         {
-//            int currentUser = getCurrentUser();
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
+            return users;
+        }
+        else
+        {
+            try
             {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
+    //            int currentUser = getCurrentUser();
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                if(ret != 0)
                 {
-                    writeErrorLog(line);
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    for(String line : err)
+                    {
+                        writeErrorLog(line);
+                    }
+                    return null;
                 }
+                else
+                {
+                    ArrayList<String> users = new ArrayList<String>();
+                    ArrayList<String> out = getOutput(p).get("stdout");
+                    for(String line : out)
+                    {
+                        if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
+                        {
+                            users.add(line.trim());
+                        }
+                    }
+                    return users;
+                }
+            }
+            catch(IOException e)
+            {
+                Log.i(TAG, e.toString());
                 return null;
             }
-            else
+            catch(InterruptedException e)
             {
-                ArrayList<String> users = new ArrayList<String>();
-                ArrayList<String> out = getOutput(p).get("stdout");
-                for(String line : out)
-                {
-                    if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
-                    {
-                        users.add(line.trim());
-                    }
-                }
-                return users;
+                Log.i(TAG, e.toString());
+                return null;
             }
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return null;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return null;
         }
     }
     public int getCurrentUser()
@@ -801,20 +810,18 @@ public class ShellCommands
             return 0;
         }
     }
-/*
-    public void disablePackage(String packageName)
+    public void enableDisablePackage(String packageName, ArrayList<String> users, boolean enable)
     {
-        ArrayList<String> users = getUsers();
-        for(String user : users)
+        String option = enable ? "enable" : "disable";
+        if(users != null && users.size() > 0)
         {
-            // temporary check for owner and currentuser 
-            if(!user.equals("0") && !user.equals(Integer.toString(getCurrentUser())))
+            for(String user : users)
             {
                 try
                 {
                     p = Runtime.getRuntime().exec("su");
                     dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes("pm disable --user " + user + " " + packageName + "\n");
+                    dos.writeBytes("pm " + option + " --user " + user + " " + packageName + "\n");
                     dos.writeBytes("exit\n");
                     dos.flush();
                     int ret = p.waitFor();
@@ -836,9 +843,8 @@ public class ShellCommands
                     Log.i(TAG, e.toString());
                 }
             }
-        }        
+        }
     }
-    */
     public void disablePackage(String packageName)
     {
         String userString = "";
@@ -849,10 +855,14 @@ public class ShellCommands
         }
         try
         {
+            // reflection could probably be used to find packages available to a given user: PackageManager.queryIntentActivitiesAsUser 
+            // http://androidxref.com/4.2_r1/xref/frameworks/base/core/java/android/content/pm/PackageManager.java#1880
+            
             // editing package-restrictions.xml directly seems to require a reboot
             // sub=`grep $packageName package-restrictions.xml`
             // sed -i 's|$sub|"<pkg name=\"$packageName\" inst=\"false\" />"' package-restrictions.xml
         
+            // disabling via pm has the unfortunate side-effect that packages can only be re-enabled via pm
             String disable = "pm disable --user $user " + packageName;
             // if packagename is in package-restriction.xml the app is probably not installed by $user
             String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
@@ -894,4 +904,13 @@ public class ShellCommands
             Log.i(TAG, e.toString());
         }
     }
+    // manually installing can be used as workaround for issues with multiple users - have checkbox in preferences to toggle this
+    /*
+    public void installByIntent(File backupDir, String apk)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(backupDir, apk)), "application/vnd.android.package-archive");
+        context.startActivity(intent);
+    }
+    */
 }
