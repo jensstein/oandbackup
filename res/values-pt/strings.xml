@@ -14,16 +14,17 @@
     <string name="deleteBackup">Eliminar backup</string>
     <string name="uninstall">Desinstalar aplicação</string>
     <string name="showAll">Mostrar todas as aplicações</string>
-    <string name="showOnlySystem">Mostrar apenas aplicações do sistema</string>
-    <string name="showOnlyUser">Mostrar apenas aplicações do utilizador</string>
-    <string name="showNotBackedup">Mostrar aplicações sem backup</string>
-    <string name="showNotInstalled">Mostrar aplicações não instaladas</string>
+    <string name="showOnlySystem">Aplicações do sistema</string>
+    <string name="showOnlyUser">Aplicações do utilizador</string>
+    <string name="showNotBackedup">Aplicações sem backup</string>
+    <string name="showNotInstalled">Aplicações desinstaladas</string>
     <string name="sortByLabel">Ordenar por nome</string>
     <string name="sortByPackageName">Ordenar por nome do pacote</string>
     <string name="sort">Filtro e ordem</string>
     <string name="uninstallDialogMessage">Desinstalar este pacote?</string>
-    <string name="deleteBackupDialogMessage">Eliminar ficheiros de backup?</string>
+    <string name="deleteBackupDialogMessage">Remover ficheiros de backup?</string>
     <string name="dialogOK">Ok</string>
+	<string name="dialogCancel">Cancelar</string>
     <string name="dialogYes">Sim</string>
     <string name="dialogNo">Não</string>
     <string name="noBackupYet">Backup inexistente</string>
@@ -37,12 +38,16 @@
     <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
     <string name="shellReturnSuccess">Sucesso</string>
     <string name="shellReturnError">Erro</string>
-    <string name="backupSuccess">Backup terminado</string>
+    <string name="backupProgress">Copiando</string>
+	<string name="backupSuccess">Backup terminado</string>
     <string name="backupFailure">Erro ao copiar</string>
-    <string name="restoreSuccess">Restauro terminado</string>
+    <string name="restoreProgress">Restaurando</string>
+	<string name="restoreSuccess">Restauro terminado</string>
     <string name="restoreFailure">Erro ao restaurar</string>
     <string name="batchSuccess">Operação terminada</string>
     <string name="batchFailure">Terminada com erros</string>
+	<string name="enablePackage">Ativar</string>
+    <string name="disablePackage">Desativar</string>
 
     <string name="prefs_title">Preferências</string>    
     <string name="prefs_timestamp">Usar formato local de data</string>
@@ -61,7 +66,8 @@
     <string name="prefs_summaryRsync">Caminho do executável rsync. Deixe em branco para utilizar o caminho padrão.</string>
     
     <string name="sched_title">Agendamento</string>
-    <string name="sched_interval">Intervalo em dias</string>
+    <string name="sched_notificationMessage">Backup agendado</string>
+	<string name="sched_interval">Intervalo em dias</string>
     <string name="sched_hourOfDay">Hora do dia (0..23)</string>
     <string name="sched_checkbox">Ativar</string>
     <string name="sched_button">Atualizar</string>
