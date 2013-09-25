@@ -43,6 +43,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -262,6 +264,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     public void getPackageInfo()
     {
         pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+        Collections.sort(pinfoList, pInfoPackageNameComparator);
+        // list starts scrambled on 4.3
         BatchActivity.pinfoList = pinfoList;
 
         for(PackageInfo pinfo : pinfoList)
@@ -704,4 +708,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             })
             .show();
     }
+    public Comparator<PackageInfo> pInfoPackageNameComparator = new Comparator<PackageInfo>()
+    {
+        public int compare(PackageInfo p1, PackageInfo p2)
+        {
+            return p1.packageName.compareToIgnoreCase(p2.packageName);
+        }
+    };
 }
