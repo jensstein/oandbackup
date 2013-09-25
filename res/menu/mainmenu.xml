@@ -28,6 +28,8 @@
                 android:title="@string/showNotBackedup" />
             <item android:id="@+id/showNotInstalled"
                 android:title="@string/showNotInstalled" />
+            <item android:id="@+id/showNewAndUpdated"
+                android:title="@string/showNewAndUpdated" />                
             <item android:id="@+id/sortByLabel"
                 android:title="@string/sortByLabel" />
             <item android:id="@+id/sortByPackageName"

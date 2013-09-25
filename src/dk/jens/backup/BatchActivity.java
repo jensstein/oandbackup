@@ -240,6 +240,9 @@ public class BatchActivity extends Activity implements OnClickListener
             case R.id.showNotInstalled:
                 adapter.filterIsInstalled();
                 break;
+            case R.id.showNewAndUpdated:
+                adapter.filterNewAndUpdated();
+                break;            
             case R.id.sortByLabel:
                 adapter.sortByLabel();
                 if(!showAll)

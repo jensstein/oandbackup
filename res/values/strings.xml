@@ -13,11 +13,13 @@
     <string name="search">search</string>
     <string name="deleteBackup">delete backup</string>
     <string name="uninstall">uninstall app</string>
+    <string name="uninstallProgess">uninstalling</string>
     <string name="showAll">show all apps</string>
     <string name="showOnlySystem">show only system apps</string>
     <string name="showOnlyUser">show only user apps</string>
     <string name="showNotBackedup">show apps not backed up yet</string>
     <string name="showNotInstalled">show apps not installed</string>
+    <string name="showNewAndUpdated">show new and updated apps</string>
     <string name="sortByLabel">sort by label</string>
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort and filter</string>
@@ -48,7 +50,10 @@
     <string name="batchFailure">complete with errors</string>
     
     <string name="enablePackage">enable</string>
+    <string name="enablePackageTitle">enable for users</string>
+        <!-- title for a list of checkable users -->
     <string name="disablePackage">disable</string>
+    <string name="disablePackageTitle">disable for users</string>
 
     <string name="prefs_title">preferences</string>    
     <string name="prefs_timestamp">use local date format</string>

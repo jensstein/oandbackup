@@ -463,6 +463,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             case R.id.showNotInstalled:
                 adapter.filterIsInstalled();
                 break;
+            case R.id.showNewAndUpdated:
+                adapter.filterNewAndUpdated();
+                break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
                 if(!showAll)
@@ -536,7 +539,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                             {
                                 AppInfo appInfo = appInfoList.get(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
-                                handleMessages.showMessage(appInfo.getLabel(), "uninstall");
+                                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgess));
                                 shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
                                 runOnUiThread(new Runnable()
                                 {
@@ -566,7 +569,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         {
                             public void run()
                             {
-                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), "delete backup files");
+                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), getString(R.string.deleteBackup));
                                 if(backupDir != null)
                                 {
                                     File backupSubDir = new File(backupDir, appInfoList.get(info.position).getPackageName());
@@ -665,7 +668,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     }
     public void displayDialogEnableDisable(final String packageName, final boolean enable)
     {
-        String title = enable ? "enable for users" : "disable for users";
+        String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
         selectedUsers = new ArrayList<String>();
         userList = shellCommands.getUsers();
         CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
