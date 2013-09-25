@@ -374,8 +374,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) //onPrepareOptionsMenu(Menu menu) // onPrepare i stedet for onCreate, så menuen kan være forskellig i de to aktiviteter - menu.clear() så menuen ikke duplikerer sig ved hvert tryk på menuknappen
+    public boolean onCreateOptionsMenu(Menu menu)
     {
+        // clear menu so menus from other activities aren't shown also
         menu.clear();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
@@ -424,10 +425,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if(item.isCheckable())
-        {
-            item.setChecked(!item.isChecked());
-        }
         switch(item.getItemId())
         {
             case R.id.refresh:
@@ -437,7 +434,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 Intent backupIntent = new Intent(this, BatchActivity.class);
                 backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
                 backupIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                adapter.sortByPackageName();
                 filterShowAll();
                 startActivityForResult(backupIntent, BATCH_REQUEST);
                 break;
@@ -445,7 +441,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 Intent restoreIntent = new Intent(this, BatchActivity.class);
                 restoreIntent.putExtra("dk.jens.backup.backupBoolean", false);
                 restoreIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                adapter.sortByPackageName();
                 filterShowAll();
                 startActivityForResult(restoreIntent, BATCH_REQUEST);
                 break;

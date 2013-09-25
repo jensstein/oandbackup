@@ -28,14 +28,10 @@
                 android:title="@string/showNotBackedup" />
             <item android:id="@+id/showNotInstalled"
                 android:title="@string/showNotInstalled" />
-            <group android:checkableBehavior="single">
-                <item android:id="@+id/sortByLabel"
-                    android:title="@string/sortByLabel" 
-                    android:checked="false" />
-                <item android:id="@+id/sortByPackageName"
-                    android:title="@string/sortByPackageName" 
-                    android:checked="true" />
-            </group>
+            <item android:id="@+id/sortByLabel"
+                android:title="@string/sortByLabel" />
+            <item android:id="@+id/sortByPackageName"
+                android:title="@string/sortByPackageName" />
         </menu>
     </item>
     <item android:id="@+id/preferences"

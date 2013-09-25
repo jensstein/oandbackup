@@ -194,7 +194,7 @@ public class BatchActivity extends Activity implements OnClickListener
 //        }).start();
     }
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)//onPrepareOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(Menu menu)
     {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
@@ -204,10 +204,6 @@ public class BatchActivity extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if(item.isCheckable())
-        {
-            item.setChecked(!item.isChecked());
-        }
         switch(item.getItemId())
         {
             case R.id.de_selectAll:
