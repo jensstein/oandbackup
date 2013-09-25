@@ -2,9 +2,7 @@ package dk.jens.backup;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -40,9 +38,10 @@ public class ShellCommands
     LogFile logFile;
     ArrayList<String> users;
     boolean localTimestampFormat, multiuserEnabled;
-    public ShellCommands(Context context)
+    public ShellCommands(Context context, ArrayList<String> users)
     {
         this.context = context;
+        this.users = users;
         fileCreator = new FileCreationHelper(context);
         logFile = new LogFile(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -53,10 +52,10 @@ public class ShellCommands
         {
             busybox = "busybox";
         }
-        users = getUsers();
-        if(users != null)
+        this.users = getUsers();
+        if(this.users != null)
         {
-            multiuserEnabled = (users.size() > 1) ? true : false;
+            multiuserEnabled = (this.users.size() > 1) ? true : false;
         }
         /*
         if(rsync.length() == 0)
@@ -64,6 +63,11 @@ public class ShellCommands
             rsync = "rsync";
         }
         */
+    }
+    public ShellCommands(Context context)
+    {
+        this(context, null);
+        // initialize with userlist as null. getUsers check if list is null and simply return it if isn't and if its size is greater than 0.
     }
     public int doBackup(File backupDir, String label, String packageData, String packageApk)
     {

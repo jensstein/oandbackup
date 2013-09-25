@@ -66,6 +66,7 @@ public class BatchActivity extends Activity implements OnClickListener
     ListView listView;
     BatchAdapter adapter;
     ArrayList<AppInfo> list;
+    ArrayList<String> users;
 
     LinearLayout linearLayout;
     RadioButton rb, rbData, rbApk, rbBoth;
@@ -88,7 +89,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         pm = getPackageManager();
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        shellCommands = new ShellCommands(this);
+//        shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
@@ -111,6 +112,9 @@ public class BatchActivity extends Activity implements OnClickListener
         {
             backupBoolean = extra.getBoolean("dk.jens.backup.backupBoolean");
         }
+        users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
+        shellCommands = new ShellCommands(this, users);
+
         linearLayout = (LinearLayout) findViewById(R.id.backupLinear);
 
         Button bt = (Button) findViewById(R.id.backupRestoreButton);
@@ -190,7 +194,7 @@ public class BatchActivity extends Activity implements OnClickListener
 //        }).start();
     }
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(Menu menu)//onPrepareOptionsMenu(Menu menu)
     {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
@@ -200,6 +204,10 @@ public class BatchActivity extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if(item.isCheckable())
+        {
+            item.setChecked(!item.isChecked());
+        }
         switch(item.getItemId())
         {
             case R.id.de_selectAll:
@@ -274,7 +282,7 @@ public class BatchActivity extends Activity implements OnClickListener
                 break;
             /* ------------------------- */
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
     public void showConfirmDialog(Context context, final ArrayList<AppInfo> selectedList)
     {
