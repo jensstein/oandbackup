@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">oandbackup</string>
-    <string name="backupButton">Backup</string>
-    <string name="restoreButton">Restauro</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restauro</string>
     <string name="radioApk">Apk</string>
     <string name="radioData">Dados</string>
     <string name="radioBoth">Dados e Apk</string>

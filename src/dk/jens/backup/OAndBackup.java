@@ -164,7 +164,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             int backupRet = 0;
             public void run()
             {
-                handleMessages.showMessage(appInfo.getLabel(), "backup");
+                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.backup));
                 if(backupDir != null)
                 {
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
@@ -212,7 +212,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 {
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     // error handling, hvis backupSubDir ikke findes
-                    handleMessages.showMessage(appInfo.getLabel(), "restore");
+                    handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
 
                     LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
                     String dataDir = appInfo.getDataDir();

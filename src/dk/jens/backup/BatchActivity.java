@@ -133,13 +133,13 @@ public class BatchActivity extends Activity implements OnClickListener
                 }
             }
 
-            bt.setText(R.string.backupButton);
+            bt.setText(R.string.backup);
         }
         else
         {
             list = new ArrayList<AppInfo>(appInfoList);
 
-            bt.setText(R.string.restoreButton);
+            bt.setText(R.string.restore);
             RadioGroup rg = new RadioGroup(this);
             rg.setOrientation(LinearLayout.HORIZONTAL);
             rbData = new RadioButton(this);
@@ -285,7 +285,7 @@ public class BatchActivity extends Activity implements OnClickListener
     }
     public void showConfirmDialog(Context context, final ArrayList<AppInfo> selectedList)
     {
-        String title = backupBoolean ? "backup?" : "restore?";
+        String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
         String message = "";
         for(AppInfo appInfo : selectedList)
         {

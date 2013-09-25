@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">oandbackup</string>
-    <string name="backupButton">backup</string>
-    <string name="restoreButton">restore</string>
-    <string name="radioApk">Apk</string>
-    <string name="radioData">Data</string>
-    <string name="radioBoth">Data + Apk</string>
+    <string name="backup">backup</string>
+    <string name="restore">restore</string>
+    <string name="backupConfirmation">backup?</string>
+    <string name="restoreConfirmation">restore?</string>
+    <string name="radioApk">apk</string>
+    <string name="radioData">data</string>
+    <string name="radioBoth">data + apk</string>
     <string name="de_selectAll">de/select all</string>
     <string name="refresh">refresh</string>
     <string name="batchbackup">batch backup</string>
