@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -265,7 +266,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         Collections.sort(pinfoList, pInfoPackageNameComparator);
-        // list starts scrambled on 4.3
+        // list seemingly starts scrambled on 4.3
         BatchActivity.pinfoList = pinfoList;
 
         for(PackageInfo pinfo : pinfoList)
@@ -300,7 +301,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         }
         if(backupDir != null && backupDir.exists())
         {
-            for(String folder : backupDir.list())
+            String[] files = backupDir.list();
+            Arrays.sort(files);
+            for(String folder : files)
             {
                 boolean found = false;
                 for(PackageInfo pinfo : pinfoList)

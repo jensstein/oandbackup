@@ -44,11 +44,8 @@ public class FileCreationHelper
                         Log.i(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
                         return null;
                     }
-                    return dir;
                 }
-                return dir;
             }
-            return dir;
         }
         return dir;
     }
