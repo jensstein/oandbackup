@@ -71,18 +71,19 @@ public class ShellCommands
     }
     public int doBackup(File backupDir, String label, String packageData, String packageApk)
     {
+        String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
         try
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDirPath + "\n");
 //            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
             // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
 //            dos.flush();
 //            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
-            dos.writeBytes(busybox + " cp " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
+            dos.writeBytes(busybox + " cp " + packageApk + " " + backupDirPath + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
 //            dos.flush();
@@ -140,6 +141,7 @@ public class ShellCommands
     }
     public int doRestore(File backupDir, String label, String packageName)
     {
+        String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
         int unzipRet = -1;
         int untarRet = -1;
         LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
@@ -160,7 +162,7 @@ public class ShellCommands
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
 //            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
-            dos.writeBytes("cp -r " + backupDir.getAbsolutePath() + "/" + packageName + "/* " + packageData + "\n");
+            dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
 /*
             dos.writeBytes("am force-stop " + packageName + "\n");
 */
@@ -917,4 +919,16 @@ public class ShellCommands
         context.startActivity(intent);
     }
     */
+    // due to changes in 4.3 (api level 18) the root user cannot see /storage/emulated/$user/ so calls using su (except pm in restoreApk) should swap the first part with /mnt/shell/emulated/, which is readable by the root user
+    public String swapBackupDirPath(String path)
+    {
+        if(android.os.Build.VERSION.SDK_INT >= 18)
+        {
+            if(path.contains("/storage/emulated/"))
+            {
+                path = path.replace("/storage/emulated/", "/mnt/shell/emulated/");
+            }
+        }
+        return path;
+    }
 }
