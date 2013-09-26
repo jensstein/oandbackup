@@ -3,6 +3,8 @@
     <string name="app_name">oandbackup</string>
     <string name="backup">Backup</string>
     <string name="restore">Restauro</string>
+    <string name="backupConfirmation">Backup?</string>
+    <string name="restoreConfirmation">Restaurar?</string>
     <string name="radioApk">Apk</string>
     <string name="radioData">Dados</string>
     <string name="radioBoth">Dados e Apk</string>
@@ -12,19 +14,21 @@
     <string name="batchrestore">Restauro em lote</string>
     <string name="search">Procurar</string>
     <string name="deleteBackup">Eliminar backup</string>
+    <string name="uninstallProgess">A desinstalar</string>
     <string name="uninstall">Desinstalar aplicação</string>
     <string name="showAll">Mostrar todas as aplicações</string>
     <string name="showOnlySystem">Aplicações do sistema</string>
     <string name="showOnlyUser">Aplicações do utilizador</string>
     <string name="showNotBackedup">Aplicações sem backup</string>
     <string name="showNotInstalled">Aplicações desinstaladas</string>
+    <string name="showNewAndUpdated">Aplicações novas/atualizadas</string>
     <string name="sortByLabel">Ordenar por nome</string>
     <string name="sortByPackageName">Ordenar por nome do pacote</string>
     <string name="sort">Filtro e ordem</string>
     <string name="uninstallDialogMessage">Desinstalar este pacote?</string>
     <string name="deleteBackupDialogMessage">Remover ficheiros de backup?</string>
     <string name="dialogOK">Ok</string>
-	<string name="dialogCancel">Cancelar</string>
+    <string name="dialogCancel">Cancelar</string>
     <string name="dialogYes">Sim</string>
     <string name="dialogNo">Não</string>
     <string name="noBackupYet">Backup inexistente</string>
@@ -39,15 +43,19 @@
     <string name="shellReturnSuccess">Sucesso</string>
     <string name="shellReturnError">Erro</string>
     <string name="backupProgress">Copiando</string>
-	<string name="backupSuccess">Backup terminado</string>
+    <string name="backupSuccess">Backup terminado</string>
     <string name="backupFailure">Erro ao copiar</string>
     <string name="restoreProgress">Restaurando</string>
-	<string name="restoreSuccess">Restauro terminado</string>
+    <string name="restoreSuccess">Restauro terminado</string>
     <string name="restoreFailure">Erro ao restaurar</string>
     <string name="batchSuccess">Operação terminada</string>
     <string name="batchFailure">Terminada com erros</string>
-	<string name="enablePackage">Ativar</string>
+	
+    <string name="enablePackage">Ativar</string>
+    <string name="enablePackageTitle">Ativar para</string>
+        <!-- title for a list of checkable users -->
     <string name="disablePackage">Desativar</string>
+    <string name="disablePackageTitle">Desativar para</string>
 
     <string name="prefs_title">Preferências</string>    
     <string name="prefs_timestamp">Usar formato local de data</string>
@@ -67,7 +75,7 @@
     
     <string name="sched_title">Agendamento</string>
     <string name="sched_notificationMessage">Backup agendado</string>
-	<string name="sched_interval">Intervalo em dias</string>
+    <string name="sched_interval">Intervalo em dias</string>
     <string name="sched_hourOfDay">Hora do dia (0..23)</string>
     <string name="sched_checkbox">Ativar</string>
     <string name="sched_button">Atualizar</string>
