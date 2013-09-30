@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.2.4 (development)
+0.2.4 (2013-09-30)
 ------------------
  * fixed uninstalling and restoring system apps
  * fixed missing error handling on folder creation
