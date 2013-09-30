@@ -5,6 +5,7 @@ changelog
 ------------------
  * fixed uninstalling and restoring system apps
  * fixed missing error handling on folder creation
+ * fixed issue with path to backup folder on 4.3 (/storage/emulated/$userid/ not visible to root)
  * better message feedback on errors (notifications)
  * beginning work on handling multiple users
  * long press / context menu now has option to enable or disable app
