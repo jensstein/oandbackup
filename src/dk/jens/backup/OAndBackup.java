@@ -49,8 +49,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class OAndBackup extends FragmentActivity // FragmentActivity i stedet for Activity for at kunne bruge ting fra support-bibliotekerne
-implements SharedPreferences.OnSharedPreferenceChangeListener
+public class OAndBackup extends FragmentActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
     static final int BATCH_REQUEST = 1;
@@ -153,6 +152,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 });
             }
         }).start();
+    }
+    @Override
+    public void onDestroy()
+    {
+        if(handleMessages != null)
+        {
+            handleMessages.dismissMessage();
+        }
+        super.onDestroy();
     }
     public void displayDialog(AppInfo appInfo)
     {

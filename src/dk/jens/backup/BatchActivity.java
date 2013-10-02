@@ -172,6 +172,15 @@ public class BatchActivity extends Activity implements OnClickListener
         });
     }
     @Override
+    public void onDestroy()
+    {
+        if(handleMessages != null)
+        {
+            handleMessages.dismissMessage();
+        }
+        super.onDestroy();
+    }    
+    @Override
     public void onClick(View v)
     {
 /*

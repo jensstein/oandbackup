@@ -735,54 +735,63 @@ public class ShellCommands
     }
     public ArrayList getUsers()
     {
-        if(users != null && users.size() > 0)
+        if(android.os.Build.VERSION.SDK_INT > 17)
         {
-            return users;
+            if(users != null && users.size() > 0)
+            {
+                return users;
+            }
+            else
+            {
+                try
+                {
+        //            int currentUser = getCurrentUser();
+                    p = Runtime.getRuntime().exec("su");
+                    dos = new DataOutputStream(p.getOutputStream());
+                    dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
+                    dos.writeBytes("exit\n");
+                    dos.flush();
+                    int ret = p.waitFor();
+                    if(ret != 0)
+                    {
+                        ArrayList<String> err = getOutput(p).get("stderr");
+                        for(String line : err)
+                        {
+                            writeErrorLog(line);
+                        }
+                        return null;
+                    }
+                    else
+                    {
+                        ArrayList<String> users = new ArrayList<String>();
+                        ArrayList<String> out = getOutput(p).get("stdout");
+                        for(String line : out)
+                        {
+                            if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
+                            {
+                                users.add(line.trim());
+                            }
+                        }
+                        return users;
+                    }
+                }
+                catch(IOException e)
+                {
+                    Log.i(TAG, e.toString());
+                    return null;
+                }
+                catch(InterruptedException e)
+                {
+                    Log.i(TAG, e.toString());
+                    return null;
+                }
+            }
         }
         else
         {
-            try
-            {
-    //            int currentUser = getCurrentUser();
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
-                if(ret != 0)
-                {
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    for(String line : err)
-                    {
-                        writeErrorLog(line);
-                    }
-                    return null;
-                }
-                else
-                {
-                    ArrayList<String> users = new ArrayList<String>();
-                    ArrayList<String> out = getOutput(p).get("stdout");
-                    for(String line : out)
-                    {
-                        if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
-                        {
-                            users.add(line.trim());
-                        }
-                    }
-                    return users;
-                }
-            }
-            catch(IOException e)
-            {
-                Log.i(TAG, e.toString());
-                return null;
-            }
-            catch(InterruptedException e)
-            {
-                Log.i(TAG, e.toString());
-                return null;
-            }
+            ArrayList<String> users = new ArrayList<String>();
+            users.add("0");
+            return users;
         }
     }
     public int getCurrentUser()

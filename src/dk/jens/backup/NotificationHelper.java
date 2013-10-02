@@ -22,8 +22,9 @@ public class NotificationHelper
             .setContentTitle(title)
             .setContentText(text)
             .setAutoCancel(autocancel);
-        // resultIntent og taskstackbuilder er for bagudkompabilitet
         Intent resultIntent = new Intent(context, c);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            // make sure messages aren't overdrawn
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(c);
         stackBuilder.addNextIntent(resultIntent);

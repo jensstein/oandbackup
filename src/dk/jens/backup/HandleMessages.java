@@ -41,6 +41,13 @@ public class HandleMessages
         endMessage.what = DISMISS_DIALOG;
         handler.sendMessage(endMessage);
     }
+    public void dismissMessage()
+    {
+        if(progress != null)
+        {
+            progress.dismiss();
+        }
+    }
     private Handler handler = new Handler()
     {
         @Override
@@ -50,22 +57,17 @@ public class HandleMessages
             switch(message.what)
             {
                 case SHOW_DIALOG:
-//                    Log.i(TAG, "show");
                     progress = ProgressDialog.show(context, array[0].toString(), array[1].toString(), true, false); // den sidste boolean er cancelable -> sættes til true, når der er skrevet en måde at afbryde handlingen (threaden) på
                     break;
                 case CHANGE_DIALOG:
-                    if(progress != null)
+                    if(progress != null && progress.isShowing())
                     {
                         progress.setTitle(array[0].toString());
                         progress.setMessage(array[1].toString());
                     }
                     break;
                 case DISMISS_DIALOG:
-//                    Log.i(TAG, "dismiss");
-                    if(progress != null)
-                    {
-                        progress.dismiss();
-                    }
+                    dismissMessage();
                     break;
             }
         }
