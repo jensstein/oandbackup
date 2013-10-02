@@ -14,6 +14,7 @@ public class FileCreationHelper
     final static String defaultLogFilePath = Environment.getExternalStorageDirectory() + "/oandbackup.log";
     File backupDir;
     Context context;
+    public boolean fallbackFlag;
     public FileCreationHelper(Context context)
     {
         this.context = context;
@@ -28,20 +29,22 @@ public class FileCreationHelper
     }
     public File createBackupFolder(String path)
     {
+        fallbackFlag = false;
         File dir = new File(path);
         if(!dir.exists())
         {
             boolean created = dir.mkdirs();
             if(!created)
             {
-                Log.i(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
+                fallbackFlag = true;
+                Log.e(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
                 dir = new File(defaultBackupDirPath);
                 if(!dir.exists())
                 {
                     boolean defaultCreated = dir.mkdirs();
                     if(!defaultCreated)
                     {
-                        Log.i(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
+                        Log.e(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
                         return null;
                     }
                 }
@@ -56,13 +59,7 @@ public class FileCreationHelper
         {
             try
             {
-                boolean created = file.createNewFile();
-                /*
-                if(!created)
-                {
-                    Log.i(TAG, context.getString(R.string.mkfileError) + " " + file.getAbsolutePath());
-                }
-                */
+                file.createNewFile();
                 return file;
             }
             catch(IOException e)
@@ -74,7 +71,7 @@ public class FileCreationHelper
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            e.printStackTrace();
             return null;
         }
     }

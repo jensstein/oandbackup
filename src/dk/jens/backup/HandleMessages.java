@@ -57,7 +57,10 @@ public class HandleMessages
             switch(message.what)
             {
                 case SHOW_DIALOG:
-                    progress = ProgressDialog.show(context, array[0].toString(), array[1].toString(), true, false); // den sidste boolean er cancelable -> sættes til true, når der er skrevet en måde at afbryde handlingen (threaden) på
+                    if(context != null) // trying to fix a very occasional BadTokenException
+                    {
+                        progress = ProgressDialog.show(context, array[0].toString(), array[1].toString(), true, false); // den sidste boolean er cancelable -> sættes til true, når der er skrevet en måde at afbryde handlingen (threaden) på
+                    }
                     break;
                 case CHANGE_DIALOG:
                     if(progress != null && progress.isShowing())

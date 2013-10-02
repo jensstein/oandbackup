@@ -89,7 +89,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
-        logFile = new LogFile(this);        
+        logFile = new LogFile(this);
         
         new Thread(new Runnable(){
             public void run()
@@ -111,14 +111,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 //                if(!rsyncInstalled || !bboxInstalled)
                 if(!bboxInstalled)
                 {
-                    runOnUiThread(new Runnable()
-                    {
-                        public void run()
-                        {
-//                            Toast.makeText(OAndBackup.this, getString(R.string.rsyncOrBusyboxProblem), Toast.LENGTH_LONG).show();
-                            showWarning("", getString(R.string.rsyncOrBusyboxProblem));
-                        }
-                    });
+                    showWarning("", getString(R.string.rsyncOrBusyboxProblem));
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
@@ -621,7 +614,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(key.equals("pathBackupFolder"))
         {
             String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-//            backupDir = new File(backupDirPath);
             createBackupDir(backupDirPath);
             refresh();
         }
@@ -643,11 +635,21 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         return true;
     }
-    public void createBackupDir(String path)
+    public void createBackupDir(final String path)
     {
         if(path.trim().length() > 0)
         {
             backupDir = fileCreator.createBackupFolder(path);
+            if(fileCreator.fallbackFlag)
+            {
+                runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+                        Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + path + " - " + getString(R.string.fallbackToDefault) + ": " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
         else
         {
@@ -655,25 +657,24 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         if(backupDir == null)
         {
-            runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-//                    Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
-                    showWarning(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), getString(R.string.backupFolderError));
-                }
-            });                    
+            showWarning(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), getString(R.string.backupFolderError));
         }
     }
-    public void showWarning(String title, String message)
+    public void showWarning(final String title, final String message)
     {
-        new AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id){}})
-            .setCancelable(false)
-            .show();
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                new AlertDialog.Builder(OAndBackup.this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id){}})
+                    .setCancelable(false)
+                    .show();
+            }
+        });
     }
     public void filterShowAll()
     {
