@@ -156,7 +156,6 @@ public class BatchActivity extends Activity implements OnClickListener
         }
 
         listView = (ListView) findViewById(R.id.listview);
-//        adapter = new BatchAdapter(this, R.layout.batchlistlayout, appInfoList);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
         listView.setAdapter(adapter);
         // onItemClickListener gør at hele viewet kan klikkes - med onCheckedListener er det kun checkboxen der kan klikkes
@@ -183,24 +182,15 @@ public class BatchActivity extends Activity implements OnClickListener
     @Override
     public void onClick(View v)
     {
-/*
-        new Thread(new Runnable()
+        ArrayList<AppInfo> selectedList = new ArrayList<AppInfo>();
+        for(AppInfo appInfo : list)
         {
-            public void run()
+            if(appInfo.isChecked)
             {
-*/
-                ArrayList<AppInfo> selectedList = new ArrayList<AppInfo>();
-                for(AppInfo appInfo : list)
-                {
-                    if(appInfo.isChecked)
-                    {
-                        selectedList.add(appInfo);
-                    }
-                }
-                showConfirmDialog(BatchActivity.this, selectedList);
-//                doAction(selectedList);
-//            }
-//        }).start();
+                selectedList.add(appInfo);
+            }
+        }
+        showConfirmDialog(BatchActivity.this, selectedList);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
