@@ -36,7 +36,7 @@
     <string name="collectingData">A obter informação de pacotes</string>
     <string name="suCheck">A verificar superuser e busybox</string>
     <string name="noSu">Não foi possível obter as permissões superuser</string>
-    <string name="rsyncOrBusyboxProblem">Não foi possível encontrar busybox. Consulte o registo de erros</string>
+    <string name="busyboxProblem">Não foi possível encontrar busybox. Consulte o registo de erros</string>
     <string name="mkfileError">Não foi possível criar</string>
     	<!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
@@ -59,8 +59,6 @@
 
     <string name="prefs_title">Preferências</string>    
     <string name="prefs_timestamp">Usar formato local de data</string>
-    <string name="prefs_rsyncOutput">Saída rsync</string>
-    <string name="prefs_summaryRsyncOutput">Gravar saída de rsync para logcat</string>
     <string name="prefs_acquireWakelock">Obter wakelock</string>
     <string name="prefs_summaryAcquireWakelock">Acelera os backups em segundo plano mas utiliza mais energia</string>
     <string name="prefs_pathscategory">Caminhos personalizados</string>
@@ -70,8 +68,6 @@
     <string name="prefs_summaryLogfile">Caminho do ficheiro de registos. Deixe em branco para utilizar o caminho padrão.</string>
     <string name="prefs_pathBusybox">Busybox</string>
     <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
-    <string name="prefs_pathRsync">Rsync</string>
-    <string name="prefs_summaryRsync">Caminho do executável rsync. Deixe em branco para utilizar o caminho padrão.</string>
     
     <string name="sched_title">Agendamento</string>
     <string name="sched_notificationMessage">Backup agendado</string>

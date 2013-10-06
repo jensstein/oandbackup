@@ -36,7 +36,7 @@
     <string name="collectingData">collecting package infos</string>
     <string name="suCheck">checking for superuser and busybox</string>
     <string name="noSu">couldn\'t get superuser permissions</string>
-    <string name="rsyncOrBusyboxProblem">couldn\'t find busybox. please check error log</string>
+    <string name="busyboxProblem">couldn\'t find busybox. please check error log</string>
     <string name="mkfileError">couldn\'t create</string>
         <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="fallbackToDefault">fall back to default</string>
@@ -61,8 +61,6 @@
 
     <string name="prefs_title">preferences</string>    
     <string name="prefs_timestamp">use local date format</string>
-    <string name="prefs_rsyncOutput">rsync output</string>
-    <string name="prefs_summaryRsyncOutput">print output from rsync to logcat</string>
     <string name="prefs_acquireWakelock">acquire wakelock</string>
     <string name="prefs_summaryAcquireWakelock">will speed up backups running in the background considerably but will consume more energy</string>
     <string name="prefs_pathscategory">custom paths</string>
@@ -72,8 +70,6 @@
     <string name="prefs_summaryLogfile">path to logfile. leave blank for default.</string>
     <string name="prefs_pathBusybox">busybox</string>
     <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
-    <string name="prefs_pathRsync">rsync</string>
-    <string name="prefs_summaryRsync">path to rsync executable. be sure it\'s correct. leave blank for default.</string>
     
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>

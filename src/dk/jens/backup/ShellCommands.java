@@ -33,7 +33,7 @@ public class ShellCommands
     DataOutputStream dos;
     Context context;
     SharedPreferences prefs;
-    String busybox, rsync;
+    String busybox;
     FileCreationHelper fileCreator;
     LogFile logFile;
     ArrayList<String> users;
@@ -47,7 +47,6 @@ public class ShellCommands
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
-//        rsync = prefs.getString("pathRsync", "rsync").trim();
         if(busybox.length() == 0)
         {
             busybox = "busybox";
@@ -57,12 +56,6 @@ public class ShellCommands
         {
             multiuserEnabled = (this.users.size() > 1) ? true : false;
         }
-        /*
-        if(rsync.length() == 0)
-        {
-            rsync = "rsync";
-        }
-        */
     }
     public ShellCommands(Context context)
     {
@@ -79,28 +72,13 @@ public class ShellCommands
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
             dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDirPath + "\n");
-//            dos.writeBytes(rsync + " -rt --exclude=/lib --delete " + packageData + " " + backupDir.getAbsolutePath() + "\n");
-            // rsync -a virker ikke, fordi fat32 ikke understøtter unix-filtilladelser
-//            dos.flush();
-//            dos.writeBytes(rsync + " -t " + packageApk + " " + backupDir.getAbsolutePath() + "\n");
             dos.writeBytes(busybox + " cp " + packageApk + " " + backupDirPath + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
-//            dos.flush();
 
             int ret = p.waitFor();
             String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
             Log.i(TAG, "return: " + ret + " / " + returnMessages);
-            /*
-            if(prefs.getBoolean("rsyncOutput", false))
-            {
-                ArrayList<String> stdout = getOutput(p).get("stdout");
-                for(String line : stdout)
-                {
-                    Log.i(TAG, line);
-                }
-            }
-            */
             if(ret != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
@@ -161,26 +139,13 @@ public class ShellCommands
             }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-//            dos.writeBytes(rsync + " -rvt --exclude=/lib --delete " + backupDir.getAbsolutePath() + "/" + packageName + "/ " + packageData + "\n");
             dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
-/*
-            dos.writeBytes("am force-stop " + packageName + "\n");
-*/
+//            dos.writeBytes("am force-stop " + packageName + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
             dos.flush();
 
             int ret = p.waitFor();
-            /*
-            if(prefs.getBoolean("rsyncOutput", false))
-            {
-                ArrayList<String> stdout = getOutput(p).get("stdout");
-                for(String line : stdout)
-                {
-                    Log.i(TAG, line);
-                }
-            }
-            */
             if(ret != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
@@ -627,44 +592,6 @@ public class ShellCommands
             return false;
         }
     }
-    /*
-    public boolean checkRsync()
-    {
-        try
-        {
-            p = Runtime.getRuntime().exec("sh");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(rsync + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int rsyncReturn = p.waitFor();
-            if(rsyncReturn == 1)
-            {
-                return true;
-            }
-            else
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
-                {
-                    writeErrorLog(line);
-                }
-                return false;
-            }
-//            Log.i(TAG, "rsyncReturn: " + rsyncReturn);
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return false;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return false;
-        }
-    }
-    */
     public boolean checkBusybox()
     {
         try
@@ -688,7 +615,6 @@ public class ShellCommands
                 }
                 return false;
             }
-//            Log.i(TAG, "busyboxReturn: " + bboxReturn);
         }
         catch(IOException e)
         {

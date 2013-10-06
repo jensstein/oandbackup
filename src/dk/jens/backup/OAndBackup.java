@@ -106,12 +106,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         }
                     });                    
                 }
-//                boolean rsyncInstalled = shellCommands.checkRsync();
                 boolean bboxInstalled = shellCommands.checkBusybox();
-//                if(!rsyncInstalled || !bboxInstalled)
                 if(!bboxInstalled)
                 {
-                    showWarning("", getString(R.string.rsyncOrBusyboxProblem));
+                    showWarning("", getString(R.string.busyboxProblem));
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
