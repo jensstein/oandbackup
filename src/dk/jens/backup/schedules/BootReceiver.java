@@ -19,31 +19,34 @@ public class BootReceiver extends BroadcastReceiver
     {
         handleAlarms = new HandleAlarms(context);
         prefs = context.getSharedPreferences("schedules", 0);
-        if(prefs.getBoolean("enabled", false) && prefs.getInt("repeatTime", 0) > 0)
+        for(int i = 0; i <= prefs.getInt("total", 0); i++)
         {
-            long timePlaced = prefs.getLong("timePlaced", 0);
-            long repeat = (long)(prefs.getInt("repeatTime", 0) * AlarmManager.INTERVAL_DAY);
-            long timePassed = System.currentTimeMillis() - timePlaced;
-            long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay", 0));
-            long timeLeft = prefs.getLong("timeUntilNextEvent", 0) - timePassed;
-            if(timeLeft < (5 * 60000))
+            if(prefs.getBoolean("enabled" + i, false) && prefs.getInt("repeatTime" + i, 0) > 0)
             {
-                handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
-            }
-            else if(timeLeft < (24 * AlarmManager.INTERVAL_HOUR))
-            {
-                if(hourOfDay > 0)
-                {
-                    handleAlarms.setAlarm(0, hourOfDay, repeat);
-                }
-                else
+                long timePlaced = prefs.getLong("timePlaced" + i, 0);
+                long repeat = (long)(prefs.getInt("repeatTime" + i, 0) * AlarmManager.INTERVAL_DAY);
+                long timePassed = System.currentTimeMillis() - timePlaced;
+                long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay" + i, 0));
+                long timeLeft = prefs.getLong("timeUntilNextEvent" + i, 0) - timePassed;
+                if(timeLeft < (5 * 60000))
                 {
                     handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
                 }
-            }
-            else
-            {
-                handleAlarms.setAlarm(0, timeLeft, repeat);
+                else if(timeLeft < (24 * AlarmManager.INTERVAL_HOUR))
+                {
+                    if(hourOfDay > 0)
+                    {
+                        handleAlarms.setAlarm(0, hourOfDay, repeat);
+                    }
+                    else
+                    {
+                        handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
+                    }
+                }
+                else
+                {
+                    handleAlarms.setAlarm(0, timeLeft, repeat);
+                }
             }
         }
     }

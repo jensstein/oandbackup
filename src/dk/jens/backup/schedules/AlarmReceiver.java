@@ -23,12 +23,15 @@ public class AlarmReceiver extends BroadcastReceiver
         HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
         prefs = context.getSharedPreferences("schedules", 0);
         edit = prefs.edit();
-        long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime", 0), prefs.getInt("hourOfDay", 0));
-        edit.putLong("timeUntilNextEvent", timeUntilNextEvent);
-        edit.putLong("timePlaced", System.currentTimeMillis());
-        edit.commit();
-        Log.i(TAG, context.getString(R.string.sched_startingbackup));
-        int mode = prefs.getInt("scheduleMode", 1);
-        handleScheduledBackups.initiateBackup(mode);
+        for(int i = 0; i <= prefs.getInt("total", 0); i++)
+        {
+            long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime" + i, 0), prefs.getInt("hourOfDay" + i, 0));
+            edit.putLong("timeUntilNextEvent" + i, timeUntilNextEvent);
+            edit.putLong("timePlaced" + i, System.currentTimeMillis());
+            edit.commit();
+            Log.i(TAG, context.getString(R.string.sched_startingbackup));
+            int mode = prefs.getInt("scheduleMode" + i, 1);
+            handleScheduledBackups.initiateBackup(mode);
+        }
     }
 }

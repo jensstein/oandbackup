@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayout"
+    android:id="@+id/ll"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    android:layout_height="match_parent"
+    android:paddingBottom="20sp">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -89,6 +89,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
             android:text="@string/sched_button"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:text="@string/sched_removeButton"
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>
