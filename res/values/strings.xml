@@ -76,7 +76,7 @@
     <string name="sched_interval">interval in days</string>
     <string name="sched_hourOfDay">hour of day (0..23)</string>
     <string name="sched_checkbox">enable</string>
-    <string name="sched_button">update</string>
+    <string name="sched_updateButton">update</string>
     <string name="sched_removeButton">remove</string>
     <string name="sched_startingbackup">starting scheduled backup</string>
     <string name="sched_backupMode">backup mode</string>

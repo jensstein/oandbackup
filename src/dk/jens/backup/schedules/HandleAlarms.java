@@ -21,6 +21,7 @@ public class HandleAlarms
     {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("id", id); // requestCode of PendingIntent is not used yet so a separate extra is needed
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
         if(repeat > 0)

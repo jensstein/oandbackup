@@ -30,22 +30,22 @@ public class BootReceiver extends BroadcastReceiver
                 long timeLeft = prefs.getLong("timeUntilNextEvent" + i, 0) - timePassed;
                 if(timeLeft < (5 * 60000))
                 {
-                    handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
+                    handleAlarms.setAlarm(i, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
                 }
                 else if(timeLeft < (24 * AlarmManager.INTERVAL_HOUR))
                 {
                     if(hourOfDay > 0)
                     {
-                        handleAlarms.setAlarm(0, hourOfDay, repeat);
+                        handleAlarms.setAlarm(i, hourOfDay, repeat);
                     }
                     else
                     {
-                        handleAlarms.setAlarm(0, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
+                        handleAlarms.setAlarm(i, AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
                     }
                 }
                 else
                 {
-                    handleAlarms.setAlarm(0, timeLeft, repeat);
+                    handleAlarms.setAlarm(i, timeLeft, repeat);
                 }
             }
         }

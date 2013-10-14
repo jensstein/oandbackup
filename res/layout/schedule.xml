@@ -88,7 +88,7 @@
             android:id="@+id/updateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
-            android:text="@string/sched_button"
+            android:text="@string/sched_updateButton"
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>

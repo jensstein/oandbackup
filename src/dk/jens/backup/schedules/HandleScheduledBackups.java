@@ -171,11 +171,7 @@ public class HandleScheduledBackups
             String lastBackup = context.getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-                try
-                {
-                    lastBackup = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp();
-                }
-                catch(IndexOutOfBoundsException e)
+                if((lastBackup = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp()) == null)
                 {
                     lastBackup = context.getString(R.string.noBackupYet);
                 }

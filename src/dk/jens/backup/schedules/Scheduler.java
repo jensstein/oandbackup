@@ -176,7 +176,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 {
                     long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
                     edit.putLong("timeUntilNextEvent" + number, startTime);
-//                    Log.i(TAG, "starttime update: " + (startTime / 1000 / 60 / 60f));
+//                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
                     handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * intervalInDays);
                 }
                 edit.commit();

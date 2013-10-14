@@ -19,19 +19,24 @@ public class AlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        HandleAlarms handleAlarms = new HandleAlarms(context);
-        HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
-        prefs = context.getSharedPreferences("schedules", 0);
-        edit = prefs.edit();
-        for(int i = 0; i <= prefs.getInt("total", 0); i++)
+        int id = intent.getIntExtra("id", -1);
+        if(id >= 0)
         {
-            long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime" + i, 0), prefs.getInt("hourOfDay" + i, 0));
-            edit.putLong("timeUntilNextEvent" + i, timeUntilNextEvent);
-            edit.putLong("timePlaced" + i, System.currentTimeMillis());
+            HandleAlarms handleAlarms = new HandleAlarms(context);
+            HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
+            prefs = context.getSharedPreferences("schedules", 0);
+            edit = prefs.edit();
+            long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(prefs.getInt("repeatTime" + id, 0), prefs.getInt("hourOfDay" + id, 0));
+            edit.putLong("timeUntilNextEvent" + id, timeUntilNextEvent);
+            edit.putLong("timePlaced" + id, System.currentTimeMillis());
             edit.commit();
             Log.i(TAG, context.getString(R.string.sched_startingbackup));
-            int mode = prefs.getInt("scheduleMode" + i, 1);
+            int mode = prefs.getInt("scheduleMode" + id, 1);
             handleScheduledBackups.initiateBackup(mode);
+        }
+        else
+        {
+            Log.e(TAG, "get id: " + id + " from " + intent.toString());
         }
     }
 }
