@@ -4,9 +4,10 @@ public class AppInfo implements Comparable<AppInfo>
 {
     String label, packageName, loggedVersionName, versionName, sourceDir, dataDir, lastBackup;
     int loggedVersionCode, versionCode;
+    long lastBackupMillis;
     public boolean isSystem, isInstalled, isChecked;
 
-    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, String lastBackup, boolean isSystem, boolean isInstalled)
+    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, long lastBackupMillis, String lastBackup, boolean isSystem, boolean isInstalled)
     {
         this.label = label;
         this.packageName = packageName;
@@ -16,6 +17,7 @@ public class AppInfo implements Comparable<AppInfo>
         this.versionCode = versionCode;
         this.sourceDir = sourceDir;
         this.dataDir = dataDir;
+        this.lastBackupMillis = lastBackupMillis;
         this.lastBackup = lastBackup;
         this.isSystem = isSystem;
         this.isInstalled = isInstalled;
@@ -51,6 +53,10 @@ public class AppInfo implements Comparable<AppInfo>
     public String getDataDir()
     {
         return dataDir;
+    }
+    public long getLastBackupMillis()
+    {
+        return lastBackupMillis;    
     }
     public String getLastBackupTimestamp()
     {

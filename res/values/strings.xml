@@ -22,6 +22,7 @@
     <string name="showNotBackedup">show apps not backed up yet</string>
     <string name="showNotInstalled">show apps not installed</string>
     <string name="showNewAndUpdated">show new and updated apps</string>
+    <string name="showOldBackups">show old backups</string>
     <string name="sortByLabel">sort by label</string>
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort and filter</string>
@@ -70,6 +71,8 @@
     <string name="prefs_summaryLogfile">path to logfile. leave blank for default.</string>
     <string name="prefs_pathBusybox">busybox</string>
     <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
+    <string name="prefs_oldBackups">show old backups</string>
+    <string name="prefs_summaryOldBackups">filter backups older than value in days</string>
     
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>

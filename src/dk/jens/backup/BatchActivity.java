@@ -158,7 +158,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         listView = (ListView) findViewById(R.id.listview);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
-        sorter = new Sorter(adapter);
+        sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));
         listView.setAdapter(adapter);
         // onItemClickListener gør at hele viewet kan klikkes - med onCheckedListener er det kun checkboxen der kan klikkes
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()

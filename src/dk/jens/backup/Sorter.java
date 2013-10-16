@@ -3,11 +3,13 @@ package dk.jens.backup;
 public class Sorter
 {
     AppInfoAdapter adapter;
+    int oldBackups;
     boolean showAll = true;
     boolean showOnlyUser = false;
-    public Sorter(AppInfoAdapter adapter)
+    public Sorter(AppInfoAdapter adapter, int oldBackups)
     {
         this.adapter = adapter;
+        this.oldBackups = oldBackups;
     }
     public void sort(int id)
     {
@@ -34,6 +36,9 @@ public class Sorter
                 break;
             case R.id.showNewAndUpdated:
                 adapter.filterNewAndUpdated();
+                break;
+            case R.id.showOldBackups:
+                adapter.filterOldApps(oldBackups);
                 break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();

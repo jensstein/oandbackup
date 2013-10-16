@@ -296,6 +296,24 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         notifyDataSetChanged();
     }
+    public void filterOldApps(int days)
+    {
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        clear();
+        for(AppInfo appInfo : originalValues)
+        {
+            long lastBackup = appInfo.getLastBackupMillis();
+            long diff = System.currentTimeMillis() - lastBackup;
+            if(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f))
+            {
+                add(appInfo);
+            }
+        }
+        notifyDataSetChanged();    
+    }
     public void sortByLabel()
     {
         if(originalValues == null)

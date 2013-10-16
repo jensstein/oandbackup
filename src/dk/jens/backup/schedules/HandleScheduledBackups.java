@@ -168,10 +168,13 @@ public class HandleScheduledBackups
 
         for(PackageInfo pinfo : pinfoList)
         {
+            long lastBackupMillis = 0;
             String lastBackup = context.getString(R.string.noBackupYet);
             if(backupDir != null)
             {
-                if((lastBackup = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat).getLastBackupTimestamp()) == null)
+                LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
+                lastBackupMillis = logInfo.getLastBackupMillis();
+                if((lastBackup = logInfo.getLastBackupTimestamp()) == null)
                 {
                     lastBackup = context.getString(R.string.noBackupYet);
                 }
@@ -182,7 +185,7 @@ public class HandleScheduledBackups
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
         }
         return appInfoList;

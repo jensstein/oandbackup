@@ -125,7 +125,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 registerForContextMenu(listView);
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
-                sorter = new Sorter(adapter);
+                sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
@@ -270,31 +270,35 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
         for(PackageInfo pinfo : pinfoList)
         {
-            int loggedVersionCode;
-            String loggedVersionName;
+            int loggedVersionCode = 0;
+            long lastBackupMillis = 0;
+            String loggedVersionName = "0";
             String lastBackup = getString(R.string.noBackupYet);
             if(backupDir != null)
             {
                 LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
                 loggedVersionCode = logInfo.getVersionCode();
                 loggedVersionName = logInfo.getVersionName();
+                lastBackupMillis = logInfo.getLastBackupMillis();
                 if(logInfo.getLastBackupTimestamp() != null)
                 {
                     lastBackup = logInfo.getLastBackupTimestamp();
                 }
             }
+            /*
             else
             {
                 loggedVersionCode = 0;
                 loggedVersionName = "0";
             }
+            */
 
             boolean isSystem = false;
             if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), loggedVersionName, pinfo.versionName, loggedVersionCode, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), loggedVersionName, pinfo.versionName, loggedVersionCode, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
 
         }
@@ -317,7 +321,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                     if(logInfo.getLastBackupTimestamp() != null)
                     {
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false);
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupMillis(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false);
                         appInfoList.add(appInfo);
                     }
                 }
@@ -568,6 +572,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         {
             localTimestampFormat = prefs.getBoolean("timestamp", true);
             refresh();
+        }
+        if(key.equals("oldBackups"))
+        {
+            sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));        
         }
     }
     public boolean onSearchRequested()

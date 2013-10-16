@@ -11,6 +11,12 @@
         android:summary="@string/prefs_summaryAcquireWakelock"
         android:defaultValue="true"
         />
+    <EditTextPreference
+        android:key="oldBackups"
+        android:title="@string/prefs_oldBackups"
+        android:summary="@string/prefs_summaryOldBackups"
+        android:inputType="number"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >

@@ -48,7 +48,8 @@ public class LogFile
             this.versionName = jsonObject.getString("versionName");
             this.sourceDir = jsonObject.getString("sourceDir");
             this.dataDir = jsonObject.getString("dataDir");
-            this.lastBackup = formatDate(new Date(jsonObject.getLong("lastBackupMillis")));
+            this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
+            this.lastBackup = formatDate(new Date(lastBackupMillis));
             this.versionCode = jsonObject.getInt("versionCode");
             this.isSystem = jsonObject.optBoolean("isSystem");
         }
@@ -109,6 +110,10 @@ public class LogFile
     public String getDataDir()
     {
         return dataDir;
+    }
+    public long getLastBackupMillis()
+    {
+        return lastBackupMillis;
     }
     public String getLastBackupTimestamp()
     {
