@@ -63,8 +63,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     AppInfoAdapter adapter;
     ArrayList<AppInfo> appInfoList;
 
-    boolean showAll = true;
-    boolean showOnlyUser = false;
     boolean localTimestampFormat;
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
@@ -74,6 +72,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     FileCreationHelper fileCreator;
     LogFile logFile;
     NotificationHelper notificationHelper;
+    Sorter sorter;
 
     ListView listView;
     
@@ -126,6 +125,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 registerForContextMenu(listView);
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
+                sorter = new Sorter(adapter);
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
@@ -331,7 +331,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
-                showAll = true;
+                sorter.reset();
                 appInfoList.clear();
                 getPackageInfo();
                 runOnUiThread(new Runnable(){
@@ -440,79 +440,24 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 Intent backupIntent = new Intent(this, BatchActivity.class);
                 backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
                 backupIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                filterShowAll();
+                sorter.filterShowAll();
                 startActivityForResult(backupIntent, BATCH_REQUEST);
                 break;
             case R.id.batchrestore:
                 Intent restoreIntent = new Intent(this, BatchActivity.class);
                 restoreIntent.putExtra("dk.jens.backup.backupBoolean", false);
                 restoreIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                filterShowAll();
+                sorter.filterShowAll();
                 startActivityForResult(restoreIntent, BATCH_REQUEST);
-                break;
-            case R.id.showAll:
-                filterShowAll();
-                break;
-            case R.id.showOnlySystem:
-                showOnlyUser = false;
-                showAll = false;
-                adapter.filterAppType(2);
-                break;
-            case R.id.showOnlyUser:
-                showOnlyUser = true;
-                showAll = false;
-                adapter.filterAppType(1);
-                break;
-            case R.id.showNotBackedup:
-                adapter.filterIsBackedup();
-                break;
-            case R.id.showNotInstalled:
-                adapter.filterIsInstalled();
-                break;
-            case R.id.showNewAndUpdated:
-                adapter.filterNewAndUpdated();
-                break;
-            case R.id.sortByLabel:
-                adapter.sortByLabel();
-                if(!showAll)
-                {
-                    if(showOnlyUser)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
-                break;
-            case R.id.sortByPackageName:
-                adapter.sortByPackageName();
-                if(!showAll)
-                {
-                    if(showOnlyUser)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
                 break;
             case R.id.preferences:
                 startActivity(new Intent(this, Preferences.class));
                 break;
             case R.id.schedules:
                 startActivity(new Intent(this, Scheduler.class));
+                break;
+            default:
+                sorter.sort(item.getItemId());
                 break;
         }
         return true;
@@ -673,12 +618,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     .show();
             }
         });
-    }
-    public void filterShowAll()
-    {
-        showAll = true;
-        showOnlyUser = false;
-        adapter.getFilter().filter("");
     }
     public void displayDialogEnableDisable(final String packageName, final boolean enable)
     {

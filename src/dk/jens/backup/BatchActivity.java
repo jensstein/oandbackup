@@ -78,6 +78,7 @@ public class BatchActivity extends Activity implements OnClickListener
     FileCreationHelper fileCreator;
     LogFile logFile;
     NotificationHelper notificationHelper;
+    Sorter sorter;
     
     boolean localTimestampFormat;
 
@@ -157,6 +158,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         listView = (ListView) findViewById(R.id.listview);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
+        sorter = new Sorter(adapter);
         listView.setAdapter(adapter);
         // onItemClickListener gør at hele viewet kan klikkes - med onCheckedListener er det kun checkboxen der kan klikkes
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -216,69 +218,9 @@ public class BatchActivity extends Activity implements OnClickListener
                 checkboxSelectAllBoolean = checkboxSelectAllBoolean ? false : true;
                 adapter.notifyDataSetChanged();
                 break;
-                
-            /* skal i separat class så det kan deles med OAndBackup.java */
-            case R.id.showAll:
-                showAll = true;
-                showOnlyUser = false;
-                adapter.getFilter().filter("");
-                break;
-            case R.id.showOnlySystem:
-                showOnlyUser = false;
-                showAll = false;
-                adapter.filterAppType(2);
-                break;
-            case R.id.showOnlyUser:
-                showOnlyUser = true;
-                showAll = false;
-                adapter.filterAppType(1);
-                break;
-            case R.id.showNotBackedup:
-                adapter.filterIsBackedup();
-                break;
-            case R.id.showNotInstalled:
-                adapter.filterIsInstalled();
-                break;
-            case R.id.showNewAndUpdated:
-                adapter.filterNewAndUpdated();
-                break;            
-            case R.id.sortByLabel:
-                adapter.sortByLabel();
-                if(!showAll)
-                {
-                    if(showOnlyUser)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
-                break;
-            case R.id.sortByPackageName:
-                adapter.sortByPackageName();
-                if(!showAll)
-                {
-                    if(showOnlyUser)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
-                break;
-            /* ------------------------- */
+            default:
+                sorter.sort(item.getItemId());
+                break;                
         }
         return super.onOptionsItemSelected(item);
     }

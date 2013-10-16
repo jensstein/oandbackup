@@ -3,7 +3,8 @@ changelog
 
 0.2.5 (development)
 ------------------
- * fixed issue where clicking a notification while a messages was displayed would lead to windowleaked
+ * multiple schedules are now supported
+ * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
 
 0.2.4 (2013-09-30)
 ------------------
