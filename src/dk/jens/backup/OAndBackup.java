@@ -285,14 +285,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     lastBackup = logInfo.getLastBackupTimestamp();
                 }
             }
-            /*
-            else
-            {
-                loggedVersionCode = 0;
-                loggedVersionName = "0";
-            }
-            */
-
             boolean isSystem = false;
             if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
             {

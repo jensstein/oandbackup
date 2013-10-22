@@ -5,6 +5,7 @@ changelog
 ------------------
  * multiple schedules are now supported
  * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
+ * new option to filter older backups
 
 0.2.4 (2013-09-30)
 ------------------

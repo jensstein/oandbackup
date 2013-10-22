@@ -62,17 +62,17 @@ public class ShellCommands
         this(context, null);
         // initialize with userlist as null. getUsers check if list is null and simply return it if isn't and if its size is greater than 0.
     }
-    public int doBackup(File backupDir, String label, String packageData, String packageApk)
+    public int doBackup(File backupSubDir, String label, String packageData, String packageApk)
     {
-        String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
+        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
         try
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
             // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupDirPath + "\n");
-            dos.writeBytes(busybox + " cp " + packageApk + " " + backupDirPath + "\n");
+            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupSubDirPath + "\n");
+            dos.writeBytes(busybox + " cp " + packageApk + " " + backupSubDirPath + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
 
@@ -88,21 +88,25 @@ public class ShellCommands
                 }
             }
             String folder = new File(packageData).getName();
-            deleteBackup(new File(backupDir, folder + "/lib"));
+            deleteBackup(new File(backupSubDir, folder + "/lib"));
 //            int tarRet = tar(backupDir.getAbsolutePath(), folder);
-            int zipret = new Compression().zip(new File(backupDir, folder));
+            int zipret = new Compression().zip(new File(backupSubDir, folder));
             if(zipret == 0)
             {
-                deleteBackup(new File(backupDir, folder));
-                deleteBackup(new File(backupDir, folder + ".tar.gz"));
+                deleteBackup(new File(backupSubDir, folder));
+                deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
             }
             else if(zipret == 2)
             {
                 // handling empty zip
-                deleteBackup(new File(backupDir, folder + ".zip"));
-                deleteBackup(new File(backupDir, folder + ".tar.gz"));
+                deleteBackup(new File(backupSubDir, folder + ".zip"));
+                deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
                 return ret;
                 // zipret == 2 shouldn't be treated as an error
+            }
+            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", true))
+            {
+                copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
             }
             return ret + zipret;
         }
@@ -865,5 +869,39 @@ public class ShellCommands
             }
         }
         return path;
+    }
+    public void copySelfAPk(File backupSubDir, String apk)
+    {
+        String parent = backupSubDir.getParent() + "/" + TAG + ".apk";
+        String apkPath = backupSubDir.getAbsolutePath() + "/" + new File(apk).getName();
+        if(parent != null)
+        {
+            try
+            {
+                p = Runtime.getRuntime().exec("sh");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes(busybox + " cp " + apkPath + " " + parent + "\n");
+                dos.flush();
+                dos.writeBytes("exit\n");
+                dos.flush();
+                int ret = p.waitFor();
+                ArrayList<String> err = getOutput(p).get("stderr");
+                if(ret != 0)
+                {
+                    for(String line : err)
+                    {
+                        writeErrorLog(line);
+                    }
+                }
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+            catch(InterruptedException e)
+            {
+                Log.e(TAG, "InterruptedException: copySelfAPk");
+            }
+        }
     }
 }

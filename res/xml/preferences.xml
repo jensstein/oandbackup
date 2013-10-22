@@ -6,6 +6,12 @@
         android:defaultValue="true"
         />
     <CheckBoxPreference
+        android:key="copySelfApk"
+        android:title="@string/prefs_copySelfApk"
+        android:summary="@string/prefs_summaryCopySelfApk"
+        android:defaultValue="true"
+        />
+    <CheckBoxPreference
         android:key="acquireWakelock"
         android:title="@string/prefs_acquireWakelock"
         android:summary="@string/prefs_summaryAcquireWakelock"
