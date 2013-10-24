@@ -3,10 +3,11 @@ changelog
 
 0.2.5 (development)
 ------------------
- * multiple schedules are now supported
- * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
+ * (unlimited) multiple schedules are now supported
  * new option to filter older backups
  * new option to copy own apk to top level of backup directory
+ * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
+ * fixed sorting bug where sorting state was forgotten after restoring an app
 
 0.2.4 (2013-09-30)
 ------------------

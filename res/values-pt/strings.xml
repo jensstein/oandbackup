@@ -22,6 +22,7 @@
   <string name="showNotBackedup">Aplicações sem backup</string>
   <string name="showNotInstalled">Aplicações desinstaladas</string>
   <string name="showNewAndUpdated">Aplicações novas/atualizadas</string>
+  <string name="showOldBackups">Mostrar backups antigos</string>
   <string name="sortByLabel">Ordenar por nome</string>
   <string name="sortByPackageName">Ordenar por nome do pacote</string>
   <string name="sort">Filtro e ordem</string>
@@ -68,13 +69,19 @@
   <string name="prefs_summaryLogfile">Caminho do ficheiro de registos. Deixe em branco para utilizar o caminho padrão.</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
+  <string name="prefs_oldBackups">Mostrar backups antigos</string>
+  <string name="prefs_summaryOldBackups">Filtrar backups por antiguidade</string>
+  <string name="prefs_copySelfApk">Copiar apk</string>
+  <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
   <string name="sched_interval">Intervalo em dias</string>
   <string name="sched_hourOfDay">Hora do dia (0..23)</string>
   <string name="sched_checkbox">Ativar</string>
-  <string name="sched_button">Atualizar</string>
+  <string name="sched_updateButton">Atualizar</string>
+  <string name="sched_removeButton">Remover</string>
   <string name="sched_startingbackup">Iniciar agendamento</string>
   <string name="sched_backupMode">Modo de backup</string>
   <string name="sched_timeLeft">Horas até ao próximo backup</string>
+  <string name="sched_addSchudule">Agendar</string>
 </resources>
