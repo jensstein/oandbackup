@@ -327,13 +327,14 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
-                sorter.reset();
                 appInfoList.clear();
                 getPackageInfo();
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
                         adapter.setNewOriginalValues(appInfoList);
+                        sorter.sort(sorter.getSortingMethod().getId());
+                        adapter.restoreFilter();
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -414,6 +415,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 public boolean onMenuItemActionCollapse(MenuItem item)
                 {
                     adapter.getFilter().filter("");
+                    sorter.filterShowAll();
                     return true;
                 }
             });

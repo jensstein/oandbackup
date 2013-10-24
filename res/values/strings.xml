@@ -38,10 +38,10 @@
     <string name="suCheck">checking for superuser and busybox</string>
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="busyboxProblem">couldn\'t find busybox. please check error log</string>
-    <string name="mkfileError">couldn\'t create</string>
         <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
-    <string name="fallbackToDefault">fall back to default</string>
+    <string name="mkfileError">couldn\'t create</string>
         <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">fall back to default</string>
     <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSuccess">success</string>
     <string name="shellReturnError">error</string>
@@ -55,8 +55,8 @@
     <string name="batchFailure">complete with errors</string>
     
     <string name="enablePackage">enable</string>
+        <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">enable for users</string>
-        <!-- title for a list of checkable users -->
     <string name="disablePackage">disable</string>
     <string name="disablePackageTitle">disable for users</string>
 

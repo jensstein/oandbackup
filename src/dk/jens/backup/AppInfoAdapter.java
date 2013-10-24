@@ -20,6 +20,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     Context context;
     ArrayList<AppInfo> items;
     int layout;
+    String currentFilter;
 
     private ArrayList<AppInfo> originalValues;
     private MyArrayFilter mFilter;
@@ -112,6 +113,13 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         return mFilter;
     }
+    public void restoreFilter()
+    {
+        if(currentFilter != null && !currentFilter.isEmpty())
+        {
+            getFilter().filter(currentFilter);
+        }
+    }
     private class MyArrayFilter extends Filter
     {
         @Override
@@ -148,6 +156,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results)
         {
+            currentFilter = constraint.toString();
             items = (ArrayList<AppInfo>) results.values;
             ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
             if(results.count > 0)
@@ -164,10 +173,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         notInstalled.add(value);
                     }
                 }
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 notifyDataSetChanged();
             }
             else
@@ -201,12 +207,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         switch(options)
         {
-            case 1:
+            case 1: //user apps
                 for(AppInfo appInfo : originalValues)
                 {
                     if(!appInfo.isSystem)
                     {
-//                        add(appInfo);
                         if(appInfo.isInstalled)
                         {
                             add(appInfo);
@@ -217,12 +222,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 break;
-            case 2:
+            case 2: // system apps
                 for(AppInfo appInfo : originalValues)
                 {
                     if(appInfo.isSystem)
@@ -237,10 +239,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 break;
         }
         notifyDataSetChanged();
@@ -251,6 +250,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             originalValues = new ArrayList<AppInfo>(items);
         }
+        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
         clear();
         for(AppInfo appInfo : originalValues)
         {
@@ -258,10 +258,18 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             {
                 if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
                 {
-                    add(appInfo);
+                    if(appInfo.isInstalled)
+                    {
+                        add(appInfo);
+                    }
+                    else
+                    {
+                        notInstalled.add(appInfo);
+                    }
                 }
             }
         }
+        addAll(notInstalled);
         notifyDataSetChanged();
     }
     public void filterIsInstalled()
@@ -302,6 +310,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             originalValues = new ArrayList<AppInfo>(items);
         }
+        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
         clear();
         for(AppInfo appInfo : originalValues)
         {
@@ -309,9 +318,17 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             long diff = System.currentTimeMillis() - lastBackup;
             if(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f))
             {
-                add(appInfo);
+                if(appInfo.isInstalled)
+                {
+                    add(appInfo);
+                }
+                else
+                {
+                    notInstalled.add(appInfo);
+                }
             }
         }
+        addAll(notInstalled);
         notifyDataSetChanged();    
     }
     public void sortByLabel()
