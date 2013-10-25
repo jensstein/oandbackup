@@ -104,7 +104,7 @@ public class ShellCommands
                 return ret;
                 // zipret == 2 shouldn't be treated as an error
             }
-            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", true))
+            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", false))
             {
                 copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
             }
