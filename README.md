@@ -1,6 +1,7 @@
 oandbackup
 =======
 a backup program for android. requires root and allows you to backup individual apps and their data.
+both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores). oandbackup is also able to uninstall system apps.
 
 a working busybox installation is required at the moment.   
 a busybox executable can be obtained from various sources. here are instructions for building it from source: http://mobisocial.stanford.edu/news/2011/02/compile-busybox-on-android-os/   
