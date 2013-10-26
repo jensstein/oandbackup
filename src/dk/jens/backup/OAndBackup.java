@@ -420,10 +420,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
             });
         }
-        else
-        {
-            menu.removeItem(R.id.search);
-        }
         return true;
     }
     @Override
@@ -453,6 +449,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 break;
             case R.id.schedules:
                 startActivity(new Intent(this, Scheduler.class));
+                break;
+            case R.id.search:
+                setupLegacySearch();
                 break;
             default:
                 sorter.sort(item.getItemId());
@@ -574,11 +573,44 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public boolean onSearchRequested()
     {
+        setupLegacySearch();
         if(mSearchItem != null)
         {
             mSearchItem.expandActionView();
         }
         return true;
+    }
+    public void setupLegacySearch()
+    {
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
+        {
+            android.widget.LinearLayout linearLayout = (android.widget.LinearLayout) findViewById(R.id.linearLayout);
+            View child = linearLayout.getChildAt(0);
+            if(child.getClass() != android.widget.EditText.class)
+            {
+                android.widget.EditText et = new android.widget.EditText(this);
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(et, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                et.requestFocus();
+                et.addTextChangedListener(new android.text.TextWatcher()
+                {
+                    public void afterTextChanged(android.text.Editable s){}
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+                    public void onTextChanged(CharSequence s, int start, int before, int count)
+                    {
+                        OAndBackup.this.adapter.getFilter().filter(s.toString());
+                    }
+                });
+                android.view.ViewGroup.LayoutParams lp = new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                linearLayout.addView(et, 0, lp);
+            }
+            else
+            {
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(child, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                child.requestFocus();
+            }
+        }
     }
     public void createBackupDir(final String path)
     {

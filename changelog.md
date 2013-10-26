@@ -6,6 +6,7 @@ changelog
  * (unlimited) multiple schedules are now supported
  * new option to filter older backups
  * new option to copy own apk to top level of backup directory
+ * searching now works for older versions of android too
  * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
  * fixed sorting bug where sorting state was forgotten after restoring an app
 

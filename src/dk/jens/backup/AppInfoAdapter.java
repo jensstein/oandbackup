@@ -173,7 +173,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         notInstalled.add(value);
                     }
                 }
-                addAll(notInstalled);
+                // addAll cannot be used as it was only added in api level 11
+                for(AppInfo appInfo : notInstalled)
+                {
+                    add(appInfo);
+                }
                 notifyDataSetChanged();
             }
             else
@@ -222,7 +226,10 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                addAll(notInstalled);
+                for(AppInfo appInfo : notInstalled)
+                {
+                    add(appInfo);
+                }
                 break;
             case 2: // system apps
                 for(AppInfo appInfo : originalValues)
@@ -239,7 +246,10 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                addAll(notInstalled);
+                for(AppInfo appInfo : notInstalled)
+                {
+                    add(appInfo);
+                }
                 break;
         }
         notifyDataSetChanged();
@@ -269,7 +279,10 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 }
             }
         }
-        addAll(notInstalled);
+        for(AppInfo appInfo : notInstalled)
+        {
+            add(appInfo);
+        }
         notifyDataSetChanged();
     }
     public void filterIsInstalled()
@@ -328,7 +341,10 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 }
             }
         }
-        addAll(notInstalled);
+        for(AppInfo appInfo : notInstalled)
+        {
+            add(appInfo);
+        }
         notifyDataSetChanged();    
     }
     public void sortByLabel()

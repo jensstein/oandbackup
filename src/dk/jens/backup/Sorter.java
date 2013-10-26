@@ -3,7 +3,7 @@ package dk.jens.backup;
 public class Sorter
 {
     AppInfoAdapter adapter;
-    SortingMethod sortingMethod;
+    SortingMethod sortingMethod = SortingMethod.ALL;
     int oldBackups;
     boolean showAll = true;
     boolean showOnlyUser = false;
