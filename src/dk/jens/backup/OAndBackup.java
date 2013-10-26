@@ -588,7 +588,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             View child = linearLayout.getChildAt(0);
             if(child.getClass() != android.widget.EditText.class)
             {
-                android.widget.EditText et = new android.widget.EditText(this);
+                final android.widget.EditText et = new android.widget.EditText(this);
                 et.addTextChangedListener(new android.text.TextWatcher()
                 {
                     public void afterTextChanged(android.text.Editable s){}
@@ -600,9 +600,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 });
                 android.view.ViewGroup.LayoutParams lp = new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
                 linearLayout.addView(et, 0, lp);
-                et.requestFocus();
-                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(et, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                et.postDelayed(new Runnable(){
+                    public void run()
+                    {
+                        et.requestFocus();
+                        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(et, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }, 200);
+                // workaround for showing the keyboard automatically when search is selected from menu - probably not the best solution: turbomanage.wordpress.com/2012/05/02/show-soft-keyboard-automatically-when-edittext-receives-focus/
             }
             else
             {
