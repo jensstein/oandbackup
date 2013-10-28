@@ -160,36 +160,44 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void onClick(View v)
     {
         int number = (Integer) v.getTag();
-        View view = viewList.get(number);
-        EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-        EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-
-        switch(v.getId())
+        try
         {
-            case R.id.updateButton:
-                Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-                Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
-                edit.putLong("timePlaced" + number, System.currentTimeMillis());
-                edit.putInt("hourOfDay" + number, hourOfDay);
-                edit.putInt("repeatTime" + number, repeatTime);
-                if(prefs.getBoolean("enabled" + number, false))
-                {
-                    long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
-                    edit.putLong("timeUntilNextEvent" + number, startTime);
-//                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
-                    handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * intervalInDays);
-                }
-                edit.commit();
-                setTimeLeftTextView(number);
-                break;
-            case R.id.removeButton:
-                handleAlarms.cancelAlarm(number);
-                main.removeView(view);
-                viewList.remove(number);
-                removePreferenceEntries(totalSchedules--);
-                edit.putInt("total", totalSchedules);
-                edit.commit();
-                break;
+            View view = viewList.get(number);
+            EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
+            EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
+
+            switch(v.getId())
+            {
+                case R.id.updateButton:
+                    Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
+                    Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
+                    edit.putLong("timePlaced" + number, System.currentTimeMillis());
+                    edit.putInt("hourOfDay" + number, hourOfDay);
+                    edit.putInt("repeatTime" + number, repeatTime);
+                    if(prefs.getBoolean("enabled" + number, false))
+                    {
+                        long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
+                        edit.putLong("timeUntilNextEvent" + number, startTime);
+    //                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
+                        handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * intervalInDays);
+                    }
+                    edit.commit();
+                    setTimeLeftTextView(number);
+                    break;
+                case R.id.removeButton:
+                    handleAlarms.cancelAlarm(number);
+                    removePreferenceEntries(number);
+                    main.removeView(view);
+                    migrateSchedules(number, totalSchedules);
+                    viewList.remove(number);
+                    edit.putInt("total", --totalSchedules);
+                    edit.commit();
+                    break;
+            }
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            e.printStackTrace();
         }
     }
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -231,6 +239,43 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
             }
         }
+    }
+    public void migrateSchedules(int number, int total)
+    {
+        for(int i = number; i < total; i++)
+        {
+            // decrease alarm id by one if set
+            if(prefs.getBoolean("enabled" + (i + 1), false))
+            {
+                long timePassed = System.currentTimeMillis() - prefs.getLong("timePlaced" + (i + 1), 0);
+                long timeLeft = prefs.getLong("timeUntilNextEvent" + (i + 1), 0) - timePassed;
+                long repeat = (long)(prefs.getInt("repeatTime" + (i + 1), 0) * intervalInDays);
+                handleAlarms.cancelAlarm(i + 1);
+                handleAlarms.setAlarm(i, timeLeft, repeat);
+            }
+
+            // move settings one place back
+            edit.putBoolean("enabled" + i, prefs.getBoolean("enabled" + (i + 1), false));
+            edit.putInt("hourOfDay" + i, prefs.getInt("hourOfDay" + (i + 1), 0));
+            edit.putInt("repeatTime" + i, prefs.getInt("repeatTime" + (i + 1), 0));
+            edit.putInt("scheduleMode" + i, prefs.getInt("scheduleMode" + (i + 1), 0));
+            edit.putLong("timePlaced" + i, prefs.getLong("timePlaced" + (i + 1), System.currentTimeMillis()));
+            edit.putLong("timeUntilNextEvent" + i, prefs.getLong("timeUntilNextEvent" + (i + 1), 0));
+            edit.commit();
+
+            // update tags on view elements
+            View view = viewList.get(i + 1);
+            Button updateButton = (Button) view.findViewById(R.id.updateButton);
+            Button removeButton = (Button) view.findViewById(R.id.removeButton);
+            CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
+            Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
+
+            updateButton.setTag(i);
+            removeButton.setTag(i);
+            cb.setTag(i);
+            spinner.setTag(i);
+        }
+        removePreferenceEntries(total);
     }
     public void removePreferenceEntries(int number)
     {
