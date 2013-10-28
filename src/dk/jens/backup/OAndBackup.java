@@ -564,7 +564,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(key.equals("timestamp"))
         {
             localTimestampFormat = prefs.getBoolean("timestamp", true);
-            refresh();
+//            refresh(); 
+                // conflicts with the other call to refresh() if both this and pathBackupFolder is changed
         }
         if(key.equals("oldBackups"))
         {

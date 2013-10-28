@@ -6,7 +6,7 @@
         android:id="@+id/linearLayout"
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
     </LinearLayout>
 </ScrollView>

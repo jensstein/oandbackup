@@ -115,7 +115,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void restoreFilter()
     {
-        if(currentFilter != null && !currentFilter.isEmpty())
+        if(currentFilter != null && currentFilter.length() > 0)
         {
             getFilter().filter(currentFilter);
         }

@@ -34,7 +34,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
         //midlertidigt indtil custom layout med flere muligheder
         if(isInstalled)
         {
-            builder.setPositiveButton("backup", new DialogInterface.OnClickListener()
+            builder.setPositiveButton(context.getString(R.string.backup), new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -45,7 +45,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
         }
         if(!appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
         {
-            builder.setNegativeButton("restore", new DialogInterface.OnClickListener()
+            builder.setNegativeButton(context.getString(R.string.restore), new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
