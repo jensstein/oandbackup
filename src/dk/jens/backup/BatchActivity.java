@@ -42,7 +42,7 @@ import java.util.List;
 
 public class BatchActivity extends Activity implements OnClickListener
 {
-    public static List<PackageInfo> pinfoList;
+//    public static List<PackageInfo> pinfoList;
     public static ArrayList<AppInfo> appInfoList;
     final static String TAG = OAndBackup.TAG; 
     boolean backupBoolean;

@@ -130,55 +130,65 @@ public class ShellCommands
         String packageData = logInfo.getDataDir();
         Log.i(TAG, "restoring: " + label);
 
-        try
+        // check if there is a directory to copy from - it is not necessarily an error if there isn't
+        String[] list = new File(backupDir, packageName).list();
+        if(list != null && list.length > 0)
         {
-            killPackage(packageName);
-            if(new File(backupDir, packageName + ".zip").exists())
+            try
             {
-                unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
-            }
-            else
-            {
-                untarRet = untar(backupDir.getAbsolutePath(), packageName);
-            }
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
-//            dos.writeBytes("am force-stop " + packageName + "\n");
-            dos.flush();
-            dos.writeBytes("exit\n");
-            dos.flush();
-
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
+                killPackage(packageName);
+                if(new File(backupDir, packageName + ".zip").exists())
                 {
-                    writeErrorLog(line);
+                    unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
                 }
+                else
+                {
+                    untarRet = untar(backupDir.getAbsolutePath(), packageName);
+                }
+                p = Runtime.getRuntime().exec("su");
+                dos = new DataOutputStream(p.getOutputStream());
+                dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
+    //            dos.writeBytes("am force-stop " + packageName + "\n");
+                dos.flush();
+                dos.writeBytes("exit\n");
+                dos.flush();
+
+                int ret = p.waitFor();
+                if(ret != 0)
+                {
+                    ArrayList<String> stderr = getOutput(p).get("stderr");
+                    for(String line : stderr)
+                    {
+                        writeErrorLog(line);
+                    }
+                }
+                String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
+                Log.i(TAG, "return: " + ret + " / " + returnMessages);
+                if(untarRet == 0 || unzipRet == 0)
+                {
+                    deleteBackup(new File(backupDir, packageName));
+                }
+                if(multiuserEnabled)
+                {
+                    disablePackage(packageName);
+                }
+                return ret;
             }
-            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
-            Log.i(TAG, "return: " + ret + " / " + returnMessages);
-            if(untarRet == 0 || unzipRet == 0)
+            catch(IOException e)
             {
-                deleteBackup(new File(backupDir, packageName));
+                e.printStackTrace();
+                return 1;
             }
-            if(multiuserEnabled)
+            catch(InterruptedException e)
             {
-                disablePackage(packageName);
+                Log.i(TAG, "doRestore: " + e.toString());
+                return 1;
             }
-            return ret;
         }
-        catch(IOException e)
+        else
         {
-            e.printStackTrace();
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, "doRestore: " + e.toString());
-            return 1;
+            Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupDirPath + "/" + packageName);
+            return 0;
         }
     }
     public int setPermissions(String packageDir)
@@ -298,10 +308,11 @@ public class ShellCommands
                 dos.writeBytes("exit\n");
                 dos.flush();
                 int ret = p.waitFor();
-    //                Log.i(TAG, "restoreApk return: " + ret);
-                // det ser ud til at pm install giver 0 som return selvom der sker en fejl
+                // pm install returns 0 even for errors and prints part of its normal output to stderr
+                // on api level 10 successful output spans three lines while it spans one line on the other api levels
                 ArrayList<String> err = getOutput(p).get("stderr");
-                if(err.size() > 1)
+                int limit = (android.os.Build.VERSION.SDK_INT == 10) ? 3 : 1;
+                if(err.size() > limit)
                 {
                     for(String line : err)
                     {

@@ -123,7 +123,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 handleMessages.endMessage();
                 listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
-
+                
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
                 sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));
                 runOnUiThread(new Runnable(){
@@ -266,7 +266,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
-        BatchActivity.pinfoList = pinfoList;
+//        BatchActivity.pinfoList = pinfoList;
 
         for(PackageInfo pinfo : pinfoList)
         {
