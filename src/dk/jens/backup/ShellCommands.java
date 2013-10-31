@@ -90,6 +90,10 @@ public class ShellCommands
             String folder = new File(packageData).getName();
             deleteBackup(new File(backupSubDir, folder + "/lib"));
 //            int tarRet = tar(backupDir.getAbsolutePath(), folder);
+            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", false))
+            {
+                copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
+            }
             int zipret = new Compression().zip(new File(backupSubDir, folder));
             if(zipret == 0)
             {
@@ -103,10 +107,6 @@ public class ShellCommands
                 deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
                 return ret;
                 // zipret == 2 shouldn't be treated as an error
-            }
-            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", false))
-            {
-                copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
             }
             return ret + zipret;
         }
@@ -130,21 +130,21 @@ public class ShellCommands
         String packageData = logInfo.getDataDir();
         Log.i(TAG, "restoring: " + label);
 
-        // check if there is a directory to copy from - it is not necessarily an error if there isn't
-        String[] list = new File(backupDir, packageName).list();
-        if(list != null && list.length > 0)
+        try
         {
-            try
+            killPackage(packageName);
+            if(new File(backupDir, packageName + ".zip").exists())
             {
-                killPackage(packageName);
-                if(new File(backupDir, packageName + ".zip").exists())
-                {
-                    unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
-                }
-                else
-                {
-                    untarRet = untar(backupDir.getAbsolutePath(), packageName);
-                }
+                unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
+            }
+            else if(new File(backupDir, packageName + ".tar.gz").exists())
+            {
+                untarRet = untar(backupDir.getAbsolutePath(), packageName);
+            }
+            // check if there is a directory to copy from - it is not necessarily an error if there isn't
+            String[] list = new File(backupDir, packageName).list();
+            if(list != null && list.length > 0)
+            {
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
@@ -164,31 +164,34 @@ public class ShellCommands
                 }
                 String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
                 Log.i(TAG, "return: " + ret + " / " + returnMessages);
-                if(untarRet == 0 || unzipRet == 0)
-                {
-                    deleteBackup(new File(backupDir, packageName));
-                }
                 if(multiuserEnabled)
                 {
                     disablePackage(packageName);
                 }
                 return ret;
             }
-            catch(IOException e)
+            else
             {
-                e.printStackTrace();
-                return 1;
-            }
-            catch(InterruptedException e)
-            {
-                Log.i(TAG, "doRestore: " + e.toString());
-                return 1;
+                Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupDir.getAbsolutePath() + "/" + packageName);
+                return 0;
             }
         }
-        else
+        catch(IOException e)
         {
-            Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupDirPath + "/" + packageName);
-            return 0;
+            e.printStackTrace();
+            return 1;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, "doRestore: " + e.toString());
+            return 1;
+        }
+        finally
+        {
+            if(untarRet == 0 || unzipRet == 0)
+            {
+                deleteBackup(new File(backupDir, packageName));
+            }
         }
     }
     public int setPermissions(String packageDir)

@@ -9,6 +9,7 @@ changelog
  * searching now works for older versions of android too
  * fixed issue where clicking a notification while a message was displayed would lead to windowleaked
  * fixed sorting bug where sorting state was forgotten after restoring an app
+ * fixed bug where output of pm install wasn't read properly on android versions 2.3.3 - 2.3.7
 
 0.2.4 (2013-09-30)
 ------------------

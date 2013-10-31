@@ -366,12 +366,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 {
                     refresh();
                 }
-            }
-            for(AppInfo appInfo : appInfoList)
-            {
-                if(appInfo.isChecked)
+                else
                 {
-                    appInfo.toggle();
+                    for(AppInfo appInfo : appInfoList)
+                    {
+                        if(appInfo.isChecked)
+                        {
+                            appInfo.toggle();
+                        }
+                    }
                 }
             }
         }
