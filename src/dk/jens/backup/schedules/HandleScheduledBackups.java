@@ -146,7 +146,8 @@ public class HandleScheduledBackups
                         if(i == total)
                         {
                             String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
-                            notificationHelper.showNotification(OAndBackup.class, id, notificationTitle, context.getString(R.string.sched_notificationMessage), true);
+                            String notificationMessage = errorFlag ? context.getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()) : context.getString(R.string.sched_notificationMessage);
+                            notificationHelper.showNotification(OAndBackup.class, id, notificationTitle, notificationMessage, true);
                         }
                     }
                     if(wl.isHeld())

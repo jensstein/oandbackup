@@ -204,7 +204,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel() + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()), true);
                 }
             }
         }).start();
@@ -263,7 +263,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel() + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()), true);
                 }
             }
         }).start();
@@ -578,8 +578,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 // conflicts with the other call to refresh() if both this and pathBackupFolder is changed
         }
         if(key.equals("oldBackups"))
-        {
-            sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));        
+        {                
+            int oldBackups = 0;
+            try
+            {
+                oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+            }
+            catch(NumberFormatException e)
+            {}
+            sorter = new Sorter(adapter, oldBackups);
         }
     }
     public boolean onSearchRequested()

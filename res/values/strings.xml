@@ -53,6 +53,8 @@
     <string name="restoreFailure">error on restore</string>
     <string name="batchSuccess">operation complete</string>
     <string name="batchFailure">complete with errors</string>
+        <!-- errrorlogReference: used in notifications when error encountered. path to logfile is printed after this string -->
+    <string name="errorlogReference">please check the logfile:</string>
     
     <string name="enablePackage">enable</string>
         <!-- enablePackageTitle: title for a list of checkable users -->
@@ -71,8 +73,9 @@
     <string name="prefs_summaryLogfile">path to logfile. leave blank for default.</string>
     <string name="prefs_pathBusybox">busybox</string>
     <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
-    <string name="prefs_oldBackups">show old backups</string>
-    <string name="prefs_summaryOldBackups">filter backups older than value in days</string>
+    <string name="prefs_oldBackups">filter backups by age</string>
+        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
+    <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
     <string name="prefs_copySelfApk">copy own apk</string>
     <string name="prefs_summaryCopySelfApk">place a copy of oandbackup in the top level of the backup folder when backed up</string>
     

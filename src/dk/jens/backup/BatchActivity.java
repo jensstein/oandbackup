@@ -158,7 +158,14 @@ public class BatchActivity extends Activity implements OnClickListener
 
         listView = (ListView) findViewById(R.id.listview);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
-        sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));
+        int oldBackups = 0;
+        try
+        {
+            oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+        }
+        catch(NumberFormatException e)
+        {}
+        sorter = new Sorter(adapter, oldBackups);
         listView.setAdapter(adapter);
         // onItemClickListener gør at hele viewet kan klikkes - med onCheckedListener er det kun checkboxen der kan klikkes
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -346,6 +353,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     {
                         String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
                         String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
+                        msg = errorFlag ? msg + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()) : msg;
                         notificationHelper.showNotification(BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }

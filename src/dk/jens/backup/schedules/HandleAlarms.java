@@ -28,10 +28,13 @@ public class HandleAlarms
         {
             am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
         }
+        // used for testing:
+        /*
         else
         {
             am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
         }
+        */
         Log.i(TAG, "backup starting in: " + (start / 1000 / 60 / 60f));
     }
     public void cancelAlarm(int id)
