@@ -26,7 +26,7 @@
     <string name="sortByLabel">sort by label</string>
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort and filter</string>
-    <string name="uninstallDialogMessage">uninstall this package?</string>
+    <string name="uninstallDialogMessage">uninstall this app?</string>
     <string name="deleteBackupDialogMessage">delete backup files?</string>
     <string name="dialogOK">ok</string>
     <string name="dialogCancel">cancel</string>

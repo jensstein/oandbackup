@@ -125,7 +125,14 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 registerForContextMenu(listView);
                 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
-                sorter = new Sorter(adapter, Integer.valueOf(prefs.getString("oldBackups", "0")));
+                int oldBackups = 0;
+                try
+                {
+                    oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+                }
+                catch(NumberFormatException e)
+                {}
+                sorter = new Sorter(adapter, oldBackups);
                 runOnUiThread(new Runnable(){
                     public void run()
                     {

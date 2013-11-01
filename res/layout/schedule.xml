@@ -47,25 +47,20 @@
             android:inputType="number"
             />
     </LinearLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/sched_backupMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sched_backupMode"
-            android:textSize="14sp"
-            android:textColor="#fff"
-            android:padding="5sp"
-            />
-        <Spinner
-            android:id="@+id/sched_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_alignParentRight="true"
-            />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/sched_backupMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sched_backupMode"
+        android:textSize="14sp"
+        android:textColor="#fff"
+        android:padding="5sp"
+        />
+    <Spinner
+        android:id="@+id/sched_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        />
     <TextView
         android:id="@+id/sched_timeLeft"
         android:layout_width="wrap_content"
@@ -74,34 +69,29 @@
         android:textColor="#fff"
         android:padding="5sp"
         />
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:text="@string/sched_checkbox"
+        android:onClick="checkboxOnClick" 
+        />
     <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        <CheckBox
-            android:id="@+id/checkbox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" 
-            android:text="@string/sched_checkbox"
-            android:onClick="checkboxOnClick" 
-            android:gravity="left"
-            android:layout_weight="0.5"
-            />
+        android:layout_height="wrap_content" >        
         <Button
             android:id="@+id/updateButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
             android:text="@string/sched_updateButton"
-            android:layout_gravity="right"
-            android:layout_weight="0.25"
             android:textAlignment="center"
             />
         <Button
             android:id="@+id/removeButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
             android:text="@string/sched_removeButton"
-            android:layout_gravity="right"
-            android:layout_weight="0.25"
             android:textAlignment="center"
             />
     </LinearLayout>
