@@ -332,9 +332,9 @@ public class ShellCommands
             {
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("mount -o remount,rw /system\n");
+                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " cp " + apk + " /system/app/" + "\n");
-                dos.writeBytes("mount -o remount,r /system\n");
+                dos.writeBytes(busybox + " mount -o remount,r /system\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
