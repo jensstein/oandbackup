@@ -204,7 +204,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel() + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
                 }
             }
         }).start();
@@ -263,7 +263,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel() + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()), true);
+                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
                 }
             }
         }).start();

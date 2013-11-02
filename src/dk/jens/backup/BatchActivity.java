@@ -353,7 +353,6 @@ public class BatchActivity extends Activity implements OnClickListener
                     {
                         String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
                         String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
-                        msg = errorFlag ? msg + " - " + getString(R.string.errorlogReference) + " " + prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath()) : msg;
                         notificationHelper.showNotification(BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }
