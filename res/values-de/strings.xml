@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">oandbackup</string>
+  <string name="backup">Backup</string>
+  <string name="restore">Wiederherstellen</string>
+  <string name="backupConfirmation">Sichern?</string>
+  <string name="restoreConfirmation">Wiederherstellen?</string>
+  <string name="radioApk">apk</string>
+  <string name="radioData">data</string>
+  <string name="radioBoth">data + apk</string>
+  <string name="de_selectAll">alle an-/abwählen</string>
+  <string name="refresh">Aktualisieren</string>
+  <string name="batchbackup">Backup Stapelverarbeitung</string>
+  <string name="batchrestore">Wiederherstellung Stapelverarbeitung</string>
+  <string name="search">Suchen</string>
+  <string name="deleteBackup">Backup löschen</string>
+  <string name="uninstall">Deinstalliere App</string>
+  <string name="uninstallProgess">Deinstalliere</string>
+  <string name="showAll">Alle Apps anzeigen</string>
+  <string name="showOnlySystem">Nur System-Apps anzeigen</string>
+  <string name="showOnlyUser">Nur Apps des Nutzers anzeigen</string>
+  <string name="showNotBackedup">Apps ohne Backup anzeigen</string>
+  <string name="showNotInstalled">Nicht installierte Anwendugen anzeigen</string>
+  <string name="showNewAndUpdated">Neue und aktualisierte Apps anzeigen</string>
+  <string name="showOldBackups">Alte Backups anzeigen</string>
+  <string name="sortByLabel">Nach Bezeichnung sortieren</string>
+  <string name="sortByPackageName">Nach Paketname sortieren</string>
+  <string name="sort">Sortieren und Filtern</string>
+  <string name="uninstallDialogMessage">Diese App deinstallieren?</string>
+  <string name="deleteBackupDialogMessage">Backup-Dateien löschen?</string>
+  <string name="dialogOK">Okay</string>
+  <string name="dialogCancel">Abbrechen</string>
+  <string name="dialogYes">Ja</string>
+  <string name="dialogNo">Nein</string>
+  <string name="noBackupYet">Noch kein Backup</string>
+  <string name="restoreDataWithoutApkError">Kann Daten nicht ohne apk wiederherstellen, Paket ist nicht installiert:</string>
+  <string name="collectingData">Sammle Paketinformationen</string>
+  <string name="suCheck">Prüfe für Superuser und Busybox</string>
+  <string name="noSu">Konnte Superuser-Rechte nicht erlangen</string>
+  <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehler-Log überprüfen.</string>
+  <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
+  <string name="mkfileError">Konnte Datei nicht erstellen</string>
+  <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
+  <string name="fallbackToDefault">Falle auf Standard zurück</string>
+  <string name="backupFolderError">Bitte korrekten Pfad in den Einstellungen setzen und versichern dass dieser existiert oder erstellbar ist.</string>
+  <string name="shellReturnSuccess">Erfolgreich!</string>
+  <string name="shellReturnError">Fehler</string>
+  <string name="backupProgress">Sichere…</string>
+  <string name="backupSuccess">Backup abgeschlossen</string>
+  <string name="backupFailure">Fehler beim Sichern</string>
+  <string name="restoreProgress">Wiederherstellung</string>
+  <string name="restoreSuccess">Wiederherstellung komplett</string>
+  <string name="restoreFailure">Fehler bei Wiederherstellung</string>
+  <string name="batchSuccess">Operation abgeschlossen</string>
+  <string name="batchFailure">Mit Fehlern abgeschlossen</string>
+  <string name="enablePackage">Aktivieren</string>
+  <!--enablePackageTitle: title for a list of checkable users-->
+  <string name="enablePackageTitle">Für Nutzer aktivieren</string>
+  <string name="disablePackage">Deaktivieren</string>
+  <string name="disablePackageTitle">Deaktivieren für Nutzer</string>
+  <string name="prefs_title">Einstellungen</string>
+  <string name="prefs_timestamp">Lokales Zeitformat nutzen</string>
+  <string name="prefs_acquireWakelock">Wakelock verwenden</string>
+  <string name="prefs_summaryAcquireWakelock">Beschleunigt Backups im Hintergrund erheblich, verbraucht jedoch mehr Energie.</string>
+  <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>
+  <string name="prefs_pathBackupFolder">Backup-Verzeichnis</string>
+  <string name="prefs_summaryBackupFolder">Pfad zum Backup-Verzeichnis. Leerlassen für Standardwert. </string>
+  <string name="prefs_pathLogfile">Log-Datei</string>
+  <string name="prefs_summaryLogfile">Pfad zur Log-Datei. Leer lassen für Standardwert.</string>
+  <string name="prefs_pathBusybox">Busybox</string>
+  <string name="prefs_summaryBusybox">Pfad zur Busybox-Programmdatei. Auf Korrektheit überprüfen! Leer lassen für Standardwert.</string>
+  <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
+  <string name="prefs_copySelfApk">Eigene apk-Datei kopieren</string>
+  <string name="prefs_summaryCopySelfApk">Erstelle eine Kopie von oandbackup auf höchster Ebene im Backup-Verzeichnis.</string>
+  <string name="sched_title">Backup-Planung</string>
+  <string name="sched_notificationMessage">Geplantes Backup</string>
+  <string name="sched_interval">Interval in Tagen</string>
+  <string name="sched_hourOfDay">Stunde des Tages (0..23)</string>
+  <string name="sched_checkbox">Aktivieren</string>
+  <string name="sched_updateButton">Aktualisieren</string>
+  <string name="sched_removeButton">Entfernen</string>
+  <string name="sched_startingbackup">Starte geplantes Backup</string>
+  <string name="sched_backupMode">Backup-Modus</string>
+  <string name="sched_timeLeft">Stunden bis zum nächsten Backup</string>
+  <string name="sched_addSchudule">Hinzufügen zur Planung</string>
+</resources>

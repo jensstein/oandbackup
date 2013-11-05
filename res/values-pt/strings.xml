@@ -26,7 +26,7 @@
   <string name="sortByLabel">Ordenar por nome</string>
   <string name="sortByPackageName">Ordenar por nome do pacote</string>
   <string name="sort">Filtro e ordem</string>
-  <string name="uninstallDialogMessage">Desinstalar este pacote?</string>
+  <string name="uninstallDialogMessage">Desinstalar aplicação?</string>
   <string name="deleteBackupDialogMessage">Remover ficheiros de backup?</string>
   <string name="dialogOK">Ok</string>
   <string name="dialogCancel">Cancelar</string>
@@ -38,10 +38,10 @@
   <string name="suCheck">A verificar superuser e busybox</string>
   <string name="noSu">Não foi possível obter as permissões superuser</string>
   <string name="busyboxProblem">Não foi possível encontrar busybox. Consulte o registo de erros</string>
-  <string name="mkfileError">Não foi possível criar</string>
   <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
-  <string name="fallbackToDefault">utilizar pré-definições</string>
+  <string name="mkfileError">Não foi possível criar</string>
   <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
+  <string name="fallbackToDefault">utilizar pré-definições</string>
   <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
   <string name="shellReturnSuccess">Sucesso</string>
   <string name="shellReturnError">Erro</string>
@@ -54,8 +54,8 @@
   <string name="batchSuccess">Operação terminada</string>
   <string name="batchFailure">Terminada com erros</string>
   <string name="enablePackage">Ativar</string>
+  <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>
-  <!--title for a list of checkable users-->
   <string name="disablePackage">Desativar</string>
   <string name="disablePackageTitle">Desativar para</string>
   <string name="prefs_title">Preferências</string>
@@ -69,8 +69,9 @@
   <string name="prefs_summaryLogfile">Caminho do ficheiro de registos. Deixe em branco para utilizar o caminho padrão.</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
-  <string name="prefs_oldBackups">Mostrar backups antigos</string>
-  <string name="prefs_summaryOldBackups">Filtrar backups por antiguidade</string>
+  <string name="prefs_oldBackups">Filtrar backups por antiguidade</string>
+  <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
+  <string name="prefs_summaryOldBackups">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado</string>
   <string name="prefs_copySelfApk">Copiar apk</string>
   <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
   <string name="sched_title">Agendamento</string>

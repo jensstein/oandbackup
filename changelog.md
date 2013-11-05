@@ -1,9 +1,10 @@
 changelog
 =========
 
-0.2.5 (development)
+0.2.5 (2013-11-05)
 ------------------
  * (unlimited) multiple schedules are now supported
+ * added german translation. thanks to lightonflux
  * new option to filter older backups
  * new option to copy own apk to top level of backup directory
  * searching now works for older versions of android too
