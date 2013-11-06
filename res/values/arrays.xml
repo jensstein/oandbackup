@@ -6,4 +6,18 @@
         <item>system apps</item>
         <item>new and updated apps</item>
     </string-array>
+    <string-array name="languageEntries">
+        <!-- only the first item (system default) should be translated -->
+        <item>system default</item>
+        <item>deutsch (deutschland)</item>
+        <item>english</item>
+        <item>português (portugal)</item>
+    </string-array>
+    <!-- languageEntryValues shouldn't be translated -->
+    <string-array name="languageEntryValues">
+        <item>system</item>
+        <item>de</item>
+        <item>en</item>
+        <item>pt</item>
+    </string-array>
 </resources>

@@ -76,6 +76,7 @@
     <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
     <string name="prefs_copySelfApk">copy own apk</string>
     <string name="prefs_summaryCopySelfApk">place a copy of oandbackup in the top level of the backup folder when backed up</string>
+    <string name="prefs_languages">languages</string>    
     
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>

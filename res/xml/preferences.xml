@@ -23,6 +23,13 @@
         android:summary="@string/prefs_summaryOldBackups"
         android:inputType="number"
         />
+    <ListPreference
+        android:key="languages"
+        android:title="@string/prefs_languages"
+        android:entries="@array/languageEntries"
+        android:entryValues="@array/languageEntryValues"
+        android:defaultValue="system"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >

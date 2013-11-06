@@ -93,6 +93,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         new Thread(new Runnable(){
             public void run()
             {
+                prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+                prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
+                new LanguageHelper().initLanguage(OAndBackup.this, prefs.getString("languages", "system"));
                 handleMessages.showMessage("", getString(R.string.suCheck));
                 boolean haveSu = shellCommands.checkSuperUser();
                 if(!haveSu)
@@ -112,8 +115,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
-                prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
-                prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
                 createBackupDir(backupDirPath);
                 localTimestampFormat = prefs.getBoolean("timestamp", true);
@@ -587,6 +588,17 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             catch(NumberFormatException e)
             {}
             sorter = new Sorter(adapter, oldBackups);
+        }
+        if(key.equals("languages"))
+        {
+            new LanguageHelper().changeLanguage(OAndBackup.this, prefs.getString("languages", "system"));
+//            recreate();
+            Intent intent = getIntent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
         }
     }
     public boolean onSearchRequested()
