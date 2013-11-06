@@ -1,10 +1,12 @@
 package dk.jens.backup;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 
-public class Preferences extends PreferenceActivity
+public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -24,4 +26,28 @@ public class Preferences extends PreferenceActivity
             logFilePref.setText(fileCreator.getDefaultLogFilePath());
         }
     }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);        
+    }
+    @Override
+    public void onPause()
+    {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);    
+        super.onPause();
+    }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
+    {
+        if(key.equals("languages"))
+        {
+            new LanguageHelper().changeLanguage(this, preferences.getString("languages", "system"));
+            Intent intent = getIntent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            startActivity(intent);
+        }
+    }    
 }

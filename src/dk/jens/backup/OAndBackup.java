@@ -589,17 +589,16 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {}
             sorter = new Sorter(adapter, oldBackups);
         }
+        /*
         if(key.equals("languages"))
         {
-            new LanguageHelper().changeLanguage(OAndBackup.this, prefs.getString("languages", "system"));
-//            recreate();
+            new LanguageHelper().changeLanguage(this, prefs.getString("languages", "system"));
             Intent intent = getIntent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             finish();
-            overridePendingTransition(0, 0);
             startActivity(intent);
-            overridePendingTransition(0, 0);
         }
+        */
     }
     public boolean onSearchRequested()
     {
