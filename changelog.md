@@ -1,6 +1,10 @@
 changelog
 =========
 
+0.2.6 (development)
+-------------------
+ * added option to change language
+
 0.2.5 (2013-11-05)
 ------------------
  * (unlimited) multiple schedules are now supported
