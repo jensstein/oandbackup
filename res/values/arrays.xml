@@ -6,13 +6,15 @@
         <item>system apps</item>
         <item>new and updated apps</item>
     </string-array>
+    
+    <!-- languageEntries shouldn't be translated -->
     <string-array name="languageEntries">
-        <!-- only the first item (system default) should be translated -->
-        <item>system default</item>
+        <item>@string/prefs_languageSystemDefault</item>
         <item>deutsch (deutschland)</item>
         <item>english</item>
         <item>português (portugal)</item>
     </string-array>
+    
     <!-- languageEntryValues shouldn't be translated -->
     <string-array name="languageEntryValues">
         <item>system</item>
