@@ -69,7 +69,9 @@
   <string name="prefs_summaryLogfile">Pfad zur Log-Datei. Leer lassen für Standardwert.</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Pfad zur Busybox-Programmdatei. Auf Korrektheit überprüfen! Leer lassen für Standardwert.</string>
+  <string name="prefs_oldBackups">Filter Backups nach Alter</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
+  <string name="prefs_summaryOldBackups">Filter Backups älter als Tage in Wert. Genutzt vom Filter \"Alte Backups anzeigen\"</string>
   <string name="prefs_copySelfApk">Eigene apk-Datei kopieren</string>
   <string name="prefs_summaryCopySelfApk">Erstelle eine Kopie von oandbackup auf höchster Ebene im Backup-Verzeichnis.</string>
   <string name="sched_title">Backup-Planung</string>
