@@ -37,6 +37,7 @@ public class ShellCommands
     FileCreationHelper fileCreator;
     LogFile logFile;
     ArrayList<String> users;
+    String errors = "";
     boolean localTimestampFormat, multiuserEnabled;
     public ShellCommands(Context context, ArrayList<String> users)
     {
@@ -554,6 +555,7 @@ public class ShellCommands
     public void writeErrorLog(String err)
     {
         // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
+        errors += err + "\n";
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
         String dateFormated = dateFormat.format(date);
@@ -580,6 +582,14 @@ public class ShellCommands
         {
             Log.i(TAG, e.toString());
         }
+    }
+    public String getErrors()
+    {
+        return errors;
+    }
+    public void clearErrors()
+    {
+        errors = "";
     }
     public boolean checkSuperUser()
     {

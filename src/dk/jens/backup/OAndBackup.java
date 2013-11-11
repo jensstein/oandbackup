@@ -88,7 +88,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
-        logFile = new LogFile(this);
+        logFile = new LogFile(this);        
         
         new Thread(new Runnable(){
             public void run()
@@ -206,6 +206,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
+                    Utils utils = new Utils(OAndBackup.this); // must be passed an activity context
+                    utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
         }).start();
@@ -265,6 +267,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
+                    Utils utils = new Utils(OAndBackup.this);
+                    utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
         }).start();
@@ -589,16 +593,16 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {}
             sorter = new Sorter(adapter, oldBackups);
         }
-        /*
         if(key.equals("languages"))
         {
             new LanguageHelper().changeLanguage(this, prefs.getString("languages", "system"));
             Intent intent = getIntent();
+            overridePendingTransition(0, 0);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            overridePendingTransition(0, 0);
             finish();
             startActivity(intent);
         }
-        */
     }
     public boolean onSearchRequested()
     {

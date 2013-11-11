@@ -363,6 +363,11 @@ public class BatchActivity extends Activity implements OnClickListener
                 wl.release();
                 Log.i(TAG, "wakelock released");
             }
+            if(errorFlag)
+            {
+                Utils utils = new Utils(BatchActivity.this);
+                utils.showErrors(this, shellCommands);
+            }
             Intent result = new Intent();
             result.putExtra("changesMade", changesMade);
             setResult(RESULT_OK, result);
