@@ -73,6 +73,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     LogFile logFile;
     NotificationHelper notificationHelper;
     Sorter sorter;
+    Utils utils;
 
     ListView listView;
     
@@ -88,7 +89,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
-        logFile = new LogFile(this);        
+        logFile = new LogFile(this);
+        utils = new Utils(OAndBackup.this); // must be passed an activity context
         
         new Thread(new Runnable(){
             public void run()
@@ -111,12 +113,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 boolean bboxInstalled = shellCommands.checkBusybox();
                 if(!bboxInstalled)
                 {
-                    showWarning("", getString(R.string.busyboxProblem));
+                    utils.showWarning("", getString(R.string.busyboxProblem));
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-                createBackupDir(backupDirPath);
+                backupDir = utils.createBackupDir(backupDirPath, fileCreator);
                 localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
@@ -206,7 +208,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
-                    Utils utils = new Utils(OAndBackup.this); // must be passed an activity context
                     utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
@@ -267,7 +268,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
-                    Utils utils = new Utils(OAndBackup.this);
                     utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
@@ -569,7 +569,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(key.equals("pathBackupFolder"))
         {
             String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-            createBackupDir(backupDirPath);
+            backupDir = utils.createBackupDir(backupDirPath, fileCreator);
             refresh();
         }
         if(key.equals("pathBusybox"))
@@ -650,47 +650,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 imm.showSoftInput(child, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
             }
         }
-    }
-    public void createBackupDir(final String path)
-    {
-        if(path.trim().length() > 0)
-        {
-            backupDir = fileCreator.createBackupFolder(path);
-            if(fileCreator.fallbackFlag)
-            {
-                runOnUiThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        Toast.makeText(OAndBackup.this, getString(R.string.mkfileError) + " " + path + " - " + getString(R.string.fallbackToDefault) + ": " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }
-        else
-        {
-            backupDir = fileCreator.createBackupFolder(fileCreator.getDefaultBackupDirPath());
-        }
-        if(backupDir == null)
-        {
-            showWarning(getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), getString(R.string.backupFolderError));
-        }
-    }
-    public void showWarning(final String title, final String message)
-    {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                new AlertDialog.Builder(OAndBackup.this)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id){}})
-                    .setCancelable(false)
-                    .show();
-            }
-        });
     }
     public void displayDialogEnableDisable(final String packageName, final boolean enable)
     {

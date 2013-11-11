@@ -105,7 +105,7 @@ public class BatchActivity extends Activity implements OnClickListener
         */
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-        createBackupDir(backupDirPath);
+        backupDir = new Utils(BatchActivity.this).createBackupDir(backupDirPath, fileCreator);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         Bundle extra = getIntent().getExtras();
@@ -371,27 +371,6 @@ public class BatchActivity extends Activity implements OnClickListener
             Intent result = new Intent();
             result.putExtra("changesMade", changesMade);
             setResult(RESULT_OK, result);
-        }
-    }
-    public void createBackupDir(String path)
-    {
-        if(path.trim().length() > 0)
-        {
-            backupDir = fileCreator.createBackupFolder(path);
-        }
-        else
-        {
-            backupDir = fileCreator.createBackupFolder(fileCreator.getDefaultBackupDirPath());
-        }
-        if(backupDir == null)
-        {
-            runOnUiThread(new Runnable()
-            {
-                public void run()
-                {
-                    Toast.makeText(BatchActivity.this, getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
-                }
-            });                    
         }
     }
 }
