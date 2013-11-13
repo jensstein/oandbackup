@@ -4,6 +4,7 @@ changelog
 0.2.6 (development)
 -------------------
  * added option to change language
+ * display errors in ui
 
 0.2.5 (2013-11-05)
 ------------------

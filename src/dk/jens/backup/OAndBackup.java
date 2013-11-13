@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -365,6 +366,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             appInfoList.set(pos, appInfo);
             adapter.notifyDataSetChanged();
         }
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        new LanguageHelper().initLanguage(this, prefs.getString("languages", "system"));
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
