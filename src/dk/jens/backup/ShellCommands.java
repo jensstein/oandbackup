@@ -85,7 +85,7 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    writeErrorLog(line);
+                    writeErrorLog(label, line);
                 }
             }
             String folder = new File(packageData).getName();
@@ -160,7 +160,7 @@ public class ShellCommands
                     ArrayList<String> stderr = getOutput(p).get("stderr");
                     for(String line : stderr)
                     {
-                        writeErrorLog(line);
+                        writeErrorLog(label, line);
                     }
                 }
                 String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
@@ -270,7 +270,7 @@ public class ShellCommands
                     ArrayList<String> output = getOutput(p).get("stderr");
                     for(String outLine : output)
                     {
-                        writeErrorLog(outLine);
+                        writeErrorLog(packageDir, outLine);
                         Log.i(TAG, outLine);
                     }
                 }
@@ -278,14 +278,14 @@ public class ShellCommands
             }
             else
             {
-                writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
+                writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
                 return 1;
             }
         }
         catch(IndexOutOfBoundsException e)
         {
             Log.i(TAG, "error while setPermissions: " + e.toString());
-            writeErrorLog("setPermissions error: could not find permissions for " + packageDir);
+            writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
             return 1;
         }
         catch(IOException e)
@@ -320,7 +320,7 @@ public class ShellCommands
                 {
                     for(String line : err)
                     {
-                        writeErrorLog(line);
+                        writeErrorLog(label, line);
                     }
                     return 1;
                 }
@@ -345,7 +345,7 @@ public class ShellCommands
                     ArrayList<String> err = getOutput(p).get("stderr");
                     for(String line : err)
                     {
-                        writeErrorLog(line);
+                        writeErrorLog(label, line);
                     }
                 }
                 return ret;                
@@ -388,7 +388,7 @@ public class ShellCommands
                     {
                         if(!line.contains("No such file or directory"))
                         {
-                            writeErrorLog(line);
+                            writeErrorLog(packageName, line);
                             Log.i(TAG, "uninstall return: " + ret);
                         }
                     }
@@ -417,7 +417,7 @@ public class ShellCommands
                     {
                         if(!line.contains("No such file or directory"))
                         {
-                            writeErrorLog(line);
+                            writeErrorLog(packageName, line);
                             Log.i(TAG, "uninstall return: " + ret);
                         }
                     }
@@ -503,7 +503,7 @@ public class ShellCommands
                         ArrayList<String> err = getOutput(p).get("stderr");
                         for(String line : err)
                         {
-                            writeErrorLog(line);
+                            writeErrorLog(packageName, line);
                         }
                     }
                 }
@@ -552,29 +552,21 @@ public class ShellCommands
             return map;
         }
     }
-    public void writeErrorLog(String err)
+    public void writeErrorLog(String packageName, String err)
     {
-        // TODO: brugbare informationer om hvilken pakke og hvilken fejl, der opstod
-        errors += err + "\n";
+        errors += packageName + ": " + err + "\n";
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
         String dateFormated = dateFormat.format(date);
         try
         {
             String logFilePath = prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath());
-//            File outFile = new File(logFilePath);
             File outFile = fileCreator.createLogFile(logFilePath);
-            /*
-            if(!outFile.exists())
-            {
-                outFile.createNewFile();
-            }
-            */
             if(outFile != null)
             {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
                 BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(dateFormated + ": " + err + "\n");
+                bw.write(dateFormated + ": " + err + " [" + packageName + "]\n");
                 bw.close();        
             }
         }
@@ -639,7 +631,7 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    writeErrorLog(line);
+                    writeErrorLog("busybox", line);
                 }
                 return false;
             }
@@ -671,7 +663,7 @@ public class ShellCommands
                 ArrayList<String> err = getOutput(p).get("stderr");
                 for(String line : err)
                 {
-                    writeErrorLog(line);
+                    writeErrorLog(folder, line);
                 }
             }
             return ret;
@@ -711,7 +703,7 @@ public class ShellCommands
                         ArrayList<String> err = getOutput(p).get("stderr");
                         for(String line : err)
                         {
-                            writeErrorLog(line);
+                            writeErrorLog("", line);
                         }
                         return null;
                     }
@@ -799,7 +791,7 @@ public class ShellCommands
                         ArrayList<String> err = getOutput(p).get("stderr");
                         for(String line : err)
                         {
-                            writeErrorLog(line);
+                            writeErrorLog(packageName, line);
                         }
                     }
                 }
@@ -850,7 +842,7 @@ public class ShellCommands
                 ArrayList<String> err = getOutput(p).get("stderr");
                 for(String line : err)
                 {
-                    writeErrorLog(line);
+                    writeErrorLog(packageName, line);
                 }
             }
             /*
@@ -914,7 +906,7 @@ public class ShellCommands
                 {
                     for(String line : err)
                     {
-                        writeErrorLog(line);
+                        writeErrorLog("", line);
                     }
                 }
             }
