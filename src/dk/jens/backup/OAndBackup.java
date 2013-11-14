@@ -410,6 +410,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             mSearchItem = menu.findItem(R.id.search);
             SearchView search = (SearchView) mSearchItem.getActionView();
             search.setIconifiedByDefault(true);
+            search.setQueryHint(getString(R.string.searchHint));
             search.setOnQueryTextListener(new OnQueryTextListener()
             {
                 @Override
