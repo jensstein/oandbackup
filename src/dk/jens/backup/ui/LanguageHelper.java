@@ -17,18 +17,21 @@ public class LanguageHelper
             changeLanguage(context, langCode);
         }
     }
-    public void changeLanguage(Context context, String langCode)
+    public boolean changeLanguage(Context context, String langCode)
     {
         if(!langCode.equals("system"))
         {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
+            String lang = conf.locale.getLanguage();
             conf.locale = new Locale(langCode);
             res.updateConfiguration(conf, res.getDisplayMetrics());
+            // return true if language changed
+            return !lang.equals(langCode);
         }
         else
         {
-            changeLanguage(context, new Locale(langCode).getDefault().getLanguage());
+            return changeLanguage(context, new Locale(langCode).getDefault().getLanguage());
         }
     }
 }

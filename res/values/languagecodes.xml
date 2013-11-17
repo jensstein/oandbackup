@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- languageEntries shouldn't be translated -->
+    <string-array name="languageEntries">
+        <item>@string/prefs_languageSystemDefault</item>
+        <item>deutsch (deutschland)</item>
+        <item>english</item>
+        <item>português (portugal)</item>
+    </string-array>
+    
+    <!-- languageEntryValues shouldn't be translated -->
+    <string-array name="languageEntryValues">
+        <item>system</item>
+        <item>de</item>
+        <item>en</item>
+        <item>pt</item>
+    </string-array>
+</resources>
