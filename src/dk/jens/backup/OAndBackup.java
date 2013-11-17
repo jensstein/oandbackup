@@ -601,6 +601,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {}
             sorter = new Sorter(adapter, oldBackups);
         }
+/*
         if(key.equals("languages"))
         {
             new LanguageHelper().changeLanguage(this, prefs.getString("languages", "system"));
@@ -611,6 +612,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             finish();
             startActivity(intent);
         }
+        */
     }
     public boolean onSearchRequested()
     {

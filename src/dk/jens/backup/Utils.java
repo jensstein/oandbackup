@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.widget.Toast;
 
 import java.io.File;
@@ -76,5 +77,16 @@ public class Utils
                     .show();
             }
         });
+    }
+    public void reloadWithParentStack(Context context)
+    {
+        Intent intent = activity.getIntent();
+        activity.overridePendingTransition(0, 0);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        activity.overridePendingTransition(0, 0);
+        activity.finish();
+        android.support.v4.app.TaskStackBuilder.create(context)
+            .addNextIntentWithParentStack(intent)
+            .startActivities();
     }
 }

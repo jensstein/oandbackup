@@ -27,12 +27,15 @@
         </activity>
         <activity android:name=".Preferences"
             android:label="@string/prefs_title"
-            android:configChanges="locale" >
+            android:configChanges="keyboardHidden|orientation|screenSize|locale" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dk.jens.backup.OAndBackup" />
         </activity>
         <activity android:name=".Scheduler"
             android:label="@string/sched_title"
             android:windowSoftInputMode="stateHidden"
-            android:configChanges="locale" >
+            android:configChanges="keyboardHidden|orientation|screenSize|locale" >
         </activity>
         <receiver android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver">

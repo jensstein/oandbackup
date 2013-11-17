@@ -41,15 +41,12 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
     {
-    /*
         if(key.equals("languages"))
         {
-            new LanguageHelper().changeLanguage(this, preferences.getString("languages", "system"));
-            Intent intent = getIntent();
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            finish();
-            startActivity(intent);
+            if(new LanguageHelper().changeLanguage(this, preferences.getString("languages", "system")))
+            {
+                new Utils(Preferences.this).reloadWithParentStack(this);
+            }
         }
-    */
     }    
 }
