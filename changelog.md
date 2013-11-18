@@ -5,6 +5,8 @@ changelog
 -------------------
  * added option to change language
  * display errors in ui
+ * fix restore of system apps
+ * fix zip creation of /data/system/ on newer apis
 
 0.2.5 (2013-11-05)
 ------------------

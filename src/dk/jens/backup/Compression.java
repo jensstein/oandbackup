@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,15 +31,22 @@ public class Compression
             getFiles(dir);
             for(String file : fileList)
             {
-                ZipEntry entry = new ZipEntry(file.substring(baseDir.length(), file.length()));
-                FileInputStream in = new FileInputStream(file);
-                zos.putNextEntry(entry);
-                int len;
-                while((len = in.read(buffer)) > 0)
+                try
                 {
-                    zos.write(buffer, 0, len);
+                    ZipEntry entry = new ZipEntry(file.substring(baseDir.length(), file.length()));
+                    FileInputStream in = new FileInputStream(file);
+                    zos.putNextEntry(entry);
+                    int len;
+                    while((len = in.read(buffer)) > 0)
+                    {
+                        zos.write(buffer, 0, len);
+                    }
+                    in.close();
                 }
-                in.close();
+                catch(FileNotFoundException e)
+                {
+                    // some files in /data/system/ can give this error (e.g. ndebugsocket)
+                }
             }
             zos.closeEntry();
             zos.close();

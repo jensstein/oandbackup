@@ -271,7 +271,6 @@ public class ShellCommands
                     for(String outLine : output)
                     {
                         writeErrorLog(packageDir, outLine);
-                        Log.i(TAG, outLine);
                     }
                 }
                 return ret;
