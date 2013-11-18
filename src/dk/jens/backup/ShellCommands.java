@@ -334,7 +334,8 @@ public class ShellCommands
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes(busybox + " mount -o remount,rw /system\n");
-                dos.writeBytes(busybox + " cp " + apk + " /system/app/" + "\n");
+                dos.writeBytes(busybox + " cp " + backupDir.getAbsolutePath() + "/" + apk + " /system/app/" + "\n");
+                dos.writeBytes(busybox + " chmod 644 /system/app/" + apk + "\n");
                 dos.writeBytes(busybox + " mount -o remount,r /system\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
@@ -374,7 +375,7 @@ public class ShellCommands
                 dos.flush();
 //                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
 //                dos.flush();
-                dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
+                dos.writeBytes(busybox + " rm -r /data/app-lib/" + packageName + "*\n");
                 dos.flush();
                 // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
                 // indføre tjek på pm uninstalls return 
@@ -399,13 +400,13 @@ public class ShellCommands
             {
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("mount -o remount,rw /system\n");
-                dos.writeBytes("rm " + sourceDir + "\n");
-                dos.writeBytes("mount -o remount,r /system\n");
+                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
+                dos.writeBytes(busybox + " rm " + sourceDir + "\n");
+                dos.writeBytes(busybox + " mount -o remount,r /system\n");
                 dos.flush();
-                dos.writeBytes("rm -r " + dataDir + "\n");
+                dos.writeBytes(busybox + " rm -r " + dataDir + "\n");
                 dos.flush();
-                dos.writeBytes("rm -r /data/app-lib/" + packageName + "*\n");
+                dos.writeBytes(busybox + " rm -r /data/app-lib/" + packageName + "*\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
