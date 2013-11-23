@@ -333,6 +333,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
         }
         BatchActivity.appInfoList = appInfoList;
+        CustomPackageList.appInfoList = appInfoList;
     }
     public void refresh()
     {

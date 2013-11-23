@@ -33,7 +33,6 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     HandleAlarms handleAlarms;
     LinearLayout main;
 
-    long intervalInDays = AlarmManager.INTERVAL_DAY;
     int totalSchedules;
 
     SharedPreferences prefs;
@@ -142,7 +141,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
             long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
 //            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
-            handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * intervalInDays);
+            handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
             edit.putLong("timePlaced" + number, System.currentTimeMillis());
             edit.putLong("timeUntilNextEvent" + number, startTime);
             edit.putInt("repeatTime" + number, repeatTime);
@@ -179,7 +178,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                         long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
                         edit.putLong("timeUntilNextEvent" + number, startTime);
     //                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
-                        handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * intervalInDays);
+                        handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
                     }
                     edit.commit();
                     setTimeLeftTextView(number);
@@ -203,6 +202,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
+        if(pos == 4 && prefs.getInt("scheduleMode" + number, 0) != pos)
+        {
+            new CustomPackageList(Scheduler.this, number).showList(prefs, pos);
+        }
         edit.putInt("scheduleMode" + number, pos);
         edit.commit();
     }
@@ -249,7 +252,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             {
                 long timePassed = System.currentTimeMillis() - prefs.getLong("timePlaced" + (i + 1), 0);
                 long timeLeft = prefs.getLong("timeUntilNextEvent" + (i + 1), 0) - timePassed;
-                long repeat = (long)(prefs.getInt("repeatTime" + (i + 1), 0) * intervalInDays);
+                long repeat = (long)(prefs.getInt("repeatTime" + (i + 1), 0) * AlarmManager.INTERVAL_DAY);
                 handleAlarms.cancelAlarm(i + 1);
                 handleAlarms.setAlarm(i, timeLeft, repeat);
             }

@@ -32,7 +32,7 @@ public class AlarmReceiver extends BroadcastReceiver
             edit.commit();
             Log.i(TAG, context.getString(R.string.sched_startingbackup));
             int mode = prefs.getInt("scheduleMode" + id, 1);
-            handleScheduledBackups.initiateBackup(mode);
+            handleScheduledBackups.initiateBackup(mode, id);
         }
         else
         {

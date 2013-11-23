@@ -41,14 +41,14 @@ public class HandleScheduledBackups
         logFile = new LogFile(context);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
-    public void initiateBackup(final int mode)
+    public void initiateBackup(final int mode, final int id)
     {
         new Thread(new Runnable()
         {
             public void run()
             {
                 ArrayList<AppInfo> list = gatherInfo();
-                ArrayList<AppInfo> listToBackup;
+                ArrayList<AppInfo> listToBackUp;
                 switch(mode)
                 {
                     case 0:
@@ -58,33 +58,33 @@ public class HandleScheduledBackups
                         break;
                     case 1:
                         // user apps
-                        listToBackup = new ArrayList<AppInfo>();
+                        listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
                             if(!appInfo.isSystem)
                             {
-                                listToBackup.add(appInfo);
+                                listToBackUp.add(appInfo);
                             }
                         }
-                        Collections.sort(listToBackup);
-                        backup(listToBackup);
+                        Collections.sort(listToBackUp);
+                        backup(listToBackUp);
                         break;                        
                     case 2:
                         // system apps
-                        listToBackup = new ArrayList<AppInfo>();
+                        listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
                             if(appInfo.isSystem)
                             {
-                                listToBackup.add(appInfo);
+                                listToBackUp.add(appInfo);
                             }
                         }
-                        Collections.sort(listToBackup);
-                        backup(listToBackup);
+                        Collections.sort(listToBackUp);
+                        backup(listToBackUp);
                         break;                        
                     case 3:
                         // new and updated apps
-                        listToBackup = new ArrayList<AppInfo>();
+                        listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
                             File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
@@ -95,12 +95,26 @@ public class HandleScheduledBackups
                             }
                             if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)) || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
                             {
-                                listToBackup.add(appInfo);
+                                listToBackUp.add(appInfo);
                             }
                         }
-                        Collections.sort(listToBackup);
-                        backup(listToBackup);
+                        Collections.sort(listToBackUp);
+                        backup(listToBackUp);
                         break;
+                    case 4: 
+                        // custom package list
+                        listToBackUp = new ArrayList<AppInfo>();
+                        SharedPreferences customList = context.getSharedPreferences("customlist" + id, 0);
+                        for(AppInfo appInfo : list)
+                        {
+                            if(customList.contains(appInfo.getPackageName()))
+                            {
+                                listToBackUp.add(appInfo);
+                            }
+                        }
+                        Collections.sort(listToBackUp);
+                        backup(listToBackUp);
+                        break;                        
                 }
             }
         }).start();
