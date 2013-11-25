@@ -5,6 +5,6 @@
         <item>user apps</item>
         <item>system apps</item>
         <item>new and updated apps</item>
-<!--        <item>custom list</item> -->
+        <item>custom list</item>
     </string-array>
 </resources>

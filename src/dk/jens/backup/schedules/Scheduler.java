@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -114,10 +115,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(prefs.getInt("scheduleMode" + number, 0), false); // false has the effect that onItemSelected() is not called when the spinner is added
         spinner.setOnItemSelectedListener(this);
-        spinner.setSelection(prefs.getInt("scheduleMode" + number, 0));
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
-        
+
         updateButton.setTag(number);
         removeButton.setTag(number);
         cb.setTag(number);
@@ -186,6 +187,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 case R.id.removeButton:
                     handleAlarms.cancelAlarm(number);
                     removePreferenceEntries(number);
+                    removeCustomListFile(number);
                     main.removeView(view);
                     migrateSchedules(number, totalSchedules);
                     viewList.remove(number);
@@ -202,9 +204,9 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
-        if(pos == 4 && prefs.getInt("scheduleMode" + number, 0) != pos)
+        if(pos == 4)
         {
-            new CustomPackageList(Scheduler.this, number).showList(prefs, pos);
+            new CustomPackageList(this, number).showList(Scheduler.this, pos);
         }
         edit.putInt("scheduleMode" + number, pos);
         edit.commit();
@@ -277,8 +279,11 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             removeButton.setTag(i);
             cb.setTag(i);
             spinner.setTag(i);
+            
+            renameCustomListFile(i);
         }
         removePreferenceEntries(total);
+        removeCustomListFile(total);
     }
     public void removePreferenceEntries(int number)
     {
@@ -289,6 +294,18 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         edit.remove("timePlaced" + number);
         edit.remove("timeUntilNextEvent" + number);
         edit.commit();
+    }
+    public void renameCustomListFile(int number)
+    {
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        FileReaderWriter frw = new FileReaderWriter(p.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + (number + 1));
+        frw.rename("customlist" + number);
+    }
+    public void removeCustomListFile(int number)
+    {
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        FileReaderWriter frw = new FileReaderWriter(p.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
+        frw.delete();
     }
     public void transferOldValues()
     {

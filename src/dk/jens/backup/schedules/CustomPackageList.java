@@ -2,34 +2,38 @@ package dk.jens.backup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
 public class CustomPackageList
 {
     public static ArrayList<AppInfo> appInfoList;
-    Activity activity;
-    SharedPreferences customList;
-    SharedPreferences.Editor edit;
-    public CustomPackageList(Activity activity, int number)
+    SharedPreferences prefs;
+    FileReaderWriter frw;
+    public CustomPackageList(Context context, int number)
     {
-        this.activity = activity;
-        customList = activity.getSharedPreferences("customlist" + number, 0);    
-        edit = customList.edit();
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
     }
-    public void showList(SharedPreferences prefs, int number)
+    public void showList(Activity activity, int number)
     {
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<Integer>();
         boolean[] checked = new boolean[items.length];
         for(int i = 0; i < items.length; i++)
         {
-            checked[i] = false;
+            if(frw.contains(items[i].toString()))
+            {
+                checked[i] = true;
+                selected.add(i);
+            }
         }
         new AlertDialog.Builder(activity)
-            .setTitle("titel")
+            .setTitle(R.string.customListTitle)
             .setMultiChoiceItems(items, checked, new DialogInterface.OnMultiChoiceClickListener()
             {
                 public void onClick(DialogInterface dialog, int id, boolean isChecked)
@@ -38,34 +42,38 @@ public class CustomPackageList
                     {
                         selected.add(id);
                     }
+                    else
+                    {
+                        selected.remove((Integer) id); // cast as Integer to distinguish between remove(Object) and remove(index)
+                    }
                 }
             })
-            .setNeutralButton(R.string.dialogOK, new DialogInterface.OnClickListener()
+            .setPositiveButton(R.string.dialogOK, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
                     handleSelectedItems(items, selected);
                 }
             })
+            .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id){}})
             .show();
     }
     public CharSequence[] collectItems()
     {
         ArrayList<String> list = new ArrayList<String>();
-        CharSequence[] items;
         for(AppInfo appInfo : appInfoList)
         {
             list.add(appInfo.getPackageName());
         }
-        items = list.toArray(new CharSequence[list.size()]);
-        return items;
+        return list.toArray(new CharSequence[list.size()]);
     }
     public void handleSelectedItems(CharSequence[] items, ArrayList<Integer> selected)
     {
+        frw.clear();
         for(int pos : selected)
         {
-            edit.putString(items[pos].toString(), "");
-            edit.commit();
+            frw.putString(items[pos].toString(), true);
         }
     }
 }
