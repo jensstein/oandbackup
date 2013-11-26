@@ -104,10 +104,10 @@ public class HandleScheduledBackups
                     case 4: 
                         // custom package list
                         listToBackUp = new ArrayList<AppInfo>();
-                        SharedPreferences customList = context.getSharedPreferences("customlist" + id, 0);
+                        FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + id);
                         for(AppInfo appInfo : list)
                         {
-                            if(customList.contains(appInfo.getPackageName()))
+                            if(frw.contains(appInfo.getPackageName()))
                             {
                                 listToBackUp.add(appInfo);
                             }
