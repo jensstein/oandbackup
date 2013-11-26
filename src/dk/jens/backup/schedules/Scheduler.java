@@ -2,8 +2,6 @@ package dk.jens.backup;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Scheduler extends Activity 
 implements View.OnClickListener, AdapterView.OnItemSelectedListener

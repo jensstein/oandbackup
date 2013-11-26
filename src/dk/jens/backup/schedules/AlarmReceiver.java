@@ -6,10 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
 public class AlarmReceiver extends BroadcastReceiver
 {
     static final String TAG = OAndBackup.TAG;
