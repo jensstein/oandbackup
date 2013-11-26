@@ -85,7 +85,7 @@ public class FileReaderWriter
         String[] lines = read().split("\n");
         for(String line : lines)
         {
-            if(string.equals(line))
+            if(string.equals(line.trim()))
             {
                 return true;
             }

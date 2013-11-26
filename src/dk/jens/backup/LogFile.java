@@ -37,12 +37,11 @@ public class LogFile
     public LogFile(File backupSubDir, String packageName, boolean localTimestampFormat)
     {
         this.localTimestampFormat = localTimestampFormat;
-        String json = readLogFile(backupSubDir, packageName);
+        FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
+        String json = frw.read();
         try
         {
-//            Log.i(TAG, "json: " + json);
             JSONObject jsonObject = new JSONObject(json);
-            // kan bruges, når alle writeLogFile skriver json
             this.label = jsonObject.getString("label");
             this.packageName = jsonObject.getString("packageName");
             this.versionName = jsonObject.getString("versionName");
@@ -55,7 +54,6 @@ public class LogFile
         }
         catch(JSONException e)
         {
-            long stime = System.currentTimeMillis();
             ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
             if(log != null)
             {
@@ -122,46 +120,6 @@ public class LogFile
     public boolean isSystem()
     {
         return isSystem;
-    }
-    private String readLogFile(File backupDir, String packageName)
-    {
-        BufferedReader reader = null;
-        try
-        {
-            File logFile = new File(backupDir.getAbsolutePath() + "/" + packageName + ".log");
-            FileReader fr = new FileReader(logFile);
-            reader = new BufferedReader(fr);
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null)
-            {
-                sb.append(line);
-            }
-            return sb.toString();
-        }
-        catch(FileNotFoundException e)
-        {
-            return e.toString();
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return e.toString();
-        }
-        finally
-        {
-            try
-            {
-                if(reader != null)
-                {
-                    reader.close();
-                }
-            }
-            catch(IOException e)
-            {
-                return e.toString();
-            }
-        }
     }
     private ArrayList<String> readLegacyLogFile(File backupDir, String packageName)
     {
