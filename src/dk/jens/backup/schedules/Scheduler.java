@@ -36,6 +36,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 
     int totalSchedules;
 
+    SharedPreferences defaultPrefs;
     SharedPreferences prefs;
     SharedPreferences.Editor edit;
 
@@ -46,7 +47,8 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         setContentView(R.layout.schedulesframe);
         
         handleAlarms = new HandleAlarms(this);
-        
+
+        defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs = getSharedPreferences("schedules", 0);
         edit = prefs.edit();
         
@@ -283,7 +285,6 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             renameCustomListFile(i);
         }
         removePreferenceEntries(total);
-        removeCustomListFile(total);
     }
     public void removePreferenceEntries(int number)
     {
@@ -297,14 +298,12 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     }
     public void renameCustomListFile(int number)
     {
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
-        FileReaderWriter frw = new FileReaderWriter(p.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + (number + 1));
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + (number + 1));
         frw.rename("customlist" + number);
     }
     public void removeCustomListFile(int number)
     {
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
-        FileReaderWriter frw = new FileReaderWriter(p.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
         frw.delete();
     }
     public void transferOldValues()
