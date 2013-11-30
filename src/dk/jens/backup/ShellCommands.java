@@ -359,7 +359,7 @@ public class ShellCommands
             return 1;
         }           
     }
-    public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem)
+    public int uninstall(String packageName, String sourceDir, String dataDir, String nativeLibraryDir, boolean isSystem)
     {
         try
         {
@@ -371,7 +371,7 @@ public class ShellCommands
                 dos.flush();
 //                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
 //                dos.flush();
-                dos.writeBytes(busybox + " rm -r /data/app-lib/" + packageName + "*\n");
+                dos.writeBytes(busybox + " rm -r " + nativeLibraryDir + "\n");
                 dos.flush();
                 // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
                 // indføre tjek på pm uninstalls return 

@@ -293,7 +293,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {
                 isSystem = true;
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), loggedVersionName, pinfo.versionName, loggedVersionCode, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
+            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), loggedVersionName, pinfo.versionName, loggedVersionCode, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, pinfo.applicationInfo.nativeLibraryDir, lastBackupMillis, lastBackup, isSystem, true);
             appInfoList.add(appInfo);
 
         }
@@ -316,7 +316,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                     if(logInfo.getLastBackupTimestamp() != null)
                     {
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupMillis(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false);
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), "", logInfo.getLastBackupMillis(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false);
                         appInfoList.add(appInfo);
                     }
                 }
@@ -502,7 +502,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 AppInfo appInfo = appInfoList.get(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgess));
-                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
+                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.getNativeLibraryDir(), appInfo.isSystem);
                                 runOnUiThread(new Runnable()
                                 {
                                     public void run()
