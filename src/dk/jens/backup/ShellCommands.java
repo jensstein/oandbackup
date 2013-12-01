@@ -359,7 +359,7 @@ public class ShellCommands
             return 1;
         }           
     }
-    public int uninstall(String packageName, String sourceDir, String dataDir, String nativeLibraryDir, boolean isSystem)
+    public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem)
     {
         try
         {
@@ -371,7 +371,7 @@ public class ShellCommands
                 dos.flush();
 //                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
 //                dos.flush();
-                dos.writeBytes(busybox + " rm -r " + nativeLibraryDir + "\n");
+                dos.writeBytes(busybox + " rm -r /data/lib/" + packageName + "/*\n");
                 dos.flush();
                 // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
                 // indføre tjek på pm uninstalls return 
@@ -439,7 +439,7 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(busybox + " pkill system_server\n");
+            dos.writeBytes(busybox + " pkill system_server\n"); // seems to be slightly faster than the restart command
             dos.flush();
             dos.writeBytes("exit\n");
             dos.flush();
