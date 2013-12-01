@@ -433,6 +433,38 @@ public class ShellCommands
             return 1;
         }           
     }
+    public int quickReboot()
+    {
+        try
+        {
+            p = Runtime.getRuntime().exec("su");
+            dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes(busybox + " pkill system_server\n");
+            dos.flush();
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
+                {
+                    writeErrorLog("", line);
+                }
+            }
+            return ret;
+        }
+        catch(IOException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+            return 1;
+        }
+    }
     public void deleteBackup(File file)
     {
         if(file.exists())
