@@ -466,6 +466,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             case R.id.search:
                 setupLegacySearch();
                 break;
+            case R.id.quickReboot:
+                quickReboot();
+                break;
             default:
                 sorter.sort(item.getItemId());
                 break;
@@ -609,6 +612,22 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             startActivity(intent);
         }
         */
+    }
+    public void quickReboot()
+    {
+        new AlertDialog.Builder(this)
+        .setTitle(R.string.quickReboot)
+        .setMessage(R.string.quickRebootMessage)
+        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                shellCommands.quickReboot();
+            }
+        })
+        .setNegativeButton(R.string.dialogNo, null)
+        .show();
     }
     public boolean onSearchRequested()
     {

@@ -42,4 +42,6 @@
         android:title="@string/prefs_title"/>
     <item android:id="@+id/schedules"
         android:title="@string/sched_title"/>
+    <item android:id="@+id/quickReboot"
+        android:title="@string/quickReboot"/>
 </menu>
