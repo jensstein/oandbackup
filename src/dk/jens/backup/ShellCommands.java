@@ -439,9 +439,8 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-//            dos.writeBytes(busybox + " pkill system_server\n");
-            dos.writeBytes("restart\n");
-            dos.flush();
+            dos.writeBytes(busybox + " pkill system_server\n");
+//            dos.writeBytes("restart\n"); // restart doesn't seem to work here even though it works fine from ssh
             dos.writeBytes("exit\n");
             dos.flush();
             int ret = p.waitFor();
