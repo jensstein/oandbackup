@@ -13,9 +13,10 @@
   <string name="batchbackup">Backup em lote</string>
   <string name="batchrestore">Restauro em lote</string>
   <string name="search">Procurar</string>
+  <string name="searchHint">Procurar aplicações</string>
   <string name="deleteBackup">Eliminar backup</string>
   <string name="uninstall">Desinstalar aplicação</string>
-  <string name="uninstallProgess">A desinstalar</string>
+  <string name="uninstallProgress">A desinstalar</string>
   <string name="showAll">Mostrar todas as aplicações</string>
   <string name="showOnlySystem">Aplicações do sistema</string>
   <string name="showOnlyUser">Aplicações do utilizador</string>
@@ -53,6 +54,7 @@
   <string name="restoreFailure">Erro ao restaurar</string>
   <string name="batchSuccess">Operação terminada</string>
   <string name="batchFailure">Terminada com erros</string>
+  <string name="errorDialogTitle">Ocorreram erros</string>
   <string name="enablePackage">Ativar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>
@@ -74,6 +76,8 @@
   <string name="prefs_summaryOldBackups">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado</string>
   <string name="prefs_copySelfApk">Copiar apk</string>
   <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
+  <string name="prefs_languages">Idiomas</string>
+  <string name="prefs_languageSystemDefault">Idioma do sistema</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
   <string name="sched_interval">Intervalo em dias</string>

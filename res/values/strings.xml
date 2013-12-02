@@ -16,7 +16,7 @@
     <string name="searchHint">search for apps</string>
     <string name="deleteBackup">delete backup</string>
     <string name="uninstall">uninstall app</string>
-    <string name="uninstallProgess">uninstalling</string>
+    <string name="uninstallProgress">uninstalling</string>
     <string name="showAll">show all apps</string>
     <string name="showOnlySystem">show only system apps</string>
     <string name="showOnlyUser">show only user apps</string>

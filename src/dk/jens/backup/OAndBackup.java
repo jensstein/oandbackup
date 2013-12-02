@@ -509,7 +509,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             {
                                 AppInfo appInfo = appInfoList.get(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
-                                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgess));
+                                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
                                 shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
                                 runOnUiThread(new Runnable()
                                 {

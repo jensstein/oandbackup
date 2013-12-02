@@ -15,7 +15,7 @@
   <string name="search">Suchen</string>
   <string name="deleteBackup">Backup löschen</string>
   <string name="uninstall">Deinstalliere App</string>
-  <string name="uninstallProgess">Deinstalliere</string>
+  <string name="uninstallProgress">Deinstalliere</string>
   <string name="showAll">Alle Apps anzeigen</string>
   <string name="showOnlySystem">Nur System-Apps anzeigen</string>
   <string name="showOnlyUser">Nur Apps des Nutzers anzeigen</string>
