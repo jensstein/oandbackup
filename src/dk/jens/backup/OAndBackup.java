@@ -475,9 +475,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
     {
-        super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.contextmenu, menu);
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        AppInfo appInfo = appInfoList.get(info.position);
+        if(appInfo.getLastBackupMillis() == 0)
+        {
+            menu.removeItem(R.id.deleteBackup);
+        }
+        menu.setHeaderTitle(appInfo.getLabel());
     }
     @Override
     public boolean onContextItemSelected(MenuItem item)

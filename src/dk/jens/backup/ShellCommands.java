@@ -439,7 +439,8 @@ public class ShellCommands
         {
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(busybox + " pkill system_server\n"); // seems to be slightly faster than the restart command
+//            dos.writeBytes(busybox + " pkill system_server\n");
+            dos.writeBytes("restart\n");
             dos.flush();
             dos.writeBytes("exit\n");
             dos.flush();
