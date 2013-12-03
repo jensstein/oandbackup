@@ -6,7 +6,9 @@ changelog
  * added option to change language
  * display errors in ui
  * scheduled backups can have custom lists
+ * added function to reboot user space quickly
  * fix restore of system apps
+ * system apps don't need rebooting after a restore now (at least on android 4.2)
  * fix zip creation of /data/system/ on newer apis
 
 0.2.5 (2013-11-05)
