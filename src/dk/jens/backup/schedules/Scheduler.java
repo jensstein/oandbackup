@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +27,7 @@ public class Scheduler extends Activity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener
 {
     static final String TAG = OAndBackup.TAG;
+    static final int CUSTOMLISTUPDATEBUTTONID = 1;
 
     ArrayList<View> viewList;
     HandleAlarms handleAlarms;
@@ -118,6 +120,8 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         spinner.setOnItemSelectedListener(this);
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
 
+        toggleCustomSchedulesButton(ll, spinner, number);
+
         updateButton.setTag(number);
         removeButton.setTag(number);
         cb.setTag(number);
@@ -193,6 +197,9 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     edit.putInt("total", --totalSchedules);
                     edit.commit();
                     break;
+                case CUSTOMLISTUPDATEBUTTONID:
+                    new CustomPackageList(this, number).showList(Scheduler.this);
+                    break;
             }
         }
         catch(IndexOutOfBoundsException e)
@@ -203,9 +210,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
+        toggleCustomSchedulesButton((LinearLayout) parent.getParent(), (Spinner) parent, number);
         if(pos == 4)
         {
-            new CustomPackageList(this, number).showList(Scheduler.this, pos);
+            new CustomPackageList(this, number).showList(Scheduler.this);
         }
         edit.putInt("scheduleMode" + number, pos);
         edit.commit();
@@ -244,6 +252,27 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             }
         }
     }
+    public void toggleCustomSchedulesButton(LinearLayout parent, Spinner spinner, int number)
+    {
+        if(spinner.getSelectedItemPosition() == 4)
+        {
+            Button bt = new Button(this);
+            bt.setId(CUSTOMLISTUPDATEBUTTONID);
+            bt.setText(getString(R.string.sched_customListUpdateButton));
+            bt.setTag(number);
+            bt.setOnClickListener(this);
+            LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            parent.addView(bt, lp);
+        }
+        else
+        {
+            Button bt = (Button) parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
+            if(bt != null)
+            {
+                parent.removeView(bt);
+            }
+        }
+    }
     public void migrateSchedules(int number, int total)
     {
         for(int i = number; i < total; i++)
@@ -271,6 +300,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             View view = viewList.get(i + 1);
             Button updateButton = (Button) view.findViewById(R.id.updateButton);
             Button removeButton = (Button) view.findViewById(R.id.removeButton);
+            Button customListUpdateButton = (Button) view.findViewById(CUSTOMLISTUPDATEBUTTONID);
             CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
             Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
 
@@ -278,6 +308,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             removeButton.setTag(i);
             cb.setTag(i);
             spinner.setTag(i);
+            if(customListUpdateButton != null)
+            {
+                customListUpdateButton.setTag(i);
+            }
             
             renameCustomListFile(i);
         }

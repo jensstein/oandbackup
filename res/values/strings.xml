@@ -95,4 +95,5 @@
     <string name="sched_backupMode">backup mode</string>
     <string name="sched_timeLeft">hours until next backup</string>
     <string name="sched_addSchudule">add schedule</string>
+    <string name="sched_customListUpdateButton">update custom list</string>
 </resources>
