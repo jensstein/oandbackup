@@ -481,20 +481,9 @@ public class ShellCommands
                     {
                         deleteBackup(child);
                     }
-                    if(file.list().length == 0)
-                    {
-                        file.delete();
-                    }
-                }
-                else
-                {
-                    file.delete();
                 }
             }
-            else
-            {
-                file.delete();
-            }
+            file.delete();
         }
     }
     public void deleteOldApk(File backupfolder, String newApkPath)
