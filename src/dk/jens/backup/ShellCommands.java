@@ -88,7 +88,7 @@ public class ShellCommands
             String folder = new File(packageData).getName();
             deleteBackup(new File(backupSubDir, folder + "/lib"));
 //            int tarRet = tar(backupDir.getAbsolutePath(), folder);
-            if(label.equals(TAG) && prefs.getBoolean("copySelfApk", false))
+            if(label.equals(TAG))
             {
                 copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
             }
@@ -910,35 +910,38 @@ public class ShellCommands
     }
     public void copySelfAPk(File backupSubDir, String apk)
     {
-        String parent = backupSubDir.getParent() + "/" + TAG + ".apk";
-        String apkPath = backupSubDir.getAbsolutePath() + "/" + new File(apk).getName();
-        if(parent != null)
+        if(prefs.getBoolean("copySelfApk", false))
         {
-            try
+            String parent = backupSubDir.getParent() + "/" + TAG + ".apk";
+            String apkPath = backupSubDir.getAbsolutePath() + "/" + new File(apk).getName();
+            if(parent != null)
             {
-                p = Runtime.getRuntime().exec("sh");
-                dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(busybox + " cp " + apkPath + " " + parent + "\n");
-                dos.flush();
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
-                ArrayList<String> err = getOutput(p).get("stderr");
-                if(ret != 0)
+                try
                 {
-                    for(String line : err)
+                    p = Runtime.getRuntime().exec("sh");
+                    dos = new DataOutputStream(p.getOutputStream());
+                    dos.writeBytes(busybox + " cp " + apkPath + " " + parent + "\n");
+                    dos.flush();
+                    dos.writeBytes("exit\n");
+                    dos.flush();
+                    int ret = p.waitFor();
+                    ArrayList<String> err = getOutput(p).get("stderr");
+                    if(ret != 0)
                     {
-                        writeErrorLog("", line);
+                        for(String line : err)
+                        {
+                            writeErrorLog("", line);
+                        }
                     }
                 }
-            }
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
-            catch(InterruptedException e)
-            {
-                Log.e(TAG, "InterruptedException: copySelfAPk");
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+                catch(InterruptedException e)
+                {
+                    Log.e(TAG, "InterruptedException: copySelfAPk");
+                }
             }
         }
     }
