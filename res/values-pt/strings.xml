@@ -55,6 +55,9 @@
   <string name="batchSuccess">Operação terminada</string>
   <string name="batchFailure">Terminada com erros</string>
   <string name="errorDialogTitle">Ocorreram erros</string>
+  <string name="customListTitle">Lista personalizada</string>
+  <string name="quickReboot">Reinicio rápido</string>
+  <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
   <string name="enablePackage">Ativar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>
@@ -89,4 +92,5 @@
   <string name="sched_backupMode">Modo de backup</string>
   <string name="sched_timeLeft">Horas até ao próximo backup</string>
   <string name="sched_addSchudule">Agendar</string>
+  <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
 </resources>
