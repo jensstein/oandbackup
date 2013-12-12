@@ -265,7 +265,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             if(appInfo.getLastBackupTimestamp() != null)
             {
-                if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+                if(appInfo.getLastBackupMillis() == 0)
                 {
                     if(appInfo.isInstalled)
                     {
@@ -309,7 +309,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         for(AppInfo appInfo : originalValues)
         {
-            if((appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode()) || appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+            if((appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode()) || appInfo.getLastBackupMillis() == 0)
             {
                 add(appInfo);
             }

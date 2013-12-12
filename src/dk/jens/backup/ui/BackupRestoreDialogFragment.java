@@ -42,7 +42,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                 }
             });
         }
-        if(!appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)))
+        if(appInfo.getLastBackupMillis() > 0)
         {
             builder.setNegativeButton(context.getString(R.string.restore), new DialogInterface.OnClickListener()
             {

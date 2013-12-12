@@ -93,7 +93,7 @@ public class HandleScheduledBackups
                             {
                                 versionCode = new LogFile(backupSubDir, appInfo.getPackageName(), true).getVersionCode();
                             }
-                            if(appInfo.getLastBackupTimestamp().equals(context.getString(R.string.noBackupYet)) || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                            if(appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
                             {
                                 listToBackUp.add(appInfo);
                             }
