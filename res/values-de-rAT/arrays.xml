@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string-array name="scheduleModes">
+    <item>Alle Anwendungen</item>
+    <item>Benutzeranwendungen</item>
+    <item>Systemanwendungen</item>
+    <item>Neue und aktualisierte Anwendungen</item>
+    <item>custom list</item>
+  </string-array>
+</resources>
