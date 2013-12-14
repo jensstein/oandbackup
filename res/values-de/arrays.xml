@@ -2,9 +2,8 @@
 <resources>
   <string-array name="scheduleModes">
     <item>Alle Anwendungen</item>
-    <item>Anwendungen des Nutzers</item>
+    <item>Benutzeranwendungen</item>
     <item>Systemanwendungen</item>
-    <item>neue + aktualisierte Anwendungen</item>
-    <item>custom list</item>
+    <item>Neue und aktualisierte Anwendungen</item>
   </string-array>
 </resources>

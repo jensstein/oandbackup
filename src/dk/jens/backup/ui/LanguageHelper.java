@@ -24,7 +24,16 @@ public class LanguageHelper
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             String lang = conf.locale.getLanguage();
-            conf.locale = new Locale(langCode);
+            // check if langCode is a regional language
+            if(langCode.contains("_"))
+            {
+                String[] parts = langCode.split("_");
+                conf.locale = new Locale(parts[0], parts[1]);
+            }
+            else
+            {
+                conf.locale = new Locale(langCode);
+            }
             res.updateConfiguration(conf, res.getDisplayMetrics());
             // return true if language changed
             return !lang.equals(langCode);
