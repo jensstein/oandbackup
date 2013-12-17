@@ -61,7 +61,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     FileCreationHelper fileCreator;
-    LogFile logFile;
     NotificationHelper notificationHelper;
     Sorter sorter;
     Utils utils;
@@ -80,7 +79,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
-        logFile = new LogFile(this);
         utils = new Utils(OAndBackup.this); // must be passed an activity context
         
         new Thread(new Runnable(){
@@ -180,7 +178,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
+                    new LogFile(OAndBackup.this).writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
                 
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
@@ -353,6 +351,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             int pos = appInfoList.indexOf(appInfo);
             appInfo.label = logInfo.getLabel();
             appInfo.lastBackup = logInfo.getLastBackupTimestamp();
+            appInfo.lastBackupMillis = logInfo.getLastBackupMillis();
             appInfoList.set(pos, appInfo);
             adapter.notifyDataSetChanged();
         }
@@ -600,18 +599,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {}
             sorter = new Sorter(adapter, oldBackups);
         }
-/*
-        if(key.equals("languages"))
-        {
-            new LanguageHelper().changeLanguage(this, prefs.getString("languages", "system"));
-            Intent intent = getIntent();
-            overridePendingTransition(0, 0);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            overridePendingTransition(0, 0);
-            finish();
-            startActivity(intent);
-        }
-        */
     }
     public void quickReboot()
     {
