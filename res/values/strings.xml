@@ -32,6 +32,8 @@
     <string name="showNotInstalled">show apps not installed</string>
     <string name="showNewAndUpdated">show new and updated apps</string>
     <string name="showOldBackups">show old backups</string>
+    <string name="showOnlyApkBackedUp">show apps with only apk backed up</string>
+    <string name="showOnlyDataBackedUp">show apps with only data backed up</string>
     <string name="sortByLabel">sort by label</string>
     <string name="sortByPackageName">sort by packagename</string>
     <string name="sort">sort and filter</string>

@@ -32,6 +32,10 @@
                 android:title="@string/showNewAndUpdated" />                
             <item android:id="@+id/showOldBackups"
                 android:title="@string/showOldBackups" />
+            <item android:id="@+id/showOnlyApkBackedUp"
+                android:title="@string/showOnlyApkBackedUp" />
+            <item android:id="@+id/showOnlyDataBackedUp"
+                android:title="@string/showOnlyDataBackedUp" />
             <item android:id="@+id/sortByLabel"
                 android:title="@string/sortByLabel" />
             <item android:id="@+id/sortByPackageName"

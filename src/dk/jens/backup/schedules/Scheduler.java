@@ -230,7 +230,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 edit.commit();
                 break;
             case R.id.sched_spinnerSubModes:
-                edit.putInt("scheduleSubMode" + number, pos); // add one to have them correspond to AppInfo.MODE_*
+                edit.putInt("scheduleSubMode" + number, pos);
                 edit.commit();
                 break;
         }

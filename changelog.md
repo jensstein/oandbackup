@@ -3,6 +3,7 @@ changelog
 
 0.2.7 (development)
 -------------------
+ * backups can now be specified to include either apk, data or both
  * add austrian german translation. thanks to user_99_gmx.at
 
 0.2.6 (11-12-13)

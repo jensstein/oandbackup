@@ -361,6 +361,22 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         notifyDataSetChanged();    
     }
+    public void filterPartialBackups(int backupMode)
+    {
+        if(originalValues == null)
+        {
+            originalValues = new ArrayList<AppInfo>(items);
+        }
+        clear();
+        for(AppInfo appInfo : originalValues)
+        {
+            if(appInfo.getBackupMode() == backupMode)
+            {
+                add(appInfo);
+            }
+        }
+        notifyDataSetChanged();        
+    }
     public void sortByLabel()
     {
         if(originalValues == null)

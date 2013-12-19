@@ -20,7 +20,9 @@ public class Sorter
         NOTBACKEDUP(R.id.showNotBackedup),
         NOTINSTALLED(R.id.showNotInstalled),
         NEWANDUPDATED(R.id.showNewAndUpdated),
-        OLDBACKUPS(R.id.showOldBackups);
+        OLDBACKUPS(R.id.showOldBackups),
+        ONLYAPK(R.id.showOnlyApkBackedUp),
+        ONLYDATA(R.id.showOnlyDataBackedUp);
         int id;
         SortingMethod(int i)
         {
@@ -41,14 +43,10 @@ public class Sorter
                 break;
             case R.id.showOnlySystem:
                 sortingMethod = SortingMethod.SYSTEM;
-//                showOnlyUser = false;
-//                showAll = false;
                 adapter.filterAppType(2);
                 break;
             case R.id.showOnlyUser:
                 sortingMethod = SortingMethod.USER;
-//                showOnlyUser = true;
-//                showAll = false;
                 adapter.filterAppType(1);
                 break;
             case R.id.showNotBackedup:
@@ -67,13 +65,19 @@ public class Sorter
                 sortingMethod = SortingMethod.OLDBACKUPS;
                 adapter.filterOldApps(oldBackups);
                 break;
+            case R.id.showOnlyApkBackedUp:
+                sortingMethod = SortingMethod.ONLYAPK;
+                adapter.filterPartialBackups(AppInfo.MODE_APK);
+                break;
+            case R.id.showOnlyDataBackedUp:
+                sortingMethod = SortingMethod.ONLYDATA;
+                adapter.filterPartialBackups(AppInfo.MODE_DATA);
+                break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
                 if(sortingMethod != SortingMethod.ALL)
-//                if(!showAll)
                 {
                     if(sortingMethod == SortingMethod.USER)
-//                    if(showOnlyUser)
                     {
                         adapter.filterAppType(1);
                     }
@@ -90,10 +94,8 @@ public class Sorter
             case R.id.sortByPackageName:
                 adapter.sortByPackageName();
                 if(sortingMethod != SortingMethod.ALL)                
-//                if(!showAll)
                 {
                     if(sortingMethod == SortingMethod.USER)
-//                    if(showOnlyUser)
                     {
                         adapter.filterAppType(1);
                     }
@@ -112,17 +114,8 @@ public class Sorter
     public void filterShowAll()
     {
         sortingMethod = SortingMethod.ALL;
-//        showAll = true;
-//        showOnlyUser = false;
         adapter.getFilter().filter("");
     }
-    /*
-    public void reset()
-    {
-        showAll = true;
-        showOnlyUser = false;
-    }
-    */
     public SortingMethod getSortingMethod()
     {
         if(sortingMethod != null)
