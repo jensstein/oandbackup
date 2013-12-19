@@ -61,6 +61,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" 
         />
+    <Spinner
+        android:id="@+id/sched_spinnerSubModes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        />
     <TextView
         android:id="@+id/sched_timeLeft"
         android:layout_width="wrap_content"

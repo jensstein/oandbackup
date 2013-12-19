@@ -113,11 +113,18 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
         cb.setChecked(prefs.getBoolean("enabled" + number, false));
         Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
+        Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setSelection(prefs.getInt("scheduleMode" + number, 0), false); // false has the effect that onItemSelected() is not called when the spinner is added
         spinner.setOnItemSelectedListener(this);
+        ArrayAdapter<CharSequence> adapterSubModes = ArrayAdapter.createFromResource(this, R.array.scheduleSubModes, android.R.layout.simple_spinner_item);
+        adapterSubModes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSubModes.setAdapter(adapterSubModes);
+        spinnerSubModes.setSelection(prefs.getInt("scheduleSubMode" + number, 2), false);
+        spinnerSubModes.setOnItemSelectedListener(this);
+        
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
 
         toggleCustomSchedulesButton(ll, spinner, number);
@@ -126,6 +133,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         removeButton.setTag(number);
         cb.setTag(number);
         spinner.setTag(number);
+        spinnerSubModes.setTag(number);
         
         main.addView(ll);
         return view;
@@ -210,13 +218,22 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
-        toggleCustomSchedulesButton((LinearLayout) parent.getParent(), (Spinner) parent, number);
-        if(pos == 4)
+        switch(parent.getId())
         {
-            new CustomPackageList(this, number).showList(Scheduler.this);
+            case R.id.sched_spinner:
+                toggleCustomSchedulesButton((LinearLayout) parent.getParent(), (Spinner) parent, number);
+                if(pos == 4)
+                {
+                    new CustomPackageList(this, number).showList(Scheduler.this);
+                }
+                edit.putInt("scheduleMode" + number, pos);
+                edit.commit();
+                break;
+            case R.id.sched_spinnerSubModes:
+                edit.putInt("scheduleSubMode" + number, pos); // add one to have them correspond to AppInfo.MODE_*
+                edit.commit();
+                break;
         }
-        edit.putInt("scheduleMode" + number, pos);
-        edit.commit();
     }
     public void onNothingSelected(AdapterView<?> parent)
     {}
@@ -292,6 +309,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             edit.putInt("hourOfDay" + i, prefs.getInt("hourOfDay" + (i + 1), 0));
             edit.putInt("repeatTime" + i, prefs.getInt("repeatTime" + (i + 1), 0));
             edit.putInt("scheduleMode" + i, prefs.getInt("scheduleMode" + (i + 1), 0));
+            edit.putInt("scheduleSubMode" + i, prefs.getInt("scheduleSubMode" + (i + 1), 0));
             edit.putLong("timePlaced" + i, prefs.getLong("timePlaced" + (i + 1), System.currentTimeMillis()));
             edit.putLong("timeUntilNextEvent" + i, prefs.getLong("timeUntilNextEvent" + (i + 1), 0));
             edit.commit();
@@ -303,11 +321,13 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             Button customListUpdateButton = (Button) view.findViewById(CUSTOMLISTUPDATEBUTTONID);
             CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
             Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
+            Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
 
             updateButton.setTag(i);
             removeButton.setTag(i);
             cb.setTag(i);
             spinner.setTag(i);
+            spinnerSubModes.setTag(i);
             if(customListUpdateButton != null)
             {
                 customListUpdateButton.setTag(i);
@@ -323,6 +343,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         edit.remove("hourOfDay" + number);
         edit.remove("repeatTime" + number);
         edit.remove("scheduleMode" + number);
+        edit.remove("scheduleSubMode" + number);
         edit.remove("timePlaced" + number);
         edit.remove("timeUntilNextEvent" + number);
         edit.commit();

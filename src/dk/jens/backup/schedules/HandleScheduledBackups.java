@@ -41,7 +41,7 @@ public class HandleScheduledBackups
         logFile = new LogFile(context);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
-    public void initiateBackup(final int mode, final int id)
+    public void initiateBackup(final int id, final int mode, final int subMode)
     {
         new Thread(new Runnable()
         {
@@ -54,7 +54,7 @@ public class HandleScheduledBackups
                     case 0:
                         // all apps
                         Collections.sort(list);
-                        backup(list);
+                        backup(list, subMode);
                         break;
                     case 1:
                         // user apps
@@ -67,7 +67,7 @@ public class HandleScheduledBackups
                             }
                         }
                         Collections.sort(listToBackUp);
-                        backup(listToBackUp);
+                        backup(listToBackUp, subMode);
                         break;                        
                     case 2:
                         // system apps
@@ -80,7 +80,7 @@ public class HandleScheduledBackups
                             }
                         }
                         Collections.sort(listToBackUp);
-                        backup(listToBackUp);
+                        backup(listToBackUp, subMode);
                         break;                        
                     case 3:
                         // new and updated apps
@@ -99,7 +99,7 @@ public class HandleScheduledBackups
                             }
                         }
                         Collections.sort(listToBackUp);
-                        backup(listToBackUp);
+                        backup(listToBackUp, subMode);
                         break;
                     case 4: 
                         // custom package list
@@ -113,13 +113,13 @@ public class HandleScheduledBackups
                             }
                         }
                         Collections.sort(listToBackUp);
-                        backup(listToBackUp);
+                        backup(listToBackUp, subMode);
                         break;                        
                 }
             }
         }).start();
     }
-    public void backup(final ArrayList<AppInfo> backupList)
+    public void backup(final ArrayList<AppInfo> backupList, final int subMode)
     {
         if(backupDir != null)
         {
@@ -151,8 +151,8 @@ public class HandleScheduledBackups
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), AppInfo.MODE_BOTH);
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(AppInfo.MODE_BOTH));
+                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode));
                         if(ret != 0)
                         {
                             errorFlag = true;
@@ -185,6 +185,11 @@ public class HandleScheduledBackups
         {
             long lastBackupMillis = 0;
             String lastBackup = context.getString(R.string.noBackupYet);
+            boolean isSystem = false;
+            if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
+            {
+                isSystem = true;
+            }
             if(backupDir != null)
             {
                 LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
@@ -193,15 +198,14 @@ public class HandleScheduledBackups
                 {
                     lastBackup = context.getString(R.string.noBackupYet);
                 }
+                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true, logInfo.getBackupMode());
+                appInfoList.add(appInfo);
             }
-
-            boolean isSystem = false;
-            if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
+            else
             {
-                isSystem = true;
+                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
+                appInfoList.add(appInfo);
             }
-            AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
-            appInfoList.add(appInfo);
         }
         return appInfoList;
     }
