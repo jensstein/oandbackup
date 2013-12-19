@@ -297,8 +297,8 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
+                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), AppInfo.MODE_BOTH);
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(AppInfo.MODE_BOTH));
                         if(backupRet != 0)
                         {
                             errorFlag = true;

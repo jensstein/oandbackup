@@ -58,19 +58,33 @@ public class ShellCommands
     public ShellCommands(Context context)
     {
         this(context, null);
-        // initialize with userlist as null. getUsers check if list is null and simply return it if isn't and if its size is greater than 0.
+        // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
-    public int doBackup(File backupSubDir, String label, String packageData, String packageApk)
+    public int doBackup(File backupSubDir, String label, String packageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
         try
         {
+            String commandString;
+            switch(backupMode)
+            {
+                case AppInfo.MODE_APK:
+                    commandString = "cp " + packageApk + " " + backupSubDirPath + "\n";
+                    break;
+                case AppInfo.MODE_DATA:
+                    // don't use busybox cp - it cannot be told not to follow symlinks on recurse which leads to problems with /lib
+                    commandString = "cp -r " + packageData + " " + backupSubDirPath + "\n";
+                    break;
+                default: // defaults to MODE_BOTH
+                    commandString = "cp -r " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n";
+                    break;
+            }
             p = Runtime.getRuntime().exec("su");
             dos = new DataOutputStream(p.getOutputStream());
-            // /lib kan give nogle mærkelige problemer, og er alligevel pakket med apken
-            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupSubDirPath + "\n");
-            dos.writeBytes(busybox + " cp " + packageApk + " " + backupSubDirPath + "\n");
+            dos.writeBytes(commandString);
+//            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupSubDirPath + "\n");
+//            dos.writeBytes(busybox + " cp " + packageApk + " " + backupSubDirPath + "\n");
 //            dos.flush();
             dos.writeBytes("exit\n");
 
@@ -82,7 +96,14 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    writeErrorLog(label, line);
+                    if(line.contains("symlink") && line.contains("/lib") && line.contains("not permitted") && stderr.size() == 1)
+                    {
+                        ret = 0; // ignore errors caused by failing to symlink /lib if there aren't any other errors
+                    }
+                    else
+                    {
+                        writeErrorLog(label, line);
+                    }
                 }
             }
             String folder = new File(packageData).getName();

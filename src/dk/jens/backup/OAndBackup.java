@@ -158,7 +158,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 //        dialog.show(getFragmentManager(), "DialogFragment");
         dialog.show(getSupportFragmentManager(), "DialogFragment");
     }
-    public void callBackup(final AppInfo appInfo)
+    public void callBackup(final AppInfo appInfo, final int mode)
     {
         new Thread(new Runnable()
         {
@@ -177,8 +177,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     {
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
-                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir());
-                    new LogFile(OAndBackup.this).writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem);
+                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), mode);
+                    new LogFile(OAndBackup.this).writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(mode));
                 
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()

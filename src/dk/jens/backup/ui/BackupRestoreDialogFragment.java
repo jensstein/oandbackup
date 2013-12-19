@@ -37,8 +37,10 @@ public class BackupRestoreDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callBackup(appInfo);
+                    BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment(appInfo);
+                    backupDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment");
+//                    OAndBackup obackup = (OAndBackup) getActivity();
+//                    obackup.callBackup(appInfo);
                 }
             });
         }

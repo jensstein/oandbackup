@@ -26,7 +26,7 @@ public class LogFile
     File logfile;
     SharedPreferences prefs;
     String label, packageName, versionName, sourceDir, dataDir, lastBackup;
-    int versionCode;
+    int versionCode, backupMode;
     long lastBackupMillis;
     boolean localTimestampFormat, isSystem;
     public LogFile(Context context)
@@ -51,6 +51,7 @@ public class LogFile
             this.lastBackup = formatDate(new Date(lastBackupMillis));
             this.versionCode = jsonObject.getInt("versionCode");
             this.isSystem = jsonObject.optBoolean("isSystem");
+            this.backupMode = jsonObject.optInt("backupMode", AppInfo.MODE_UNSET);
         }
         catch(JSONException e)
         {
@@ -67,7 +68,8 @@ public class LogFile
                     this.lastBackup = log.get(5);
                     this.versionCode = 0;
                     this.isSystem = false;
-                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup, isSystem);
+                    this.backupMode = AppInfo.MODE_UNSET;
+                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup, isSystem, backupMode);
                 }
                 catch(IndexOutOfBoundsException ie)
                 {
@@ -121,6 +123,10 @@ public class LogFile
     {
         return isSystem;
     }
+    public int getBackupMode()
+    {
+        return backupMode;
+    }
     private ArrayList<String> readLegacyLogFile(File backupDir, String packageName)
     {
         ArrayList<String> logLines = new ArrayList<String>();
@@ -146,7 +152,7 @@ public class LogFile
             return null;
         }
     }
-    public void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated, boolean isSystem)
+    public void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated, boolean isSystem, int backupMode)
     {
         if(dateFormated == null)
         {
@@ -165,6 +171,7 @@ public class LogFile
             jsonObject.put("lastBackup", dateFormated);
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
             jsonObject.put("isSystem", isSystem);
+            jsonObject.put("backupMode", backupMode);
             String json = jsonObject.toString(4);
             File outFile = new File(backupSubDir.getAbsolutePath() + "/" + packageName + ".log");
             outFile.createNewFile();
@@ -182,6 +189,7 @@ public class LogFile
             Log.i(TAG, e.toString());
         }
     }
+    /*
     public void writeLogFile(String filePath, String content)
     {
         Date date = new Date();
@@ -211,6 +219,7 @@ public class LogFile
             Log.i(TAG, e.toString());
         }
     }
+    */
     public String formatDate(Date date)
     {
         String dateFormated;

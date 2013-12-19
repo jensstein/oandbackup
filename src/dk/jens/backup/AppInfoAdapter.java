@@ -57,6 +57,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             viewHolder.packageName = (TextView) convertView.findViewById(R.id.packageName);
             viewHolder.versionName = (TextView) convertView.findViewById(R.id.versionCode);
             viewHolder.lastBackup = (TextView) convertView.findViewById(R.id.lastBackup);
+            viewHolder.backupMode = (TextView) convertView.findViewById(R.id.backupMode);
             convertView.setTag(viewHolder);
         }
         else
@@ -93,6 +94,19 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 viewHolder.label.setTextColor(Color.GRAY);
                 viewHolder.packageName.setTextColor(Color.GRAY);
             }
+            int backupMode = appInfo.getBackupMode();
+            switch(backupMode)
+            {
+                case AppInfo.MODE_APK:
+                    viewHolder.backupMode.setText(R.string.onlyApkBackedUp);
+                    break;
+                case AppInfo.MODE_DATA:
+                    viewHolder.backupMode.setText(R.string.onlyDataBackedUp);
+                    break;
+                default:
+                    viewHolder.backupMode.setText("");
+                    break;                    
+            }
         }
         return convertView;
     }
@@ -102,6 +116,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         TextView packageName;
         TextView versionName;
         TextView lastBackup;
+        TextView backupMode;
     }
     @Override
     public Filter getFilter()

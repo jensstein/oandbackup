@@ -3,11 +3,15 @@ package dk.jens.backup;
 public class AppInfo implements Comparable<AppInfo>
 {
     String label, packageName, loggedVersionName, versionName, sourceDir, dataDir, lastBackup;
-    int loggedVersionCode, versionCode;
+    int loggedVersionCode, versionCode, backupMode;
     long lastBackupMillis;
     public boolean isSystem, isInstalled, isChecked;
-
-    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, long lastBackupMillis, String lastBackup, boolean isSystem, boolean isInstalled)
+    public static final int MODE_UNSET = 0;
+    public static final int MODE_APK = 1;
+    public static final int MODE_DATA = 2;
+    public static final int MODE_BOTH = 3;
+    
+    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, long lastBackupMillis, String lastBackup, boolean isSystem, boolean isInstalled, int backupMode)
     {
         this.label = label;
         this.packageName = packageName;
@@ -21,6 +25,11 @@ public class AppInfo implements Comparable<AppInfo>
         this.lastBackup = lastBackup;
         this.isSystem = isSystem;
         this.isInstalled = isInstalled;
+        this.backupMode = backupMode;
+    }
+    public AppInfo(String packageName, String label, String loggedVersionName, String versionName, int loggedVersionCode, int versionCode, String sourceDir, String dataDir, long lastBackupMillis, String lastBackup, boolean isSystem, boolean isInstalled)
+    {
+        this(packageName, label, loggedVersionName, versionName, loggedVersionCode, versionCode, sourceDir, dataDir, lastBackupMillis, lastBackup, isSystem, isInstalled, MODE_UNSET);
     }
     public String getPackageName()
     {
@@ -61,6 +70,23 @@ public class AppInfo implements Comparable<AppInfo>
     public String getLastBackupTimestamp()
     {
         return lastBackup;
+    }
+    public int getBackupMode()
+    {
+        return backupMode;
+    }
+    public int setNewBackupMode(int modeToAdd)
+    {
+        if(backupMode == MODE_BOTH || modeToAdd == MODE_BOTH)
+        {
+            backupMode = MODE_BOTH;
+            return backupMode;
+        }
+        else
+        {
+            backupMode = backupMode + modeToAdd;
+            return backupMode;
+        }
     }
     public void toggle()
     {
