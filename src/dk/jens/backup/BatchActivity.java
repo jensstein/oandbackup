@@ -191,7 +191,7 @@ public class BatchActivity extends Activity implements OnClickListener
     {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.batchmenu, menu);
         return true;
     }
     @Override

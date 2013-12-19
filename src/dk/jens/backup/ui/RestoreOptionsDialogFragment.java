@@ -20,19 +20,23 @@ public class RestoreOptionsDialogFragment extends DialogFragment
     }
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        int backupMode = appInfo.getBackupMode();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(label);
         builder.setMessage(packageName);
         //midlertidigt indtil custom layout med flere muligheder
-        builder.setNegativeButton(R.string.restoreApk, new DialogInterface.OnClickListener()
+        if(backupMode != AppInfo.MODE_DATA)
         {
-            public void onClick(DialogInterface dialog, int id)
+            builder.setNegativeButton(R.string.restoreApk, new DialogInterface.OnClickListener()
             {
-                OAndBackup obackup = (OAndBackup) getActivity();
-                obackup.callRestore(appInfo, 1);
-            }
-        });
-        if(appInfo.isInstalled)
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    OAndBackup obackup = (OAndBackup) getActivity();
+                    obackup.callRestore(appInfo, 1);
+                }
+            });
+        }
+        if(appInfo.isInstalled && backupMode != AppInfo.MODE_APK)
         {
             builder.setNeutralButton(R.string.restoreData, new DialogInterface.OnClickListener()
             {
@@ -43,14 +47,17 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 }
             });
         }
-        builder.setPositiveButton(R.string.restoreBoth, new DialogInterface.OnClickListener()
+        if(backupMode != AppInfo.MODE_APK && backupMode != AppInfo.MODE_DATA)
         {
-            public void onClick(DialogInterface dialog, int id)
+            builder.setPositiveButton(R.string.restoreBoth, new DialogInterface.OnClickListener()
             {
-                OAndBackup obackup = (OAndBackup) getActivity();
-                obackup.callRestore(appInfo, 3);
-            }
-        });
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    OAndBackup obackup = (OAndBackup) getActivity();
+                    obackup.callRestore(appInfo, 3);
+                }
+            });
+        }
         return builder.create();
     }
 }
