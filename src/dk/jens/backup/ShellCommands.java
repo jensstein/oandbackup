@@ -89,8 +89,6 @@ public class ShellCommands
             dos.writeBytes("exit\n");
 
             int ret = p.waitFor();
-            String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
-            Log.i(TAG, "return: " + ret + " / " + returnMessages);
             if(ret != 0)
             {
                 ArrayList<String> stderr = getOutput(p).get("stderr");
@@ -127,6 +125,8 @@ public class ShellCommands
                 return ret;
                 // zipret == 2 shouldn't be treated as an error
             }
+            String returnMessages = (ret + zipret) == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
+            Log.i(TAG, "return: " + ret + " / " + returnMessages);
             return ret + zipret;
         }
         catch(IOException e)
@@ -181,12 +181,12 @@ public class ShellCommands
                         writeErrorLog(label, line);
                     }
                 }
-                String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
-                Log.i(TAG, "return: " + ret + " / " + returnMessages);
                 if(multiuserEnabled)
                 {
                     disablePackage(packageName);
                 }
+                String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
+                Log.i(TAG, "return: " + ret + " / " + returnMessages);
                 return ret;
             }
             else

@@ -8,6 +8,30 @@
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
     />
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent">     
+        <RadioButton
+            android:id="@+id/radioApk"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" 
+            android:text="@string/radioApk"
+        />
+        <RadioButton
+            android:id="@+id/radioData"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" 
+            android:text="@string/radioData"
+        />
+        <RadioButton
+            android:id="@+id/radioBoth"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" 
+            android:text="@string/radioBoth"
+        />
+    </RadioGroup>
     <LinearLayout
         android:id="@+id/backupLinear"
         android:orientation="vertical"

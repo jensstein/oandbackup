@@ -24,7 +24,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         builder.setTitle(label);
         builder.setMessage(packageName);
         //midlertidigt indtil custom layout med flere muligheder
-        builder.setPositiveButton(R.string.restoreApk, new DialogInterface.OnClickListener()
+        builder.setNegativeButton(R.string.restoreApk, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {
@@ -43,7 +43,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 }
             });
         }
-        builder.setNegativeButton(R.string.restoreBoth, new DialogInterface.OnClickListener()
+        builder.setPositiveButton(R.string.restoreBoth, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {

@@ -23,7 +23,7 @@ public class BackupOptionsDialogFragment extends DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(label);
         builder.setMessage(packageName);
-        builder.setNegativeButton("apk", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(R.string.backupApk, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {
@@ -31,7 +31,7 @@ public class BackupOptionsDialogFragment extends DialogFragment
                 obackup.callBackup(appInfo, AppInfo.MODE_APK);
             }
         });
-        builder.setNeutralButton("data", new DialogInterface.OnClickListener()
+        builder.setNeutralButton(R.string.backupData, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {
@@ -39,7 +39,7 @@ public class BackupOptionsDialogFragment extends DialogFragment
                 obackup.callBackup(appInfo, AppInfo.MODE_DATA);
             }
         });
-        builder.setPositiveButton("both", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(R.string.backupBoth, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {

@@ -64,7 +64,7 @@ public class BatchActivity extends Activity implements OnClickListener
     ArrayList<String> users;
 
     LinearLayout linearLayout;
-    RadioButton rb, rbData, rbApk, rbBoth;
+    RadioButton rbData, rbApk, rbBoth;
     ArrayList<CheckBox> checkboxList = new ArrayList<CheckBox>();
     HashMap<String, PackageInfo> pinfoMap = new HashMap<String, PackageInfo>();
 
@@ -115,6 +115,10 @@ public class BatchActivity extends Activity implements OnClickListener
 
         Button bt = (Button) findViewById(R.id.backupRestoreButton);
         bt.setOnClickListener(this);
+        rbApk = (RadioButton) findViewById(R.id.radioApk);
+        rbData = (RadioButton) findViewById(R.id.radioData);
+        rbBoth = (RadioButton) findViewById(R.id.radioBoth);
+        rbBoth.setChecked(true);
 
         if(backupBoolean)
         {
@@ -134,21 +138,7 @@ public class BatchActivity extends Activity implements OnClickListener
         else
         {
             list = new ArrayList<AppInfo>(appInfoList);
-
             bt.setText(R.string.restore);
-            RadioGroup rg = new RadioGroup(this);
-            rg.setOrientation(LinearLayout.HORIZONTAL);
-            rbData = new RadioButton(this);
-            rbData.setText(R.string.radioData);
-            rg.addView(rbData);
-            rbData.setChecked(true); // hvis ikke setChecked() kaldes før  knappen er tilføjet til sin parent bliver den permanent trykket 
-            rbApk = new RadioButton(this);
-            rbApk.setText(R.string.radioApk);
-            rg.addView(rbApk);
-            rbBoth = new RadioButton(this);
-            rbBoth.setText(R.string.radioBoth);
-            rg.addView(rbBoth);
-            linearLayout.addView(rg);
         }
 
         listView = (ListView) findViewById(R.id.listview);
@@ -297,8 +287,17 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), AppInfo.MODE_BOTH);
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(AppInfo.MODE_BOTH));
+                        int backupMode = AppInfo.MODE_BOTH;
+                        if(rbApk.isChecked())
+                        {
+                            backupMode = AppInfo.MODE_APK;
+                        }
+                        else if(rbData.isChecked())
+                        {
+                            backupMode = AppInfo.MODE_DATA;
+                        }
+                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
                         if(backupRet != 0)
                         {
                             errorFlag = true;
