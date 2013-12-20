@@ -115,9 +115,14 @@ public class Compression
                 {
                     getFiles(file);
                 }
-                else
+                else if(file.isFile())
                 {
                     fileList.add(file.getAbsolutePath());
+                }
+                else
+                {
+                    // fixes a bug where the paid version of titanium backup would never complete compression - not seen with any other app
+                    Log.w(TAG, "special file " + file.getAbsolutePath() + " is not compressed");
                 }
             }
         }
