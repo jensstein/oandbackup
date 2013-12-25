@@ -94,9 +94,10 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    if(line.contains("symlink") && line.contains("/lib") && line.contains("not permitted") && stderr.size() == 1)
+                    if((line.contains("symlink") && line.contains("/lib") && line.contains("not permitted") && stderr.size() == 1) || (line.contains("org.mozilla.firefox") && line.contains("/lock") && stderr.size() == 1))
                     {
                         ret = 0; // ignore errors caused by failing to symlink /lib if there aren't any other errors
+                                // also temporary fix for a symlink in the files stored by firefox
                     }
                     else
                     {
