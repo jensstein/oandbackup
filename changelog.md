@@ -4,6 +4,7 @@ changelog
 0.2.7 (development)
 -------------------
  * backups can now be specified to include either apk, data or both
+ * scheduled backups of new and updated apps can now be specified to exclude system apps
  * add austrian german translation. thanks to user_99_gmx.at
  * fixed bug where a fifo special file blocked compression. thanks to lisandro for reporting and testing.
 

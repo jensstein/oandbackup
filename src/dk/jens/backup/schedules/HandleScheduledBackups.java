@@ -162,6 +162,9 @@ public class HandleScheduledBackups
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
                         int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
+
+                        shellCommands.logReturnMessage(ret);
+
                         logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode));
                         if(ret != 0)
                         {

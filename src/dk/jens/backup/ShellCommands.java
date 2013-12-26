@@ -108,7 +108,6 @@ public class ShellCommands
             }
             String folder = new File(packageData).getName();
             deleteBackup(new File(backupSubDir, folder + "/lib"));
-//            int tarRet = tar(backupDir.getAbsolutePath(), folder);
             if(label.equals(TAG))
             {
                 copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
@@ -127,8 +126,6 @@ public class ShellCommands
                 return ret;
                 // zipret == 2 shouldn't be treated as an error
             }
-            String returnMessages = (ret + zipret) == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
-            Log.i(TAG, "return: " + ret + " / " + returnMessages);
             return ret + zipret;
         }
         catch(IOException e)
@@ -187,8 +184,6 @@ public class ShellCommands
                 {
                     disablePackage(packageName);
                 }
-                String returnMessages = ret == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
-                Log.i(TAG, "return: " + ret + " / " + returnMessages);
                 return ret;
             }
             else
@@ -596,6 +591,11 @@ public class ShellCommands
             map.put("stdout", out);
             return map;
         }
+    }
+    public void logReturnMessage(int returnCode)
+    {
+        String returnMessage = returnCode == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
+        Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
     }
     public void writeErrorLog(String packageName, String err)
     {

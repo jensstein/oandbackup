@@ -178,6 +178,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
                     backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+
+                    shellCommands.logReturnMessage(backupRet);
+
                     new LogFile(OAndBackup.this).writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
                 
                     // køre på uitråd for at undgå WindowLeaked
@@ -228,6 +231,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             if(appInfo.isInstalled)
                             {
                                 restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                shellCommands.logReturnMessage(restoreRet);
+
                                 permRet = shellCommands.setPermissions(dataDir);
                             }
                             else
@@ -238,6 +243,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         case 3:
                             apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            shellCommands.logReturnMessage(restoreRet);
                             permRet = shellCommands.setPermissions(dataDir);
                             break;
                     }

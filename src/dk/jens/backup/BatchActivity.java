@@ -297,6 +297,8 @@ public class BatchActivity extends Activity implements OnClickListener
                             backupMode = AppInfo.MODE_DATA;
                         }
                         int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+                        shellCommands.logReturnMessage(backupRet);
+
                         logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
                         if(backupRet != 0)
                         {
@@ -321,6 +323,7 @@ public class BatchActivity extends Activity implements OnClickListener
                             if(appInfo.isInstalled)
                             {
                                 int restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                shellCommands.logReturnMessage(restoreRet);
                                 int permRet = shellCommands.setPermissions(dataDir);
                                 if(restoreRet != 0 || permRet != 0)
                                 {
@@ -336,6 +339,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
                             int restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            shellCommands.logReturnMessage(restoreRet);
                             int permRet = shellCommands.setPermissions(dataDir);
                             if(apkRet != 0 || restoreRet != 0 || permRet != 0)
                             {
