@@ -94,9 +94,10 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    if((line.contains("symlink") && line.contains("/lib") && line.contains("not permitted") && stderr.size() == 1) || (line.contains("org.mozilla.firefox") && line.contains("/lock") && stderr.size() == 1))
+                    if((line.contains("/lib") && ((line.contains("not permitted") && line.contains("symlink")) || line.contains("No such file or directory")) && stderr.size() == 1) || (line.contains("org.mozilla.firefox") && line.contains("/lock") && stderr.size() == 1))
                     {
                         ret = 0; // ignore errors caused by failing to symlink /lib if there aren't any other errors
+                                // excluding lib from cp would be better but would mean further busybox-specific code: for dir in $packageData/*; do if [ `basename $dir` != 'lib' ]; then cp -r $dir $backupdir; fi; done
                                 // also temporary fix for a symlink in the files stored by firefox
                     }
                     else
