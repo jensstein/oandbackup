@@ -41,7 +41,7 @@ public class HandleScheduledBackups
         logFile = new LogFile(context);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
-    public void initiateBackup(final int id, final int mode, final int subMode)
+    public void initiateBackup(final int id, final int mode, final int subMode, final boolean excludeSystem)
     {
         new Thread(new Runnable()
         {
@@ -93,9 +93,19 @@ public class HandleScheduledBackups
                             {
                                 versionCode = new LogFile(backupSubDir, appInfo.getPackageName(), true).getVersionCode();
                             }
-                            if(appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                            if(!excludeSystem)
                             {
-                                listToBackUp.add(appInfo);
+                                if(appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                                {
+                                    listToBackUp.add(appInfo);
+                                }
+                            }
+                            else
+                            {
+                                if(!appInfo.isSystem && appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                                {
+                                    listToBackUp.add(appInfo);
+                                }
                             }
                         }
                         Collections.sort(listToBackUp);

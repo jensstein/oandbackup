@@ -29,7 +29,8 @@ public class AlarmReceiver extends BroadcastReceiver
             Log.i(TAG, context.getString(R.string.sched_startingbackup));
             int mode = prefs.getInt("scheduleMode" + id, 1);
             int subMode = prefs.getInt("scheduleSubMode" + id, 2);
-            handleScheduledBackups.initiateBackup(id, mode, subMode + 1); // add one to have them correspond to AppInfo.MODE_*
+            boolean exludeSystem = prefs.getBoolean("excludeSystem" + id, false);
+            handleScheduledBackups.initiateBackup(id, mode, subMode + 1, exludeSystem); // add one to submode to have it correspond to AppInfo.MODE_*
         }
         else
         {

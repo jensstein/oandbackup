@@ -28,6 +28,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 {
     static final String TAG = OAndBackup.TAG;
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
+    static final int EXCLUDESYSTEMCHECKBOXID = 2;
 
     ArrayList<View> viewList;
     HandleAlarms handleAlarms;
@@ -127,11 +128,12 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
 
-        toggleCustomSchedulesButton(ll, spinner, number);
+        toggleSecondaryButtons(ll, spinner, number);
 
         updateButton.setTag(number);
         removeButton.setTag(number);
         cb.setTag(number);
+//        exludeSystemCB.setTag(number);
         spinner.setTag(number);
         spinnerSubModes.setTag(number);
         
@@ -208,6 +210,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 case CUSTOMLISTUPDATEBUTTONID:
                     new CustomPackageList(this, number).showList(Scheduler.this);
                     break;
+                case EXCLUDESYSTEMCHECKBOXID:
+                    edit.putBoolean("excludeSystem" + number, ((CheckBox) v).isChecked());
+                    edit.commit();
+                    break;
             }
         }
         catch(IndexOutOfBoundsException e)
@@ -221,7 +227,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         switch(parent.getId())
         {
             case R.id.sched_spinner:
-                toggleCustomSchedulesButton((LinearLayout) parent.getParent(), (Spinner) parent, number);
+                toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
                 if(pos == 4)
                 {
                     new CustomPackageList(this, number).showList(Scheduler.this);
@@ -269,25 +275,48 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             }
         }
     }
-    public void toggleCustomSchedulesButton(LinearLayout parent, Spinner spinner, int number)
+    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, int number)
     {
-        if(spinner.getSelectedItemPosition() == 4)
+        switch(spinner.getSelectedItemPosition())
         {
-            Button bt = new Button(this);
-            bt.setId(CUSTOMLISTUPDATEBUTTONID);
-            bt.setText(getString(R.string.sched_customListUpdateButton));
-            bt.setTag(number);
-            bt.setOnClickListener(this);
-            LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            parent.addView(bt, lp);
+            case 3:
+                CheckBox cb = new CheckBox(this);
+                cb.setId(EXCLUDESYSTEMCHECKBOXID);
+                cb.setText(getString(R.string.sched_excludeSystemCheckBox));
+                cb.setTag(number);
+                cb.setChecked(prefs.getBoolean("excludeSystem" + number, false));
+                cb.setOnClickListener(this);
+                LayoutParams cblp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                parent.addView(cb, cblp);
+                removeSecondaryButton(parent, cb);
+                break;
+            case 4:
+                Button bt = new Button(this);
+                bt.setId(CUSTOMLISTUPDATEBUTTONID);
+                bt.setText(getString(R.string.sched_customListUpdateButton));
+                bt.setTag(number);
+                bt.setOnClickListener(this);
+                LayoutParams btlp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                parent.addView(bt, btlp);
+                removeSecondaryButton(parent, bt);
+                break;
+            default:
+                removeSecondaryButton(parent, null);
+                break;
         }
-        else
+    }
+    public void removeSecondaryButton(LinearLayout parent, View v)
+    {
+        int id = (v != null) ? v.getId() : -1;
+        Button bt = (Button) parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
+        CheckBox cb = (CheckBox) parent.findViewById(EXCLUDESYSTEMCHECKBOXID);
+        if(bt != null && id != CUSTOMLISTUPDATEBUTTONID)
         {
-            Button bt = (Button) parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
-            if(bt != null)
-            {
-                parent.removeView(bt);
-            }
+            parent.removeView(bt);
+        }
+        if(cb != null && id != EXCLUDESYSTEMCHECKBOXID)
+        {
+            parent.removeView(cb);
         }
     }
     public void migrateSchedules(int number, int total)
@@ -306,6 +335,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 
             // move settings one place back
             edit.putBoolean("enabled" + i, prefs.getBoolean("enabled" + (i + 1), false));
+            edit.putBoolean("excludeSystem" + i, prefs.getBoolean("excludeSystem" + (i + 1), false));
             edit.putInt("hourOfDay" + i, prefs.getInt("hourOfDay" + (i + 1), 0));
             edit.putInt("repeatTime" + i, prefs.getInt("repeatTime" + (i + 1), 0));
             edit.putInt("scheduleMode" + i, prefs.getInt("scheduleMode" + (i + 1), 0));
@@ -320,6 +350,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             Button removeButton = (Button) view.findViewById(R.id.removeButton);
             Button customListUpdateButton = (Button) view.findViewById(CUSTOMLISTUPDATEBUTTONID);
             CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
+            CheckBox excludeSystemCB = (CheckBox) view.findViewById(EXCLUDESYSTEMCHECKBOXID);
             Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
             Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
 
@@ -332,6 +363,10 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             {
                 customListUpdateButton.setTag(i);
             }
+            if(excludeSystemCB != null)
+            {
+                excludeSystemCB.setTag(i);
+            }
             
             renameCustomListFile(i);
         }
@@ -340,6 +375,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     public void removePreferenceEntries(int number)
     {
         edit.remove("enabled" + number);
+        edit.remove("excludeSystem" + number);
         edit.remove("hourOfDay" + number);
         edit.remove("repeatTime" + number);
         edit.remove("scheduleMode" + number);
