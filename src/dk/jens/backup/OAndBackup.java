@@ -473,6 +473,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             case R.id.quickReboot:
                 quickReboot();
                 break;
+            case R.id.help:
+                startActivity(new Intent(this, Help.class));
+                break;
             default:
                 sorter.sort(item.getItemId());
                 break;

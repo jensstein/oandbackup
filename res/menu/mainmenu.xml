@@ -48,4 +48,6 @@
         android:title="@string/sched_title"/>
     <item android:id="@+id/quickReboot"
         android:title="@string/quickReboot"/>
+    <item android:id="@+id/help"
+        android:title="@string/help_title" />
 </menu>

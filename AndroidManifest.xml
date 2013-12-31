@@ -37,6 +37,11 @@
             android:windowSoftInputMode="stateHidden"
             android:configChanges="keyboardHidden|orientation|screenSize|locale" >
         </activity>
+        <activity android:name=".Help"
+            android:label="@string/help_title"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale" >
+        </activity>
         <receiver android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver">
             <intent-filter>

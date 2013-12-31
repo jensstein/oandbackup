@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="help_usageHeader">usage notes</string>
+    <string name="help_usageContentsPoint1">long press an item in the list of apps to get the context menu.</string>
+    <string name="help_usageContentsSubPoint1">delete backup: deletes the backup files for the chosen app.</string>
+    <string name="help_usageContentsSubPoint2">uninstall: somewhat more aggresive than a normal uninstall. in addition to doing a normal uninstall via android commands uninstalling from oandbackup deletes files the app might have left over in /data/app-lib/. this also works on system apps (although this is somewhat experimental).</string>
+   <string name="help_usageContentsSubPoint3">enable / disable: uses the android script `pm` to enable or disable an app. disabling an app removes it from the normal user interface without uninstalling. this can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). users are identified with an id: 0 is the first user (owner).</string>
+   <string name="help_usageContentsPoint2">multiple users: multi-user is still somewhat experimental but should work. when restoring in a multi-user setting, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1").   
+this can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. the context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore.   
+enabling and disabling only works after an initial install (not necessarily from oandbackup) or restore of the app.</string>
+    <string name="help_changelogHeader">changelog</string>
+    <string name="help_changelogLink">https://github.com/jensstein/oandbackup/blob/master/changelog.md</string>
+    <string name="help_licenseHeader">license</string>
+    <string name="help_licenseContents">oandbackup is licensed under the MIT license and is free to download, modify and share without restrictions</string>
+    <string name="help_licenseLink">https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt</string>
+</resources>
