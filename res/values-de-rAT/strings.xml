@@ -5,13 +5,16 @@
   <string name="restore">Wiederherstellen</string>
   <string name="backupConfirmation">Sichern?</string>
   <string name="restoreConfirmation">Wiederherstellen?</string>
+  <string name="restoreApk">APK wiederhersellen</string>
+  <string name="restoreData">Daten wiederherstellen</string>
+  <string name="restoreBoth">APK und Daten wiederherstellen</string>
   <string name="radioApk">APK</string>
   <string name="radioData">Daten</string>
   <string name="radioBoth">Daten und APK</string>
   <string name="de_selectAll">Alle aus-/abwählen</string>
   <string name="refresh">Aktualisieren</string>
   <string name="batchbackup">Sicherungsstapelverarbeitung</string>
-  <string name="batchrestore">Wiederherstellungstapelverarbeitung</string>
+  <string name="batchrestore">Wiederherstellungsstapelverarbeitung</string>
   <string name="search">Suchen</string>
   <string name="searchHint">Nach Anwendungen suchen</string>
   <string name="deleteBackup">Sicherung löschen</string>
@@ -56,8 +59,8 @@
   <string name="batchFailure">Mit Fehlern abgeschlossen</string>
   <string name="errorDialogTitle">Fehler sind aufgetreten</string>
   <string name="customListTitle">Eigene Liste</string>
-  <string name="quickReboot">Gerät neustarten</string>
-  <string name="quickRebootMessage">Neustart sicher durchführen?</string>
+  <string name="quickReboot">Gerät neu starten</string>
+  <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
   <string name="enablePackage">Aktivieren</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Für Benutzer aktivieren</string>
@@ -71,7 +74,7 @@
   <string name="prefs_pathBackupFolder">Sicherungsverzeichnis</string>
   <string name="prefs_summaryBackupFolder">Pfad zum Sicherungsverzeichnis (Leer lassen für Standardwert)</string>
   <string name="prefs_pathLogfile">Protokolldatei</string>
-  <string name="prefs_summaryLogfile">Pfad zur Protokolldatei. (Leer lassen für Standardwert)</string>
+  <string name="prefs_summaryLogfile">Pfad zur Protokolldatei (Leer lassen für Standardwert)</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Pfad zur Busybox-Programmdatei. Auf Korrektheit überprüfen! (Leer lassen für Standardwert)</string>
   <string name="prefs_oldBackups">Sicherungen nach Alter filtern</string>

@@ -5,13 +5,16 @@
   <string name="restore">Wiederherstellen</string>
   <string name="backupConfirmation">Sichern?</string>
   <string name="restoreConfirmation">Wiederherstellen?</string>
+  <string name="restoreApk">APK wiederherstellen</string>
+  <string name="restoreData">Daten wiederherstellen</string>
+  <string name="restoreBoth">APK und Daten wiederherstellen</string>
   <string name="radioApk">apk</string>
   <string name="radioData">data</string>
   <string name="radioBoth">data + apk</string>
   <string name="de_selectAll">alle an-/abwählen</string>
   <string name="refresh">Aktualisieren</string>
   <string name="batchbackup">Sicherungsstapelverarbeitung</string>
-  <string name="batchrestore">Wiederherstellungstapelverarbeitung</string>
+  <string name="batchrestore">Wiederherstellungsstapelverarbeitung</string>
   <string name="search">Suchen</string>
   <string name="searchHint">Nach Anwendungen suchen</string>
   <string name="deleteBackup">Backup löschen</string>
@@ -56,8 +59,8 @@
   <string name="batchFailure">Mit Fehlern abgeschlossen</string>
   <string name="errorDialogTitle">Fehler sind aufgetreten</string>
   <string name="customListTitle">Eigene Liste</string>
-  <string name="quickReboot">Gerät neustarten</string>
-  <string name="quickRebootMessage">Neustart sicher durchführen?</string>
+  <string name="quickReboot">Gerät neu starten</string>
+  <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
   <string name="enablePackage">Aktivieren</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Für Benutzer aktivieren</string>

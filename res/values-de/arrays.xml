@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <!--translators should ensure that all items are translated. there is no graceful fallback if the number of items in a translated file doesn't match the source and the app will crash on that particular language.-->
   <string-array name="scheduleModes">
-    <item>Alle Anwendungen</item>
-    <item>Benutzeranwendungen</item>
-    <item>Systemanwendungen</item>
-    <item>Neue und aktualisierte Anwendungen</item>
-    <item>custom list</item>
+    <item>Alle Apps</item>
+    <item>Benutzer-Apps</item>
+    <item>System-Apps</item>
+    <item>Neue und aktualisierte Apps</item>
+    <item>Benutzerliste</item>
   </string-array>
 </resources>
