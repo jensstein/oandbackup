@@ -5,7 +5,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:padding="10sp"
+        >
         <TextView
             style="@style/help_headerStyle"
             android:text="@string/help_usageHeader"

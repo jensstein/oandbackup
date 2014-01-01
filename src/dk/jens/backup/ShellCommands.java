@@ -163,9 +163,15 @@ public class ShellCommands
             String[] list = new File(backupDir, packageName).list();
             if(list != null && list.length > 0)
             {
+                String restoreCommand = busybox + " cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n";
+                if(!(new File(packageData).exists()))
+                {
+                    restoreCommand = "mkdir " + packageData + "\n" + restoreCommand;
+                    // restored system app will not necessarily have the data folder (which is otherwise handled by pm)
+                }
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n");
+                dos.writeBytes(restoreCommand);
     //            dos.writeBytes("am force-stop " + packageName + "\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
@@ -352,9 +358,9 @@ public class ShellCommands
                 // with touch, a reboot is not necessary after restoring system apps
                 // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
                 dos.writeBytes(busybox + " touch /system/app/" + apk + "\n");
-                dos.writeBytes(busybox + " cp " + backupDir.getAbsolutePath() + "/" + apk + " /system/app/" + "\n");
+                dos.writeBytes(busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath()) + "/" + apk + " /system/app/" + "\n");
                 dos.writeBytes(busybox + " chmod 644 /system/app/" + apk + "\n");
-                dos.writeBytes(busybox + " mount -o remount,r /system\n");
+                dos.writeBytes(busybox + " mount -o remount,ro /system\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
