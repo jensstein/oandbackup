@@ -353,14 +353,16 @@ public class ShellCommands
             {
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
+//                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
+                // remounting seems to make android 4.4 fail the following commands without error
+
                 // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
                 // with touch, a reboot is not necessary after restoring system apps
                 // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
                 dos.writeBytes(busybox + " touch /system/app/" + apk + "\n");
                 dos.writeBytes(busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath()) + "/" + apk + " /system/app/" + "\n");
                 dos.writeBytes(busybox + " chmod 644 /system/app/" + apk + "\n");
-                dos.writeBytes(busybox + " mount -o remount,ro /system\n");
+//                dos.writeBytes(busybox + " mount -o remount,ro /system\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
