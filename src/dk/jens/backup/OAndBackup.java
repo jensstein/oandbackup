@@ -44,6 +44,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 {
     static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
     static final int BATCH_REQUEST = 1;
+    static final int TOOLS_REQUEST = 2;
 
     PackageManager pm;
     File backupDir;
@@ -326,6 +327,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         BatchActivity.appInfoList = appInfoList;
         CustomPackageList.appInfoList = appInfoList;
+        Tools.appInfoList = appInfoList;
     }
     public void refresh()
     {
@@ -370,7 +372,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == BATCH_REQUEST)
+        if(requestCode == BATCH_REQUEST || requestCode == TOOLS_REQUEST)
         {
             if(data != null)
             {
@@ -470,8 +472,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             case R.id.search:
                 setupLegacySearch();
                 break;
-            case R.id.quickReboot:
-                quickReboot();
+            case R.id.tools:
+                if(backupDir != null)
+                {
+                    Intent toolsIntent = new Intent(this, Tools.class);
+                    toolsIntent.putExtra("dk.jens.backup.backupDir", backupDir);
+                    startActivityForResult(toolsIntent, TOOLS_REQUEST);
+                }
                 break;
             case R.id.help:
                 startActivity(new Intent(this, Help.class));
@@ -607,22 +614,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {}
             sorter = new Sorter(adapter, oldBackups);
         }
-    }
-    public void quickReboot()
-    {
-        new AlertDialog.Builder(this)
-        .setTitle(R.string.quickReboot)
-        .setMessage(R.string.quickRebootMessage)
-        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                shellCommands.quickReboot();
-            }
-        })
-        .setNegativeButton(R.string.dialogNo, null)
-        .show();
     }
     public boolean onSearchRequested()
     {

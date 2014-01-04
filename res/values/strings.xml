@@ -67,6 +67,10 @@
     <string name="quickRebootMessage">do you wish to restart userspace?</string>
     <string name="help_title">help</string>
     
+    <string name="tools_title">tools</string>
+    <string name="tools_batchDeleteTitle">delete backups?</string>
+    <string name="tools_batchDeleteMessage">deleting backups</string>
+
     <string name="enablePackage">enable</string>
         <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">enable for users</string>

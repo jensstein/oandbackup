@@ -42,6 +42,11 @@
             android:windowSoftInputMode="stateHidden"
             android:configChanges="keyboardHidden|orientation|screenSize|locale" >
         </activity>
+        <activity android:name=".Tools"
+            android:label="@string/tools_title"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale" >
+        </activity>
         <receiver android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver">
             <intent-filter>
