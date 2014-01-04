@@ -5,12 +5,9 @@
     <string name="restore">restore</string>
     <string name="backupConfirmation">backup?</string>
     <string name="restoreConfirmation">restore?</string>
-    <string name="restoreApk">restore apk</string>
-    <string name="restoreData">restore data</string>
-    <string name="restoreBoth">restore both</string>
-    <string name="backupApk">backup apk</string>
-    <string name="backupData">backup data</string>
-    <string name="backupBoth">backup both</string>
+    <string name="handleApk">apk</string>
+    <string name="handleData">data</string>
+    <string name="handleBoth">both</string>
     <string name="radioApk">apk</string>
     <string name="radioData">data</string>
     <string name="radioBoth">data + apk</string>

@@ -23,11 +23,11 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         int backupMode = appInfo.getBackupMode();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(label);
-        builder.setMessage(packageName);
+        builder.setMessage(R.string.restore);
         //midlertidigt indtil custom layout med flere muligheder
         if(backupMode != AppInfo.MODE_DATA)
         {
-            builder.setNegativeButton(R.string.restoreApk, new DialogInterface.OnClickListener()
+            builder.setNegativeButton(R.string.handleApk, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -38,7 +38,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         }
         if(appInfo.isInstalled && backupMode != AppInfo.MODE_APK)
         {
-            builder.setNeutralButton(R.string.restoreData, new DialogInterface.OnClickListener()
+            builder.setNeutralButton(R.string.handleData, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -49,7 +49,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         }
         if(backupMode != AppInfo.MODE_APK && backupMode != AppInfo.MODE_DATA)
         {
-            builder.setPositiveButton(R.string.restoreBoth, new DialogInterface.OnClickListener()
+            builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
