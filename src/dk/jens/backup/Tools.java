@@ -27,7 +27,6 @@ public class Tools extends ListActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toolslayout);
         
-        shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
 
         Bundle extra = getIntent().getExtras();
@@ -35,6 +34,9 @@ public class Tools extends ListActivity
         {
             backupDir = (File) extra.get("dk.jens.backup.backupDir");
         }
+        // get users to prevent an unnecessary call to su
+        ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
+        shellCommands = new ShellCommands(this, users);
                 
         String[] titles = getResources().getStringArray(R.array.tools_titles);
         String[] descriptions = getResources().getStringArray(R.array.tools_descriptions);
@@ -117,19 +119,11 @@ public class Tools extends ListActivity
     }
     public static class Pair
     {
-        String title, description;
+        public final String title, description;
         public Pair(String title, String description)
         {
             this.title = title;
             this.description = description;
-        }
-        public String getTitle()
-        {
-            return title;
-        }
-        public String getDescription()
-        {
-            return description;
         }
     }
 }

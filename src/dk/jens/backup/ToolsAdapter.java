@@ -41,8 +41,8 @@ public class ToolsAdapter extends ArrayAdapter
         Tools.Pair pair = (Tools.Pair) getItem(pos);
         if(pair != null)
         {
-            viewHolder.title.setText(pair.getTitle());
-            viewHolder.description.setText(pair.getDescription());
+            viewHolder.title.setText(pair.title);
+            viewHolder.description.setText(pair.description);
         }
         return convertView;
     }

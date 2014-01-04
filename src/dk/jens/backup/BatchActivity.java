@@ -61,7 +61,6 @@ public class BatchActivity extends Activity implements OnClickListener
     ListView listView;
     BatchAdapter adapter;
     ArrayList<AppInfo> list;
-    ArrayList<String> users;
 
     LinearLayout linearLayout;
     RadioButton rbData, rbApk, rbBoth;
@@ -108,7 +107,7 @@ public class BatchActivity extends Activity implements OnClickListener
         {
             backupBoolean = extra.getBoolean("dk.jens.backup.backupBoolean");
         }
-        users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
+        ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
         shellCommands = new ShellCommands(this, users);
 
         linearLayout = (LinearLayout) findViewById(R.id.backupLinear);

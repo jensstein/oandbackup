@@ -477,6 +477,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 {
                     Intent toolsIntent = new Intent(this, Tools.class);
                     toolsIntent.putExtra("dk.jens.backup.backupDir", backupDir);
+                    toolsIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
                     startActivityForResult(toolsIntent, TOOLS_REQUEST);
                 }
                 break;

@@ -5,7 +5,8 @@ changelog
 -------------------
  * backups can now be specified to include either apk, data or both
  * scheduled backups of new and updated apps can now be specified to exclude system apps
- * add austrian german translation. thanks to user_99_gmx.at
+ * added austrian german translation. thanks to user_99_gmx.at
+ * added an activity for various tasks (rebooting userspace and deleting backups)
  * fixed bug where a fifo special file blocked compression. thanks to lisandro for reporting and testing.
  * fixed restoring system apps for android 4.4
 
