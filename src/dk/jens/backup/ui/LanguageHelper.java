@@ -44,4 +44,12 @@ public class LanguageHelper
             return changeLanguage(context, new Locale(langCode).getDefault().getLanguage());
         }
     }
+    public void legacyKeepLanguage(Context context, String langCode)
+    {
+        // for some reason the locale changes back when PackageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES) is called on older apis (Process.waitFor() in shellCommands.checkSuperUser() does it too)
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
+        {
+            changeLanguage(context, langCode);
+        }
+    }
 }

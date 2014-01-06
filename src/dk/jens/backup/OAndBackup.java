@@ -87,9 +87,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             {
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
-                new LanguageHelper().initLanguage(OAndBackup.this, prefs.getString("languages", "system"));
+                String langCode = prefs.getString("languages", "system");
+                LanguageHelper languageHelper = new LanguageHelper();
+                languageHelper.initLanguage(OAndBackup.this, langCode);
                 handleMessages.showMessage("", getString(R.string.suCheck));
                 boolean haveSu = shellCommands.checkSuperUser();
+                languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                 if(!haveSu)
                 {
                     runOnUiThread(new Runnable()
@@ -113,10 +116,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 
                 appInfoList = new ArrayList<AppInfo>();
                 getPackageInfo();
+                languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                 handleMessages.endMessage();
                 listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
                 
+
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
                 int oldBackups = 0;
                 try
