@@ -99,7 +99,7 @@ public class BatchActivity extends Activity implements OnClickListener
         */
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-        backupDir = new Utils(BatchActivity.this).createBackupDir(backupDirPath, fileCreator);
+        backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath, fileCreator);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         Bundle extra = getIntent().getExtras();
@@ -362,8 +362,7 @@ public class BatchActivity extends Activity implements OnClickListener
             }
             if(errorFlag)
             {
-                Utils utils = new Utils(BatchActivity.this);
-                utils.showErrors(this, shellCommands);
+                Utils.showErrors(BatchActivity.this, shellCommands);
             }
             Intent result = new Intent();
             result.putExtra("changesMade", changesMade);

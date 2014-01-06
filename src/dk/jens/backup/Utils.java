@@ -11,12 +11,7 @@ import java.io.File;
 
 public class Utils
 {
-    Activity activity;
-    public Utils(Activity activity)
-    {
-        this.activity = activity;
-    }
-    public void showErrors(final Context context, final ShellCommands shellCommands)
+    public static void showErrors(final Activity activity, final ShellCommands shellCommands)
     {
         activity.runOnUiThread(new Runnable()
         {
@@ -25,7 +20,7 @@ public class Utils
                 String errors = shellCommands.getErrors();
                 if(errors.length() > 0)
                 {
-                    new AlertDialog.Builder(context)
+                    new AlertDialog.Builder(activity)
                     .setTitle(R.string.errorDialogTitle)
                     .setMessage(errors)
                     .setPositiveButton(R.string.dialogOK, null)
@@ -35,7 +30,7 @@ public class Utils
             }
         });
     }
-    public File createBackupDir(final String path, final FileCreationHelper fileCreator)
+    public static File createBackupDir(final Activity activity, final String path, final FileCreationHelper fileCreator)
     {
         File backupDir;
         if(path.trim().length() > 0)
@@ -58,11 +53,11 @@ public class Utils
         }
         if(backupDir == null)
         {
-            showWarning(activity.getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), activity.getString(R.string.backupFolderError));
+            showWarning(activity, activity.getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), activity.getString(R.string.backupFolderError));
         }
         return backupDir;
     }
-    public void showWarning(final String title, final String message)
+    public static void showWarning(final Activity activity, final String title, final String message)
     {
         activity.runOnUiThread(new Runnable()
         {
@@ -78,14 +73,13 @@ public class Utils
             }
         });
     }
-    public void reloadWithParentStack(Context context)
+    public static void reloadWithParentStack(Activity activity)
     {
         Intent intent = activity.getIntent();
-        activity.overridePendingTransition(0, 0);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        activity.overridePendingTransition(0, 0);
         activity.finish();
-        android.support.v4.app.TaskStackBuilder.create(context)
+        activity.overridePendingTransition(0, 0);
+        android.support.v4.app.TaskStackBuilder.create(activity)
             .addNextIntentWithParentStack(intent)
             .startActivities();
     }

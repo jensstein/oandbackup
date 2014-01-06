@@ -64,7 +64,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     FileCreationHelper fileCreator;
     NotificationHelper notificationHelper;
     Sorter sorter;
-    Utils utils;
 
     ListView listView;
     
@@ -80,7 +79,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
-        utils = new Utils(OAndBackup.this); // must be passed an activity context
         
         new Thread(new Runnable(){
             public void run()
@@ -106,12 +104,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 boolean bboxInstalled = shellCommands.checkBusybox();
                 if(!bboxInstalled)
                 {
-                    utils.showWarning("", getString(R.string.busyboxProblem));
+                    Utils.showWarning(OAndBackup.this, "", getString(R.string.busyboxProblem));
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
                 String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-                backupDir = utils.createBackupDir(backupDirPath, fileCreator);
+                backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath, fileCreator);
                 localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
@@ -206,7 +204,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
-                    utils.showErrors(OAndBackup.this, shellCommands);
+                    Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
         }).start();
@@ -269,7 +267,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 else
                 {
                     notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
-                    utils.showErrors(OAndBackup.this, shellCommands);
+                    Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
         }).start();
@@ -596,7 +594,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(key.equals("pathBackupFolder"))
         {
             String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-            backupDir = utils.createBackupDir(backupDirPath, fileCreator);
+            backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath, fileCreator);
             refresh();
         }
         if(key.equals("pathBusybox"))
