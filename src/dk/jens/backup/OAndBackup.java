@@ -56,6 +56,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     ArrayList<AppInfo> appInfoList;
 
     boolean localTimestampFormat;
+    boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationNumber = 0;
     int notificationId = (int) Calendar.getInstance().getTimeInMillis();
 
@@ -146,6 +147,17 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 });
             }
         }).start();
+    }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        // work-around for changing language on older android versions since TaskStackBuilder doesn't seem to recreate the activities below the top in the stack properly
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB && languageChanged)
+        {
+            Utils.reloadWithParentStack(OAndBackup.this);
+            languageChanged = false;
+        }
     }
     @Override
     public void onDestroy()
@@ -617,6 +629,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             catch(NumberFormatException e)
             {}
             sorter = new Sorter(adapter, oldBackups);
+        }
+        if(key.equals("languages"))
+        {
+            languageChanged = true;
         }
     }
     public boolean onSearchRequested()
