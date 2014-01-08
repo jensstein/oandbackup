@@ -170,9 +170,16 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public void displayDialog(AppInfo appInfo)
     {
-        BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment(this, appInfo);
-//        dialog.show(getFragmentManager(), "DialogFragment");
-        dialog.show(getSupportFragmentManager(), "DialogFragment");
+        if(!appInfo.isInstalled && appInfo.getBackupMode() == AppInfo.MODE_DATA)
+        {
+            Toast.makeText(this, getString(R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment(this, appInfo);
+    //        dialog.show(getFragmentManager(), "DialogFragment");
+            dialog.show(getSupportFragmentManager(), "DialogFragment");
+        }
     }
     public void callBackup(final AppInfo appInfo, final int backupMode)
     {
