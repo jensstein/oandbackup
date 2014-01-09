@@ -5,13 +5,15 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#fff</item>
+        <item name="android:textIsSelectable">true</item>
     </style>
     <style name="help_contentPointStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">#eee</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#ede</item>
         <item name="android:paddingLeft">15sp</item>
+        <item name="android:textIsSelectable">true</item>
     </style>
     <style name="help_contentSubPointStyle" parent="@style/help_contentPointStyle">
         <item name="android:paddingLeft">30sp</item>

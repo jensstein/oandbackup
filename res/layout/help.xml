@@ -12,9 +12,13 @@
             style="@style/help_headerStyle"
             android:text="@string/help_usageHeader"
         />
+        <TextView
+            style="@style/help_contentPointStyle"
+            android:text="@string/help_usageContextPointBackModes"
+        />
         <TextView 
             style="@style/help_contentPointStyle"
-            android:text="@string/help_usageContentsPoint1"
+            android:text="@string/help_usageContentsPointContextMenu"
         />
         <TextView 
             style="@style/help_contentSubPointStyle"
@@ -30,7 +34,7 @@
         />
         <TextView 
             style="@style/help_contentPointStyle"
-            android:text="@string/help_usageContentsPoint2"
+            android:text="@string/help_usageContentsPointMultiUser"
         />
         <TextView
             style="@style/help_headerStyle"
