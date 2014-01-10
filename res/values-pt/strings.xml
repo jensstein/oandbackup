@@ -5,13 +5,15 @@
   <string name="restore">Restauro</string>
   <string name="backupConfirmation">Backup?</string>
   <string name="restoreConfirmation">Restaurar?</string>
-  <string name="restoreApk">Restaurar apk</string>
-  <string name="restoreData">Restaurar dados</string>
-  <string name="restoreBoth">Restaurar apk e dados</string>
+  <string name="handleApk">Apk</string>
+  <string name="handleData">Dados</string>
+  <string name="handleBoth">Ambos</string>
   <string name="radioApk">Apk</string>
   <string name="radioData">Dados</string>
   <string name="radioBoth">Dados e Apk</string>
   <string name="de_selectAll">Marcar/desmarcar tudo</string>
+  <string name="onlyApkBackedUp">Apenas apk</string>
+  <string name="onlyDataBackedUp">Apenas dados</string>
   <string name="refresh">Atualizar</string>
   <string name="batchbackup">Backup em lote</string>
   <string name="batchrestore">Restauro em lote</string>
@@ -27,6 +29,8 @@
   <string name="showNotInstalled">Aplicações desinstaladas</string>
   <string name="showNewAndUpdated">Aplicações novas/atualizadas</string>
   <string name="showOldBackups">Mostrar backups antigos</string>
+  <string name="showOnlyApkBackedUp">Mostrar aplicações que só tenham backup de apk</string>
+  <string name="showOnlyDataBackedUp">Mostrar aplicações que só tenham backup de dados</string>
   <string name="sortByLabel">Ordenar por nome</string>
   <string name="sortByPackageName">Ordenar por nome do pacote</string>
   <string name="sort">Filtro e ordem</string>
@@ -61,6 +65,10 @@
   <string name="customListTitle">Lista personalizada</string>
   <string name="quickReboot">Reinicio rápido</string>
   <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
+  <string name="help_title">Ajuda</string>
+  <string name="tools_title">Ferramentas</string>
+  <string name="tools_batchDeleteTitle">Eliminar backups?</string>
+  <string name="tools_batchDeleteMessage">Eliminar backups</string>
   <string name="enablePackage">Ativar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>
@@ -96,4 +104,5 @@
   <string name="sched_timeLeft">Horas até ao próximo backup</string>
   <string name="sched_addSchudule">Agendar</string>
   <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
+  <string name="sched_excludeSystemCheckBox">Excluir aplicações do sistema</string>
 </resources>

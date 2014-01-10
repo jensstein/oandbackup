@@ -8,4 +8,18 @@
     <item>Neue und aktualisierte Apps</item>
     <item>Benutzerliste</item>
   </string-array>
+  <!--entries in scheduleSubModes are taken from strings.xml and should be left as-is here-->
+  <string-array name="scheduleSubModes">
+    <item>@string/radioApk</item>
+    <item>@string/radioData</item>
+    <item>@string/radioBoth</item>
+  </string-array>
+  <string-array name="tools_titles">
+    <item>Schneller Neustart</item>
+    <item>Sicherungen löschen</item>
+  </string-array>
+  <string-array name="tools_descriptions">
+    <item>Beendet den System_Server-Prozess und erzwingt dadurch einen Neustart des Benutzer-Interface-Systems</item>
+    <item>Löscht die Sicherungen von derzeit nicht installierten Apps</item>
+  </string-array>
 </resources>
