@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.2.7 (development)
+0.2.7 (2014-01-13)
 -------------------
  * backups can now be specified to include either apk, data or both
  * scheduled backups of new and updated apps can now be specified to exclude system apps
@@ -10,7 +10,7 @@ changelog
  * fixed bug where a fifo special file blocked compression. thanks to lisandro for reporting and testing.
  * fixed restoring system apps for android 4.4
 
-0.2.6 (11-12-13)
+0.2.6 (2013-12-11)
 -------------------
  * added option to change language
  * display errors in ui
