@@ -66,6 +66,7 @@
   <string name="quickReboot">Gerät neu starten</string>
   <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
   <string name="help_title">Hilfe</string>
+  <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
   <string name="tools_title">Hilfsmittel</string>
   <string name="tools_batchDeleteTitle">Sicherungen löschen?</string>
   <string name="tools_batchDeleteMessage">Lösche Sicherungen...</string>

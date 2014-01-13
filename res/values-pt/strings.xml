@@ -66,6 +66,7 @@
   <string name="quickReboot">Reinicio rápido</string>
   <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
   <string name="help_title">Ajuda</string>
+  <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
   <string name="tools_title">Ferramentas</string>
   <string name="tools_batchDeleteTitle">Eliminar backups?</string>
   <string name="tools_batchDeleteMessage">Eliminar backups</string>
