@@ -69,9 +69,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             viewHolder.label.setText(appInfo.getLabel());
             viewHolder.packageName.setText(appInfo.getPackageName());
-            if(appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode())
+            if(appInfo.getLogInfo() != null && (appInfo.getLogInfo().getVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
             {
-                String updatedVersionString = appInfo.getLoggedVersionName() + " -> " + appInfo.getVersionName();
+                String updatedVersionString = appInfo.getLogInfo().getVersionName() + " -> " + appInfo.getVersionName();
                 viewHolder.versionName.setText(updatedVersionString);
                 if(updatedVersionString.length() < 15)
                 {
@@ -82,7 +82,14 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             {
                 viewHolder.versionName.setText(appInfo.getVersionName());
             }
-            viewHolder.lastBackup.setText(appInfo.getLastBackupTimestamp());
+            if(appInfo.getLogInfo() != null)
+            {
+                viewHolder.lastBackup.setText(appInfo.getLogInfo().getLastBackupTimestamp());
+            }
+            else
+            {
+                viewHolder.lastBackup.setText(context.getString(R.string.noBackupYet));
+            }
             if(appInfo.isInstalled)
             {
                 int color = appInfo.isSystem ? Color.RED : Color.GREEN;
@@ -274,28 +281,16 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             originalValues = new ArrayList<AppInfo>(items);
         }
-        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
         clear();
         for(AppInfo appInfo : originalValues)
         {
-            if(appInfo.getLastBackupTimestamp() != null)
+            if(appInfo.getLogInfo() == null)
             {
-                if(appInfo.getLastBackupMillis() == 0)
+                if(appInfo.isInstalled)
                 {
-                    if(appInfo.isInstalled)
-                    {
-                        add(appInfo);
-                    }
-                    else
-                    {
-                        notInstalled.add(appInfo);
-                    }
+                    add(appInfo);
                 }
             }
-        }
-        for(AppInfo appInfo : notInstalled)
-        {
-            add(appInfo);
         }
         notifyDataSetChanged();
     }
@@ -324,7 +319,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         for(AppInfo appInfo : originalValues)
         {
-            if((appInfo.getLoggedVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLoggedVersionCode()) || appInfo.getLastBackupMillis() == 0)
+            if(appInfo.getLogInfo() == null || (appInfo.getLogInfo().getVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
             {
                 add(appInfo);
             }
@@ -341,17 +336,20 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         clear();
         for(AppInfo appInfo : originalValues)
         {
-            long lastBackup = appInfo.getLastBackupMillis();
-            long diff = System.currentTimeMillis() - lastBackup;
-            if(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f))
+            if(appInfo.getLogInfo() != null)
             {
-                if(appInfo.isInstalled)
+                long lastBackup = appInfo.getLogInfo().getLastBackupMillis();
+                long diff = System.currentTimeMillis() - lastBackup;
+                if(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f))
                 {
-                    add(appInfo);
-                }
-                else
-                {
-                    notInstalled.add(appInfo);
+                    if(appInfo.isInstalled)
+                    {
+                        add(appInfo);
+                    }
+                    else
+                    {
+                        notInstalled.add(appInfo);
+                    }
                 }
             }
         }

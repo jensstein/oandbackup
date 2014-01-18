@@ -307,20 +307,19 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
             if(backupDir != null)
             {
-                LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
-                if(logInfo.getLastBackupTimestamp() != null)
+                File subdir = new File(backupDir, pinfo.packageName);
+                if(subdir.exists())
                 {
-                    lastBackup = logInfo.getLastBackupTimestamp();
+                    LogFile logInfo = new LogFile(subdir, pinfo.packageName, localTimestampFormat);
+                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
+                    appInfoList.add(appInfo);
                 }
-                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), logInfo.getVersionName(), pinfo.versionName, logInfo.getVersionCode(), pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, logInfo.getLastBackupMillis(), lastBackup, isSystem, true, logInfo.getBackupMode());
-                appInfoList.add(appInfo);
+                else
+                {
+                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
+                    appInfoList.add(appInfo);
+                }
             }
-            else
-            {
-                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "0", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, 0, lastBackup, isSystem, true);
-                appInfoList.add(appInfo);
-            }
-
         }
         if(backupDir != null && backupDir.exists())
         {
@@ -341,7 +340,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
                     if(logInfo.getLastBackupTimestamp() != null)
                     {
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), "", logInfo.getVersionName(), 0, logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getLastBackupMillis(), logInfo.getLastBackupTimestamp(), logInfo.isSystem(), false, logInfo.getBackupMode());
+                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
                         appInfoList.add(appInfo);
                     }
                 }
@@ -378,9 +377,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         {
             LogFile logInfo = new LogFile(new File(backupDir, appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
             int pos = appInfoList.indexOf(appInfo);
-            appInfo.label = logInfo.getLabel();
-            appInfo.lastBackup = logInfo.getLastBackupTimestamp();
-            appInfo.lastBackupMillis = logInfo.getLastBackupMillis();
+            appInfo.setLogInfo(logInfo);
             appInfoList.set(pos, appInfo);
             adapter.notifyDataSetChanged();
         }
@@ -519,7 +516,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         inflater.inflate(R.menu.contextmenu, menu);
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
         AppInfo appInfo = appInfoList.get(info.position);
-        if(appInfo.getLastBackupMillis() == 0)
+        if(appInfo.getLogInfo() == null)
         {
             menu.removeItem(R.id.deleteBackup);
         }

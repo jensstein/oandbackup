@@ -87,22 +87,16 @@ public class HandleScheduledBackups
                         listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
-                            File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                            int versionCode = 0;
-                            if(backupSubDir.exists())
-                            {
-                                versionCode = new LogFile(backupSubDir, appInfo.getPackageName(), true).getVersionCode();
-                            }
                             if(!excludeSystem)
                             {
-                                if(appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                                if(appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
                                 {
                                     listToBackUp.add(appInfo);
                                 }
                             }
                             else
                             {
-                                if(!appInfo.isSystem && appInfo.getLastBackupMillis() == 0 || (versionCode > 0 && appInfo.getVersionCode() > versionCode))
+                                if(!appInfo.isSystem && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode())))
                                 {
                                     listToBackUp.add(appInfo);
                                 }
@@ -205,19 +199,18 @@ public class HandleScheduledBackups
             }
             if(backupDir != null)
             {
-                LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
-                lastBackupMillis = logInfo.getLastBackupMillis();
-                if((lastBackup = logInfo.getLastBackupTimestamp()) == null)
+                File subdir = new File(backupDir, pinfo.packageName);
+                if(subdir.exists())
                 {
-                    lastBackup = context.getString(R.string.noBackupYet);
+                    LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
+                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
+                    appInfoList.add(appInfo);
                 }
-                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true, logInfo.getBackupMode());
-                appInfoList.add(appInfo);
-            }
-            else
-            {
-                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), "", pinfo.versionName, 0, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, lastBackupMillis, lastBackup, isSystem, true);
-                appInfoList.add(appInfo);
+                else
+                {
+                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
+                    appInfoList.add(appInfo);
+                }
             }
         }
         return appInfoList;
