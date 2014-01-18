@@ -5,14 +5,14 @@
   <string name="restore">Wiederherstellen</string>
   <string name="backupConfirmation">Sichern?</string>
   <string name="restoreConfirmation">Wiederherstellen?</string>
-  <string name="handleApk">Apk</string>
+  <string name="handleApk">APK</string>
   <string name="handleData">Daten</string>
   <string name="handleBoth">Daten und APK</string>
   <string name="radioApk">APK</string>
   <string name="radioData">Daten</string>
   <string name="radioBoth">Daten und APK</string>
   <string name="de_selectAll">Alle aus-/abwählen</string>
-  <string name="onlyApkBackedUp">Nur Apk</string>
+  <string name="onlyApkBackedUp">Nur APK</string>
   <string name="onlyDataBackedUp">Nur Daten</string>
   <string name="refresh">Aktualisieren</string>
   <string name="batchbackup">Sicherungsstapelverarbeitung</string>
@@ -29,7 +29,7 @@
   <string name="showNotInstalled">Nicht installierte Apps anzeigen</string>
   <string name="showNewAndUpdated">Neue und aktualisierte Apps anzeigen</string>
   <string name="showOldBackups">Alte Sicherungen anzeigen</string>
-  <string name="showOnlyApkBackedUp">Nur Apps anzeigen, bei denen nur die Apk-Datei gesichert wurde</string>
+  <string name="showOnlyApkBackedUp">Nur Apps anzeigen, bei denen nur die APK-Datei gesichert wurde</string>
   <string name="showOnlyDataBackedUp">Nur Apps anzeigen, bei denen nur die App-Daten gesichert wurde</string>
   <string name="sortByLabel">Nach Bezeichnung sortieren</string>
   <string name="sortByPackageName">Nach Paketname sortieren</string>
