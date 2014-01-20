@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             viewHolder.versionName = (TextView) convertView.findViewById(R.id.versionCode);
             viewHolder.lastBackup = (TextView) convertView.findViewById(R.id.lastBackup);
             viewHolder.backupMode = (TextView) convertView.findViewById(R.id.backupMode);
+            viewHolder.icon = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(viewHolder);
         }
         else
@@ -67,6 +70,19 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         AppInfo appInfo = getItem(pos);
         if(appInfo != null)
         {
+            if(appInfo.icon != null)
+            {
+                viewHolder.icon.setVisibility(View.VISIBLE); // to cancel View.GONE if it was set
+                viewHolder.icon.setImageDrawable(appInfo.icon);
+                LayoutParams lp = (LayoutParams) viewHolder.icon.getLayoutParams();
+                lp.height = 32;
+                lp.width = 32;
+                viewHolder.icon.setLayoutParams(lp);
+            }
+            else
+            {
+                viewHolder.icon.setVisibility(View.GONE);
+            }
             viewHolder.label.setText(appInfo.getLabel());
             viewHolder.packageName.setText(appInfo.getPackageName());
             if(appInfo.getLogInfo() != null && (appInfo.getLogInfo().getVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
@@ -124,6 +140,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         TextView versionName;
         TextView lastBackup;
         TextView backupMode;
+        ImageView icon;
     }
     @Override
     public Filter getFilter()

@@ -12,6 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -307,16 +308,19 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
             if(backupDir != null)
             {
+                Drawable icon = pm.getApplicationIcon(pinfo.applicationInfo);
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
                     LogFile logInfo = new LogFile(subdir, pinfo.packageName, localTimestampFormat);
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
+                    appInfo.icon = icon;
                     appInfoList.add(appInfo);
                 }
                 else
                 {
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
+                    appInfo.icon = icon;
                     appInfoList.add(appInfo);
                 }
             }
