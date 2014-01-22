@@ -212,7 +212,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     {
                         public void run()
                         {
-                            refresh(appInfo);
+                            refreshSingle(appInfo);
                         }
                     });
                 }
@@ -271,13 +271,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             permRet = shellCommands.setPermissions(dataDir);
                             break;
                     }
-                    runOnUiThread(new Runnable()
-                    {
-                        public void run()
-                        {
-                            refresh();
-                        }
-                    });
+                    refresh();
                 }
                 handleMessages.endMessage();
                 if(apkRet == 0 && restoreRet == 0 && permRet == 0)
@@ -356,13 +350,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public void refresh()
     {
-        new Thread(new Runnable(){
+        new Thread(new Runnable()
+        {
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
                 appInfoList.clear();
                 getPackageInfo();
-                runOnUiThread(new Runnable(){
+                runOnUiThread(new Runnable()
+                {
                     public void run()
                     {
                         adapter.setNewOriginalValues(appInfoList);
@@ -375,7 +371,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
         }).start();
     }
-    public void refresh(AppInfo appInfo)
+    public void refreshSingle(AppInfo appInfo)
     {
         if(backupDir != null)
         {
@@ -549,13 +545,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
                                 shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
-                                runOnUiThread(new Runnable()
-                                {
-                                    public void run()
-                                    {
-                                        refresh();
-                                    }
-                                });
+                                refresh();
                                 handleMessages.endMessage();
                             }
                         }).start();
@@ -582,13 +572,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 {
                                     File backupSubDir = new File(backupDir, appInfoList.get(info.position).getPackageName());
                                     shellCommands.deleteBackup(backupSubDir);
-                                    runOnUiThread(new Runnable()
-                                    {
-                                        public void run()
-                                        {
-                                            refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
-                                        }
-                                    });
+                                    refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
                                 }
                                 handleMessages.endMessage();
                             }
