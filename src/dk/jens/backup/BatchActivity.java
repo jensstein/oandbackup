@@ -23,7 +23,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -37,9 +36,8 @@ import java.util.List;
 
 public class BatchActivity extends Activity implements OnClickListener
 {
-//    public static List<PackageInfo> pinfoList;
     public static ArrayList<AppInfo> appInfoList;
-    final static String TAG = OAndBackup.TAG; 
+    final static String TAG = OAndBackup.TAG;
     boolean backupBoolean;
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
@@ -49,8 +47,6 @@ public class BatchActivity extends Activity implements OnClickListener
 
     boolean checkboxSelectAllBoolean = true;
     boolean changesMade;
-    boolean showAll = true;
-    boolean showOnlyUser = false;
 
     File backupDir;
     ProgressDialog progress;
@@ -62,10 +58,7 @@ public class BatchActivity extends Activity implements OnClickListener
     BatchAdapter adapter;
     ArrayList<AppInfo> list;
 
-    LinearLayout linearLayout;
     RadioButton rbData, rbApk, rbBoth;
-    ArrayList<CheckBox> checkboxList = new ArrayList<CheckBox>();
-    HashMap<String, PackageInfo> pinfoMap = new HashMap<String, PackageInfo>();
 
     HandleMessages handleMessages;
     ShellCommands shellCommands;
@@ -84,19 +77,11 @@ public class BatchActivity extends Activity implements OnClickListener
 
         pm = getPackageManager();
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//        shellCommands = new ShellCommands(this);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
         notificationHelper = new NotificationHelper(this);
         logFile = new LogFile(this);
         
-        /*        
-        backupDir = new File(Environment.getExternalStorageDirectory() + "/oandbackups");
-        if(!backupDir.exists())
-        {
-            backupDir.mkdirs();
-        }
-        */
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
         backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath, fileCreator);
@@ -109,8 +94,6 @@ public class BatchActivity extends Activity implements OnClickListener
         }
         ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
         shellCommands = new ShellCommands(this, users);
-
-        linearLayout = (LinearLayout) findViewById(R.id.backupLinear);
 
         Button bt = (Button) findViewById(R.id.backupRestoreButton);
         bt.setOnClickListener(this);
