@@ -18,12 +18,16 @@
     <item android:id="@+id/sortingsubmenu"
         android:title="@string/sort" >
         <menu>
-            <item android:id="@+id/showAll"
-                android:title="@string/showAll" />
-            <item android:id="@+id/showOnlyUser"
-                android:title="@string/showOnlyUser" />
-            <item android:id="@+id/showOnlySystem"
-                android:title="@string/showOnlySystem" />
+            <group android:id="@+id/filterGroup"
+                android:checkableBehavior="single">
+                <item android:id="@+id/showAll"
+                    android:title="@string/showAll"
+                    android:checked="true" />
+                <item android:id="@+id/showOnlyUser"
+                    android:title="@string/showOnlyUser" />
+                <item android:id="@+id/showOnlySystem"
+                    android:title="@string/showOnlySystem" />
+            </group>
             <item android:id="@+id/showNotBackedup"
                 android:title="@string/showNotBackedup" />
             <item android:id="@+id/showNotInstalled"
@@ -36,10 +40,14 @@
                 android:title="@string/showOnlyApkBackedUp" />
             <item android:id="@+id/showOnlyDataBackedUp"
                 android:title="@string/showOnlyDataBackedUp" />
-            <item android:id="@+id/sortByLabel"
-                android:title="@string/sortByLabel" />
-            <item android:id="@+id/sortByPackageName"
-                android:title="@string/sortByPackageName" />
+            <group android:id="@+id/sortGroup"
+                android:checkableBehavior="single">
+                <item android:id="@+id/sortByLabel"
+                    android:title="@string/sortByLabel" />
+                <item android:id="@+id/sortByPackageName"
+                    android:title="@string/sortByPackageName"
+                    android:checked="true" />
+            </group>
         </menu>
     </item>
     <item android:id="@+id/preferences"

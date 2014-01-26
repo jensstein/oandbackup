@@ -140,7 +140,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             @Override
                             public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
                             {
-                                AppInfo appInfo = appInfoList.get(pos);
+                                AppInfo appInfo = adapter.getItem(pos);
                                 displayDialog(appInfo);
                             }
                         });
@@ -505,6 +505,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 startActivity(new Intent(this, Help.class));
                 break;
             default:
+                item.setChecked(!item.isChecked());
                 sorter.sort(item.getItemId());
                 break;
         }
@@ -516,7 +517,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.contextmenu, menu);
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-        AppInfo appInfo = appInfoList.get(info.position);
+        AppInfo appInfo = adapter.getItem(info.position);
         if(appInfo.getLogInfo() == null)
         {
             menu.removeItem(R.id.deleteBackup);

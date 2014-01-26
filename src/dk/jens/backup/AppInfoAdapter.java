@@ -247,7 +247,21 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         items.clear();
         switch(options)
         {
-            case 1: //user apps
+            case 0: // all apps
+                for(AppInfo appInfo : originalValues)
+                {
+                    if(appInfo.isInstalled)
+                    {
+                        add(appInfo);
+                    }
+                    else
+                    {
+                        notInstalled.add(appInfo);
+                    }
+                }
+                addAll(notInstalled);
+                break;
+            case 1: // user apps
                 for(AppInfo appInfo : originalValues)
                 {
                     if(!appInfo.isSystem)

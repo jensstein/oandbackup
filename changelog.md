@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.2.8 (development)
+-------------------
+ * icons in app list
+ * better filtering: filtering is now shared and consistent between the different modes (activities)
+
 0.2.7 (2014-01-13)
 -------------------
  * backups can now be specified to include either apk, data or both

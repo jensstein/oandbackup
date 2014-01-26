@@ -36,7 +36,6 @@ public class Sorter
         switch(id)
         {
             case R.id.showAll:
-                sortingMethod = SortingMethod.ALL;
                 filterShowAll();
                 break;
             case R.id.showOnlySystem:
@@ -73,46 +72,18 @@ public class Sorter
                 break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
-                if(sortingMethod != SortingMethod.ALL)
-                {
-                    if(sortingMethod == SortingMethod.USER)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
+                sort(sortingMethod.getId());
                 break;
             case R.id.sortByPackageName:
                 adapter.sortByPackageName();
-                if(sortingMethod != SortingMethod.ALL)                
-                {
-                    if(sortingMethod == SortingMethod.USER)
-                    {
-                        adapter.filterAppType(1);
-                    }
-                    else
-                    {
-                        adapter.filterAppType(2);
-                    }
-                }
-                else
-                {
-                    adapter.getFilter().filter("");
-                }
+                sort(sortingMethod.getId());
                 break;
         }
     }
     public void filterShowAll()
     {
         sortingMethod = SortingMethod.ALL;
-        adapter.getFilter().filter("");
+        adapter.filterAppType(0);
     }
     public SortingMethod getSortingMethod()
     {
