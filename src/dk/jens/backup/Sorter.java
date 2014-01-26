@@ -3,14 +3,14 @@ package dk.jens.backup;
 public class Sorter
 {
     AppInfoAdapter adapter;
-    SortingMethod sortingMethod = SortingMethod.ALL;
+    FilteringMethod filteringMethod = FilteringMethod.ALL;
     int oldBackups;
     public Sorter(AppInfoAdapter adapter, int oldBackups)
     {
         this.adapter = adapter;
         this.oldBackups = oldBackups;
     }
-    public enum SortingMethod
+    public enum FilteringMethod
     {
         ALL(R.id.showAll),
         SYSTEM(R.id.showOnlySystem),
@@ -22,7 +22,7 @@ public class Sorter
         ONLYAPK(R.id.showOnlyApkBackedUp),
         ONLYDATA(R.id.showOnlyDataBackedUp);
         int id;
-        SortingMethod(int i)
+        FilteringMethod(int i)
         {
             id = i;
         }
@@ -39,61 +39,61 @@ public class Sorter
                 filterShowAll();
                 break;
             case R.id.showOnlySystem:
-                sortingMethod = SortingMethod.SYSTEM;
+                filteringMethod = FilteringMethod.SYSTEM;
                 adapter.filterAppType(2);
                 break;
             case R.id.showOnlyUser:
-                sortingMethod = SortingMethod.USER;
+                filteringMethod = FilteringMethod.USER;
                 adapter.filterAppType(1);
                 break;
             case R.id.showNotBackedup:
-                sortingMethod = SortingMethod.NOTBACKEDUP;
+                filteringMethod = FilteringMethod.NOTBACKEDUP;
                 adapter.filterIsBackedup();
                 break;
             case R.id.showNotInstalled:
-                sortingMethod = SortingMethod.NOTINSTALLED;
+                filteringMethod = FilteringMethod.NOTINSTALLED;
                 adapter.filterIsInstalled();
                 break;
             case R.id.showNewAndUpdated:
-                sortingMethod = SortingMethod.NEWANDUPDATED;
+                filteringMethod = FilteringMethod.NEWANDUPDATED;
                 adapter.filterNewAndUpdated();
                 break;
             case R.id.showOldBackups:
-                sortingMethod = SortingMethod.OLDBACKUPS;
+                filteringMethod = FilteringMethod.OLDBACKUPS;
                 adapter.filterOldApps(oldBackups);
                 break;
             case R.id.showOnlyApkBackedUp:
-                sortingMethod = SortingMethod.ONLYAPK;
+                filteringMethod = FilteringMethod.ONLYAPK;
                 adapter.filterPartialBackups(AppInfo.MODE_APK);
                 break;
             case R.id.showOnlyDataBackedUp:
-                sortingMethod = SortingMethod.ONLYDATA;
+                filteringMethod = FilteringMethod.ONLYDATA;
                 adapter.filterPartialBackups(AppInfo.MODE_DATA);
                 break;
             case R.id.sortByLabel:
                 adapter.sortByLabel();
-                sort(sortingMethod.getId());
+                sort(filteringMethod.getId());
                 break;
             case R.id.sortByPackageName:
                 adapter.sortByPackageName();
-                sort(sortingMethod.getId());
+                sort(filteringMethod.getId());
                 break;
         }
     }
     public void filterShowAll()
     {
-        sortingMethod = SortingMethod.ALL;
+        filteringMethod = FilteringMethod.ALL;
         adapter.filterAppType(0);
     }
-    public SortingMethod getSortingMethod()
+    public FilteringMethod getFilteringMethod()
     {
-        if(sortingMethod != null)
+        if(filteringMethod != null)
         {
-            return sortingMethod;
+            return filteringMethod;
         }
         else
         {
-            return SortingMethod.ALL;
+            return FilteringMethod.ALL;
         }
     }
 }

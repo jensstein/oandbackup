@@ -362,7 +362,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     public void run()
                     {
                         adapter.setNewOriginalValues(appInfoList);
-                        sorter.sort(sorter.getSortingMethod().getId());
+                        sorter.sort(sorter.getFilteringMethod().getId());
                         adapter.restoreFilter();
                         adapter.notifyDataSetChanged();
                     }
@@ -410,7 +410,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         }
                     }
                 }
-                sorter.sort(data.getIntExtra("sortingMethodId", 0));
+                sorter.sort(data.getIntExtra("filteringMethodId", 0));
             }
         }
     }
@@ -466,7 +466,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         Intent batchIntent = new Intent(this, batchClass);
         batchIntent.putExtra("dk.jens.backup.backupBoolean", backup);
         batchIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-        batchIntent.putExtra("dk.jens.backup.sortingMethodId", sorter.getSortingMethod().getId());
+        batchIntent.putExtra("dk.jens.backup.filteringMethodId", sorter.getFilteringMethod().getId());
         return batchIntent;
     }
     @Override
