@@ -88,11 +88,13 @@ public class BatchActivity extends Activity implements OnClickListener
         localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         int filteringMethodId = 0;
+        int sortingMethodId = 0;
         Bundle extra = getIntent().getExtras();
         if(extra != null)
         {
             backupBoolean = extra.getBoolean("dk.jens.backup.backupBoolean");
             filteringMethodId = extra.getInt("dk.jens.backup.filteringMethodId");
+            sortingMethodId = extra.getInt("dk.jens.backup.sortingMethodId");
         }
         ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
         shellCommands = new ShellCommands(this, users);
@@ -136,6 +138,7 @@ public class BatchActivity extends Activity implements OnClickListener
         {}
         sorter = new Sorter(adapter, oldBackups);
         sorter.sort(filteringMethodId);
+        sorter.sort(sortingMethodId);
         listView.setAdapter(adapter);
         // onItemClickListener gør at hele viewet kan klikkes - med onCheckedListener er det kun checkboxen der kan klikkes
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -143,7 +146,7 @@ public class BatchActivity extends Activity implements OnClickListener
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
             {
-                AppInfo appInfo = list.get(pos);
+                AppInfo appInfo = adapter.getItem(pos);
                 appInfo.toggle();
                 adapter.notifyDataSetChanged();
             }
@@ -155,6 +158,7 @@ public class BatchActivity extends Activity implements OnClickListener
         Intent result = new Intent();
         result.putExtra("changesMade", changesMade);
         result.putExtra("filteringMethodId", sorter.getFilteringMethod().getId());
+        result.putExtra("sortingMethodId", sorter.getSortingMethod().getId());
         setResult(RESULT_OK, result);
         super.finish();
     }

@@ -4,6 +4,7 @@ public class Sorter
 {
     AppInfoAdapter adapter;
     FilteringMethod filteringMethod = FilteringMethod.ALL;
+    SortingMethod sortingMethod = SortingMethod.PACKAGENAME;
     int oldBackups;
     public Sorter(AppInfoAdapter adapter, int oldBackups)
     {
@@ -23,6 +24,20 @@ public class Sorter
         ONLYDATA(R.id.showOnlyDataBackedUp);
         int id;
         FilteringMethod(int i)
+        {
+            id = i;
+        }
+        int getId()
+        {
+            return id;
+        }
+    }
+    public enum SortingMethod
+    {
+        LABEL(R.id.sortByLabel),
+        PACKAGENAME(R.id.sortByPackageName);
+        int id;
+        SortingMethod(int i)
         {
             id = i;
         }
@@ -71,10 +86,12 @@ public class Sorter
                 adapter.filterPartialBackups(AppInfo.MODE_DATA);
                 break;
             case R.id.sortByLabel:
+                sortingMethod = SortingMethod.LABEL;
                 adapter.sortByLabel();
                 sort(filteringMethod.getId());
                 break;
             case R.id.sortByPackageName:
+                sortingMethod = SortingMethod.PACKAGENAME;
                 adapter.sortByPackageName();
                 sort(filteringMethod.getId());
                 break;
@@ -91,9 +108,14 @@ public class Sorter
         {
             return filteringMethod;
         }
-        else
+        return FilteringMethod.ALL;
+    }
+    public SortingMethod getSortingMethod()
+    {
+        if(sortingMethod != null)
         {
-            return FilteringMethod.ALL;
+            return sortingMethod;
         }
+        return SortingMethod.PACKAGENAME;
     }
 }
