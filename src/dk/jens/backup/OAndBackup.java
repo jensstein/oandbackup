@@ -410,6 +410,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         }
                     }
                 }
+                sorter.sort(data.getIntExtra("sortingMethodId", 0));
             }
         }
     }
@@ -460,6 +461,14 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         return true;
     }
+    public Intent batchIntent(Class batchClass, boolean backup)
+    {
+        Intent batchIntent = new Intent(this, batchClass);
+        batchIntent.putExtra("dk.jens.backup.backupBoolean", backup);
+        batchIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
+        batchIntent.putExtra("dk.jens.backup.sortingMethodId", sorter.getSortingMethod().getId());
+        return batchIntent;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -469,18 +478,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 refresh();
                 break;
             case R.id.batchbackup:
-                Intent backupIntent = new Intent(this, BatchActivity.class);
-                backupIntent.putExtra("dk.jens.backup.backupBoolean", true);
-                backupIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                sorter.filterShowAll();
-                startActivityForResult(backupIntent, BATCH_REQUEST);
+                startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST);
                 break;
             case R.id.batchrestore:
-                Intent restoreIntent = new Intent(this, BatchActivity.class);
-                restoreIntent.putExtra("dk.jens.backup.backupBoolean", false);
-                restoreIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
-                sorter.filterShowAll();
-                startActivityForResult(restoreIntent, BATCH_REQUEST);
+                startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST);
                 break;
             case R.id.preferences:
                 startActivity(new Intent(this, Preferences.class));

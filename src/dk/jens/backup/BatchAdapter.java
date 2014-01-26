@@ -16,12 +16,11 @@ public class BatchAdapter extends AppInfoAdapter
     ArrayList<AppInfo> items;
     int layout;
 
-    private ArrayList<AppInfo> originalValues;
     public BatchAdapter(Context context, int layout, ArrayList<AppInfo> items)
     {
         super(context, layout, items);
         this.context = context;
-        this.items = items;
+        this.items = new ArrayList<AppInfo>(items);
         this.layout = layout;
     }
     @Override

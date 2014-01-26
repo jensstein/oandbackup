@@ -29,7 +29,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     {
         super(context, layout, items);
         this.context = context;
-        this.items = items;
+        this.items = new ArrayList<AppInfo>(items);
         this.layout = layout;
         
         originalValues = new ArrayList<AppInfo>(items);
