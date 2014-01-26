@@ -5,8 +5,6 @@ public class Sorter
     AppInfoAdapter adapter;
     SortingMethod sortingMethod = SortingMethod.ALL;
     int oldBackups;
-    boolean showAll = true;
-    boolean showOnlyUser = false;
     public Sorter(AppInfoAdapter adapter, int oldBackups)
     {
         this.adapter = adapter;

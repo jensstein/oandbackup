@@ -31,8 +31,20 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         this.context = context;
         this.items = items;
         this.layout = layout;
+        
+        originalValues = new ArrayList<AppInfo>(items);
     }
-/*
+    public void add(AppInfo appInfo)
+    {
+        items.add(appInfo);
+    }
+    public void addAll(ArrayList<AppInfo> list)
+    {
+        for(AppInfo appInfo : list)
+        {
+            items.add(appInfo);
+        }
+    }
     public AppInfo getItem(int pos)
     {
         return items.get(pos);
@@ -41,11 +53,6 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     {
         return items.size();
     }
-    public long getItemId(int pos)
-    {
-        return items.get(pos).hashCode();
-    }
-*/
     @Override
     public View getView(int pos, View convertView, ViewGroup parent)
     {
@@ -128,7 +135,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                     break;
                 default:
                     viewHolder.backupMode.setText("");
-                    break;                    
+                    break;
             }
         }
         return convertView;
@@ -186,7 +193,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             }
             else
             {
-                results.values = originalValues;
+                results.values = new ArrayList<AppInfo>(originalValues);
                 results.count = originalValues.size();
             }
             return results;
@@ -195,12 +202,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         protected void publishResults(CharSequence constraint, FilterResults results)
         {
             currentFilter = constraint.toString();
-            items = (ArrayList<AppInfo>) results.values;
-            ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
+            ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>();
             if(results.count > 0)
             {
-                clear();
-                for(AppInfo value : items)
+                items.clear();
+                for(AppInfo value : (ArrayList<AppInfo>) results.values)
                 {
                     if(value.isInstalled)
                     {
@@ -211,16 +217,12 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         notInstalled.add(value);
                     }
                 }
-                // addAll cannot be used as it was only added in api level 11
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 notifyDataSetChanged();
             }
             else
             {
-                clear();
+                items.clear();
                 notifyDataSetInvalidated();
             }
         }
@@ -241,12 +243,8 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     };
     public void filterAppType(int options)
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
-        clear();
+        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>();
+        items.clear();
         switch(options)
         {
             case 1: //user apps
@@ -264,10 +262,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 break;
             case 2: // system apps
                 for(AppInfo appInfo : originalValues)
@@ -284,21 +279,14 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                         }
                     }
                 }
-                for(AppInfo appInfo : notInstalled)
-                {
-                    add(appInfo);
-                }
+                addAll(notInstalled);
                 break;
         }
         notifyDataSetChanged();
     }
     public void filterIsBackedup()
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        clear();
+        items.clear();
         for(AppInfo appInfo : originalValues)
         {
             if(appInfo.getLogInfo() == null)
@@ -313,11 +301,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void filterIsInstalled()
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        clear();
+        items.clear();
         for(AppInfo appInfo : originalValues)
         {
             if(!appInfo.isInstalled)
@@ -329,11 +313,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void filterNewAndUpdated()
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        clear();
+        items.clear();
         for(AppInfo appInfo : originalValues)
         {
             if(appInfo.getLogInfo() == null || (appInfo.getLogInfo().getVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
@@ -345,12 +325,8 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void filterOldApps(int days)
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>(); 
-        clear();
+        ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>();
+        items.clear();
         for(AppInfo appInfo : originalValues)
         {
             if(appInfo.getLogInfo() != null)
@@ -370,19 +346,12 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 }
             }
         }
-        for(AppInfo appInfo : notInstalled)
-        {
-            add(appInfo);
-        }
-        notifyDataSetChanged();    
+        addAll(notInstalled);
+        notifyDataSetChanged();
     }
     public void filterPartialBackups(int backupMode)
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
-        clear();
+        items.clear();
         for(AppInfo appInfo : originalValues)
         {
             if(appInfo.getBackupMode() == backupMode)
@@ -390,31 +359,20 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 add(appInfo);
             }
         }
-        notifyDataSetChanged();        
+        notifyDataSetChanged();
     }
     public void sortByLabel()
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
         Collections.sort(originalValues, labelComparator);
         notifyDataSetChanged();
     }
     public void sortByPackageName()
     {
-        if(originalValues == null)
-        {
-            originalValues = new ArrayList<AppInfo>(items);
-        }
         Collections.sort(originalValues, packageNameComparator);
         notifyDataSetChanged();
     }
     public void setNewOriginalValues(ArrayList newList)
     {
-        if(originalValues != null)
-        {
-            originalValues = new ArrayList<AppInfo>(newList);
-        }
+        originalValues = new ArrayList<AppInfo>(newList);
     }
 }
