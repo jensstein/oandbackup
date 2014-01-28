@@ -6,6 +6,7 @@
         <item>deutsch (deutschland)</item>
         <item>deutsch (österreich)</item>
         <item>english</item>
+        <item>español</item>
         <item>português (portugal)</item>
     </string-array>
     
@@ -15,6 +16,7 @@
         <item>de</item>
         <item>de_AT</item>
         <item>en</item>
+        <item>es</item>
         <item>pt</item>
     </string-array>
 </resources>
