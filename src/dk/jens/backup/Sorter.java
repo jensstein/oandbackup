@@ -1,15 +1,41 @@
 package dk.jens.backup;
 
+import android.content.SharedPreferences;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Sorter
 {
     AppInfoAdapter adapter;
     FilteringMethod filteringMethod = FilteringMethod.ALL;
     SortingMethod sortingMethod = SortingMethod.PACKAGENAME;
-    int oldBackups;
-    public Sorter(AppInfoAdapter adapter, int oldBackups)
+    private static final Map<Integer, Integer> convertFilteringIdMap, convertSortingIdMap;
+    SharedPreferences.Editor prefsEdit;
+    int oldBackups = 0;
+    public Sorter(AppInfoAdapter adapter, SharedPreferences prefs)
     {
         this.adapter = adapter;
-        this.oldBackups = oldBackups;
+        this.prefsEdit = prefs.edit();
+        try
+        {
+            oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+        }
+        catch(NumberFormatException e)
+        {}
+    }
+    static
+    {
+        convertFilteringIdMap = new HashMap<Integer, Integer>();
+        convertFilteringIdMap.put(FilteringMethod.ALL.ordinal(), R.id.showAll);
+        convertFilteringIdMap.put(FilteringMethod.SYSTEM.ordinal(), R.id.showOnlySystem);
+        convertFilteringIdMap.put(FilteringMethod.USER.ordinal(), R.id.showOnlyUser);
+    }
+    static
+    {
+        convertSortingIdMap = new HashMap<Integer, Integer>();
+        convertSortingIdMap.put(SortingMethod.LABEL.ordinal(), R.id.sortByLabel);
+        convertSortingIdMap.put(SortingMethod.PACKAGENAME.ordinal(), R.id.sortByPackageName);
     }
     public enum FilteringMethod
     {
@@ -23,9 +49,9 @@ public class Sorter
         ONLYAPK(R.id.showOnlyApkBackedUp),
         ONLYDATA(R.id.showOnlyDataBackedUp);
         int id;
-        FilteringMethod(int i)
+        FilteringMethod(int id)
         {
-            id = i;
+            this.id = id;
         }
         int getId()
         {
@@ -37,9 +63,9 @@ public class Sorter
         LABEL(R.id.sortByLabel),
         PACKAGENAME(R.id.sortByPackageName);
         int id;
-        SortingMethod(int i)
+        SortingMethod(int id)
         {
-            id = i;
+            this.id = id;
         }
         int getId()
         {
@@ -52,14 +78,17 @@ public class Sorter
         {
             case R.id.showAll:
                 filterShowAll();
+                saveInPrefs("filteringId", filteringMethod.ordinal());
                 break;
             case R.id.showOnlySystem:
                 filteringMethod = FilteringMethod.SYSTEM;
                 adapter.filterAppType(2);
+                saveInPrefs("filteringId", filteringMethod.ordinal());
                 break;
             case R.id.showOnlyUser:
                 filteringMethod = FilteringMethod.USER;
                 adapter.filterAppType(1);
+                saveInPrefs("filteringId", filteringMethod.ordinal());
                 break;
             case R.id.showNotBackedup:
                 filteringMethod = FilteringMethod.NOTBACKEDUP;
@@ -89,11 +118,13 @@ public class Sorter
                 sortingMethod = SortingMethod.LABEL;
                 adapter.sortByLabel();
                 sort(filteringMethod.getId());
+                saveInPrefs("sortingId", sortingMethod.ordinal());
                 break;
             case R.id.sortByPackageName:
                 sortingMethod = SortingMethod.PACKAGENAME;
                 adapter.sortByPackageName();
                 sort(filteringMethod.getId());
+                saveInPrefs("sortingId", sortingMethod.ordinal());
                 break;
         }
     }
@@ -117,5 +148,27 @@ public class Sorter
             return sortingMethod;
         }
         return SortingMethod.PACKAGENAME;
+    }
+    public void saveInPrefs(String prefName, int persistentId)
+    {
+        prefsEdit.putInt(prefName, persistentId);
+        prefsEdit.commit();
+    }
+    // needs to be static as it is used in onPrepareOptionsMenu which is called before the sorter instance is created
+    public static int convertFilteringId(int key)
+    {
+        if(convertFilteringIdMap.containsKey(key))
+        {
+            return convertFilteringIdMap.get(key);
+        }
+        return 0;
+    }
+    public static int convertSortingId(int key)
+    {
+        if(convertSortingIdMap.containsKey(key))
+        {
+            return convertSortingIdMap.get(key);
+        }
+        return 0;
     }
 }

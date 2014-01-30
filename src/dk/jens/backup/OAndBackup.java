@@ -123,14 +123,12 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
-                int oldBackups = 0;
-                try
+                sorter = new Sorter(adapter, prefs);
+                if(prefs.getBoolean("rememberFiltering", false))
                 {
-                    oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+                    sorter.sort(Sorter.convertFilteringId(prefs.getInt("filteringId", 0)));
+                    sorter.sort(Sorter.convertSortingId(prefs.getInt("sortingId", 1)));
                 }
-                catch(NumberFormatException e)
-                {}
-                sorter = new Sorter(adapter, oldBackups);
                 runOnUiThread(new Runnable(){
                     public void run()
                     {
@@ -463,6 +461,23 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         return true;
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
+        MenuItem filterItem = menu.findItem(filteringId);
+        if(filterItem != null)
+        {
+            filterItem.setChecked(true);
+        }
+        int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
+        MenuItem sortItem = menu.findItem(sortingId);
+        if(sortItem != null)
+        {
+            sortItem.setChecked(true);
+        }
+        return true;
+    }
     public Intent batchIntent(Class batchClass, boolean backup)
     {
         Intent batchIntent = new Intent(this, batchClass);
@@ -617,15 +632,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 // conflicts with the other call to refresh() if both this and pathBackupFolder is changed
         }
         if(key.equals("oldBackups"))
-        {                
-            int oldBackups = 0;
-            try
-            {
-                oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
-            }
-            catch(NumberFormatException e)
-            {}
-            sorter = new Sorter(adapter, oldBackups);
+        {
+            sorter = new Sorter(adapter, prefs);
         }
         if(key.equals("languages"))
         {

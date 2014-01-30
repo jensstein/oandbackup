@@ -4,7 +4,10 @@ changelog
 0.2.8 (development)
 -------------------
  * icons in app list
- * better filtering: filtering is now shared and consistent between the different modes (activities)
+ * better filtering
+   * filtering is now shared and consistent between the different modes (activities)
+   * added option to remember filtering and sorting
+ * added spanish translation. thanks to isaacluz.
 
 0.2.7 (2014-01-13)
 -------------------

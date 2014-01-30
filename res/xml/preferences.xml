@@ -17,6 +17,12 @@
         android:summary="@string/prefs_summaryAcquireWakelock"
         android:defaultValue="true"
         />
+    <CheckBoxPreference
+        android:key="rememberFiltering"
+        android:title="@string/prefs_rememberFiltering"
+        android:summary="@string/prefs_summaryRememberFiltering"
+        android:defaultValue="false"
+        />
     <EditTextPreference
         android:key="oldBackups"
         android:title="@string/prefs_oldBackups"

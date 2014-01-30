@@ -129,14 +129,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
         listView = (ListView) findViewById(R.id.listview);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
-        int oldBackups = 0;
-        try
-        {
-            oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
-        }
-        catch(NumberFormatException e)
-        {}
-        sorter = new Sorter(adapter, oldBackups);
+        sorter = new Sorter(adapter, prefs);
         sorter.sort(filteringMethodId);
         sorter.sort(sortingMethodId);
         listView.setAdapter(adapter);
@@ -193,6 +186,23 @@ public class BatchActivity extends Activity implements OnClickListener
         return true;
     }
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
+        MenuItem filterItem = menu.findItem(filteringId);
+        if(filterItem != null)
+        {
+            filterItem.setChecked(true);
+        }
+        int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
+        MenuItem sortItem = menu.findItem(sortingId);
+        if(sortItem != null)
+        {
+            sortItem.setChecked(true);
+        }
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
@@ -209,6 +219,7 @@ public class BatchActivity extends Activity implements OnClickListener
                 adapter.notifyDataSetChanged();
                 break;
             default:
+                item.setChecked(!item.isChecked());
                 sorter.sort(item.getItemId());
                 break;                
         }
