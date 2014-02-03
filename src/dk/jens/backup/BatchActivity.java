@@ -29,7 +29,6 @@ import android.widget.RadioGroup;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -262,7 +261,7 @@ public class BatchActivity extends Activity implements OnClickListener
                 Log.i(TAG, "wakelock acquired");
             }
             changesMade = true;
-            int id = (int) Calendar.getInstance().getTimeInMillis();
+            int id = (int) System.currentTimeMillis();
             int total = selectedList.size();
             int i = 0;
             boolean errorFlag = false;

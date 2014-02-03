@@ -11,7 +11,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -135,7 +134,7 @@ public class HandleScheduledBackups
                         wl.acquire();
                         Log.i(TAG, "wakelock acquired");
                     }
-                    int id = (int) Calendar.getInstance().getTimeInMillis();
+                    int id = (int) System.currentTimeMillis();
                     int total = backupList.size();
                     int i = 0;
                     boolean errorFlag = false;

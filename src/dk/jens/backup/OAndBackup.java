@@ -34,7 +34,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,7 +56,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     boolean localTimestampFormat;
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationNumber = 0;
-    int notificationId = (int) Calendar.getInstance().getTimeInMillis();
+    int notificationId = (int) System.currentTimeMillis();
 
     ShellCommands shellCommands;
     HandleMessages handleMessages;
