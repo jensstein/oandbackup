@@ -71,6 +71,10 @@
     <string name="tools_title">tools</string>
     <string name="tools_batchDeleteTitle">delete backups?</string>
     <string name="tools_batchDeleteMessage">deleting backups</string>
+    <string name="tools_notificationTitle">delete backups</string>
+        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="tools_backupsDeleted">backups deleted:</string>
+    <string name="tools_nothingToDelete">no backups to delete</string>
 
     <string name="enablePackage">enable</string>
         <!-- enablePackageTitle: title for a list of checkable users -->

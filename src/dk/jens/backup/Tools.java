@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,25 +59,43 @@ public class Tools extends ListActivity
                 quickReboot();
                 break;
             case 1:
-                new AlertDialog.Builder(this)
-                .setTitle(R.string.tools_batchDeleteTitle)
-                .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
+                final ArrayList<AppInfo> deleteList = new ArrayList<AppInfo>();
+                String message = "";
+                for(AppInfo appInfo : appInfoList)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
+                    if(!appInfo.isInstalled)
                     {
-                        changesMade();
-                        new Thread(new Runnable()
-                        {
-                            public void run()
-                            {
-                                deleteBackups();
-                            }
-                        }).start();
+                        deleteList.add(appInfo);
+                        message += appInfo.getLabel() + "\n";
                     }
-                })
-                .setNegativeButton(R.string.dialogNo, null)
-                .show();
+                }
+                if(!deleteList.isEmpty)
+                {
+                    new AlertDialog.Builder(this)
+                    .setTitle(R.string.tools_batchDeleteTitle)
+                    .setMessage(message.trim())
+                    .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            changesMade();
+                            new Thread(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    deleteBackups(deleteList);
+                                }
+                            }).start();
+                        }
+                    })
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show();
+                }
+                else
+                {
+                    Toast.makeText(this, getString(R.string.tools_nothingToDelete), Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
@@ -86,20 +105,25 @@ public class Tools extends ListActivity
         result.putExtra("changesMade", true);
         setResult(RESULT_OK, result);
     }    
-    public void deleteBackups()
+    public void deleteBackups(ArrayList<AppInfo> deleteList)
     {
         handleMessages.showMessage(getString(R.string.tools_batchDeleteMessage), "");
-        for(AppInfo appInfo : appInfoList)
+        for(AppInfo appInfo : deleteList)
         {
-            if(backupDir != null && !appInfo.isInstalled)
+            if(backupDir != null)
             {
                 handleMessages.changeMessage(getString(R.string.tools_batchDeleteMessage), appInfo.getLabel());
                 Log.i(TAG, "deleting backup of " + appInfo.getLabel());
                 File backupSubDir = new File(backupDir, appInfo.getPackageName());
                 shellCommands.deleteBackup(backupSubDir);
             }
+            else
+            {
+                Log.e(TAG, "Tools.deleteBackups: backupDir null");
+            }
         }
         handleMessages.endMessage();
+        NotificationHelper.showNotification(this, Tools.class, (int) System.currentTimeMillis(), getString(R.string.tools_notificationTitle), getString(R.string.tools_backupsDeleted) + " " + deleteList.size(), false);
     }
     public void quickReboot()
     {
