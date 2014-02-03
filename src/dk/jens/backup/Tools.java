@@ -69,7 +69,7 @@ public class Tools extends ListActivity
                         message += appInfo.getLabel() + "\n";
                     }
                 }
-                if(!deleteList.isEmpty)
+                if(!deleteList.isEmpty())
                 {
                     new AlertDialog.Builder(this)
                     .setTitle(R.string.tools_batchDeleteTitle)
