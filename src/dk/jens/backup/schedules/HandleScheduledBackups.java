@@ -25,7 +25,6 @@ public class HandleScheduledBackups
     FileCreationHelper fileCreator;
     LogFile logFile;
     HandleMessages handleMessages;
-    NotificationHelper notificationHelper;
     SharedPreferences prefs;
     File backupDir;
     boolean localTimestampFormat;
@@ -35,7 +34,6 @@ public class HandleScheduledBackups
         shellCommands = new ShellCommands(context);
         fileCreator = new FileCreationHelper(context);
         handleMessages = new HandleMessages(context);
-        notificationHelper = new NotificationHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         logFile = new LogFile(context);
@@ -145,7 +143,7 @@ public class HandleScheduledBackups
                     {
                         i++;
                         String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
-                        notificationHelper.showNotification(OAndBackup.class, id, title, appInfo.getLabel(), false);
+                        NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
                         File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
                         if(!backupSubDir.exists())
                         {
@@ -168,7 +166,7 @@ public class HandleScheduledBackups
                         {
                             String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
                             String notificationMessage = context.getString(R.string.sched_notificationMessage);
-                            notificationHelper.showNotification(OAndBackup.class, id, notificationTitle, notificationMessage, true);
+                            NotificationHelper.showNotification(context, OAndBackup.class, id, notificationTitle, notificationMessage, true);
                         }
                     }
                     if(wl.isHeld())

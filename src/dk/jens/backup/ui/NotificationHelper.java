@@ -9,12 +9,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 public class NotificationHelper
 {
-    Context context;
-    public NotificationHelper(Context context)
-    {
-        this.context = context;
-    }
-    public void showNotification(Class c, int id, String title, String text, boolean autocancel)
+    public static void showNotification(Context context, Class c, int id, String title, String text, boolean autocancel)
     {
 //        Notification.Builder mBuilder = new Notification.Builder(this)
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)

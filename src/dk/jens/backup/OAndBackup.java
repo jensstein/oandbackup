@@ -2,8 +2,6 @@ package dk.jens.backup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.FragmentManager;
-//import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,7 +62,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     FileCreationHelper fileCreator;
-    NotificationHelper notificationHelper;
     Sorter sorter;
 
     ListView listView;
@@ -80,7 +77,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
         fileCreator = new FileCreationHelper(this);
-        notificationHelper = new NotificationHelper(this);
         
         new Thread(new Runnable(){
             public void run()
@@ -217,11 +213,11 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 handleMessages.endMessage();
                 if(backupRet == 0)
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupSuccess), appInfo.getLabel(), true);
+                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.backupSuccess), appInfo.getLabel(), true);
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
+                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
                     Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
@@ -274,11 +270,11 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 handleMessages.endMessage();
                 if(apkRet == 0 && restoreRet == 0 && permRet == 0)
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
+                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
                 }
                 else
                 {
-                    notificationHelper.showNotification(OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
+                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
                     Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }

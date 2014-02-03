@@ -64,7 +64,6 @@ public class BatchActivity extends Activity implements OnClickListener
     ShellCommands shellCommands;
     FileCreationHelper fileCreator;
     LogFile logFile;
-    NotificationHelper notificationHelper;
     Sorter sorter;
     
     boolean localTimestampFormat;
@@ -79,7 +78,6 @@ public class BatchActivity extends Activity implements OnClickListener
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         handleMessages = new HandleMessages(this);
         fileCreator = new FileCreationHelper(this);
-        notificationHelper = new NotificationHelper(this);
         logFile = new LogFile(this);
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -277,7 +275,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
                     title = title + " (" + i + "/" + total + ")";
-                    notificationHelper.showNotification(BatchActivity.class, id, title, appInfo.getLabel(), false);
+                    NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
                     if(i == 1)
                     {
                         handleMessages.showMessage(appInfo.getLabel(), message);
@@ -360,7 +358,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     {
                         String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
                         String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
-                        notificationHelper.showNotification(BatchActivity.class, id, notificationTitle, msg, true);
+                        NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }
                 }
