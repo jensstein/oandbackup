@@ -61,7 +61,6 @@ public class BatchActivity extends Activity implements OnClickListener
 
     HandleMessages handleMessages;
     ShellCommands shellCommands;
-    LogFile logFile;
     Sorter sorter;
     
     boolean localTimestampFormat;
@@ -75,7 +74,6 @@ public class BatchActivity extends Activity implements OnClickListener
         pm = getPackageManager();
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         handleMessages = new HandleMessages(this);
-        logFile = new LogFile(this);
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
@@ -303,7 +301,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
                         shellCommands.logReturnMessage(backupRet);
 
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
+                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode), localTimestampFormat);
                         if(backupRet != 0)
                         {
                             errorFlag = true;

@@ -21,7 +21,6 @@ public class HandleScheduledBackups
     Context context;
     PowerManager powerManager;
     ShellCommands shellCommands;
-    LogFile logFile;
     HandleMessages handleMessages;
     SharedPreferences prefs;
     File backupDir;
@@ -33,7 +32,6 @@ public class HandleScheduledBackups
         handleMessages = new HandleMessages(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
-        logFile = new LogFile(context);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
     public void initiateBackup(final int id, final int mode, final int subMode, final boolean excludeSystem)
@@ -154,7 +152,7 @@ public class HandleScheduledBackups
 
                         shellCommands.logReturnMessage(ret);
 
-                        logFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode));
+                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode), localTimestampFormat);
                         if(ret != 0)
                         {
                             errorFlag = true;

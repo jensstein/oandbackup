@@ -31,7 +31,6 @@ public class ShellCommands
     Context context;
     SharedPreferences prefs;
     String busybox;
-    LogFile logFile;
     ArrayList<String> users;
     String errors = "";
     boolean localTimestampFormat, multiuserEnabled;
@@ -39,7 +38,6 @@ public class ShellCommands
     {
         this.context = context;
         this.users = users;
-        logFile = new LogFile(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();

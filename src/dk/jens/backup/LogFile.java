@@ -1,8 +1,5 @@
 package dk.jens.backup;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -24,19 +21,12 @@ public class LogFile
 {
     final static String TAG = OAndBackup.TAG; 
     File logfile;
-    SharedPreferences prefs;
     String label, packageName, versionName, sourceDir, dataDir, lastBackup;
     int versionCode, backupMode;
     long lastBackupMillis;
-    boolean localTimestampFormat, isSystem;
-    public LogFile(Context context)
-    {
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.localTimestampFormat = prefs.getBoolean("timestamp", true);
-    }
+    boolean isSystem;
     public LogFile(File backupSubDir, String packageName, boolean localTimestampFormat)
     {
-        this.localTimestampFormat = localTimestampFormat;
         FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
         String json = frw.read();
         try
@@ -48,7 +38,7 @@ public class LogFile
             this.sourceDir = jsonObject.getString("sourceDir");
             this.dataDir = jsonObject.getString("dataDir");
             this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
-            this.lastBackup = formatDate(new Date(lastBackupMillis));
+            this.lastBackup = formatDate(new Date(lastBackupMillis), localTimestampFormat);
             this.versionCode = jsonObject.getInt("versionCode");
             this.isSystem = jsonObject.optBoolean("isSystem");
             this.backupMode = jsonObject.optInt("backupMode", AppInfo.MODE_UNSET);
@@ -69,7 +59,7 @@ public class LogFile
                     this.versionCode = 0;
                     this.isSystem = false;
                     this.backupMode = AppInfo.MODE_UNSET;
-                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup, isSystem, backupMode);
+                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup, isSystem, backupMode, localTimestampFormat);
                 }
                 catch(IndexOutOfBoundsException ie)
                 {
@@ -152,12 +142,12 @@ public class LogFile
             return null;
         }
     }
-    public void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated, boolean isSystem, int backupMode)
+    public static void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated, boolean isSystem, int backupMode, boolean localTimestampFormat)
     {
         if(dateFormated == null)
         {
             Date date = new Date();
-            dateFormated = formatDate(date);
+            dateFormated = formatDate(date, localTimestampFormat);
         }
         try
         {
@@ -178,7 +168,7 @@ public class LogFile
             FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(json);
-            bw.close();            
+            bw.close();
         }
         catch(JSONException e)
         {
@@ -189,38 +179,7 @@ public class LogFile
             Log.i(TAG, e.toString());
         }
     }
-    /*
-    public void writeLogFile(String filePath, String content)
-    {
-        Date date = new Date();
-        String dateFormated;
-        if(prefs.getBoolean("timestamp", true))
-        {
-            DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            dateFormated = dateFormat.format(date);
-        }
-        else
-        {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
-            dateFormated = dateFormat.format(date);
-        }
-        content = content + "\n" + dateFormated + "\n";
-        try
-        {
-            File outFile = new File(filePath);
-            outFile.createNewFile();
-            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(content);
-            bw.close();
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-        }
-    }
-    */
-    public String formatDate(Date date)
+    public static String formatDate(Date date, boolean localTimestampFormat)
     {
         String dateFormated;
         if(localTimestampFormat)
