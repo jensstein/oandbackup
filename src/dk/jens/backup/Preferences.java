@@ -12,17 +12,16 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        FileCreationHelper fileCreator = new FileCreationHelper(this);
         EditTextPreference backupFolderPref = (EditTextPreference) findPreference("pathBackupFolder");
         // det ser ikke ud til at setDefaultValue() virker som den skal
         if(backupFolderPref.getText() == null)
         {
-            backupFolderPref.setText(fileCreator.getDefaultBackupDirPath());
+            backupFolderPref.setText(FileCreationHelper.getDefaultBackupDirPath());
         }
         EditTextPreference logFilePref= (EditTextPreference) findPreference("pathLogfile");
         if(logFilePref.getText() == null)
         {
-            logFilePref.setText(fileCreator.getDefaultLogFilePath());
+            logFilePref.setText(FileCreationHelper.getDefaultLogFilePath());
         }
     }
     @Override

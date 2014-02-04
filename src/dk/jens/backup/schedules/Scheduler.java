@@ -386,12 +386,12 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     }
     public void renameCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + (number + 1));
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + (number + 1));
         frw.rename("customlist" + number);
     }
     public void removeCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
         frw.delete();
     }
     public void transferOldValues()

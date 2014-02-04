@@ -21,7 +21,6 @@ public class HandleScheduledBackups
     Context context;
     PowerManager powerManager;
     ShellCommands shellCommands;
-    FileCreationHelper fileCreator;
     LogFile logFile;
     HandleMessages handleMessages;
     SharedPreferences prefs;
@@ -31,7 +30,6 @@ public class HandleScheduledBackups
     {
         this.context = context;
         shellCommands = new ShellCommands(context);
-        fileCreator = new FileCreationHelper(context);
         handleMessages = new HandleMessages(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
@@ -182,7 +180,7 @@ public class HandleScheduledBackups
         PackageManager pm = context.getPackageManager();
         List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         ArrayList<AppInfo> appInfoList = new ArrayList<AppInfo>();
-        String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
+        String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
         backupDir = new File(backupDirPath);
 
         for(PackageInfo pinfo : pinfoList)

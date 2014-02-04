@@ -30,30 +30,31 @@ public class Utils
             }
         });
     }
-    public static File createBackupDir(final Activity activity, final String path, final FileCreationHelper fileCreator)
+    public static File createBackupDir(final Activity activity, final String path)
     {
+        FileCreationHelper fileCreator = new FileCreationHelper();
         File backupDir;
         if(path.trim().length() > 0)
         {
             backupDir = fileCreator.createBackupFolder(path);
-            if(fileCreator.fallbackFlag)
+            if(fileCreator.isFallenBack())
             {
                 activity.runOnUiThread(new Runnable()
                 {
                     public void run()
                     {
-                        Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + fileCreator.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + FileCreationHelper.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         }
         else
         {
-            backupDir = fileCreator.createBackupFolder(fileCreator.getDefaultBackupDirPath());
+            backupDir = fileCreator.createBackupFolder(FileCreationHelper.getDefaultBackupDirPath());
         }
         if(backupDir == null)
         {
-            showWarning(activity, activity.getString(R.string.mkfileError) + " " + fileCreator.getDefaultBackupDirPath(), activity.getString(R.string.backupFolderError));
+            showWarning(activity, activity.getString(R.string.mkfileError) + " " + FileCreationHelper.getDefaultBackupDirPath(), activity.getString(R.string.backupFolderError));
         }
         return backupDir;
     }

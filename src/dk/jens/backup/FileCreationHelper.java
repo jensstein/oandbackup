@@ -1,6 +1,5 @@
 package dk.jens.backup;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -12,20 +11,18 @@ public class FileCreationHelper
     final static String TAG = OAndBackup.TAG;
     final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackups";
     final static String defaultLogFilePath = Environment.getExternalStorageDirectory() + "/oandbackup.log";
-    File backupDir;
-    Context context;
-    public boolean fallbackFlag;
-    public FileCreationHelper(Context context)
-    {
-        this.context = context;
-    }
-    public String getDefaultBackupDirPath()
+    boolean fallbackFlag;
+    public static String getDefaultBackupDirPath()
     {
         return defaultBackupDirPath;
     }
-    public String getDefaultLogFilePath()
+    public static String getDefaultLogFilePath()
     {
         return defaultLogFilePath;
+    }
+    public boolean isFallenBack()
+    {
+        return fallbackFlag;
     }
     public File createBackupFolder(String path)
     {
@@ -37,14 +34,14 @@ public class FileCreationHelper
             if(!created)
             {
                 fallbackFlag = true;
-                Log.e(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
+                Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
                 dir = new File(defaultBackupDirPath);
                 if(!dir.exists())
                 {
                     boolean defaultCreated = dir.mkdirs();
                     if(!defaultCreated)
                     {
-                        Log.e(TAG, context.getString(R.string.mkfileError) + " " + dir.getAbsolutePath());
+                        Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
                         return null;
                     }
                 }

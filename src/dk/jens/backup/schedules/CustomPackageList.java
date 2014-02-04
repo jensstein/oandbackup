@@ -17,7 +17,7 @@ public class CustomPackageList
     public CustomPackageList(Context context, int number)
     {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + number);
+        frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
     }
     public void showList(Activity activity)
     {

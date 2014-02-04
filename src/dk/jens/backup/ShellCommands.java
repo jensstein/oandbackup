@@ -31,7 +31,6 @@ public class ShellCommands
     Context context;
     SharedPreferences prefs;
     String busybox;
-    FileCreationHelper fileCreator;
     LogFile logFile;
     ArrayList<String> users;
     String errors = "";
@@ -40,7 +39,6 @@ public class ShellCommands
     {
         this.context = context;
         this.users = users;
-        fileCreator = new FileCreationHelper(context);
         logFile = new LogFile(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
@@ -613,8 +611,8 @@ public class ShellCommands
         String dateFormated = dateFormat.format(date);
         try
         {
-            String logFilePath = prefs.getString("pathLogfile", fileCreator.getDefaultLogFilePath());
-            File outFile = fileCreator.createLogFile(logFilePath);
+            String logFilePath = prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath());
+            File outFile = new FileCreationHelper().createLogFile(logFilePath);
             if(outFile != null)
             {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append

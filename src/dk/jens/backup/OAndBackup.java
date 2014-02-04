@@ -60,7 +60,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
     ShellCommands shellCommands;
     HandleMessages handleMessages;
-    FileCreationHelper fileCreator;
     Sorter sorter;
 
     ListView listView;
@@ -75,7 +74,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         setContentView(R.layout.main);
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this);
-        fileCreator = new FileCreationHelper(this);
         
         new Thread(new Runnable(){
             public void run()
@@ -105,8 +103,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
                 pm = getPackageManager();
-                String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-                backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath, fileCreator);
+                String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+                backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
                 localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
@@ -612,8 +610,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     {
         if(key.equals("pathBackupFolder"))
         {
-            String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-            backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath, fileCreator);
+            String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             refresh();
         }
         if(key.equals("pathBusybox"))

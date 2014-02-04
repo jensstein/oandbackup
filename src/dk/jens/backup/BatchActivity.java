@@ -61,7 +61,6 @@ public class BatchActivity extends Activity implements OnClickListener
 
     HandleMessages handleMessages;
     ShellCommands shellCommands;
-    FileCreationHelper fileCreator;
     LogFile logFile;
     Sorter sorter;
     
@@ -76,12 +75,11 @@ public class BatchActivity extends Activity implements OnClickListener
         pm = getPackageManager();
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         handleMessages = new HandleMessages(this);
-        fileCreator = new FileCreationHelper(this);
         logFile = new LogFile(this);
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String backupDirPath = prefs.getString("pathBackupFolder", fileCreator.getDefaultBackupDirPath());
-        backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath, fileCreator);
+        String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+        backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         int filteringMethodId = 0;
