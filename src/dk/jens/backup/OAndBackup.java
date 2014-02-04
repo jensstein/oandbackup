@@ -394,16 +394,22 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 else
                 {
-                    for(AppInfo appInfo : appInfoList)
+                    if(appInfoList != null) // make sure the object hasn't been deleted (e.g. if user has 'don't keep activities' checked)
                     {
-                        if(appInfo.isChecked)
+                        for(AppInfo appInfo : appInfoList)
                         {
-                            appInfo.toggle();
+                            if(appInfo.isChecked)
+                            {
+                                appInfo.toggle();
+                            }
                         }
                     }
                 }
-                sorter.sort(data.getIntExtra("filteringMethodId", 0));
-                sorter.sort(data.getIntExtra("sortingMethodId", 0));
+                if(sorter != null)
+                {
+                    sorter.sort(data.getIntExtra("filteringMethodId", 0));
+                    sorter.sort(data.getIntExtra("sortingMethodId", 0));
+                }
             }
         }
     }
