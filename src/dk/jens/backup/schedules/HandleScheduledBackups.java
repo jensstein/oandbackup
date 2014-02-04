@@ -28,9 +28,9 @@ public class HandleScheduledBackups
     public HandleScheduledBackups(Context context)
     {
         this.context = context;
-        shellCommands = new ShellCommands(context);
         handleMessages = new HandleMessages(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        shellCommands = new ShellCommands(prefs);
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
@@ -150,7 +150,7 @@ public class HandleScheduledBackups
                         }
                         int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
 
-                        shellCommands.logReturnMessage(ret);
+                        shellCommands.logReturnMessage(context, ret);
 
                         LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode), localTimestampFormat);
                         if(ret != 0)

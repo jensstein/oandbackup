@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -37,7 +38,7 @@ public class Tools extends ListActivity
         }
         // get users to prevent an unnecessary call to su
         ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
-        shellCommands = new ShellCommands(this, users);
+        shellCommands = new ShellCommands(PreferenceManager.getDefaultSharedPreferences(this), users);
                 
         String[] titles = getResources().getStringArray(R.array.tools_titles);
         String[] descriptions = getResources().getStringArray(R.array.tools_descriptions);
@@ -115,7 +116,7 @@ public class Tools extends ListActivity
                 handleMessages.changeMessage(getString(R.string.tools_batchDeleteMessage), appInfo.getLabel());
                 Log.i(TAG, "deleting backup of " + appInfo.getLabel());
                 File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                shellCommands.deleteBackup(backupSubDir);
+                ShellCommands.deleteBackup(backupSubDir);
             }
             else
             {

@@ -73,13 +73,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         handleMessages = new HandleMessages(this);
-        shellCommands = new ShellCommands(this);
         
         new Thread(new Runnable(){
             public void run()
             {
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
+                shellCommands = new ShellCommands(prefs);
                 String langCode = prefs.getString("languages", "system");
                 LanguageHelper languageHelper = new LanguageHelper();
                 languageHelper.initLanguage(OAndBackup.this, langCode);
@@ -194,7 +194,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     }
                     backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
 
-                    shellCommands.logReturnMessage(backupRet);
+                    shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
                     LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode), localTimestampFormat);
                 
@@ -245,8 +245,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         case 2:
                             if(appInfo.isInstalled)
                             {
-                                restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                                shellCommands.logReturnMessage(restoreRet);
+                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
 
                                 permRet = shellCommands.setPermissions(dataDir);
                             }
@@ -257,8 +257,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             break;
                         case 3:
                             apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
-                            restoreRet = shellCommands.doRestore(backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
-                            shellCommands.logReturnMessage(restoreRet);
+                            restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
                             permRet = shellCommands.setPermissions(dataDir);
                             break;
                     }
@@ -622,7 +622,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         if(key.equals("pathBusybox"))
         {
-            shellCommands = new ShellCommands(this);
+            shellCommands = new ShellCommands(prefs);
         }
         if(key.equals("timestamp"))
         {

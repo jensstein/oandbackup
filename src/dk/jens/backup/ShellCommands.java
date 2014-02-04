@@ -28,17 +28,15 @@ public class ShellCommands
     final static String TAG = OAndBackup.TAG; 
     Process p;
     DataOutputStream dos;
-    Context context;
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
     String errors = "";
     boolean localTimestampFormat, multiuserEnabled;
-    public ShellCommands(Context context, ArrayList<String> users)
+    public ShellCommands(SharedPreferences prefs, ArrayList<String> users)
     {
-        this.context = context;
         this.users = users;
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        this.prefs = prefs;
         localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
         if(busybox.length() == 0)
@@ -51,9 +49,9 @@ public class ShellCommands
             multiuserEnabled = (this.users.size() > 1) ? true : false;
         }
     }
-    public ShellCommands(Context context)
+    public ShellCommands(SharedPreferences prefs)
     {
-        this(context, null);
+        this(prefs, null);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
     public int doBackup(File backupSubDir, String label, String packageData, String packageApk, int backupMode)
@@ -135,7 +133,7 @@ public class ShellCommands
             return 1;
         }
     }
-    public int doRestore(File backupDir, String label, String packageName)
+    public int doRestore(Context context, File backupDir, String label, String packageName)
     {
         String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
         int unzipRet = -1;
@@ -146,7 +144,7 @@ public class ShellCommands
 
         try
         {
-            killPackage(packageName);
+            killPackage(context, packageName);
             if(new File(backupDir, packageName + ".zip").exists())
             {
                 unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
@@ -491,7 +489,7 @@ public class ShellCommands
             return 1;
         }
     }
-    public void deleteBackup(File file)
+    public static void deleteBackup(File file)
     {
         if(file.exists())
         {
@@ -523,7 +521,7 @@ public class ShellCommands
             file.delete();
         }
     }
-    public void killPackage(String packageName)
+    public void killPackage(Context context, String packageName)
     {
         List<ActivityManager.RunningAppProcessInfo> runningList;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -596,7 +594,7 @@ public class ShellCommands
             return map;
         }
     }
-    public void logReturnMessage(int returnCode)
+    public void logReturnMessage(Context context, int returnCode)
     {
         String returnMessage = returnCode == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
         Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
