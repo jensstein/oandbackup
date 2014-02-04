@@ -24,14 +24,12 @@ public class HandleScheduledBackups
     HandleMessages handleMessages;
     SharedPreferences prefs;
     File backupDir;
-    boolean localTimestampFormat;
     public HandleScheduledBackups(Context context)
     {
         this.context = context;
         handleMessages = new HandleMessages(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         shellCommands = new ShellCommands(prefs);
-        localTimestampFormat = prefs.getBoolean("timestamp", true);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
     public void initiateBackup(final int id, final int mode, final int subMode, final boolean excludeSystem)
@@ -152,7 +150,7 @@ public class HandleScheduledBackups
 
                         shellCommands.logReturnMessage(context, ret);
 
-                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(subMode), localTimestampFormat);
+                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(subMode));
                         if(ret != 0)
                         {
                             errorFlag = true;
@@ -195,7 +193,7 @@ public class HandleScheduledBackups
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
-                    LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName, localTimestampFormat);
+                    LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName);
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
                     appInfoList.add(appInfo);
                 }

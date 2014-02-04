@@ -53,7 +53,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     AppInfoAdapter adapter;
     ArrayList<AppInfo> appInfoList;
 
-    boolean localTimestampFormat;
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationNumber = 0;
     int notificationId = (int) System.currentTimeMillis();
@@ -105,7 +104,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 pm = getPackageManager();
                 String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
-                localTimestampFormat = prefs.getBoolean("timestamp", true);
                 
                 appInfoList = new ArrayList<AppInfo>();
                 getPackageInfo();
@@ -116,6 +114,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
+                adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
                 sorter = new Sorter(adapter, prefs);
                 if(prefs.getBoolean("rememberFiltering", false))
                 {
@@ -196,7 +195,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
-                    LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode), localTimestampFormat);
+                    LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
                 
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
@@ -234,7 +233,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     // error handling, hvis backupSubDir ikke findes
                     handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
 
-                    LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat);
+                    LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
                     String dataDir = appInfo.getDataDir();
                     String apk = logInfo.getApk();
                     switch(options)
@@ -297,7 +296,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
-                    LogFile logInfo = new LogFile(subdir, pinfo.packageName, localTimestampFormat);
+                    LogFile logInfo = new LogFile(subdir, pinfo.packageName);
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
                     appInfo.icon = icon;
                     appInfoList.add(appInfo);
@@ -326,8 +325,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
                 if(!found)
                 {
-                    LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder, localTimestampFormat);
-                    if(logInfo.getLastBackupTimestamp() != null)
+                    LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                    if(logInfo.getLastBackupMillis() > 0)
                     {
                         AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
                         appInfoList.add(appInfo);
@@ -367,7 +366,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     {
         if(backupDir != null)
         {
-            LogFile logInfo = new LogFile(new File(backupDir, appInfo.getPackageName()), appInfo.getPackageName(), localTimestampFormat);
+            LogFile logInfo = new LogFile(new File(backupDir, appInfo.getPackageName()), appInfo.getPackageName());
             int pos = appInfoList.indexOf(appInfo);
             appInfo.setLogInfo(logInfo);
             appInfoList.set(pos, appInfo);
@@ -626,9 +625,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         if(key.equals("timestamp"))
         {
-            localTimestampFormat = prefs.getBoolean("timestamp", true);
-//            refresh(); 
-                // conflicts with the other call to refresh() if both this and pathBackupFolder is changed
+            adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
+            adapter.notifyDataSetChanged();
         }
         if(key.equals("oldBackups"))
         {

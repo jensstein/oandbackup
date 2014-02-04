@@ -63,8 +63,6 @@ public class BatchActivity extends Activity implements OnClickListener
     ShellCommands shellCommands;
     Sorter sorter;
     
-    boolean localTimestampFormat;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -78,7 +76,6 @@ public class BatchActivity extends Activity implements OnClickListener
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
         backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath);
-        localTimestampFormat = prefs.getBoolean("timestamp", true);
 
         int filteringMethodId = 0;
         int sortingMethodId = 0;
@@ -301,7 +298,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
                         shellCommands.logReturnMessage(this, backupRet);
 
-                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), null, appInfo.isSystem, appInfo.setNewBackupMode(backupMode), localTimestampFormat);
+                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
                         if(backupRet != 0)
                         {
                             errorFlag = true;
@@ -309,7 +306,7 @@ public class BatchActivity extends Activity implements OnClickListener
                     }
                     else
                     {
-                        String apk = new LogFile(backupSubDir, appInfo.getPackageName(), localTimestampFormat).getApk();
+                        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
                         String dataDir = appInfo.getDataDir();
 
                         if(rbApk.isChecked() && apk != null)

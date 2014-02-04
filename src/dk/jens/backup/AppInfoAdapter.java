@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 public class AppInfoAdapter extends ArrayAdapter<AppInfo>
 {
@@ -25,6 +26,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
 
     private ArrayList<AppInfo> originalValues;
     private MyArrayFilter mFilter;
+    boolean localTimestampFormat;
     public AppInfoAdapter(Context context, int layout, ArrayList<AppInfo> items)
     {
         super(context, layout, items);
@@ -107,7 +109,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             }
             if(appInfo.getLogInfo() != null)
             {
-                viewHolder.lastBackup.setText(appInfo.getLogInfo().getLastBackupTimestamp());
+                viewHolder.lastBackup.setText(LogFile.formatDate(new Date(appInfo.getLogInfo().getLastBackupMillis()), localTimestampFormat));
             }
             else
             {
@@ -388,5 +390,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     public void setNewOriginalValues(ArrayList newList)
     {
         originalValues = new ArrayList<AppInfo>(newList);
+    }
+    public void setLocalTimestampFormat(boolean newPref)
+    {
+        localTimestampFormat = newPref;
     }
 }

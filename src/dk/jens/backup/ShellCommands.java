@@ -32,12 +32,11 @@ public class ShellCommands
     String busybox;
     ArrayList<String> users;
     String errors = "";
-    boolean localTimestampFormat, multiuserEnabled;
+    boolean multiuserEnabled;
     public ShellCommands(SharedPreferences prefs, ArrayList<String> users)
     {
         this.users = users;
         this.prefs = prefs;
-        localTimestampFormat = prefs.getBoolean("timestamp", true);
         busybox = prefs.getString("pathBusybox", "busybox").trim();
         if(busybox.length() == 0)
         {
@@ -138,7 +137,7 @@ public class ShellCommands
         String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
         int unzipRet = -1;
         int untarRet = -1;
-        LogFile logInfo = new LogFile(backupDir, packageName, localTimestampFormat);
+        LogFile logInfo = new LogFile(backupDir, packageName);
         String packageData = logInfo.getDataDir();
         Log.i(TAG, "restoring: " + label);
 

@@ -21,11 +21,11 @@ public class LogFile
 {
     final static String TAG = OAndBackup.TAG; 
     File logfile;
-    String label, packageName, versionName, sourceDir, dataDir, lastBackup;
+    String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
     long lastBackupMillis;
     boolean isSystem;
-    public LogFile(File backupSubDir, String packageName, boolean localTimestampFormat)
+    public LogFile(File backupSubDir, String packageName)
     {
         FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
         String json = frw.read();
@@ -38,7 +38,6 @@ public class LogFile
             this.sourceDir = jsonObject.getString("sourceDir");
             this.dataDir = jsonObject.getString("dataDir");
             this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
-            this.lastBackup = formatDate(new Date(lastBackupMillis), localTimestampFormat);
             this.versionCode = jsonObject.getInt("versionCode");
             this.isSystem = jsonObject.optBoolean("isSystem");
             this.backupMode = jsonObject.optInt("backupMode", AppInfo.MODE_UNSET);
@@ -55,11 +54,10 @@ public class LogFile
                     this.versionName = log.get(1);
                     this.sourceDir = log.get(3);
                     this.dataDir = log.get(4);
-                    this.lastBackup = log.get(5);
                     this.versionCode = 0;
                     this.isSystem = false;
                     this.backupMode = AppInfo.MODE_UNSET;
-                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, lastBackup, isSystem, backupMode, localTimestampFormat);
+                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, isSystem, backupMode);
                 }
                 catch(IndexOutOfBoundsException ie)
                 {
@@ -105,10 +103,6 @@ public class LogFile
     {
         return lastBackupMillis;
     }
-    public String getLastBackupTimestamp()
-    {
-        return lastBackup;
-    }
     public boolean isSystem()
     {
         return isSystem;
@@ -142,13 +136,8 @@ public class LogFile
             return null;
         }
     }
-    public static void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String dateFormated, boolean isSystem, int backupMode, boolean localTimestampFormat)
+    public static void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean isSystem, int backupMode)
     {
-        if(dateFormated == null)
-        {
-            Date date = new Date();
-            dateFormated = formatDate(date, localTimestampFormat);
-        }
         try
         {
             JSONObject jsonObject = new JSONObject();
@@ -158,7 +147,6 @@ public class LogFile
             jsonObject.put("packageName", packageName);
             jsonObject.put("sourceDir", sourceDir);
             jsonObject.put("dataDir", dataDir);
-            jsonObject.put("lastBackup", dateFormated);
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
             jsonObject.put("isSystem", isSystem);
             jsonObject.put("backupMode", backupMode);
