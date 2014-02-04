@@ -54,7 +54,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     ArrayList<AppInfo> appInfoList;
 
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
-    int notificationNumber = 0;
     int notificationId = (int) System.currentTimeMillis();
 
     ShellCommands shellCommands;
@@ -63,9 +62,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
     ListView listView;
     
-    ArrayList<String> userList;
-    ArrayList<String> selectedUsers;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -687,8 +683,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     public void displayDialogEnableDisable(final String packageName, final boolean enable)
     {
         String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
-        selectedUsers = new ArrayList<String>();
-        userList = shellCommands.getUsers();
+        final ArrayList<String> selectedUsers = new ArrayList<String>();
+        final ArrayList<String> userList = shellCommands.getUsers();
         CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
         new AlertDialog.Builder(this)
             .setTitle(title)
