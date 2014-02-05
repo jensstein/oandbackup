@@ -21,13 +21,11 @@ public class HandleScheduledBackups
     Context context;
     PowerManager powerManager;
     ShellCommands shellCommands;
-    HandleMessages handleMessages;
     SharedPreferences prefs;
     File backupDir;
     public HandleScheduledBackups(Context context)
     {
         this.context = context;
-        handleMessages = new HandleMessages(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         shellCommands = new ShellCommands(prefs);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
