@@ -44,9 +44,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     static final int BATCH_REQUEST = 1;
     static final int TOOLS_REQUEST = 2;
 
-    PackageManager pm;
     File backupDir;
-    List<PackageInfo> pinfoList;
     MenuItem mSearchItem;
     SharedPreferences prefs;
 
@@ -59,8 +57,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     Sorter sorter;
-
-    ListView listView;
     
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -97,15 +93,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     Utils.showWarning(OAndBackup.this, "", getString(R.string.busyboxProblem));
                 }
                 handleMessages.changeMessage("", getString(R.string.collectingData));
-                pm = getPackageManager();
                 String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
                 
-                appInfoList = new ArrayList<AppInfo>();
-                getPackageInfo();
+                appInfoList = getPackageInfo();
                 languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                 handleMessages.endMessage();
-                listView = (ListView) findViewById(R.id.listview);
+                final ListView listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
                 
 
@@ -272,9 +266,11 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
         }).start();
     }
-    public void getPackageInfo()
+    public ArrayList<AppInfo> getPackageInfo()
     {
-        pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+        ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+        PackageManager pm = getPackageManager();
+        List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
 
@@ -295,13 +291,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     LogFile logInfo = new LogFile(subdir, pinfo.packageName);
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
                     appInfo.icon = icon;
-                    appInfoList.add(appInfo);
+                    list.add(appInfo);
                 }
                 else
                 {
                     AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
                     appInfo.icon = icon;
-                    appInfoList.add(appInfo);
+                    list.add(appInfo);
                 }
             }
         }
@@ -325,14 +321,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     if(logInfo.getLastBackupMillis() > 0)
                     {
                         AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
-                        appInfoList.add(appInfo);
+                        list.add(appInfo);
                     }
                 }
             }
         }
-        BatchActivity.appInfoList = appInfoList;
-        CustomPackageList.appInfoList = appInfoList;
-        Tools.appInfoList = appInfoList;
+        BatchActivity.appInfoList = list;
+        CustomPackageList.appInfoList = list;
+        Tools.appInfoList = list;
+        return list;
     }
     public void refresh()
     {
@@ -341,17 +338,20 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
-                appInfoList.clear();
-                getPackageInfo();
+                appInfoList = getPackageInfo();
                 runOnUiThread(new Runnable()
                 {
                     public void run()
                     {
-                        adapter.setNewOriginalValues(appInfoList);
-                        sorter.sort(sorter.getFilteringMethod().getId());
-                        sorter.sort(sorter.getSortingMethod().getId());
-                        adapter.restoreFilter();
-                        adapter.notifyDataSetChanged();
+                        // temporary work-around until the race condition between refresh and oncreate when returning from batchactivity with changesmade have been fixed
+                        if(adapter != null && sorter != null)
+                        {
+                            adapter.setNewOriginalValues(appInfoList);
+                            sorter.sort(sorter.getFilteringMethod().getId());
+                            sorter.sort(sorter.getSortingMethod().getId());
+                            adapter.restoreFilter();
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 });
                 handleMessages.endMessage();
