@@ -150,7 +150,7 @@ public class BatchActivity extends Activity implements OnClickListener
     {
         if(handleMessages != null)
         {
-            handleMessages.dismissMessage();
+            handleMessages.endMessage();
         }
         super.onDestroy();
     }    

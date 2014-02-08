@@ -133,6 +133,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     public void onResume()
     {
         super.onResume();
+        // reload handlemessages in case its context has been garbage collected
+        handleMessages = new HandleMessages(this);
         // work-around for changing language on older android versions since TaskStackBuilder doesn't seem to recreate the activities below the top in the stack properly
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB && languageChanged)
         {
@@ -145,7 +147,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     {
         if(handleMessages != null)
         {
-            handleMessages.dismissMessage();
+            handleMessages.endMessage();
         }
         super.onDestroy();
     }
