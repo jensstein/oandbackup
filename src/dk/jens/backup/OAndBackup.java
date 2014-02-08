@@ -544,7 +544,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         {
             case R.id.uninstall:
                 new AlertDialog.Builder(this)
-                .setTitle(appInfoList.get(info.position).getLabel())
+                .setTitle(adapter.getItem(info.position).getLabel())
                 .setMessage(R.string.uninstallDialogMessage)
                 .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
                 {
@@ -555,7 +555,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         {
                             public void run()
                             {
-                                AppInfo appInfo = appInfoList.get(info.position);
+                                AppInfo appInfo = adapter.getItem(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
                                 shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
@@ -570,7 +570,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 return true;
             case R.id.deleteBackup:
                 new AlertDialog.Builder(this)
-                .setTitle(appInfoList.get(info.position).getLabel())
+                .setTitle(adapter.getItem(info.position).getLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
                 {
@@ -581,10 +581,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         {
                             public void run()
                             {
-                                handleMessages.showMessage(appInfoList.get(info.position).getLabel(), getString(R.string.deleteBackup));
+                                handleMessages.showMessage(adapter.getItem(info.position).getLabel(), getString(R.string.deleteBackup));
                                 if(backupDir != null)
                                 {
-                                    File backupSubDir = new File(backupDir, appInfoList.get(info.position).getPackageName());
+                                    File backupSubDir = new File(backupDir, adapter.getItem(info.position).getPackageName());
                                     shellCommands.deleteBackup(backupSubDir);
                                     refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
                                 }
@@ -597,10 +597,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 .show();
                 return true;
             case R.id.enablePackage:
-                displayDialogEnableDisable(appInfoList.get(info.position).getPackageName(), true);
+                displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), true);
                 return true;
             case R.id.disablePackage:
-                displayDialogEnableDisable(appInfoList.get(info.position).getPackageName(), false);
+                displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), false);
                 return true;
             default:
                 return super.onContextItemSelected(item);
