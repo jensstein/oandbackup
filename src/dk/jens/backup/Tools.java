@@ -52,6 +52,15 @@ public class Tools extends ListActivity
         setListAdapter(adapter);
     }
     @Override
+    public void onDestroy()
+    {
+        if(handleMessages != null)
+        {
+            handleMessages.endMessage();
+        }
+        super.onDestroy();
+    }
+    @Override
     public void onListItemClick(ListView l, View v, int pos, long id)
     {
         switch(pos)
