@@ -8,4 +8,6 @@
         android:title="@string/enablePackage"/>
     <item android:id="@+id/disablePackage"
         android:title="@string/disablePackage"/>
+    <item android:id="@+id/share"
+        android:title="@string/shareTitle" />
 </menu>

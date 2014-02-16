@@ -67,6 +67,7 @@
     <string name="quickRebootMessage">do you wish to restart userspace?</string>
     <string name="help_title">help</string>
     <string name="notInstalledModeDataWarning">app cannot be restored from a backup without apk</string>
+    <string name="shareTitle">share</string>
     
     <string name="tools_title">tools</string>
     <string name="tools_batchDeleteTitle">delete backups?</string>

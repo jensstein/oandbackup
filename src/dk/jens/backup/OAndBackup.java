@@ -535,6 +535,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(appInfo.getLogInfo() == null)
         {
             menu.removeItem(R.id.deleteBackup);
+            menu.removeItem(R.id.share);
         }
         menu.setHeaderTitle(appInfo.getLabel());
     }
@@ -603,6 +604,26 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 return true;
             case R.id.disablePackage:
                 displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), false);
+                return true;
+            case R.id.share:
+                AppInfo appInfo = adapter.getItem(info.position);
+                File apk = new File(backupDir, appInfo.getPackageName() + "/" + appInfo.getLogInfo().getApk());
+                String dataPath = appInfo.getLogInfo().getDataDir();
+                dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
+                File data = new File(backupDir, appInfo.getPackageName() + "/" + dataPath + ".zip");
+                Bundle arguments = new Bundle();
+                arguments.putString("label", appInfo.getLabel());
+                if(apk.exists())
+                {
+                    arguments.putSerializable("apk", apk);
+                }
+                if(data.exists())
+                {
+                    arguments.putSerializable("data", data);
+                }
+                ShareDialogFragment shareDialog = new ShareDialogFragment();
+                shareDialog.setArguments(arguments);
+                shareDialog.show(getSupportFragmentManager(), "DialogFragment");
                 return true;
             default:
                 return super.onContextItemSelected(item);
