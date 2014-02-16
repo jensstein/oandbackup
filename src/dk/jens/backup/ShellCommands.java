@@ -25,9 +25,7 @@ import java.util.Map;
 
 public class ShellCommands
 {
-    final static String TAG = OAndBackup.TAG; 
-    Process p;
-    DataOutputStream dos;
+    final static String TAG = OAndBackup.TAG;
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
@@ -73,8 +71,8 @@ public class ShellCommands
                     commandString = "cp -r " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n";
                     break;
             }
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(commandString);
 //            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupSubDirPath + "\n");
 //            dos.writeBytes(busybox + " cp " + packageApk + " " + backupSubDirPath + "\n");
@@ -162,8 +160,8 @@ public class ShellCommands
                     restoreCommand = "mkdir " + packageData + "\n" + restoreCommand;
                     // restored system app will not necessarily have the data folder (which is otherwise handled by pm)
                 }
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes(restoreCommand);
     //            dos.writeBytes("am force-stop " + packageName + "\n");
                 dos.flush();
@@ -263,7 +261,6 @@ public class ShellCommands
             }
             if(!uid_gid.isEmpty())
             {
-
                 p = Runtime.getRuntime().exec("su");
                 dos = new DataOutputStream(p.getOutputStream());
 //                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
@@ -318,8 +315,8 @@ public class ShellCommands
         {
             if(!isSystem)
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
@@ -344,8 +341,8 @@ public class ShellCommands
             }
             else
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
 //                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
                 // remounting seems to make android 4.4 fail the following commands without error
 
@@ -388,8 +385,8 @@ public class ShellCommands
         {
             if(!isSystem)
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm uninstall " + packageName + "\n");
                 dos.flush();
 //                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
@@ -417,8 +414,8 @@ public class ShellCommands
             }
             else
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes(busybox + " mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " rm " + sourceDir + "\n");
                 dos.writeBytes(busybox + " mount -o remount,r /system\n");
@@ -460,8 +457,8 @@ public class ShellCommands
     {
         try
         {
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(busybox + " pkill system_server\n");
 //            dos.writeBytes("restart\n"); // restart doesn't seem to work here even though it works fine from ssh
             dos.writeBytes("exit\n");
@@ -531,8 +528,8 @@ public class ShellCommands
             {
                 try
                 {
-                    p = Runtime.getRuntime().exec("su");
-                    dos = new DataOutputStream(p.getOutputStream());
+                    Process p = Runtime.getRuntime().exec("su");
+                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                     // tjek med File.exists() ser ikke ud til at virke
                     dos.writeBytes("kill " + process.pid + "\n");
                     dos.flush();
@@ -633,8 +630,8 @@ public class ShellCommands
     {
         try
         {
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes("exit\n");
             dos.flush();
             p.waitFor();
@@ -662,8 +659,8 @@ public class ShellCommands
     {
         try
         {
-            p = Runtime.getRuntime().exec("sh");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(busybox + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
@@ -697,8 +694,8 @@ public class ShellCommands
     {
         try
         {
-            p = Runtime.getRuntime().exec("sh");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C " + pathToBackupsubdir + "\n");
             dos.flush();
             dos.writeBytes("exit\n");
@@ -738,8 +735,8 @@ public class ShellCommands
                 try
                 {
         //            int currentUser = getCurrentUser();
-                    p = Runtime.getRuntime().exec("su");
-                    dos = new DataOutputStream(p.getOutputStream());
+                    Process p = Runtime.getRuntime().exec("su");
+                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                     dos.writeBytes("pm list users | sed -e 's/{/ /' -e 's/:/ /' | awk '{print $2}'\n");
                     dos.writeBytes("exit\n");
                     dos.flush();
@@ -826,8 +823,8 @@ public class ShellCommands
             {
                 try
                 {
-                    p = Runtime.getRuntime().exec("su");
-                    dos = new DataOutputStream(p.getOutputStream());
+                    Process p = Runtime.getRuntime().exec("su");
+                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                     dos.writeBytes("pm " + option + " --user " + user + " " + packageName + "\n");
                     dos.writeBytes("exit\n");
                     dos.flush();
@@ -877,8 +874,8 @@ public class ShellCommands
             String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
             // why doesn't ! enabled work
             String command = "for user in " + userString + "; do if [ $user != " + currentUser + " ] && " + grep + " && " + enabled + "; then " + disable + "; fi; done";
-            p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             dos.writeBytes(command + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
@@ -942,8 +939,8 @@ public class ShellCommands
             {
                 try
                 {
-                    p = Runtime.getRuntime().exec("sh");
-                    dos = new DataOutputStream(p.getOutputStream());
+                    Process p = Runtime.getRuntime().exec("sh");
+                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                     dos.writeBytes(busybox + " cp " + apkPath + " " + parent + "\n");
                     dos.flush();
                     dos.writeBytes("exit\n");
