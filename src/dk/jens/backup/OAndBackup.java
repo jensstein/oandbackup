@@ -315,6 +315,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     if(pinfo.packageName.equals(folder))
                     {
                         found = true;
+                        break;
                     }
                 }
                 if(!found)
