@@ -130,34 +130,33 @@ public class ShellCommands
             return 1;
         }
     }
-    public int doRestore(Context context, File backupDir, String label, String packageName)
+    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir)
     {
-        String backupDirPath = swapBackupDirPath(backupDir.getAbsolutePath());
+        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+        String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
         int unzipRet = -1;
         int untarRet = -1;
-        LogFile logInfo = new LogFile(backupDir, packageName);
-        String packageData = logInfo.getDataDir();
         Log.i(TAG, "restoring: " + label);
 
         try
         {
             killPackage(context, packageName);
-            if(new File(backupDir, packageName + ".zip").exists())
+            if(new File(backupSubDir, dataDirName + ".zip").exists())
             {
-                unzipRet = new Compression().unzip(backupDir, packageName + ".zip");
+                unzipRet = new Compression().unzip(backupSubDir, dataDirName + ".zip");
             }
-            else if(new File(backupDir, packageName + ".tar.gz").exists())
+            else if(new File(backupSubDir, dataDirName + ".tar.gz").exists())
             {
-                untarRet = untar(backupDir.getAbsolutePath(), packageName);
+                untarRet = untar(backupSubDir.getAbsolutePath(), dataDirName);
             }
             // check if there is a directory to copy from - it is not necessarily an error if there isn't
-            String[] list = new File(backupDir, packageName).list();
+            String[] list = new File(backupSubDir, dataDirName).list();
             if(list != null && list.length > 0)
             {
-                String restoreCommand = busybox + " cp -r " + backupDirPath + "/" + packageName + "/* " + packageData + "\n";
-                if(!(new File(packageData).exists()))
+                String restoreCommand = busybox + " cp -r " + backupSubDirPath + "/" + dataDirName + "/* " + dataDir + "\n";
+                if(!(new File(dataDir).exists()))
                 {
-                    restoreCommand = "mkdir " + packageData + "\n" + restoreCommand;
+                    restoreCommand = "mkdir " + dataDir + "\n" + restoreCommand;
                     // restored system app will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 Process p = Runtime.getRuntime().exec("su");
@@ -185,7 +184,7 @@ public class ShellCommands
             }
             else
             {
-                Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupDir.getAbsolutePath() + "/" + packageName);
+                Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupSubDir.getAbsolutePath() + "/" + dataDirName);
                 return 0;
             }
         }
@@ -203,7 +202,7 @@ public class ShellCommands
         {
             if(untarRet == 0 || unzipRet == 0)
             {
-                deleteBackup(new File(backupDir, packageName));
+                deleteBackup(new File(backupSubDir, dataDirName));
             }
         }
     }

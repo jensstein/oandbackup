@@ -236,7 +236,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         case 2:
                             if(appInfo.isInstalled)
                             {
-                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                                 shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
 
                                 permRet = shellCommands.setPermissions(dataDir);
@@ -248,7 +248,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             break;
                         case 3:
                             apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
-                            restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName());
+                            restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                             shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
                             permRet = shellCommands.setPermissions(dataDir);
                             break;
