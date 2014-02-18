@@ -114,21 +114,26 @@ public class ShellCommands
             {
                 copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
             }
-            int zipret = new Compression().zip(new File(backupSubDir, folder));
-            if(zipret == 0)
+            // only zip if data is backed up
+            if(backupMode != AppInfo.MODE_APK)
             {
-                deleteBackup(new File(backupSubDir, folder));
-                deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
+                int zipret = new Compression().zip(new File(backupSubDir, folder));
+                if(zipret == 0)
+                {
+                    deleteBackup(new File(backupSubDir, folder));
+                    deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
+                }
+                else if(zipret == 2)
+                {
+                    // handling empty zip
+                    deleteBackup(new File(backupSubDir, folder + ".zip"));
+                    deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
+                    return ret;
+                    // zipret == 2 shouldn't be treated as an error
+                }
+                return ret + zipret;
             }
-            else if(zipret == 2)
-            {
-                // handling empty zip
-                deleteBackup(new File(backupSubDir, folder + ".zip"));
-                deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
-                return ret;
-                // zipret == 2 shouldn't be treated as an error
-            }
-            return ret + zipret;
+            return ret;
         }
         catch(IOException e)
         {
