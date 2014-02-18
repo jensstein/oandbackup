@@ -144,7 +144,7 @@ public class HandleScheduledBackups
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
+                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode, context.getApplicationInfo().dataDir);
 
                         shellCommands.logReturnMessage(context, ret);
 

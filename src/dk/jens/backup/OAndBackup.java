@@ -183,7 +183,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     {
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                     }
-                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, OAndBackup.this.getApplicationInfo().dataDir);
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
@@ -231,7 +231,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     switch(options)
                     {
                         case 1:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, OAndBackup.this.getApplicationInfo().dataDir);
                             break;
                         case 2:
                             if(appInfo.isInstalled)
@@ -247,7 +247,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             }
                             break;
                         case 3:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, OAndBackup.this.getApplicationInfo().dataDir);
                             restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                             shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
                             permRet = shellCommands.setPermissions(dataDir);

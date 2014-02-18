@@ -51,7 +51,7 @@ public class ShellCommands
         this(prefs, null);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
-    public int doBackup(File backupSubDir, String label, String packageData, String packageApk, int backupMode)
+    public int doBackup(File backupSubDir, String label, String packageData, String packageApk, int backupMode, String ownDataDir)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
@@ -96,6 +96,17 @@ public class ShellCommands
                         writeErrorLog(label, line);
                     }
                 }
+            }
+            if(backupSubDirPath.startsWith(ownDataDir))
+            {
+                /**
+                    * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)
+                    * we need to ensure that the permissions are correct before trying to
+                    * zip. on the external storage, gid will be sdcard_r (or something similar)
+                    * without any changes but in the app's own datadir files will have both uid 
+                    * and gid as 0 / root when they are first copied with su.
+                */
+                ret = ret + setPermissions(backupSubDirPath);
             }
             String folder = new File(packageData).getName();
             deleteBackup(new File(backupSubDir, folder + "/lib"));
@@ -157,7 +168,7 @@ public class ShellCommands
                 if(!(new File(dataDir).exists()))
                 {
                     restoreCommand = "mkdir " + dataDir + "\n" + restoreCommand;
-                    // restored system app will not necessarily have the data folder (which is otherwise handled by pm)
+                    // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dos = new DataOutputStream(p.getOutputStream());
@@ -308,15 +319,33 @@ public class ShellCommands
             return 1;
         }
     }
-    public int restoreApk(File backupDir, String label, String apk, boolean isSystem) 
+    public int restoreApk(File backupDir, String label, String apk, boolean isSystem, String ownDataDir)
     {
+        // swapBackupDirPath is not needed with pm install
         try
         {
             if(!isSystem)
             {
+                String installCommand = "pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n";
+                if(backupDir.getAbsolutePath().startsWith(ownDataDir))
+                {
+                    /**
+                        * pm cannot install from a file on the data partition
+                        * Failure [INSTALL_FAILED_INVALID_URI] is reported
+                        * therefore, if the backup directory is oab's own data
+                        * directory a temporary directory on the external storage
+                        * is created where the apk is then copied to.
+                    */
+                    String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
+                    String mkdir = busybox + " mkdir " + swapBackupDirPath(tempPath) + "\n";
+                    String cp = busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath() + "/" + apk) + " " + swapBackupDirPath(tempPath) + "\n";
+                    String install = "pm install -r " + tempPath + "/" + apk + "\n";
+                    String rm = busybox + " rm -r " + swapBackupDirPath(tempPath) + "\n";
+                    installCommand = mkdir + cp + install + rm;
+                }
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n");
+                dos.writeBytes(installCommand);
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();

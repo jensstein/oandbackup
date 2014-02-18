@@ -295,7 +295,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         {
                             backupMode = AppInfo.MODE_DATA;
                         }
-                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
                         shellCommands.logReturnMessage(this, backupRet);
 
                         LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
@@ -311,7 +311,7 @@ public class BatchActivity extends Activity implements OnClickListener
 
                         if(rbApk.isChecked() && apk != null)
                         {
-                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
                             if(apkRet != 0)
                             {
                                 errorFlag = true;
@@ -336,7 +336,7 @@ public class BatchActivity extends Activity implements OnClickListener
                         }
                         else if(rbBoth.isChecked() && apk != null)
                         {
-                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem);
+                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
                             int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                             shellCommands.logReturnMessage(this, restoreRet);
                             int permRet = shellCommands.setPermissions(dataDir);
