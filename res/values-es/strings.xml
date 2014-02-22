@@ -70,6 +70,10 @@
   <string name="tools_title">Herramientas</string>
   <string name="tools_batchDeleteTitle">¿Eliminar respaldos?</string>
   <string name="tools_batchDeleteMessage">Eliminando respaldos</string>
+  <string name="tools_notificationTitle">Eliminar respaldos</string>
+  <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
+  <string name="tools_backupsDeleted">Respaldos eliminados:</string>
+  <string name="tools_nothingToDelete">Sin respaldos</string>
   <string name="enablePackage">Habilitar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Habilitar para usuarios</string>
@@ -77,9 +81,8 @@
   <string name="disablePackageTitle">Deshabilitar para usuarios</string>
   <string name="prefs_title">Preferencias</string>
   <string name="prefs_timestamp">Usar formato local de fecha</string>
-  <!-- prefs_acquireWakelock: As a suggestion: Not all people knows what wakelock is, maybe you can use some string like Prevent Sleep.  -->
-  <string name="prefs_acquireWakelock">Prevenir reposo (wakelock)</string>
-  <string name="prefs_summaryAcquireWakelock">Acelera considerablemente los respaldos corriendo en segundo plano pero consumirá más energía</string>
+  <string name="prefs_acquireWakelock">Impedir suspensión </string>
+  <string name="prefs_summaryAcquireWakelock">Obtiene wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
   <string name="prefs_pathscategory">Rutas personalizadas</string>
   <string name="prefs_pathBackupFolder">Directorio de respaldos</string>
   <string name="prefs_summaryBackupFolder">Ruta al directorio de respaldo. Dejar en blanco predeterminada.</string>
@@ -94,6 +97,8 @@
   <string name="prefs_summaryCopySelfApk">Poner una copia de oandbackup en el nivel superior del directorio de respaldos cuando se respalde.</string>
   <string name="prefs_languages">Idiomas</string>
   <string name="prefs_languageSystemDefault">Idioma del sistema</string>
+  <string name="prefs_rememberFiltering">Recordar orden y filtro</string>
+  <string name="prefs_summaryRememberFiltering">Salva el orden elegido y el método de filtrado. Solo los elementos marcados serán considerados.</string>
   <string name="sched_title">Programación</string>
   <string name="sched_notificationMessage">Respaldos programados</string>
   <string name="sched_interval">Intervalo en días</string>

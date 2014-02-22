@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
+  <string name="app_name">Oandbackup</string>
   <string name="backup">Backup</string>
   <string name="restore">Wiederherstellen</string>
   <string name="backupConfirmation">Sichern?</string>
@@ -70,6 +70,10 @@
   <string name="tools_title">Hilfsmittel</string>
   <string name="tools_batchDeleteTitle">Sicherungen löschen?</string>
   <string name="tools_batchDeleteMessage">Lösche Sicherungen...</string>
+  <string name="tools_notificationTitle">Sicherungen löschen</string>
+  <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
+  <string name="tools_backupsDeleted">Gelöschte Sicherungen:</string>
+  <string name="tools_nothingToDelete">Keine Sicherungen zum Löschen vorhanden</string>
   <string name="enablePackage">Aktivieren</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Für Benutzer aktivieren</string>
@@ -77,8 +81,8 @@
   <string name="disablePackageTitle">Für Benutzer deaktivieren</string>
   <string name="prefs_title">Einstellungen</string>
   <string name="prefs_timestamp">Lokales Zeitformat nutzen</string>
-  <string name="prefs_acquireWakelock">Wakelock verwenden</string>
-  <string name="prefs_summaryAcquireWakelock">Beschleunigt das Sichern im Hintergrund erheblich, verbraucht aber mehr Energie</string>
+  <string name="prefs_acquireWakelock">Standby verhindern</string>
+  <string name="prefs_summaryAcquireWakelock">Wakelock anfordern und Standby verhindern, während Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie</string>
   <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>
   <string name="prefs_pathBackupFolder">Backup-Verzeichnis</string>
   <string name="prefs_summaryBackupFolder">Pfad zum Backup-Verzeichnis. Leerlassen für Standardwert. </string>
@@ -90,9 +94,11 @@
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">Sicherungen nach Anzahl von festgelegten Tagen filtern. Benützt in \"Alte Sicherungen anzeigen\"</string>
   <string name="prefs_copySelfApk">Eigene APK-Datei kopieren</string>
-  <string name="prefs_summaryCopySelfApk">Erstelle eine Kopie von oandbackup auf höchster Ebene im Backup-Verzeichnis.</string>
+  <string name="prefs_summaryCopySelfApk">Erstelle eine Kopie von Oandbackup auf höchster Ebene im Backup-Verzeichnis.</string>
   <string name="prefs_languages">Sprache</string>
   <string name="prefs_languageSystemDefault">Systemsprache</string>
+  <string name="prefs_rememberFiltering">Sortierung und Filter behalten</string>
+  <string name="prefs_summaryRememberFiltering">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü angekreuzten werden beachtet</string>
   <string name="sched_title">Backup-Planung</string>
   <string name="sched_notificationMessage">Geplantes Backup</string>
   <string name="sched_interval">Interval in Tagen</string>

@@ -21,7 +21,7 @@
   <string name="searchHint">Procurar aplicações</string>
   <string name="deleteBackup">Eliminar backup</string>
   <string name="uninstall">Desinstalar aplicação</string>
-  <string name="uninstallProgress">A desinstalar</string>
+  <string name="uninstallProgress">A desinstalar...</string>
   <string name="showAll">Mostrar todas as aplicações</string>
   <string name="showOnlySystem">Aplicações do sistema</string>
   <string name="showOnlyUser">Aplicações do utilizador</string>
@@ -53,10 +53,10 @@
   <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
   <string name="shellReturnSuccess">Sucesso</string>
   <string name="shellReturnError">Erro</string>
-  <string name="backupProgress">Copiando</string>
+  <string name="backupProgress">A criar backup...</string>
   <string name="backupSuccess">Backup terminado</string>
   <string name="backupFailure">Erro ao copiar</string>
-  <string name="restoreProgress">Restaurando</string>
+  <string name="restoreProgress">A restaurar...</string>
   <string name="restoreSuccess">Restauro terminado</string>
   <string name="restoreFailure">Erro ao restaurar</string>
   <string name="batchSuccess">Operação terminada</string>
@@ -69,7 +69,11 @@
   <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
   <string name="tools_title">Ferramentas</string>
   <string name="tools_batchDeleteTitle">Eliminar backups?</string>
-  <string name="tools_batchDeleteMessage">Eliminar backups</string>
+  <string name="tools_batchDeleteMessage">A eliminar backups...</string>
+  <string name="tools_notificationTitle">Eliminar backups</string>
+  <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
+  <string name="tools_backupsDeleted">Backups eliminados:</string>
+  <string name="tools_nothingToDelete">Não há backups para eliminar</string>
   <string name="enablePackage">Ativar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>
@@ -77,8 +81,8 @@
   <string name="disablePackageTitle">Desativar para</string>
   <string name="prefs_title">Preferências</string>
   <string name="prefs_timestamp">Usar formato local de data</string>
-  <string name="prefs_acquireWakelock">Obter wakelock</string>
-  <string name="prefs_summaryAcquireWakelock">Acelera os backups em segundo plano mas utiliza mais energia</string>
+  <string name="prefs_acquireWakelock">Impedir suspensão</string>
+  <string name="prefs_summaryAcquireWakelock">Obter wakelock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
   <string name="prefs_pathscategory">Caminhos personalizados</string>
   <string name="prefs_pathBackupFolder">Pasta de backup</string>
   <string name="prefs_summaryBackupFolder">Caminho da pasta de backups. Deixe em branco para utilizar a pasta padrão.</string>
@@ -93,6 +97,8 @@
   <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
   <string name="prefs_languages">Idiomas</string>
   <string name="prefs_languageSystemDefault">Idioma do sistema</string>
+  <string name="prefs_rememberFiltering">Memorizar ordem e filtro</string>
+  <string name="prefs_summaryRememberFiltering">Guarda o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
   <string name="sched_interval">Intervalo em dias</string>

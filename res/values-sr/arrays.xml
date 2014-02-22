@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <!--translators should ensure that all items are translated. there is no graceful fallback if the number of items in a translated file doesn't match the source and the app will crash on that particular language.-->
+  <!--entries in scheduleSubModes are taken from strings.xml and should be left as-is here-->
+</resources>

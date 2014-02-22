@@ -7,7 +7,9 @@
         <item>deutsch (österreich)</item>
         <item>english</item>
         <item>español</item>
+        <item>italiano</item>
         <item>português (portugal)</item>
+        <item>Српски</item>
     </string-array>
     
     <!-- languageEntryValues shouldn't be translated -->
@@ -17,6 +19,8 @@
         <item>de_AT</item>
         <item>en</item>
         <item>es</item>
+        <item>it</item>
         <item>pt</item>
+        <item>sr</item>
     </string-array>
 </resources>
