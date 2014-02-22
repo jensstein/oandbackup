@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="languages"
+        android:title="@string/prefs_languages"
+        android:entries="@array/languageEntries"
+        android:entryValues="@array/languageEntryValues"
+        android:defaultValue="system"
+        />
     <CheckBoxPreference
         android:key="timestamp"
         android:title="@string/prefs_timestamp"
@@ -28,13 +35,6 @@
         android:title="@string/prefs_oldBackups"
         android:summary="@string/prefs_summaryOldBackups"
         android:inputType="number"
-        />
-    <ListPreference
-        android:key="languages"
-        android:title="@string/prefs_languages"
-        android:entries="@array/languageEntries"
-        android:entryValues="@array/languageEntryValues"
-        android:defaultValue="system"
         />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
