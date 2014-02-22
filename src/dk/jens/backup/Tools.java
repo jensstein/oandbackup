@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,6 +29,10 @@ public class Tools extends ListActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toolslayout);
+        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN)
+        {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         
         handleMessages = new HandleMessages(this);
 
@@ -108,6 +113,17 @@ public class Tools extends ListActivity
                 }
                 break;
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                Utils.navigateUp(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     public void changesMade()
     {

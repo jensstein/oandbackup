@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import java.io.File;
@@ -80,8 +82,15 @@ public class Utils
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         activity.finish();
         activity.overridePendingTransition(0, 0);
-        android.support.v4.app.TaskStackBuilder.create(activity)
+        TaskStackBuilder.create(activity)
             .addNextIntentWithParentStack(intent)
             .startActivities();
+    }
+    public static void navigateUp(Activity activity)
+    {
+        // navigates up to parent activity with recreating it
+        Intent intent = NavUtils.getParentActivityIntent(activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NavUtils.navigateUpTo(activity, intent);
     }
 }

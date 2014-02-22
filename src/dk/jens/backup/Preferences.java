@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -22,6 +23,10 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         if(logFilePref.getText() == null)
         {
             logFilePref.setText(FileCreationHelper.getDefaultLogFilePath());
+        }
+        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN)
+        {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
     @Override
@@ -46,5 +51,16 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
                 Utils.reloadWithParentStack(Preferences.this);
             }
         }
-    }    
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                Utils.navigateUp(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

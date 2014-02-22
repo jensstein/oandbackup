@@ -1,6 +1,5 @@
 package dk.jens.backup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -33,7 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class BatchActivity extends Activity implements OnClickListener
+public class BatchActivity extends BaseActivity
+implements OnClickListener
 {
     public static ArrayList<AppInfo> appInfoList;
     final static String TAG = OAndBackup.TAG;
@@ -138,11 +138,7 @@ public class BatchActivity extends Activity implements OnClickListener
     @Override
     public void finish()
     {
-        Intent result = new Intent();
-        result.putExtra("changesMade", changesMade);
-        result.putExtra("filteringMethodId", sorter.getFilteringMethod().getId());
-        result.putExtra("sortingMethodId", sorter.getSortingMethod().getId());
-        setResult(RESULT_OK, result);
+        setResult(RESULT_OK, constructResultIntent());
         super.finish();
     }
     @Override
@@ -197,6 +193,15 @@ public class BatchActivity extends Activity implements OnClickListener
     {
         switch(item.getItemId())
         {
+            case android.R.id.home:
+                setResult(RESULT_OK, constructResultIntent());
+                /**
+                    * since finish() is not called when navigating up via
+                    * the actionbar it needs to be set here.
+                    * break instead of return true to let it continue to
+                    * the call to baseactivity where navigation is handled.
+                */
+                break;
             case R.id.de_selectAll:
                 for(AppInfo appInfo : appInfoList)
                 {
@@ -207,13 +212,21 @@ public class BatchActivity extends Activity implements OnClickListener
                 }
                 checkboxSelectAllBoolean = checkboxSelectAllBoolean ? false : true;
                 adapter.notifyDataSetChanged();
-                break;
+                return true;
             default:
                 item.setChecked(!item.isChecked());
                 sorter.sort(item.getItemId());
-                break;                
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public Intent constructResultIntent()
+    {
+        Intent result = new Intent();
+        result.putExtra("changesMade", changesMade);
+        result.putExtra("filteringMethodId", sorter.getFilteringMethod().getId());
+        result.putExtra("sortingMethodId", sorter.getSortingMethod().getId());
+        return result;
     }
     public void showConfirmDialog(Context context, final ArrayList<AppInfo> selectedList)
     {

@@ -1,6 +1,5 @@
 package dk.jens.backup;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,7 +22,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Scheduler extends Activity 
+public class Scheduler extends BaseActivity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener
 {
     static final String TAG = OAndBackup.TAG;
@@ -92,9 +91,9 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             case R.id.addSchedule:
                 viewList.add(buildUi(++totalSchedules));
                 edit.putInt("total", totalSchedules);
-                break;
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }    
     public View buildUi(int number)
     {    
