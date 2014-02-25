@@ -562,9 +562,18 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 AppInfo appInfo = adapter.getItem(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
-                                shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
+                                int ret = shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
                                 refresh();
                                 handleMessages.endMessage();
+                                if(ret == 0)
+                                {
+                                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.uninstallSuccess), appInfo.getLabel(), true);
+                                }
+                                else
+                                {
+                                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
+                                    Utils.showErrors(OAndBackup.this, shellCommands);
+                                }
                             }
                         }).start();
                     }

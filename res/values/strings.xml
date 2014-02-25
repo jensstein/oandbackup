@@ -61,6 +61,8 @@
     <string name="restoreFailure">error on restore</string>
     <string name="batchSuccess">operation complete</string>
     <string name="batchFailure">complete with errors</string>
+    <string name="uninstallSuccess">uninstall complete</string>
+    <string name="uninstallFailure">error on uninstall</string>
     <string name="errorDialogTitle">errors occurred</string>
     <string name="customListTitle">custom list</string>
     <string name="quickReboot">quick reboot</string>

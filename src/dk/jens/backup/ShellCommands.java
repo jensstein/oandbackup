@@ -451,7 +451,12 @@ public class ShellCommands
                 ArrayList<String> err = getOutput(p).get("stderr");
                 for(String line : err)
                 {
-                    if(!line.contains("No such file or directory"))
+                    if(line.contains("No such file or directory") && err.size() == 1)
+                    {
+                        // ignore errors if it is only that the directory doesn't exist for rm to remove
+                        ret = 0;
+                    }
+                    else
                     {
                         writeErrorLog(packageName, line);
                     }
