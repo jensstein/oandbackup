@@ -416,10 +416,10 @@ public class ShellCommands
     {
         try
         {
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             if(!isSystem)
             {
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 dos.writeBytes("pm uninstall " + packageName + "\n");
                 dos.flush();
 //                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
@@ -430,25 +430,9 @@ public class ShellCommands
                 // indføre tjek på pm uninstalls return 
                 dos.writeBytes("exit\n");
                 dos.flush();
-                int ret = p.waitFor();
-                if(ret != 0)
-                {
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    for(String line : err)
-                    {
-                        if(!line.contains("No such file or directory"))
-                        {
-                            writeErrorLog(packageName, line);
-                            Log.i(TAG, "uninstall return: " + ret);
-                        }
-                    }
-                }
-                return ret;
             }
             else
             {
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
                 // it seems that busybox mount sometimes fails silently so use toolbox instead
                 dos.writeBytes("mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " rm " + sourceDir + "\n");
@@ -460,21 +444,21 @@ public class ShellCommands
                 dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
-                int ret = p.waitFor();
-                if(ret != 0)
+            }
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> err = getOutput(p).get("stderr");
+                for(String line : err)
                 {
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    for(String line : err)
+                    if(!line.contains("No such file or directory"))
                     {
-                        if(!line.contains("No such file or directory"))
-                        {
-                            writeErrorLog(packageName, line);
-                            Log.i(TAG, "uninstall return: " + ret);
-                        }
+                        writeErrorLog(packageName, line);
                     }
                 }
-                return ret;
             }
+            Log.i(TAG, "uninstall return: " + ret);
+            return ret;
         }
         catch(IOException e)
         {
