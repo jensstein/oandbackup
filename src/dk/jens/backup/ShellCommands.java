@@ -449,9 +449,10 @@ public class ShellCommands
             {
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(busybox + " mount -o remount,rw /system\n");
+                // it seems that busybox mount sometimes fails silently so use toolbox instead
+                dos.writeBytes("mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " rm " + sourceDir + "\n");
-                dos.writeBytes(busybox + " mount -o remount,r /system\n");
+                dos.writeBytes("mount -o remount,ro /system\n");
                 dos.flush();
                 dos.writeBytes(busybox + " rm -r " + dataDir + "\n");
                 dos.flush();
