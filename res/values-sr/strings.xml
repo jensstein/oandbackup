@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">oandbackup</string>
   <string name="backup">Резервна копија</string>
   <string name="restore">Враћање</string>
   <string name="backupConfirmation">Да направим резервну копију?</string>
@@ -14,9 +15,9 @@
   <string name="onlyApkBackedUp">Само Apk</string>
   <string name="onlyDataBackedUp">Само подаци</string>
   <string name="refresh">Освежи</string>
-  <string name="batchbackup">Групно прављење резервне копије</string>
+  <string name="batchbackup">Групна резервна копија</string>
   <string name="batchrestore">Групно враћање</string>
-  <string name="search">Тражжи</string>
+  <string name="search">Тражи</string>
   <string name="searchHint">Тражи апликације</string>
   <string name="deleteBackup">Обриши резервну копију</string>
   <string name="uninstall">Деинсталирај апликацију</string>
@@ -28,8 +29,8 @@
   <string name="showNotInstalled">Прикажи апликације које нису инсталиране</string>
   <string name="showNewAndUpdated">Прикажи нове и ажуруране апликације</string>
   <string name="showOldBackups">Прикажи старе резервне копије</string>
-  <string name="showOnlyApkBackedUp">Прикажи апликације којима имају резервну копију само за Apk</string>
-  <string name="showOnlyDataBackedUp">Прикажи апликације којима имају само резервну копију података</string>
+  <string name="showOnlyApkBackedUp">Прикажи апликације које имају резервну копију само за Apk</string>
+  <string name="showOnlyDataBackedUp">Прикажи апликације које имају само резервну копију података</string>
   <string name="sortByLabel">Поређај по ознаци</string>
   <string name="sortByPackageName">Поређај по имену пакета</string>
   <string name="sort">Поређај и филтрирај</string>
@@ -41,7 +42,7 @@
   <string name="dialogNo">Не</string>
   <string name="noBackupYet">Још нема резервних копија</string>
   <string name="restoreDataWithoutApkError">Не могу да вратим податке без враћања Apk-а, пакет није инсталиран:</string>
-  <string name="collectingData">Сакупља податке о пакету</string>
+  <string name="collectingData">Сакупљам податке о пакету</string>
   <string name="suCheck">Вршим проверу да ли су инсталирани superuser и busybox</string>
   <string name="noSu">Нисам могао да прибавим superuser дозволе</string>
   <string name="busyboxProblem">Нисам могао да нађем busybox. Молим проверите записник</string>
@@ -89,7 +90,7 @@
   <string name="prefs_summaryLogfile">Путања до записника. Оставите празно ако желите фабричку путању.</string>
   <string name="prefs_pathBusybox">busybox</string>
   <string name="prefs_summaryBusybox">Путања до busybox извршне датотеке. Оставите празно ако желите фабричку путању.</string>
-  <string name="prefs_oldBackups">Поређај резервне копије по старости</string>
+  <string name="prefs_oldBackups">Филтрирај резервне копије по старости</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">Филтрирај резервне копије старије од вредности наведене у данима.</string>
   <string name="prefs_copySelfApk">Копирај сопствени Apk</string>
@@ -97,6 +98,7 @@
   <string name="prefs_languages">Језици</string>
   <string name="prefs_languageSystemDefault">Подразумевани за уређај</string>
   <string name="prefs_rememberFiltering">Запамти редослед и филтрирање</string>
+  <string name="prefs_summaryRememberFiltering">Чува Ваша подешавања за сортирање и филтрирање. У обзир се узимају само она која сте обележили у менију.</string>
   <string name="sched_title">Направите распоред</string>
   <string name="sched_notificationMessage">Програмирајте прављење резервне копије</string>
   <string name="sched_interval">Интервал у данима</string>
@@ -108,6 +110,6 @@
   <string name="sched_backupMode">Мод прављења резервне копије</string>
   <string name="sched_timeLeft">Сати до следеће прављења резервне копије</string>
   <string name="sched_addSchudule">Додај распоред</string>
-  <string name="sched_customListUpdateButton">Освежи произвољну листу</string>
+  <string name="sched_customListUpdateButton">Освежи произвољни списак</string>
   <string name="sched_excludeSystemCheckBox">Изузми системске апликације</string>
 </resources>
