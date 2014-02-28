@@ -44,7 +44,7 @@ implements OnClickListener
 
     final static int RESULT_OK = 0;
 
-    boolean checkboxSelectAllBoolean = true;
+    boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
 
     File backupDir;
@@ -203,11 +203,23 @@ implements OnClickListener
                 */
                 break;
             case R.id.de_selectAll:
-                for(AppInfo appInfo : appInfoList)
+                /**
+                    * if anything has been selected then through select all
+                    * then deselect everything.
+                    * if not then select every shown item.
+                */
+                if(checkboxSelectAllBoolean)
                 {
-                    if(appInfo.isChecked != checkboxSelectAllBoolean)
+                    for(AppInfo appInfo : appInfoList)
                     {
-                        appInfo.toggle();
+                        appInfo.setChecked(false);
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i < adapter.getCount(); i++)
+                    {
+                        adapter.getItem(i).setChecked(true);
                     }
                 }
                 checkboxSelectAllBoolean = checkboxSelectAllBoolean ? false : true;

@@ -88,6 +88,10 @@ public class AppInfo implements Comparable<AppInfo>
     {
         isChecked = isChecked ? false : true;
     }
+    public void setChecked(boolean checked)
+    {
+        isChecked = checked;
+    }
     public int compareTo(AppInfo appInfo)
     {
         return label.compareToIgnoreCase(appInfo.getLabel());
