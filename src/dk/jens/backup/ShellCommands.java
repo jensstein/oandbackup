@@ -535,9 +535,16 @@ public class ShellCommands
                 return (!filename.equals(apk) && filename.endsWith(".apk"));
             }
         });
-        for(File file : files)
+        if(files != null)
         {
-            file.delete();
+            for(File file : files)
+            {
+                file.delete();
+            }
+        }
+        else
+        {
+            Log.e(TAG, "deleteOldApk: listFiles returned null");
         }
     }
     public void killPackage(Context context, String packageName)
