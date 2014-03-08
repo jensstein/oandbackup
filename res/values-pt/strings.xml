@@ -61,12 +61,15 @@
   <string name="restoreFailure">Erro ao restaurar</string>
   <string name="batchSuccess">Operação terminada</string>
   <string name="batchFailure">Terminada com erros</string>
+  <string name="uninstallSuccess">Desinstalação terminada</string>
+  <string name="uninstallFailure">Erro ao desinstalar</string>
   <string name="errorDialogTitle">Ocorreram erros</string>
   <string name="customListTitle">Lista personalizada</string>
   <string name="quickReboot">Reinicio rápido</string>
   <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
   <string name="help_title">Ajuda</string>
   <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
+  <string name="shareTitle">Partilhar</string>
   <string name="tools_title">Ferramentas</string>
   <string name="tools_batchDeleteTitle">Eliminar backups?</string>
   <string name="tools_batchDeleteMessage">A eliminar backups...</string>

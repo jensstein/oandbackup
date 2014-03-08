@@ -61,12 +61,15 @@
   <string name="restoreFailure">Грешка при враћању</string>
   <string name="batchSuccess">Операција је завршена</string>
   <string name="batchFailure">Завршено са грешкама</string>
+  <string name="uninstallSuccess">Деинсталирање завршено</string>
+  <string name="uninstallFailure">Грешка при деинсталацији</string>
   <string name="errorDialogTitle">Грешке су се појавиле</string>
   <string name="customListTitle">Произвољна листа</string>
   <string name="quickReboot">Брзо поновно покретање</string>
   <string name="quickRebootMessage">Да ли желите да поново покренете корисничко окружење?</string>
   <string name="help_title">Помоћ</string>
   <string name="notInstalledModeDataWarning">Апликације се не може вратити без Apk-а</string>
+  <string name="shareTitle">Подели</string>
   <string name="tools_title">Алати</string>
   <string name="tools_batchDeleteTitle">Обриши резервне копије?</string>
   <string name="tools_batchDeleteMessage">Бришем резервне копије</string>

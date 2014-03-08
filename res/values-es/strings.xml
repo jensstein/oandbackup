@@ -20,7 +20,7 @@
   <string name="search">Buscar</string>
   <string name="searchHint">Buscar aplicaciones</string>
   <string name="deleteBackup">Eliminar respaldo</string>
-  <string name="uninstall">Desinstalar aplicació</string>
+  <string name="uninstall">Desinstalar aplicación</string>
   <string name="uninstallProgress">Desinstalando</string>
   <string name="showAll">Mostrar todas las aplicaciones</string>
   <string name="showOnlySystem">Mostrar solo aplicaciones del sistema</string>
@@ -61,12 +61,15 @@
   <string name="restoreFailure">Error al restaurar</string>
   <string name="batchSuccess">Operación terminada</string>
   <string name="batchFailure">Terminado con errores</string>
+  <string name="uninstallSuccess">Desinstalación completa</string>
+  <string name="uninstallFailure">Error al desinstalar</string>
   <string name="errorDialogTitle">Han ocurrido errores</string>
   <string name="customListTitle">Lista personalizada</string>
   <string name="quickReboot">Reinicio rápido</string>
   <string name="quickRebootMessage">¿Reiniciar el espacio de usuario?</string>
   <string name="help_title">Ayuda</string>
   <string name="notInstalledModeDataWarning">La aplicación no se puede restaurar de un respaldo sin la Apk</string>
+  <string name="shareTitle">Compartir</string>
   <string name="tools_title">Herramientas</string>
   <string name="tools_batchDeleteTitle">¿Eliminar respaldos?</string>
   <string name="tools_batchDeleteMessage">Eliminando respaldos</string>

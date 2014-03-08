@@ -61,12 +61,15 @@
   <string name="restoreFailure">Fehler bei Wiederherstellung</string>
   <string name="batchSuccess">Operation abgeschlossen</string>
   <string name="batchFailure">Mit Fehlern abgeschlossen</string>
+  <string name="uninstallSuccess">Deinstallation komplett</string>
+  <string name="uninstallFailure">Fehler bei Deinstallation</string>
   <string name="errorDialogTitle">Fehler sind aufgetreten</string>
   <string name="customListTitle">Eigene Liste</string>
   <string name="quickReboot">Gerät neu starten</string>
   <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
   <string name="help_title">Hilfe</string>
   <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
+  <string name="shareTitle">Teilen</string>
   <string name="tools_title">Hilfsmittel</string>
   <string name="tools_batchDeleteTitle">Sicherungen löschen?</string>
   <string name="tools_batchDeleteMessage">Lösche Sicherungen...</string>
