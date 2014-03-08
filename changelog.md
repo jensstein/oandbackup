@@ -1,13 +1,20 @@
 changelog
 =========
 
-0.2.8 (development)
+0.2.8 (2014-03-08)
 -------------------
+ * context menu now has a share option - the backup files for data and apk can be shared here
+ * backup directory can now be in oandbackup's own data directory (/data/data/dk.jens.backup) - sharing does not yet work when the backup files are here
  * icons in app list
  * better filtering
    * filtering is now shared and consistent between the different modes (activities)
    * added option to remember filtering and sorting
+ * better feedback when deleting backups of uninstalled apps
+ * added italian translation. thanks to Marco Bonifacio (mbonix).
+ * added serbian translation. thanks to operationDIE.
  * added spanish translation. thanks to isaacluz.
+ * fixed bug where compressed data was deleted if an apk-only backup was made after backing up data
+ * fixed bug where restores failed for packages which have packagenames and data paths which differ (mainly the core android package, android system)
 
 0.2.7 (2014-01-13)
 -------------------
