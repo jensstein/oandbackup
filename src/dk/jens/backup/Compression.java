@@ -16,19 +16,18 @@ import java.util.zip.ZipOutputStream;
 public class Compression
 {
     final static String TAG = OAndBackup.TAG;
-    ArrayList<String> fileList;
     public int zip(File dir)
     {
         try
         {
-            fileList = new ArrayList<String>();
+            ArrayList<String> fileList = new ArrayList<String>();
             byte[] buffer = new byte[1024];
             File zipDir = new File(dir.getAbsolutePath() + ".zip");
             String baseDir = dir.getAbsolutePath().substring(0, dir.getAbsolutePath().length() - dir.getName().length());
             FileOutputStream fos = new FileOutputStream(zipDir);
             ZipOutputStream zos = new ZipOutputStream(fos);
 
-            getFiles(dir);
+            getFiles(dir, fileList);
             for(String file : fileList)
             {
                 try
@@ -104,26 +103,34 @@ public class Compression
             return 1;
         }
     }
-    private void getFiles(File dir)
+    private void getFiles(File dir, ArrayList<String> fileList)
     {
         // handling an uncreated directory in case of missing busybox
         if(dir.exists())
         {
-            for(File file : dir.listFiles())
+            File[] list = dir.listFiles();
+            if(list != null)
             {
-                if(file.isDirectory())
+                for(File file : list)
                 {
-                    getFiles(file);
+                    if(file.isDirectory())
+                    {
+                        getFiles(file, fileList);
+                    }
+                    else if(file.isFile())
+                    {
+                        fileList.add(file.getAbsolutePath());
+                    }
+                    else
+                    {
+                        // fixes a bug where the paid version of titanium backup would never complete compression - not seen with any other app
+                        Log.w(TAG, "special file " + file.getAbsolutePath() + " is not compressed");
+                    }
                 }
-                else if(file.isFile())
-                {
-                    fileList.add(file.getAbsolutePath());
-                }
-                else
-                {
-                    // fixes a bug where the paid version of titanium backup would never complete compression - not seen with any other app
-                    Log.w(TAG, "special file " + file.getAbsolutePath() + " is not compressed");
-                }
+            }
+            else
+            {
+                Log.e(TAG, "Compression.getFiles: listFiles returned null");
             }
         }
     }
