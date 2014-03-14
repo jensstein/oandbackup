@@ -23,28 +23,31 @@ public class BackupOptionsDialogFragment extends DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(label);
         builder.setMessage(R.string.backup);
-        builder.setNegativeButton(R.string.handleApk, new DialogInterface.OnClickListener()
+        if(appInfo.getSourceDir().length() > 0)
         {
-            public void onClick(DialogInterface dialog, int id)
+            builder.setNegativeButton(R.string.handleApk, new DialogInterface.OnClickListener()
             {
-                OAndBackup obackup = (OAndBackup) getActivity();
-                obackup.callBackup(appInfo, AppInfo.MODE_APK);
-            }
-        });
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    OAndBackup obackup = (OAndBackup) getActivity();
+                    obackup.callBackup(appInfo, AppInfo.MODE_APK);
+                }
+            });
+            builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    OAndBackup obackup = (OAndBackup) getActivity();
+                    obackup.callBackup(appInfo, AppInfo.MODE_BOTH);
+                }
+            });
+        }
         builder.setNeutralButton(R.string.handleData, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {
                 OAndBackup obackup = (OAndBackup) getActivity();
                 obackup.callBackup(appInfo, AppInfo.MODE_DATA);
-            }
-        });
-        builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
-            {
-                OAndBackup obackup = (OAndBackup) getActivity();
-                obackup.callBackup(appInfo, AppInfo.MODE_BOTH);
             }
         });
         return builder.create();
