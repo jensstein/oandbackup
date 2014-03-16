@@ -1,16 +1,15 @@
 package dk.jens.backup;
 
 import android.content.SharedPreferences;
-
-import java.util.HashMap;
-import java.util.Map;
+import android.util.SparseIntArray;
 
 public class Sorter
 {
     AppInfoAdapter adapter;
     FilteringMethod filteringMethod = FilteringMethod.ALL;
     SortingMethod sortingMethod = SortingMethod.PACKAGENAME;
-    private static final Map<Integer, Integer> convertFilteringIdMap, convertSortingIdMap;
+    // SparseIntArray is more memory efficient than mapping integers to integers using a hashmap
+    private static final SparseIntArray convertFilteringIdMap, convertSortingIdMap;
     SharedPreferences.Editor prefsEdit;
     int oldBackups = 0;
     public Sorter(AppInfoAdapter adapter, SharedPreferences prefs)
@@ -26,14 +25,14 @@ public class Sorter
     }
     static
     {
-        convertFilteringIdMap = new HashMap<Integer, Integer>();
+        convertFilteringIdMap = new SparseIntArray(3);
         convertFilteringIdMap.put(FilteringMethod.ALL.ordinal(), R.id.showAll);
         convertFilteringIdMap.put(FilteringMethod.SYSTEM.ordinal(), R.id.showOnlySystem);
         convertFilteringIdMap.put(FilteringMethod.USER.ordinal(), R.id.showOnlyUser);
     }
     static
     {
-        convertSortingIdMap = new HashMap<Integer, Integer>();
+        convertSortingIdMap = new SparseIntArray(2);
         convertSortingIdMap.put(SortingMethod.LABEL.ordinal(), R.id.sortByLabel);
         convertSortingIdMap.put(SortingMethod.PACKAGENAME.ordinal(), R.id.sortByPackageName);
     }
@@ -157,18 +156,11 @@ public class Sorter
     // needs to be static as it is used in onPrepareOptionsMenu which is called before the sorter instance is created
     public static int convertFilteringId(int key)
     {
-        if(convertFilteringIdMap.containsKey(key))
-        {
-            return convertFilteringIdMap.get(key);
-        }
-        return 0;
+        // SparseIntArray returns 0 if the key is not found
+        return convertFilteringIdMap.get(key);
     }
     public static int convertSortingId(int key)
     {
-        if(convertSortingIdMap.containsKey(key))
-        {
-            return convertSortingIdMap.get(key);
-        }
-        return 0;
+        return convertSortingIdMap.get(key);
     }
 }
