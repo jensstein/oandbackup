@@ -79,13 +79,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                 if(!haveSu)
                 {
-                    runOnUiThread(new Runnable()
-                    {
-                        public void run()
-                        {
-                            Toast.makeText(OAndBackup.this, getString(R.string.noSu), Toast.LENGTH_LONG).show();
-                        }
-                    });                    
+                    Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
                 }
                 boolean bboxInstalled = shellCommands.checkBusybox();
                 if(!bboxInstalled)
