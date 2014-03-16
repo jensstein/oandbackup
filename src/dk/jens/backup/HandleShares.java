@@ -14,7 +14,7 @@ public class HandleShares
     private static Map<String, String> mimeTypes;
     public static Intent constructIntentSingle(String title, File file)
     {
-        String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase(Locale.ROOT);
+        String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase(Locale.ENGLISH);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType(getMimeType(ext));
