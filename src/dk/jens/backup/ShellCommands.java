@@ -226,15 +226,29 @@ public class ShellCommands
     {
         try
         {
-            Process p = Runtime.getRuntime().exec("sh"); // man behøver ikke su til stat - det gør man til ls -l /data/
+            // you don't need su for stat - you do for ls -l /data/
+            Process p = Runtime.getRuntime().exec("sh");
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             //uid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+//            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+
+            /**
+                * sed:
+                * -n: suppress usual output
+                * -r: extended regular expressions
+                * \1: replace with the first regex group match
+                * p: print the changed line
+                * enclosing .*: isolates the uid since the captured part will replace the whole regex
+                * escaping backslashes need to be escaped here
+                * http://www.mikeplate.com/2012/05/09/extract-regular-expression-group-match-using-grep-or-sed/
+            */
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\((.?[0-9]+).*|\\1|p'\n");
             dos.flush();
             //gid:
 //            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+//            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\((.?[0-9]+).*|\\1|p'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
@@ -249,30 +263,7 @@ public class ShellCommands
             ArrayList<String> uid_gid = new ArrayList<String>();
             while((line = stdin.readLine()) != null)
             {
-                uid_gid.add(line);
-            }
-            if(uid_gid.get(0).trim().length() == 0 || uid_gid.get(1).trim().length() == 0)
-            {
-                uid_gid = new ArrayList<String>();
-                p = Runtime.getRuntime().exec("sh");
-                dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4$5}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
-                dos.flush();
-                dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $8$9}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
-                dos.flush();
-
-                dos.writeBytes("exit\n");
-                dos.flush();
-                ret = p.waitFor();
-          
-                Log.i(TAG, "setPermissions return 1.5: " + ret);
-
-                isr = new InputStreamReader(p.getInputStream());
-                stdin = new BufferedReader(isr);
-                while((line = stdin.readLine()) != null)
-                {
-                    uid_gid.add(line);
-                }
+                uid_gid.add(line.trim());
             }
             if(!uid_gid.isEmpty())
             {
@@ -303,6 +294,7 @@ public class ShellCommands
             }
             else
             {
+                Log.e(TAG, "no uid and gid found while trying to set permissions");
                 writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
                 return 1;
             }
