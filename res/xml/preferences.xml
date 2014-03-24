@@ -36,6 +36,12 @@
         android:summary="@string/prefs_summaryOldBackups"
         android:inputType="number"
         />
+    <CheckBoxPreference
+        android:key="disableNotifications"
+        android:title="@string/prefs_disableNotifications"
+        android:summary="@string/prefs_summaryDisableNotifications"
+        android:defaultValue="false"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
