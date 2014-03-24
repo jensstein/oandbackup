@@ -119,4 +119,5 @@
     <string name="sched_addSchudule">add schedule</string>
     <string name="sched_customListUpdateButton">update custom list</string>
     <string name="sched_excludeSystemCheckBox">exclude system apps</string>
+    <string name="sched_warningIntervalZero">error: interval cannot be 0</string>
 </resources>

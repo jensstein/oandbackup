@@ -253,22 +253,15 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             long timePassed = System.currentTimeMillis() - timePlaced;
             long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay" + number, 0));
             long timeLeft = prefs.getLong("timeUntilNextEvent" + number, 0) - timePassed;
-            if(!prefs.getBoolean("enabled" + number, false) || repeat < 0)
+            if(!prefs.getBoolean("enabled" + number, false))
             {
                 timeLeftTextView.setText("");
             }
-            else if(repeat == 0)
+            else if(repeat <= 0)
             {
-                if(hourOfDay > 0)
-                {
-                    timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (hourOfDay / 1000 / 60 / 60f));
-                }
-                else
-                {
-                    timeLeftTextView.setText("");
-                }
+                timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
             }
-            else if(repeat > 0)
+            else
             {
                 timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
             }
