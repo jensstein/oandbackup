@@ -6,7 +6,17 @@ restoring system apps should be possible without requiring a reboot afterwards. 
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
 a working busybox installation is required at the moment.   
-you can get the source for busybox here: http://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: http://busybox.net/downloads/binaries/latest/ - place the binary in /system/xbin/ (symlinking should not be necessary for operation with oandbackup).
+you can get the source for busybox here: http://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: http://busybox.net/downloads/binaries/latest/.   
+if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
+```
+    make defconfig # makes a config file with the default options
+    make menuconfig # brings up an ncurses-based menu for editing the options
+        # set the prefix for your toolchain under busybox settings -> build options 
+        # (remember the trailing dash, e.g. 'arm-unknown-linux-gnueabihf-')
+        # build as a static binary if needed
+    make
+```
+copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackup.
 
 an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
 
