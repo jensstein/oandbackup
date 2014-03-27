@@ -251,7 +251,6 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             long timePlaced = prefs.getLong("timePlaced" + number, 0);
             long repeat = (long)(prefs.getInt("repeatTime" + number, 0) * AlarmManager.INTERVAL_DAY);
             long timePassed = System.currentTimeMillis() - timePlaced;
-            long hourOfDay = handleAlarms.timeUntilNextEvent(0, prefs.getInt("hourOfDay" + number, 0));
             long timeLeft = prefs.getLong("timeUntilNextEvent" + number, 0) - timePassed;
             if(!prefs.getBoolean("enabled" + number, false))
             {

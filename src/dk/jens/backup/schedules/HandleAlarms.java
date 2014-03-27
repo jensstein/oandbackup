@@ -48,6 +48,17 @@ public class HandleAlarms
     public long timeUntilNextEvent(int interval, int hour)
     {
         Calendar c = Calendar.getInstance();
+        if((interval == 1 && hour > c.get(Calendar.HOUR_OF_DAY)) || interval > 1)
+        {
+            /**
+                * to account for the day the schedule was set on
+                * the interval is subtracted by one.
+                * the check that the scheduled hour is larger
+                * than the current hour prevents things getting
+                * scheduled in the past.
+            */
+            interval--;
+        }
         c.add(Calendar.DAY_OF_MONTH, interval);
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, 0);
