@@ -9,20 +9,14 @@ import android.support.v4.app.DialogFragment;
 
 public class RestoreOptionsDialogFragment extends DialogFragment
 {
-    final static String TAG = OAndBackup.TAG; 
-    String packageName, label;
-    AppInfo appInfo;
-    public RestoreOptionsDialogFragment(AppInfo appInfo)
-    {
-        this.appInfo = appInfo;
-        this.packageName = appInfo.getPackageName();
-        this.label = appInfo.getLabel();
-    }
+    final static String TAG = OAndBackup.TAG;
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        Bundle arguments = getArguments();
+        final AppInfo appInfo = arguments.getParcelable("appinfo");
         int backupMode = appInfo.getBackupMode();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(label);
+        builder.setTitle(appInfo.getLabel());
         builder.setMessage(R.string.restore);
         //midlertidigt indtil custom layout med flere muligheder
         if(backupMode != AppInfo.MODE_DATA)

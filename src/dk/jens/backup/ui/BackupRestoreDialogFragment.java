@@ -3,41 +3,30 @@ package dk.jens.backup;
 import android.app.AlertDialog;
 import android.app.Dialog;
 //import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 public class BackupRestoreDialogFragment extends DialogFragment
 {
-    final static String TAG = OAndBackup.TAG; 
-    String packageName, label;
-    Context context;
-    boolean isInstalled;
-    AppInfo appInfo;
-    public BackupRestoreDialogFragment(Context context, AppInfo appInfo)
-    {
-        this.context = context;
-        this.appInfo = appInfo;
-        this.packageName = appInfo.getPackageName();
-        this.label = appInfo.getLabel();
-        this.isInstalled = appInfo.isInstalled;
-    }
-
+    final static String TAG = OAndBackup.TAG;
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        final Bundle arguments = getArguments();
+        AppInfo appInfo = arguments.getParcelable("appinfo");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(packageName);
-        builder.setTitle(label);
+        builder.setMessage(appInfo.getPackageName());
+        builder.setTitle(appInfo.getLabel());
 
-        //midlertidigt indtil custom layout med flere muligheder
-        if(isInstalled)
+        if(appInfo.isInstalled)
         {
-            builder.setPositiveButton(context.getString(R.string.backup), new DialogInterface.OnClickListener()
+            builder.setPositiveButton(R.string.backup, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment(appInfo);
+                    BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment();
+                    backupDialog.setArguments(arguments);
                     backupDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment");
 //                    OAndBackup obackup = (OAndBackup) getActivity();
 //                    obackup.callBackup(appInfo);
@@ -46,11 +35,12 @@ public class BackupRestoreDialogFragment extends DialogFragment
         }
         if(appInfo.getLogInfo() != null)
         {
-            builder.setNegativeButton(context.getString(R.string.restore), new DialogInterface.OnClickListener()
+            builder.setNegativeButton(R.string.restore, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    RestoreOptionsDialogFragment restoreDialog = new RestoreOptionsDialogFragment(appInfo);
+                    RestoreOptionsDialogFragment restoreDialog = new RestoreOptionsDialogFragment();
+                    restoreDialog.setArguments(arguments);
 //                    restoreDialog.show(getFragmentManager(), "DialogFragment");
                     restoreDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment");
                 }

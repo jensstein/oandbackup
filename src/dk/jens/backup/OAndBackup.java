@@ -154,7 +154,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         else
         {
-            BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment(this, appInfo);
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("appinfo", appInfo);
+            BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment();
+            dialog.setArguments(arguments);
     //        dialog.show(getFragmentManager(), "DialogFragment");
             dialog.show(getSupportFragmentManager(), "DialogFragment");
         }
