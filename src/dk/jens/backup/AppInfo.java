@@ -1,6 +1,6 @@
 package dk.jens.backup;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
 public class AppInfo implements Comparable<AppInfo>
 {
@@ -8,7 +8,7 @@ public class AppInfo implements Comparable<AppInfo>
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
     public boolean isSystem, isInstalled, isChecked;
-    public Drawable icon;
+    public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;

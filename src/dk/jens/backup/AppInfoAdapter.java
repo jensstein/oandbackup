@@ -82,7 +82,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             if(appInfo.icon != null)
             {
                 viewHolder.icon.setVisibility(View.VISIBLE); // to cancel View.GONE if it was set
-                viewHolder.icon.setImageDrawable(appInfo.icon);
+                viewHolder.icon.setImageBitmap(appInfo.icon);
                 LayoutParams lp = (LayoutParams) viewHolder.icon.getLayoutParams();
                 lp.height = 32;
                 lp.width = 32;

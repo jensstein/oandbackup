@@ -10,7 +10,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -283,7 +284,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             }
             if(backupDir != null)
             {
-                Drawable icon = pm.getApplicationIcon(pinfo.applicationInfo);
+                // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
+                Bitmap icon = (Bitmap)((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap();
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
