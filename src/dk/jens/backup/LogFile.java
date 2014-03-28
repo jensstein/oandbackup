@@ -1,5 +1,7 @@
 package dk.jens.backup;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -17,7 +19,7 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LogFile
+public class LogFile implements Parcelable
 {
     final static String TAG = OAndBackup.TAG; 
     File logfile;
@@ -181,5 +183,49 @@ public class LogFile
             dateFormated = dateFormat.format(date);
         }
         return dateFormated;
+    }
+    public int describeContents()
+    {
+        return 0;
+    }
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeString(label);
+        out.writeString(packageName);
+        out.writeString(versionName);
+        out.writeString(sourceDir);
+        out.writeString(dataDir);
+        out.writeInt(versionCode);
+        out.writeInt(backupMode);
+        out.writeLong(lastBackupMillis);
+        out.writeByte((byte) (isSystem ? 1 : 0));
+        // Parcel has no method to write a boolean. http://stackoverflow.com/a/7089687
+        // http://code.google.com/p/android/issues/detail?id=5973
+        out.writeSerializable(logfile);
+    }
+    public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>()
+    {
+        public LogFile createFromParcel(Parcel in)
+        {
+            return new LogFile(in);
+        }
+        public LogFile[] newArray(int size)
+        {
+            return new LogFile[size];
+        }
+    };
+    private LogFile(Parcel in)
+    {
+        // data is read in the order it was written
+        label = in.readString();
+        packageName = in.readString();
+        versionName = in.readString();
+        sourceDir = in.readString();
+        dataDir = in.readString();
+        versionCode = in.readInt();
+        backupMode = in.readInt();
+        lastBackupMillis = in.readLong();
+        isSystem = in.readByte() != 0;
+        logfile = (File) in.readSerializable();
     }
 }
