@@ -281,26 +281,18 @@ implements OnClickListener
             changesMade = true;
             int id = (int) System.currentTimeMillis();
             int total = selectedList.size();
-            int i = 0;
+            int i = 1;
             boolean errorFlag = false;
             for(AppInfo appInfo: selectedList)
             {
                 if(appInfo.isChecked)
                 {
-                    i++;
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
                     title = title + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
-                    if(i == 1)
-                    {
-                        handleMessages.showMessage(appInfo.getLabel(), message);
-                    }
-                    else
-                    {
-                        handleMessages.changeMessage(appInfo.getLabel(), message);
-                    }
+                    handleMessages.setMessage(appInfo.getLabel(), message);
                     if(backupBoolean)
                     {
                         if(backup(backupSubDir, appInfo) != 0)
@@ -318,6 +310,7 @@ implements OnClickListener
                         NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
                     }
+                    i++;
                 }
             }
             if(wl.isHeld())
