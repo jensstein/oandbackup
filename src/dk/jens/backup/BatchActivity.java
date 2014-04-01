@@ -303,80 +303,13 @@ implements OnClickListener
                     }
                     if(backupBoolean)
                     {
-                        if(!backupSubDir.exists())
-                        {
-                            backupSubDir.mkdirs();
-                        }
-                        else
-                        {
-                            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-                        }
-                        int backupMode = AppInfo.MODE_BOTH;
-                        if(rbApk.isChecked())
-                        {
-                            backupMode = AppInfo.MODE_APK;
-                        }
-                        else if(rbData.isChecked())
-                        {
-                            backupMode = AppInfo.MODE_DATA;
-                        }
-                        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
-                        shellCommands.logReturnMessage(this, backupRet);
-
-                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
-                        if(backupRet != 0)
-                        {
+                        if(backup(backupSubDir, appInfo) != 0)
                             errorFlag = true;
-                        }
                     }
                     else
                     {
-                        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
-                        String dataDir = appInfo.getDataDir();
-
-                        if(rbApk.isChecked() && apk != null)
-                        {
-                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
-                            if(apkRet != 0)
-                            {
-                                errorFlag = true;
-                            }
-                        }
-                        else if(rbData.isChecked())
-                        {
-                            if(appInfo.isInstalled)
-                            {
-                                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                                shellCommands.logReturnMessage(this, restoreRet);
-                                int permRet = shellCommands.setPermissions(dataDir);
-                                if(restoreRet != 0 || permRet != 0)
-                                {
-                                    errorFlag = true;
-                                }
-                            }
-                            else
-                            {
-                                Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-                            }
-                        }
-                        else if(rbBoth.isChecked() && apk != null)
-                        {
-                            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
-                            if(apkRet == 0)
-                            {
-                                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                                shellCommands.logReturnMessage(this, restoreRet);
-                                int permRet = shellCommands.setPermissions(dataDir);
-                                if(restoreRet != 0 || permRet != 0)
-                                {
-                                    errorFlag = true;
-                                }
-                            }
-                            else
-                            {
-                                errorFlag = true;
-                            }
-                        }
+                        if(restore(backupSubDir, appInfo) != 0)
+                            errorFlag = true;
                     }
                     if(i == total)
                     {
@@ -397,5 +330,75 @@ implements OnClickListener
                 Utils.showErrors(BatchActivity.this, shellCommands);
             }
         }
+    }
+    public int backup(File backupSubDir, AppInfo appInfo)
+    {
+        if(!backupSubDir.exists())
+        {
+            backupSubDir.mkdirs();
+        }
+        else
+        {
+            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+        }
+        int backupMode = AppInfo.MODE_BOTH;
+        if(rbApk.isChecked())
+        {
+            backupMode = AppInfo.MODE_APK;
+        }
+        else if(rbData.isChecked())
+        {
+            backupMode = AppInfo.MODE_DATA;
+        }
+        int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
+        shellCommands.logReturnMessage(this, backupRet);
+
+        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
+
+        return backupRet;
+    }
+    public int restore(File backupSubDir, AppInfo appInfo)
+    {
+        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
+        String dataDir = appInfo.getDataDir();
+
+        if(rbApk.isChecked() && apk != null)
+        {
+            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
+            return apkRet;
+        }
+        else if(rbData.isChecked())
+        {
+            if(appInfo.isInstalled)
+            {
+                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+                shellCommands.logReturnMessage(this, restoreRet);
+                int permRet = shellCommands.setPermissions(dataDir);
+                if(restoreRet != 0 || permRet != 0)
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                Log.e(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+            }
+        }
+        else if(rbBoth.isChecked() && apk != null)
+        {
+            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
+            if(apkRet == 0)
+            {
+                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+                shellCommands.logReturnMessage(this, restoreRet);
+                int permRet = shellCommands.setPermissions(dataDir);
+                if(restoreRet != 0 || permRet != 0)
+                {
+                    return 1;
+                }
+            }
+            return apkRet;
+        }
+        return 0;
     }
 }
