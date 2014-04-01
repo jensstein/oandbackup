@@ -129,7 +129,7 @@ implements OnClickListener
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
             {
                 AppInfo appInfo = adapter.getItem(pos);
-                appInfo.toggle();
+                appInfo.setChecked(!appInfo.isChecked);
                 adapter.notifyDataSetChanged();
             }
         });

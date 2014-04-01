@@ -87,10 +87,6 @@ implements Comparable<AppInfo>, Parcelable
             return backupMode;
         }
     }
-    public void toggle()
-    {
-        isChecked = isChecked ? false : true;
-    }
     public void setChecked(boolean checked)
     {
         isChecked = checked;
