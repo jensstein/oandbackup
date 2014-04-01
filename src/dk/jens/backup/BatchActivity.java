@@ -53,7 +53,6 @@ implements OnClickListener
     PowerManager powerManager;
     SharedPreferences prefs;
 
-    ListView listView;
     BatchAdapter adapter;
     ArrayList<AppInfo> list;
 
@@ -117,7 +116,7 @@ implements OnClickListener
             bt.setText(R.string.restore);
         }
 
-        listView = (ListView) findViewById(R.id.listview);
+        ListView listView = (ListView) findViewById(R.id.listview);
         adapter = new BatchAdapter(this, R.layout.batchlistlayout, list);
         sorter = new Sorter(adapter, prefs);
         sorter.sort(filteringMethodId);
@@ -203,11 +202,6 @@ implements OnClickListener
                 */
                 break;
             case R.id.de_selectAll:
-                /**
-                    * if anything has been selected then through select all
-                    * then deselect everything.
-                    * if not then select every shown item.
-                */
                 if(checkboxSelectAllBoolean)
                 {
                     for(AppInfo appInfo : appInfoList)
@@ -217,6 +211,7 @@ implements OnClickListener
                 }
                 else
                 {
+                    // only check the shown items
                     for(int i = 0; i < adapter.getCount(); i++)
                     {
                         adapter.getItem(i).setChecked(true);
