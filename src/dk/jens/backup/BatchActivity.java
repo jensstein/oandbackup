@@ -362,10 +362,17 @@ implements OnClickListener
                         else if(rbBoth.isChecked() && apk != null)
                         {
                             int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
-                            int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                            shellCommands.logReturnMessage(this, restoreRet);
-                            int permRet = shellCommands.setPermissions(dataDir);
-                            if(apkRet != 0 || restoreRet != 0 || permRet != 0)
+                            if(apkRet == 0)
+                            {
+                                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+                                shellCommands.logReturnMessage(this, restoreRet);
+                                int permRet = shellCommands.setPermissions(dataDir);
+                                if(restoreRet != 0 || permRet != 0)
+                                {
+                                    errorFlag = true;
+                                }
+                            }
+                            else
                             {
                                 errorFlag = true;
                             }
