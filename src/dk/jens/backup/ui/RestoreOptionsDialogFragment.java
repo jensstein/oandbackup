@@ -30,7 +30,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 }
             });
         }
-        if(appInfo.isInstalled && backupMode != AppInfo.MODE_APK)
+        if(appInfo.isInstalled() && backupMode != AppInfo.MODE_APK)
         {
             builder.setNeutralButton(R.string.handleData, new DialogInterface.OnClickListener()
             {

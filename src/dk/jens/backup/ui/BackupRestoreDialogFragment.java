@@ -19,7 +19,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
         builder.setMessage(appInfo.getPackageName());
         builder.setTitle(appInfo.getLabel());
 
-        if(appInfo.isInstalled)
+        if(appInfo.isInstalled())
         {
             builder.setPositiveButton(R.string.backup, new DialogInterface.OnClickListener()
             {

@@ -115,9 +115,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             {
                 viewHolder.lastBackup.setText(context.getString(R.string.noBackupYet));
             }
-            if(appInfo.isInstalled)
+            if(appInfo.isInstalled())
             {
-                int color = appInfo.isSystem ? Color.RED : Color.GREEN;
+                int color = appInfo.isSystem() ? Color.RED : Color.GREEN;
                 viewHolder.label.setTextColor(Color.WHITE);
                 viewHolder.packageName.setTextColor(color);
             }
@@ -210,7 +210,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 items.clear();
                 for(AppInfo value : (ArrayList<AppInfo>) results.values)
                 {
-                    if(value.isInstalled)
+                    if(value.isInstalled())
                     {
                         add(value);
                     }
@@ -252,7 +252,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             case 0: // all apps
                 for(AppInfo appInfo : originalValues)
                 {
-                    if(appInfo.isInstalled)
+                    if(appInfo.isInstalled())
                     {
                         add(appInfo);
                     }
@@ -266,9 +266,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             case 1: // user apps
                 for(AppInfo appInfo : originalValues)
                 {
-                    if(!appInfo.isSystem)
+                    if(!appInfo.isSystem())
                     {
-                        if(appInfo.isInstalled)
+                        if(appInfo.isInstalled())
                         {
                             add(appInfo);
                         }
@@ -283,9 +283,9 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             case 2: // system apps
                 for(AppInfo appInfo : originalValues)
                 {
-                    if(appInfo.isSystem)
+                    if(appInfo.isSystem())
                     {
-                        if(appInfo.isInstalled)
+                        if(appInfo.isInstalled())
                         {
                             add(appInfo);
                         }
@@ -307,7 +307,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             if(appInfo.getLogInfo() == null)
             {
-                if(appInfo.isInstalled)
+                if(appInfo.isInstalled())
                 {
                     add(appInfo);
                 }
@@ -320,7 +320,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         items.clear();
         for(AppInfo appInfo : originalValues)
         {
-            if(!appInfo.isInstalled)
+            if(!appInfo.isInstalled())
             {
                 add(appInfo);
             }
@@ -351,7 +351,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 long diff = System.currentTimeMillis() - lastBackup;
                 if(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f))
                 {
-                    if(appInfo.isInstalled)
+                    if(appInfo.isInstalled())
                     {
                         add(appInfo);
                     }

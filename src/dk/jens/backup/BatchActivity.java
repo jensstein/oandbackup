@@ -102,7 +102,7 @@ implements OnClickListener
             while(iter.hasNext())
             {
                 AppInfo appInfo = (AppInfo) iter.next();
-                if(appInfo.isInstalled)
+                if(appInfo.isInstalled())
                 {
                     list.add(appInfo);
                 }
@@ -129,7 +129,7 @@ implements OnClickListener
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
             {
                 AppInfo appInfo = adapter.getItem(pos);
-                appInfo.setChecked(!appInfo.isChecked);
+                appInfo.setChecked(!appInfo.isChecked());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -155,7 +155,7 @@ implements OnClickListener
         ArrayList<AppInfo> selectedList = new ArrayList<AppInfo>();
         for(AppInfo appInfo : list)
         {
-            if(appInfo.isChecked)
+            if(appInfo.isChecked())
             {
                 selectedList.add(appInfo);
             }
@@ -280,7 +280,7 @@ implements OnClickListener
             boolean errorFlag = false;
             for(AppInfo appInfo: selectedList)
             {
-                if(appInfo.isChecked)
+                if(appInfo.isChecked())
                 {
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
@@ -341,7 +341,7 @@ implements OnClickListener
         int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
         shellCommands.logReturnMessage(this, backupRet);
 
-        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
+        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.setNewBackupMode(backupMode));
 
         return backupRet;
     }
@@ -352,12 +352,12 @@ implements OnClickListener
 
         if(rbApk.isChecked() && apk != null)
         {
-            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
+            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), this.getApplicationInfo().dataDir);
             return apkRet;
         }
         else if(rbData.isChecked())
         {
-            if(appInfo.isInstalled)
+            if(appInfo.isInstalled())
             {
                 int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                 shellCommands.logReturnMessage(this, restoreRet);
@@ -374,7 +374,7 @@ implements OnClickListener
         }
         else if(rbBoth.isChecked() && apk != null)
         {
-            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, this.getApplicationInfo().dataDir);
+            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), this.getApplicationInfo().dataDir);
             if(apkRet == 0)
             {
                 int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());

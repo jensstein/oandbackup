@@ -50,7 +50,7 @@ public class HandleScheduledBackups
                         listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
-                            if(!appInfo.isSystem)
+                            if(!appInfo.isSystem())
                             {
                                 listToBackUp.add(appInfo);
                             }
@@ -63,7 +63,7 @@ public class HandleScheduledBackups
                         listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
-                            if(appInfo.isSystem)
+                            if(appInfo.isSystem())
                             {
                                 listToBackUp.add(appInfo);
                             }
@@ -85,7 +85,7 @@ public class HandleScheduledBackups
                             }
                             else
                             {
-                                if(!appInfo.isSystem && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode())))
+                                if(!appInfo.isSystem() && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode())))
                                 {
                                     listToBackUp.add(appInfo);
                                 }
@@ -148,7 +148,7 @@ public class HandleScheduledBackups
 
                         shellCommands.logReturnMessage(context, ret);
 
-                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(subMode));
+                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.setNewBackupMode(subMode));
                         if(ret != 0)
                         {
                             errorFlag = true;

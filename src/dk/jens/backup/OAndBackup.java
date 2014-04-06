@@ -148,7 +148,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public void displayDialog(AppInfo appInfo)
     {
-        if(!appInfo.isInstalled && appInfo.getBackupMode() == AppInfo.MODE_DATA)
+        if(!appInfo.isInstalled() && appInfo.getBackupMode() == AppInfo.MODE_DATA)
         {
             Toast.makeText(this, getString(R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show();
         }
@@ -188,7 +188,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
-                    LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem, appInfo.setNewBackupMode(backupMode));
+                    LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.setNewBackupMode(backupMode));
                 
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
@@ -232,10 +232,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     switch(options)
                     {
                         case 1:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, OAndBackup.this.getApplicationInfo().dataDir);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
                             break;
                         case 2:
-                            if(appInfo.isInstalled)
+                            if(appInfo.isInstalled())
                             {
                                 restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                                 shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
@@ -248,7 +248,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                             }
                             break;
                         case 3:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem, OAndBackup.this.getApplicationInfo().dataDir);
+                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
                             restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
                             shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
                             permRet = shellCommands.setPermissions(dataDir);
@@ -558,7 +558,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 AppInfo appInfo = adapter.getItem(info.position);
                                 Log.i(TAG, "uninstalling " + appInfo.getLabel());
                                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
-                                int ret = shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem);
+                                int ret = shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem());
                                 refresh();
                                 handleMessages.endMessage();
                                 if(ret == 0)

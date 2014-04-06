@@ -45,10 +45,10 @@ public class BatchAdapter extends AppInfoAdapter
         {
             viewHolder.cb.setText(appInfo.getLabel());
             viewHolder.tv.setText(appInfo.getPackageName());
-            viewHolder.cb.setChecked(appInfo.isChecked);
-            if(appInfo.isInstalled)
+            viewHolder.cb.setChecked(appInfo.isChecked());
+            if(appInfo.isInstalled())
             {
-                int color = appInfo.isSystem ? Color.RED : Color.GREEN;
+                int color = appInfo.isSystem() ? Color.RED : Color.GREEN;
                 viewHolder.cb.setTextColor(Color.WHITE);
                 viewHolder.tv.setTextColor(color);
             }

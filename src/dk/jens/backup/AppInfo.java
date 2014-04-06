@@ -10,14 +10,14 @@ implements Comparable<AppInfo>, Parcelable
     LogFile logInfo;
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
-    public boolean isSystem, isInstalled, isChecked;
+    private boolean system, installed, checked;
     public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
     public static final int MODE_BOTH = 3;
 
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean isSystem, boolean isInstalled, LogFile logInfo)
+    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean system, boolean installed, LogFile logInfo)
     {
         this.label = label;
         this.packageName = packageName;
@@ -25,8 +25,8 @@ implements Comparable<AppInfo>, Parcelable
         this.versionCode = versionCode;
         this.sourceDir = sourceDir;
         this.dataDir = dataDir;
-        this.isSystem = isSystem;
-        this.isInstalled = isInstalled;
+        this.system = system;
+        this.installed = installed;
         if(logInfo != null)
         {
             this.backupMode = logInfo.getBackupMode();
@@ -87,9 +87,21 @@ implements Comparable<AppInfo>, Parcelable
             return backupMode;
         }
     }
+    public boolean isChecked()
+    {
+        return checked;
+    }
     public void setChecked(boolean checked)
     {
-        isChecked = checked;
+        this.checked = checked;
+    }
+    public boolean isSystem()
+    {
+        return system;
+    }
+    public boolean isInstalled()
+    {
+        return installed;
     }
     public int compareTo(AppInfo appInfo)
     {
@@ -113,7 +125,7 @@ implements Comparable<AppInfo>, Parcelable
         out.writeString(dataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
-        out.writeBooleanArray(new boolean[] {isSystem, isInstalled, isChecked});
+        out.writeBooleanArray(new boolean[] {system, installed, checked});
         out.writeParcelable(icon, flags);
     }
     public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>()
@@ -139,9 +151,9 @@ implements Comparable<AppInfo>, Parcelable
         backupMode = in.readInt();
         boolean[] bools = new boolean[3];
         in.readBooleanArray(bools);
-        isSystem = bools[0];
-        isInstalled = bools[1];
-        isChecked = bools[2];
+        system = bools[0];
+        installed = bools[1];
+        checked = bools[2];
         icon = (Bitmap) in.readParcelable(getClass().getClassLoader());
     }
 }

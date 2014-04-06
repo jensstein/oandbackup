@@ -78,7 +78,7 @@ public class Tools extends ListActivity
                 String message = "";
                 for(AppInfo appInfo : appInfoList)
                 {
-                    if(!appInfo.isInstalled)
+                    if(!appInfo.isInstalled())
                     {
                         deleteList.add(appInfo);
                         message += appInfo.getLabel() + "\n";
