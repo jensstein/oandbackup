@@ -117,34 +117,21 @@ public class ShellCommands
             // only zip if data is backed up
             if(backupMode != AppInfo.MODE_APK)
             {
-                int zipret = new Compression().zip(new File(backupSubDir, folder));
-                if(zipret == 0)
-                {
-                    deleteBackup(new File(backupSubDir, folder));
-                    deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
-                }
-                else if(zipret == 2)
-                {
-                    // handling empty zip
-                    deleteBackup(new File(backupSubDir, folder + ".zip"));
-                    deleteBackup(new File(backupSubDir, folder + ".tar.gz"));
-                    return ret;
-                    // zipret == 2 shouldn't be treated as an error
-                }
-                return ret + zipret;
+                int zipret = compress(backupSubDir, folder);
+                if(zipret != 0)
+                    ret += zipret;
             }
             return ret;
         }
         catch(IOException e)
         {
             e.printStackTrace();
-            return 1;
         }
         catch(InterruptedException e)
         {
             Log.i(TAG, e.toString());
-            return 1;
         }
+        return 1;
     }
     public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir)
     {
@@ -402,7 +389,23 @@ public class ShellCommands
         {
             Log.i(TAG, e.toString());
             return 1;
-        }           
+        }
+    }
+    public int compress(File backupSubDir, String folder)
+    {
+        int zipret = new Compression().zip(new File(backupSubDir, folder));
+        if(zipret == 0)
+        {
+            deleteBackup(new File(backupSubDir, folder));
+        }
+        else if(zipret == 2)
+        {
+            // handling empty zip
+            deleteBackup(new File(backupSubDir, folder + ".zip"));
+            return 0;
+            // zipret == 2 shouldn't be treated as an error
+        }
+        return zipret;
     }
     public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem)
     {
