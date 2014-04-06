@@ -74,18 +74,13 @@ implements Comparable<AppInfo>, Parcelable
     {
         logInfo = newLogInfo;
     }
-    public int setNewBackupMode(int modeToAdd)
+    public void setBackupMode(int modeToAdd)
     {
+        // add only if both values are different and neither is MODE_BOTH
         if(backupMode == MODE_BOTH || modeToAdd == MODE_BOTH)
-        {
             backupMode = MODE_BOTH;
-            return backupMode;
-        }
-        else
-        {
-            backupMode = backupMode + modeToAdd;
-            return backupMode;
-        }
+        else if(modeToAdd != backupMode)
+            backupMode += modeToAdd;
     }
     public boolean isChecked()
     {

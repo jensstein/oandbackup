@@ -182,7 +182,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
-                    appInfo.setNewBackupMode(backupMode);
+                    appInfo.setBackupMode(backupMode);
                     LogFile.writeLogFile(backupSubDir, appInfo);
                 
                     // køre på uitråd for at undgå WindowLeaked
