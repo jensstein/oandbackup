@@ -139,9 +139,9 @@ implements Comparable<AppInfo>, Parcelable
         backupMode = in.readInt();
         boolean[] bools = new boolean[3];
         in.readBooleanArray(bools);
-        isSystem = bools[1];
-        isInstalled = bools[2];
-        isChecked = bools[3];
+        isSystem = bools[0];
+        isInstalled = bools[1];
+        isChecked = bools[2];
         icon = (Bitmap) in.readParcelable(getClass().getClassLoader());
     }
 }
