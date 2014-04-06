@@ -138,6 +138,16 @@ public class LogFile implements Parcelable
             return null;
         }
     }
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo)
+    {
+        /*
+         * this overloaded method is only temporary,
+         * until the reading of old logfiles are fully deprecated.
+         * in the future there will only be one writeLogFile
+         * and it will take a File and an AppInfo as parameters.
+         */
+        writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.getBackupMode());
+    }
     public static void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean isSystem, int backupMode)
     {
         try

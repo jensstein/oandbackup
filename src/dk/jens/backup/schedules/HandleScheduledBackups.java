@@ -148,7 +148,8 @@ public class HandleScheduledBackups
 
                         shellCommands.logReturnMessage(context, ret);
 
-                        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.setNewBackupMode(subMode));
+                        appInfo.setNewBackupMode(subMode);
+                        LogFile.writeLogFile(backupSubDir, appInfo);
                         if(ret != 0)
                         {
                             errorFlag = true;

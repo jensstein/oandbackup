@@ -341,7 +341,8 @@ implements OnClickListener
         int backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
         shellCommands.logReturnMessage(this, backupRet);
 
-        LogFile.writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.setNewBackupMode(backupMode));
+        appInfo.setNewBackupMode(backupMode);
+        LogFile.writeLogFile(backupSubDir, appInfo);
 
         return backupRet;
     }
