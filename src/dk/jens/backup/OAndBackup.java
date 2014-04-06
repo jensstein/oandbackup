@@ -174,16 +174,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 {
                     File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     if(!backupSubDir.exists())
-                    {
                         backupSubDir.mkdirs();
-                    }
-                    else
-                    {
-                        if(appInfo.getSourceDir().length() > 0)
-                        {
-                            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-                        }
-                    }
+                    else if(appInfo.getSourceDir().length() > 0)
+                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+
                     backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, OAndBackup.this.getApplicationInfo().dataDir);
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
