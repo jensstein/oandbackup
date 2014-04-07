@@ -209,7 +209,7 @@ public class ShellCommands
             }
         }
     }
-    public ArrayList<String> getPermissions(String packageDir)
+    public ArrayList<String> getOwnership(String packageDir)
     {
         try
         {
@@ -235,7 +235,7 @@ public class ShellCommands
             dos.flush();
             int ret = p.waitFor();
 
-            Log.i(TAG, "getPermissions return: " + ret);
+            Log.i(TAG, "getOwnership return: " + ret);
 
             InputStreamReader isr = new InputStreamReader(p.getInputStream());
             BufferedReader stdin = new BufferedReader(isr);
@@ -259,7 +259,7 @@ public class ShellCommands
     }
     public int setPermissions(String packageDir)
     {
-        ArrayList<String> uid_gid = getPermissions(packageDir);
+        ArrayList<String> uid_gid = getOwnership(packageDir);
         try
         {
             if(uid_gid != null && !uid_gid.isEmpty())
