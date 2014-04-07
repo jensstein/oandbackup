@@ -209,17 +209,13 @@ public class ShellCommands
             }
         }
     }
-    public int setPermissions(String packageDir)
+    public ArrayList<String> getPermissions(String packageDir)
     {
         try
         {
             // you don't need su for stat - you do for ls -l /data/
             Process p = Runtime.getRuntime().exec("sh");
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            //uid:
-//            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $2}'" + "\n");
-//            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Uid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
-
             /**
                 * sed:
                 * -n: suppress usual output
@@ -232,17 +228,14 @@ public class ShellCommands
             */
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\((.?[0-9]+).*|\\1|p'\n");
             dos.flush();
-            //gid:
-//            dos.writeBytes("ls -l /data/data/ | grep " + packageDir + " | " + awk + " '{print $3}'" + "\n"); 
-//            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " grep Gid | " + busybox + " awk '{print $4}' | " + busybox + " sed -e 's/\\///g' -e 's/(//g'\n");
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\((.?[0-9]+).*|\\1|p'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
             dos.flush();
             int ret = p.waitFor();
-          
-            Log.i(TAG, "setPermissions return 1: " + ret);
+
+            Log.i(TAG, "getPermissions return: " + ret);
 
             InputStreamReader isr = new InputStreamReader(p.getInputStream());
             BufferedReader stdin = new BufferedReader(isr);
@@ -252,10 +245,27 @@ public class ShellCommands
             {
                 uid_gid.add(line.trim());
             }
-            if(!uid_gid.isEmpty())
+            return uid_gid;
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(InterruptedException e)
+        {
+            Log.i(TAG, e.toString());
+        }
+        return null;
+    }
+    public int setPermissions(String packageDir)
+    {
+        ArrayList<String> uid_gid = getPermissions(packageDir);
+        try
+        {
+            if(uid_gid != null && !uid_gid.isEmpty())
             {
-                p = Runtime.getRuntime().exec("su");
-                dos = new DataOutputStream(p.getOutputStream());
+                Process p = Runtime.getRuntime().exec("su");
+                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
 //                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
 //                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
 //                dos.flush();
@@ -266,8 +276,8 @@ public class ShellCommands
 //                dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
-                ret = p.waitFor();
-                Log.i(TAG, "setPermissions return 2: " + ret);
+                int ret = p.waitFor();
+                Log.i(TAG, "setPermissions return: " + ret);
 
                 if(ret != 0)
                 {
@@ -283,25 +293,23 @@ public class ShellCommands
             {
                 Log.e(TAG, "no uid and gid found while trying to set permissions");
                 writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
-                return 1;
             }
+            return 1;
         }
         catch(IndexOutOfBoundsException e)
         {
-            Log.i(TAG, "error while setPermissions: " + e.toString());
+            Log.e(TAG, "error while setPermissions: " + e.toString());
             writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
-            return 1;
         }
         catch(IOException e)
         {
             e.printStackTrace();
-            return 1;
         }
         catch(InterruptedException e)
         {
-            Log.i(TAG, e.toString());
-            return 1;
+            Log.e(TAG, "error while setPermissions: " + e.toString());
         }
+        return 1;
     }
     public int restoreApk(File backupDir, String label, String apk, boolean isSystem, String ownDataDir)
     {
