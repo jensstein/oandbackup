@@ -211,10 +211,15 @@ public class ShellCommands
     }
     public ArrayList<String> getOwnership(String packageDir)
     {
+        return getOwnership(packageDir, "sh");
+    }
+    public ArrayList<String> getOwnership(String packageDir, String shellPrivs)
+    {
         try
         {
             // you don't need su for stat - you do for ls -l /data/
-            Process p = Runtime.getRuntime().exec("sh");
+            // and for stat on single files
+            Process p = Runtime.getRuntime().exec(shellPrivs);
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             /**
                 * sed:
@@ -236,6 +241,14 @@ public class ShellCommands
             int ret = p.waitFor();
 
             Log.i(TAG, "getOwnership return: " + ret);
+            if(ret != 0)
+            {
+                ArrayList<String> stderr = getOutput(p).get("stderr");
+                for(String line : stderr)
+                {
+                    writeErrorLog("", line);
+                }
+            }
 
             InputStreamReader isr = new InputStreamReader(p.getInputStream());
             BufferedReader stdin = new BufferedReader(isr);
