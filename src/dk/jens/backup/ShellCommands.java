@@ -57,26 +57,22 @@ public class ShellCommands
         Log.i(TAG, "backup: " + label);
         try
         {
-            String commandString;
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             switch(backupMode)
             {
                 case AppInfo.MODE_APK:
-                    commandString = "cp " + packageApk + " " + backupSubDirPath + "\n";
+                    dos.writeBytes("cp " + packageApk + " " + backupSubDirPath + "\n");
                     break;
                 case AppInfo.MODE_DATA:
-                    // don't use busybox cp - it cannot be told not to follow symlinks on recurse which leads to problems with /lib
-                    commandString = "cp -r " + packageData + " " + backupSubDirPath + "\n";
+                    // -L because fat (which will often be used to store the backup files)
+                    // doesn't support symlinks
+                    dos.writeBytes("cp -RL " + packageData + " " + backupSubDirPath + "\n");
                     break;
                 default: // defaults to MODE_BOTH
-                    commandString = "cp -r " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n";
+                    dos.writeBytes("cp -RL " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n");
                     break;
             }
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(commandString);
-//            dos.writeBytes(busybox + " cp -r " + packageData + " " + backupSubDirPath + "\n");
-//            dos.writeBytes(busybox + " cp " + packageApk + " " + backupSubDirPath + "\n");
-//            dos.flush();
             dos.writeBytes("exit\n");
 
             int ret = p.waitFor();
@@ -85,16 +81,7 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    if((line.contains("/lib") && ((line.contains("not permitted") && line.contains("symlink")) || line.contains("No such file or directory")) && stderr.size() == 1) || (line.contains("org.mozilla.firefox") && line.contains("/lock") && stderr.size() == 1))
-                    {
-                        ret = 0; // ignore errors caused by failing to symlink /lib if there aren't any other errors
-                                // excluding lib from cp would be better but would mean further busybox-specific code: for dir in $packageData/*; do if [ `basename $dir` != 'lib' ]; then cp -r $dir $backupdir; fi; done
-                                // also temporary fix for a symlink in the files stored by firefox
-                    }
-                    else
-                    {
-                        writeErrorLog(label, line);
-                    }
+                    writeErrorLog(label, line);
                 }
             }
             if(backupSubDirPath.startsWith(ownDataDir))
