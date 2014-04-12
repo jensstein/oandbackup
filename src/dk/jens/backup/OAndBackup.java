@@ -178,13 +178,20 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     else if(appInfo.getSourceDir().length() > 0)
                         shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
 
-                    backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, OAndBackup.this.getApplicationInfo().dataDir);
+                    if(appInfo.isSpecial())
+                    {
+                        backupRet = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+                    }
+                    else
+                    {
+                        backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, OAndBackup.this.getApplicationInfo().dataDir);
+                    }
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
 
                     appInfo.setBackupMode(backupMode);
                     LogFile.writeLogFile(backupSubDir, appInfo);
-                
+
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
                     {
@@ -232,10 +239,18 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                         case 2:
                             if(appInfo.isInstalled())
                             {
-                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                                shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
+                                if(appInfo.isSpecial())
+                                {
+                                    restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+                                    permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
+                                }
+                                else
+                                {
+                                    restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
 
-                                permRet = shellCommands.setPermissions(dataDir);
+                                    permRet = shellCommands.setPermissions(dataDir);
+                                }
+                                shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
                             }
                             else
                             {
@@ -267,13 +282,16 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     public ArrayList<AppInfo> getPackageInfo()
     {
         ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+        ArrayList<String> packageNames = new ArrayList<String>();
         PackageManager pm = getPackageManager();
         List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
 
+        addSpecialBackups(list, packageNames);
         for(PackageInfo pinfo : pinfoList)
         {
+            packageNames.add(pinfo.packageName);
             String lastBackup = getString(R.string.noBackupYet);
             boolean isSystem = false;
             if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
@@ -306,16 +324,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
             Arrays.sort(files);
             for(String folder : files)
             {
-                boolean found = false;
-                for(PackageInfo pinfo : pinfoList)
-                {
-                    if(pinfo.packageName.equals(folder))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found)
+                if(!packageNames.contains(folder))
                 {
                     LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                     if(logInfo.getLastBackupMillis() > 0)
@@ -330,6 +339,58 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         CustomPackageList.appInfoList = list;
         Tools.appInfoList = list;
         return list;
+    }
+    public ArrayList<AppInfo> getSpecialBackups()
+    {
+        String versionName = android.os.Build.VERSION.RELEASE;
+        int versionCode = android.os.Build.VERSION.SDK_INT;
+        int currentUser = shellCommands.getCurrentUser();
+        ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+
+        AppInfo accounts = new AppInfo("accounts", getString(R.string.spec_accounts), versionName, versionCode, "", "", true);
+        accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
+        list.add(accounts);
+
+        AppInfo appWidgets = new AppInfo("appwidgets", getString(R.string.spec_appwidgets), versionName, versionCode, "", "", true);
+        appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
+        list.add(appWidgets);
+
+        AppInfo bluetooth = new AppInfo("bluetooth", getString(R.string.spec_bluetooth), versionName, versionCode, "", "/data/misc/bluedroid/", true);
+        list.add(bluetooth);
+
+        AppInfo data = new AppInfo("data.usage.policy", getString(R.string.spec_data), versionName, versionCode, "", "/data/system/netstats/", true);
+        data.setFilesList("/data/system/netpolicy.xml");
+        list.add(data);
+
+        AppInfo wallpaper = new AppInfo("wallpaper", getString(R.string.spec_wallpaper), versionName, versionCode, "", "", true);
+        wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
+        list.add(wallpaper);
+
+        AppInfo wap = new AppInfo("wifi.access.points", getString(R.string.spec_wifiAccessPoints), versionName, versionCode, "", "", true);
+        wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
+        list.add(wap);
+
+        return list;
+    }
+    public void addSpecialBackups(ArrayList<AppInfo> list, ArrayList<String> packageNames)
+    {
+        ArrayList<AppInfo> specialList = getSpecialBackups();
+        for(AppInfo appInfo : specialList)
+        {
+            String packageName = appInfo.getPackageName();
+            packageNames.add(packageName);
+            File subdir = new File(backupDir, packageName);
+            if(subdir.exists())
+            {
+                LogFile logInfo = new LogFile(subdir, packageName);
+                if(logInfo != null)
+                {
+                    appInfo.setLogInfo(logInfo);
+                    appInfo.setBackupMode(appInfo.getLogInfo().getBackupMode());
+                }
+            }
+            list.add(appInfo);
+        }
     }
     public void refresh()
     {

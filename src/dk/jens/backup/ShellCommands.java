@@ -196,6 +196,108 @@ public class ShellCommands
             }
         }
     }
+    public int backupSpecial(File backupSubDir, String label, String dataDir, String... files)
+    {
+        // backup method only used for the special appinfos which can have lists of single files
+        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+        Log.i(TAG, "backup: " + label);
+        try
+        {
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            if(files != null)
+                for(String file : files)
+                    dos.writeBytes("cp -r " + file + " " + backupSubDirPath + "\n");
+            if(dataDir.length() > 0)
+                dos.writeBytes("cp -r " + dataDir + " " + backupSubDirPath + "\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> stderr = getOutput(p).get("stderr");
+                for(String line : stderr)
+                {
+                    writeErrorLog(label, line);
+                }
+            }
+            if(dataDir.length() > 0)
+            {
+                String folder = new File(dataDir).getName();
+                int zipret = compress(backupSubDir, folder);
+                if(zipret != 0)
+                    ret += zipret;
+            }
+            return ret;
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(InterruptedException e)
+        {
+            Log.e(TAG, "backupSpecial: " + e.toString());
+        }
+        return 1;
+    }
+    public int restoreSpecial(File backupSubDir, String label, String dataDir, String... files)
+    {
+        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+        String folder = dataDir.substring(dataDir.lastIndexOf("/") + 1);
+
+        int unzipRet = -1;
+        Log.i(TAG, "restoring: " + label);
+        try
+        {
+            if(new File(backupSubDir, folder + ".zip").exists())
+                unzipRet = new Compression().unzip(backupSubDir, folder + ".zip");
+
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            if(files != null)
+            {
+                for(String file : files)
+                {
+                    String filename = file.substring(file.lastIndexOf("/") + 1);
+                    dos.writeBytes("cp -r " + backupSubDirPath + "/" + filename + " " + file + "\n");
+                }
+            }
+            if(dataDir.length() > 0)
+            {
+                // remove trailing slash to ensure lastIndexOf gives the correct result
+                if(dataDir.endsWith("/"))
+                    dataDir = dataDir.substring(0, dataDir.length() - 1);
+                String dest = dataDir.substring(0, dataDir.lastIndexOf("/"));
+                dos.writeBytes("cp -r " + folder + " " + dest + "\n");
+            }
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> stderr = getOutput(p).get("stderr");
+                for(String line : stderr)
+                {
+                    writeErrorLog(label, line);
+                }
+            }
+            return ret;
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(InterruptedException e)
+        {
+            Log.e(TAG, "restoreSpecial: " + e.toString());
+        }
+        finally
+        {
+            if(unzipRet == 0)
+                deleteBackup(new File(backupSubDir, folder));
+        }
+        return 1;
+    }
     public ArrayList<String> getOwnership(String packageDir)
     {
         return getOwnership(packageDir, "sh");
@@ -308,6 +410,64 @@ public class ShellCommands
         catch(InterruptedException e)
         {
             Log.e(TAG, "error while setPermissions: " + e.toString());
+        }
+        return 1;
+    }
+    public int setPermissionsSpecial(String packageDir, String... files)
+    {
+        try
+        {
+            ArrayList<String> uid_gid = null;
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            if(packageDir.length() > 0)
+            {
+                uid_gid = getOwnership(packageDir);
+                dos.writeBytes(busybox + " chmod -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+                dos.writeBytes(busybox + " chmod -R 0771 " + packageDir + "\n");
+            }
+            if(files != null)
+            {
+                for(String file : files)
+                {
+                    // the single files don't necessarily have the same ownership as
+                    // their parent directory so they should be checked individually
+                    if((uid_gid = getOwnership(file, "su")) != null)
+                    {
+                        dos.writeBytes(busybox + " chown " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
+                        dos.writeBytes(busybox + " chmod 0771 " + file + "\n");
+                    }
+                    else
+                    {
+                        Log.e(TAG, "couldn't get ownership for " + file);
+                    }
+                }
+            }
+            dos.writeBytes("exit\n");
+            dos.flush();
+            int ret = p.waitFor();
+            if(ret != 0)
+            {
+                ArrayList<String> output = getOutput(p).get("stderr");
+                for(String outLine : output)
+                {
+                    writeErrorLog(packageDir, outLine);
+                }
+            }
+            return ret;
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            Log.e(TAG, "error while setPermissionsSpecial: " + e.toString());
+            writeErrorLog("", "setPermissionsSpecial error: could not find permissions for " + packageDir);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(InterruptedException e)
+        {
+            Log.e(TAG, "error while setPermissionsSpecial: " + e.toString());
         }
         return 1;
     }

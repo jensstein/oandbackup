@@ -9,8 +9,9 @@ implements Comparable<AppInfo>, Parcelable
 {
     LogFile logInfo;
     String label, packageName, versionName, sourceDir, dataDir;
+    String[] files;
     int versionCode, backupMode;
-    private boolean system, installed, checked;
+    private boolean system, installed, checked, special;
     public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
@@ -37,6 +38,11 @@ implements Comparable<AppInfo>, Parcelable
     {
         this(packageName, label, versionName, versionCode, sourceDir, dataDir, isSystem, isInstalled, null);
         this.backupMode = MODE_UNSET;
+    }
+    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean special)
+    {
+        this(packageName, label, versionName, versionCode, sourceDir, dataDir, true, true);
+        this.special = special;
     }
     public String getPackageName()
     {
@@ -98,6 +104,23 @@ implements Comparable<AppInfo>, Parcelable
     {
         return installed;
     }
+    // list of single files used by special backups
+    public String[] getFilesList()
+    {
+        return files;
+    }
+    public void setFilesList(String file)
+    {
+        files = new String[] {file};
+    }
+    public void setFilesList(String... files)
+    {
+        this.files = files;
+    }
+    public boolean isSpecial()
+    {
+        return special;
+    }
     public int compareTo(AppInfo appInfo)
     {
         return label.compareToIgnoreCase(appInfo.getLabel());
@@ -120,8 +143,9 @@ implements Comparable<AppInfo>, Parcelable
         out.writeString(dataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
-        out.writeBooleanArray(new boolean[] {system, installed, checked});
+        out.writeBooleanArray(new boolean[] {system, installed, checked, special});
         out.writeParcelable(icon, flags);
+        out.writeStringArray(files);
     }
     public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>()
     {
@@ -144,11 +168,13 @@ implements Comparable<AppInfo>, Parcelable
         dataDir = in.readString();
         versionCode = in.readInt();
         backupMode = in.readInt();
-        boolean[] bools = new boolean[3];
+        boolean[] bools = new boolean[4];
         in.readBooleanArray(bools);
         system = bools[0];
         installed = bools[1];
         checked = bools[2];
+        special = bools[3];
         icon = (Bitmap) in.readParcelable(getClass().getClassLoader());
+        files = in.createStringArray();
     }
 }

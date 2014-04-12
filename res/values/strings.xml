@@ -122,4 +122,11 @@
     <string name="sched_customListUpdateButton">update custom list</string>
     <string name="sched_excludeSystemCheckBox">exclude system apps</string>
     <string name="sched_warningIntervalZero">error: interval cannot be 0</string>
+
+    <string name="spec_accounts">Accounts</string>
+    <string name="spec_appwidgets">Application Widgets</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Data Usage and Policy</string>
+    <string name="spec_wallpaper">Wallpaper</string>
+    <string name="spec_wifiAccessPoints">Wifi Access Points</string>
 </resources>
