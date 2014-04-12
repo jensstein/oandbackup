@@ -46,7 +46,8 @@ public class Sorter
         NEWANDUPDATED(R.id.showNewAndUpdated),
         OLDBACKUPS(R.id.showOldBackups),
         ONLYAPK(R.id.showOnlyApkBackedUp),
-        ONLYDATA(R.id.showOnlyDataBackedUp);
+        ONLYDATA(R.id.showOnlyDataBackedUp),
+        ONLYSPECIAL(R.id.showOnlySpecialBackups);
         int id;
         FilteringMethod(int id)
         {
@@ -112,6 +113,10 @@ public class Sorter
             case R.id.showOnlyDataBackedUp:
                 filteringMethod = FilteringMethod.ONLYDATA;
                 adapter.filterPartialBackups(AppInfo.MODE_DATA);
+                break;
+            case R.id.showOnlySpecialBackups:
+                filteringMethod = FilteringMethod.ONLYSPECIAL;
+                adapter.filterSpecialBackups();
                 break;
             case R.id.sortByLabel:
                 sortingMethod = SortingMethod.LABEL;

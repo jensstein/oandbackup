@@ -24,6 +24,8 @@
         android:title="@string/showOnlyApkBackedUp" />
     <item android:id="@+id/showOnlyDataBackedUp"
         android:title="@string/showOnlyDataBackedUp" />
+    <item android:id="@+id/showOnlySpecialBackups"
+        android:title="@string/showOnlySpecialBackups" />
     <group android:id="@+id/sortGroup"
         android:checkableBehavior="single">
         <item android:id="@+id/sortByLabel"

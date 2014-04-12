@@ -377,6 +377,14 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         notifyDataSetChanged();
     }
+    public void filterSpecialBackups()
+    {
+        items.clear();
+        for(AppInfo appInfo : originalValues)
+            if(appInfo.isSpecial())
+                add(appInfo);
+        notifyDataSetChanged();
+    }
     public void sortByLabel()
     {
         Collections.sort(originalValues, labelComparator);
