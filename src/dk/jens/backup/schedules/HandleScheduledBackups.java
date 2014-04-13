@@ -128,11 +128,10 @@ public class HandleScheduledBackups
                     }
                     int id = (int) System.currentTimeMillis();
                     int total = backupList.size();
-                    int i = 0;
+                    int i = 1;
                     boolean errorFlag = false;
                     for(AppInfo appInfo : backupList)
                     {
-                        i++;
                         String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                         NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
                         File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
@@ -144,11 +143,20 @@ public class HandleScheduledBackups
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        int ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode, context.getApplicationInfo().dataDir);
+                        appInfo.setBackupMode(subMode);
+                        int ret = 0;
+                        if(appInfo.isSpecial())
+                        {
+                            ret = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+                            appInfo.setBackupMode(AppInfo.MODE_DATA);
+                        }
+                        else
+                        {
+                            ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode, context.getApplicationInfo().dataDir);
+                        }
 
                         shellCommands.logReturnMessage(context, ret);
 
-                        appInfo.setBackupMode(subMode);
                         LogFile.writeLogFile(backupSubDir, appInfo);
                         if(ret != 0)
                         {
@@ -160,6 +168,7 @@ public class HandleScheduledBackups
                             String notificationMessage = context.getString(R.string.sched_notificationMessage);
                             NotificationHelper.showNotification(context, OAndBackup.class, id, notificationTitle, notificationMessage, true);
                         }
+                        i++;
                     }
                     if(wl.isHeld())
                     {
