@@ -35,7 +35,7 @@ import java.util.List;
 public class BatchActivity extends BaseActivity
 implements OnClickListener
 {
-    public static ArrayList<AppInfo> appInfoList;
+    ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     final static String TAG = OAndBackup.TAG;
     boolean backupBoolean;
     final static int SHOW_DIALOG = 0;

@@ -50,7 +50,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     SharedPreferences prefs;
 
     AppInfoAdapter adapter;
-    ArrayList<AppInfo> appInfoList;
+    /*
+     * appInfoList is too large to transfer as an intent extra.
+     * making it accessible as a public field instead is recommended
+     * by the android documentation:
+     * http://developer.android.com/guide/faq/framework.html#3
+     */
+    public static ArrayList<AppInfo> appInfoList;
 
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationId = (int) System.currentTimeMillis();
@@ -335,9 +341,6 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 }
             }
         }
-        BatchActivity.appInfoList = list;
-        CustomPackageList.appInfoList = list;
-        Tools.appInfoList = list;
         return list;
     }
     public ArrayList<AppInfo> getSpecialBackups()

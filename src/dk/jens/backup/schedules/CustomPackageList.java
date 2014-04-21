@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class CustomPackageList
 {
-    public static ArrayList<AppInfo> appInfoList;
+    ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     SharedPreferences prefs;
     FileReaderWriter frw;
     public CustomPackageList(Context context, int number)

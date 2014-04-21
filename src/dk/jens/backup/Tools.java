@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Tools extends ListActivity
 {
-    public static ArrayList<AppInfo> appInfoList;
+    ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     final static String TAG = OAndBackup.TAG; 
     File backupDir;
     ShellCommands shellCommands;
