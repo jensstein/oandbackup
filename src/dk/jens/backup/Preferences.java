@@ -3,6 +3,7 @@ package dk.jens.backup;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
@@ -28,6 +29,17 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        // for some reason preferencesactivity doesn't behave like the other
+        // activities when setting locale so it can't be done in onCreate
+        // http://stackoverflow.com/a/20057397
+        ListPreference languages = (ListPreference) findPreference("languages");
+        if(languages != null)
+            LanguageHelper.initLanguage(this, languages.getValue());
     }
     @Override
     public void onResume()

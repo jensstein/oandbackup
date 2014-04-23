@@ -1,7 +1,9 @@
 package dk.jens.backup;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 public class BaseActivity extends Activity
@@ -14,6 +16,9 @@ public class BaseActivity extends Activity
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String langCode = prefs.getString("languages", "system");
+        LanguageHelper.initLanguage(this, langCode);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -33,6 +34,9 @@ public class Tools extends ListActivity
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String langCode = prefs.getString("languages", "system");
+        LanguageHelper.initLanguage(this, langCode);
         
         handleMessages = new HandleMessages(this);
 
