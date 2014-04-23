@@ -89,15 +89,14 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 shellCommands = new ShellCommands(prefs);
                 String langCode = prefs.getString("languages", "system");
-                LanguageHelper languageHelper = new LanguageHelper();
-                languageHelper.initLanguage(OAndBackup.this, langCode);
+                LanguageHelper.initLanguage(OAndBackup.this, langCode);
                 String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
                 if(!checked)
                 {
                     handleMessages.showMessage("", getString(R.string.suCheck));
                     boolean haveSu = shellCommands.checkSuperUser();
-                    languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                    LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                     if(!haveSu)
                     {
                         Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
@@ -114,7 +113,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 {
                     handleMessages.changeMessage("", getString(R.string.collectingData));
                     appInfoList = getPackageInfo();
-                    languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                    LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                     handleMessages.endMessage();
                 }
 
@@ -476,7 +475,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        new LanguageHelper().initLanguage(this, prefs.getString("languages", "system"));
+        LanguageHelper.initLanguage(this, prefs.getString("languages", "system"));
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)

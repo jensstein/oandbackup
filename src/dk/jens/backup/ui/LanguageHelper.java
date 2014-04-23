@@ -10,14 +10,14 @@ import java.util.Locale;
 public class LanguageHelper
 {
     // no need to change anything on start if default is choosen
-    public void initLanguage(Context context, String langCode)
+    public static void initLanguage(Context context, String langCode)
     {
         if(!langCode.equals("system"))
         {
             changeLanguage(context, langCode);
         }
     }
-    public boolean changeLanguage(Context context, String langCode)
+    public static boolean changeLanguage(Context context, String langCode)
     {
         if(!langCode.equals("system"))
         {
@@ -44,7 +44,7 @@ public class LanguageHelper
             return changeLanguage(context, new Locale(langCode).getDefault().getLanguage());
         }
     }
-    public void legacyKeepLanguage(Context context, String langCode)
+    public static void legacyKeepLanguage(Context context, String langCode)
     {
         // for some reason the locale changes back when PackageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES) is called on older apis (Process.waitFor() in shellCommands.checkSuperUser() does it too)
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
