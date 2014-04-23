@@ -93,4 +93,12 @@ public class Utils
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         NavUtils.navigateUpTo(activity, intent);
     }
+    public static void reShowMessage(HandleMessages handleMessages, long tid)
+    {
+        // since messages are progressdialogs and not dialogfragments they need to be set again manually
+        if(tid != -1)
+            for(Thread t : Thread.getAllStackTraces().keySet())
+                if(t.getId() == tid && t.isAlive())
+                    handleMessages.reShowMessage();
+    }
 }

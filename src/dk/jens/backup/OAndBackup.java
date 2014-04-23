@@ -60,6 +60,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationId = (int) System.currentTimeMillis();
+    long threadId = -1;
 
     ShellCommands shellCommands;
     HandleMessages handleMessages;
@@ -71,8 +72,17 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         handleMessages = new HandleMessages(this);
-        
-        new Thread(new Runnable(){
+
+        // if onCreate is called due to a configuration change su and busybox shouldn't be checked again
+        final boolean checked = savedInstanceState != null ? savedInstanceState.getBoolean("stateChecked") : false;
+        if(savedInstanceState != null)
+        {
+            threadId = savedInstanceState.getLong("threadId");
+            Utils.reShowMessage(handleMessages, threadId);
+        }
+
+        Thread initThread = new Thread(new Runnable()
+        {
             public void run()
             {
                 prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
@@ -81,28 +91,35 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 String langCode = prefs.getString("languages", "system");
                 LanguageHelper languageHelper = new LanguageHelper();
                 languageHelper.initLanguage(OAndBackup.this, langCode);
-                handleMessages.showMessage("", getString(R.string.suCheck));
-                boolean haveSu = shellCommands.checkSuperUser();
-                languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
-                if(!haveSu)
-                {
-                    Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
-                }
-                boolean bboxInstalled = shellCommands.checkBusybox();
-                if(!bboxInstalled)
-                {
-                    Utils.showWarning(OAndBackup.this, "", getString(R.string.busyboxProblem));
-                }
-                handleMessages.changeMessage("", getString(R.string.collectingData));
                 String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
-                
-                appInfoList = getPackageInfo();
-                languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
-                handleMessages.endMessage();
+                if(!checked)
+                {
+                    handleMessages.showMessage("", getString(R.string.suCheck));
+                    boolean haveSu = shellCommands.checkSuperUser();
+                    languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                    if(!haveSu)
+                    {
+                        Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
+                    }
+                    boolean bboxInstalled = shellCommands.checkBusybox();
+                    if(!bboxInstalled)
+                    {
+                        Utils.showWarning(OAndBackup.this, "", getString(R.string.busyboxProblem));
+                    }
+                    handleMessages.endMessage();
+                }
+
+                if(appInfoList == null)
+                {
+                    handleMessages.changeMessage("", getString(R.string.collectingData));
+                    appInfoList = getPackageInfo();
+                    languageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                    handleMessages.endMessage();
+                }
+
                 final ListView listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
-                
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
                 adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
@@ -128,7 +145,16 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     }
                 });
             }
-        }).start();
+        });
+        initThread.start();
+        /*
+         * only set threadId here if this is not after a configuration change.
+         * otherwise it could overwrite the value of a running backup / restore thread.
+         * a better fix would probably be to check for the thread name or have the threads
+         * in an array.
+         */
+        if(!checked)
+            threadId = initThread.getId();
     }
     @Override
     public void onResume()
@@ -152,6 +178,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         }
         super.onDestroy();
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("stateChecked", true);
+        outState.putLong("threadId", threadId);
+    }
     public void displayDialog(AppInfo appInfo)
     {
         if(!appInfo.isInstalled() && appInfo.getBackupMode() == AppInfo.MODE_DATA)
@@ -170,7 +203,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public void callBackup(final AppInfo appInfo, final int backupMode)
     {
-        new Thread(new Runnable()
+        Thread backupThread = new Thread(new Runnable()
         {
             int backupRet = 0;
             public void run()
@@ -218,11 +251,13 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
-        }).start();
+        });
+        backupThread.start();
+        threadId = backupThread.getId();
     }
     public void callRestore(final AppInfo appInfo, final int options)
     {
-        new Thread(new Runnable()
+        Thread restoreThread = new Thread(new Runnable()
         {
             public void run()
             {
@@ -283,7 +318,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     Utils.showErrors(OAndBackup.this, shellCommands);
                 }
             }
-        }).start();
+        });
+        restoreThread.start();
+        threadId = restoreThread.getId();
     }
     public ArrayList<AppInfo> getPackageInfo()
     {
@@ -397,7 +434,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     }
     public void refresh()
     {
-        new Thread(new Runnable()
+        Thread refreshThread = new Thread(new Runnable()
         {
             public void run()
             {
@@ -420,7 +457,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 });
                 handleMessages.endMessage();
             }
-        }).start();
+        });
+        refreshThread.start();
+        threadId = refreshThread.getId();
     }
     public void refreshSingle(AppInfo appInfo)
     {
@@ -610,7 +649,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        new Thread(new Runnable()
+                        Thread uninstallThread = new Thread(new Runnable()
                         {
                             public void run()
                             {
@@ -630,7 +669,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                     Utils.showErrors(OAndBackup.this, shellCommands);
                                 }
                             }
-                        }).start();
+                        });
+                        uninstallThread.start();
+                        threadId = uninstallThread.getId();
                     }
                 })
                 .setNegativeButton(R.string.dialogNo, null)
@@ -645,7 +686,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        new Thread(new Runnable()
+                        Thread deleteBackupThread = new Thread(new Runnable()
                         {
                             public void run()
                             {
@@ -658,7 +699,9 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                                 }
                                 handleMessages.endMessage();
                             }
-                        }).start();
+                        });
+                        deleteBackupThread.start();
+                        threadId = deleteBackupThread.getId();
                     }
                 })
                 .setNegativeButton(R.string.dialogNo, null)

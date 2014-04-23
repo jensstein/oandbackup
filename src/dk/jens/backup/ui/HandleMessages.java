@@ -40,6 +40,14 @@ public class HandleMessages
         message.setData(bundle);
         message.sendToTarget();
     }
+    public void reShowMessage()
+    {
+        setMessage(handler.getTitle(), handler.getMessage());
+    }
+    public boolean isShowing()
+    {
+        return handler.isShowing();
+    }
     public void showMessage(String title, String message)
     {
         setMessage(title, message);
@@ -61,9 +69,12 @@ public class HandleMessages
     private static class ProgressHandler extends Handler
     {
         private static ProgressDialog progress = null;
+        private static String title, msg;
         @Override
         public void handleMessage(Message message)
         {
+            title = message.getData().getString("title");
+            msg = message.getData().getString("message");
             switch(message.what)
             {
                 case SHOW_DIALOG:
@@ -76,13 +87,13 @@ public class HandleMessages
                     */
                     if(progress != null && progress.isShowing())
                     {
-                        progress.setTitle(message.getData().getString("title"));
-                        progress.setMessage(message.getData().getString("message"));
+                        progress.setTitle(title);
+                        progress.setMessage(msg);
                     }
                     else if((context = mContext.get()) != null)
                     {
                         // TODO: notice if a BadTokenException might seldomly occur here
-                        progress = ProgressDialog.show(context, message.getData().getString("title"), message.getData().getString("message"), true, false);
+                        progress = ProgressDialog.show(context, title, msg, true, false);
                     }
                     else
                     {
@@ -108,6 +119,24 @@ public class HandleMessages
                     }
                     break;
             }
+        }
+        public boolean isShowing()
+        {
+            if(progress != null)
+                return progress.isShowing();
+            return false;
+        }
+        public String getTitle()
+        {
+            if(title != null)
+                return title;
+            return "";
+        }
+        public String getMessage()
+        {
+            if(msg != null)
+                return msg;
+            return "";
         }
     };
 }

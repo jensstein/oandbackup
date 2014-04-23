@@ -52,7 +52,9 @@ implements OnClickListener
     HandleMessages handleMessages;
     ShellCommands shellCommands;
     Sorter sorter;
-    
+
+    long threadId = -1;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -61,7 +63,13 @@ implements OnClickListener
 
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         handleMessages = new HandleMessages(this);
-        
+
+        if(savedInstanceState != null)
+        {
+            threadId = savedInstanceState.getLong("threadId");
+            Utils.reShowMessage(handleMessages, threadId);
+        }
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
         backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath);
@@ -138,7 +146,13 @@ implements OnClickListener
             handleMessages.endMessage();
         }
         super.onDestroy();
-    }    
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putLong("threadId", threadId);
+    }
     @Override
     public void onClick(View v)
     {
@@ -241,13 +255,15 @@ implements OnClickListener
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                new Thread(new Runnable()
+                Thread thread = new Thread(new Runnable()
                 {
                     public void run()
                     {
                         doAction(selectedList);
                     }
-                }).start();
+                });
+                thread.start();
+                threadId = thread.getId();
             }
         })
         .setNegativeButton(R.string.dialogNo, null)
