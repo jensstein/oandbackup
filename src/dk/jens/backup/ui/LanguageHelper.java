@@ -41,7 +41,7 @@ public class LanguageHelper
         }
         else
         {
-            return changeLanguage(context, new Locale(langCode).getDefault().getLanguage());
+            return changeLanguage(context, Locale.getDefault().getLanguage());
         }
     }
     public static void legacyKeepLanguage(Context context, String langCode)
