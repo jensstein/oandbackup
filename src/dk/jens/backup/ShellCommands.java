@@ -976,7 +976,7 @@ public class ShellCommands
             return users;
         }
     }
-    public int getCurrentUser()
+    public static int getCurrentUser()
     {
         try
         {
@@ -986,26 +986,12 @@ public class ShellCommands
             boolean muEnabled = userHandle.getField("MU_ENABLED").getBoolean(null);
             int range = userHandle.getField("PER_USER_RANGE").getInt(null);
             if(muEnabled)
-            {
                 return android.os.Binder.getCallingUid() / range;
-            }
-            else
-            {
-                return 0;
-            }
         }
-        catch(ClassNotFoundException e)
-        {
-            return 0;
-        }
-        catch(NoSuchFieldException e)
-        {
-            return 0;
-        }
-        catch(IllegalAccessException e)
-        {
-            return 0;
-        }
+        catch(ClassNotFoundException e){}
+        catch(NoSuchFieldException e){}
+        catch(IllegalAccessException e){}
+        return 0;
     }
     public void enableDisablePackage(String packageName, ArrayList<String> users, boolean enable)
     {
