@@ -1,9 +1,6 @@
 package dk.jens.backup;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -36,7 +33,9 @@ public class HandleScheduledBackups
         {
             public void run()
             {
-                ArrayList<AppInfo> list = gatherInfo();
+                String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+                backupDir = new File(backupDirPath);
+                ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(context, backupDir, false);
                 ArrayList<AppInfo> listToBackUp;
                 switch(mode)
                 {
@@ -143,7 +142,6 @@ public class HandleScheduledBackups
                         {
                             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
                         }
-                        appInfo.setBackupMode(subMode);
                         int ret = 0;
                         if(appInfo.isSpecial())
                         {
@@ -153,6 +151,7 @@ public class HandleScheduledBackups
                         else
                         {
                             ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode, context.getApplicationInfo().dataDir);
+                            appInfo.setBackupMode(subMode);
                         }
 
                         shellCommands.logReturnMessage(context, ret);
@@ -178,40 +177,5 @@ public class HandleScheduledBackups
                 }
             }).start();
         }
-    }
-    public ArrayList gatherInfo()
-    {
-        PackageManager pm = context.getPackageManager();
-        List<PackageInfo> pinfoList = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
-        ArrayList<AppInfo> appInfoList = new ArrayList<AppInfo>();
-        String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
-        backupDir = new File(backupDirPath);
-
-        for(PackageInfo pinfo : pinfoList)
-        {
-            long lastBackupMillis = 0;
-            String lastBackup = context.getString(R.string.noBackupYet);
-            boolean isSystem = false;
-            if((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
-            {
-                isSystem = true;
-            }
-            if(backupDir != null)
-            {
-                File subdir = new File(backupDir, pinfo.packageName);
-                if(subdir.exists())
-                {
-                    LogFile logInfo = new LogFile(new File(backupDir, pinfo.packageName), pinfo.packageName);
-                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
-                    appInfoList.add(appInfo);
-                }
-                else
-                {
-                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
-                    appInfoList.add(appInfo);
-                }
-            }
-        }
-        return appInfoList;
     }
 }
