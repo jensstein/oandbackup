@@ -47,15 +47,20 @@ public class HandleAlarms
     }
     public long timeUntilNextEvent(int interval, int hour)
     {
+        return timeUntilNextEvent(interval, hour, false);
+    }
+    public long timeUntilNextEvent(int interval, int hour, boolean init)
+    {
         Calendar c = Calendar.getInstance();
-        if((interval == 1 && hour > c.get(Calendar.HOUR_OF_DAY)) || interval > 1)
+        // init: only subtract when the alarm is set first
+        if(init && ((interval == 1 && hour > c.get(Calendar.HOUR_OF_DAY)) || interval > 1))
         {
             /**
-                * to account for the day the schedule was set on
-                * the interval is subtracted by one.
-                * the check that the scheduled hour is larger
-                * than the current hour prevents things getting
-                * scheduled in the past.
+            * to account for the day the schedule was set on
+            * the interval is subtracted by one.
+            * the check that the scheduled hour is larger
+            * than the current hour prevents things getting
+            * scheduled in the past.
             */
             interval--;
         }

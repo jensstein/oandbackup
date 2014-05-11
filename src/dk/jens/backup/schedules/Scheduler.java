@@ -152,7 +152,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             edit.putBoolean("enabled" + number, true);
             Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
             Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-            long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
+            long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
 //            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
             handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
             edit.putLong("timePlaced" + number, System.currentTimeMillis());
@@ -188,7 +188,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     edit.putInt("repeatTime" + number, repeatTime);
                     if(prefs.getBoolean("enabled" + number, false))
                     {
-                        long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay);
+                        long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
                         edit.putLong("timeUntilNextEvent" + number, startTime);
     //                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
                         handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
