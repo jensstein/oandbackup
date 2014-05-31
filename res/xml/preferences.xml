@@ -45,7 +45,7 @@
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
-        <EditTextPreference
+        <dk.jens.backup.FileBrowserEditTextPreference
             android:key="pathBackupFolder"
             android:title="@string/prefs_pathBackupFolder"
             android:summary="@string/prefs_summaryBackupFolder"

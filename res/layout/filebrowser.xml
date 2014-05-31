@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <HorizontalScrollView
+            android:id="@+id/fileBrowserHorizontalScrollView"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:scrollbars="none">
+            <TextView
+                android:id="@+id/fileBrowserCurrentPath"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                />
+        </HorizontalScrollView>
+        <Button
+            android:id="@+id/fileBrowserSetPath"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:text="@string/filebrowser_setButton"
+            />
+        </LinearLayout>
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fileBrowserListview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fastScrollEnabled="true"
+        />
+</LinearLayout>
+

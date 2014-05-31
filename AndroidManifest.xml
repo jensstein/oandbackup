@@ -43,6 +43,10 @@
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName="dk.jens.backup.OAndBackup" >
         </activity>
+        <activity android:name=".FileBrowser"
+            android:label="@string/filebrowser_title"
+            android:parentActivityName="dk.jens.backup.Preferences" >
+        </activity>
         <receiver android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver">
             <intent-filter>

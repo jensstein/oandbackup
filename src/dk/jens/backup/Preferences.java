@@ -14,7 +14,7 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        EditTextPreference backupFolderPref = (EditTextPreference) findPreference("pathBackupFolder");
+        FileBrowserEditTextPreference backupFolderPref = (FileBrowserEditTextPreference) findPreference("pathBackupFolder");
         // det ser ikke ud til at setDefaultValue() virker som den skal
         if(backupFolderPref.getText() == null)
         {
@@ -45,12 +45,18 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     public void onResume()
     {
         super.onResume();
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);        
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        FileBrowserEditTextPreference backupFolderPref = (FileBrowserEditTextPreference) findPreference("pathBackupFolder");
+        if(FileBrowser.getPath() != null)
+        {
+            backupFolderPref.getEditText().setText(FileBrowser.getPath());
+            FileBrowser.invalidatePath();
+        }
     }
     @Override
     public void onPause()
     {
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);    
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
     @Override

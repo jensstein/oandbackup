@@ -71,6 +71,7 @@
     <string name="help_title">help</string>
     <string name="notInstalledModeDataWarning">app cannot be restored from a backup without apk</string>
     <string name="shareTitle">share</string>
+    <string name="filebrowser_title">file browser</string>
     
     <string name="tools_title">tools</string>
     <string name="tools_batchDeleteTitle">delete backups?</string>
@@ -130,4 +131,6 @@
     <string name="spec_data">Data Usage and Policy</string>
     <string name="spec_wallpaper">Wallpaper</string>
     <string name="spec_wifiAccessPoints">Wifi Access Points</string>
+
+    <string name="filebrowser_setButton">set</string>
 </resources>
