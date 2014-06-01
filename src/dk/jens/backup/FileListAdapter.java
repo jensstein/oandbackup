@@ -47,7 +47,12 @@ public class FileListAdapter extends ArrayAdapter<File>
         }
         File file = getItem(pos);
         if(file != null)
-            viewHolder.filename.setText(file.getAbsolutePath() + "/");
+        {
+            if(file instanceof FileBrowser.ParentFile)
+                viewHolder.filename.setText("..");
+            else
+                viewHolder.filename.setText(file.getAbsolutePath() + "/");
+        }
         return convertView;
     }
     static class ViewHolder

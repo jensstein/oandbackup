@@ -44,7 +44,6 @@ implements View.OnClickListener
         resultPath = null;
 
         filesList = getFilesList(root);
-        Collections.sort(filesList, pathComparator);
 
         currentPathTextView = (TextView) findViewById(R.id.fileBrowserCurrentPath);
         currentPathTextView.setText(root);
@@ -73,6 +72,12 @@ implements View.OnClickListener
             for(File file : dirList)
                 if(file.isDirectory())
                     list.add(file);
+        Collections.sort(list, pathComparator);
+        File parent = dir.getParentFile();
+        // set as ParentFile so that FileListAdapter will abbreviate
+        // the representation of its path to '..'
+        if(parent != null)
+            list.add(0, new ParentFile(parent.getAbsolutePath()));
         return list;
     }
     public void navigateFiles(final boolean direction, int pos)
@@ -90,7 +95,6 @@ implements View.OnClickListener
         }
         adapter.clear();
         ArrayList<File> filesList = getFilesList(root);
-        Collections.sort(filesList, pathComparator);
         adapter.addAll(filesList);
         adapter.notifyDataSetChanged();
         currentPathTextView.setText(root);
@@ -140,4 +144,16 @@ implements View.OnClickListener
             return m1.getName().compareToIgnoreCase(m2.getName());
         }
     };
+    /*
+    * this is just a placeholder class that allows for checking
+    * whether a given file is the parent folder in the list.
+    * the actual check is done in FileListAdapter with instanceof.
+    */
+    protected class ParentFile extends File
+    {
+        public ParentFile(String path)
+        {
+            super(path);
+        }
+    }
 }
