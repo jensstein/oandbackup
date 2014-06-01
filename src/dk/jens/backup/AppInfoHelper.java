@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.List;
 
 public class AppInfoHelper
 {
+    final static String TAG = OAndBackup.TAG;
+
     public static ArrayList<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups)
     {
         ArrayList<AppInfo> list = new ArrayList<AppInfo>();
@@ -64,18 +67,25 @@ public class AppInfoHelper
         if(backupDir != null && backupDir.exists())
         {
             String[] files = backupDir.list();
-            Arrays.sort(files);
-            for(String folder : files)
+            if(files != null)
             {
-                if(!packageNames.contains(folder))
+                Arrays.sort(files);
+                for(String folder : files)
                 {
-                    LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
-                    if(logInfo.getLastBackupMillis() > 0)
+                    if(!packageNames.contains(folder))
                     {
-                        AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
-                        list.add(appInfo);
+                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                        if(logInfo.getLastBackupMillis() > 0)
+                        {
+                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
+                            list.add(appInfo);
+                        }
                     }
                 }
+            }
+            else
+            {
+                Log.e(TAG, "addUninstalledBackups: backupDir.list() returned null");
             }
         }
     }
