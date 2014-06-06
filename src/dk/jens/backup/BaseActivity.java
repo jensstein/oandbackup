@@ -1,12 +1,12 @@
 package dk.jens.backup;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 
-public class BaseActivity extends Activity
+public class BaseActivity extends FragmentActivity
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
