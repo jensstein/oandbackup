@@ -137,4 +137,5 @@
     <string name="filebrowser_createDirectoryDlgMsg">enter name of folder to create</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
     <string name="filebrowser_createDirectoryError">could not create the folder: </string>
+    <string name="filebrowser_refresh">refresh</string>
 </resources>

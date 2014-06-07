@@ -4,4 +4,8 @@
         android:id="@+id/createDirectory"
         android:title="@string/filebrowser_createDirectory"
     />
+    <item
+        android:id="@+id/filebrowser_refresh"
+        android:title="@string/filebrowser_refresh"
+    />
 </menu>

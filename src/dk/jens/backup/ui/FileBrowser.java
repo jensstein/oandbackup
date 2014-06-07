@@ -106,10 +106,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
             if((root = file.getParent()) == null)
                 root = "/";
         }
-        adapter.clear();
-        ArrayList<File> filesList = getFilesList(root);
-        adapter.addAll(filesList);
-        adapter.notifyDataSetChanged();
+        refresh();
         currentPathTextView.setText(root);
         scroll.post(new Runnable()
         {
@@ -122,6 +119,13 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
                     listView.setSelection(0);
             }
         });
+    }
+    public void refresh()
+    {
+        filesList = getFilesList(root);
+        adapter.clear();
+        adapter.addAll(filesList);
+        adapter.notifyDataSetChanged();
     }
     public static String getPath()
     {
@@ -149,6 +153,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
     {
         if(!makedir(root, dirname))
             Toast.makeText(this, getString(R.string.filebrowser_createDirectoryError) + " " + root + "/" + dirname, Toast.LENGTH_LONG).show();
+        refresh();
     }
     @Override
     public void onClick(View v)
@@ -189,8 +194,11 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
             dialog.setArguments(arguments);
             dialog.show(getSupportFragmentManager(), "DialogFragment");
             break;
+        case R.id.refresh:
+            refresh();
+            break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
     public Comparator<File> pathComparator = new Comparator<File>()
     {
