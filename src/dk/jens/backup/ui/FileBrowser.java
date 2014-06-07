@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class FileBrowser extends BaseActivity
-implements View.OnClickListener
+implements View.OnClickListener, CreateDirectoryDialog.PathListener
 {
     final static String TAG = OAndBackup.TAG;
 
@@ -34,13 +38,16 @@ implements View.OnClickListener
     private static String resultPath;
 
     @Override
-    public void onCreate(Bundle savedInstance)
+    public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstance);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.filebrowser);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        root = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+        if(savedInstanceState != null)
+            root = savedInstanceState.getString("root");
+        else
+            root = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
         resultPath = null;
 
         filesList = getFilesList(root);
@@ -62,6 +69,12 @@ implements View.OnClickListener
                 navigateFiles(true, pos);
             }
         });
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString("root", root);
     }
     public ArrayList<File> getFilesList(String path)
     {
@@ -118,6 +131,25 @@ implements View.OnClickListener
     {
         resultPath = null;
     }
+    public boolean makedir(String root, String dirname)
+    {
+        try
+        {
+            File dir = new File(root, dirname);
+            return dir.mkdir();
+        }
+        catch(SecurityException e)
+        {
+            Log.e(TAG, "makedir: " + e.toString());
+        }
+        return false;
+    }
+    @Override
+    public void onPathSet(String root, String dirname)
+    {
+        if(!makedir(root, dirname))
+            Toast.makeText(this, getString(R.string.filebrowser_createDirectoryError) + " " + root + "/" + dirname, Toast.LENGTH_LONG).show();
+    }
     @Override
     public void onClick(View v)
     {
@@ -136,6 +168,29 @@ implements View.OnClickListener
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        menu.clear();
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.filebrowsermenu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+        case R.id.createDirectory:
+            Bundle arguments = new Bundle();
+            arguments.putString("root", root);
+            CreateDirectoryDialog dialog = new CreateDirectoryDialog();
+            dialog.setArguments(arguments);
+            dialog.show(getSupportFragmentManager(), "DialogFragment");
+            break;
+        }
+        return true;
     }
     public Comparator<File> pathComparator = new Comparator<File>()
     {
