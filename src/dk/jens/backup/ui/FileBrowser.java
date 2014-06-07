@@ -4,12 +4,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
@@ -60,6 +63,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
 
         adapter = new FileListAdapter(this, R.layout.fileslist, filesList);
         listView = (ListView) findViewById(R.id.fileBrowserListview);
+        registerForContextMenu(listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -135,6 +139,11 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
     {
         resultPath = null;
     }
+    public void setPath(String path)
+    {
+        resultPath = path;
+        finish();
+    }
     public boolean makedir(String root, String dirname)
     {
         try
@@ -158,8 +167,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
     @Override
     public void onClick(View v)
     {
-        resultPath = root;
-        finish();
+        setPath(root);
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -199,6 +207,29 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
             break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.filebrowsercontextmenu, menu);
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        File file = adapter.getItem(info.position);
+        menu.setHeaderTitle(file.getName());
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+        case R.id.filebrowser_contextSetBackupDirectory:
+            AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+            File file = adapter.getItem(info.position);
+            setPath(file.getAbsolutePath());
+            return true;
+        default:
+            return super.onContextItemSelected(item);
+        }
     }
     public Comparator<File> pathComparator = new Comparator<File>()
     {
