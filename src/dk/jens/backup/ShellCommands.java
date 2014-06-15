@@ -320,6 +320,12 @@ public class ShellCommands
                 * escaping backslashes need to be escaped here
                 * http://www.mikeplate.com/2012/05/09/extract-regular-expression-group-match-using-grep-or-sed/
             */
+            /*
+            * some packages can have 0 / UNKNOWN as uid and gid for a short
+            * time before being switched to their proper ids so to work
+            * around the race condition we sleep a little.
+            */
+            dos.writeBytes("sleep 1\n");
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\((.?[0-9]+).*|\\1|p'\n");
             dos.flush();
             dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\((.?[0-9]+).*|\\1|p'\n");
