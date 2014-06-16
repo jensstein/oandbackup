@@ -93,11 +93,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     {
                         Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
                     }
-                    boolean bboxInstalled = shellCommands.checkBusybox();
-                    if(!bboxInstalled)
-                    {
-                        Utils.showWarning(OAndBackup.this, "", getString(R.string.busyboxProblem));
-                    }
+                    checkBusybox();
                     handleMessages.endMessage();
                 }
 
@@ -630,6 +626,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         if(key.equals("pathBusybox"))
         {
             shellCommands = new ShellCommands(prefs);
+            checkBusybox();
         }
         if(key.equals("timestamp"))
         {
@@ -729,5 +726,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 public void onClick(DialogInterface dialog, int which){}
             })
             .show();
+    }
+    public void checkBusybox()
+    {
+        if(!shellCommands.checkBusybox())
+            Utils.showWarning(this, "", getString(R.string.busyboxProblem));
     }
 }
