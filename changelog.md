@@ -1,6 +1,18 @@
 changelog
 =========
 
+0.2.9 (development)
+-------------------
+ * more robust method of getting uid and gid of a package
+ * count the day a scheduled backup was set when calculating when it should run
+ * added option to disable notifications
+ * added (experimental) support for special backup - accounts, widgets, etc.
+ * added file browser for choosing backup directory
+ * added check for sanity of busybox path when it is set in the preferences
+ * added french translation. thanks to gwenhael.
+ * better handling of symlinks when backing up
+ * better handling of configuration changes
+
 0.2.8 (2014-03-08)
 -------------------
  * context menu now has a share option - the backup files for data and apk can be shared here
