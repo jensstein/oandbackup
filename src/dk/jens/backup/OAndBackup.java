@@ -42,6 +42,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     SharedPreferences prefs;
 
     AppInfoAdapter adapter;
+    ListView listView;
     /*
      * appInfoList is too large to transfer as an intent extra.
      * making it accessible as a public field instead is recommended
@@ -67,6 +68,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
 
         // if onCreate is called due to a configuration change su and busybox shouldn't be checked again
         final boolean checked = savedInstanceState != null ? savedInstanceState.getBoolean("stateChecked") : false;
+        final int firstVisiblePosition = savedInstanceState != null ? savedInstanceState.getInt("firstVisiblePosition") : 0;
         if(savedInstanceState != null)
         {
             threadId = savedInstanceState.getLong("threadId");
@@ -105,7 +107,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     handleMessages.endMessage();
                 }
 
-                final ListView listView = (ListView) findViewById(R.id.listview);
+                listView = (ListView) findViewById(R.id.listview);
                 registerForContextMenu(listView);
 
                 adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
@@ -120,6 +122,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     public void run()
                     {
                         listView.setAdapter(adapter);
+                        listView.setSelection(firstVisiblePosition);
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                         {
                             @Override
@@ -171,6 +174,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         super.onSaveInstanceState(outState);
         outState.putBoolean("stateChecked", true);
         outState.putLong("threadId", threadId);
+        outState.putInt("firstVisiblePosition", listView.getFirstVisiblePosition());
     }
     public void displayDialog(AppInfo appInfo)
     {
