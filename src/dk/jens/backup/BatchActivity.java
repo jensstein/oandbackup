@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BatchActivity extends BaseActivity
-implements OnClickListener
+implements OnClickListener, BatchConfirmDialog.ConfirmListener
 {
     ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     final static String TAG = OAndBackup.TAG;
@@ -164,7 +164,12 @@ implements OnClickListener
                 selectedList.add(appInfo);
             }
         }
-        showConfirmDialog(BatchActivity.this, selectedList);
+        Bundle arguments = new Bundle();
+        arguments.putParcelableArrayList("selectedList", selectedList);
+        arguments.putBoolean("backupBoolean", backupBoolean);
+        BatchConfirmDialog dialog = new BatchConfirmDialog();
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "DialogFragment");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -239,35 +244,19 @@ implements OnClickListener
         result.putExtra("sortingMethodId", sorter.getSortingMethod().getId());
         return result;
     }
-    public void showConfirmDialog(Context context, final ArrayList<AppInfo> selectedList)
+    @Override
+    public void onConfirmed(ArrayList<AppInfo> selectedList)
     {
-        String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
-        String message = "";
-        for(AppInfo appInfo : selectedList)
+        final ArrayList<AppInfo> list = new ArrayList<AppInfo>(selectedList);
+        Thread thread = new Thread(new Runnable()
         {
-            message = message + appInfo.getLabel() + "\n";
-        }
-        new AlertDialog.Builder(context)
-        .setTitle(title)
-        .setMessage(message.trim())
-        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
+            public void run()
             {
-                Thread thread = new Thread(new Runnable()
-                {
-                    public void run()
-                    {
-                        doAction(selectedList);
-                    }
-                });
-                thread.start();
-                threadId = thread.getId();
+                doAction(list);
             }
-        })
-        .setNegativeButton(R.string.dialogNo, null)
-        .show();
+        });
+        thread.start();
+        threadId = thread.getId();
     }
     public void doAction(ArrayList<AppInfo> selectedList)
     {
