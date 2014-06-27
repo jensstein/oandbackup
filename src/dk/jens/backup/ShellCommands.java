@@ -59,18 +59,19 @@ public class ShellCommands
         {
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            // -L because fat (which will often be used to store the backup files)
+            // doesn't support symlinks
+            String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
             switch(backupMode)
             {
                 case AppInfo.MODE_APK:
                     dos.writeBytes("cp " + packageApk + " " + backupSubDirPath + "\n");
                     break;
                 case AppInfo.MODE_DATA:
-                    // -L because fat (which will often be used to store the backup files)
-                    // doesn't support symlinks
-                    dos.writeBytes("cp -RL " + packageData + " " + backupSubDirPath + "\n");
+                    dos.writeBytes("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath + "\n");
                     break;
                 default: // defaults to MODE_BOTH
-                    dos.writeBytes("cp -RL " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n");
+                    dos.writeBytes("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n");
                     break;
             }
             dos.writeBytes("exit\n");
@@ -81,7 +82,12 @@ public class ShellCommands
                 ArrayList<String> stderr = getOutput(p).get("stderr");
                 for(String line : stderr)
                 {
-                    writeErrorLog(label, line);
+                    // ignore error if it is about /lib while followSymlinks
+                    // is false or if it is about /lock in the data of firefox
+                    if(stderr.size() == 1 && ((!prefs.getBoolean("followSymlinks", true) && (line.contains("lib") && ((line.contains("not permitted") && line.contains("symlink"))) || line.contains("No such file or directory"))) || (line.contains("org.mozilla.firefox") && line.contains("/lock"))))
+                        ret = 0;
+                    else
+                        writeErrorLog(label, line);
                 }
             }
             if(backupSubDirPath.startsWith(ownDataDir))

@@ -42,6 +42,12 @@
         android:summary="@string/prefs_summaryDisableNotifications"
         android:defaultValue="false"
         />
+    <CheckBoxPreference
+        android:key="followSymlinks"
+        android:title="@string/prefs_followSymlinks"
+        android:summary="@string/prefs_summaryFollowSymlinks"
+        android:defaultValue="true"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
