@@ -174,7 +174,10 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         super.onSaveInstanceState(outState);
         outState.putBoolean("stateChecked", true);
         outState.putLong("threadId", threadId);
-        outState.putInt("firstVisiblePosition", listView.getFirstVisiblePosition());
+        int firstVisiblePosition = 0;
+        if(listView != null)
+            firstVisiblePosition = listView.getFirstVisiblePosition();
+        outState.putInt("firstVisiblePosition", firstVisiblePosition);
     }
     public void displayDialog(AppInfo appInfo)
     {
