@@ -95,24 +95,37 @@ public class AppInfoHelper
         int versionCode = android.os.Build.VERSION.SDK_INT;
         int currentUser = ShellCommands.getCurrentUser();
         ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+        boolean apiCheck = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
         AppInfo accounts = new AppInfo("accounts", context.getString(R.string.spec_accounts), versionName, versionCode, "", "", true);
-        accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
+        if(apiCheck)
+            accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
+        else
+            accounts.setFilesList("/data/system/accounts.db");
         list.add(accounts);
 
         AppInfo appWidgets = new AppInfo("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode, "", "", true);
-        appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
+        if(apiCheck)
+            appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
+        else
+            appWidgets.setFilesList("/data/system/appwidgets.xml");
         list.add(appWidgets);
 
-        AppInfo bluetooth = new AppInfo("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode, "", "/data/misc/bluedroid/", true);
-        list.add(bluetooth);
+        if(apiCheck)
+        {
+            AppInfo bluetooth = new AppInfo("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode, "", "/data/misc/bluedroid/", true);
+            list.add(bluetooth);
 
-        AppInfo data = new AppInfo("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "", "/data/system/netstats/", true);
-        data.setFilesList("/data/system/netpolicy.xml");
-        list.add(data);
+            AppInfo data = new AppInfo("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "", "/data/system/netstats/", true);
+            data.setFilesList("/data/system/netpolicy.xml");
+            list.add(data);
+        }
 
         AppInfo wallpaper = new AppInfo("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode, "", "", true);
-        wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
+        if(apiCheck)
+            wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
+        else
+            wallpaper.setFilesList(new String[] {"/data/system/wallpaper", "/data/system/wallpaper_info.xml"});
         list.add(wallpaper);
 
         AppInfo wap = new AppInfo("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode, "", "", true);
