@@ -31,6 +31,7 @@
   <string name="showOldBackups">Alte Sicherungen anzeigen</string>
   <string name="showOnlyApkBackedUp">Nur Apps anzeigen, bei denen nur die APK-Datei gesichert wurde</string>
   <string name="showOnlyDataBackedUp">Nur Apps anzeigen, bei denen nur die App-Daten gesichert wurde</string>
+  <string name="showOnlySpecialBackups">Nur spezielle Sicherungen anzeigen</string>
   <string name="sortByLabel">Nach Bezeichnung sortieren</string>
   <string name="sortByPackageName">Nach Paketname sortieren</string>
   <string name="sort">Sortieren und Filtern</string>
@@ -70,6 +71,7 @@
   <string name="help_title">Hilfe</string>
   <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
   <string name="shareTitle">Teilen</string>
+  <string name="filebrowser_title">Datei-Browser</string>
   <string name="tools_title">Hilfsmittel</string>
   <string name="tools_batchDeleteTitle">Sicherungen löschen?</string>
   <string name="tools_batchDeleteMessage">Lösche Sicherungen...</string>
@@ -102,6 +104,10 @@
   <string name="prefs_languageSystemDefault">Systemsprache</string>
   <string name="prefs_rememberFiltering">Sortierung und Filter behalten</string>
   <string name="prefs_summaryRememberFiltering">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü angekreuzten werden beachtet</string>
+  <string name="prefs_disableNotifications">Benachrichtigungen ausschalten</string>
+  <string name="prefs_summaryDisableNotifications">Keine Benachrichtigungen mehr anzeigen</string>
+  <string name="prefs_followSymlinks">Symbolischen Links folgen</string>
+  <string name="prefs_summaryFollowSymlinks">Symbolischen Links beim Kopieren immer folgen (cp -L)</string>
   <string name="sched_title">Sicherung planen</string>
   <string name="sched_notificationMessage">Geplante Sicherung</string>
   <string name="sched_interval">Interval in Tagen:</string>
@@ -115,4 +121,18 @@
   <string name="sched_addSchudule">Der Planung hinzufügen</string>
   <string name="sched_customListUpdateButton">Eigene Liste aktualisieren</string>
   <string name="sched_excludeSystemCheckBox">System-Apps ausschließen</string>
+  <string name="sched_warningIntervalZero">Fehler: Intervall darf nicht Null sein</string>
+  <string name="spec_accounts">Konten</string>
+  <string name="spec_appwidgets">App-Widgets</string>
+  <string name="spec_bluetooth">Bluetooth</string>
+  <string name="spec_data">Datenschutzbestimmungen</string>
+  <string name="spec_wallpaper">Hintergrundbild</string>
+  <string name="spec_wifiAccessPoints">WLAN Access-Point</string>
+  <string name="filebrowser_setButton">Festlegen</string>
+  <string name="filebrowser_createDirectory">Ordner erstellen</string>
+  <string name="filebrowser_createDirectoryDlgMsg">Neuen Ordnername eingeben</string>
+  <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
+  <string name="filebrowser_createDirectoryError">Konnte Ordner nicht erstellen: </string>
+  <string name="filebrowser_refresh">Aktualisieren</string>
+  <string name="filebrowser_contextSetBackupDirectory">Als Sicherungsordner festlegen</string>
 </resources>

@@ -115,4 +115,5 @@
   <string name="sched_addSchudule">ajouter une planification</string>
   <string name="sched_customListUpdateButton">mettre à jour la liste personnalisée</string>
   <string name="sched_excludeSystemCheckBox">exclure les applications systèmes</string>
+  <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
 </resources>

@@ -31,6 +31,7 @@
   <string name="showOldBackups">mostra i backup obsoleti</string>
   <string name="showOnlyApkBackedUp">mostra applicazioni con backup del solo apk</string>
   <string name="showOnlyDataBackedUp">mostra applicazioni con backup dei soli dati</string>
+  <string name="showOnlySpecialBackups">mostra solo i backup speciali</string>
   <string name="sortByLabel">ordina per etichetta</string>
   <string name="sortByPackageName">ordina per nome</string>
   <string name="sort">ordina e filtra</string>
@@ -61,16 +62,23 @@
   <string name="restoreFailure">errore nel ripristino</string>
   <string name="batchSuccess">operazione completata</string>
   <string name="batchFailure">completato con errori</string>
+  <string name="uninstallSuccess">disinstallazione completata</string>
+  <string name="uninstallFailure">errore nella disinstallazione</string>
   <string name="errorDialogTitle">si sono verificati degli errori</string>
   <string name="customListTitle">elenco personalizzato</string>
   <string name="quickReboot">riavvio veloce</string>
   <string name="quickRebootMessage">si desidera riavviare l\'ambiente utente?</string>
   <string name="help_title">aiuto</string>
   <string name="notInstalledModeDataWarning">impossibile ripristinare l\'applicazione da un backup senza apk</string>
+  <string name="shareTitle">condividi</string>
+  <string name="filebrowser_title">gestore file</string>
   <string name="tools_title">strumenti</string>
   <string name="tools_batchDeleteTitle">eliminare i backup?</string>
   <string name="tools_batchDeleteMessage">eliminazione dei backup</string>
+  <string name="tools_notificationTitle">cancella i backup</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
+  <string name="tools_backupsDeleted">backup cancellati:</string>
+  <string name="tools_nothingToDelete">nessun backup da cancellare</string>
   <string name="enablePackage">abilita</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">abilita per gli utenti</string>
@@ -78,6 +86,8 @@
   <string name="disablePackageTitle">disabilita per gli utenti</string>
   <string name="prefs_title">opzioni</string>
   <string name="prefs_timestamp">usa il formato locale per le date</string>
+  <string name="prefs_acquireWakelock">impedisci la modalità sleep</string>
+  <string name="prefs_summaryAcquireWakelock">ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità sleep. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
   <string name="prefs_pathscategory">percorsi personalizzati</string>
   <string name="prefs_pathBackupFolder">cartella di backup</string>
   <string name="prefs_summaryBackupFolder">percorso della cartella di backup. predefinito se vuoto.</string>
@@ -92,6 +102,12 @@
   <string name="prefs_summaryCopySelfApk">crea una copia di oandbackup nel livello superiore della cartella di backup quando effettua il salvataggio</string>
   <string name="prefs_languages">lingue</string>
   <string name="prefs_languageSystemDefault">predefinita di sistema</string>
+  <string name="prefs_rememberFiltering">ricorda l\'ordinamento e i filtri</string>
+  <string name="prefs_summaryRememberFiltering">salva il metodo selezionato di ordinamento e filtro. solo quelli indicati da una checkbox nel menu sono considerati.</string>
+  <string name="prefs_disableNotifications">disabilita le notifiche</string>
+  <string name="prefs_summaryDisableNotifications">non mostrare le notifiche</string>
+  <string name="prefs_followSymlinks">segui i link simbolici</string>
+  <string name="prefs_summaryFollowSymlinks">segui sempre i link simbolici quando copi (cp -L)</string>
   <string name="sched_title">pianificazioni</string>
   <string name="sched_notificationMessage">backup pianificato</string>
   <string name="sched_interval">intervallo in giorni</string>
@@ -105,4 +121,18 @@
   <string name="sched_addSchudule">aggiungi pianificazione</string>
   <string name="sched_customListUpdateButton">aggiorna l\'elenco personalizzato</string>
   <string name="sched_excludeSystemCheckBox">escludi le applicazioni di sistema</string>
+  <string name="sched_warningIntervalZero">errore: l\'intervallo non può essere 0</string>
+  <string name="spec_accounts">Accounts</string>
+  <string name="spec_appwidgets">Widget dell\'applicazione</string>
+  <string name="spec_bluetooth">Bluetooth</string>
+  <string name="spec_data">Utilizzo e policy dei dati</string>
+  <string name="spec_wallpaper">Immagine di sfondo</string>
+  <string name="spec_wifiAccessPoints">Punti di accesso Wifi</string>
+  <string name="filebrowser_setButton">assegna</string>
+  <string name="filebrowser_createDirectory">crea una cartella</string>
+  <string name="filebrowser_createDirectoryDlgMsg">inserisci il nome della cartella da creare</string>
+  <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
+  <string name="filebrowser_createDirectoryError">non posso creare la cartella:</string>
+  <string name="filebrowser_refresh">aggiorna</string>
+  <string name="filebrowser_contextSetBackupDirectory">assegna come cartella di backup</string>
 </resources>

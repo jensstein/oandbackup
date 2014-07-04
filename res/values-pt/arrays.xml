@@ -15,11 +15,11 @@
     <item>@string/radioBoth</item>
   </string-array>
   <string-array name="tools_titles">
-    <item>reinicio rápido</item>
-    <item>eliminar backups</item>
+    <item>Reinicio rápido</item>
+    <item>Eliminar backups</item>
   </string-array>
   <string-array name="tools_descriptions">
-    <item>termina o processo system_server para reiniciar o user space</item>
-    <item>elimina os backups de todas as aplicações não instaladas</item>
+    <item>Termina o processo system_server para reiniciar o user space</item>
+    <item>Elimina os backups de todas as aplicações não instaladas</item>
   </string-array>
 </resources>
