@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -28,7 +30,9 @@ public class AppInfoHelper
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
 
-        addSpecialBackups(context, backupDir, list, packageNames);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if(prefs.getBoolean("enableSpecialBackups", true))
+            addSpecialBackups(context, backupDir, list, packageNames);
         for(PackageInfo pinfo : pinfoList)
         {
             packageNames.add(pinfo.packageName);

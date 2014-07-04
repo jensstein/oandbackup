@@ -648,6 +648,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         {
             languageChanged = true;
         }
+        if(key.equals("enableSpecialBackups"))
+            refresh();
     }
     public boolean onSearchRequested()
     {

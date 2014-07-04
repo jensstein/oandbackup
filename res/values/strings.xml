@@ -111,6 +111,7 @@
     <string name="prefs_summaryDisableNotifications">don\'t show any notifications</string>
     <string name="prefs_followSymlinks">follow symbolic links</string>
     <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
+    <string name="prefs_enableSpecialBackups">enable special backups</string>
 
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>

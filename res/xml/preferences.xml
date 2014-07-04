@@ -48,6 +48,11 @@
         android:summary="@string/prefs_summaryFollowSymlinks"
         android:defaultValue="true"
         />
+    <CheckBoxPreference
+        android:key="enableSpecialBackups"
+        android:title="@string/prefs_enableSpecialBackups"
+        android:defaultValue="true"
+        />
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
