@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.2.9 (development)
+0.2.9 (2014-07-08)
 -------------------
  * more robust method of getting uid and gid of a package
  * count the day a scheduled backup was set when calculating when it should run
