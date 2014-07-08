@@ -108,6 +108,7 @@
   <string name="prefs_summaryDisableNotifications">Keine Benachrichtigungen mehr anzeigen</string>
   <string name="prefs_followSymlinks">Symbolischen Links folgen</string>
   <string name="prefs_summaryFollowSymlinks">Symbolischen Links beim Kopieren immer folgen (cp -L)</string>
+  <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
   <string name="sched_title">Sicherung planen</string>
   <string name="sched_notificationMessage">Geplante Sicherung</string>
   <string name="sched_interval">Interval in Tagen:</string>

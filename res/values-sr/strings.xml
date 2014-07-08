@@ -108,6 +108,7 @@
   <string name="prefs_summaryDisableNotifications">Не приказуј обавештења</string>
   <string name="prefs_followSymlinks">Прати symlink-ове</string>
   <string name="prefs_summaryFollowSymlinks">Увек прати symlink-ове при копирању (cp -L)</string>
+  <string name="prefs_enableSpecialBackups">Омогући посебне копије</string>
   <string name="sched_title">Направите распоред</string>
   <string name="sched_notificationMessage">Програмирајте прављење резервне копије</string>
   <string name="sched_interval">Интервал у данима</string>

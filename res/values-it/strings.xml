@@ -108,6 +108,7 @@
   <string name="prefs_summaryDisableNotifications">non mostrare le notifiche</string>
   <string name="prefs_followSymlinks">segui i link simbolici</string>
   <string name="prefs_summaryFollowSymlinks">segui sempre i link simbolici quando copi (cp -L)</string>
+  <string name="prefs_enableSpecialBackups">abilita i backup speciali</string>
   <string name="sched_title">pianificazioni</string>
   <string name="sched_notificationMessage">backup pianificato</string>
   <string name="sched_interval">intervallo in giorni</string>
