@@ -407,13 +407,15 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 @Override
                 public boolean onQueryTextChange(String newText)
                 {
-                    OAndBackup.this.adapter.getFilter().filter(newText);
+                    if(OAndBackup.this.adapter != null)
+                        OAndBackup.this.adapter.getFilter().filter(newText);
                     return true;
                 }
                 @Override
                 public boolean onQueryTextSubmit(String query)
                 {
-                    OAndBackup.this.adapter.getFilter().filter(query);
+                    if(OAndBackup.this.adapter != null)
+                        OAndBackup.this.adapter.getFilter().filter(query);
                     return true;
                 }
             });
