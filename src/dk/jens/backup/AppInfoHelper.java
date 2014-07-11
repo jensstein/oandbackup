@@ -115,11 +115,15 @@ public class AppInfoHelper
             appWidgets.setFilesList("/data/system/appwidgets.xml");
         list.add(appWidgets);
 
+        AppInfo bluetooth = new AppInfo("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode, "", "", true);
+        if(apiCheck)
+            bluetooth.setFilesList("/data/misc/bluedroid/");
+        else
+            bluetooth.setFilesList(new String[] {"/data/misc/bluetooth", "/data/misc/bluetoothd"});
+        list.add(bluetooth);
+
         if(apiCheck)
         {
-            AppInfo bluetooth = new AppInfo("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode, "", "/data/misc/bluedroid/", true);
-            list.add(bluetooth);
-
             AppInfo data = new AppInfo("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "", "/data/system/netstats/", true);
             data.setFilesList("/data/system/netpolicy.xml");
             list.add(data);
