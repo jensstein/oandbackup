@@ -167,7 +167,7 @@ public class LogFile implements Parcelable
             outFile.createNewFile();
             FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(json);
+            bw.write(json + "\n");
             bw.close();
         }
         catch(JSONException e)
