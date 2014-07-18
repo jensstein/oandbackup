@@ -110,7 +110,7 @@ public class ShellCommands
             // only zip if data is backed up
             if(backupMode != AppInfo.MODE_APK)
             {
-                int zipret = compress(backupSubDir, folder);
+                int zipret = compress(new File(backupSubDir, folder));
                 if(zipret != 0)
                     ret += zipret;
             }
@@ -230,7 +230,7 @@ public class ShellCommands
             if(dataDir.length() > 0)
             {
                 String folder = new File(dataDir).getName();
-                int zipret = compress(backupSubDir, folder);
+                int zipret = compress(new File(backupSubDir, folder));
                 if(zipret != 0)
                     ret += zipret;
             }
@@ -571,17 +571,17 @@ public class ShellCommands
             return 1;
         }
     }
-    public int compress(File backupSubDir, String folder)
+    public int compress(File directoryToCompress)
     {
-        int zipret = new Compression().zip(new File(backupSubDir, folder));
+        int zipret = new Compression().zip(directoryToCompress);
         if(zipret == 0)
         {
-            deleteBackup(new File(backupSubDir, folder));
+            deleteBackup(directoryToCompress);
         }
         else if(zipret == 2)
         {
             // handling empty zip
-            deleteBackup(new File(backupSubDir, folder + ".zip"));
+            deleteBackup(new File(directoryToCompress.getAbsolutePath() + ".zip"));
             return 0;
             // zipret == 2 shouldn't be treated as an error
         }
