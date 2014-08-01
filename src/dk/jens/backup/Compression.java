@@ -73,6 +73,10 @@ public class Compression
     }
     public static int unzip(File baseDir, String zipfile)
     {
+        return unzip(baseDir, zipfile, baseDir.getAbsolutePath());
+    }
+    public static int unzip(File baseDir, String zipfile, String outputDir)
+    {
         try
         {
             byte[] buffer = new byte[1024];
@@ -82,7 +86,7 @@ public class Compression
             while((entry = zis.getNextEntry()) != null)
             {
                 String filename = entry.getName();
-                File file = new File(baseDir.getAbsolutePath() + "/" + filename);
+                File file = new File(outputDir + "/" + filename);
                 new File(file.getParent()).mkdirs();
                 FileOutputStream fos = new FileOutputStream(file);
                 int len;
