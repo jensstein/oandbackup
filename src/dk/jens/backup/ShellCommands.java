@@ -26,6 +26,7 @@ import java.util.Map;
 public class ShellCommands
 {
     final static String TAG = OAndBackup.TAG;
+    final static String EXTERNAL_FILES = "external_files";
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
@@ -78,7 +79,7 @@ public class ShellCommands
             File backupSubDirExternalFiles = null;
             if(prefs.getBoolean("backupExternalFiles", false) && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
             {
-                backupSubDirExternalFiles = new File(backupSubDirPath, "external_files");
+                backupSubDirExternalFiles = new File(backupSubDirPath, EXTERNAL_FILES);
                 if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())
                     dos.writeBytes("cp -R" + followSymlinks + " " + externalFilesDir.getAbsolutePath() + " " + backupSubDirExternalFiles.getAbsolutePath() + "\n");
                 else
@@ -159,7 +160,7 @@ public class ShellCommands
             }
             if(prefs.getBoolean("backupExternalFiles", false))
             {
-                File externalFiles = new File(backupSubDir, "external_files");
+                File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
                 if(externalFiles.exists())
                 {
                     String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
