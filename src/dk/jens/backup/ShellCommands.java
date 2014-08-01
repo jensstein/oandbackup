@@ -76,7 +76,7 @@ public class ShellCommands
             }
             File externalFilesDir = getExternalFilesDirPath(context, packageData);
             File backupSubDirExternalFiles = null;
-            if(backupMode != AppInfo.MODE_APK && externalFilesDir != null)
+            if(prefs.getBoolean("backupExternalFiles", false) && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
             {
                 backupSubDirExternalFiles = new File(backupSubDirPath, "external_files");
                 if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())

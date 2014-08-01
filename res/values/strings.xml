@@ -112,6 +112,8 @@
     <string name="prefs_followSymlinks">follow symbolic links</string>
     <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
     <string name="prefs_enableSpecialBackups">enable special backups</string>
+    <string name="prefs_backupExternalFiles">handle external data</string>
+    <string name="prefs_summaryBackupExternalFiles">backs up and restores data that is placed on the external storage (e.g. /sdcard/Android/data/)</string>
 
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>
