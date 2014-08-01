@@ -16,7 +16,7 @@ import java.util.zip.ZipOutputStream;
 public class Compression
 {
     final static String TAG = OAndBackup.TAG;
-    public int zip(File dir)
+    public static int zip(File dir)
     {
         try
         {
@@ -71,7 +71,7 @@ public class Compression
             return 1;
         }
     }
-    public int unzip(File baseDir, String zipfile)
+    public static int unzip(File baseDir, String zipfile)
     {
         try
         {
@@ -103,7 +103,7 @@ public class Compression
             return 1;
         }
     }
-    private void getFiles(File dir, ArrayList<String> fileList)
+    private static void getFiles(File dir, ArrayList<String> fileList)
     {
         // handling an uncreated directory in case of missing busybox
         if(dir.exists())

@@ -151,7 +151,7 @@ public class ShellCommands
             killPackage(context, packageName);
             if(new File(backupSubDir, dataDirName + ".zip").exists())
             {
-                unzipRet = new Compression().unzip(backupSubDir, dataDirName + ".zip");
+                unzipRet = Compression.unzip(backupSubDir, dataDirName + ".zip");
             }
             else if(new File(backupSubDir, dataDirName + ".tar.gz").exists())
             {
@@ -268,7 +268,7 @@ public class ShellCommands
         try
         {
             if(new File(backupSubDir, folder + ".zip").exists())
-                unzipRet = new Compression().unzip(backupSubDir, folder + ".zip");
+                unzipRet = Compression.unzip(backupSubDir, folder + ".zip");
 
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
@@ -585,7 +585,7 @@ public class ShellCommands
     }
     public int compress(File directoryToCompress)
     {
-        int zipret = new Compression().zip(directoryToCompress);
+        int zipret = Compression.zip(directoryToCompress);
         if(zipret == 0)
         {
             deleteBackup(directoryToCompress);
