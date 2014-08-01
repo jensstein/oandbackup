@@ -122,7 +122,7 @@ public class ShellCommands
             {
                 int zipret = compress(new File(backupSubDir, folder));
                 if(backupSubDirExternalFiles != null)
-                    zipret += compress(backupSubDirExternalFiles);
+                    zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
                 if(zipret != 0)
                     ret += zipret;
             }
@@ -157,6 +157,17 @@ public class ShellCommands
             {
                 untarRet = untar(backupSubDir.getAbsolutePath(), dataDirName);
             }
+            if(prefs.getBoolean("backupExternalFiles", false))
+            {
+                File externalFiles = new File(backupSubDir, "external_files");
+                if(externalFiles.exists())
+                {
+                    String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+                    externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
+                    Compression.unzip(externalFiles, dataDirName + ".zip", externalFilesPath);
+                }
+            }
+
             // check if there is a directory to copy from - it is not necessarily an error if there isn't
             String[] list = new File(backupSubDir, dataDirName).list();
             if(list != null && list.length > 0)
