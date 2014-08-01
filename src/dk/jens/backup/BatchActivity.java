@@ -341,7 +341,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         }
         else
         {
-            backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, this.getApplicationInfo().dataDir);
+            backupRet = shellCommands.doBackup(this, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
         }
         shellCommands.logReturnMessage(this, backupRet);
 

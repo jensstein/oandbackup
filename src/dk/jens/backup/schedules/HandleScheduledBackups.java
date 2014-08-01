@@ -150,7 +150,7 @@ public class HandleScheduledBackups
                         }
                         else
                         {
-                            ret = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode, context.getApplicationInfo().dataDir);
+                            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
                             appInfo.setBackupMode(subMode);
                         }
 

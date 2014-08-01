@@ -51,7 +51,7 @@ public class ShellCommands
         this(prefs, null);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
-    public int doBackup(File backupSubDir, String label, String packageData, String packageApk, int backupMode, String ownDataDir)
+    public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
@@ -74,6 +74,16 @@ public class ShellCommands
                     dos.writeBytes("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n");
                     break;
             }
+            File externalFilesDir = getExternalFilesDirPath(context, packageData);
+            File backupSubDirExternalFiles = null;
+            if(backupMode != AppInfo.MODE_APK && externalFilesDir != null)
+            {
+                backupSubDirExternalFiles = new File(backupSubDirPath, "external_files");
+                if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())
+                    dos.writeBytes("cp -R" + followSymlinks + " " + externalFilesDir.getAbsolutePath() + " " + backupSubDirExternalFiles.getAbsolutePath() + "\n");
+                else
+                    Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
+            }
             dos.writeBytes("exit\n");
 
             int ret = p.waitFor();
@@ -90,7 +100,7 @@ public class ShellCommands
                         writeErrorLog(label, line);
                 }
             }
-            if(backupSubDirPath.startsWith(ownDataDir))
+            if(backupSubDirPath.startsWith(context.getApplicationInfo().dataDir))
             {
                 /**
                     * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)
@@ -111,6 +121,8 @@ public class ShellCommands
             if(backupMode != AppInfo.MODE_APK)
             {
                 int zipret = compress(new File(backupSubDir, folder));
+                if(backupSubDirExternalFiles != null)
+                    zipret += compress(backupSubDirExternalFiles);
                 if(zipret != 0)
                     ret += zipret;
             }
@@ -1156,5 +1168,18 @@ public class ShellCommands
                 }
             }
         }
+    }
+    public File getExternalFilesDirPath(Context context, String packageData)
+    {
+        if(android.os.Build.VERSION.SDK_INT >= 8)
+        {
+            String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+            // get path of own externalfilesdir and then cutting at the packagename to get the general path
+            externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
+            File externalFilesDir = new File(externalFilesPath, new File(packageData).getName());
+            if(externalFilesDir.exists())
+                return externalFilesDir;
+        }
+        return null;
     }
 }

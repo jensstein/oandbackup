@@ -217,7 +217,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     }
                     else
                     {
-                        backupRet = shellCommands.doBackup(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode, OAndBackup.this.getApplicationInfo().dataDir);
+                        backupRet = shellCommands.doBackup(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
                     }
 
                     shellCommands.logReturnMessage(OAndBackup.this, backupRet);
