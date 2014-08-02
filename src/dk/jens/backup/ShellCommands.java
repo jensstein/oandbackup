@@ -79,9 +79,9 @@ public class ShellCommands
             File backupSubDirExternalFiles = null;
             if(prefs.getBoolean("backupExternalFiles", false) && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
             {
-                backupSubDirExternalFiles = new File(backupSubDirPath, EXTERNAL_FILES);
+                backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
                 if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())
-                    dos.writeBytes("cp -R" + followSymlinks + " " + externalFilesDir.getAbsolutePath() + " " + backupSubDirExternalFiles.getAbsolutePath() + "\n");
+                    dos.writeBytes("cp -R" + followSymlinks + " " + swapBackupDirPath(externalFilesDir.getAbsolutePath()) + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + EXTERNAL_FILES) + "\n");
                 else
                     Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
             }
