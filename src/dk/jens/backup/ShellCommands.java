@@ -459,7 +459,7 @@ public class ShellCommands
             if(packageDir.length() > 0)
             {
                 uid_gid = getOwnership(packageDir);
-                dos.writeBytes(busybox + " chmod -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
+                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
                 dos.writeBytes(busybox + " chmod -R 0771 " + packageDir + "\n");
             }
             if(files != null)
