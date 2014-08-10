@@ -43,7 +43,12 @@ public class RestoreOptionsDialogFragment extends DialogFragment
         }
         if(backupMode != AppInfo.MODE_APK && backupMode != AppInfo.MODE_DATA)
         {
-            builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
+            /* an uninstalled package cannot have data as a restore option
+             * so the option to restore both apk and data cannot read 'both'
+             * since there would only be one other option ('apk').
+             */
+            int textId = appInfo.isInstalled() ? R.string.handleBoth : R.string.radioBoth;
+            builder.setPositiveButton(textId, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
