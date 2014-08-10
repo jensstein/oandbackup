@@ -20,11 +20,6 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         {
             backupFolderPref.setText(FileCreationHelper.getDefaultBackupDirPath());
         }
-        EditTextPreference logFilePref= (EditTextPreference) findPreference("pathLogfile");
-        if(logFilePref.getText() == null)
-        {
-            logFilePref.setText(FileCreationHelper.getDefaultLogFilePath());
-        }
         if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN)
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);

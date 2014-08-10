@@ -68,11 +68,6 @@
             android:summary="@string/prefs_summaryBackupFolder"
             />
         <EditTextPreference
-            android:key="pathLogfile"
-            android:title="@string/prefs_pathLogfile"
-            android:summary="@string/prefs_summaryLogfile"
-            />            
-        <EditTextPreference
             android:key="pathBusybox"
             android:title="@string/prefs_pathBusybox"
             android:summary="@string/prefs_summaryBusybox"

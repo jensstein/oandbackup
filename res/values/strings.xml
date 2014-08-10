@@ -94,8 +94,6 @@
     <string name="prefs_pathscategory">custom paths</string>
     <string name="prefs_pathBackupFolder">backup folder</string>
     <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>
-    <string name="prefs_pathLogfile">logfile</string>
-    <string name="prefs_summaryLogfile">path to logfile. leave blank for default.</string>
     <string name="prefs_pathBusybox">busybox</string>
     <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
     <string name="prefs_oldBackups">filter backups by age</string>
