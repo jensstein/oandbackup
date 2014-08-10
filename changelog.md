@@ -1,6 +1,14 @@
 changelog
 =========
 
+0.2.10 (development)
+-------------------
+ * package data in the external files directory is now backed up
+ * the error log is now placed in the backup directory and the option to set a custom path for it has been removed. if the logfile already exists, it will be moved to the new destination.
+ * bluetooth directory is added to the special backups on older versions of android
+ * fixed bug where the data limit on ipc transfers where exceeded on api 9
+ * fixed bug that caused crash when search button was pushed before package list was loaded
+
 0.2.9 (2014-07-08)
 -------------------
  * more robust method of getting uid and gid of a package
