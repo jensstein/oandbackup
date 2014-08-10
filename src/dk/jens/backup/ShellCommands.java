@@ -832,8 +832,7 @@ public class ShellCommands
         String dateFormated = dateFormat.format(date);
         try
         {
-            String logFilePath = prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath());
-            File outFile = new FileCreationHelper().createLogFile(logFilePath);
+            File outFile = new FileCreationHelper().createLogFile(FileCreationHelper.getDefaultLogFilePath());
             if(outFile != null)
             {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append

@@ -10,7 +10,7 @@ public class FileCreationHelper
 {
     final static String TAG = OAndBackup.TAG;
     final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackups";
-    final static String defaultLogFilePath = Environment.getExternalStorageDirectory() + "/oandbackup.log";
+    final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackup.log";
     boolean fallbackFlag;
     public static String getDefaultBackupDirPath()
     {
@@ -70,6 +70,15 @@ public class FileCreationHelper
         {
             e.printStackTrace();
             return null;
+        }
+    }
+    public void moveLogfile(String path)
+    {
+        if(!path.equals(defaultLogFilePath))
+        {
+            File srcFile = new File(path);
+            File dstFile = new File(defaultLogFilePath);
+            srcFile.renameTo(dstFile);
         }
     }
 }

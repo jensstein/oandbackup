@@ -86,6 +86,8 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                 LanguageHelper.initLanguage(OAndBackup.this, langCode);
                 String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
+                // temporary method to move logfile from bottom of external storage to bottom of backupdir
+                new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
                 if(!checked)
                 {
                     handleMessages.showMessage("", getString(R.string.suCheck));
