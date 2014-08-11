@@ -251,7 +251,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
         backupThread.start();
         threadId = backupThread.getId();
     }
-    public void callRestore(final AppInfo appInfo, final int options)
+    public void callRestore(final AppInfo appInfo, final int mode)
     {
         Thread restoreThread = new Thread(new Runnable()
         {
@@ -268,39 +268,30 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
                     LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
                     String dataDir = appInfo.getDataDir();
                     String apk = logInfo.getApk();
-                    switch(options)
+                    if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+                        apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
+                    if(mode == AppInfo.MODE_DATA|| mode == AppInfo.MODE_BOTH)
                     {
-                        case 1:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
-                            break;
-                        case 2:
-                            if(appInfo.isInstalled())
+                        if(appInfo.isInstalled() || mode == AppInfo.MODE_BOTH)
+                        {
+                            if(appInfo.isSpecial())
                             {
-                                if(appInfo.isSpecial())
-                                {
-                                    restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                                    permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
-                                }
-                                else
-                                {
-                                    restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-
-                                    permRet = shellCommands.setPermissions(dataDir);
-                                }
-                                shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
+                                restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+                                permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
                             }
                             else
                             {
-                                Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+
+                                permRet = shellCommands.setPermissions(dataDir);
                             }
-                            break;
-                        case 3:
-                            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
-                            restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                            shellCommands.logReturnMessage(OAndBackup.this, restoreRet);
-                            permRet = shellCommands.setPermissions(dataDir);
-                            break;
+                        }
+                        else
+                        {
+                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
+                        }
                     }
+                    shellCommands.logReturnMessage(OAndBackup.this, apkRet + restoreRet + permRet);
                     refresh();
                 }
                 handleMessages.endMessage();

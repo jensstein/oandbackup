@@ -26,7 +26,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 public void onClick(DialogInterface dialog, int id)
                 {
                     OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, 1);
+                    obackup.callRestore(appInfo, AppInfo.MODE_APK);
                 }
             });
         }
@@ -37,7 +37,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 public void onClick(DialogInterface dialog, int id)
                 {
                     OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, 2);
+                    obackup.callRestore(appInfo, AppInfo.MODE_DATA);
                 }
             });
         }
@@ -53,7 +53,7 @@ public class RestoreOptionsDialogFragment extends DialogFragment
                 public void onClick(DialogInterface dialog, int id)
                 {
                     OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, 3);
+                    obackup.callRestore(appInfo, AppInfo.MODE_BOTH);
                 }
             });
         }
