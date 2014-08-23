@@ -93,29 +93,29 @@ public class AppInfoHelper
             }
         }
     }
-    public static ArrayList<AppInfo> getSpecialBackups(Context context)
+    public static ArrayList<AppInfoSpecial> getSpecialBackups(Context context)
     {
         String versionName = android.os.Build.VERSION.RELEASE;
         int versionCode = android.os.Build.VERSION.SDK_INT;
         int currentUser = ShellCommands.getCurrentUser();
-        ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+        ArrayList<AppInfoSpecial> list = new ArrayList<AppInfoSpecial>();
         boolean apiCheck = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
-        AppInfo accounts = new AppInfo("accounts", context.getString(R.string.spec_accounts), versionName, versionCode, "", "", true);
+        AppInfoSpecial accounts = new AppInfoSpecial("accounts", context.getString(R.string.spec_accounts), versionName, versionCode);
         if(apiCheck)
             accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
         else
             accounts.setFilesList("/data/system/accounts.db");
         list.add(accounts);
 
-        AppInfo appWidgets = new AppInfo("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode, "", "", true);
+        AppInfoSpecial appWidgets = new AppInfoSpecial("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode);
         if(apiCheck)
             appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
         else
             appWidgets.setFilesList("/data/system/appwidgets.xml");
         list.add(appWidgets);
 
-        AppInfo bluetooth = new AppInfo("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode, "", "", true);
+        AppInfoSpecial bluetooth = new AppInfoSpecial("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode);
         if(apiCheck)
             bluetooth.setFilesList("/data/misc/bluedroid/");
         else
@@ -124,19 +124,19 @@ public class AppInfoHelper
 
         if(apiCheck)
         {
-            AppInfo data = new AppInfo("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "", "/data/system/netstats/", true);
+            AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "/data/system/netstats/");
             data.setFilesList("/data/system/netpolicy.xml");
             list.add(data);
         }
 
-        AppInfo wallpaper = new AppInfo("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode, "", "", true);
+        AppInfoSpecial wallpaper = new AppInfoSpecial("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode);
         if(apiCheck)
             wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
         else
             wallpaper.setFilesList(new String[] {"/data/system/wallpaper", "/data/system/wallpaper_info.xml"});
         list.add(wallpaper);
 
-        AppInfo wap = new AppInfo("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode, "", "", true);
+        AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);
         wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
         list.add(wap);
 
@@ -144,8 +144,8 @@ public class AppInfoHelper
     }
     public static void addSpecialBackups(Context context, File backupDir, ArrayList<AppInfo> list, ArrayList<String> packageNames)
     {
-        ArrayList<AppInfo> specialList = getSpecialBackups(context);
-        for(AppInfo appInfo : specialList)
+        ArrayList<AppInfoSpecial> specialList = getSpecialBackups(context);
+        for(AppInfoSpecial appInfo : specialList)
         {
             String packageName = appInfo.getPackageName();
             packageNames.add(packageName);

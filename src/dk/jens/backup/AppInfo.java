@@ -9,9 +9,8 @@ implements Comparable<AppInfo>, Parcelable
 {
     LogFile logInfo;
     String label, packageName, versionName, sourceDir, dataDir;
-    String[] files;
     int versionCode, backupMode;
-    private boolean system, installed, checked, special;
+    private boolean system, installed, checked;
     public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
@@ -38,11 +37,6 @@ implements Comparable<AppInfo>, Parcelable
     {
         this(packageName, label, versionName, versionCode, sourceDir, dataDir, isSystem, isInstalled, null);
         this.backupMode = MODE_UNSET;
-    }
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean special)
-    {
-        this(packageName, label, versionName, versionCode, sourceDir, dataDir, true, true);
-        this.special = special;
     }
     public String getPackageName()
     {
@@ -104,22 +98,15 @@ implements Comparable<AppInfo>, Parcelable
     {
         return installed;
     }
-    // list of single files used by special backups
+    // list of single files used by special backups - only for compatibility now
     public String[] getFilesList()
     {
-        return files;
+        return null;
     }
-    public void setFilesList(String file)
-    {
-        files = new String[] {file};
-    }
-    public void setFilesList(String... files)
-    {
-        this.files = files;
-    }
+    // should ideally be removed once proper polymorphism is implemented
     public boolean isSpecial()
     {
-        return special;
+        return false;
     }
     public int compareTo(AppInfo appInfo)
     {
@@ -143,9 +130,8 @@ implements Comparable<AppInfo>, Parcelable
         out.writeString(dataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
-        out.writeBooleanArray(new boolean[] {system, installed, checked, special});
+        out.writeBooleanArray(new boolean[] {system, installed, checked});
         out.writeParcelable(icon, flags);
-        out.writeStringArray(files);
     }
     public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>()
     {
@@ -158,7 +144,7 @@ implements Comparable<AppInfo>, Parcelable
             return new AppInfo[size];
         }
     };
-    private AppInfo(Parcel in)
+    protected AppInfo(Parcel in)
     {
         logInfo = in.readParcelable(getClass().getClassLoader());
         label = in.readString();
@@ -173,8 +159,6 @@ implements Comparable<AppInfo>, Parcelable
         system = bools[0];
         installed = bools[1];
         checked = bools[2];
-        special = bools[3];
         icon = (Bitmap) in.readParcelable(getClass().getClassLoader());
-        files = in.createStringArray();
     }
 }
