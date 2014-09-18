@@ -12,7 +12,7 @@ public class BaseActivity extends FragmentActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN)
+        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN && getParentActivityIntent() != null)
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }

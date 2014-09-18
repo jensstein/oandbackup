@@ -1,6 +1,5 @@
 package dk.jens.backup;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,17 +8,13 @@ import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View.OnClickListener;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
@@ -29,9 +24,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-public class OAndBackup extends FragmentActivity implements SharedPreferences.OnSharedPreferenceChangeListener
+public class OAndBackup extends BaseActivity
+implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
     static final int BATCH_REQUEST = 1;
@@ -358,6 +353,7 @@ public class OAndBackup extends FragmentActivity implements SharedPreferences.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == BATCH_REQUEST || requestCode == TOOLS_REQUEST)
         {
             if(appInfoList != null)
