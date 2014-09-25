@@ -712,15 +712,9 @@ public class ShellCommands
         if(file.exists())
         {
             if(file.isDirectory())
-            {
-                if(file.list().length > 0)
-                {
+                if(file.list().length > 0 && file.listFiles() != null)
                     for(File child : file.listFiles())
-                    {
                         deleteBackup(child);
-                    }
-                }
-            }
             file.delete();
         }
     }
