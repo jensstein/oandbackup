@@ -120,6 +120,7 @@
     <string name="sched_checkbox">enable</string>
     <string name="sched_updateButton">update</string>
     <string name="sched_removeButton">remove</string>
+    <string name="sched_activateButton">start backup now</string>
     <string name="sched_startingbackup">starting scheduled backup</string>
     <string name="sched_backupMode">backup mode</string>
     <string name="sched_timeLeft">hours until next backup</string>
