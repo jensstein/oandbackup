@@ -11,16 +11,11 @@ import java.util.ArrayList;
 
 public class CustomPackageList
 {
-    ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
-    SharedPreferences prefs;
-    FileReaderWriter frw;
-    public CustomPackageList(Context context, int number)
+    static ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
+    public static void showList(Activity activity, int number)
     {
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
-    }
-    public void showList(Activity activity)
-    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        final FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<Integer>();
         boolean[] checked = new boolean[items.length];
@@ -52,14 +47,14 @@ public class CustomPackageList
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    handleSelectedItems(items, selected);
+                    handleSelectedItems(frw, items, selected);
                 }
             })
             .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id){}})
             .show();
     }
-    public CharSequence[] collectItems()
+    private static CharSequence[] collectItems()
     {
         ArrayList<String> list = new ArrayList<String>();
         for(AppInfo appInfo : appInfoList)
@@ -68,7 +63,7 @@ public class CustomPackageList
         }
         return list.toArray(new CharSequence[list.size()]);
     }
-    public void handleSelectedItems(CharSequence[] items, ArrayList<Integer> selected)
+    private static void handleSelectedItems(FileReaderWriter frw, CharSequence[] items, ArrayList<Integer> selected)
     {
         frw.clear();
         for(int pos : selected)

@@ -217,7 +217,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     handleScheduledBackups.initiateBackup(number, mode, subMode + 1, exludeSystem);
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
-                    new CustomPackageList(this, number).showList(Scheduler.this);
+                    CustomPackageList.showList(this, number);
                     break;
                 case EXCLUDESYSTEMCHECKBOXID:
                     edit.putBoolean("excludeSystem" + number, ((CheckBox) v).isChecked());
@@ -239,7 +239,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
                 if(pos == 4)
                 {
-                    new CustomPackageList(this, number).showList(Scheduler.this);
+                    CustomPackageList.showList(this, number);
                 }
                 edit.putInt("scheduleMode" + number, pos);
                 edit.commit();
