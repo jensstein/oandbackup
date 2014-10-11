@@ -59,6 +59,19 @@
         android:title="@string/prefs_enableSpecialBackups"
         android:defaultValue="true"
         />
+    <PreferenceScreen
+        android:title="@string/prefs_cryptoMenu"
+        android:key="cryptoMenu">
+        <EditTextPreference
+            android:key="cryptoUserIds"
+            android:title="@string/prefs_cryptoUserIds"
+            android:summary="@string/prefs_summaryCryptoUserIds"
+            />
+        <org.openintents.openpgp.util.OpenPgpListPreference
+            android:key="openpgpProviderList"
+            android:title="@string/prefs_openpgpProviderList"
+            />
+    </PreferenceScreen>
     <PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >

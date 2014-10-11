@@ -112,6 +112,10 @@
     <string name="prefs_enableSpecialBackups">enable special backups</string>
     <string name="prefs_backupExternalFiles">handle external data</string>
     <string name="prefs_summaryBackupExternalFiles">backs up and restores data that is placed on the external storage (e.g. /sdcard/Android/data/)</string>
+    <string name="prefs_cryptoMenu">cryptography</string>
+    <string name="prefs_cryptoUserIds">openpgp user ids</string>
+    <string name="prefs_summaryCryptoUserIds">emails of user ids to use for encrypting files. split with \",\"</string>
+    <string name="prefs_openpgpProviderList">openpgp provider</string>
 
     <string name="sched_title">scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>

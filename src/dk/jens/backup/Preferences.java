@@ -2,10 +2,12 @@ package dk.jens.backup;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+
+import org.openintents.openpgp.util.OpenPgpUtils;
 
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -24,6 +26,8 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        Preference cryptoMenu = findPreference("cryptoMenu");
+        cryptoMenu.setEnabled(OpenPgpUtils.isAvailable(this));
     }
     @Override
     protected void onSaveInstanceState(Bundle outState)
