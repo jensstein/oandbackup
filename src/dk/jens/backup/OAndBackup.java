@@ -34,7 +34,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
     File backupDir;
     MenuItem mSearchItem;
-    SharedPreferences prefs;
 
     AppInfoAdapter adapter;
     ListView listView;
@@ -74,7 +73,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             public void run()
             {
-                prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 shellCommands = new ShellCommands(prefs);
                 String langCode = prefs.getString("languages", "system");
@@ -348,6 +347,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         LanguageHelper.initLanguage(this, prefs.getString("languages", "system"));
     }
     @Override
@@ -430,6 +430,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
         MenuItem filterItem = menu.findItem(filteringId);
         if(filterItem != null)
@@ -617,23 +618,23 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         if(key.equals("pathBackupFolder"))
         {
-            String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            String backupDirPath = preferences.getString(key, FileCreationHelper.getDefaultBackupDirPath());
             backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             refresh();
         }
         if(key.equals("pathBusybox"))
         {
-            shellCommands = new ShellCommands(prefs);
+            shellCommands = new ShellCommands(preferences);
             checkBusybox();
         }
         if(key.equals("timestamp"))
         {
-            adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
+            adapter.setLocalTimestampFormat(preferences.getBoolean(key, true));
             adapter.notifyDataSetChanged();
         }
         if(key.equals("oldBackups"))
         {
-            sorter = new Sorter(adapter, prefs);
+            sorter = new Sorter(adapter, preferences);
         }
         if(key.equals("languages"))
         {
