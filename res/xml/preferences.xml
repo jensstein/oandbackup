@@ -62,6 +62,12 @@
     <PreferenceScreen
         android:title="@string/prefs_cryptoMenu"
         android:key="cryptoMenu">
+        <CheckBoxPreference
+            android:key="enableCrypto"
+            android:title="@string/prefs_enableCrypto"
+            android:summary="@string/prefs_summaryEnableCrypto"
+            android:defaultValue="false"
+            />
         <EditTextPreference
             android:key="cryptoUserIds"
             android:title="@string/prefs_cryptoUserIds"
