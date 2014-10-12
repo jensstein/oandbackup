@@ -28,6 +28,8 @@ public class BaseActivity extends FragmentActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String langCode = prefs.getString("languages", "system");
         LanguageHelper.initLanguage(this, langCode);
+        if(prefs.getBoolean("enableCrypto", false))
+            startCrypto();
     }
     @Override
     public void onDestroy()
@@ -98,7 +100,7 @@ public class BaseActivity extends FragmentActivity
                 }
                 catch(InterruptedException e)
                 {
-                    Log.e(TAG, "Crypto.getCrypto interrupted");
+                    Log.e(TAG, "getCrypto interrupted");
                 }
             }
         }
