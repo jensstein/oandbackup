@@ -85,7 +85,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 if(!checked)
                 {
                     handleMessages.showMessage("", getString(R.string.suCheck));
-                    boolean haveSu = shellCommands.checkSuperUser();
+                    boolean haveSu = ShellCommands.checkSuperUser();
                     LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                     if(!haveSu)
                     {
