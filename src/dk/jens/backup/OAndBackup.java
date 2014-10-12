@@ -621,26 +621,28 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             refresh();
         }
-        if(key.equals("pathBusybox"))
+        else if(key.equals("pathBusybox"))
         {
             shellCommands = new ShellCommands(prefs);
             checkBusybox();
         }
-        if(key.equals("timestamp"))
+        else if(key.equals("timestamp"))
         {
             adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
             adapter.notifyDataSetChanged();
         }
-        if(key.equals("oldBackups"))
+        else if(key.equals("oldBackups"))
         {
             sorter = new Sorter(adapter, prefs);
         }
-        if(key.equals("languages"))
+        else if(key.equals("languages"))
         {
             languageChanged = true;
         }
-        if(key.equals("enableSpecialBackups"))
+        else if(key.equals("enableSpecialBackups"))
             refresh();
+        else if(key.equals("enableCrypto") && preferences.getBoolean(key, false))
+            startCrypto();
     }
     public boolean onSearchRequested()
     {
