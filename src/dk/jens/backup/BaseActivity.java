@@ -82,7 +82,7 @@ public class BaseActivity extends FragmentActivity
         {
             public void run()
             {
-                crypto = new Crypto();
+                crypto = new Crypto(PreferenceManager.getDefaultSharedPreferences(BaseActivity.this));
                 crypto.bind(BaseActivity.this);
             }
         }).start();

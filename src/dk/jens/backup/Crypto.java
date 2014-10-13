@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.File;
@@ -25,11 +26,17 @@ public class Crypto
     private File[] files;
     private long[] keyIds;
     private String[] userIds;
-    private String provider = "org.sufficientlysecure.keychain";
-    public Crypto()
+    private String provider;
+    public Crypto(SharedPreferences prefs)
     {
+        userIds = prefs.getString("cryptoUserIds", "").split(",");
         // openkeychain doesn't like it if the string is empty
-        userIds = new String[]{"dummy"};
+        if(userIds.length == 1 && userIds[0].length() == 0)
+            userIds[0] = "dummy";
+        else
+            for(int i = 0; i < userIds.length; i++)
+                userIds[i] = userIds[i].trim();
+        provider = prefs.getString("openpgpProviderList", "org.sufficientlysecure.keychain");
     }
     public void testResponse(Activity activity, Intent intent, long[] keyIds)
     {
