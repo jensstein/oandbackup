@@ -133,30 +133,7 @@ public class HandleScheduledBackups
                     {
                         String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                         NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
-                        File backupSubDir = new File(backupDir.getAbsolutePath() + "/" + appInfo.getPackageName());
-                        if(!backupSubDir.exists())
-                        {
-                            backupSubDir.mkdirs();
-                        }
-                        else
-                        {
-                            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-                        }
-                        int ret = 0;
-                        if(appInfo.isSpecial())
-                        {
-                            ret = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                            appInfo.setBackupMode(AppInfo.MODE_DATA);
-                        }
-                        else
-                        {
-                            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), subMode);
-                            appInfo.setBackupMode(subMode);
-                        }
-
-                        shellCommands.logReturnMessage(context, ret);
-
-                        LogFile.writeLogFile(backupSubDir, appInfo);
+                        int ret = BackupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
                         if(ret != 0)
                         {
                             errorFlag = true;

@@ -285,7 +285,12 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                     handleMessages.setMessage(appInfo.getLabel(), message);
                     if(backupBoolean)
                     {
-                        if(backup(backupSubDir, appInfo) != 0)
+                        int backupMode = AppInfo.MODE_BOTH;
+                        if(rbApk.isChecked())
+                            backupMode = AppInfo.MODE_APK;
+                        else if(rbData.isChecked())
+                            backupMode = AppInfo.MODE_DATA;
+                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, backupMode) != 0)
                             errorFlag = true;
                     }
                     else
@@ -313,42 +318,6 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                 Utils.showErrors(BatchActivity.this, shellCommands);
             }
         }
-    }
-    public int backup(File backupSubDir, AppInfo appInfo)
-    {
-        if(!backupSubDir.exists())
-        {
-            backupSubDir.mkdirs();
-        }
-        else
-        {
-            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-        }
-        int backupMode = AppInfo.MODE_BOTH;
-        if(rbApk.isChecked())
-        {
-            backupMode = AppInfo.MODE_APK;
-        }
-        else if(rbData.isChecked())
-        {
-            backupMode = AppInfo.MODE_DATA;
-        }
-        int backupRet = 0;
-        if(appInfo.isSpecial())
-        {
-            backupMode = AppInfo.MODE_DATA;
-            backupRet = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-        }
-        else
-        {
-            backupRet = shellCommands.doBackup(this, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
-        }
-        shellCommands.logReturnMessage(this, backupRet);
-
-        appInfo.setBackupMode(backupMode);
-        LogFile.writeLogFile(backupSubDir, appInfo);
-
-        return backupRet;
     }
     public int restore(File backupSubDir, AppInfo appInfo)
     {

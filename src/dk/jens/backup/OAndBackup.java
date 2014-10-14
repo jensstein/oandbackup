@@ -201,26 +201,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.backup));
                 if(backupDir != null)
                 {
-                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                    if(!backupSubDir.exists())
-                        backupSubDir.mkdirs();
-                    else if(appInfo.getSourceDir().length() > 0)
-                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-
-                    if(appInfo.isSpecial())
-                    {
-                        backupRet = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                    }
-                    else
-                    {
-                        backupRet = shellCommands.doBackup(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
-                    }
-
-                    shellCommands.logReturnMessage(OAndBackup.this, backupRet);
-
-                    appInfo.setBackupMode(backupMode);
-                    LogFile.writeLogFile(backupSubDir, appInfo);
-
+                    backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
                     {
