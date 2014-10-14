@@ -7,8 +7,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-import org.openintents.openpgp.util.OpenPgpUtils;
-
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     @Override
@@ -27,7 +25,7 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         Preference cryptoMenu = findPreference("cryptoMenu");
-        cryptoMenu.setEnabled(OpenPgpUtils.isAvailable(this));
+        cryptoMenu.setEnabled(Crypto.isAvailable(this));
     }
     @Override
     protected void onSaveInstanceState(Bundle outState)

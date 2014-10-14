@@ -14,9 +14,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.openintents.openpgp.IOpenPgpService;
-import org.openintents.openpgp.util.OpenPgpApi;
 import org.openintents.openpgp.OpenPgpError;
+import org.openintents.openpgp.util.OpenPgpApi;
 import org.openintents.openpgp.util.OpenPgpServiceConnection;
+import org.openintents.openpgp.util.OpenPgpUtils;
 
 public class Crypto
 {
@@ -233,5 +234,11 @@ public class Crypto
             errorFlag = true;
             break;
         }
+    }
+    public static boolean isAvailable(Context context)
+    {
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
+            return OpenPgpUtils.isAvailable(context);
+        return false;
     }
 }
