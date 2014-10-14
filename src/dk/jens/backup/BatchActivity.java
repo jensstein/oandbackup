@@ -278,24 +278,23 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                 if(appInfo.isChecked())
                 {
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
                     String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
                     title = title + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
                     handleMessages.setMessage(appInfo.getLabel(), message);
+                    int mode = AppInfo.MODE_BOTH;
+                    if(rbApk.isChecked())
+                        mode = AppInfo.MODE_APK;
+                    else if(rbData.isChecked())
+                        mode = AppInfo.MODE_DATA;
                     if(backupBoolean)
                     {
-                        int backupMode = AppInfo.MODE_BOTH;
-                        if(rbApk.isChecked())
-                            backupMode = AppInfo.MODE_APK;
-                        else if(rbData.isChecked())
-                            backupMode = AppInfo.MODE_DATA;
-                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, backupMode) != 0)
+                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
                     }
                     else
                     {
-                        if(restore(backupSubDir, appInfo) != 0)
+                        if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
                     }
                     if(i == total)
@@ -318,56 +317,5 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                 Utils.showErrors(BatchActivity.this, shellCommands);
             }
         }
-    }
-    public int restore(File backupSubDir, AppInfo appInfo)
-    {
-        String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
-        String dataDir = appInfo.getDataDir();
-
-        if(rbApk.isChecked() && apk != null && !appInfo.isSpecial())
-        {
-            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), this.getApplicationInfo().dataDir);
-            return apkRet;
-        }
-        else if(rbData.isChecked())
-        {
-            if(appInfo.isInstalled())
-            {
-                int restoreRet = 0;
-                int permRet = 0;
-                if(appInfo.isSpecial())
-                {
-                    restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                    permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
-                }
-                else
-                {
-                    restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                    shellCommands.logReturnMessage(this, restoreRet);
-                    permRet = shellCommands.setPermissions(dataDir);
-                }
-                return restoreRet + permRet;
-            }
-            else
-            {
-                Log.e(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-            }
-        }
-        else if(rbBoth.isChecked() && apk != null && !appInfo.isSpecial())
-        {
-            int apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), this.getApplicationInfo().dataDir);
-            if(apkRet == 0)
-            {
-                int restoreRet = shellCommands.doRestore(this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-                shellCommands.logReturnMessage(this, restoreRet);
-                int permRet = shellCommands.setPermissions(dataDir);
-                if(restoreRet != 0 || permRet != 0)
-                {
-                    return 1;
-                }
-            }
-            return apkRet;
-        }
-        return 1;
     }
 }

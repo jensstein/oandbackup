@@ -232,45 +232,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             public void run()
             {
-                int apkRet, restoreRet, permRet;
-                apkRet = restoreRet = permRet = 0;
+                int ret = 0;
                 if(backupDir != null)
                 {
-                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                    // error handling, hvis backupSubDir ikke findes
                     handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
-
-                    LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
-                    String dataDir = appInfo.getDataDir();
-                    String apk = logInfo.getApk();
-                    if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
-                        apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
-                    if(mode == AppInfo.MODE_DATA|| mode == AppInfo.MODE_BOTH)
-                    {
-                        if(appInfo.isInstalled() || mode == AppInfo.MODE_BOTH)
-                        {
-                            if(appInfo.isSpecial())
-                            {
-                                restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                                permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
-                            }
-                            else
-                            {
-                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-
-                                permRet = shellCommands.setPermissions(dataDir);
-                            }
-                        }
-                        else
-                        {
-                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-                        }
-                    }
-                    shellCommands.logReturnMessage(OAndBackup.this, apkRet + restoreRet + permRet);
+                    ret = BackupRestoreHelper.restore(OAndBackup.this, backupDir, appInfo, shellCommands, mode);
                     refresh();
                 }
                 handleMessages.endMessage();
-                if(apkRet == 0 && restoreRet == 0 && permRet == 0)
+                if(ret == 0)
                 {
                     NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
                 }
