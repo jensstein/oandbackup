@@ -356,9 +356,9 @@ public class ShellCommands
             * around the race condition we sleep a little.
             */
             dos.writeBytes("sleep 1\n");
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\((.?[0-9]+).*|\\1|p'\n");
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\(( *[0-9]+).*|\\1|p'\n");
             dos.flush();
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\((.?[0-9]+).*|\\1|p'\n");
+            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\(( *[0-9]+).*|\\1|p'\n");
             dos.flush();
 
             dos.writeBytes("exit\n");
