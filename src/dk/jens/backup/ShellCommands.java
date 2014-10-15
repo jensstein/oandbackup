@@ -848,7 +848,7 @@ public class ShellCommands
     {
         errors = "";
     }
-    public boolean checkSuperUser()
+    public static boolean checkSuperUser()
     {
         try
         {
@@ -857,25 +857,18 @@ public class ShellCommands
             dos.writeBytes("exit\n");
             dos.flush();
             p.waitFor();
-            if(p.exitValue() != 0)
-            {
-                return false;
-            }
-            else
-            {
+            if(p.exitValue() == 0)
                 return true;
-            }
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
-            return false;
+            Log.e(TAG, "checkSuperUser: " + e.toString());
         }
         catch(InterruptedException e)
         {
-            Log.i(TAG, e.toString());
-            return false;
+            Log.e(TAG, "checkSuperUser: " + e.toString());
         }
+        return false;
     }
     public boolean checkBusybox()
     {
@@ -898,19 +891,17 @@ public class ShellCommands
                 {
                     writeErrorLog("busybox", line);
                 }
-                return false;
             }
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
-            return false;
+            Log.e(TAG, "checkBusybox: " + e.toString());
         }
         catch(InterruptedException e)
         {
-            Log.i(TAG, e.toString());
-            return false;
+            Log.e(TAG, "checkBusybox: " + e.toString());
         }
+        return false;
     }
     public int untar(String pathToBackupsubdir, String folder)
     {

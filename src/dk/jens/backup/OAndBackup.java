@@ -34,7 +34,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
 
     File backupDir;
     MenuItem mSearchItem;
-    SharedPreferences prefs;
 
     AppInfoAdapter adapter;
     ListView listView;
@@ -74,7 +73,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             public void run()
             {
-                prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                 prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
                 shellCommands = new ShellCommands(prefs);
                 String langCode = prefs.getString("languages", "system");
@@ -86,7 +85,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 if(!checked)
                 {
                     handleMessages.showMessage("", getString(R.string.suCheck));
-                    boolean haveSu = shellCommands.checkSuperUser();
+                    boolean haveSu = ShellCommands.checkSuperUser();
                     LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                     if(!haveSu)
                     {
@@ -202,26 +201,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.backup));
                 if(backupDir != null)
                 {
-                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                    if(!backupSubDir.exists())
-                        backupSubDir.mkdirs();
-                    else if(appInfo.getSourceDir().length() > 0)
-                        shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
-
-                    if(appInfo.isSpecial())
-                    {
-                        backupRet = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                    }
-                    else
-                    {
-                        backupRet = shellCommands.doBackup(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
-                    }
-
-                    shellCommands.logReturnMessage(OAndBackup.this, backupRet);
-
-                    appInfo.setBackupMode(backupMode);
-                    LogFile.writeLogFile(backupSubDir, appInfo);
-
+                    backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
                     {
@@ -252,45 +232,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         {
             public void run()
             {
-                int apkRet, restoreRet, permRet;
-                apkRet = restoreRet = permRet = 0;
+                int ret = 0;
                 if(backupDir != null)
                 {
-                    File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                    // error handling, hvis backupSubDir ikke findes
                     handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
-
-                    LogFile logInfo = new LogFile(backupSubDir, appInfo.getPackageName());
-                    String dataDir = appInfo.getDataDir();
-                    String apk = logInfo.getApk();
-                    if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
-                        apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), OAndBackup.this.getApplicationInfo().dataDir);
-                    if(mode == AppInfo.MODE_DATA|| mode == AppInfo.MODE_BOTH)
-                    {
-                        if(appInfo.isInstalled() || mode == AppInfo.MODE_BOTH)
-                        {
-                            if(appInfo.isSpecial())
-                            {
-                                restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                                permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
-                            }
-                            else
-                            {
-                                restoreRet = shellCommands.doRestore(OAndBackup.this, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
-
-                                permRet = shellCommands.setPermissions(dataDir);
-                            }
-                        }
-                        else
-                        {
-                            Log.i(TAG, getString(R.string.restoreDataWithoutApkError) + appInfo.getPackageName());
-                        }
-                    }
-                    shellCommands.logReturnMessage(OAndBackup.this, apkRet + restoreRet + permRet);
+                    ret = BackupRestoreHelper.restore(OAndBackup.this, backupDir, appInfo, shellCommands, mode);
                     refresh();
                 }
                 handleMessages.endMessage();
-                if(apkRet == 0 && restoreRet == 0 && permRet == 0)
+                if(ret == 0)
                 {
                     NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
                 }
@@ -348,6 +298,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         LanguageHelper.initLanguage(this, prefs.getString("languages", "system"));
     }
     @Override
@@ -430,6 +381,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
         MenuItem filterItem = menu.findItem(filteringId);
         if(filterItem != null)
@@ -617,23 +569,23 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         if(key.equals("pathBackupFolder"))
         {
-            String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            String backupDirPath = preferences.getString(key, FileCreationHelper.getDefaultBackupDirPath());
             backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             refresh();
         }
         else if(key.equals("pathBusybox"))
         {
-            shellCommands = new ShellCommands(prefs);
+            shellCommands = new ShellCommands(preferences);
             checkBusybox();
         }
         else if(key.equals("timestamp"))
         {
-            adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
+            adapter.setLocalTimestampFormat(preferences.getBoolean(key, true));
             adapter.notifyDataSetChanged();
         }
         else if(key.equals("oldBackups"))
         {
-            sorter = new Sorter(adapter, prefs);
+            sorter = new Sorter(adapter, preferences);
         }
         else if(key.equals("languages"))
         {

@@ -94,16 +94,18 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }    
+    }
     public View buildUi(int number)
-    {    
+    {
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
-                
+
         Button updateButton = (Button) view.findViewById(R.id.updateButton);
         updateButton.setOnClickListener(this);
         Button removeButton = (Button) view.findViewById(R.id.removeButton);
         removeButton.setOnClickListener(this);
+        Button activateButton = (Button) view.findViewById(R.id.activateButton);
+        activateButton.setOnClickListener(this);
         EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
         String repeatString = Integer.toString(prefs.getInt("repeatTime" + number, 0));
         intervalDays.setText(repeatString);
@@ -131,6 +133,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 
         updateButton.setTag(number);
         removeButton.setTag(number);
+        activateButton.setTag(number);
         cb.setTag(number);
 //        exludeSystemCB.setTag(number);
         spinner.setTag(number);
@@ -206,8 +209,15 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     edit.putInt("total", --totalSchedules);
                     edit.commit();
                     break;
+                case R.id.activateButton:
+                    int mode = prefs.getInt("scheduleMode" + number, 1);
+                    int subMode = prefs.getInt("scheduleSubMode" + number, 2);
+                    boolean exludeSystem = prefs.getBoolean("excludeSystem" + number, false);
+                    HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
+                    handleScheduledBackups.initiateBackup(number, mode, subMode + 1, exludeSystem);
+                    break;
                 case CUSTOMLISTUPDATEBUTTONID:
-                    new CustomPackageList(this, number).showList(Scheduler.this);
+                    CustomPackageList.showList(this, number);
                     break;
                 case EXCLUDESYSTEMCHECKBOXID:
                     edit.putBoolean("excludeSystem" + number, ((CheckBox) v).isChecked());
@@ -229,7 +239,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
                 if(pos == 4)
                 {
-                    new CustomPackageList(this, number).showList(Scheduler.this);
+                    CustomPackageList.showList(this, number);
                 }
                 edit.putInt("scheduleMode" + number, pos);
                 edit.commit();

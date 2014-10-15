@@ -9,54 +9,10 @@
         android:padding="10sp"
         >
         <TextView
-            style="@style/help_headerStyle"
-            android:text="@string/help_usageHeader"
-        />
-        <TextView
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_usageContextPointBackModes"
-        />
-        <TextView 
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_usageContentsPointContextMenu"
-        />
-        <TextView 
-            style="@style/help_contentSubPointStyle"
-            android:text="@string/help_usageContentsSubPoint1"
-        />
-        <TextView 
-            style="@style/help_contentSubPointStyle"
-            android:text="@string/help_usageContentsSubPoint2"
-        />
-        <TextView 
-            style="@style/help_contentSubPointStyle"
-            android:text="@string/help_usageContentsSubPoint3"
-        />
-        <TextView 
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_usageContentsPointMultiUser"
-        />
-        <TextView
-            style="@style/help_headerStyle"
-            android:text="@string/help_changelogHeader"
-        />
-        <TextView
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_changelogLink"
-            android:autoLink="web"
-        />
-        <TextView
-            style="@style/help_headerStyle"
-            android:text="@string/help_licenseHeader"
-        />
-        <TextView
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_licenseContents"
-        />
-        <TextView
-            style="@style/help_contentPointStyle"
-            android:text="@string/help_licenseLink"
-            android:autoLink="web"
+            android:id="@+id/helpHtml"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textIsSelectable="true"
         />
     </LinearLayout>
 </ScrollView>
