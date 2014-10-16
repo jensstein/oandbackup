@@ -115,6 +115,7 @@ public class Crypto
     }
     public void doAction(Activity activity, Intent intent, int requestCode)
     {
+        errorFlag = false;
         if(!testFlag)
         {
             testResponse(activity, new Intent(), null);
@@ -208,7 +209,6 @@ public class Crypto
     private void handleResult(Activity activity, Intent result, int requestCode)
     {
         successFlag = false;
-        errorFlag = false;
         switch(result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR))
         {
         case OpenPgpApi.RESULT_CODE_SUCCESS:
@@ -240,5 +240,9 @@ public class Crypto
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
             return OpenPgpUtils.isAvailable(context);
         return false;
+    }
+    public boolean isErrorSet()
+    {
+        return errorFlag;
     }
 }
