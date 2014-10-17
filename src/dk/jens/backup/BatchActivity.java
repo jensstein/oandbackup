@@ -262,6 +262,9 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
     {
         if(backupDir != null)
         {
+            Crypto crypto = null;
+            if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(this))
+                crypto = getCrypto();
             PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             if(prefs.getBoolean("acquireWakelock", true))
             {
@@ -291,6 +294,8 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                     {
                         if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
+                        else if(crypto != null)
+                            crypto.encryptFromAppInfo(this, backupDir, appInfo, mode, prefs);
                     }
                     else
                     {

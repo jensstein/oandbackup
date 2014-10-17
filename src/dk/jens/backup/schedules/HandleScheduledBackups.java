@@ -119,6 +119,12 @@ public class HandleScheduledBackups
             {
                 public void run()
                 {
+                    Crypto crypto = null;
+                    if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(context))
+                    {
+                        crypto = new Crypto(prefs);
+                        crypto.bind(context);
+                    }
                     PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
                     if(prefs.getBoolean("acquireWakelock", true))
                     {
@@ -135,9 +141,9 @@ public class HandleScheduledBackups
                         NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
                         int ret = BackupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
                         if(ret != 0)
-                        {
                             errorFlag = true;
-                        }
+                        else if(crypto != null)
+                            crypto.encryptFromAppInfo(context, backupDir, appInfo, subMode, prefs);
                         if(i == total)
                         {
                             String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);

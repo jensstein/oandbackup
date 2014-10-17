@@ -101,6 +101,34 @@ public class Crypto
     {
         encryptFiles(context, new File[] {file});
     }
+    public void encryptFromAppInfo(Context context, File backupDir, AppInfo appInfo, int mode, SharedPreferences prefs)
+    {
+        File backupSubDir = new File(backupDir, appInfo.getPackageName());
+        String apk = appInfo.getSourceDir();
+        apk = apk.substring(apk.lastIndexOf("/") + 1);
+        String data = appInfo.getDataDir();
+        data = data.substring(data.lastIndexOf("/") + 1);
+        int i = 0;
+        File[] files = new File[3];
+        if(!appInfo.isSpecial() && (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH))
+            files[i++] = new File(backupSubDir, apk);
+        if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            files[i++] = new File(backupSubDir, data + ".zip");
+        /*
+        // can only be used if external_files is zipped
+        if(prefs.getBoolean("backupExternalFiles", false))
+        {
+            File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES);
+            if(extFiles.exists())
+                files[i++] = extFiles;
+        }
+        */
+        encryptFiles(context, files);
+        if(!errorFlag)
+            for(File file : files)
+                if(file != null)
+                    ShellCommands.deleteBackup(file);
+    }
     public void handleFiles(Context context, Intent intent, int requestCode, File... filesList)
     {
         waitForServiceBound();
@@ -129,6 +157,10 @@ public class Crypto
                     intent.putExtra(OpenPgpApi.EXTRA_KEY_IDS, keyIds);
                 for(File file : files)
                 {
+                    // not all slots in the File array is necessarilly used.
+                    // an ArrayList would probably be better
+                    if(file == null)
+                        continue;
                     String outputFilename;
                     if(requestCode == BaseActivity.OPENPGP_REQUEST_DECRYPT)
                         outputFilename = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(".gpg"));
@@ -146,11 +178,13 @@ public class Crypto
             }
             else
             {
+                errorFlag = true;
                 Log.e(TAG, "Crypto: no files to de/encrypt");
             }
         }
         catch(IOException e)
         {
+            errorFlag = true;
             Log.e(TAG, "Crypto error: " + e.toString());
         }
     }

@@ -201,7 +201,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 handleMessages.showMessage(appInfo.getLabel(), getString(R.string.backup));
                 if(backupDir != null)
                 {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+                    Crypto crypto = null;
+                    if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(OAndBackup.this))
+                        crypto = getCrypto();
                     backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
+                    if(backupRet == 0 && crypto != null)
+                        crypto.encryptFromAppInfo(OAndBackup.this, backupDir, appInfo, backupMode, prefs);
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
                     {
