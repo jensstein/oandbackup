@@ -39,7 +39,7 @@ public class Crypto
                 userIds[i] = userIds[i].trim();
         provider = prefs.getString("openpgpProviderList", "org.sufficientlysecure.keychain");
     }
-    public void testResponse(Activity activity, Intent intent, long[] keyIds)
+    public void testResponse(Context context, Intent intent, long[] keyIds)
     {
         /*
          * this method is only used to cause the user interaction screen
@@ -55,9 +55,9 @@ public class Crypto
         if(keyIds != null)
             this.keyIds = keyIds;
         intent.putExtra(OpenPgpApi.EXTRA_USER_IDS, userIds);
-        OpenPgpApi api = new OpenPgpApi(activity, service.getService());
+        OpenPgpApi api = new OpenPgpApi(context, service.getService());
         Intent result = api.executeApi(intent, is, os);
-        handleResult(activity, result, BaseActivity.OPENPGP_REQUEST_TESTRESPONSE);
+        handleResult(context, result, BaseActivity.OPENPGP_REQUEST_TESTRESPONSE);
     }
     public void bind(Context context)
     {
@@ -82,26 +82,26 @@ public class Crypto
         if(service != null)
             service.unbindFromService();
     }
-    public void decryptFiles(Activity activity, File... filesList)
+    public void decryptFiles(Context context, File... filesList)
     {
         Intent intent = new Intent(OpenPgpApi.ACTION_DECRYPT_VERIFY);
-        handleFiles(activity, intent, BaseActivity.OPENPGP_REQUEST_DECRYPT, filesList);
+        handleFiles(context, intent, BaseActivity.OPENPGP_REQUEST_DECRYPT, filesList);
     }
-    public void decryptFiles(Activity activity, File file)
+    public void decryptFiles(Context context, File file)
     {
-        decryptFiles(activity, new File[]{file});
+        decryptFiles(context, new File[]{file});
     }
-    public void encryptFiles(Activity activity, File... filesList)
+    public void encryptFiles(Context context, File... filesList)
     {
         Intent intent = new Intent(OpenPgpApi.ACTION_ENCRYPT);
         intent.putExtra(OpenPgpApi.EXTRA_USER_IDS, userIds);
-        handleFiles(activity, intent, BaseActivity.OPENPGP_REQUEST_ENCRYPT, filesList);
+        handleFiles(context, intent, BaseActivity.OPENPGP_REQUEST_ENCRYPT, filesList);
     }
-    public void encryptFiles(Activity activity, File file)
+    public void encryptFiles(Context context, File file)
     {
-        encryptFiles(activity, new File[] {file});
+        encryptFiles(context, new File[] {file});
     }
-    public void handleFiles(Activity activity, Intent intent, int requestCode, File... filesList)
+    public void handleFiles(Context context, Intent intent, int requestCode, File... filesList)
     {
         waitForServiceBound();
         /*
@@ -111,14 +111,14 @@ public class Crypto
          * through the user interaction phase.
          */
         files = filesList;
-        doAction(activity, intent, requestCode);
+        doAction(context, intent, requestCode);
     }
-    public void doAction(Activity activity, Intent intent, int requestCode)
+    public void doAction(Context context, Intent intent, int requestCode)
     {
         errorFlag = false;
         if(!testFlag)
         {
-            testResponse(activity, new Intent(), null);
+            testResponse(context, new Intent(), null);
             waitForResult();
         }
         try
@@ -137,9 +137,9 @@ public class Crypto
                     Log.i(TAG, "crypto input: " + file.getAbsolutePath() + " output: " + outputFilename);
                     FileInputStream is = new FileInputStream(file);
                     FileOutputStream os = new FileOutputStream(outputFilename);
-                    OpenPgpApi api = new OpenPgpApi(activity, service.getService());
+                    OpenPgpApi api = new OpenPgpApi(context, service.getService());
                     Intent result = api.executeApi(intent, is, os);
-                    handleResult(activity, result, requestCode);
+                    handleResult(context, result, requestCode);
                     waitForResult();
                     os.close();
                 }
@@ -206,7 +206,7 @@ public class Crypto
             Log.e(TAG, "Crypto.waitForResult interrupted");
         }
     }
-    private void handleResult(Activity activity, Intent result, int requestCode)
+    private void handleResult(Context context, Intent result, int requestCode)
     {
         successFlag = false;
         switch(result.getIntExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_ERROR))
@@ -219,9 +219,21 @@ public class Crypto
             PendingIntent pi = result.getParcelableExtra(OpenPgpApi.RESULT_INTENT);
             try
             {
+                /*
+                 * Activity is needed to use startIntentSenderFromChild
+                 * which is needed to get the response in onActivityResult.
+                 * but HandleScheduledBackups can only get a Context from the
+                 * onReceive of the BroadcastReceiver so it must be cast.
+                 */
+                Activity activity = (Activity) context;
                 activity.startIntentSenderFromChild(activity, pi.getIntentSender(), requestCode, null, 0, 0, 0);
             }
             catch(IntentSender.SendIntentException e)
+            {
+                errorFlag = true;
+                Log.e(TAG, "Crypto.handleResult error: " + e.toString());
+            }
+            catch(ClassCastException e)
             {
                 errorFlag = true;
                 Log.e(TAG, "Crypto.handleResult error: " + e.toString());
