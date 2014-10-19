@@ -14,7 +14,7 @@ public class BackupRestoreHelper
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         if(!backupSubDir.exists())
             backupSubDir.mkdirs();
-        else if(appInfo.getSourceDir().length() > 0)
+        else if(backupMode != AppInfo.MODE_DATA && appInfo.getSourceDir().length() > 0)
             shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
 
         if(appInfo.isSpecial())
