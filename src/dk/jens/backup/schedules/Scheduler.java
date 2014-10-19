@@ -91,6 +91,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             case R.id.addSchedule:
                 viewList.add(buildUi(++totalSchedules));
                 edit.putInt("total", totalSchedules);
+                edit.commit();
                 return true;
         }
         return super.onOptionsItemSelected(item);
