@@ -48,7 +48,7 @@ public class AppInfoHelper
                 try
                 {
                     // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
-                    icon = ((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap();
+                    icon = Bitmap.createScaledBitmap(((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap(), 32, 32, true);
                 }
                 catch(ClassCastException e) {}
                 // for now the error is ignored since logging it would fill a lot in the log
