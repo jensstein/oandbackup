@@ -126,6 +126,7 @@ public class LogFile implements Parcelable
             {
                 logLines.add(logLine);
             }
+            breader.close();
             return logLines;
         }
         catch(FileNotFoundException e)
