@@ -29,7 +29,7 @@ public class BackupRestoreHelper
         }
 
         shellCommands.logReturnMessage(context, ret);
-        LogFile.writeLogFile(backupSubDir, appInfo);
+        LogFile.writeLogFile(backupSubDir, appInfo, backupMode);
         return ret;
     }
     public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode)

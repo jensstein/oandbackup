@@ -94,17 +94,25 @@ public class LogFile implements Parcelable
     {
         return backupMode;
     }
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo)
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode)
     {
         BufferedWriter bw = null;
         try
         {
+            // path to apk should only be logged if it is backed up
+            String sourceDir = "";
+            if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
+                sourceDir = appInfo.getSourceDir();
+            else
+                if(appInfo.getLogInfo() != null)
+                    sourceDir = appInfo.getLogInfo().getSourceDir();
+
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("label", appInfo.getLabel());
             jsonObject.put("versionName", appInfo.getVersionName());
             jsonObject.put("versionCode", appInfo.getVersionCode());
             jsonObject.put("packageName", appInfo.getPackageName());
-            jsonObject.put("sourceDir", appInfo.getSourceDir());
+            jsonObject.put("sourceDir", sourceDir);
             jsonObject.put("dataDir", appInfo.getDataDir());
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
             jsonObject.put("isSystem", appInfo.isSystem());
