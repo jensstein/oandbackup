@@ -273,6 +273,9 @@ public class ShellCommands
     public int restoreSpecial(File backupSubDir, String label, String dataDir, String... files)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+        // remove trailing slash to ensure lastIndexOf gives the correct result
+        if(dataDir.endsWith("/"))
+            dataDir = dataDir.substring(0, dataDir.length() - 1);
         String folder = dataDir.substring(dataDir.lastIndexOf("/") + 1);
 
         int unzipRet = -1;
@@ -289,16 +292,28 @@ public class ShellCommands
                 for(String file : files)
                 {
                     String filename = file.substring(file.lastIndexOf("/") + 1);
+                    ArrayList<String> uid_gid = getOwnership(file, "su");
                     dos.writeBytes("cp -r " + backupSubDirPath + "/" + filename + " " + file + "\n");
+                    if(uid_gid != null && !uid_gid.isEmpty())
+                        dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
+                    else
+                        Log.e(TAG, "couldn't find ownership: " + file);
                 }
             }
             if(dataDir.length() > 0)
             {
-                // remove trailing slash to ensure lastIndexOf gives the correct result
-                if(dataDir.endsWith("/"))
-                    dataDir = dataDir.substring(0, dataDir.length() - 1);
+                ArrayList<String> uid_gid = getOwnership(dataDir);
                 String dest = dataDir.substring(0, dataDir.lastIndexOf("/"));
-                dos.writeBytes("cp -r " + folder + " " + dest + "\n");
+                dos.writeBytes("cp -r " + backupSubDirPath + "/" + folder + " " + dest + "\n");
+                if(uid_gid != null && !uid_gid.isEmpty())
+                {
+                    dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + dataDir + "\n");
+                    dos.writeBytes(busybox + " chmod -R 0771 " + dataDir + "\n");
+                }
+                else
+                {
+                    Log.e(TAG, "couldn't find ownership: " + dataDir);
+                }
             }
             dos.writeBytes("exit\n");
             dos.flush();
@@ -315,7 +330,12 @@ public class ShellCommands
         }
         catch(IOException e)
         {
+            Log.e(TAG, "restoreSpecial: " + e.toString());
             e.printStackTrace();
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            Log.e(TAG, "restoreSpecial: " + e.toString());
         }
         catch(InterruptedException e)
         {
@@ -446,64 +466,6 @@ public class ShellCommands
         catch(InterruptedException e)
         {
             Log.e(TAG, "error while setPermissions: " + e.toString());
-        }
-        return 1;
-    }
-    public int setPermissionsSpecial(String packageDir, String... files)
-    {
-        try
-        {
-            ArrayList<String> uid_gid = null;
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            if(packageDir.length() > 0)
-            {
-                uid_gid = getOwnership(packageDir);
-                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-                dos.writeBytes(busybox + " chmod -R 0771 " + packageDir + "\n");
-            }
-            if(files != null)
-            {
-                for(String file : files)
-                {
-                    // the single files don't necessarily have the same ownership as
-                    // their parent directory so they should be checked individually
-                    if((uid_gid = getOwnership(file, "su")) != null)
-                    {
-                        dos.writeBytes(busybox + " chown " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
-                        dos.writeBytes(busybox + " chmod 0771 " + file + "\n");
-                    }
-                    else
-                    {
-                        Log.e(TAG, "couldn't get ownership for " + file);
-                    }
-                }
-            }
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> output = getOutput(p).get("stderr");
-                for(String outLine : output)
-                {
-                    writeErrorLog(packageDir, outLine);
-                }
-            }
-            return ret;
-        }
-        catch(IndexOutOfBoundsException e)
-        {
-            Log.e(TAG, "error while setPermissionsSpecial: " + e.toString());
-            writeErrorLog("", "setPermissionsSpecial error: could not find permissions for " + packageDir);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch(InterruptedException e)
-        {
-            Log.e(TAG, "error while setPermissionsSpecial: " + e.toString());
         }
         return 1;
     }

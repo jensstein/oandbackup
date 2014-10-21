@@ -60,7 +60,6 @@ public class BackupRestoreHelper
                 if(appInfo.isSpecial())
                 {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                    permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
                 }
                 else
                 {
