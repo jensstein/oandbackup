@@ -39,11 +39,23 @@ public class BackupRestoreHelper
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
         String dataDir = appInfo.getDataDir();
-        if((mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) && apk != null && apk.length() > 0)
-            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
+        if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+        {
+            if(apk != null && apk.length() > 0)
+            {
+                apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
+            }
+            else if(!appInfo.isSpecial())
+            {
+                String s = "no apk to install: " + appInfo.getPackageName();
+                Log.e(TAG, s);
+                shellCommands.writeErrorLog(appInfo.getPackageName(), s);
+                apkRet = 1;
+            }
+        }
         if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
         {
-            if(appInfo.isInstalled() || mode == AppInfo.MODE_BOTH)
+            if(apkRet == 0 && (appInfo.isInstalled() || mode == AppInfo.MODE_BOTH))
             {
                 if(appInfo.isSpecial())
                 {
