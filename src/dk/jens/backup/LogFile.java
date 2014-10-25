@@ -66,11 +66,8 @@ public class LogFile implements Parcelable
     }
     public String getApk()
     {
-        if(sourceDir != null)
-        {
-            String apk = new File(sourceDir).getName();
-            return apk;
-        }
+        if(sourceDir != null && sourceDir.length() > 0)
+            return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
         return null;
     }
     public String getDataDir()
