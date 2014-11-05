@@ -14,8 +14,15 @@ public class BackupRestoreHelper
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         if(!backupSubDir.exists())
             backupSubDir.mkdirs();
-        else if(appInfo.getSourceDir().length() > 0)
-            shellCommands.deleteOldApk(backupSubDir, appInfo.getSourceDir());
+        else if(backupMode != AppInfo.MODE_DATA && appInfo.getSourceDir().length() > 0)
+        {
+            if(appInfo.getLogInfo() != null && appInfo.getLogInfo().getSourceDir().length() > 0 && !appInfo.getSourceDir().equals(appInfo.getLogInfo().getSourceDir()))
+            {
+                String apk = appInfo.getLogInfo().getApk();
+                if(apk != null)
+                    ShellCommands.deleteBackup(new File(backupSubDir, apk));
+            }
+        }
 
         if(appInfo.isSpecial())
         {
@@ -29,7 +36,7 @@ public class BackupRestoreHelper
         }
 
         shellCommands.logReturnMessage(context, ret);
-        LogFile.writeLogFile(backupSubDir, appInfo);
+        LogFile.writeLogFile(backupSubDir, appInfo, backupMode);
         return ret;
     }
     public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode, Crypto crypto)
@@ -42,16 +49,27 @@ public class BackupRestoreHelper
         // extra check for needToDecrypt here because of BatchActivity which cannot really reset crypto to null for every package to restore
         if(crypto != null && Crypto.needToDecrypt(backupDir, appInfo, mode))
             crypto.decryptFromAppInfo(context, backupDir, appInfo, mode);
-        if((mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) && apk != null && apk.length() > 0)
-            apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
+        if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+        {
+            if(apk != null && apk.length() > 0)
+            {
+                apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
+            }
+            else if(!appInfo.isSpecial())
+            {
+                String s = "no apk to install: " + appInfo.getPackageName();
+                Log.e(TAG, s);
+                shellCommands.writeErrorLog(appInfo.getPackageName(), s);
+                apkRet = 1;
+            }
+        }
         if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
         {
-            if(appInfo.isInstalled() || mode == AppInfo.MODE_BOTH)
+            if(apkRet == 0 && (appInfo.isInstalled() || mode == AppInfo.MODE_BOTH))
             {
                 if(appInfo.isSpecial())
                 {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
-                    permRet = shellCommands.setPermissionsSpecial(appInfo.getDataDir(), appInfo.getFilesList());
                 }
                 else
                 {

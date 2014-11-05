@@ -4,16 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.JSONException;
@@ -21,8 +17,7 @@ import org.json.JSONObject;
 
 public class LogFile implements Parcelable
 {
-    final static String TAG = OAndBackup.TAG; 
-    File logfile;
+    final static String TAG = OAndBackup.TAG;
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
     long lastBackupMillis;
@@ -46,26 +41,7 @@ public class LogFile implements Parcelable
         }
         catch(JSONException e)
         {
-            ArrayList<String> log = readLegacyLogFile(backupSubDir, packageName);
-            if(log != null)
-            {
-                try
-                {
-                    this.label = log.get(0);
-                    this.packageName = log.get(2);
-                    this.versionName = log.get(1);
-                    this.sourceDir = log.get(3);
-                    this.dataDir = log.get(4);
-                    this.versionCode = 0;
-                    this.isSystem = false;
-                    this.backupMode = AppInfo.MODE_UNSET;
-                    writeLogFile(backupSubDir, packageName, label, versionName, versionCode, sourceDir, dataDir, isSystem, backupMode);
-                }
-                catch(IndexOutOfBoundsException ie)
-                {
-                    ie.printStackTrace();
-                }
-            }
+            Log.e(TAG, packageName + ": error while reading logfile: " + e.toString());
         }
     }
     public String getLabel()
@@ -90,11 +66,8 @@ public class LogFile implements Parcelable
     }
     public String getApk()
     {
-        if(sourceDir != null)
-        {
-            String apk = new File(sourceDir).getName();
-            return apk;
-        }
+        if(sourceDir != null && sourceDir.length() > 0)
+            return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
         return null;
     }
     public String getDataDir()
@@ -113,70 +86,55 @@ public class LogFile implements Parcelable
     {
         return backupMode;
     }
-    private ArrayList<String> readLegacyLogFile(File backupDir, String packageName)
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode)
     {
-        ArrayList<String> logLines = new ArrayList<String>();
+        BufferedWriter bw = null;
         try
         {
-            File logFile = new File(backupDir.getAbsolutePath() + "/" + packageName + ".log");
-            FileReader fr = new FileReader(logFile);
-            BufferedReader breader = new BufferedReader(fr);
-            String logLine;
-            while((logLine = breader.readLine()) != null)
-            {
-                logLines.add(logLine);
-            }
-            return logLines;
-        }
-        catch(FileNotFoundException e)
-        {
-            return null;
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return null;
-        }
-    }
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo)
-    {
-        /*
-         * this overloaded method is only temporary,
-         * until the reading of old logfiles are fully deprecated.
-         * in the future there will only be one writeLogFile
-         * and it will take a File and an AppInfo as parameters.
-         */
-        writeLogFile(backupSubDir, appInfo.getPackageName(), appInfo.getLabel(), appInfo.getVersionName(), appInfo.getVersionCode(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem(), appInfo.getBackupMode());
-    }
-    public static void writeLogFile(File backupSubDir, String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean isSystem, int backupMode)
-    {
-        try
-        {
+            // path to apk should only be logged if it is backed up
+            String sourceDir = "";
+            if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
+                sourceDir = appInfo.getSourceDir();
+            else
+                if(appInfo.getLogInfo() != null)
+                    sourceDir = appInfo.getLogInfo().getSourceDir();
+
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("label", label);
-            jsonObject.put("versionName", versionName);
-            jsonObject.put("versionCode", versionCode);
-            jsonObject.put("packageName", packageName);
+            jsonObject.put("label", appInfo.getLabel());
+            jsonObject.put("versionName", appInfo.getVersionName());
+            jsonObject.put("versionCode", appInfo.getVersionCode());
+            jsonObject.put("packageName", appInfo.getPackageName());
             jsonObject.put("sourceDir", sourceDir);
-            jsonObject.put("dataDir", dataDir);
+            jsonObject.put("dataDir", appInfo.getDataDir());
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
-            jsonObject.put("isSystem", isSystem);
-            jsonObject.put("backupMode", backupMode);
+            jsonObject.put("isSystem", appInfo.isSystem());
+            jsonObject.put("backupMode", appInfo.getBackupMode());
             String json = jsonObject.toString(4);
-            File outFile = new File(backupSubDir.getAbsolutePath() + "/" + packageName + ".log");
+            File outFile = new File(backupSubDir, appInfo.getPackageName() + ".log");
             outFile.createNewFile();
             FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
+            bw = new BufferedWriter(fw);
             bw.write(json + "\n");
-            bw.close();
         }
         catch(JSONException e)
         {
-            Log.i(TAG, e.toString());
+            Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
+        }
+        finally
+        {
+            try
+            {
+                if(bw != null)
+                    bw.close();
+            }
+            catch(IOException e)
+            {
+                Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
+            }
         }
     }
     public static String formatDate(Date date, boolean localTimestampFormat)
@@ -211,7 +169,6 @@ public class LogFile implements Parcelable
         out.writeByte((byte) (isSystem ? 1 : 0));
         // Parcel has no method to write a boolean. http://stackoverflow.com/a/7089687
         // http://code.google.com/p/android/issues/detail?id=5973
-        out.writeSerializable(logfile);
     }
     public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>()
     {
@@ -236,6 +193,5 @@ public class LogFile implements Parcelable
         backupMode = in.readInt();
         lastBackupMillis = in.readLong();
         isSystem = in.readByte() != 0;
-        logfile = (File) in.readSerializable();
     }
 }

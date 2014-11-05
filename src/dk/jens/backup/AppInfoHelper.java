@@ -44,8 +44,14 @@ public class AppInfoHelper
             }
             if(backupDir != null)
             {
-                // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
-                Bitmap icon = (Bitmap)((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap();
+                Bitmap icon = null;
+                try
+                {
+                    // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
+                    icon = Bitmap.createScaledBitmap(((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap(), 32, 32, true);
+                }
+                catch(ClassCastException e) {}
+                // for now the error is ignored since logging it would fill a lot in the log
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
