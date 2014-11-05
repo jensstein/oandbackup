@@ -20,7 +20,12 @@ public class BackupRestoreHelper
             {
                 String apk = appInfo.getLogInfo().getApk();
                 if(apk != null)
+                {
                     ShellCommands.deleteBackup(new File(backupSubDir, apk));
+                    if(appInfo.getLogInfo().isEncrypted())
+                        ShellCommands.deleteBackup(new File(backupSubDir, apk + ".gpg"));
+
+                }
             }
         }
 
