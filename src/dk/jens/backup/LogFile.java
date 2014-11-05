@@ -21,7 +21,7 @@ public class LogFile implements Parcelable
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
     long lastBackupMillis;
-    boolean isSystem;
+    boolean encrypted, system;
     public LogFile(File backupSubDir, String packageName)
     {
         FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
@@ -36,7 +36,8 @@ public class LogFile implements Parcelable
             this.dataDir = jsonObject.getString("dataDir");
             this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
             this.versionCode = jsonObject.getInt("versionCode");
-            this.isSystem = jsonObject.optBoolean("isSystem");
+            this.encrypted = jsonObject.optBoolean("isEncrypted");
+            this.system = jsonObject.optBoolean("isSystem");
             this.backupMode = jsonObject.optInt("backupMode", AppInfo.MODE_UNSET);
         }
         catch(JSONException e)
@@ -78,15 +79,24 @@ public class LogFile implements Parcelable
     {
         return lastBackupMillis;
     }
+    public boolean isEncrypted()
+    {
+        return encrypted;
+    }
     public boolean isSystem()
     {
-        return isSystem;
+        return system;
     }
     public int getBackupMode()
     {
         return backupMode;
     }
     public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode)
+    {
+        // the boolean for encrypted backups are only written if the encrypted succeeded so false is written first by default
+        writeLogFile(backupSubDir, appInfo, backupMode, false);
+    }
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted)
     {
         BufferedWriter bw = null;
         try
@@ -107,6 +117,7 @@ public class LogFile implements Parcelable
             jsonObject.put("sourceDir", sourceDir);
             jsonObject.put("dataDir", appInfo.getDataDir());
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
+            jsonObject.put("isEncrypted", encrypted);
             jsonObject.put("isSystem", appInfo.isSystem());
             jsonObject.put("backupMode", appInfo.getBackupMode());
             String json = jsonObject.toString(4);
@@ -166,9 +177,7 @@ public class LogFile implements Parcelable
         out.writeInt(versionCode);
         out.writeInt(backupMode);
         out.writeLong(lastBackupMillis);
-        out.writeByte((byte) (isSystem ? 1 : 0));
-        // Parcel has no method to write a boolean. http://stackoverflow.com/a/7089687
-        // http://code.google.com/p/android/issues/detail?id=5973
+        out.writeBooleanArray(new boolean[] {encrypted, system});
     }
     public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>()
     {
@@ -192,6 +201,9 @@ public class LogFile implements Parcelable
         versionCode = in.readInt();
         backupMode = in.readInt();
         lastBackupMillis = in.readLong();
-        isSystem = in.readByte() != 0;
+        boolean[] bools = new boolean[2];
+        in.readBooleanArray(bools);
+        encrypted = bools[0];
+        system = bools[1];
     }
 }

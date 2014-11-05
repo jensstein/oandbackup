@@ -151,9 +151,12 @@ public class Crypto
         */
         encryptFiles(context, files);
         if(!errorFlag)
+        {
+            LogFile.writeLogFile(backupSubDir, appInfo, mode, true);
             for(File file : files)
                 if(file != null)
                     ShellCommands.deleteBackup(file);
+        }
     }
     public void handleFiles(Context context, Intent intent, int requestCode, File... filesList)
     {
