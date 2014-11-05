@@ -263,7 +263,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         if(backupDir != null)
         {
             Crypto crypto = null;
-            if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(this))
+            if(backupBoolean && prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(this))
                 crypto = getCrypto();
             PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             if(prefs.getBoolean("acquireWakelock", true))
@@ -278,6 +278,9 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
             boolean errorFlag = false;
             for(AppInfo appInfo: selectedList)
             {
+                // crypto may be needed for restoring even if the preference is set to false
+                if(!backupBoolean && appInfo.getLogInfo() != null && appInfo.getLogInfo().isEncrypted() && Crypto.isAvailable(this))
+                    crypto = getCrypto();
                 if(appInfo.isChecked())
                 {
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
