@@ -101,6 +101,32 @@ public class Crypto
     {
         encryptFiles(context, new File[] {file});
     }
+    public void decryptFromAppInfo(Context context, File backupDir, AppInfo appInfo, int mode)
+    {
+        LogFile log = appInfo.getLogInfo();
+        if(log != null)
+        {
+            File backupSubDir = new File(backupDir, appInfo.getPackageName());
+            int i = 0;
+            File[] files = new File[3];
+            if(!appInfo.isSpecial() && (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH))
+            {
+                String apk = log.getApk();
+                File apkFile = new File(backupSubDir, apk + ".gpg");
+                if(apkFile.exists())
+                    files[i++] = apkFile;
+            }
+            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            {
+                String data = log.getDataDir();
+                data = data.substring(data.lastIndexOf("/") + 1);
+                File dataFile = new File(backupSubDir, data + ".zip.gpg");
+                if(dataFile.exists())
+                    files[i++] = dataFile;
+            }
+            decryptFiles(context, files);
+        }
+    }
     public void encryptFromAppInfo(Context context, File backupDir, AppInfo appInfo, int mode, SharedPreferences prefs)
     {
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
@@ -290,5 +316,17 @@ public class Crypto
     public boolean isErrorSet()
     {
         return errorFlag;
+    }
+    public static boolean needToDecrypt(File backupDir, AppInfo appInfo, int mode)
+    {
+        File backupSubDir = new File(backupDir, appInfo.getPackageName());
+        LogFile log = appInfo.getLogInfo();
+        if(log != null)
+        {
+            File apk = new File(backupSubDir, log.getApk() + ".gpg");
+            File data = new File(backupSubDir, log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1) + ".zip.gpg");
+            return (apk.exists() || data.exists());
+        }
+        return false;
     }
 }

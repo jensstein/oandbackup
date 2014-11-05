@@ -242,7 +242,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 if(backupDir != null)
                 {
                     handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
-                    ret = BackupRestoreHelper.restore(OAndBackup.this, backupDir, appInfo, shellCommands, mode);
+                    Crypto crypto = null;
+                    if(Crypto.isAvailable(OAndBackup.this) && Crypto.needToDecrypt(backupDir, appInfo, mode))
+                        crypto = getCrypto();
+                    ret = BackupRestoreHelper.restore(OAndBackup.this, backupDir, appInfo, shellCommands, mode, crypto);
                     refresh();
                 }
                 handleMessages.endMessage();

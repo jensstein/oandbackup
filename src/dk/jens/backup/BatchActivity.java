@@ -299,7 +299,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                     }
                     else
                     {
-                        if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode) != 0)
+                        if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode, crypto) != 0)
                             errorFlag = true;
                     }
                     if(i == total)

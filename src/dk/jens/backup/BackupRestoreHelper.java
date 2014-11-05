@@ -32,13 +32,16 @@ public class BackupRestoreHelper
         LogFile.writeLogFile(backupSubDir, appInfo);
         return ret;
     }
-    public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode)
+    public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode, Crypto crypto)
     {
         int apkRet, restoreRet, permRet;
         apkRet = restoreRet = permRet = 0;
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
         String dataDir = appInfo.getDataDir();
+        // extra check for needToDecrypt here because of BatchActivity which cannot really reset crypto to null for every package to restore
+        if(crypto != null && Crypto.needToDecrypt(backupDir, appInfo, mode))
+            crypto.decryptFromAppInfo(context, backupDir, appInfo, mode);
         if((mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) && apk != null && apk.length() > 0)
             apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
         if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
@@ -62,6 +65,22 @@ public class BackupRestoreHelper
                 Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + appInfo.getPackageName());
                 apkRet = 1;
                 shellCommands.writeErrorLog(appInfo.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
+            }
+        }
+        if(crypto != null && !crypto.isErrorSet())
+        {
+            if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+                if(new File(backupSubDir, apk + ".gpg").exists())
+                    shellCommands.deleteBackup(new File(backupSubDir, apk));
+            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            {
+                LogFile log = appInfo.getLogInfo();
+                if(log != null)
+                {
+                    String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
+                    if(new File(backupSubDir, data + ".zip.gpg").exists())
+                        shellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+                }
             }
         }
         shellCommands.logReturnMessage(context, apkRet + restoreRet + permRet);
