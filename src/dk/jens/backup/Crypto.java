@@ -71,7 +71,7 @@ public class Crypto
                 @Override
                 public void onError(Exception e)
                 {
-                    Log.e(TAG, "couldn't bind openpgp service: " + e.toString());
+                    logError("couldn't bind openpgp service: " + e.toString());
                 }
             }
         );
@@ -207,14 +207,12 @@ public class Crypto
             }
             else
             {
-                errorFlag = true;
-                Log.e(TAG, "Crypto: no files to de/encrypt");
+                logError("Crypto: no files to de/encrypt");
             }
         }
         catch(IOException e)
         {
-            errorFlag = true;
-            Log.e(TAG, "Crypto error: " + e.toString());
+            logError("Crypto error: " + e.toString());
         }
     }
     public void cancel()
@@ -222,11 +220,19 @@ public class Crypto
         errorFlag = true;
         Log.i(TAG, "Crypto action was cancelled");
     }
+    private void logError(String... errorMsgs)
+    {
+        errorFlag = true;
+        for(String errorMsg : errorMsgs)
+        {
+            Log.e(TAG, errorMsg);
+            ShellCommands.writeErrorLog("", errorMsg);
+        }
+    }
     public void setError()
     {
         // to be used if the openpgp provider crashes so there isn't any usable callback
-        errorFlag = true;
-        Log.e(TAG, "Crypto error set. Did the openpgp provider crash?");
+        logError("Crypto error set. Did the openpgp provider crash?");
     }
     private boolean waitForServiceBound()
     {
@@ -244,7 +250,7 @@ public class Crypto
             }
             catch(InterruptedException e)
             {
-                Log.e(TAG, "Crypto.waitForServiceBound interrupted");
+                logError("Crypto.waitForServiceBound interrupted");
             }
         }
         return service.getService() != null;
@@ -266,7 +272,7 @@ public class Crypto
         }
         catch(InterruptedException e)
         {
-            Log.e(TAG, "Crypto.waitForResult interrupted");
+            logError("Crypto.waitForResult interrupted");
         }
     }
     private void handleResult(Context context, Intent result, int requestCode)
@@ -293,20 +299,16 @@ public class Crypto
             }
             catch(IntentSender.SendIntentException e)
             {
-                errorFlag = true;
-                Log.e(TAG, "Crypto.handleResult error: " + e.toString());
+                logError("Crypto.handleResult error: " + e.toString());
             }
             catch(ClassCastException e)
             {
-                errorFlag = true;
-                Log.e(TAG, "Crypto.handleResult error: " + e.toString());
+                logError("Crypto.handleResult error: " + e.toString());
             }
             break;
         case OpenPgpApi.RESULT_CODE_ERROR:
             OpenPgpError error = result.getParcelableExtra(OpenPgpApi.RESULT_ERROR);
-            Log.e(TAG, "Crypto.handleResult error id: " + error.getErrorId());
-            Log.e(TAG, "Crypto.handleResult error message: " + error.getMessage());
-            errorFlag = true;
+            logError("Crypto.handleResult error id: " + error.getErrorId(), "Crypto.handleResult error message: " + error.getMessage());
             break;
         }
     }
