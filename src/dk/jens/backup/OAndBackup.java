@@ -225,7 +225,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 else
                 {
                     NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
-                    Utils.showErrors(OAndBackup.this, shellCommands);
+                    Utils.showErrors(OAndBackup.this);
                 }
             }
         });
@@ -256,7 +256,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 else
                 {
                     NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
-                    Utils.showErrors(OAndBackup.this, shellCommands);
+                    Utils.showErrors(OAndBackup.this);
                 }
             }
         });
@@ -502,7 +502,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                                 else
                                 {
                                     NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
-                                    Utils.showErrors(OAndBackup.this, shellCommands);
+                                    Utils.showErrors(OAndBackup.this);
                                 }
                             }
                         });

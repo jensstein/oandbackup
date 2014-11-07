@@ -64,7 +64,7 @@ public class BackupRestoreHelper
             {
                 String s = "no apk to install: " + appInfo.getPackageName();
                 Log.e(TAG, s);
-                shellCommands.writeErrorLog(appInfo.getPackageName(), s);
+                ShellCommands.writeErrorLog(appInfo.getPackageName(), s);
                 apkRet = 1;
             }
         }
@@ -87,14 +87,14 @@ public class BackupRestoreHelper
             {
                 Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + appInfo.getPackageName());
                 apkRet = 1;
-                shellCommands.writeErrorLog(appInfo.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
+                ShellCommands.writeErrorLog(appInfo.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
             }
         }
         if(crypto != null && !crypto.isErrorSet())
         {
             if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
                 if(new File(backupSubDir, apk + ".gpg").exists())
-                    shellCommands.deleteBackup(new File(backupSubDir, apk));
+                    ShellCommands.deleteBackup(new File(backupSubDir, apk));
             if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
             {
                 LogFile log = appInfo.getLogInfo();
@@ -102,7 +102,7 @@ public class BackupRestoreHelper
                 {
                     String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
                     if(new File(backupSubDir, data + ".zip.gpg").exists())
-                        shellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+                        ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
                 }
             }
         }

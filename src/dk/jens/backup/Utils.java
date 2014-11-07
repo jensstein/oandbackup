@@ -13,13 +13,13 @@ import java.io.File;
 
 public class Utils
 {
-    public static void showErrors(final Activity activity, final ShellCommands shellCommands)
+    public static void showErrors(final Activity activity)
     {
         activity.runOnUiThread(new Runnable()
         {
             public void run()
             {
-                String errors = shellCommands.getErrors();
+                String errors = ShellCommands.getErrors();
                 if(errors.length() > 0)
                 {
                     new AlertDialog.Builder(activity)
@@ -27,7 +27,7 @@ public class Utils
                     .setMessage(errors)
                     .setPositiveButton(R.string.dialogOK, null)
                     .show();
-                    shellCommands.clearErrors();
+                    ShellCommands.clearErrors();
                 }
             }
         });

@@ -30,7 +30,7 @@ public class ShellCommands
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
-    String errors = "";
+    private static String errors = "";
     boolean multiuserEnabled;
     public ShellCommands(SharedPreferences prefs, ArrayList<String> users)
     {
@@ -788,7 +788,7 @@ public class ShellCommands
         String returnMessage = returnCode == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
         Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
     }
-    public void writeErrorLog(String packageName, String err)
+    public static void writeErrorLog(String packageName, String err)
     {
         errors += packageName + ": " + err + "\n";
         Date date = new Date();
@@ -802,19 +802,19 @@ public class ShellCommands
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
                 BufferedWriter bw = new BufferedWriter(fw);
                 bw.write(dateFormated + ": " + err + " [" + packageName + "]\n");
-                bw.close();        
+                bw.close();
             }
         }
         catch(IOException e)
         {
-            Log.i(TAG, e.toString());
+            Log.e(TAG, e.toString());
         }
     }
-    public String getErrors()
+    public static String getErrors()
     {
         return errors;
     }
-    public void clearErrors()
+    public static void clearErrors()
     {
         errors = "";
     }

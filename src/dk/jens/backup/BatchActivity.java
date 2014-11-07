@@ -322,7 +322,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
             }
             if(errorFlag)
             {
-                Utils.showErrors(BatchActivity.this, shellCommands);
+                Utils.showErrors(BatchActivity.this);
             }
         }
     }
