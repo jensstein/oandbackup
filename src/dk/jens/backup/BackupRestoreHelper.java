@@ -92,26 +92,9 @@ public class BackupRestoreHelper
         }
         if(crypto != null)
         {
-            if(!crypto.isErrorSet())
-            {
-                if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
-                    if(new File(backupSubDir, apk + ".gpg").exists())
-                        ShellCommands.deleteBackup(new File(backupSubDir, apk));
-                if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
-                {
-                    LogFile log = appInfo.getLogInfo();
-                    if(log != null)
-                    {
-                        String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
-                        if(new File(backupSubDir, data + ".zip.gpg").exists())
-                            ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
-                    }
-                }
-            }
-            else
-            {
+            Crypto.cleanUpDecryption(appInfo, backupSubDir, mode);
+            if(crypto.isErrorSet())
                 cryptoRet = 1;
-            }
         }
         int ret = apkRet + restoreRet + permRet + cryptoRet;
         shellCommands.logReturnMessage(context, ret);

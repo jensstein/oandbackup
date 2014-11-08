@@ -129,12 +129,7 @@ public class ShellCommands
             }
             // delete old encrypted files if encryption is not enabled
             if(!prefs.getBoolean("enableCrypto", false))
-            {
-                if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
-                    deleteBackup(new File(backupSubDir, packageApk.substring(packageApk.lastIndexOf("/") + 1) + ".gpg"));
-                if(backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH)
-                    deleteBackup(new File(backupSubDir, folder + ".zip.gpg"));
-            }
+                Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode);
             return ret;
         }
         catch(IOException e)

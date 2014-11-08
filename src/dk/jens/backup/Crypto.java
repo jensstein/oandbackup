@@ -334,4 +334,32 @@ public class Crypto
         }
         return false;
     }
+    public static void cleanUpDecryption(AppInfo appInfo, File backupSubDir, int mode)
+    {
+        LogFile log = appInfo.getLogInfo();
+        if(log != null)
+        {
+            if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+            {
+                String apk = log.getApk();
+                if(new File(backupSubDir, apk + ".gpg").exists())
+                    ShellCommands.deleteBackup(new File(backupSubDir, apk));
+            }
+            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            {
+                String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
+                if(new File(backupSubDir, data + ".zip.gpg").exists())
+                    ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+            }
+        }
+    }
+    public static void cleanUpEncryptedFiles(File backupSubDir, String sourceDir, String dataDir, int mode)
+    {
+        String apk = sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
+        String data = dataDir.substring(dataDir.lastIndexOf("/") + 1);
+        if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+            ShellCommands.deleteBackup(new File(backupSubDir, apk + ".gpg"));
+        if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip.gpg"));
+    }
 }

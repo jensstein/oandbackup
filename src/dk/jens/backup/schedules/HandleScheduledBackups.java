@@ -146,7 +146,10 @@ public class HandleScheduledBackups
                         {
                             crypto.encryptFromAppInfo(context, backupDir, appInfo, subMode, prefs);
                             if(crypto.isErrorSet())
+                            {
+                                Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), subMode);
                                 errorFlag = true;
+                            }
                         }
                         if(i == total)
                         {
