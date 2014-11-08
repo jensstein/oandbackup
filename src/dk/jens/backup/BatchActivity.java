@@ -298,7 +298,11 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                         if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
                         else if(crypto != null)
+                        {
                             crypto.encryptFromAppInfo(this, backupDir, appInfo, mode, prefs);
+                            if(crypto.isErrorSet())
+                                errorFlag = true;
+                        }
                     }
                     else
                     {

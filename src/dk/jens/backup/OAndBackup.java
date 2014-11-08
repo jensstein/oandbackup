@@ -207,7 +207,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         crypto = getCrypto();
                     backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
                     if(backupRet == 0 && crypto != null)
+                    {
                         crypto.encryptFromAppInfo(OAndBackup.this, backupDir, appInfo, backupMode, prefs);
+                        if(crypto.isErrorSet())
+                            backupRet++;
+                    }
                     // køre på uitråd for at undgå WindowLeaked
                     runOnUiThread(new Runnable()
                     {

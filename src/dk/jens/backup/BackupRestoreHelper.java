@@ -46,8 +46,8 @@ public class BackupRestoreHelper
     }
     public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode, Crypto crypto)
     {
-        int apkRet, restoreRet, permRet;
-        apkRet = restoreRet = permRet = 0;
+        int apkRet, restoreRet, permRet, cryptoRet;
+        apkRet = restoreRet = permRet = cryptoRet = 0;
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         String apk = new LogFile(backupSubDir, appInfo.getPackageName()).getApk();
         String dataDir = appInfo.getDataDir();
@@ -90,23 +90,31 @@ public class BackupRestoreHelper
                 ShellCommands.writeErrorLog(appInfo.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
             }
         }
-        if(crypto != null && !crypto.isErrorSet())
+        if(crypto != null)
         {
-            if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
-                if(new File(backupSubDir, apk + ".gpg").exists())
-                    ShellCommands.deleteBackup(new File(backupSubDir, apk));
-            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            if(!crypto.isErrorSet())
             {
-                LogFile log = appInfo.getLogInfo();
-                if(log != null)
+                if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+                    if(new File(backupSubDir, apk + ".gpg").exists())
+                        ShellCommands.deleteBackup(new File(backupSubDir, apk));
+                if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
                 {
-                    String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
-                    if(new File(backupSubDir, data + ".zip.gpg").exists())
-                        ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+                    LogFile log = appInfo.getLogInfo();
+                    if(log != null)
+                    {
+                        String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
+                        if(new File(backupSubDir, data + ".zip.gpg").exists())
+                            ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+                    }
                 }
             }
+            else
+            {
+                cryptoRet = 1;
+            }
         }
-        shellCommands.logReturnMessage(context, apkRet + restoreRet + permRet);
-        return apkRet + restoreRet + permRet;
+        int ret = apkRet + restoreRet + permRet + cryptoRet;
+        shellCommands.logReturnMessage(context, ret);
+        return ret;
     }
 }

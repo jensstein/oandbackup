@@ -143,7 +143,11 @@ public class HandleScheduledBackups
                         if(ret != 0)
                             errorFlag = true;
                         else if(crypto != null)
+                        {
                             crypto.encryptFromAppInfo(context, backupDir, appInfo, subMode, prefs);
+                            if(crypto.isErrorSet())
+                                errorFlag = true;
+                        }
                         if(i == total)
                         {
                             String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
