@@ -123,6 +123,9 @@ public class Crypto
                 File dataFile = new File(backupSubDir, data + ".zip.gpg");
                 if(dataFile.exists())
                     files[i++] = dataFile;
+                File externalFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES + "/" + data + ".zip.gpg");
+                if(externalFiles.exists())
+                    files[i++] = externalFiles;
             }
             decryptFiles(context, files);
         }
@@ -346,6 +349,8 @@ public class Crypto
                 String data = log.getDataDir().substring(log.getDataDir().lastIndexOf("/") + 1);
                 if(new File(backupSubDir, data + ".zip.gpg").exists())
                     ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip"));
+                if(new File(backupSubDir, ShellCommands.EXTERNAL_FILES + "/" + data + ".zip.gpg").exists())
+                    ShellCommands.deleteBackup(new File(backupSubDir, ShellCommands.EXTERNAL_FILES + "/" + data + ".zip"));
             }
         }
     }
