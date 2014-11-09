@@ -217,8 +217,7 @@ public class Crypto
     }
     public void cancel()
     {
-        errorFlag = true;
-        Log.i(TAG, "Crypto action was cancelled");
+        logError("en/decryption was cancelled");
     }
     private void logError(String... errorMsgs)
     {
