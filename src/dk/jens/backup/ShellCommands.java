@@ -77,13 +77,19 @@ public class ShellCommands
             }
             File externalFilesDir = getExternalFilesDirPath(context, packageData);
             File backupSubDirExternalFiles = null;
-            if(prefs.getBoolean("backupExternalFiles", false) && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
+            boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
+            if(backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
             {
                 backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
                 if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())
                     dos.writeBytes("cp -R" + followSymlinks + " " + swapBackupDirPath(externalFilesDir.getAbsolutePath()) + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + EXTERNAL_FILES) + "\n");
                 else
                     Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
+            }
+            else if(!backupExternalFiles && backupMode != AppInfo.MODE_APK)
+            {
+                String data = packageData.substring(packageData.lastIndexOf("/"));
+                deleteBackup(new File(backupSubDir, EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
             }
             dos.writeBytes("exit\n");
 
@@ -129,7 +135,7 @@ public class ShellCommands
             }
             // delete old encrypted files if encryption is not enabled
             if(!prefs.getBoolean("enableCrypto", false))
-                Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode);
+                Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
             return ret;
         }
         catch(IOException e)

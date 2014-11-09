@@ -211,7 +211,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                         crypto.encryptFromAppInfo(OAndBackup.this, backupDir, appInfo, backupMode, prefs);
                         if(crypto.isErrorSet())
                         {
-                            Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), backupMode);
+                            Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), backupMode, prefs.getBoolean("backupExternalFiles", false));
                             backupRet++;
                         }
                     }

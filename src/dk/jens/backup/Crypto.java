@@ -140,15 +140,12 @@ public class Crypto
             files[i++] = new File(backupSubDir, apk);
         if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
             files[i++] = new File(backupSubDir, data + ".zip");
-        /*
-        // can only be used if external_files is zipped
         if(prefs.getBoolean("backupExternalFiles", false))
         {
-            File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES);
+            File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES  + "/" + data + ".zip");
             if(extFiles.exists())
                 files[i++] = extFiles;
         }
-        */
         encryptFiles(context, files);
         if(!errorFlag)
         {
@@ -352,13 +349,17 @@ public class Crypto
             }
         }
     }
-    public static void cleanUpEncryptedFiles(File backupSubDir, String sourceDir, String dataDir, int mode)
+    public static void cleanUpEncryptedFiles(File backupSubDir, String sourceDir, String dataDir, int mode, boolean backupExternalFiles)
     {
         String apk = sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
         String data = dataDir.substring(dataDir.lastIndexOf("/") + 1);
         if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
             ShellCommands.deleteBackup(new File(backupSubDir, apk + ".gpg"));
         if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+        {
             ShellCommands.deleteBackup(new File(backupSubDir, data + ".zip.gpg"));
+            if(backupExternalFiles)
+                ShellCommands.deleteBackup(new File(backupSubDir, ShellCommands.EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
+        }
     }
 }
