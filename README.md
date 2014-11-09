@@ -44,13 +44,17 @@ building
 ========
 to compile you just need the android sdk and apache ant:
 ```
-    $path_to_sdk/tools/android update project --t $target_number --p $path_to_this_project
     cd $path_to_this_project
-    ant debug 
+    git submodule update --init
+    # or obtain the code for openpgp-api-lib in some other way and place it in the libs directory
+    $path_to_sdk/tools/android update project -t $target_number -p . --library libs/openpgp-api-lib
+    ant debug
 ```
 
 licenses
 =======
 oandbackup is licensed under the MIT license (see LICENSE.txt)
 
-android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs folder)
+android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs directory)
+
+openpgp-api-lib is written by Dominik Schürmann and licensed under Apache License, Version 2.0
