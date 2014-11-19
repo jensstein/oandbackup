@@ -17,7 +17,7 @@ implements Comparable<AppInfo>, Parcelable
     public static final int MODE_DATA = 2;
     public static final int MODE_BOTH = 3;
 
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean system, boolean installed, LogFile logInfo)
+    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean system, boolean installed)
     {
         this.label = label;
         this.packageName = packageName;
@@ -27,15 +27,6 @@ implements Comparable<AppInfo>, Parcelable
         this.dataDir = dataDir;
         this.system = system;
         this.installed = installed;
-        if(logInfo != null)
-        {
-            this.backupMode = logInfo.getBackupMode();
-        }
-        this.logInfo = logInfo;
-    }
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean isSystem, boolean isInstalled)
-    {
-        this(packageName, label, versionName, versionCode, sourceDir, dataDir, isSystem, isInstalled, null);
         this.backupMode = MODE_UNSET;
     }
     public String getPackageName()
@@ -73,6 +64,7 @@ implements Comparable<AppInfo>, Parcelable
     public void setLogInfo(LogFile newLogInfo)
     {
         logInfo = newLogInfo;
+        backupMode = logInfo.getBackupMode();
     }
     public void setBackupMode(int modeToAdd)
     {

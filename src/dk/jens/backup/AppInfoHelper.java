@@ -52,20 +52,15 @@ public class AppInfoHelper
                 }
                 catch(ClassCastException e) {}
                 // for now the error is ignored since logging it would fill a lot in the log
+                AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
                 {
                     LogFile logInfo = new LogFile(subdir, pinfo.packageName);
-                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true, logInfo);
-                    appInfo.icon = icon;
-                    list.add(appInfo);
+                    appInfo.setLogInfo(logInfo);
                 }
-                else
-                {
-                    AppInfo appInfo = new AppInfo(pinfo.packageName, pinfo.applicationInfo.loadLabel(pm).toString(), pinfo.versionName, pinfo.versionCode, pinfo.applicationInfo.sourceDir, pinfo.applicationInfo.dataDir, isSystem, true);
-                    appInfo.icon = icon;
-                    list.add(appInfo);
-                }
+                appInfo.icon = icon;
+                list.add(appInfo);
             }
         }
         if(includeUnistalledBackups)
@@ -87,7 +82,8 @@ public class AppInfoHelper
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                         if(logInfo.getLastBackupMillis() > 0)
                         {
-                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false, logInfo);
+                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false);
+                            appInfo.setLogInfo(logInfo);
                             list.add(appInfo);
                         }
                     }
