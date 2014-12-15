@@ -302,7 +302,23 @@ public class Crypto
             }
             catch(ClassCastException e)
             {
-                logError("Crypto.handleResult error: " + e.toString());
+                try
+                {
+                    /*
+                     * starting the intentsender like this will not
+                     * generate a response to handle user interaction.
+                     * but because the exception most likely will occur
+                     * with the broadcastreceiver of a scheduled backup
+                     * this will not be a problem since everything needs
+                     * to be configured correctly for unattended operation
+                     * with the schedules anyway.
+                     */
+                    context.startIntentSender(pi.getIntentSender(), null, 0, 0, 0);
+                }
+                catch(IntentSender.SendIntentException e2)
+                {
+                    logError("Crypto.handleResult error: " + e2.toString());
+                }
             }
             break;
         case OpenPgpApi.RESULT_CODE_ERROR:
