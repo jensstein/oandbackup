@@ -31,7 +31,6 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 
     ArrayList<View> viewList;
     HandleAlarms handleAlarms;
-    LinearLayout main;
 
     int totalSchedules;
 
@@ -44,35 +43,34 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedulesframe);
-        
+
         handleAlarms = new HandleAlarms(this);
 
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs = getSharedPreferences("schedules", 0);
         edit = prefs.edit();
-        
+
         transferOldValues();
-        
+
         viewList = new ArrayList<View>();
-        main = (LinearLayout) findViewById(R.id.linearLayout);
-        totalSchedules = prefs.getInt("total", 0);
-        totalSchedules = totalSchedules < 0 ? 0 : totalSchedules; // set to zero so there is always at least one schedule on activity start
-        
-        for(int i = 0; i <= totalSchedules; i++)
-        {
-            viewList.add(buildUi(i));
-        }
     }
     @Override
     public void onResume()
     {
         super.onResume();
-        for(int i = 0; i <= prefs.getInt("total", 0); i++)
+        LinearLayout main = (LinearLayout) findViewById(R.id.linearLayout);
+        totalSchedules = prefs.getInt("total", 0);
+        totalSchedules = totalSchedules < 0 ? 0 : totalSchedules; // set to zero so there is always at least one schedule on activity start
+        for(View view : viewList)
+            ((android.view.ViewGroup) view.getParent()).removeView(view);
+        viewList = new ArrayList<View>();
+        for(int i = 0; i <= totalSchedules; i++)
         {
+            View v = buildUi(i);
+            viewList.add(v);
+            main.addView(v);
             if(prefs.getBoolean("enabled" + i, false))
-            {
                 setTimeLeftTextView(i);
-            }
         }
     }
     @Override
@@ -139,8 +137,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
 //        exludeSystemCB.setTag(number);
         spinner.setTag(number);
         spinnerSubModes.setTag(number);
-        
-        main.addView(ll);
+
         return view;
     }
     public void checkboxOnClick(View v)
@@ -204,7 +201,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     handleAlarms.cancelAlarm(number);
                     removePreferenceEntries(number);
                     removeCustomListFile(number);
-                    main.removeView(view);
+                    ((LinearLayout) findViewById(R.id.linearLayout)).removeView(view);
                     migrateSchedules(number, totalSchedules);
                     viewList.remove(number);
                     edit.putInt("total", --totalSchedules);
