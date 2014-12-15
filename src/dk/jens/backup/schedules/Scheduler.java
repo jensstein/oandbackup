@@ -87,7 +87,9 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         switch(item.getItemId())
         {
             case R.id.addSchedule:
-                viewList.add(buildUi(++totalSchedules));
+                View v = buildUi(++totalSchedules);
+                viewList.add(v);
+                ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
                 edit.putInt("total", totalSchedules);
                 edit.commit();
                 return true;
