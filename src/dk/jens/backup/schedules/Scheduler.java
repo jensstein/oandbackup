@@ -62,7 +62,11 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         totalSchedules = prefs.getInt("total", 0);
         totalSchedules = totalSchedules < 0 ? 0 : totalSchedules; // set to zero so there is always at least one schedule on activity start
         for(View view : viewList)
-            ((android.view.ViewGroup) view.getParent()).removeView(view);
+        {
+            android.view.ViewGroup parent = (android.view.ViewGroup) view.getParent();
+            if(parent != null)
+                parent.removeView(view);
+        }
         viewList = new ArrayList<View>();
         for(int i = 0; i <= totalSchedules; i++)
         {
