@@ -101,4 +101,10 @@ public class Utils
                 if(t.getId() == tid && t.isAlive())
                     handleMessages.reShowMessage();
     }
+    public static String getName(String path)
+    {
+        if(path.endsWith(File.separator))
+            path = path.substring(0, path.length() - 1);
+        return path.substring(path.lastIndexOf(File.separator) + 1);
+    }
 }
