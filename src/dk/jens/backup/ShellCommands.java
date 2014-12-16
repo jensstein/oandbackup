@@ -260,6 +260,19 @@ public class ShellCommands
                     writeErrorLog(label, line);
                 }
             }
+            if(files != null)
+            {
+                for(String file : files)
+                {
+                    File f = new File(backupSubDir, Utils.getName(file));
+                    if(f.isDirectory())
+                    {
+                        int zipret = compress(f);
+                        if(zipret != 0 && zipret != 2)
+                            ret += zipret;
+                    }
+                }
+            }
             if(dataDir.length() > 0)
             {
                 String folder = new File(dataDir).getName();
@@ -282,46 +295,57 @@ public class ShellCommands
     public int restoreSpecial(File backupSubDir, String label, String dataDir, String... files)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
-        // remove trailing slash to ensure lastIndexOf gives the correct result
-        if(dataDir.endsWith("/"))
-            dataDir = dataDir.substring(0, dataDir.length() - 1);
-        String folder = dataDir.substring(dataDir.lastIndexOf("/") + 1);
+        int unzipRet = 0;
+        ArrayList<String> toDelete = new ArrayList<String>();
 
-        int unzipRet = -1;
         Log.i(TAG, "restoring: " + label);
         try
         {
-            if(new File(backupSubDir, folder + ".zip").exists())
-                unzipRet = Compression.unzip(backupSubDir, folder + ".zip");
-
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
             if(files != null)
             {
+                ArrayList<String> uid_gid;
                 for(String file : files)
                 {
-                    String filename = file.substring(file.lastIndexOf("/") + 1);
-                    ArrayList<String> uid_gid = getOwnership(file, "su");
-                    dos.writeBytes("cp -r " + backupSubDirPath + "/" + filename + " " + file + "\n");
-                    if(uid_gid != null && !uid_gid.isEmpty())
-                        dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
+                    uid_gid = getOwnership(file);
+                    String filename = Utils.getName(file);
+                    if(file.endsWith(File.separator))
+                        file = file.substring(0, file.length() - 1);
+                    String dest = file;
+                    if(new File(file).isDirectory())
+                    {
+                        dest = file.substring(0, file.lastIndexOf("/"));
+                        if(new File(backupSubDir, filename + ".zip").exists())
+                        {
+                            int ret = Compression.unzip(backupSubDir, filename + ".zip");
+                            // delay the deletion of the unzipped directory until the copying has been done
+                            if(ret == 0)
+                            {
+                                toDelete.add(filename);
+                            }
+                            else
+                            {
+                                unzipRet += ret;
+                                writeErrorLog(label, "error unzipping " + file);
+                                continue;
+                            }
+                        }
+                    }
                     else
+                    {
+                        uid_gid = getOwnership(file, "su");
+                    }
+                    dos.writeBytes("cp -r " + backupSubDirPath + "/" + filename + " " + dest + "\n");
+                    if(uid_gid != null && !uid_gid.isEmpty())
+                    {
+                        dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
+                        dos.writeBytes(busybox + " chmod -R 0771 " + file + "\n");
+                    }
+                    else
+                    {
                         Log.e(TAG, "couldn't find ownership: " + file);
-                }
-            }
-            if(dataDir.length() > 0)
-            {
-                ArrayList<String> uid_gid = getOwnership(dataDir);
-                String dest = dataDir.substring(0, dataDir.lastIndexOf("/"));
-                dos.writeBytes("cp -r " + backupSubDirPath + "/" + folder + " " + dest + "\n");
-                if(uid_gid != null && !uid_gid.isEmpty())
-                {
-                    dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + dataDir + "\n");
-                    dos.writeBytes(busybox + " chmod -R 0771 " + dataDir + "\n");
-                }
-                else
-                {
-                    Log.e(TAG, "couldn't find ownership: " + dataDir);
+                    }
                 }
             }
             dos.writeBytes("exit\n");
@@ -335,7 +359,7 @@ public class ShellCommands
                     writeErrorLog(label, line);
                 }
             }
-            return ret;
+            return ret + unzipRet;
         }
         catch(IOException e)
         {
@@ -352,8 +376,8 @@ public class ShellCommands
         }
         finally
         {
-            if(unzipRet == 0)
-                deleteBackup(new File(backupSubDir, folder));
+            for(String filename : toDelete)
+                deleteBackup(new File(backupSubDir, filename));
         }
         return 1;
     }
