@@ -11,11 +11,6 @@ implements Parcelable
     {
         super(packageName, label, versionName, versionCode, "", "", true, true);
     }
-    // temporary constructor until zipping is sorted out for paths in fileslist also
-    public AppInfoSpecial(String packageName, String label, String versionName, int versionCode, String dataDir)
-    {
-        super(packageName, label, versionName, versionCode, "", dataDir, true, true);
-    }
     public String[] getFilesList()
     {
         return files;

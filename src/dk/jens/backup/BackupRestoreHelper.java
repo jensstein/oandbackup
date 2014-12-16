@@ -31,7 +31,7 @@ public class BackupRestoreHelper
 
         if(appInfo.isSpecial())
         {
-            ret = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+            ret = shellCommands.backupSpecial(backupSubDir, appInfo.getLabel(), appInfo.getFilesList());
             appInfo.setBackupMode(AppInfo.MODE_DATA);
         }
         else
@@ -74,7 +74,7 @@ public class BackupRestoreHelper
             {
                 if(appInfo.isSpecial())
                 {
-                    restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getFilesList());
+                    restoreRet = shellCommands.restoreSpecial(backupSubDir, appInfo.getLabel(), appInfo.getFilesList());
                 }
                 else
                 {

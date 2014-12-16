@@ -126,8 +126,8 @@ public class AppInfoHelper
 
         if(apiCheck)
         {
-            AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode, "/data/system/netstats/");
-            data.setFilesList("/data/system/netpolicy.xml");
+            AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode);
+            data.setFilesList(new String[] {"/data/system/netpolicy.xml", "/data/system/netstats/"});
             list.add(data);
         }
 

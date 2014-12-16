@@ -235,7 +235,7 @@ public class ShellCommands
             }
         }
     }
-    public int backupSpecial(File backupSubDir, String label, String dataDir, String... files)
+    public int backupSpecial(File backupSubDir, String label, String... files)
     {
         // backup method only used for the special appinfos which can have lists of single files
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
@@ -247,8 +247,6 @@ public class ShellCommands
             if(files != null)
                 for(String file : files)
                     dos.writeBytes("cp -r " + file + " " + backupSubDirPath + "\n");
-            if(dataDir.length() > 0)
-                dos.writeBytes("cp -r " + dataDir + " " + backupSubDirPath + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
             int ret = p.waitFor();
@@ -273,13 +271,6 @@ public class ShellCommands
                     }
                 }
             }
-            if(dataDir.length() > 0)
-            {
-                String folder = new File(dataDir).getName();
-                int zipret = compress(new File(backupSubDir, folder));
-                if(zipret != 0)
-                    ret += zipret;
-            }
             return ret;
         }
         catch(IOException e)
@@ -292,7 +283,7 @@ public class ShellCommands
         }
         return 1;
     }
-    public int restoreSpecial(File backupSubDir, String label, String dataDir, String... files)
+    public int restoreSpecial(File backupSubDir, String label, String... files)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         int unzipRet = 0;
