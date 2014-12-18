@@ -107,25 +107,44 @@ public class Crypto
         if(log != null)
         {
             File backupSubDir = new File(backupDir, appInfo.getPackageName());
-            int i = 0;
-            File[] files = new File[3];
-            if(!appInfo.isSpecial() && (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH))
+            File[] files;
+            if(appInfo.isSpecial())
             {
-                String apk = log.getApk();
-                File apkFile = new File(backupSubDir, apk + ".gpg");
-                if(apkFile.exists())
-                    files[i++] = apkFile;
+                int i;
+                String[] list = appInfo.getFilesList();
+                files = new File[list.length];
+                for(i = 0; i < list.length; i++)
+                {
+                    String file = Utils.getName(list[i]);
+                    File f = new File(backupSubDir, file + ".zip.gpg");
+                    if(f.exists())
+                        files[i] = f;
+                    else
+                        files[i] = new File(backupSubDir, file + ".gpg");
+                }
             }
-            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+            else
             {
-                String data = log.getDataDir();
-                data = data.substring(data.lastIndexOf("/") + 1);
-                File dataFile = new File(backupSubDir, data + ".zip.gpg");
-                if(dataFile.exists())
-                    files[i++] = dataFile;
-                File externalFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES + "/" + data + ".zip.gpg");
-                if(externalFiles.exists())
-                    files[i++] = externalFiles;
+                int i = 0;
+                files = new File[3];
+                if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+                {
+                    String apk = log.getApk();
+                    File apkFile = new File(backupSubDir, apk + ".gpg");
+                    if(apkFile.exists())
+                        files[i++] = apkFile;
+                }
+                if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+                {
+                    String data = log.getDataDir();
+                    data = data.substring(data.lastIndexOf("/") + 1);
+                    File dataFile = new File(backupSubDir, data + ".zip.gpg");
+                    if(dataFile.exists())
+                        files[i++] = dataFile;
+                    File externalFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES + "/" + data + ".zip.gpg");
+                    if(externalFiles.exists())
+                        files[i++] = externalFiles;
+                }
             }
             decryptFiles(context, files);
         }
@@ -137,17 +156,36 @@ public class Crypto
         apk = apk.substring(apk.lastIndexOf("/") + 1);
         String data = appInfo.getDataDir();
         data = data.substring(data.lastIndexOf("/") + 1);
-        int i = 0;
-        File[] files = new File[3];
-        if(!appInfo.isSpecial() && (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH))
-            files[i++] = new File(backupSubDir, apk);
-        if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
-            files[i++] = new File(backupSubDir, data + ".zip");
-        if(prefs.getBoolean("backupExternalFiles", false))
+        File[] files;
+        if(appInfo.isSpecial())
         {
-            File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES  + "/" + data + ".zip");
-            if(extFiles.exists())
-                files[i++] = extFiles;
+            int i;
+            String[] list = appInfo.getFilesList();
+            files = new File[list.length];
+            for(i = 0; i < list.length; i++)
+            {
+                String file = Utils.getName(list[i]);
+                File f = new File(backupSubDir, file + ".zip");
+                if(f.exists())
+                    files[i] = f;
+                else
+                    files[i] = new File(backupSubDir, file);
+            }
+        }
+        else
+        {
+            int i = 0;
+            files = new File[3];
+            if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
+                files[i++] = new File(backupSubDir, apk);
+            if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
+                files[i++] = new File(backupSubDir, data + ".zip");
+            if(prefs.getBoolean("backupExternalFiles", false))
+            {
+                File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES  + "/" + data + ".zip");
+                if(extFiles.exists())
+                    files[i++] = extFiles;
+            }
         }
         encryptFiles(context, files);
         if(!errorFlag)
@@ -341,6 +379,17 @@ public class Crypto
     {
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
         LogFile log = appInfo.getLogInfo();
+        if(appInfo.isSpecial())
+        {
+            for(String file : appInfo.getFilesList())
+            {
+                File f1 = new File(backupSubDir, Utils.getName(file) + ".gpg");
+                File f2 = new File(backupSubDir, Utils.getName(file) + ".zip.gpg");
+                if(f1.exists() || f2.exists())
+                    return true;
+            }
+            return false;
+        }
         if(log != null)
         {
             File apk = new File(backupSubDir, log.getApk() + ".gpg");
@@ -351,6 +400,17 @@ public class Crypto
     }
     public static void cleanUpDecryption(AppInfo appInfo, File backupSubDir, int mode)
     {
+        if(appInfo.isSpecial())
+        {
+            for(String file : appInfo.getFilesList())
+            {
+                String filename = Utils.getName(file);
+                if(new File(backupSubDir, filename + ".gpg").exists())
+                    ShellCommands.deleteBackup(new File(backupSubDir, filename));
+                else if(new File(backupSubDir, filename + ".zip.gpg").exists())
+                    ShellCommands.deleteBackup(new File(backupSubDir, filename + ".zip"));
+            }
+        }
         LogFile log = appInfo.getLogInfo();
         if(log != null)
         {
