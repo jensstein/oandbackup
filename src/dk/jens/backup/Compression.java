@@ -77,6 +77,10 @@ public class Compression
     }
     public static int unzip(File baseDir, String zipfile, String outputDir)
     {
+        return unzip(baseDir, zipfile, outputDir, null);
+    }
+    public static int unzip(File baseDir, String zipfile, String outputDir, ArrayList<String> files)
+    {
         try
         {
             byte[] buffer = new byte[1024];
@@ -86,6 +90,9 @@ public class Compression
             while((entry = zis.getNextEntry()) != null)
             {
                 String filename = entry.getName();
+                // if a list of filenames is given, only extract those files
+                if(files != null && !files.contains(filename))
+                    continue;
                 File file = new File(outputDir + "/" + filename);
                 new File(file.getParent()).mkdirs();
                 FileOutputStream fos = new FileOutputStream(file);
