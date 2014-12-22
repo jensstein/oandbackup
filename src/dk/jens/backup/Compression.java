@@ -107,6 +107,37 @@ public class Compression
             return 1;
         }
     }
+    public static ArrayList<String> list(String zipfile, String... matches)
+    {
+        try
+        {
+            ArrayList<String> filelist = new ArrayList<String>();
+            FileInputStream in = new FileInputStream(new File(zipfile));
+            ZipInputStream zis = new ZipInputStream(in);
+            ZipEntry entry;
+            while((entry = zis.getNextEntry()) != null)
+            {
+                String name = entry.getName();
+                for(String match : matches)
+                {
+                    if(name.contains(match))
+                    {
+                        filelist.add(name);
+                        continue;
+                    }
+                }
+            }
+            zis.closeEntry();
+            zis.close();
+            return filelist;
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            Log.e(TAG, "Compression.list: " + e.toString());
+        }
+        return null;
+    }
     private static void getFiles(File dir, ArrayList<String> fileList)
     {
         // handling an uncreated directory in case of missing busybox
