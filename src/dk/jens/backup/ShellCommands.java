@@ -159,14 +159,11 @@ public class ShellCommands
         try
         {
             killPackage(context, packageName);
-            if(new File(backupSubDir, dataDirName + ".zip").exists())
-            {
-                unzipRet = Compression.unzip(backupSubDir, dataDirName + ".zip");
-            }
+            File zipFile = new File(backupSubDir, dataDirName + ".zip");
+            if(zipFile.exists())
+                unzipRet = Compression.unzip(zipFile, backupSubDir);
             else if(new File(backupSubDir, dataDirName + ".tar.gz").exists())
-            {
                 untarRet = untar(backupSubDir.getAbsolutePath(), dataDirName);
-            }
             if(prefs.getBoolean("backupExternalFiles", false))
             {
                 File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
@@ -174,7 +171,7 @@ public class ShellCommands
                 {
                     String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
                     externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
-                    Compression.unzip(externalFiles, dataDirName + ".zip", externalFilesPath);
+                    Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath));
                 }
             }
 
@@ -307,9 +304,10 @@ public class ShellCommands
                     if(new File(file).isDirectory())
                     {
                         dest = file.substring(0, file.lastIndexOf("/"));
-                        if(new File(backupSubDir, filename + ".zip").exists())
+                        File zipFile = new File(backupSubDir, filename + ".zip");
+                        if(zipFile.exists())
                         {
-                            int ret = Compression.unzip(backupSubDir, filename + ".zip");
+                            int ret = Compression.unzip(zipFile, backupSubDir);
                             // delay the deletion of the unzipped directory until the copying has been done
                             if(ret == 0)
                             {
