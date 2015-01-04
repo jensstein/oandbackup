@@ -110,12 +110,12 @@ public class Compression
             return 1;
         }
     }
-    public static ArrayList<String> list(String zipfile, String... matches)
+    public static ArrayList<String> list(File zipfile, String... matches)
     {
         try
         {
             ArrayList<String> filelist = new ArrayList<String>();
-            FileInputStream in = new FileInputStream(new File(zipfile));
+            FileInputStream in = new FileInputStream(zipfile);
             ZipInputStream zis = new ZipInputStream(in);
             ZipEntry entry;
             while((entry = zis.getNextEntry()) != null)
