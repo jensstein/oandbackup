@@ -59,6 +59,11 @@ public class BackupRestoreHelper
             if(apk != null && apk.length() > 0)
             {
                 apkRet = shellCommands.restoreApk(backupSubDir, appInfo.getLabel(), apk, appInfo.isSystem(), context.getApplicationInfo().dataDir);
+                if(appInfo.isSystem() && appInfo.getLogInfo() != null)
+                {
+                    File apkFile = new File(backupDir, appInfo.getPackageName() + "/" + appInfo.getLogInfo().getApk());
+                    shellCommands.copyNativeLibraries(context, apkFile, backupSubDir, appInfo.getDataDir(), appInfo.getPackageName());
+                }
             }
             else if(!appInfo.isSpecial())
             {
