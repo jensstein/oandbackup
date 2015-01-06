@@ -897,13 +897,16 @@ public class ShellCommands
         catch(InterruptedException e){}
 
         String nativeLibraryDir = "";
-        List<android.content.pm.PackageInfo> pinfoList = context.getPackageManager().getInstalledPackages(0);
-        for(android.content.pm.PackageInfo pinfo : pinfoList)
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
         {
-            if(packageName.equals(pinfo.packageName))
+            List<android.content.pm.PackageInfo> pinfoList = context.getPackageManager().getInstalledPackages(0);
+            for(android.content.pm.PackageInfo pinfo : pinfoList)
             {
-                nativeLibraryDir = pinfo.applicationInfo.nativeLibraryDir;
-                break;
+                if(packageName.equals(pinfo.packageName))
+                {
+                    nativeLibraryDir = pinfo.applicationInfo.nativeLibraryDir;
+                    break;
+                }
             }
         }
         /*
@@ -915,7 +918,7 @@ public class ShellCommands
          */
         String libPrefix = "lib/";
         ArrayList<String> libs = Compression.list(apk, libPrefix + android.os.Build.CPU_ABI);
-        if(libs == null || libs.size() == 0)
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO && (libs == null || libs.size() == 0))
             libs = Compression.list(apk, libPrefix + android.os.Build.CPU_ABI2);
         if(libs != null && libs.size() > 0)
         {
