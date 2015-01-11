@@ -62,7 +62,7 @@ public class BackupRestoreHelper
                 if(appInfo.isSystem() && appInfo.getLogInfo() != null)
                 {
                     File apkFile = new File(backupDir, appInfo.getPackageName() + "/" + appInfo.getLogInfo().getApk());
-                    shellCommands.copyNativeLibraries(context, apkFile, backupSubDir, appInfo.getDataDir(), appInfo.getPackageName());
+                    shellCommands.copyNativeLibraries(apkFile, backupSubDir, appInfo.getPackageName());
                 }
             }
             else if(!appInfo.isSpecial())

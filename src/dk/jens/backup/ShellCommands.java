@@ -887,28 +887,8 @@ public class ShellCommands
         }
         return false;
     }
-    public void copyNativeLibraries(Context context, File apk, File outputDir, String dataDir, String packageName)
+    public void copyNativeLibraries(File apk, File outputDir, String packageName)
     {
-        try
-        {
-            // wait a bit for android to notice the new apk and generate a PackageInfo for it
-            Thread.sleep(2000);
-        }
-        catch(InterruptedException e){}
-
-        String nativeLibraryDir = "";
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
-        {
-            List<android.content.pm.PackageInfo> pinfoList = context.getPackageManager().getInstalledPackages(0);
-            for(android.content.pm.PackageInfo pinfo : pinfoList)
-            {
-                if(packageName.equals(pinfo.packageName))
-                {
-                    nativeLibraryDir = pinfo.applicationInfo.nativeLibraryDir;
-                    break;
-                }
-            }
-        }
         /*
          * first try the primary abi and then the secondary if the
          * first doesn't give any results.
@@ -924,40 +904,18 @@ public class ShellCommands
         {
             if(Compression.unzip(apk, outputDir, libs) == 0)
             {
-                File libDir = new File(dataDir, "lib");
                 try
                 {
-                    // get the destination of the symbolic link in /data/data/
-                    String linkDestination = libDir.getCanonicalPath();
-                    String copyDest = "";
-                    if(!linkDestination.equals(libDir.getAbsolutePath()))
-                    {
-                        copyDest = linkDestination;
-                    }
-                    else if(nativeLibraryDir.length() > 0)
-                    {
-                        copyDest = nativeLibraryDir;
-                    }
-                    else
-                    {
-                        String apkName = apk.getName();
-                        String guessFromApk = "/data/app-lib/" + apkName.substring(0, apkName.lastIndexOf("."));
-                        Log.w(TAG, "trying to guess native library directory: " + guessFromApk);
-                        copyDest = guessFromApk;
-                    }
-                    ArrayList<String> uid_gid = getOwnership("/data/app-lib");
                     Process p = Runtime.getRuntime().exec("su");
                     DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    if(!new File(copyDest).exists())
-                        dos.writeBytes("mkdir " + copyDest + "\n");
+                    dos.writeBytes("mount -o remount,rw /system\n");
                     String src = swapBackupDirPath(outputDir.getAbsolutePath());
                     for(String lib : libs)
-                        dos.writeBytes("cp " + src + "/" + lib + " " + copyDest + "\n");
-                    dos.writeBytes(busybox + " chmod -R 755 " + copyDest + "\n");
-                    if(uid_gid != null && uid_gid.size() == 2)
-                        dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + copyDest + "\n");
-                    else
-                        dos.writeBytes(busybox + " chown -R system:system " + copyDest + "\n");
+                    {
+                        dos.writeBytes("cp " + src + "/" + lib + " /system/lib\n");
+                        dos.writeBytes("chmod 644 /system/lib/" + Utils.getName(lib) + "\n");
+                    }
+                    dos.writeBytes("mount -o remount,ro /system\n");
                     dos.writeBytes("exit\n");
                     dos.flush();
                     int ret = p.waitFor();
