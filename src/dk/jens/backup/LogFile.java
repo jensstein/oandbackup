@@ -43,6 +43,10 @@ public class LogFile implements Parcelable
         catch(JSONException e)
         {
             Log.e(TAG, packageName + ": error while reading logfile: " + e.toString());
+            this.label = this.packageName = this.versionName = this.sourceDir = this.dataDir = "";
+            this.lastBackupMillis = this.versionCode = 0;
+            this.encrypted = this.system = false;
+            this.backupMode = AppInfo.MODE_UNSET;
         }
     }
     public String getLabel()
