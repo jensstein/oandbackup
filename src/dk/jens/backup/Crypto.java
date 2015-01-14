@@ -179,7 +179,11 @@ public class Crypto
             if(mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH)
                 files[i++] = new File(backupSubDir, apk);
             if(mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH)
-                files[i++] = new File(backupSubDir, data + ".zip");
+            {
+                File f = new File(backupSubDir, data + ".zip");
+                if(f.exists())
+                    files[i++] = f;
+            }
             if(prefs.getBoolean("backupExternalFiles", false))
             {
                 File extFiles = new File(backupSubDir, ShellCommands.EXTERNAL_FILES  + "/" + data + ".zip");
