@@ -228,7 +228,7 @@ public class Crypto
                     intent.putExtra(OpenPgpApi.EXTRA_KEY_IDS, keyIds);
                 for(File file : files)
                 {
-                    // not all slots in the File array is necessarilly used.
+                    // not all slots in the File array are necessarily used.
                     // an ArrayList would probably be better
                     if(file == null)
                         continue;
