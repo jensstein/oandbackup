@@ -1,5 +1,6 @@
 package dk.jens.backup;
 
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -16,9 +17,11 @@ public class Help extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help);
+        TextView versionName = (TextView) findViewById(R.id.helpVersionName);
         TextView html = (TextView) findViewById(R.id.helpHtml);
         try
         {
+            versionName.setText(getApplicationInfo().loadLabel(getPackageManager()).toString() + " " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
             InputStream is = getResources().openRawResource(R.raw.help);
             String htmlString = convertStreamToString(is);
             is.close();
@@ -29,6 +32,7 @@ public class Help extends BaseActivity
         {
             html.setText(e.toString());
         }
+        catch(NameNotFoundException e){}
     }
     // taken from here: http://stackoverflow.com/a/5445161
     static String convertStreamToString(InputStream is)

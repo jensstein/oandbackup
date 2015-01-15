@@ -9,6 +9,15 @@
         android:padding="10sp"
         >
         <TextView
+            android:id="@+id/helpVersionName"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textIsSelectable="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="5sp"
+        />
+        <TextView
             android:id="@+id/helpHtml"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
