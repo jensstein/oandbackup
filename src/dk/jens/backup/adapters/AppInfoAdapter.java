@@ -2,7 +2,7 @@ package dk.jens.backup;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
 {
     Context context;
     ArrayList<AppInfo> items;
-    int layout;
+    int iconSize, layout;
     String currentFilter;
 
     private ArrayList<AppInfo> originalValues;
@@ -35,6 +35,16 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         this.layout = layout;
         
         originalValues = new ArrayList<AppInfo>(items);
+        try
+        {
+            DisplayMetrics metrics = new DisplayMetrics();
+            ((android.app.Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            iconSize = 32 * (int) metrics.density;
+        }
+        catch(ClassCastException e)
+        {
+            iconSize = 32;
+        }
     }
     public void add(AppInfo appInfo)
     {
@@ -84,8 +94,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
                 viewHolder.icon.setVisibility(View.VISIBLE); // to cancel View.GONE if it was set
                 viewHolder.icon.setImageBitmap(appInfo.icon);
                 LayoutParams lp = (LayoutParams) viewHolder.icon.getLayoutParams();
-                lp.height = 32;
-                lp.width = 32;
+                lp.height = lp.width = iconSize;
                 viewHolder.icon.setLayoutParams(lp);
             }
             else
