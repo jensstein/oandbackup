@@ -6,6 +6,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -45,10 +47,19 @@ public class AppInfoHelper
             if(backupDir != null)
             {
                 Bitmap icon = null;
+                Drawable apkIcon = pm.getApplicationIcon(pinfo.applicationInfo);
                 try
                 {
-                    // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
-                    icon = Bitmap.createScaledBitmap(((BitmapDrawable) pm.getApplicationIcon(pinfo.applicationInfo)).getBitmap(), 32, 32, true);
+                    if(apkIcon instanceof BitmapDrawable) {
+                        // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
+                        icon = Bitmap.createScaledBitmap(((BitmapDrawable) apkIcon).getBitmap(), 32, 32, true);
+                    }
+                    else {
+                        icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(icon);
+                        apkIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        apkIcon.draw(canvas);
+                    }
                 }
                 catch(ClassCastException e) {}
                 // for now the error is ignored since logging it would fill a lot in the log
