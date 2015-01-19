@@ -43,7 +43,7 @@
     <string name="dialogNo">no</string>
     <string name="noBackupYet">no backup yet</string>
     <string name="restoreDataWithoutApkError">cannot restore data without restoring apk, package is not installed</string>
-    <string name="collectingData">collecting package infos</string>
+    <string name="collectingData">collecting package info</string>
     <string name="suCheck">checking for superuser and busybox</string>
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="busyboxProblem">couldn\'t find busybox. please check error log</string>
@@ -101,12 +101,12 @@
     <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
     <string name="prefs_copySelfApk">copy own apk</string>
     <string name="prefs_summaryCopySelfApk">place a copy of oandbackup in the top level of the backup folder when backed up</string>
-    <string name="prefs_languages">languages</string>    
+    <string name="prefs_languages">language</string>
     <string name="prefs_languageSystemDefault">system default</string>
     <string name="prefs_rememberFiltering">remember sort and filter</string>
     <string name="prefs_summaryRememberFiltering">saves the chosen sorting and filtering method. only those marked by a checkbox in the menu is considered.</string>
     <string name="prefs_disableNotifications">disable notifications</string>
-    <string name="prefs_summaryDisableNotifications">don\'t show any notifications</string>
+    <string name="prefs_summaryDisableNotifications">when checked, oandbackup doesn\'t show any notifications</string>
     <string name="prefs_followSymlinks">follow symbolic links</string>
     <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
     <string name="prefs_enableSpecialBackups">enable special backups</string>
