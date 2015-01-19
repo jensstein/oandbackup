@@ -9,10 +9,11 @@
         <item>español</item>
         <item>français</item>
         <item>italiano</item>
+        <item>日本語</item>
         <item>português (portugal)</item>
         <item>Српски</item>
     </string-array>
-    
+
     <!-- languageEntryValues shouldn't be translated -->
     <string-array name="languageEntryValues">
         <item>system</item>
@@ -22,6 +23,7 @@
         <item>es</item>
         <item>fr</item>
         <item>it</item>
+        <item>ja</item>
         <item>pt</item>
         <item>sr</item>
     </string-array>
