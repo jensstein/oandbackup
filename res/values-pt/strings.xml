@@ -33,7 +33,7 @@
   <string name="showOnlyDataBackedUp">Aplicações só com backup de dados</string>
   <string name="showOnlySpecialBackups">Apenas backups especiais</string>
   <string name="sortByLabel">Ordenar por nome</string>
-  <string name="sortByPackageName">Ordenar por nome do pacote</string>
+  <string name="sortByPackageName">Ordenar por nome de pacote</string>
   <string name="sort">Filtro e ordem</string>
   <string name="uninstallDialogMessage">Desinstalar aplicação?</string>
   <string name="deleteBackupDialogMessage">Remover ficheiros de backup?</string>
@@ -42,7 +42,7 @@
   <string name="dialogYes">Sim</string>
   <string name="dialogNo">Não</string>
   <string name="noBackupYet">Backup inexistente</string>
-  <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado: </string>
+  <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado. </string>
   <string name="collectingData">A obter informação de pacotes</string>
   <string name="suCheck">A verificar superuser e busybox</string>
   <string name="noSu">Não foi possível obter as permissões superuser</string>
@@ -91,8 +91,6 @@
   <string name="prefs_pathscategory">Caminhos personalizados</string>
   <string name="prefs_pathBackupFolder">Pasta de backup</string>
   <string name="prefs_summaryBackupFolder">Caminho da pasta de backups. Deixe em branco para utilizar a pasta padrão.</string>
-  <string name="prefs_pathLogfile">Registos</string>
-  <string name="prefs_summaryLogfile">Caminho do ficheiro de registos. Deixe em branco para utilizar o caminho padrão.</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
   <string name="prefs_oldBackups">Filtrar backups por antiguidade</string>
@@ -109,6 +107,12 @@
   <string name="prefs_followSymlinks">Seguir ligações simbólicas</string>
   <string name="prefs_summaryFollowSymlinks">Seguir sempre ligações simbólicas ao copiar (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Ativar backups especiais</string>
+  <string name="prefs_backupExternalFiles">Gerir dados externos</string>
+  <string name="prefs_summaryBackupExternalFiles">Cria backups e restaura os dados existentes no disco externo (exemplo: /sdcard/Android/data/)</string>
+  <string name="prefs_cryptoMenu">Criptografia</string>
+  <string name="prefs_enableCrypto">Ativar</string>
+  <string name="prefs_summaryEnableCrypto">Ativar cifra ao fazer backups e decifrar ao restaurar</string>
+  <string name="prefs_openpgpProviderList">Fornecedore openpgp</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
   <string name="sched_interval">Intervalo em dias</string>
@@ -116,6 +120,7 @@
   <string name="sched_checkbox">Ativar</string>
   <string name="sched_updateButton">Atualizar</string>
   <string name="sched_removeButton">Remover</string>
+  <string name="sched_activateButton">Iniciar backup agora</string>
   <string name="sched_startingbackup">Iniciar agendamento</string>
   <string name="sched_backupMode">Modo de backup</string>
   <string name="sched_timeLeft">Horas até ao próximo backup</string>
