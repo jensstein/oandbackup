@@ -546,12 +546,20 @@ public class ShellCommands
                 dos.writeBytes("mount -o remount,rw /system\n");
                 // remounting with busybox mount seems to make android 4.4 fail the following commands without error
 
+                // locations of apks have been changed in android 5
+                String basePath = "/system/app/";
+                if(android.os.Build.VERSION.SDK_INT >= 21)
+                {
+                    basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
+                    dos.writeBytes("mkdir -p " + basePath + "\n");
+                    dos.writeBytes(busybox + " chmod 755 " + basePath + "\n");
+                }
                 // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
                 // with touch, a reboot is not necessary after restoring system apps
                 // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
-                dos.writeBytes(busybox + " touch /system/app/" + apk + "\n");
-                dos.writeBytes(busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath()) + "/" + apk + " /system/app/" + "\n");
-                dos.writeBytes(busybox + " chmod 644 /system/app/" + apk + "\n");
+                dos.writeBytes(busybox + " touch " + basePath + apk + "\n");
+                dos.writeBytes(busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath()) + "/" + apk + " " + basePath + "\n");
+                dos.writeBytes(busybox + " chmod 644 " + basePath + apk + "\n");
                 dos.writeBytes("mount -o remount,ro /system\n");
                 dos.flush();
                 dos.writeBytes("exit\n");
