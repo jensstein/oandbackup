@@ -627,12 +627,15 @@ public class ShellCommands
                 // it seems that busybox mount sometimes fails silently so use toolbox instead
                 dos.writeBytes("mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " rm " + sourceDir + "\n");
+                if(android.os.Build.VERSION.SDK_INT >= 21)
+                {
+                    String apkSubDir = Utils.getName(sourceDir);
+                    apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
+                    dos.writeBytes("rm -r /system/app/" + apkSubDir + "\n");
+                }
                 dos.writeBytes("mount -o remount,ro /system\n");
-                dos.flush();
                 dos.writeBytes(busybox + " rm -r " + dataDir + "\n");
-                dos.flush();
                 dos.writeBytes(busybox + " rm -r /data/app-lib/" + packageName + "*\n");
-                dos.flush();
                 dos.writeBytes("exit\n");
                 dos.flush();
             }
