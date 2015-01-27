@@ -1,13 +1,20 @@
 changelog
 =========
 
-0.2.10 (development)
+0.2.10 (2015-01-27)
 -------------------
+ * encryption is now implemented through the openpgp api library
+ * handle different display densities when showing application icons
+ * also restore compiled libraries when restoring system packages
  * package data in the external files directory is now backed up
  * the error log is now placed in the backup directory and the option to set a custom path for it has been removed. if the logfile already exists, it will be moved to the new destination.
  * bluetooth directory is added to the special backups on older versions of android
+ * added japanese translation. thanks to Naofumi
+ * added norwegian bokmål translation. thanks to Daniel
  * fixed bug where the data limit on ipc transfers where exceeded on api 9
  * fixed bug that caused crash when search button was pushed before package list was loaded
+ * fixed bug that caused a crash when getting application icons on android 5. and thanks a lot to أحمد المحمودي (Ahmed El-Mahmoudy) for additional handling of icons on android 5
+ * fixed out of memory bug when the received application icon was too big. thanks a lot to Daniel / https://github.com/DaPa for this
 
 0.2.9 (2014-07-08)
 -------------------
