@@ -98,12 +98,12 @@
   <string name="prefs_summaryOldBackups">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado.</string>
   <string name="prefs_copySelfApk">Copiar apk</string>
   <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
-  <string name="prefs_languages">Idiomas</string>
+  <string name="prefs_languages">Idioma</string>
   <string name="prefs_languageSystemDefault">Idioma do sistema</string>
   <string name="prefs_rememberFiltering">Memorizar ordem e filtro</string>
   <string name="prefs_summaryRememberFiltering">Guarda o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
   <string name="prefs_disableNotifications">Desativar notificações</string>
-  <string name="prefs_summaryDisableNotifications">Não mostrar notificações</string>
+  <string name="prefs_summaryDisableNotifications">Se ativa, o oandbackup não mostrará quaisquer notificações.</string>
   <string name="prefs_followSymlinks">Seguir ligações simbólicas</string>
   <string name="prefs_summaryFollowSymlinks">Seguir sempre ligações simbólicas ao copiar (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Ativar backups especiais</string>
@@ -112,6 +112,8 @@
   <string name="prefs_cryptoMenu">Criptografia</string>
   <string name="prefs_enableCrypto">Ativar</string>
   <string name="prefs_summaryEnableCrypto">Ativar cifra ao fazer backups e decifrar ao restaurar</string>
+  <string name="prefs_cryptoUserIds">ID openpgp de utilizador</string>
+  <string name="prefs_summaryCryptoUserIds">Enederço eletrónico utilizado para cifrar os ficheiros. Separe-os com vírgula.</string>
   <string name="prefs_openpgpProviderList">Fornecedore openpgp</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>

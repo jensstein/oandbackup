@@ -43,7 +43,7 @@
   <string name="dialogNo">Nein</string>
   <string name="noBackupYet">Noch keine Sicherung vorhanden</string>
   <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
-  <string name="collectingData">Paketinformationen sammeln</string>
+  <string name="collectingData">Paketinformationen sammeln…</string>
   <string name="suCheck">Prüfe nach Superuser und Busybox…</string>
   <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
   <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehlerprotokoll überprüfen!</string>
@@ -98,12 +98,12 @@
   <string name="prefs_summaryOldBackups">Sicherungen nach Anzahl von festgelegten Tagen filtern. Benützt in \"Alte Sicherungen anzeigen\"</string>
   <string name="prefs_copySelfApk">Eigene APK-Datei kopieren</string>
   <string name="prefs_summaryCopySelfApk">Erstelle eine Kopie von Oandbackup auf höchster Ebene im Sicherungsverzeichnis</string>
-  <string name="prefs_languages">Sprachen</string>
+  <string name="prefs_languages">Sprache</string>
   <string name="prefs_languageSystemDefault">Systemsprache</string>
   <string name="prefs_rememberFiltering">Sortierung und Filter behalten</string>
   <string name="prefs_summaryRememberFiltering">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü angekreuzten werden beachtet</string>
   <string name="prefs_disableNotifications">Benachrichtigungen ausschalten</string>
-  <string name="prefs_summaryDisableNotifications">Gar keine Benachrichtigungen anzeigen</string>
+  <string name="prefs_summaryDisableNotifications">Oandbackup zeigt keine Benachrichtigungen an</string>
   <string name="prefs_followSymlinks">Symbolischen Links folgen</string>
   <string name="prefs_summaryFollowSymlinks">Symbolischen Links beim Kopieren immer folgen (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>

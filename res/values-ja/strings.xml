@@ -103,7 +103,7 @@
   <string name="prefs_rememberFiltering">並び替えとフィルターを記憶</string>
   <string name="prefs_summaryRememberFiltering">選択した並び替えやフィルター方法を保存します。メニューのチェックボックスでマークされたもののみ考慮されます。</string>
   <string name="prefs_disableNotifications">通知を無効にする</string>
-  <string name="prefs_summaryDisableNotifications">通知を一切表示しません</string>
+  <string name="prefs_summaryDisableNotifications">チェックすると oandbackup は何も通知を表示しません</string>
   <string name="prefs_followSymlinks">シンボリックリンクをたどる</string>
   <string name="prefs_summaryFollowSymlinks">コピー時に、常にシンボリックリンクをたどる (cp -L)</string>
   <string name="prefs_enableSpecialBackups">特別バックアップを有効にする</string>

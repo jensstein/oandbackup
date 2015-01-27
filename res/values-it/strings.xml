@@ -91,8 +91,6 @@
   <string name="prefs_pathscategory">percorsi personalizzati</string>
   <string name="prefs_pathBackupFolder">cartella di backup</string>
   <string name="prefs_summaryBackupFolder">percorso della cartella di backup. predefinito se vuoto.</string>
-  <string name="prefs_pathLogfile">file di log</string>
-  <string name="prefs_summaryLogfile">percorso del file di log. predefinito se vuoto.</string>
   <string name="prefs_pathBusybox">busybox</string>
   <string name="prefs_summaryBusybox">percorso dell\'eseguibile di busybox, assicurarsi che sia corretto, predefinito se vuoto</string>
   <string name="prefs_oldBackups">filtra i backup per obsolescenza</string>
