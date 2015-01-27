@@ -10,6 +10,7 @@
         <item>français</item>
         <item>italiano</item>
         <item>日本語</item>
+        <item>norsk bokmål</item>
         <item>português (portugal)</item>
         <item>Српски</item>
     </string-array>
@@ -24,6 +25,7 @@
         <item>fr</item>
         <item>it</item>
         <item>ja</item>
+        <item>nb</item>
         <item>pt</item>
         <item>sr</item>
     </string-array>
