@@ -61,77 +61,19 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         handleMessages = new HandleMessages(this);
 
         // if onCreate is called due to a configuration change su and busybox shouldn't be checked again
-        final boolean checked = savedInstanceState != null ? savedInstanceState.getBoolean("stateChecked") : false;
-        final int firstVisiblePosition = savedInstanceState != null ? savedInstanceState.getInt("firstVisiblePosition") : 0;
+        boolean checked = false;
+        int firstVisiblePosition = 0;
+        ArrayList<String> users = null;
         if(savedInstanceState != null)
         {
             threadId = savedInstanceState.getLong("threadId");
             Utils.reShowMessage(handleMessages, threadId);
+            checked = savedInstanceState.getBoolean("stateChecked");
+            firstVisiblePosition = savedInstanceState.getInt("firstVisiblePosition");
+            users = savedInstanceState.getStringArrayList("users");
         }
 
-        Thread initThread = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
-                prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
-                shellCommands = new ShellCommands(prefs);
-                String langCode = prefs.getString("languages", "system");
-                LanguageHelper.initLanguage(OAndBackup.this, langCode);
-                String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
-                backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
-                // temporary method to move logfile from bottom of external storage to bottom of backupdir
-                new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
-                if(!checked)
-                {
-                    handleMessages.showMessage("", getString(R.string.suCheck));
-                    boolean haveSu = ShellCommands.checkSuperUser();
-                    LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
-                    if(!haveSu)
-                    {
-                        Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
-                    }
-                    checkBusybox();
-                    handleMessages.endMessage();
-                }
-
-                if(appInfoList == null)
-                {
-                    handleMessages.changeMessage("", getString(R.string.collectingData));
-                    appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this, backupDir, true);
-                    LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
-                    handleMessages.endMessage();
-                }
-
-                listView = (ListView) findViewById(R.id.listview);
-                registerForContextMenu(listView);
-
-                adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
-                adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
-                sorter = new Sorter(adapter, prefs);
-                if(prefs.getBoolean("rememberFiltering", false))
-                {
-                    sorter.sort(Sorter.convertFilteringId(prefs.getInt("filteringId", 0)));
-                    sorter.sort(Sorter.convertSortingId(prefs.getInt("sortingId", 1)));
-                }
-                runOnUiThread(new Runnable(){
-                    public void run()
-                    {
-                        listView.setAdapter(adapter);
-                        listView.setSelection(firstVisiblePosition);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                        {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
-                            {
-                                AppInfo appInfo = adapter.getItem(pos);
-                                displayDialog(appInfo);
-                            }
-                        });
-                    }
-                });
-            }
-        });
+        Thread initThread = new Thread(new InitRunnable(checked, firstVisiblePosition, users));
         initThread.start();
         /*
          * only set threadId here if this is not after a configuration change.
@@ -174,6 +116,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         if(listView != null)
             firstVisiblePosition = listView.getFirstVisiblePosition();
         outState.putInt("firstVisiblePosition", firstVisiblePosition);
+        if(shellCommands != null)
+            outState.putStringArrayList("users", shellCommands.getUsers());
     }
     public void displayDialog(AppInfo appInfo)
     {
@@ -701,5 +645,77 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         if(!shellCommands.checkBusybox())
             Utils.showWarning(this, "", getString(R.string.busyboxProblem));
+    }
+    private class InitRunnable implements Runnable
+    {
+        boolean checked;
+        int firstVisiblePosition;
+        ArrayList<String> users;
+        public InitRunnable(boolean checked, int firstVisiblePosition, ArrayList<String> users)
+        {
+            this.checked = checked;
+            this.firstVisiblePosition = firstVisiblePosition;
+            this.users = users;
+        }
+        public void run()
+        {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
+            prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
+            shellCommands = new ShellCommands(prefs, users);
+            String langCode = prefs.getString("languages", "system");
+            LanguageHelper.initLanguage(OAndBackup.this, langCode);
+            String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
+            // temporary method to move logfile from bottom of external storage to bottom of backupdir
+            new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
+            if(!checked)
+            {
+                handleMessages.showMessage("", getString(R.string.suCheck));
+                boolean haveSu = ShellCommands.checkSuperUser();
+                LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                if(!haveSu)
+                {
+                    Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
+                }
+                checkBusybox();
+                handleMessages.endMessage();
+            }
+
+            if(appInfoList == null)
+            {
+                handleMessages.changeMessage("", getString(R.string.collectingData));
+                appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this, backupDir, true);
+                LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
+                handleMessages.endMessage();
+            }
+
+            listView = (ListView) findViewById(R.id.listview);
+            registerForContextMenu(listView);
+
+            adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
+            adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
+            sorter = new Sorter(adapter, prefs);
+            if(prefs.getBoolean("rememberFiltering", false))
+            {
+                sorter.sort(Sorter.convertFilteringId(prefs.getInt("filteringId", 0)));
+                sorter.sort(Sorter.convertSortingId(prefs.getInt("sortingId", 1)));
+            }
+            runOnUiThread(new Runnable(){
+                public void run()
+                {
+                    listView.setAdapter(adapter);
+                    listView.setSelection(firstVisiblePosition);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                    {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
+                        {
+                            AppInfo appInfo = adapter.getItem(pos);
+                            displayDialog(appInfo);
+                        }
+                    });
+                }
+            });
+        }
     }
 }
