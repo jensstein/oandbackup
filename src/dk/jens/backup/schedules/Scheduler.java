@@ -26,6 +26,7 @@ public class Scheduler extends BaseActivity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener
 {
     static final String TAG = OAndBackup.TAG;
+    public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
 
@@ -391,12 +392,12 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     }
     public void renameCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + (number + 1));
-        frw.rename("customlist" + number);
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + (number + 1));
+        frw.rename(SCHEDULECUSTOMLIST + number);
     }
     public void removeCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
     public void transferOldValues()

@@ -15,7 +15,7 @@ public class CustomPackageList
     // for use with schedules
     public static void showList(Activity activity, int number)
     {
-        showList(activity, "customlist" + number);
+        showList(activity, Scheduler.SCHEDULECUSTOMLIST + number);
     }
     public static void showList(Activity activity, String filename)
     {

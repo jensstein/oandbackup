@@ -96,7 +96,7 @@ public class HandleScheduledBackups
                     case 4: 
                         // custom package list
                         listToBackUp = new ArrayList<AppInfo>();
-                        FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), "customlist" + id);
+                        FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), Scheduler.SCHEDULECUSTOMLIST + id);
                         for(AppInfo appInfo : list)
                         {
                             if(frw.contains(appInfo.getPackageName()))
