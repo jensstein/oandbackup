@@ -12,10 +12,15 @@ import java.util.ArrayList;
 public class CustomPackageList
 {
     static ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
+    // for use with schedules
     public static void showList(Activity activity, int number)
     {
+        showList(activity, "customlist" + number);
+    }
+    public static void showList(Activity activity, String filename)
+    {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        final FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), "customlist" + number);
+        final FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), filename);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<Integer>();
         boolean[] checked = new boolean[items.length];
