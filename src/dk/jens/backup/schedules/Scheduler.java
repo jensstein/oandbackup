@@ -214,7 +214,7 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     edit.commit();
                     break;
                 case R.id.activateButton:
-                    int mode = prefs.getInt("scheduleMode" + number, 1);
+                    int mode = prefs.getInt("scheduleMode" + number, 0);
                     int subMode = prefs.getInt("scheduleSubMode" + number, 2);
                     boolean excludeSystem = prefs.getBoolean("excludeSystem" + number, false);
                     HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
