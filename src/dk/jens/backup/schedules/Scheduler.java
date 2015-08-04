@@ -141,7 +141,6 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
         removeButton.setTag(number);
         activateButton.setTag(number);
         cb.setTag(number);
-//        exludeSystemCB.setTag(number);
         spinner.setTag(number);
         spinnerSubModes.setTag(number);
 
@@ -217,9 +216,9 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 case R.id.activateButton:
                     int mode = prefs.getInt("scheduleMode" + number, 1);
                     int subMode = prefs.getInt("scheduleSubMode" + number, 2);
-                    boolean exludeSystem = prefs.getBoolean("excludeSystem" + number, false);
+                    boolean excludeSystem = prefs.getBoolean("excludeSystem" + number, false);
                     HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
-                    handleScheduledBackups.initiateBackup(number, mode, subMode + 1, exludeSystem);
+                    handleScheduledBackups.initiateBackup(number, mode, subMode + 1, excludeSystem);
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
                     CustomPackageList.showList(this, number);
