@@ -56,7 +56,7 @@ public class HandleScheduledBackups
                         }
                         Collections.sort(listToBackUp);
                         backup(listToBackUp, subMode);
-                        break;                        
+                        break;
                     case 2:
                         // system apps
                         listToBackUp = new ArrayList<AppInfo>();
@@ -69,31 +69,21 @@ public class HandleScheduledBackups
                         }
                         Collections.sort(listToBackUp);
                         backup(listToBackUp, subMode);
-                        break;                        
+                        break;
                     case 3:
                         // new and updated apps
                         listToBackUp = new ArrayList<AppInfo>();
                         for(AppInfo appInfo : list)
                         {
-                            if(!excludeSystem)
+                            if((!excludeSystem || !appInfo.isSystem()) && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode())))
                             {
-                                if(appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
-                                {
-                                    listToBackUp.add(appInfo);
-                                }
-                            }
-                            else
-                            {
-                                if(!appInfo.isSystem() && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode())))
-                                {
-                                    listToBackUp.add(appInfo);
-                                }
+                                listToBackUp.add(appInfo);
                             }
                         }
                         Collections.sort(listToBackUp);
                         backup(listToBackUp, subMode);
                         break;
-                    case 4: 
+                    case 4:
                         // custom package list
                         listToBackUp = new ArrayList<AppInfo>();
                         FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), Scheduler.SCHEDULECUSTOMLIST + id);
@@ -106,7 +96,7 @@ public class HandleScheduledBackups
                         }
                         Collections.sort(listToBackUp);
                         backup(listToBackUp, subMode);
-                        break;                        
+                        break;
                 }
             }
         }).start();
