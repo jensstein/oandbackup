@@ -15,6 +15,10 @@ public class FileReaderWriter
     static final String TAG = OAndBackup.TAG;
 
     File file;
+    public FileReaderWriter(String absolutePath)
+    {
+        this.file = new File(absolutePath);
+    }
     public FileReaderWriter(String rootDirectoryPath, String name)
     {
         this.file = new File(rootDirectoryPath, name);
