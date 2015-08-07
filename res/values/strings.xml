@@ -149,4 +149,7 @@
     <string name="filebrowser_createDirectoryError">could not create the folder: </string>
     <string name="filebrowser_refresh">refresh</string>
     <string name="filebrowser_contextSetBackupDirectory">set as backup folder</string>
+
+    <string name="logviewer_message_loading">loading log file</string>
+    <string name="logviewer_next_lines_button">next</string>
 </resources>

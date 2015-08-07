@@ -116,6 +116,10 @@ public class Tools extends ListActivity
                     Toast.makeText(this, getString(R.string.tools_nothingToDelete), Toast.LENGTH_LONG).show();
                 }
                 break;
+            case 2:
+                Intent intent = new Intent(this, LogViewer.class);
+                startActivity(intent);
+                break;
         }
     }
     @Override

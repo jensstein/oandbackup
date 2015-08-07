@@ -47,6 +47,10 @@
             android:label="@string/filebrowser_title"
             android:parentActivityName="dk.jens.backup.Preferences" >
         </activity>
+        <activity android:name=".LogViewer"
+            android:label="logviewer"
+            android:parentActivityName="dk.jens.backup.Tools" >
+        </activity>
         <receiver android:name=".AlarmReceiver" />
         <receiver android:name=".BootReceiver">
             <intent-filter>
