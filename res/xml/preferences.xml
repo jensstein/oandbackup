@@ -73,7 +73,7 @@
             android:title="@string/prefs_cryptoUserIds"
             android:summary="@string/prefs_summaryCryptoUserIds"
             />
-        <org.openintents.openpgp.util.OpenPgpListPreference
+        <org.openintents.openpgp.util.OpenPgpAppPreference
             android:key="openpgpProviderList"
             android:title="@string/prefs_openpgpProviderList"
             />
