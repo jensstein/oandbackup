@@ -244,7 +244,6 @@ public class Crypto
                     Intent result = api.executeApi(intent, is, os);
                     handleResult(context, result, requestCode);
                     waitForResult();
-                    os.close();
                 }
             }
             else
