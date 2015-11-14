@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.openintents.openpgp.IOpenPgpService;
+import org.openintents.openpgp.IOpenPgpService2;
 import org.openintents.openpgp.OpenPgpError;
 import org.openintents.openpgp.util.OpenPgpApi;
 import org.openintents.openpgp.util.OpenPgpServiceConnection;
@@ -64,7 +64,7 @@ public class Crypto
         service = new OpenPgpServiceConnection(context, provider, new OpenPgpServiceConnection.OnBound()
             {
                 @Override
-                public void onBound(IOpenPgpService service)
+                public void onBound(IOpenPgpService2 service)
                 {
                     Log.i(TAG, "openpgp-api service bound");
                 }
