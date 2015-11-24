@@ -1165,9 +1165,11 @@ public class ShellCommands
     }
     */
     // due to changes in 4.3 (api level 18) the root user cannot see /storage/emulated/$user/ so calls using su (except pm in restoreApk) should swap the first part with /mnt/shell/emulated/, which is readable by the root user
+    // api 23 (android 6) seems to have reverted to the old behaviour
     public String swapBackupDirPath(String path)
     {
-        if(android.os.Build.VERSION.SDK_INT >= 18)
+        if(android.os.Build.VERSION.SDK_INT >= 18 &&
+            android.os.Build.VERSION.SDK_INT < 23)
         {
             if(path.contains("/storage/emulated/"))
             {
