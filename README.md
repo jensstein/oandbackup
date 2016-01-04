@@ -42,11 +42,18 @@ enabling and disabling only works after an initial install (not necessarily from
 
 building
 ========
-to compile you just need the android sdk and apache ant:
+oandbackups can be built with both gradle and apache ant. and in both cases you also need the android sdk.
+with gradle you can either use the wrapper script or call a binary of gradle version 2.8 directly.
+```
+# using the wrapper on linux
+./gradlew assembleDebug
+# using the gradle binary
+gradle assembleDebug
+```
+building with ant is a little more complicated since it requires manually modifying the openpgp-api-lib source to be buildable with ant (it is possible). instructions for doing this may come later.
 ```
     cd $path_to_this_project
-    git submodule update --init
-    # or obtain the code for openpgp-api-lib in some other way and place it in the libs directory
+    # obtain the code for openpgp-api-lib, change it to be ant-compatible and place it in the libs directory
     $path_to_sdk/tools/android update project -t $target_number -p . --library libs/openpgp-api-lib
     ant debug
 ```
