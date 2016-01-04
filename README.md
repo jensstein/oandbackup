@@ -40,6 +40,11 @@ special usage notes
 this can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. the context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore.   
 enabling and disabling only works after an initial install (not necessarily from oandbackup) or restore of the app.
 
+restoring data can also be done manually from the backup files. oandbackup stores the program data files in zip-compressed archives so they can be uncompressed and unpacked with any tool supporting that format (e.g. ```unzip dk.jens.backup.zip```). the unpacked files should then be placed in the directory indicated by "dataDir" in the log file stored with the backup files. this directory will usually be in /data/data/.  
+after restoring the files, the user and group id of the package need to be set. therefore data can only be restored for packages where an apk has been installed successfully. uid and gid can be obtained with the ```stat``` program (e.g. ```stat /data/data/dk.jens.backup```) and set with ```chown```. finally, the correct permissions need to be set with ```chmod```. oandbackup does this by setting 771 for all data files although this is probably not the best method. the subdirectory lib/ needs to be excluded from both ```chown``` and ```chmod```.  
+on android 6 / marshmallow (api 23) you would also need to use the ```restorecon``` command on the data directory (e.g. ```restorecon -R /data/data/dk.jens.backup```) or use another method of restoring the file security contexts.  
+the code which does these things are in the methods doRestore and setPermissions of ShellCommands.java.
+
 building
 ========
 oandbackups can be built with both gradle and apache ant. and in both cases you also need the android sdk.
