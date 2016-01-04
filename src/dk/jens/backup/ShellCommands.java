@@ -190,6 +190,8 @@ public class ShellCommands
                 dos.writeBytes(restoreCommand);
     //            dos.writeBytes("am force-stop " + packageName + "\n");
                 dos.flush();
+                if(android.os.Build.VERSION.SDK_INT >= 23)
+                    dos.writeBytes("restorecon -R " + dataDir + "\n");
                 dos.writeBytes("exit\n");
                 dos.flush();
 
