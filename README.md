@@ -25,10 +25,6 @@ so please come help us there or spread the link if you want the app available in
 
 if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com 
 
-author
-======
-jens stein
-
 special usage notes
 ===========
  * long press an item in the list of apps to get the context menu. 
@@ -70,3 +66,7 @@ oandbackup is licensed under the MIT license (see LICENSE.txt)
 android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs directory)
 
 openpgp-api-lib is written by Dominik Schürmann and licensed under Apache License, Version 2.0
+
+author
+======
+jens stein
