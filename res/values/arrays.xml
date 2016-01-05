@@ -9,7 +9,7 @@
         <item>custom list</item>
     </string-array>
     <!-- entries in scheduleSubModes are taken from strings.xml and should be left as-is here -->
-    <string-array name="scheduleSubModes">
+    <string-array name="scheduleSubModes" translatable="false">
         <item>@string/radioApk</item>
         <item>@string/radioData</item>
         <item>@string/radioBoth</item>
