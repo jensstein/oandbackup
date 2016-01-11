@@ -39,7 +39,9 @@ public class ShellCommands
         busybox = prefs.getString("pathBusybox", "busybox").trim();
         if(busybox.length() == 0)
         {
-            busybox = "busybox";
+            busybox = "toybox";
+            if(!checkBusybox())
+                busybox = "busybox";
         }
         this.users = getUsers();
         if(this.users != null)
