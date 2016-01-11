@@ -448,12 +448,15 @@ public class ShellCommands
             {
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-//                dos.writeBytes(chown + " -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-//                dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + packageDir + "\n");
-//                dos.flush();
-//                dos.writeBytes(chmod + " -R 755 " + packageDir + "\n");
-//                dos.writeBytes(busybox + " chmod -R 755 " + packageDir + "\n");
-                dos.writeBytes("for dir in " + packageDir + "/*; do if " + busybox + " test `" + busybox + " basename $dir` != \"lib\"; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
+                if(android.os.Build.VERSION.SDK_INT < 23) {
+                    dos.writeBytes("for dir in " + packageDir + "/*; do if " + busybox + " test `" + busybox + " basename $dir` != \"lib\"; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
+                } else {
+                    // android 6 has moved to toybox which doesn't include [ or [[
+                    // meanwhile its implementation of test seems to be broken at least in cm 13
+                    // cf. https://github.com/jensstein/oandbackup/issues/116
+                    dos.writeBytes(String.format("%s chown -R %s:%s %s\n", busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
+                    dos.writeBytes(String.format("%s chmod -R 771 %s\n", busybox, packageDir));
+                }
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
 //                dos.flush();
                 dos.writeBytes("exit\n");
