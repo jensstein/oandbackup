@@ -1,6 +1,7 @@
 package dk.jens.backup;
 
 import android.app.AlarmManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -214,11 +215,8 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                     edit.commit();
                     break;
                 case R.id.activateButton:
-                    int mode = prefs.getInt("scheduleMode" + number, 0);
-                    int subMode = prefs.getInt("scheduleSubMode" + number, 2);
-                    boolean excludeSystem = prefs.getBoolean("excludeSystem" + number, false);
-                    HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
-                    handleScheduledBackups.initiateBackup(number, mode, subMode + 1, excludeSystem);
+                    Utils.showConfirmDialog(this, "", getString(R.string.sched_activateButton),
+                        new StartSchedule(this, prefs, number));
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
                     CustomPackageList.showList(this, number);
@@ -416,6 +414,26 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
             edit.remove("timePlaced");        
             edit.remove("timeUntilNextEvent");
             edit.commit();
+        }
+    }
+    private class StartSchedule implements Utils.Command
+    {
+        Context context;
+        SharedPreferences preferences;
+        int scheduleNumber;
+        public StartSchedule(Context context, SharedPreferences preferences, int scheduleNumber)
+        {
+            this.context = context;
+            this.preferences = preferences;
+            this.scheduleNumber = scheduleNumber;
+        }
+        public void execute()
+        {
+            int mode = preferences.getInt("scheduleMode" + scheduleNumber, 0);
+            int subMode = preferences.getInt("scheduleSubMode" + scheduleNumber, 2);
+            boolean excludeSystem = preferences.getBoolean("excludeSystem" + scheduleNumber, false);
+            HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
+            handleScheduledBackups.initiateBackup(scheduleNumber, mode, subMode + 1, excludeSystem);
         }
     }
 }

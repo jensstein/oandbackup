@@ -76,6 +76,20 @@ public class Utils
             }
         });
     }
+    public static void showConfirmDialog(Activity activity, String title, String message, final Command confirmCommand)
+    {
+        new AlertDialog.Builder(activity)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    confirmCommand.execute();
+                }
+            })
+            .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id){}})
+            .show();
+    }
     public static void reloadWithParentStack(Activity activity)
     {
         Intent intent = activity.getIntent();
@@ -106,5 +120,9 @@ public class Utils
         if(path.endsWith(File.separator))
             path = path.substring(0, path.length() - 1);
         return path.substring(path.lastIndexOf(File.separator) + 1);
+    }
+    public interface Command
+    {
+        public void execute();
     }
 }
