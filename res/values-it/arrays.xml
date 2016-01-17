@@ -14,12 +14,4 @@
     <item>@string/radioData</item>
     <item>@string/radioBoth</item>
   </string-array>
-  <string-array name="tools_titles">
-    <item>riavvio veloce</item>
-    <item>eliminazione dei backup</item>
-  </string-array>
-  <string-array name="tools_descriptions">
-    <item>termina il processo system_server per forzare un riavvio dell\'ambiente utente</item>
-    <item>elimina i backup di tutte le applicazioni non installate attualmente</item>
-  </string-array>
 </resources>

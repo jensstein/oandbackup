@@ -17,9 +17,11 @@
   <string-array name="tools_titles">
     <item>クイック再起動</item>
     <item>バックアップを削除</item>
+    <item>エラーログを表示</item>
   </string-array>
   <string-array name="tools_descriptions">
     <item>ユーザースペースを強制的に再起動するため system_server プロセスを kill する</item>
     <item>現在インストールされていないすべてのアプリのバックアップを削除する</item>
+    <item></item>
   </string-array>
 </resources>

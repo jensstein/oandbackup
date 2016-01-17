@@ -67,7 +67,7 @@
   <string name="errorDialogTitle">En feil har oppstått</string>
   <string name="customListTitle">Tilpasset liste</string>
   <string name="quickReboot">Hurtig omstart</string>
-  <string name="quickRebootMessage">Ønsker du å omstarte brukerområde ?</string>
+  <string name="quickRebootMessage">Ønsker du å omstarte \'user space\' (brukerområde)?</string>
   <string name="help_title">Hjelp</string>
   <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
   <string name="shareTitle">Del med</string>
@@ -143,4 +143,6 @@
   <string name="filebrowser_createDirectoryError">Fikk ikke opprettet mappen: </string>
   <string name="filebrowser_refresh">Oppdater</string>
   <string name="filebrowser_contextSetBackupDirectory">Velg som mappe til sikkerhetskopier</string>
+  <string name="logviewer_message_loading">Laster inn loggfilen</string>
+  <string name="logviewer_next_lines_button">Videre</string>
 </resources>

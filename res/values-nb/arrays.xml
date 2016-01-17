@@ -2,11 +2,11 @@
 <resources>
   <!--translators should ensure that all items are translated. there is no graceful fallback if the number of items in a translated file doesn't match the source and the app will crash on that particular language.-->
   <string-array name="scheduleModes">
-    <item>alle apper</item>
-    <item>vanlige apper</item>
-    <item>system apper</item>
-    <item>nye og oppdaterte apper</item>
-    <item>tilpasset liste</item>
+    <item>Alle apper</item>
+    <item>Vanlige apper</item>
+    <item>System apper</item>
+    <item>Nye og oppdaterte apper</item>
+    <item>Tilpasset liste</item>
   </string-array>
   <!--entries in scheduleSubModes are taken from strings.xml and should be left as-is here-->
   <string-array name="scheduleSubModes">
@@ -15,11 +15,13 @@
     <item>@string/radioBoth</item>
   </string-array>
   <string-array name="tools_titles">
-    <item>hurtig omstart</item>
-    <item>slett sikkerhetskopier</item>
+    <item>Hurtig omstart</item>
+    <item>Slett sikkerhetskopier</item>
+    <item>Vis feillogg</item>
   </string-array>
   <string-array name="tools_descriptions">
-    <item>dreper \'system_server\' prosessen for å fremtvinge en omstart av \'user space\'</item>
-    <item>slett sikkerhetskopier av alle apper som ikke er installert</item>
+    <item>Dreper system_server prosessen for å fremtvinge omstart av \'user space\' (brukerområde)</item>
+    <item>Slett sikkerhetskopier til alle apper som ikke er installert  for tiden</item>
+    <item></item>
   </string-array>
 </resources>

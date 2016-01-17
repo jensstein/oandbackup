@@ -14,12 +14,4 @@
     <item>@string/radioData</item>
     <item>@string/radioBoth</item>
   </string-array>
-  <string-array name="tools_titles">
-    <item>Snelle herstart</item>
-    <item>Verwijder back-ups</item>
-  </string-array>
-  <string-array name="tools_descriptions">
-    <item>Beëindigt het \"system_server\" proces om een herstart van de \"user space\" te forceren</item>
-    <item>Verwijder back-ups van alle apps die momenteel niet geïnstalleerd zijn</item>
-  </string-array>
 </resources>

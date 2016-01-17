@@ -143,4 +143,6 @@
   <string name="filebrowser_createDirectoryError">ファるだーを作成できませんでした:</string>
   <string name="filebrowser_refresh">リフレッシュ</string>
   <string name="filebrowser_contextSetBackupDirectory">バックアップ フォルダーとして設定</string>
+  <string name="logviewer_message_loading">ログファイルを読み込んでいます</string>
+  <string name="logviewer_next_lines_button">次へ</string>
 </resources>

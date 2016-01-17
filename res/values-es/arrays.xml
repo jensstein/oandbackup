@@ -14,12 +14,4 @@
     <item>@string/radioData</item>
     <item>@string/radioBoth</item>
   </string-array>
-  <string-array name="tools_titles">
-    <item>Reinicio rápido</item>
-    <item>Eliminar respaldos</item>
-  </string-array>
-  <string-array name="tools_descriptions">
-    <item>Mata el proceso system_server para forzar un reinicio del espacio de usuario</item>
-    <item>Elmina los respaldos de todas las aplicaciones no instaladas actualmente.</item>
-  </string-array>
 </resources>

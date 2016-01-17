@@ -15,11 +15,8 @@
     <item>@string/radioBoth</item>
   </string-array>
   <string-array name="tools_titles">
-    <item>Брзо поновно покретање</item>
-    <item>Обриши резервне копије</item>
-  </string-array>
-  <string-array name="tools_descriptions">
-    <item>Прекида процес system_server како би се поново покренуло корисничко окружење</item>
-    <item>Обрисати резервне копије свих апликација које нису тренутно инсталиране</item>
+    <item>брзи рестарт</item>
+    <item>обриши копије</item>
+    <item>види записник грешака</item>
   </string-array>
 </resources>

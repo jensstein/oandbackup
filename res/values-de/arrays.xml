@@ -15,11 +15,13 @@
     <item>@string/radioBoth</item>
   </string-array>
   <string-array name="tools_titles">
-    <item>Schneller Neustart</item>
+    <item>Schnellneustart</item>
     <item>Sicherungen löschen</item>
+    <item>Protokolldatei anzeigen</item>
   </string-array>
   <string-array name="tools_descriptions">
-    <item>Beendet den System_Server-Prozess und erzwingt dadurch einen Neustart des Benutzer-Interface-Systems</item>
-    <item>Löscht die Sicherungen von derzeit nicht installierten Apps</item>
+    <item>Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</item>
+    <item>Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</item>
+    <item></item>
   </string-array>
 </resources>

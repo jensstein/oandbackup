@@ -89,8 +89,6 @@
   <string name="prefs_pathscategory">Rutas personalizadas</string>
   <string name="prefs_pathBackupFolder">Directorio de respaldos</string>
   <string name="prefs_summaryBackupFolder">Ruta al directorio de respaldo. Dejar en blanco predeterminada.</string>
-  <string name="prefs_pathLogfile">Archivo de registros</string>
-  <string name="prefs_summaryLogfile">Ruta a archivo de registros. Dejar en blanco para predeterminada.</string>
   <string name="prefs_pathBusybox">Busybox</string>
   <string name="prefs_summaryBusybox">Ruta al ejecutable busybox (confirmar que sea correcto). Dejar en blanco para predeterminada.</string>
   <string name="prefs_oldBackups">Filtrar respaldos por antiguedad</string>

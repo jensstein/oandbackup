@@ -143,4 +143,6 @@
   <string name="filebrowser_createDirectoryError">Não foi possível criar a pasta:</string>
   <string name="filebrowser_refresh">Atualizar</string>
   <string name="filebrowser_contextSetBackupDirectory">Definir como pasta de backup</string>
+  <string name="logviewer_message_loading">A carregar ficheiro de registo</string>
+  <string name="logviewer_next_lines_button">Seguinte</string>
 </resources>

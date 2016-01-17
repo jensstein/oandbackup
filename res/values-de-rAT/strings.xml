@@ -143,4 +143,6 @@
   <string name="filebrowser_createDirectoryError">Konnte Ordner nicht erstellen: </string>
   <string name="filebrowser_refresh">Aktualisieren</string>
   <string name="filebrowser_contextSetBackupDirectory">Als Sicherungsordner festlegen</string>
+  <string name="logviewer_message_loading">Protokolldatei laden...</string>
+  <string name="logviewer_next_lines_button">Weiter</string>
 </resources>

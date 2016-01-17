@@ -14,12 +14,4 @@
     <item>@string/radioData</item>
     <item>@string/radioBoth</item>
   </string-array>
-  <string-array name="tools_titles">
-    <item>redémarrage rapide</item>
-    <item>effacer les sauvegardes</item>
-  </string-array>
-  <string-array name="tools_descriptions">
-    <item>tue le programme system_server pour forcer un redémarrage de l\'environnement utilisateur</item>
-    <item>effacer les sauvegardes de toutes les applications non installées</item>
-  </string-array>
 </resources>

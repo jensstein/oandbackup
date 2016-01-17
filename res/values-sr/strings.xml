@@ -143,4 +143,6 @@
   <string name="filebrowser_createDirectoryError">Није могуће направити фасциклу:</string>
   <string name="filebrowser_refresh">Освежи</string>
   <string name="filebrowser_contextSetBackupDirectory">Подеси као фасциклу за рез. копију</string>
+  <string name="logviewer_message_loading">Учитавам датотеку записника</string>
+  <string name="logviewer_next_lines_button">Следећи</string>
 </resources>

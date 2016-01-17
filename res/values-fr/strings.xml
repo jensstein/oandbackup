@@ -89,8 +89,6 @@
   <string name="prefs_pathscategory">chemins personnalisés</string>
   <string name="prefs_pathBackupFolder">dossier de sauvegarde</string>
   <string name="prefs_summaryBackupFolder">chemin d\'accès au dossier de sauvegarde. laisser vide pour garder le chemin par défaut</string>
-  <string name="prefs_pathLogfile">fichier de journal</string>
-  <string name="prefs_summaryLogfile">chemin d\'accès au fichier de journal. laisser vide pour garder le chemin par défaut</string>
   <string name="prefs_pathBusybox">busybox</string>
   <string name="prefs_summaryBusybox">chemin d\'accès au binaire de busybox. assurez-vous qu\'il soit correct. laisser vide pour garder le chemin par défaut</string>
   <string name="prefs_oldBackups">filtrer les sauvegarde par ancienneté</string>
