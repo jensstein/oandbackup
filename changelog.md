@@ -1,6 +1,19 @@
 changelog
 =========
 
+0.2.11 (2016-01-17)
+-------------------
+ * new permission: READ_EXTERNAL_STORAGE
+ * auto-detection of toybox
+ * modify command commands for setting permissions to use test instead of [[ on
+    android versions below api 23 and temporarily use neither on versions above
+ * added gradle build files
+ * added viewer for the error log
+ * added dutch translation. thanks to baturblits
+ * added russian translation. thanks to svadkos
+ * fixed bug with restoring selinux contexts on android 6
+ * fixed encryption bug
+
 0.2.10 (2015-01-27)
 -------------------
  * encryption is now implemented through the openpgp api library
