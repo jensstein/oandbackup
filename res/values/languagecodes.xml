@@ -13,6 +13,7 @@
         <item>nederlands (nederland)</item>
         <item>norsk bokmål</item>
         <item>português (portugal)</item>
+        <item>русский</item>
         <item>Српски</item>
     </string-array>
 
@@ -29,6 +30,7 @@
         <item>nl_NL</item>
         <item>nb</item>
         <item>pt</item>
+        <item>ru</item>
         <item>sr</item>
     </string-array>
 </resources>
