@@ -16,7 +16,7 @@ if you have a working toolchain for your target device, you should only need to 
         # build as a static binary if needed
     make
 ```
-copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackup.
+copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackup. in the oandbackup preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
 
 an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
 
