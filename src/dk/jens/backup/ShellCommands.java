@@ -1005,7 +1005,7 @@ public class ShellCommands
         //            int currentUser = getCurrentUser();
                     Process p = Runtime.getRuntime().exec("su");
                     DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes("pm list users | " + busybox + " sed -e 's/{/ /' -e 's/:/ /' | " + busybox + " awk '{print $2}'\n");
+                    dos.writeBytes("pm list users | " + busybox + " sed -nr 's/.*\\{([0-9]+):.*/\\1/p'\n");
                     dos.writeBytes("exit\n");
                     dos.flush();
                     int ret = p.waitFor();
