@@ -155,7 +155,6 @@ public class ShellCommands
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
         int unzipRet = -1;
-        int untarRet = -1;
         Log.i(TAG, "restoring: " + label);
 
         try
@@ -164,8 +163,6 @@ public class ShellCommands
             File zipFile = new File(backupSubDir, dataDirName + ".zip");
             if(zipFile.exists())
                 unzipRet = Compression.unzip(zipFile, backupSubDir);
-            else if(new File(backupSubDir, dataDirName + ".tar.gz").exists())
-                untarRet = untar(backupSubDir.getAbsolutePath(), dataDirName);
             if(prefs.getBoolean("backupExternalFiles", false))
             {
                 File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
@@ -230,7 +227,7 @@ public class ShellCommands
         }
         finally
         {
-            if(untarRet == 0 || unzipRet == 0)
+            if(unzipRet == 0)
             {
                 deleteBackup(new File(backupSubDir, dataDirName));
             }
@@ -957,38 +954,6 @@ public class ShellCommands
             }
             deleteBackup(new File(outputDir, "lib"));
         }
-    }
-    public int untar(String pathToBackupsubdir, String folder)
-    {
-        try
-        {
-            Process p = Runtime.getRuntime().exec("sh");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes("tar -zxf " + pathToBackupsubdir + "/" + folder + ".tar.gz -C " + pathToBackupsubdir + "\n");
-            dos.flush();
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
-                {
-                    writeErrorLog(folder, line);
-                }
-            }
-            return ret;
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }           
     }
     public ArrayList getUsers()
     {
