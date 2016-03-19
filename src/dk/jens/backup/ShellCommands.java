@@ -189,7 +189,7 @@ public class ShellCommands
                 dos.writeBytes(restoreCommand);
     //            dos.writeBytes("am force-stop " + packageName + "\n");
                 dos.flush();
-                if(android.os.Build.VERSION.SDK_INT >= 23)
+                if(Build.VERSION.SDK_INT >= 23)
                     dos.writeBytes("restorecon -R " + dataDir + "\n");
                 dos.writeBytes("exit\n");
                 dos.flush();
@@ -447,7 +447,7 @@ public class ShellCommands
             {
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                if(android.os.Build.VERSION.SDK_INT < 23) {
+                if(Build.VERSION.SDK_INT < 23) {
                     dos.writeBytes("for dir in " + packageDir + "/*; do if " + busybox + " test `" + busybox + " basename $dir` != \"lib\"; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
                 } else {
                     // android 6 has moved to toybox which doesn't include [ or [[
@@ -529,7 +529,7 @@ public class ShellCommands
                 // pm install returns 0 even for errors and prints part of its normal output to stderr
                 // on api level 10 successful output spans three lines while it spans one line on the other api levels
                 ArrayList<String> err = getOutput(p).get("stderr");
-                int limit = (android.os.Build.VERSION.SDK_INT == 10) ? 3 : 1;
+                int limit = (Build.VERSION.SDK_INT == 10) ? 3 : 1;
                 if(err.size() > limit)
                 {
                     for(String line : err)
@@ -552,7 +552,7 @@ public class ShellCommands
 
                 // locations of apks have been changed in android 5
                 String basePath = "/system/app/";
-                if(android.os.Build.VERSION.SDK_INT >= 21)
+                if(Build.VERSION.SDK_INT >= 21)
                 {
                     basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
                     dos.writeBytes("mkdir -p " + basePath + "\n");
@@ -631,7 +631,7 @@ public class ShellCommands
                 // it seems that busybox mount sometimes fails silently so use toolbox instead
                 dos.writeBytes("mount -o remount,rw /system\n");
                 dos.writeBytes(busybox + " rm " + sourceDir + "\n");
-                if(android.os.Build.VERSION.SDK_INT >= 21)
+                if(Build.VERSION.SDK_INT >= 21)
                 {
                     String apkSubDir = Utils.getName(sourceDir);
                     apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
@@ -912,9 +912,9 @@ public class ShellCommands
          * in the android source
          */
         String libPrefix = "lib/";
-        ArrayList<String> libs = Compression.list(apk, libPrefix + android.os.Build.CPU_ABI);
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO && (libs == null || libs.size() == 0))
-            libs = Compression.list(apk, libPrefix + android.os.Build.CPU_ABI2);
+        ArrayList<String> libs = Compression.list(apk, libPrefix + Build.CPU_ABI);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO && (libs == null || libs.size() == 0))
+            libs = Compression.list(apk, libPrefix + Build.CPU_ABI2);
         if(libs != null && libs.size() > 0)
         {
             if(Compression.unzip(apk, outputDir, libs) == 0)
@@ -957,7 +957,7 @@ public class ShellCommands
     }
     public ArrayList getUsers()
     {
-        if(android.os.Build.VERSION.SDK_INT > 17)
+        if(Build.VERSION.SDK_INT > 17)
         {
             if(users != null && users.size() > 0)
             {
@@ -1140,8 +1140,8 @@ public class ShellCommands
     // api 23 (android 6) seems to have reverted to the old behaviour
     public String swapBackupDirPath(String path)
     {
-        if(android.os.Build.VERSION.SDK_INT >= 18 &&
-            android.os.Build.VERSION.SDK_INT < 23)
+        if(Build.VERSION.SDK_INT >= 18 &&
+            Build.VERSION.SDK_INT < 23)
         {
             if(path.contains("/storage/emulated/"))
             {
@@ -1189,7 +1189,7 @@ public class ShellCommands
     }
     public File getExternalFilesDirPath(Context context, String packageData)
     {
-        if(android.os.Build.VERSION.SDK_INT >= 8)
+        if(Build.VERSION.SDK_INT >= 8)
         {
             String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
             // get path of own externalfilesdir and then cutting at the packagename to get the general path
