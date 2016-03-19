@@ -36,7 +36,8 @@ public class ShellCommands
     {
         this.users = users;
         this.prefs = prefs;
-        busybox = prefs.getString("pathBusybox", "busybox").trim();
+        String defaultBox = Build.VERSION.SDK_INT >= 23 ? "toybox" : "busybox";
+        busybox = prefs.getString("pathBusybox", defaultBox).trim();
         if(busybox.length() == 0)
         {
             busybox = "toybox";
