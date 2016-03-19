@@ -93,18 +93,14 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         rbBoth = (RadioButton) findViewById(R.id.radioBoth);
         rbBoth.setChecked(true);
 
+        if(appInfoList == null)
+            appInfoList = AppInfoHelper.getPackageInfo(this, backupDir, true);
         if(backupBoolean)
         {
             list = new ArrayList<AppInfo>();
-            Iterator iter = appInfoList.iterator();
-            while(iter.hasNext())
-            {
-                AppInfo appInfo = (AppInfo) iter.next();
+            for(AppInfo appInfo : appInfoList)
                 if(appInfo.isInstalled())
-                {
                     list.add(appInfo);
-                }
-            }
 
             bt.setText(R.string.backup);
         }
