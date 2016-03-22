@@ -779,7 +779,7 @@ public class ShellCommands
             }
         }
     }
-    public Map<String, ArrayList<String>> getOutput(Process p)
+    public static Map<String, ArrayList<String>> getOutput(Process p)
     {
         ArrayList<String> out = new ArrayList<String>();
         ArrayList<String> err = new ArrayList<String>();
@@ -1033,6 +1033,33 @@ public class ShellCommands
         catch(NoSuchFieldException e){}
         catch(IllegalAccessException e){}
         return 0;
+    }
+    public static ArrayList<String> getDisabledPackages()
+    {
+        try
+        {
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            dos.writeBytes("pm list packages -d\n");
+            dos.writeBytes("exit\n");
+            dos.flush();
+            Map<String, ArrayList<String>> output = getOutput(p);
+            int ret = p.waitFor();
+            if(ret == 0) {
+                ArrayList<String> out = output.get("stdout");
+                ArrayList<String> packages = new ArrayList<String>();
+                for(String line : out)
+                    if(line.indexOf(":") != -1)
+                        packages.add(line.substring(line.indexOf(":") + 1).trim());
+                if(packages.size() > 0)
+                    return packages;
+            }
+        } catch(IOException e) {
+            Log.e(TAG, e.toString());
+        } catch(InterruptedException e) {
+            Log.e(TAG, e.toString());
+        }
+        return null;
     }
     public void enableDisablePackage(String packageName, ArrayList<String> users, boolean enable)
     {

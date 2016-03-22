@@ -32,6 +32,7 @@ public class AppInfoHelper
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
 
+        ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if(prefs.getBoolean("enableSpecialBackups", true))
             addSpecialBackups(context, backupDir, list, packageNames);
@@ -71,6 +72,8 @@ public class AppInfoHelper
                     appInfo.setLogInfo(logInfo);
                 }
                 appInfo.icon = icon;
+                if(disabledPackages != null && disabledPackages.contains(pinfo.packageName))
+                    appInfo.setDisabled(true);
                 list.add(appInfo);
             }
         }

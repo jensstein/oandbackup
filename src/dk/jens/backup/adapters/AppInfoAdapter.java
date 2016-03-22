@@ -127,6 +127,8 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             if(appInfo.isInstalled())
             {
                 int color = appInfo.isSystem() ? Color.RED : Color.GREEN;
+                if(appInfo.isDisabled())
+                    color = Color.rgb(7, 87, 117);
                 viewHolder.label.setTextColor(Color.WHITE);
                 viewHolder.packageName.setTextColor(color);
             }

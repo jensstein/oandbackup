@@ -10,7 +10,7 @@ implements Comparable<AppInfo>, Parcelable
     LogFile logInfo;
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
-    private boolean system, installed, checked;
+    private boolean system, installed, checked, disabled;
     public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
@@ -81,6 +81,14 @@ implements Comparable<AppInfo>, Parcelable
     public void setChecked(boolean checked)
     {
         this.checked = checked;
+    }
+    public void setDisabled(boolean disabled)
+    {
+        this.disabled = disabled;
+    }
+    public boolean isDisabled()
+    {
+        return disabled;
     }
     public boolean isSystem()
     {
