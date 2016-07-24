@@ -105,4 +105,8 @@ public class BackupRestoreHelper
         shellCommands.logReturnMessage(context, ret);
         return ret;
     }
+    public interface OnBackupRestoreListener
+    {
+        void onBackupRestoreDone();
+    }
 }

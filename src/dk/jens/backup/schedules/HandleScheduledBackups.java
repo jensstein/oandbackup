@@ -20,12 +20,18 @@ public class HandleScheduledBackups
     ShellCommands shellCommands;
     SharedPreferences prefs;
     File backupDir;
+    List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
     public HandleScheduledBackups(Context context)
     {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         shellCommands = new ShellCommands(prefs);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        listeners = new ArrayList<BackupRestoreHelper.OnBackupRestoreListener>();
+    }
+    public void setOnBackupListener(BackupRestoreHelper.OnBackupRestoreListener listener)
+    {
+        listeners.add(listener);
     }
     public void initiateBackup(final int id, final int mode, final int subMode, final boolean excludeSystem)
     {
@@ -154,6 +160,8 @@ public class HandleScheduledBackups
                         wl.release();
                         Log.i(TAG, "wakelock released");
                     }
+                    for(BackupRestoreHelper.OnBackupRestoreListener l : listeners)
+                        l.onBackupRestoreDone();
                 }
             }).start();
         }
