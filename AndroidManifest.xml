@@ -60,5 +60,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <service android:name="dk.jens.backup.ScheduleService" />
     </application>
 </manifest>
