@@ -53,7 +53,15 @@ public class AppInfoHelper
                 {
                     if(apkIcon instanceof BitmapDrawable) {
                         // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
-                        icon = Bitmap.createScaledBitmap(((BitmapDrawable) apkIcon).getBitmap(), 32, 32, true);
+                        Bitmap src = ((BitmapDrawable) apkIcon).getBitmap();
+                        if(src.getWidth() > 0 && src.getHeight() > 0) {
+                            icon = Bitmap.createScaledBitmap(src,
+                                src.getWidth(), src.getHeight(), true);
+                        } else {
+                            Log.d(TAG, String.format(
+                                "icon for %s had invalid height or width (h: %d w: %d)",
+                                pinfo.packageName, src.getHeight(), src.getWidth()));
+                        }
                     }
                     else {
                         icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
