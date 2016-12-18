@@ -95,6 +95,7 @@ public class ShellCommands
                 deleteBackup(new File(backupSubDir, EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
             }
             dos.writeBytes("exit\n");
+            dos.flush();
 
             int ret = p.waitFor();
             if(ret != 0)
