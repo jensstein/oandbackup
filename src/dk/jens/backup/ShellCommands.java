@@ -59,6 +59,13 @@ public class ShellCommands
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
+        // since api 24 (android 7) ApplicationInfo.dataDir can be null
+        // this doesn't seem to be documented. proper sanity checking is needed
+        if(packageData == null){
+            writeErrorLog(label,
+                "packageData is null. this is unexpected, please report it.");
+            return 1;
+        }
         try
         {
             Process p = Runtime.getRuntime().exec("su");
