@@ -87,7 +87,7 @@
     <string name="disablePackage">禁用</string>
     <string name="disablePackageTitle">禁用用户</string>
 
-    <string name="prefs_title">参数</string>
+    <string name="prefs_title">设置</string>
     <string name="prefs_timestamp">使用本地日期格式</string>
     <string name="prefs_acquireWakelock">防止睡眠</string>
     <string name="prefs_summaryAcquireWakelock">批处理运行时获取唤醒锁以防止睡眠让加速备份和恢复,但将消耗更多电量</string>
