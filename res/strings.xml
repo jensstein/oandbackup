@@ -112,7 +112,7 @@
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
     <string name="prefs_backupExternalFiles">处理外部数据</string>
     <string name="prefs_summaryBackupExternalFiles">备份和恢复放置在外部存储的数据(例如/sdcard/Android/data/)</string>
-    <string name="prefs_cryptoMenu">密码</string>
+    <string name="prefs_cryptoMenu">加密</string>
     <string name="prefs_enableCrypto">启用</string>
     <string name="prefs_summaryEnableCrypto">启用加密时备份文件和解密时恢复</string>
     <string name="prefs_cryptoUserIds">openpgp用户ID</string>
@@ -139,7 +139,7 @@
     <string name="spec_appwidgets">应用小部件</string>
     <string name="spec_bluetooth">蓝牙</string>
     <string name="spec_data">数据使用和策略</string>
-    <string name="spec_wallpaper">墙纸</string>
+    <string name="spec_wallpaper">壁纸</string>
     <string name="spec_wifiAccessPoints">Wifi接入点</string>
 
     <string name="filebrowser_setButton">设置</string>
