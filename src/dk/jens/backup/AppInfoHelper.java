@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -128,14 +129,16 @@ public class AppInfoHelper
     }
     public static ArrayList<AppInfoSpecial> getSpecialBackups(Context context)
     {
-        String versionName = android.os.Build.VERSION.RELEASE;
-        int versionCode = android.os.Build.VERSION.SDK_INT;
+        String versionName = Build.VERSION.RELEASE;
+        int versionCode = Build.VERSION.SDK_INT;
         int currentUser = ShellCommands.getCurrentUser();
         ArrayList<AppInfoSpecial> list = new ArrayList<AppInfoSpecial>();
-        boolean apiCheck = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+        boolean apiCheck = versionCode >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
         AppInfoSpecial accounts = new AppInfoSpecial("accounts", context.getString(R.string.spec_accounts), versionName, versionCode);
-        if(apiCheck)
+        if(versionCode >= Build.VERSION_CODES.N)
+            accounts.setFilesList("/data/system_ce/" + currentUser + "/accounts_ce.db");
+        else if(apiCheck)
             accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
         else
             accounts.setFilesList("/data/system/accounts.db");
