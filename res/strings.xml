@@ -5,15 +5,15 @@
     <string name="restore">恢复</string>
     <string name="backupConfirmation">备份?</string>
     <string name="restoreConfirmation">恢复?</string>
-    <string name="handleApk">apk</string>
+    <string name="handleApk">应用</string>
     <string name="handleData">数据</string>
     <string name="handleBoth">两者</string>
-    <string name="radioApk">apk</string>
+    <string name="radioApk">应用</string>
     <string name="radioData">数据</string>
-    <string name="radioBoth">数据+apk</string>
+    <string name="radioBoth">数据+应用</string>
     <string name="de_selectAll">取消/全选</string>
-    <string name="onlyApkBackedUp">仅apk</string>
-    <string name="onlyDataBackedUp">仅data</string>
+    <string name="onlyApkBackedUp">仅应用</string>
+    <string name="onlyDataBackedUp">仅数据</string>
     <string name="refresh">刷新</string>
     <string name="batchbackup">批量备份</string>
     <string name="batchrestore">批量恢复</string>
@@ -100,13 +100,13 @@
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">过滤日期超过值的备份,与过滤器一起使用'显示旧备份'</string>
     <string name="prefs_copySelfApk">复制自身apk</string>
-    <string name="prefs_summaryCopySelfApk">备份时将oandbackup的副本放在备份文件夹顶层</string>
+    <string name="prefs_summaryCopySelfApk">备份时将OandBackup的副本放在备份文件夹顶层</string>
     <string name="prefs_languages">语言</string>
     <string name="prefs_languageSystemDefault">系统默认</string>
     <string name="prefs_rememberFiltering">记住排序和过滤</string>
     <string name="prefs_summaryRememberFiltering">保存所选择的排序和过滤方法,仅考虑菜单中的复选框标记那些</string>
     <string name="prefs_disableNotifications">禁用通知</string>
-    <string name="prefs_summaryDisableNotifications">当选中时oandbackup不会显示任何通知</string>
+    <string name="prefs_summaryDisableNotifications">当选中时OandBackup不会显示任何通知</string>
     <string name="prefs_followSymlinks">遵循符号链接</string>
     <string name="prefs_summaryFollowSymlinks">复制时始终遵循符号链接(cp -L)</string>
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
@@ -117,7 +117,7 @@
     <string name="prefs_summaryEnableCrypto">启用加密时备份文件和解密时恢复</string>
     <string name="prefs_cryptoUserIds">openpgp用户ID</string>
     <string name="prefs_summaryCryptoUserIds">用于加密文件的用户ID电子邮件\",\"</string>
-    <string name="prefs_openpgpProviderList">openpgp提供程序</string>
+    <string name="prefs_openpgpProviderList">由openpgp提供程序</string>
 
     <string name="sched_title">计划</string>
     <string name="sched_notificationMessage">计划备份</string>
