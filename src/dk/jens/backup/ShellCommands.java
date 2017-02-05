@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ShellCommands
 {
@@ -32,6 +34,8 @@ public class ShellCommands
     ArrayList<String> users;
     private static String errors = "";
     boolean multiuserEnabled;
+    private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
+    private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
     public ShellCommands(SharedPreferences prefs, ArrayList<String> users)
     {
         this.users = users;
@@ -380,6 +384,17 @@ public class ShellCommands
         }
         return 1;
     }
+    private static ArrayList<String> getIdsFromStat(String stat)
+    {
+        Matcher uid = uidPattern.matcher(stat);
+        Matcher gid = gidPattern.matcher(stat);
+        if(!uid.find() || !gid.find())
+            return null;
+        ArrayList<String> res = new ArrayList<String>();
+        res.add(uid.group(1));
+        res.add(gid.group(1));
+        return res;
+    }
     public ArrayList<String> getOwnership(String packageDir)
     {
         return getOwnership(packageDir, "sh");
@@ -392,26 +407,13 @@ public class ShellCommands
             // and for stat on single files
             Process p = Runtime.getRuntime().exec(shellPrivs);
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            /**
-                * sed:
-                * -n: suppress usual output
-                * -r: extended regular expressions
-                * \1: replace with the first regex group match
-                * p: print the changed line
-                * enclosing .*: isolates the uid since the captured part will replace the whole regex
-                * escaping backslashes need to be escaped here
-                * http://www.mikeplate.com/2012/05/09/extract-regular-expression-group-match-using-grep-or-sed/
-            */
             /*
             * some packages can have 0 / UNKNOWN as uid and gid for a short
             * time before being switched to their proper ids so to work
             * around the race condition we sleep a little.
             */
             dos.writeBytes("sleep 1\n");
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Uid: \\(( *[0-9]+).*|\\1|p'\n");
-            dos.flush();
-            dos.writeBytes(busybox + " stat " + packageDir + " | " + busybox + " sed -nr 's|.*Gid: \\(( *[0-9]+).*|\\1|p'\n");
-            dos.flush();
+            dos.writeBytes(busybox + " stat " + packageDir + "\n");
 
             dos.writeBytes("exit\n");
             dos.flush();
@@ -430,11 +432,12 @@ public class ShellCommands
             InputStreamReader isr = new InputStreamReader(p.getInputStream());
             BufferedReader stdin = new BufferedReader(isr);
             String line;
-            ArrayList<String> uid_gid = new ArrayList<String>();
+            StringBuilder sb = new StringBuilder();
             while((line = stdin.readLine()) != null)
             {
-                uid_gid.add(line.trim());
+                sb.append(line);
             }
+            ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
             return uid_gid;
         }
         catch(IOException e)
