@@ -116,7 +116,7 @@ public class ShellCommands
                 {
                     // ignore error if it is about /lib while followSymlinks
                     // is false or if it is about /lock in the data of firefox
-                    if(stderr.size() == 1 && ((!prefs.getBoolean("followSymlinks", true) && (line.contains("lib") && ((line.contains("not permitted") && line.contains("symlink"))) || line.contains("No such file or directory"))) || (line.contains("org.mozilla.firefox") && line.contains("/lock"))))
+                    if(stderr.size() == 1 && ((!prefs.getBoolean("followSymlinks", true) && (line.contains("lib") && ((line.contains("not permitted") && line.contains("symlink"))) || line.contains("No such file or directory"))) || (line.contains("mozilla") && line.contains("/lock"))))
                         ret = 0;
                     else
                         writeErrorLog(label, line);
