@@ -1,8 +1,9 @@
-package dk.jens.backup;
+package dk.jens.backup.schedules;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import dk.jens.backup.OAndBackup;
 
 public class AlarmReceiver extends BroadcastReceiver
 {

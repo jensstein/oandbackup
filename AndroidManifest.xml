@@ -31,7 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dk.jens.backup.OAndBackup" />
         </activity>
-        <activity android:name=".Scheduler"
+        <activity android:name=".schedules.Scheduler"
             android:label="@string/sched_title"
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName="dk.jens.backup.OAndBackup" >
@@ -54,12 +54,12 @@
             android:label="logviewer"
             android:parentActivityName="dk.jens.backup.Tools" >
         </activity>
-        <receiver android:name=".AlarmReceiver" />
-        <receiver android:name=".BootReceiver">
+        <receiver android:name=".schedules.AlarmReceiver" />
+        <receiver android:name=".schedules.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        <service android:name="dk.jens.backup.ScheduleService" />
+        <service android:name="dk.jens.backup.schedules.ScheduleService" />
     </application>
 </manifest>

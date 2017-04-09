@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.schedules;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,6 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import dk.jens.backup.AppInfo;
+import dk.jens.backup.FileCreationHelper;
+import dk.jens.backup.FileReaderWriter;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
 
 import java.util.ArrayList;
 

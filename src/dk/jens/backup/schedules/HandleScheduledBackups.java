@@ -1,10 +1,20 @@
-package dk.jens.backup;
+package dk.jens.backup.schedules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import dk.jens.backup.AppInfo;
+import dk.jens.backup.AppInfoHelper;
+import dk.jens.backup.BackupRestoreHelper;
+import dk.jens.backup.Crypto;
+import dk.jens.backup.FileCreationHelper;
+import dk.jens.backup.FileReaderWriter;
+import dk.jens.backup.NotificationHelper;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
+import dk.jens.backup.ShellCommands;
 
 import java.io.File;
 import java.util.ArrayList;

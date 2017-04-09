@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.schedules;
 
 import android.app.AlarmManager;
 import android.content.Context;
@@ -20,6 +20,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import dk.jens.backup.BaseActivity;
+import dk.jens.backup.FileCreationHelper;
+import dk.jens.backup.FileReaderWriter;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
+import dk.jens.backup.Utils;
 
 import java.util.ArrayList;
 

@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 import dk.jens.backup.adapters.AppInfoAdapter;
+import dk.jens.backup.schedules.Scheduler;
 
 import java.io.File;
 import java.util.ArrayList;

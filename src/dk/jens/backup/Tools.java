@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+import dk.jens.backup.adapters.ToolsAdapter;
 
 import java.io.File;
 import java.util.ArrayList;

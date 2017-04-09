@@ -21,7 +21,7 @@ import android.widget.Toast;
 import dk.jens.backup.BaseActivity;
 import dk.jens.backup.CreateDirectoryDialog;
 import dk.jens.backup.FileCreationHelper;
-import dk.jens.backup.FileListAdapter;
+import dk.jens.backup.adapters.FileListAdapter;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 

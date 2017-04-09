@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.schedules;
 
 import android.app.Notification;
 import android.app.Service;
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import dk.jens.backup.BackupRestoreHelper;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
 
 public class ScheduleService extends Service
 implements BackupRestoreHelper.OnBackupRestoreListener

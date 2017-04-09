@@ -9,8 +9,8 @@ import java.io.IOException;
 public class FileCreationHelper
 {
     final static String TAG = OAndBackup.TAG;
-    final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackups";
-    final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackup.log";
+    public final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackups";
+    public final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackup.log";
     boolean fallbackFlag;
     public static String getDefaultBackupDirPath()
     {
