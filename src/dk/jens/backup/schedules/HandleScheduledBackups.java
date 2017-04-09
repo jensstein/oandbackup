@@ -11,7 +11,7 @@ import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Crypto;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
-import dk.jens.backup.NotificationHelper;
+import dk.jens.backup.ui.NotificationHelper;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 import dk.jens.backup.ShellCommands;

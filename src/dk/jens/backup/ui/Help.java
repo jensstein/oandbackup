@@ -1,10 +1,12 @@
-package dk.jens.backup;
+package dk.jens.backup.ui;
 
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
+import dk.jens.backup.BaseActivity;
+import dk.jens.backup.R;
 
 import java.io.InputStream;
 import java.io.IOException;

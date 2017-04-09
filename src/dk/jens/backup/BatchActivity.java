@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import dk.jens.backup.adapters.BatchAdapter;
+import dk.jens.backup.ui.HandleMessages;
+import dk.jens.backup.ui.NotificationHelper;
 
 import java.io.File;
 import java.util.ArrayList;

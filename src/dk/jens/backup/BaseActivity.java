@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import dk.jens.backup.ui.LanguageHelper;
 import org.openintents.openpgp.util.OpenPgpApi;
 
 public class BaseActivity extends FragmentActivity

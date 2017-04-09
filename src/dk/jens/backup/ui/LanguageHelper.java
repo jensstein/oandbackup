@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;

@@ -7,6 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import dk.jens.backup.ui.FileBrowser;
+import dk.jens.backup.ui.LanguageHelper;
 
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {

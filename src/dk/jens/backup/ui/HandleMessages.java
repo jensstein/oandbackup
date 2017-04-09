@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import dk.jens.backup.OAndBackup;
 
 import java.lang.ref.WeakReference;
 

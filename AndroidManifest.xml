@@ -36,7 +36,7 @@
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName="dk.jens.backup.OAndBackup" >
         </activity>
-        <activity android:name=".Help"
+        <activity android:name=".ui.Help"
             android:label="@string/help_title"
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName="dk.jens.backup.OAndBackup" >

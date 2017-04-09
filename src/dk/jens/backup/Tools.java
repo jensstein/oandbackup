@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 import dk.jens.backup.adapters.ToolsAdapter;
+import dk.jens.backup.ui.HandleMessages;
+import dk.jens.backup.ui.LanguageHelper;
+import dk.jens.backup.ui.NotificationHelper;
 
 import java.io.File;
 import java.util.ArrayList;
