@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,8 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
 
 public class CreateDirectoryDialog extends DialogFragment
 {

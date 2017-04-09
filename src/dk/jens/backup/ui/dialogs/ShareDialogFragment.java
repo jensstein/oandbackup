@@ -1,10 +1,12 @@
-package dk.jens.backup;
+package dk.jens.backup.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import dk.jens.backup.HandleShares;
+import dk.jens.backup.R;
 
 import java.io.File;
 

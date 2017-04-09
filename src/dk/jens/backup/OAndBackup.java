@@ -27,6 +27,8 @@ import dk.jens.backup.ui.HandleMessages;
 import dk.jens.backup.ui.Help;
 import dk.jens.backup.ui.LanguageHelper;
 import dk.jens.backup.ui.NotificationHelper;
+import dk.jens.backup.ui.dialogs.BackupRestoreDialogFragment;
+import dk.jens.backup.ui.dialogs.ShareDialogFragment;
 
 import java.io.File;
 import java.util.ArrayList;
