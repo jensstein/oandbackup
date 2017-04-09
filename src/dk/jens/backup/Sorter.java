@@ -2,6 +2,7 @@ package dk.jens.backup;
 
 import android.content.SharedPreferences;
 import android.util.SparseIntArray;
+import dk.jens.backup.adapters.AppInfoAdapter;
 
 public class Sorter
 {

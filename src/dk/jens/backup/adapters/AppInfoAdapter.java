@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +11,9 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import dk.jens.backup.AppInfo;
+import dk.jens.backup.LogFile;
+import dk.jens.backup.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
