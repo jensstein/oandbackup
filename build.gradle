@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.4.0-alpha5'
     }
 }
 
@@ -21,6 +21,11 @@ dependencies {
 android {
     compileSdkVersion 'android-25'
     buildToolsVersion '25.0.2'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     sourceSets {
         main {
