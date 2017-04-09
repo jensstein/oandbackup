@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class OAndBackup extends BaseActivity
 implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
+    public static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
     static final int BATCH_REQUEST = 1;
     static final int TOOLS_REQUEST = 2;
 
