@@ -6,6 +6,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+import dk.jens.backup.ui.FileBrowser;
 
 public class Preferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {

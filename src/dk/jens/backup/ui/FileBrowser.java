@@ -1,4 +1,4 @@
-package dk.jens.backup;
+package dk.jens.backup.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +18,12 @@ import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import dk.jens.backup.BaseActivity;
+import dk.jens.backup.CreateDirectoryDialog;
+import dk.jens.backup.FileCreationHelper;
+import dk.jens.backup.FileListAdapter;
+import dk.jens.backup.OAndBackup;
+import dk.jens.backup.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -243,7 +249,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
     * whether a given file is the parent folder in the list.
     * the actual check is done in FileListAdapter with instanceof.
     */
-    protected class ParentFile extends File
+    public class ParentFile extends File
     {
         public ParentFile(String path)
         {

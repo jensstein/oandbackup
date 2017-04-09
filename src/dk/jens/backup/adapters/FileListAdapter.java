@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import dk.jens.backup.ui.FileBrowser;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -46,7 +46,7 @@
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName="dk.jens.backup.OAndBackup" >
         </activity>
-        <activity android:name=".FileBrowser"
+        <activity android:name=".ui.FileBrowser"
             android:label="@string/filebrowser_title"
             android:parentActivityName="dk.jens.backup.Preferences" >
         </activity>

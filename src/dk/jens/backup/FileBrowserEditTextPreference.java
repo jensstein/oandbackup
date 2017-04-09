@@ -12,6 +12,7 @@ import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import dk.jens.backup.ui.FileBrowser;
 
 public class FileBrowserEditTextPreference extends DialogPreference
 {
