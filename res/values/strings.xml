@@ -134,6 +134,9 @@
     <string name="sched_customListUpdateButton">update custom list</string>
     <string name="sched_excludeSystemCheckBox">exclude system apps</string>
     <string name="sched_warningIntervalZero">error: interval cannot be 0</string>
+    <string name="sched_globalBlacklist">set global blacklist</string>
+
+    <string name="blacklistDialogTitle">blacklist</string>
 
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">Application Widgets</string>

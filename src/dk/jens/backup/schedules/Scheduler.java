@@ -21,21 +21,26 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import dk.jens.backup.BaseActivity;
+import dk.jens.backup.BlacklistListener;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
+import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
 import java.util.ArrayList;
 
 public class Scheduler extends BaseActivity
-implements View.OnClickListener, AdapterView.OnItemSelectedListener
+implements View.OnClickListener, AdapterView.OnItemSelectedListener,
+BlacklistListener
 {
     static final String TAG = OAndBackup.TAG;
     public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
+
+    public static final int GLOBALBLACKLISTID = -1;
 
     ArrayList<View> viewList;
     HandleAlarms handleAlarms;
@@ -104,6 +109,14 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
                 ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
                 edit.putInt("total", totalSchedules);
                 edit.commit();
+                return true;
+            case R.id.globalBlacklist:
+                Bundle args = new Bundle();
+                args.putInt("blacklistId", GLOBALBLACKLISTID);
+                BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
+                blacklistDialogFragment.setArguments(args);
+                blacklistDialogFragment.addBlacklistListener(this);
+                blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -260,6 +273,11 @@ implements View.OnClickListener, AdapterView.OnItemSelectedListener
     }
     public void onNothingSelected(AdapterView<?> parent)
     {}
+
+    @Override
+    public void onBlacklistChanged(CharSequence[] blacklist, int id) {
+        // stub pending implementation
+    }
     public void setTimeLeftTextView(int number)
     {
         View view = viewList.get(number);
