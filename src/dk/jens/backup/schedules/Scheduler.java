@@ -1,8 +1,10 @@
 package dk.jens.backup.schedules;
 
 import android.app.AlarmManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -21,7 +23,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import dk.jens.backup.BaseActivity;
+import dk.jens.backup.BlacklistContract;
 import dk.jens.backup.BlacklistListener;
+import dk.jens.backup.BlacklistsDBHelper;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.OAndBackup;
@@ -51,6 +55,8 @@ BlacklistListener
     SharedPreferences prefs;
     SharedPreferences.Editor edit;
 
+    private BlacklistsDBHelper blacklistsDBHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -66,6 +72,7 @@ BlacklistListener
         transferOldValues();
 
         viewList = new ArrayList<View>();
+        blacklistsDBHelper = new BlacklistsDBHelper(this);
     }
     @Override
     public void onResume()
@@ -90,6 +97,13 @@ BlacklistListener
                 setTimeLeftTextView(i);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        blacklistsDBHelper.close();
+        super.onDestroy();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -111,12 +125,18 @@ BlacklistListener
                 edit.commit();
                 return true;
             case R.id.globalBlacklist:
-                Bundle args = new Bundle();
-                args.putInt("blacklistId", GLOBALBLACKLISTID);
-                BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
-                blacklistDialogFragment.setArguments(args);
-                blacklistDialogFragment.addBlacklistListener(this);
-                blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
+                new Thread(() -> {
+                    Bundle args = new Bundle();
+                    args.putInt("blacklistId", GLOBALBLACKLISTID);
+                    SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
+                    ArrayList<String> blacklistedPackages = blacklistsDBHelper
+                        .getBlacklistedPackages(db, GLOBALBLACKLISTID);
+                    args.putStringArrayList("blacklistedPackages", blacklistedPackages);
+                    BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
+                    blacklistDialogFragment.setArguments(args);
+                    blacklistDialogFragment.addBlacklistListener(this);
+                    blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
+                }).start();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -276,8 +296,18 @@ BlacklistListener
 
     @Override
     public void onBlacklistChanged(CharSequence[] blacklist, int id) {
-        // stub pending implementation
+        new Thread(() -> {
+            SQLiteDatabase db = blacklistsDBHelper.getWritableDatabase();
+            blacklistsDBHelper.deleteBlacklistFromId(db, id);
+            for(CharSequence packagename : blacklist) {
+                ContentValues values = new ContentValues();
+                values.put(BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME, (String) packagename);
+                values.put(BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID, String.valueOf(id));
+                db.insert(BlacklistContract.BlacklistEntry.TABLE_NAME, null, values);
+            }
+        }).start();
     }
+
     public void setTimeLeftTextView(int number)
     {
         View view = viewList.get(number);

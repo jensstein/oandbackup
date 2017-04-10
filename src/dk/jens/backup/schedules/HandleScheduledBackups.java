@@ -2,12 +2,14 @@ package dk.jens.backup.schedules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.AppInfoHelper;
 import dk.jens.backup.BackupRestoreHelper;
+import dk.jens.backup.BlacklistsDBHelper;
 import dk.jens.backup.Crypto;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
@@ -141,8 +143,19 @@ public class HandleScheduledBackups
                     int total = backupList.size();
                     int i = 1;
                     boolean errorFlag = false;
+                    BlacklistsDBHelper blacklistsDBHelper =
+                        new BlacklistsDBHelper(context);
+                    SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
+                    List<String> blacklistedPackages = blacklistsDBHelper
+                        .getBlacklistedPackages(db, Scheduler.GLOBALBLACKLISTID);
                     for(AppInfo appInfo : backupList)
                     {
+                        if(blacklistedPackages.contains(appInfo.getPackageName())) {
+                            Log.i(TAG, String.format("%s ignored",
+                                appInfo.getPackageName()));
+                            i++;
+                            continue;
+                        }
                         String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                         NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
                         int ret = BackupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
@@ -172,6 +185,7 @@ public class HandleScheduledBackups
                     }
                     for(BackupRestoreHelper.OnBackupRestoreListener l : listeners)
                         l.onBackupRestoreDone();
+                    blacklistsDBHelper.close();
                 }
             }).start();
         }

@@ -27,13 +27,22 @@ public class BlacklistDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         Bundle args = getArguments();
         int blacklistId = args.getInt("blacklistId", Scheduler.GLOBALBLACKLISTID);
+        ArrayList<String> blacklistedPackages = args.getStringArrayList("blacklistedPackages");
         ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
+        boolean[] checkedPackages = new boolean[appInfoList.size()];
         ArrayList<String> labels = new ArrayList<>();
-        for(AppInfo appInfo : appInfoList)
+        int i = 0;
+        for(AppInfo appInfo : appInfoList) {
             labels.add(appInfo.getLabel());
+            if(blacklistedPackages.contains(appInfo.getPackageName())) {
+                checkedPackages[i] = true;
+                selections.add(appInfo.getPackageName());
+            }
+            i++;
+        }
         builder.setTitle(R.string.blacklistDialogTitle)
             .setMultiChoiceItems(labels.toArray(new CharSequence[labels.size()]),
-                    null, (dialogInterface, which, isChecked) -> {
+                    checkedPackages, (dialogInterface, which, isChecked) -> {
                 String packageName = appInfoList.get(which).getPackageName();
                 if (isChecked)
                     selections.add(packageName);
