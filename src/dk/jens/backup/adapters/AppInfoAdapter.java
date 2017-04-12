@@ -14,10 +14,10 @@ import android.widget.TextView;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.LogFile;
 import dk.jens.backup.R;
+import dk.jens.backup.Sorter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 public class AppInfoAdapter extends ArrayAdapter<AppInfo>
@@ -243,20 +243,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             }
         }
     }
-    public Comparator<AppInfo> labelComparator = new Comparator<AppInfo>()
-    {
-        public int compare(AppInfo m1, AppInfo m2)
-        {
-            return m1.getLabel().compareToIgnoreCase(m2.getLabel());
-        }
-    };
-    public Comparator<AppInfo> packageNameComparator = new Comparator<AppInfo>()
-    {
-        public int compare(AppInfo m1, AppInfo m2)
-        {
-            return m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
-        }
-    };
+
     public void filterAppType(int options)
     {
         ArrayList<AppInfo> notInstalled = new ArrayList<AppInfo>();
@@ -401,12 +388,12 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     }
     public void sortByLabel()
     {
-        Collections.sort(originalValues, labelComparator);
+        Collections.sort(originalValues, Sorter.appInfoLabelComparator);
         notifyDataSetChanged();
     }
     public void sortByPackageName()
     {
-        Collections.sort(originalValues, packageNameComparator);
+        Collections.sort(originalValues, Sorter.appInfoPackageNameComparator);
         notifyDataSetChanged();
     }
     public void setNewOriginalValues(ArrayList newList)

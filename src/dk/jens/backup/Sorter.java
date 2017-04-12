@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.util.SparseIntArray;
 import dk.jens.backup.adapters.AppInfoAdapter;
 
+import java.util.Comparator;
+
 public class Sorter
 {
     AppInfoAdapter adapter;
@@ -73,6 +75,12 @@ public class Sorter
             return id;
         }
     }
+
+    public static Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
+            m1.getLabel().compareToIgnoreCase(m2.getLabel());
+    public static Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
+            m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
+
     public void sort(int id)
     {
         switch(id)
