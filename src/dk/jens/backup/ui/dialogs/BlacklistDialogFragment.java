@@ -9,9 +9,11 @@ import dk.jens.backup.AppInfo;
 import dk.jens.backup.BlacklistListener;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
+import dk.jens.backup.Sorter;
 import dk.jens.backup.schedules.Scheduler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BlacklistDialogFragment extends DialogFragment {
     private ArrayList<BlacklistListener> blacklistListeners = new ArrayList<>();
@@ -32,6 +34,7 @@ public class BlacklistDialogFragment extends DialogFragment {
         boolean[] checkedPackages = new boolean[appInfoList.size()];
         ArrayList<String> labels = new ArrayList<>();
         int i = 0;
+        Collections.sort(appInfoList, Sorter.appInfoLabelComparator);
         for(AppInfo appInfo : appInfoList) {
             labels.add(appInfo.getLabel());
             if(blacklistedPackages.contains(appInfo.getPackageName())) {
