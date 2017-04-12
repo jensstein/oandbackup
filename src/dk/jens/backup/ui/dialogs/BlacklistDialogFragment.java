@@ -35,6 +35,14 @@ public class BlacklistDialogFragment extends DialogFragment {
         ArrayList<String> labels = new ArrayList<>();
         int i = 0;
         Collections.sort(appInfoList, Sorter.appInfoLabelComparator);
+        // sort all checked items in the top
+        // comparison taken from BooleanComparator of the springframework project
+        // https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/comparator/BooleanComparator.html
+        Collections.sort(appInfoList, (appInfo1, appInfo2) -> {
+            boolean b1 = blacklistedPackages.contains(appInfo1.getPackageName());
+            boolean b2 = blacklistedPackages.contains(appInfo2.getPackageName());
+            return (b1 != b2) ? (!b1 ? 1 : -1) : 0;
+        });
         for(AppInfo appInfo : appInfoList) {
             labels.add(appInfo.getLabel());
             if(blacklistedPackages.contains(appInfo.getPackageName())) {
