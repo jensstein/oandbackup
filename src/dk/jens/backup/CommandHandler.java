@@ -28,7 +28,7 @@ public class CommandHandler {
             return p.waitFor();
         } catch(IOException | InterruptedException e) {
             exceptionHandler.accept(e);
-            return -1;
+            return 1;
         }
     }
 
