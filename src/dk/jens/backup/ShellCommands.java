@@ -367,32 +367,25 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             if(uid_gid != null && !uid_gid.isEmpty())
             {
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+                List<String> commands = new ArrayList<>();
                 if(Build.VERSION.SDK_INT < 23) {
-                    dos.writeBytes("for dir in " + packageDir + "/*; do if " + busybox + " test `" + busybox + " basename $dir` != \"lib\"; then " + busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " $dir; " + busybox + " chmod -R 771 $dir; fi; done\n");
+                    commands.add("for dir in " + packageDir + "/*; do if " +
+                    busybox + " test `" + busybox +
+                    " basename $dir` != \"lib\"; then " + busybox +
+                    " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) +
+                    " $dir; " + busybox + " chmod -R 771 $dir; fi; done");
                 } else {
                     // android 6 has moved to toybox which doesn't include [ or [[
                     // meanwhile its implementation of test seems to be broken at least in cm 13
                     // cf. https://github.com/jensstein/oandbackup/issues/116
-                    dos.writeBytes(String.format("%s chown -R %s:%s %s\n", busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
-                    dos.writeBytes(String.format("%s chmod -R 771 %s\n", busybox, packageDir));
+                    commands.add(String.format("%s chown -R %s:%s %s", busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
+                    commands.add(String.format("%s chmod -R 771 %s", busybox, packageDir));
                 }
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
-//                dos.flush();
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
+                int ret = CommandHandler.runCmd("su", commands, line -> {},
+                    line -> writeErrorLog(packageDir, line),
+                    e -> Log.e(TAG, "error while setPermissions: " + e.toString()), this);
                 Log.i(TAG, "setPermissions return: " + ret);
-
-                if(ret != 0)
-                {
-                    ArrayList<String> output = getOutput(p).get("stderr");
-                    for(String outLine : output)
-                    {
-                        writeErrorLog(packageDir, outLine);
-                    }
-                }
                 return ret;
             }
             else
@@ -406,14 +399,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             Log.e(TAG, "error while setPermissions: " + e.toString());
             writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch(InterruptedException e)
-        {
-            Log.e(TAG, "error while setPermissions: " + e.toString());
         }
         return 1;
     }
