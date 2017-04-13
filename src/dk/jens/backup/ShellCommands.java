@@ -861,32 +861,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             String apkPath = backupSubDir.getAbsolutePath() + "/" + new File(apk).getName();
             if(parent != null)
             {
-                try
-                {
-                    Process p = Runtime.getRuntime().exec("sh");
-                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes(busybox + " cp " + apkPath + " " + parent + "\n");
-                    dos.flush();
-                    dos.writeBytes("exit\n");
-                    dos.flush();
-                    int ret = p.waitFor();
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    if(ret != 0)
-                    {
-                        for(String line : err)
-                        {
-                            writeErrorLog("", line);
-                        }
-                    }
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
-                catch(InterruptedException e)
-                {
-                    Log.e(TAG, "InterruptedException: copySelfAPk");
-                }
+                List<String> commands = new ArrayList<>();
+                commands.add(busybox + " cp " + apkPath + " " + parent);
+                CommandHandler.runCmd("sh", commands, line -> {},
+                    line -> writeErrorLog("", line),
+                    e -> Log.e(TAG, "copySelfApk: ", e), this);
             }
         }
     }
