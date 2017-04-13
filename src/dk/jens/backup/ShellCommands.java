@@ -342,54 +342,23 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public ArrayList<String> getOwnership(String packageDir, String shellPrivs)
     {
-        try
-        {
-            // you don't need su for stat - you do for ls -l /data/
-            // and for stat on single files
-            Process p = Runtime.getRuntime().exec(shellPrivs);
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            /*
-            * some packages can have 0 / UNKNOWN as uid and gid for a short
-            * time before being switched to their proper ids so to work
-            * around the race condition we sleep a little.
-            */
-            dos.writeBytes("sleep 1\n");
-            dos.writeBytes(busybox + " stat " + packageDir + "\n");
-
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-
-            Log.i(TAG, "getOwnership return: " + ret);
-            if(ret != 0)
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
-                {
-                    writeErrorLog("", line);
-                }
-            }
-
-            InputStreamReader isr = new InputStreamReader(p.getInputStream());
-            BufferedReader stdin = new BufferedReader(isr);
-            String line;
-            StringBuilder sb = new StringBuilder();
-            while((line = stdin.readLine()) != null)
-            {
-                sb.append(line);
-            }
-            ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
-            return uid_gid;
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-        }
-        return null;
+        List<String> commands = new ArrayList<>();
+        /*
+        * some packages can have 0 / UNKNOWN as uid and gid for a short
+        * time before being switched to their proper ids so to work
+        * around the race condition we sleep a little.
+        */
+        commands.add("sleep 1");
+        commands.add(busybox + " stat " + packageDir);
+        StringBuilder sb = new StringBuilder();
+        // you don't need su for stat - you do for ls -l /data/
+        // and for stat on single files
+        int ret = CommandHandler.runCmd(shellPrivs, commands, sb::append,
+            line -> writeErrorLog("", line),
+            e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
+        Log.i(TAG, "getOwnership return: " + ret);
+        ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
+        return uid_gid;
     }
     public int setPermissions(String packageDir)
     {
