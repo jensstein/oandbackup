@@ -402,76 +402,75 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
         return 1;
     }
-    public int restoreApk(File backupDir, String label, String apk, boolean isSystem, String ownDataDir)
+    public int restoreUserApk(File backupDir, String label, String apk, String ownDataDir)
     {
         // swapBackupDirPath is not needed with pm install
         List<String> commands = new ArrayList<>();
-        if(!isSystem)
+        if(backupDir.getAbsolutePath().startsWith(ownDataDir))
         {
-            if(backupDir.getAbsolutePath().startsWith(ownDataDir))
+            /**
+                * pm cannot install from a file on the data partition
+                * Failure [INSTALL_FAILED_INVALID_URI] is reported
+                * therefore, if the backup directory is oab's own data
+                * directory a temporary directory on the external storage
+                * is created where the apk is then copied to.
+            */
+            String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
+            commands.add(busybox + " mkdir " + swapBackupDirPath(tempPath));
+            commands.add(busybox + " cp " + swapBackupDirPath(
+                backupDir.getAbsolutePath() + "/" + apk) + " " +
+                swapBackupDirPath(tempPath));
+            commands.add("pm install -r " + tempPath + "/" + apk);
+            commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
+        } else {
+            commands.add("pm install -r " + backupDir.getAbsolutePath() + "/" + apk);
+        }
+        List<String> err = new ArrayList<>();
+        int ret = CommandHandler.runCmd("su", commands, line -> {},
+            err::add, e -> Log.e(TAG, "restoreUserApk: ", e), this);
+        // pm install returns 0 even for errors and prints part of its normal output to stderr
+        // on api level 10 successful output spans three lines while it spans one line on the other api levels
+        int limit = (Build.VERSION.SDK_INT == 10) ? 3 : 1;
+        if(err.size() > limit)
+        {
+            for(String line : err)
             {
-                /**
-                    * pm cannot install from a file on the data partition
-                    * Failure [INSTALL_FAILED_INVALID_URI] is reported
-                    * therefore, if the backup directory is oab's own data
-                    * directory a temporary directory on the external storage
-                    * is created where the apk is then copied to.
-                */
-                String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
-                commands.add(busybox + " mkdir " + swapBackupDirPath(tempPath));
-                commands.add(busybox + " cp " + swapBackupDirPath(
-                    backupDir.getAbsolutePath() + "/" + apk) + " " +
-                    swapBackupDirPath(tempPath));
-                commands.add("pm install -r " + tempPath + "/" + apk);
-                commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
-            } else {
-                commands.add("pm install -r " + backupDir.getAbsolutePath() + "/" + apk);
+                writeErrorLog(label, line);
             }
-            List<String> err = new ArrayList<>();
-            int ret = CommandHandler.runCmd("su", commands, line -> {},
-                err::add, e -> Log.e(TAG, "restoreApk: ", e), this);
-            // pm install returns 0 even for errors and prints part of its normal output to stderr
-            // on api level 10 successful output spans three lines while it spans one line on the other api levels
-            int limit = (Build.VERSION.SDK_INT == 10) ? 3 : 1;
-            if(err.size() > limit)
-            {
-                for(String line : err)
-                {
-                    writeErrorLog(label, line);
-                }
-                return 1;
-            }
-            else
-            {
-                return ret;
-            }
+            return 1;
         }
         else
         {
-            commands.add("mount -o remount,rw /system");
-            // remounting with busybox mount seems to make android 4.4 fail the following commands without error
-
-            // locations of apks have been changed in android 5
-            String basePath = "/system/app/";
-            if(Build.VERSION.SDK_INT >= 21)
-            {
-                basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
-                commands.add("mkdir -p " + basePath);
-                commands.add(busybox + " chmod 755 " + basePath);
-            }
-            // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
-            // with touch, a reboot is not necessary after restoring system apps
-            // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
-            commands.add(busybox + " touch " + basePath + apk);
-            commands.add(busybox + " cp " + swapBackupDirPath(
-                backupDir.getAbsolutePath()) + "/" + apk + " " + basePath);
-            commands.add(busybox + " chmod 644 " + basePath + apk);
-            commands.add("mount -o remount,ro /system");
-            return CommandHandler.runCmd("su", commands, line -> {},
-                line -> writeErrorLog(label, line),
-                e -> Log.e(TAG, "restoreApk: ", e), this);
+            return ret;
         }
     }
+
+    public int restoreSystemApk(File backupDir, String label, String apk) {
+        List<String> commands = new ArrayList<>();
+        commands.add("mount -o remount,rw /system");
+        // remounting with busybox mount seems to make android 4.4 fail the following commands without error
+
+        // locations of apks have been changed in android 5
+        String basePath = "/system/app/";
+        if(Build.VERSION.SDK_INT >= 21)
+        {
+            basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
+            commands.add("mkdir -p " + basePath);
+            commands.add(busybox + " chmod 755 " + basePath);
+        }
+        // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
+        // with touch, a reboot is not necessary after restoring system apps
+        // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
+        commands.add(busybox + " touch " + basePath + apk);
+        commands.add(busybox + " cp " + swapBackupDirPath(
+            backupDir.getAbsolutePath()) + "/" + apk + " " + basePath);
+        commands.add(busybox + " chmod 644 " + basePath + apk);
+        commands.add("mount -o remount,ro /system");
+        return CommandHandler.runCmd("su", commands, line -> {},
+            line -> writeErrorLog(label, line),
+            e -> Log.e(TAG, "restoreSystemApk: ", e), this);
+    }
+
     public int compress(File directoryToCompress)
     {
         int zipret = Compression.zip(directoryToCompress);
