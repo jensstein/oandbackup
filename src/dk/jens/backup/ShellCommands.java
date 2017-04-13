@@ -686,36 +686,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public boolean checkBusybox()
     {
-        try
-        {
-            Process p = Runtime.getRuntime().exec("sh");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(busybox + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int bboxReturn = p.waitFor();
-            if(bboxReturn == 0)
-            {
-                return true;
-            }
-            else
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
-                {
-                    writeErrorLog("busybox", line);
-                }
-            }
-        }
-        catch(IOException e)
-        {
-            Log.e(TAG, "checkBusybox: " + e.toString());
-        }
-        catch(InterruptedException e)
-        {
-            Log.e(TAG, "checkBusybox: " + e.toString());
-        }
-        return false;
+        List<String> commands = new ArrayList<>();
+        commands.add(busybox);
+        int ret = CommandHandler.runCmd("sh", commands,
+            line -> {}, line -> writeErrorLog("busybox", line),
+            e -> Log.e(TAG, "checkBusybox: ", e), this);
+        return ret == 0;
     }
     public void copyNativeLibraries(File apk, File outputDir, String packageName)
     {
