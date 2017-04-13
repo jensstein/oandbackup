@@ -4,25 +4,19 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -593,40 +587,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
         }
     }
-    public static Map<String, ArrayList<String>> getOutput(Process p)
-    {
-        ArrayList<String> out = new ArrayList<String>();
-        ArrayList<String> err = new ArrayList<String>();
-        try
-        {
-            InputStreamReader isr = new InputStreamReader(p.getInputStream());
-            BufferedReader stdout = new BufferedReader(isr);
-            String line;
-            while((line = stdout.readLine()) != null)
-            {
-                out.add(line);
-            }
-            isr = new InputStreamReader(p.getErrorStream());
-            BufferedReader stderr = new BufferedReader(isr);
-            while((line = stderr.readLine()) != null)
-            {
-                err.add(line);
-//                Log.i(TAG, "error: " + line);
-            }
-            Map<String, ArrayList<String>> map = new HashMap();
-            map.put("stdout", out);
-            map.put("stderr", err);
-            return map;
-        }
-        catch(IOException e)
-        {
-            Map<String, ArrayList<String>> map = new HashMap();
-            Log.i(TAG, e.toString());
-            out.add(e.toString());
-            map.put("stdout", out);
-            return map;
-        }
-    }
+
     public void logReturnMessage(Context context, int returnCode)
     {
         String returnMessage = returnCode == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
