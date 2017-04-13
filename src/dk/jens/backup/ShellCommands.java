@@ -736,48 +736,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
             else
             {
-                try
-                {
-        //            int currentUser = getCurrentUser();
-                    Process p = Runtime.getRuntime().exec("su");
-                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes("pm list users | " + busybox + " sed -nr 's/.*\\{([0-9]+):.*/\\1/p'\n");
-                    dos.writeBytes("exit\n");
-                    dos.flush();
-                    int ret = p.waitFor();
-                    if(ret != 0)
-                    {
-                        ArrayList<String> err = getOutput(p).get("stderr");
-                        for(String line : err)
-                        {
-                            writeErrorLog("", line);
-                        }
-                        return null;
-                    }
-                    else
-                    {
-                        ArrayList<String> users = new ArrayList<String>();
-                        ArrayList<String> out = getOutput(p).get("stdout");
-                        for(String line : out)
-                        {
-                            if(line.trim().length() != 0) //&& !line.trim().equals("0") && !line.trim().equals(Integer.toString(currentUser)))
-                            {
-                                users.add(line.trim());
-                            }
-                        }
-                        return users;
-                    }
-                }
-                catch(IOException e)
-                {
-                    Log.i(TAG, e.toString());
-                    return null;
-                }
-                catch(InterruptedException e)
-                {
-                    Log.i(TAG, e.toString());
-                    return null;
-                }
+    //            int currentUser = getCurrentUser();
+                List<String> commands = new ArrayList<>();
+                commands.add("pm list users | " + busybox + " sed -nr 's/.*\\{([0-9]+):.*/\\1/p'");
+                ArrayList<String> users = new ArrayList<>();
+                int ret = CommandHandler.runCmd("su", commands, line -> {
+                    if(line.trim().length() != 0)
+                        users.add(line.trim());
+                    }, line -> writeErrorLog("", line),
+                    e -> Log.e(TAG, "getUsers: ", e), this);
+                return ret == 0 ? users : null;
             }
         }
         else
