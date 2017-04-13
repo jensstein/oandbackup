@@ -535,35 +535,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public int quickReboot()
     {
-        try
-        {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(busybox + " pkill system_server\n");
+        List<String> commands = new ArrayList<>();
+        commands.add(busybox + " pkill system_server");
 //            dos.writeBytes("restart\n"); // restart doesn't seem to work here even though it works fine from ssh
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
-                {
-                    writeErrorLog("", line);
-                }
-            }
-            return ret;
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
+        int ret = CommandHandler.runCmd("su", commands, line -> {},
+            line -> writeErrorLog("", line),
+            e -> Log.e(TAG, "quickReboot: ", e), this);
+        return ret;
     }
     public static void deleteBackup(File file)
     {
