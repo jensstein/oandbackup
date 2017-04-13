@@ -710,38 +710,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             if(Compression.unzip(apk, outputDir, libs) == 0)
             {
-                try
+                List<String> commands = new ArrayList<>();
+                commands.add("mount -o remount,rw /system");
+                String src = swapBackupDirPath(outputDir.getAbsolutePath());
+                for(String lib : libs)
                 {
-                    Process p = Runtime.getRuntime().exec("su");
-                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes("mount -o remount,rw /system\n");
-                    String src = swapBackupDirPath(outputDir.getAbsolutePath());
-                    for(String lib : libs)
-                    {
-                        dos.writeBytes("cp " + src + "/" + lib + " /system/lib\n");
-                        dos.writeBytes("chmod 644 /system/lib/" + Utils.getName(lib) + "\n");
-                    }
-                    dos.writeBytes("mount -o remount,ro /system\n");
-                    dos.writeBytes("exit\n");
-                    dos.flush();
-                    int ret = p.waitFor();
-                    if(ret != 0)
-                    {
-                        ArrayList<String> err = getOutput(p).get("stderr");
-                        for(String line : err)
-                        {
-                            writeErrorLog(packageName, line);
-                        }
-                    }
+                    commands.add("cp " + src + "/" + lib + " /system/lib");
+                    commands.add("chmod 644 /system/lib/" + Utils.getName(lib));
                 }
-                catch(IOException e)
-                {
-                    Log.e(TAG, "copyNativeLibraries: " + e.toString());
-                }
-                catch(InterruptedException e)
-                {
-                    Log.e(TAG, "copyNativeLibraries: " + e.toString());
-                }
+                commands.add("mount -o remount,ro /system");
+                CommandHandler.runCmd("su", commands, line -> {},
+                    line -> writeErrorLog(packageName, line),
+                    e -> Log.e(TAG, "copyNativeLibraries: ", e), this);
             }
             deleteBackup(new File(outputDir, "lib"));
         }
