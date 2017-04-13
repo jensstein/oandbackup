@@ -192,31 +192,19 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             String[] list = new File(backupSubDir, dataDirName).list();
             if(list != null && list.length > 0)
             {
+                List<String> commands = new ArrayList<>();
                 String restoreCommand = busybox + " cp -r " + backupSubDirPath + "/" + dataDirName + "/* " + dataDir + "\n";
                 if(!(new File(dataDir).exists()))
                 {
                     restoreCommand = "mkdir " + dataDir + "\n" + restoreCommand;
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(restoreCommand);
-    //            dos.writeBytes("am force-stop " + packageName + "\n");
-                dos.flush();
+                commands.add(restoreCommand);
                 if(Build.VERSION.SDK_INT >= 23)
-                    dos.writeBytes("restorecon -R " + dataDir + "\n");
-                dos.writeBytes("exit\n");
-                dos.flush();
-
-                int ret = p.waitFor();
-                if(ret != 0)
-                {
-                    ArrayList<String> stderr = getOutput(p).get("stderr");
-                    for(String line : stderr)
-                    {
-                        writeErrorLog(label, line);
-                    }
-                }
+                    commands.add("restorecon -R " + dataDir);
+                int ret = CommandHandler.runCmd("su", commands, line -> {},
+                    line -> writeErrorLog(label, line),
+                    e -> Log.e(TAG, "doRestore: " + e.toString()), this);
                 if(multiuserEnabled)
                 {
                     disablePackage(packageName);
@@ -228,16 +216,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupSubDir.getAbsolutePath() + "/" + dataDirName);
                 return 0;
             }
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, "doRestore: " + e.toString());
-            return 1;
         }
         finally
         {
