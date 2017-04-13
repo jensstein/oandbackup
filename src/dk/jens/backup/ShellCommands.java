@@ -230,48 +230,27 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // backup method only used for the special appinfos which can have lists of single files
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
-        try
+        List<String> commands = new ArrayList<>();
+        if(files != null)
+            for(String file : files)
+                commands.add("cp -r " + file + " " + backupSubDirPath);
+        int ret = CommandHandler.runCmd("su", commands, line -> {},
+            line -> writeErrorLog(label, line),
+            e -> Log.e(TAG, "backupSpecial: " + e.toString()), this);
+        if(files != null)
         {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            if(files != null)
-                for(String file : files)
-                    dos.writeBytes("cp -r " + file + " " + backupSubDirPath + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
+            for(String file : files)
             {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
+                File f = new File(backupSubDir, Utils.getName(file));
+                if(f.isDirectory())
                 {
-                    writeErrorLog(label, line);
+                    int zipret = compress(f);
+                    if(zipret != 0 && zipret != 2)
+                        ret += zipret;
                 }
             }
-            if(files != null)
-            {
-                for(String file : files)
-                {
-                    File f = new File(backupSubDir, Utils.getName(file));
-                    if(f.isDirectory())
-                    {
-                        int zipret = compress(f);
-                        if(zipret != 0 && zipret != 2)
-                            ret += zipret;
-                    }
-                }
-            }
-            return ret;
         }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch(InterruptedException e)
-        {
-            Log.e(TAG, "backupSpecial: " + e.toString());
-        }
-        return 1;
+        return ret;
     }
     public int restoreSpecial(File backupSubDir, String label, String... files)
     {
