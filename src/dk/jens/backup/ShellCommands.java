@@ -405,97 +405,71 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public int restoreApk(File backupDir, String label, String apk, boolean isSystem, String ownDataDir)
     {
         // swapBackupDirPath is not needed with pm install
-        try
+        List<String> commands = new ArrayList<>();
+        if(!isSystem)
         {
-            if(!isSystem)
+            if(backupDir.getAbsolutePath().startsWith(ownDataDir))
             {
-                String installCommand = "pm install -r " + backupDir.getAbsolutePath() + "/" + apk + "\n";
-                if(backupDir.getAbsolutePath().startsWith(ownDataDir))
+                /**
+                    * pm cannot install from a file on the data partition
+                    * Failure [INSTALL_FAILED_INVALID_URI] is reported
+                    * therefore, if the backup directory is oab's own data
+                    * directory a temporary directory on the external storage
+                    * is created where the apk is then copied to.
+                */
+                String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
+                commands.add(busybox + " mkdir " + swapBackupDirPath(tempPath));
+                commands.add(busybox + " cp " + swapBackupDirPath(
+                    backupDir.getAbsolutePath() + "/" + apk) + " " +
+                    swapBackupDirPath(tempPath));
+                commands.add("pm install -r " + tempPath + "/" + apk);
+                commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
+            } else {
+                commands.add("pm install -r " + backupDir.getAbsolutePath() + "/" + apk);
+            }
+            List<String> err = new ArrayList<>();
+            int ret = CommandHandler.runCmd("su", commands, line -> {},
+                err::add, e -> Log.e(TAG, "restoreApk: ", e), this);
+            // pm install returns 0 even for errors and prints part of its normal output to stderr
+            // on api level 10 successful output spans three lines while it spans one line on the other api levels
+            int limit = (Build.VERSION.SDK_INT == 10) ? 3 : 1;
+            if(err.size() > limit)
+            {
+                for(String line : err)
                 {
-                    /**
-                        * pm cannot install from a file on the data partition
-                        * Failure [INSTALL_FAILED_INVALID_URI] is reported
-                        * therefore, if the backup directory is oab's own data
-                        * directory a temporary directory on the external storage
-                        * is created where the apk is then copied to.
-                    */
-                    String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
-                    String mkdir = busybox + " mkdir " + swapBackupDirPath(tempPath) + "\n";
-                    String cp = busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath() + "/" + apk) + " " + swapBackupDirPath(tempPath) + "\n";
-                    String install = "pm install -r " + tempPath + "/" + apk + "\n";
-                    String rm = busybox + " rm -r " + swapBackupDirPath(tempPath) + "\n";
-                    installCommand = mkdir + cp + install + rm;
+                    writeErrorLog(label, line);
                 }
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes(installCommand);
-                dos.flush();
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
-                // pm install returns 0 even for errors and prints part of its normal output to stderr
-                // on api level 10 successful output spans three lines while it spans one line on the other api levels
-                ArrayList<String> err = getOutput(p).get("stderr");
-                int limit = (Build.VERSION.SDK_INT == 10) ? 3 : 1;
-                if(err.size() > limit)
-                {
-                    for(String line : err)
-                    {
-                        writeErrorLog(label, line);
-                    }
-                    return 1;
-                }
-                else
-                {
-                    return ret;
-                }
+                return 1;
             }
             else
             {
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                dos.writeBytes("mount -o remount,rw /system\n");
-                // remounting with busybox mount seems to make android 4.4 fail the following commands without error
-
-                // locations of apks have been changed in android 5
-                String basePath = "/system/app/";
-                if(Build.VERSION.SDK_INT >= 21)
-                {
-                    basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
-                    dos.writeBytes("mkdir -p " + basePath + "\n");
-                    dos.writeBytes(busybox + " chmod 755 " + basePath + "\n");
-                }
-                // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
-                // with touch, a reboot is not necessary after restoring system apps
-                // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
-                dos.writeBytes(busybox + " touch " + basePath + apk + "\n");
-                dos.writeBytes(busybox + " cp " + swapBackupDirPath(backupDir.getAbsolutePath()) + "/" + apk + " " + basePath + "\n");
-                dos.writeBytes(busybox + " chmod 644 " + basePath + apk + "\n");
-                dos.writeBytes("mount -o remount,ro /system\n");
-                dos.flush();
-                dos.writeBytes("exit\n");
-                dos.flush();
-                int ret = p.waitFor();
-                if(ret != 0)
-                {
-                    ArrayList<String> err = getOutput(p).get("stderr");
-                    for(String line : err)
-                    {
-                        writeErrorLog(label, line);
-                    }
-                }
                 return ret;
             }
         }
-        catch(IOException e)
+        else
         {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
+            commands.add("mount -o remount,rw /system");
+            // remounting with busybox mount seems to make android 4.4 fail the following commands without error
+
+            // locations of apks have been changed in android 5
+            String basePath = "/system/app/";
+            if(Build.VERSION.SDK_INT >= 21)
+            {
+                basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
+                commands.add("mkdir -p " + basePath);
+                commands.add(busybox + " chmod 755 " + basePath);
+            }
+            // for some reason a permissions error is thrown if the apk path is not created first (W/zipro   ( 4433): Unable to open zip '/system/app/Term.apk': Permission denied)
+            // with touch, a reboot is not necessary after restoring system apps
+            // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
+            commands.add(busybox + " touch " + basePath + apk);
+            commands.add(busybox + " cp " + swapBackupDirPath(
+                backupDir.getAbsolutePath()) + "/" + apk + " " + basePath);
+            commands.add(busybox + " chmod 644 " + basePath + apk);
+            commands.add("mount -o remount,ro /system");
+            return CommandHandler.runCmd("su", commands, line -> {},
+                line -> writeErrorLog(label, line),
+                e -> Log.e(TAG, "restoreApk: ", e), this);
         }
     }
     public int compress(File directoryToCompress)
