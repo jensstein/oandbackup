@@ -261,8 +261,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Log.i(TAG, "restoring: " + label);
         try
         {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
+            List<String> commands = new ArrayList<>();
             if(files != null)
             {
                 ArrayList<String> uid_gid;
@@ -297,11 +296,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     {
                         uid_gid = getOwnership(file, "su");
                     }
-                    dos.writeBytes("cp -r " + backupSubDirPath + "/" + filename + " " + dest + "\n");
+                    commands.add("cp -r " + backupSubDirPath + "/" + filename + " " + dest);
                     if(uid_gid != null && !uid_gid.isEmpty())
                     {
-                        dos.writeBytes(busybox + " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) + " " + file + "\n");
-                        dos.writeBytes(busybox + " chmod -R 0771 " + file + "\n");
+                        commands.add(busybox + " chown -R " + uid_gid.get(0) +
+                            ":" + uid_gid.get(1) + " " + file);
+                        commands.add(busybox + " chmod -R 0771 " + file);
                     }
                     else
                     {
@@ -309,29 +309,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     }
                 }
             }
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
-                {
-                    writeErrorLog(label, line);
-                }
-            }
+            int ret = CommandHandler.runCmd("su", commands, line -> {},
+                line -> writeErrorLog(label, line),
+                e -> Log.e(TAG, "restoreSpecial: " + e.toString()), this);
             return ret + unzipRet;
         }
-        catch(IOException e)
-        {
-            Log.e(TAG, "restoreSpecial: " + e.toString());
-            e.printStackTrace();
-        }
         catch(IndexOutOfBoundsException e)
-        {
-            Log.e(TAG, "restoreSpecial: " + e.toString());
-        }
-        catch(InterruptedException e)
         {
             Log.e(TAG, "restoreSpecial: " + e.toString());
         }
