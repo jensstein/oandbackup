@@ -808,56 +808,27 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             userString += " " + user;
         }
-        try
-        {
-            // reflection could probably be used to find packages available to a given user: PackageManager.queryIntentActivitiesAsUser 
-            // http://androidxref.com/4.2_r1/xref/frameworks/base/core/java/android/content/pm/PackageManager.java#1880
-            
-            // editing package-restrictions.xml directly seems to require a reboot
-            // sub=`grep $packageName package-restrictions.xml`
-            // sed -i 's|$sub|"<pkg name=\"$packageName\" inst=\"false\" />"' package-restrictions.xml
-        
-            // disabling via pm has the unfortunate side-effect that packages can only be re-enabled via pm
-            String disable = "pm disable --user $user " + packageName;
-            // if packagename is in package-restriction.xml the app is probably not installed by $user
-            String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
-            // though it could be listed as enabled
-            String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
-            // why doesn't ! enabled work
-            String command = "for user in " + userString + "; do if [ $user != " + currentUser + " ] && " + grep + " && " + enabled + "; then " + disable + "; fi; done";
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            dos.writeBytes(command + "\n");
-            dos.writeBytes("exit\n");
-            dos.flush();
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
-                {
-                    writeErrorLog(packageName, line);
-                }
-            }
-            /*
-            else
-            {
-                ArrayList<String> out = getOutput(p).get("stdout");
-                for(String line : out)
-                {
-                    Log.i(TAG, line);
-                }
-            }
-            */
-        }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-        }
+        List<String> commands = new ArrayList<>();
+        // reflection could probably be used to find packages available to a given user: PackageManager.queryIntentActivitiesAsUser
+        // http://androidxref.com/4.2_r1/xref/frameworks/base/core/java/android/content/pm/PackageManager.java#1880
+
+        // editing package-restrictions.xml directly seems to require a reboot
+        // sub=`grep $packageName package-restrictions.xml`
+        // sed -i 's|$sub|"<pkg name=\"$packageName\" inst=\"false\" />"' package-restrictions.xml
+
+        // disabling via pm has the unfortunate side-effect that packages can only be re-enabled via pm
+        String disable = "pm disable --user $user " + packageName;
+        // if packagename is in package-restriction.xml the app is probably not installed by $user
+        String grep = busybox + " grep " + packageName + " /data/system/users/$user/package-restrictions.xml";
+        // though it could be listed as enabled
+        String enabled = grep + " | " + busybox + " grep enabled=\"1\"";
+        // why doesn't ! enabled work
+        commands.add("for user in " + userString + "; do if [ $user != " +
+            currentUser + " ] && " + grep + " && " + enabled + "; then " +
+            disable + "; fi; done");
+        CommandHandler.runCmd("su", commands, line -> {},
+            line -> writeErrorLog(packageName, line),
+            e -> Log.e(TAG, "disablePackage: ", e), this);
     }
     // manually installing can be used as workaround for issues with multiple users - have checkbox in preferences to toggle this
     /*
