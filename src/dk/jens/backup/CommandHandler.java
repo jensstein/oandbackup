@@ -1,5 +1,7 @@
 package dk.jens.backup;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,6 +13,11 @@ public class CommandHandler {
     public static int runCmd(String shell, List<String> commands,
             OutputConsumer outHandler, OutputConsumer errorHandler,
             ExceptionConsumer exceptionHandler, UnexpectedExceptionListener exceptionListener) {
+        if(commands.size() == 0) {
+            Log.w(OAndBackup.TAG, "no commands to run");
+            errorHandler.accept("no commands to run");
+            return 1;
+        }
         try {
             Process p = Runtime.getRuntime().exec(shell);
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
