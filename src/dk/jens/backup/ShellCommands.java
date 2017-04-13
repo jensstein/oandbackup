@@ -792,31 +792,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             for(String user : users)
             {
-                try
-                {
-                    Process p = Runtime.getRuntime().exec("su");
-                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    dos.writeBytes("pm " + option + " --user " + user + " " + packageName + "\n");
-                    dos.writeBytes("exit\n");
-                    dos.flush();
-                    int ret = p.waitFor();
-                    if(ret != 0)
-                    {
-                        ArrayList<String> err = getOutput(p).get("stderr");
-                        for(String line : err)
-                        {
-                            writeErrorLog(packageName, line);
-                        }
-                    }
-                }
-                catch(IOException e)
-                {
-                    Log.i(TAG, e.toString());
-                }
-                catch(InterruptedException e)
-                {
-                    Log.i(TAG, e.toString());
-                }
+                List<String> commands = new ArrayList<>();
+                commands.add("pm " + option + " --user " + user + " " + packageName);
+                CommandHandler.runCmd("su", commands, line -> {},
+                    line -> writeErrorLog(packageName, line),
+                    e -> Log.e(TAG, "enableDisablePackage: ", e), this);
             }
         }
     }
