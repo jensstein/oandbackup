@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ShellCommands
+public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 {
     final static String TAG = OAndBackup.TAG;
     final static String EXTERNAL_FILES = "external_files";
@@ -59,6 +60,14 @@ public class ShellCommands
         this(prefs, null);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
+
+    @Override
+    public void onUnexpectedException(Throwable t) {
+        Log.e(TAG, "unexpected exception caught", t);
+        writeErrorLog("", t.toString());
+        errors += t.toString();
+    }
+
     public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
@@ -70,98 +79,90 @@ public class ShellCommands
                 "packageData is null. this is unexpected, please report it.");
             return 1;
         }
-        try
+        List<String> commands = new ArrayList<>();
+        // -L because fat (which will often be used to store the backup files)
+        // doesn't support symlinks
+        String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+        switch(backupMode)
         {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            // -L because fat (which will often be used to store the backup files)
-            // doesn't support symlinks
-            String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
-            switch(backupMode)
-            {
-                case AppInfo.MODE_APK:
-                    dos.writeBytes("cp " + packageApk + " " + backupSubDirPath + "\n");
-                    break;
-                case AppInfo.MODE_DATA:
-                    dos.writeBytes("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath + "\n");
-                    break;
-                default: // defaults to MODE_BOTH
-                    dos.writeBytes("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath + "\n" + "cp " + packageApk + " " + backupSubDirPath + "\n");
-                    break;
-            }
-            File externalFilesDir = getExternalFilesDirPath(context, packageData);
-            File backupSubDirExternalFiles = null;
-            boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
-            if(backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null)
-            {
-                backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
-                if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir())
-                    dos.writeBytes("cp -R" + followSymlinks + " " + swapBackupDirPath(externalFilesDir.getAbsolutePath()) + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + EXTERNAL_FILES) + "\n");
-                else
-                    Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
-            }
-            else if(!backupExternalFiles && backupMode != AppInfo.MODE_APK)
-            {
-                String data = packageData.substring(packageData.lastIndexOf("/"));
-                deleteBackup(new File(backupSubDir, EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
-            }
-            dos.writeBytes("exit\n");
-            dos.flush();
-
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> stderr = getOutput(p).get("stderr");
-                for(String line : stderr)
-                {
-                    // ignore error if it is about /lib while followSymlinks
-                    // is false or if it is about /lock in the data of firefox
-                    if(stderr.size() == 1 && ((!prefs.getBoolean("followSymlinks", true) && (line.contains("lib") && ((line.contains("not permitted") && line.contains("symlink"))) || line.contains("No such file or directory"))) || (line.contains("mozilla") && line.contains("/lock"))))
-                        ret = 0;
-                    else
-                        writeErrorLog(label, line);
-                }
-            }
-            if(backupSubDirPath.startsWith(context.getApplicationInfo().dataDir))
-            {
-                /**
-                    * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)
-                    * we need to ensure that the permissions are correct before trying to
-                    * zip. on the external storage, gid will be sdcard_r (or something similar)
-                    * without any changes but in the app's own datadir files will have both uid 
-                    * and gid as 0 / root when they are first copied with su.
-                */
-                ret = ret + setPermissions(backupSubDirPath);
-            }
-            String folder = new File(packageData).getName();
-            deleteBackup(new File(backupSubDir, folder + "/lib"));
-            if(label.equals(TAG))
-            {
-                copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
-            }
-            // only zip if data is backed up
-            if(backupMode != AppInfo.MODE_APK)
-            {
-                int zipret = compress(new File(backupSubDir, folder));
-                if(backupSubDirExternalFiles != null)
-                    zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-                if(zipret != 0)
-                    ret += zipret;
-            }
-            // delete old encrypted files if encryption is not enabled
-            if(!prefs.getBoolean("enableCrypto", false))
-                Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
-            return ret;
+            case AppInfo.MODE_APK:
+                commands.add("cp " + packageApk + " " + backupSubDirPath);
+                break;
+            case AppInfo.MODE_DATA:
+                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                break;
+            default: // defaults to MODE_BOTH
+                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                commands.add("cp " + packageApk + " " + backupSubDirPath);
+                break;
         }
-        catch(IOException e)
+        File externalFilesDir = getExternalFilesDirPath(context, packageData);
+        File backupSubDirExternalFiles = null;
+        boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
+        if(backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
+            backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
+            if(backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
+                commands.add("cp -R" + followSymlinks + " " +
+                swapBackupDirPath(externalFilesDir.getAbsolutePath()) +
+                " " + swapBackupDirPath(backupSubDir.getAbsolutePath() +
+                "/" + EXTERNAL_FILES));
+            } else {
+                Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
+            }
+        } else if(!backupExternalFiles && backupMode != AppInfo.MODE_APK) {
+            String data = packageData.substring(packageData.lastIndexOf("/"));
+            deleteBackup(new File(backupSubDir, EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
+        }
+        List<String> errors = new ArrayList<>();
+        int ret = CommandHandler.runCmd("su", commands, line -> {},
+            errors::add, e -> {
+                Log.e(TAG, String.format("Exception caught running: %s",
+                    TextUtils.join(", ", commands)), e);
+                writeErrorLog(label, e.toString());
+            }, this);
+        if(errors.size() == 1 ) {
+            String line = errors.get(0);
+            // ignore error if it is about /lib while followSymlinks
+            // is false or if it is about /lock in the data of firefox
+            if((!prefs.getBoolean("followSymlinks", true) &&
+                    (line.contains("lib") && ((line.contains("not permitted")
+                    && line.contains("symlink"))) || line.contains("No such file or directory")))
+                    || (line.contains("mozilla") && line.contains("/lock")))
+                ret = 0;
+        } else {
+            for (String line : errors)
+                writeErrorLog(label, line);
+        }
+        if(backupSubDirPath.startsWith(context.getApplicationInfo().dataDir))
         {
-            e.printStackTrace();
+            /**
+                * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)
+                * we need to ensure that the permissions are correct before trying to
+                * zip. on the external storage, gid will be sdcard_r (or something similar)
+                * without any changes but in the app's own datadir files will have both uid
+                * and gid as 0 / root when they are first copied with su.
+            */
+            ret = ret + setPermissions(backupSubDirPath);
         }
-        catch(InterruptedException e)
+        String folder = new File(packageData).getName();
+        deleteBackup(new File(backupSubDir, folder + "/lib"));
+        if(label.equals(TAG))
         {
-            Log.i(TAG, e.toString());
+            copySelfAPk(backupSubDir, packageApk); // copy apk of app to parent directory for visibility
         }
-        return 1;
+        // only zip if data is backed up
+        if(backupMode != AppInfo.MODE_APK)
+        {
+            int zipret = compress(new File(backupSubDir, folder));
+            if(backupSubDirExternalFiles != null)
+                zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            if(zipret != 0)
+                ret += zipret;
+        }
+        // delete old encrypted files if encryption is not enabled
+        if(!prefs.getBoolean("enableCrypto", false))
+            Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
+        return ret;
     }
     public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir)
     {
