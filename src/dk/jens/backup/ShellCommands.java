@@ -489,70 +489,49 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem)
     {
-        try
+        List<String> commands = new ArrayList<>();
+        if(!isSystem)
         {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            if(!isSystem)
+            commands.add("pm uninstall " + packageName);
+            commands.add(busybox + " rm -r /data/lib/" + packageName + "/*");
+            // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
+            // indføre tjek på pm uninstalls return
+        }
+        else
+        {
+            // it seems that busybox mount sometimes fails silently so use toolbox instead
+            commands.add("mount -o remount,rw /system");
+            commands.add(busybox + " rm " + sourceDir);
+            if(Build.VERSION.SDK_INT >= 21)
             {
-                dos.writeBytes("pm uninstall " + packageName + "\n");
-                dos.flush();
-//                dos.writeBytes("rm -r /data/data/" + packageName + "\n");
-//                dos.flush();
-                dos.writeBytes(busybox + " rm -r /data/lib/" + packageName + "/*\n");
-                dos.flush();
-                // pm uninstall sletter ikke altid mapper og lib-filer ordentligt.
-                // indføre tjek på pm uninstalls return 
-                dos.writeBytes("exit\n");
-                dos.flush();
+                String apkSubDir = Utils.getName(sourceDir);
+                apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
+                commands.add("rm -r /system/app/" + apkSubDir);
             }
-            else
+            commands.add("mount -o remount,ro /system");
+            commands.add(busybox + " rm -r " + dataDir);
+            commands.add(busybox + " rm -r /data/app-lib/" + packageName + "*");
+        }
+        List<String> err = new ArrayList<>();
+        int ret = CommandHandler.runCmd("su", commands, line -> {},
+            err::add, e -> Log.e(TAG, "uninstall", e), this);
+        if(ret != 0)
+        {
+            for(String line : err)
             {
-                // it seems that busybox mount sometimes fails silently so use toolbox instead
-                dos.writeBytes("mount -o remount,rw /system\n");
-                dos.writeBytes(busybox + " rm " + sourceDir + "\n");
-                if(Build.VERSION.SDK_INT >= 21)
+                if(line.contains("No such file or directory") && err.size() == 1)
                 {
-                    String apkSubDir = Utils.getName(sourceDir);
-                    apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
-                    dos.writeBytes("rm -r /system/app/" + apkSubDir + "\n");
+                    // ignore errors if it is only that the directory doesn't exist for rm to remove
+                    ret = 0;
                 }
-                dos.writeBytes("mount -o remount,ro /system\n");
-                dos.writeBytes(busybox + " rm -r " + dataDir + "\n");
-                dos.writeBytes(busybox + " rm -r /data/app-lib/" + packageName + "*\n");
-                dos.writeBytes("exit\n");
-                dos.flush();
-            }
-            int ret = p.waitFor();
-            if(ret != 0)
-            {
-                ArrayList<String> err = getOutput(p).get("stderr");
-                for(String line : err)
+                else
                 {
-                    if(line.contains("No such file or directory") && err.size() == 1)
-                    {
-                        // ignore errors if it is only that the directory doesn't exist for rm to remove
-                        ret = 0;
-                    }
-                    else
-                    {
-                        writeErrorLog(packageName, line);
-                    }
+                    writeErrorLog(packageName, line);
                 }
             }
-            Log.i(TAG, "uninstall return: " + ret);
-            return ret;
         }
-        catch(IOException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }
-        catch(InterruptedException e)
-        {
-            Log.i(TAG, e.toString());
-            return 1;
-        }           
+        Log.i(TAG, "uninstall return: " + ret);
+        return ret;
     }
     public int quickReboot()
     {
