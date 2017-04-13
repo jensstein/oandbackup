@@ -585,33 +585,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         {
             if(process.processName.equals(packageName) && process.pid != android.os.Process.myPid())
             {
-                try
-                {
-                    Process p = Runtime.getRuntime().exec("su");
-                    DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-                    // tjek med File.exists() ser ikke ud til at virke
-                    dos.writeBytes("kill " + process.pid + "\n");
-                    dos.flush();
-                    dos.writeBytes("exit\n");
-                    dos.flush();
-                    int ret = p.waitFor();
-                    if(ret != 0)
-                    {
-                        ArrayList<String> err = getOutput(p).get("stderr");
-                        for(String line : err)
-                        {
-                            writeErrorLog(packageName, line);
-                        }
-                    }
-                }
-                catch(IOException e)
-                {
-                    Log.i(TAG, e.toString());
-                }
-                catch(InterruptedException e)
-                {
-                    Log.i(TAG, e.toString());
-                }           
+                List<String> commands = new ArrayList<>();
+                commands.add("kill " + process.pid);
+                CommandHandler.runCmd("su", commands, line -> {},
+                    line -> writeErrorLog(packageName, line),
+                    e -> Log.e(TAG, "killPackage: ", e), this);
             }
         }
     }
