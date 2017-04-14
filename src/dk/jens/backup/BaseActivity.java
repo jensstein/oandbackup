@@ -1,17 +1,17 @@
 package dk.jens.backup;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
 import dk.jens.backup.ui.LanguageHelper;
 import org.openintents.openpgp.util.OpenPgpApi;
 
-public class BaseActivity extends FragmentActivity
+public class BaseActivity extends Activity
 {
     final static String TAG = "oandbackup";
     public static final int OPENPGP_REQUEST_ENCRYPT = 3;

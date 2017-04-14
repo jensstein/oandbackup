@@ -135,7 +135,7 @@ BlacklistListener
                     BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
                     blacklistDialogFragment.setArguments(args);
                     blacklistDialogFragment.addBlacklistListener(this);
-                    blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
+                    blacklistDialogFragment.show(getFragmentManager(), "blacklistDialog");
                 }).start();
                 return true;
         }

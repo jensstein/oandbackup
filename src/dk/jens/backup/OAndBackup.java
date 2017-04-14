@@ -140,7 +140,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment();
             dialog.setArguments(arguments);
     //        dialog.show(getFragmentManager(), "DialogFragment");
-            dialog.show(getSupportFragmentManager(), "DialogFragment");
+            dialog.show(getFragmentManager(), "DialogFragment");
         }
     }
     public void callBackup(final AppInfo appInfo, final int backupMode)
@@ -526,7 +526,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 ShareDialogFragment shareDialog = new ShareDialogFragment();
                 shareDialog.setArguments(arguments);
-                shareDialog.show(getSupportFragmentManager(), "DialogFragment");
+                shareDialog.show(getFragmentManager(), "DialogFragment");
                 return true;
             default:
                 return super.onContextItemSelected(item);

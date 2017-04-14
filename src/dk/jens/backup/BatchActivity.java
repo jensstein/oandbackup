@@ -169,7 +169,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         arguments.putBoolean("backupBoolean", backupBoolean);
         BatchConfirmDialog dialog = new BatchConfirmDialog();
         dialog.setArguments(arguments);
-        dialog.show(getSupportFragmentManager(), "DialogFragment");
+        dialog.show(getFragmentManager(), "DialogFragment");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

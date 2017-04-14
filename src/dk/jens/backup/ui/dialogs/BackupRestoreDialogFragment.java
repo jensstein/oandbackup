@@ -2,10 +2,9 @@ package dk.jens.backup.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-//import android.app.DialogFragment;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
@@ -30,7 +29,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                 {
                     BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment();
                     backupDialog.setArguments(arguments);
-                    backupDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment");
+                    backupDialog.show(getActivity().getFragmentManager(), "DialogFragment");
 //                    OAndBackup obackup = (OAndBackup) getActivity();
 //                    obackup.callBackup(appInfo);
                 }
@@ -45,7 +44,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                     RestoreOptionsDialogFragment restoreDialog = new RestoreOptionsDialogFragment();
                     restoreDialog.setArguments(arguments);
 //                    restoreDialog.show(getFragmentManager(), "DialogFragment");
-                    restoreDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment");
+                    restoreDialog.show(getActivity().getFragmentManager(), "DialogFragment");
                 }
             });
         }

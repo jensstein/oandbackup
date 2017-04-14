@@ -206,7 +206,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
             arguments.putString("root", root);
             CreateDirectoryDialog dialog = new CreateDirectoryDialog();
             dialog.setArguments(arguments);
-            dialog.show(getSupportFragmentManager(), "DialogFragment");
+            dialog.show(getFragmentManager(), "DialogFragment");
             break;
         case R.id.refresh:
             refresh();
