@@ -69,15 +69,4 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
             }
         }
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                Utils.navigateUp(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

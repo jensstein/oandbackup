@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 import dk.jens.backup.ui.HandleMessages;
@@ -100,13 +99,6 @@ public class Utils
         TaskStackBuilder.create(activity)
             .addNextIntentWithParentStack(intent)
             .startActivities();
-    }
-    public static void navigateUp(Activity activity)
-    {
-        // navigates up to parent activity with recreating it
-        Intent intent = NavUtils.getParentActivityIntent(activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        NavUtils.navigateUpTo(activity, intent);
     }
     public static void reShowMessage(HandleMessages handleMessages, long tid)
     {

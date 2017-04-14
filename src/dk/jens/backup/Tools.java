@@ -126,17 +126,6 @@ public class Tools extends ListActivity
                 break;
         }
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                Utils.navigateUp(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
     public void changesMade()
     {
         Intent result = new Intent();

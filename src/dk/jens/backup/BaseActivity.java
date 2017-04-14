@@ -40,17 +40,6 @@ public class BaseActivity extends Activity
         super.onDestroy();
     }
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                Utils.navigateUp(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
