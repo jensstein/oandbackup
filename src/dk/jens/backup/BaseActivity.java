@@ -28,7 +28,7 @@ public class BaseActivity extends Activity
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
-            "system");
+            Constants.PREFS_LANGUAGES_DEFAULT);
         LanguageHelper.initLanguage(this, langCode);
         if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false))
             startCrypto();

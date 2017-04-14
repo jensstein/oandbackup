@@ -269,7 +269,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         super.onConfigurationChanged(newConfig);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         LanguageHelper.initLanguage(this, prefs.getString(
-            Constants.PREFS_LANGUAGES, "system"));
+            Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT));
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -674,7 +674,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
             shellCommands = new ShellCommands(prefs, users);
             String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
-                "system");
+                Constants.PREFS_LANGUAGES_DEFAULT);
             LanguageHelper.initLanguage(OAndBackup.this, langCode);
             String backupDirPath = prefs.getString(
                 Constants.PREFS_PATH_BACKUP_DIRECTORY,

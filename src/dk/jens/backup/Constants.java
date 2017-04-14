@@ -20,6 +20,7 @@ public class Constants {
     public final static String PREFS_TIMESTAMP = "timestamp";
     public final static String PREFS_OLDBACKUPS = "oldBackups";
     public final static String PREFS_LANGUAGES = "languages";
+    public final static String PREFS_LANGUAGES_DEFAULT = "system";
     public final static String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public final static String PREFS_ENABLECRYPTO = "enableCrypto";
 }

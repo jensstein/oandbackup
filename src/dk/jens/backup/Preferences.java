@@ -69,7 +69,7 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         if(key.equals(Constants.PREFS_LANGUAGES))
         {
             if(new LanguageHelper().changeLanguage(this, preferences.getString(
-                Constants.PREFS_LANGUAGES, "system"))) {
+                    Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
                 Utils.reloadWithParentStack(Preferences.this);
             }
         }

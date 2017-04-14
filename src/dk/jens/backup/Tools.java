@@ -40,7 +40,7 @@ public class Tools extends ListActivity
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
-            "system");
+            Constants.PREFS_LANGUAGES_DEFAULT);
         LanguageHelper.initLanguage(this, langCode);
         
         handleMessages = new HandleMessages(this);
