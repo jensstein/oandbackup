@@ -44,10 +44,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 busybox = "busybox";
         }
         this.users = getUsers();
-        if(this.users != null)
-        {
-            multiuserEnabled = (this.users.size() > 1) ? true : false;
-        }
+        multiuserEnabled = this.users != null && this.users.size() > 1;
     }
     public ShellCommands(SharedPreferences prefs)
     {
