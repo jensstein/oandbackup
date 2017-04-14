@@ -155,7 +155,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                 {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
                     Crypto crypto = null;
-                    if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(OAndBackup.this))
+                    if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false) &&
+                            Crypto.isAvailable(OAndBackup.this))
                         crypto = getCrypto();
                     backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
                     if(backupRet == 0 && crypto != null)
@@ -267,7 +268,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         super.onConfigurationChanged(newConfig);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        LanguageHelper.initLanguage(this, prefs.getString("languages", "system"));
+        LanguageHelper.initLanguage(this, prefs.getString(
+            Constants.PREFS_LANGUAGES, "system"));
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -535,33 +537,34 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
     {
-        if(key.equals("pathBackupFolder"))
+        if(key.equals(Constants.PREFS_PATH_BACKUP_DIRECTORY))
         {
             String backupDirPath = preferences.getString(key, FileCreationHelper.getDefaultBackupDirPath());
             backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             refresh();
         }
-        else if(key.equals("pathBusybox"))
+        else if(key.equals(Constants.PREFS_PATH_BUSYBOX))
         {
             shellCommands = new ShellCommands(preferences);
             checkBusybox();
         }
-        else if(key.equals("timestamp"))
+        else if(key.equals(Constants.PREFS_TIMESTAMP))
         {
             adapter.setLocalTimestampFormat(preferences.getBoolean(key, true));
             adapter.notifyDataSetChanged();
         }
-        else if(key.equals("oldBackups"))
+        else if(key.equals(Constants.PREFS_OLDBACKUPS))
         {
             sorter = new Sorter(adapter, preferences);
         }
-        else if(key.equals("languages"))
+        else if(key.equals(Constants.PREFS_LANGUAGES))
         {
             languageChanged = true;
         }
-        else if(key.equals("enableSpecialBackups"))
+        else if(key.equals(Constants.PREFS_ENABLESPECIALBACKUPS))
             refresh();
-        else if(key.equals("enableCrypto") && preferences.getBoolean(key, false))
+        else if(key.equals(Constants.PREFS_ENABLECRYPTO) &&
+                preferences.getBoolean(key, false))
             startCrypto();
     }
     public boolean onSearchRequested()
@@ -670,9 +673,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
             prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
             shellCommands = new ShellCommands(prefs, users);
-            String langCode = prefs.getString("languages", "system");
+            String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
+                "system");
             LanguageHelper.initLanguage(OAndBackup.this, langCode);
-            String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            String backupDirPath = prefs.getString(
+                Constants.PREFS_PATH_BACKUP_DIRECTORY,
+                FileCreationHelper.getDefaultBackupDirPath());
             backupDir = Utils.createBackupDir(OAndBackup.this, backupDirPath);
             // temporary method to move logfile from bottom of external storage to bottom of backupdir
             new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
@@ -701,7 +707,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             registerForContextMenu(listView);
 
             adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
-            adapter.setLocalTimestampFormat(prefs.getBoolean("timestamp", true));
+            adapter.setLocalTimestampFormat(prefs.getBoolean(
+                Constants.PREFS_TIMESTAMP, true));
             sorter = new Sorter(adapter, prefs);
             if(prefs.getBoolean("rememberFiltering", false))
             {

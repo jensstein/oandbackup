@@ -35,7 +35,7 @@ public class AppInfoHelper
 
         ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if(prefs.getBoolean("enableSpecialBackups", true))
+        if(prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true))
             addSpecialBackups(context, backupDir, list, packageNames);
         for(PackageInfo pinfo : pinfoList)
         {

@@ -463,12 +463,16 @@ BlacklistListener
     }
     public void renameCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + (number + 1));
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
+            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + (number + 1));
         frw.rename(SCHEDULECUSTOMLIST + number);
     }
     public void removeCustomListFile(int number)
     {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
+        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
+            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
     public void transferOldValues()

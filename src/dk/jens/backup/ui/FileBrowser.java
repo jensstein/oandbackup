@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import dk.jens.backup.BaseActivity;
+import dk.jens.backup.Constants;
 import dk.jens.backup.ui.dialogs.CreateDirectoryDialog;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.adapters.FileListAdapter;
@@ -56,7 +57,8 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
         if(savedInstanceState != null)
             root = savedInstanceState.getString("root");
         else
-            root = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+            root = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
+                FileCreationHelper.getDefaultBackupDirPath());
         resultPath = null;
 
         filesList = getFilesList(root);

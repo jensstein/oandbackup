@@ -27,9 +27,10 @@ public class BaseActivity extends Activity
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String langCode = prefs.getString("languages", "system");
+        String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
+            "system");
         LanguageHelper.initLanguage(this, langCode);
-        if(prefs.getBoolean("enableCrypto", false))
+        if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false))
             startCrypto();
     }
     @Override

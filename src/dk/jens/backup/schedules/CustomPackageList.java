@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import dk.jens.backup.AppInfo;
+import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.OAndBackup;
@@ -25,7 +26,9 @@ public class CustomPackageList
     public static void showList(Activity activity, String filename)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        final FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath()), filename);
+        final FileReaderWriter frw = new FileReaderWriter(prefs.getString(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
+            .getDefaultBackupDirPath()), filename);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<Integer>();
         boolean[] checked = new boolean[items.length];

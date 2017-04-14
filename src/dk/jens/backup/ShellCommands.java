@@ -36,7 +36,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         this.users = users;
         this.prefs = prefs;
         String defaultBox = Build.VERSION.SDK_INT >= 23 ? "toybox" : "busybox";
-        busybox = prefs.getString("pathBusybox", defaultBox).trim();
+        busybox = prefs.getString(Constants.PREFS_PATH_BUSYBOX, defaultBox).trim();
         if(busybox.length() == 0)
         {
             busybox = "toybox";
@@ -151,7 +151,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 ret += zipret;
         }
         // delete old encrypted files if encryption is not enabled
-        if(!prefs.getBoolean("enableCrypto", false))
+        if(!prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false))
             Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
         return ret;
     }

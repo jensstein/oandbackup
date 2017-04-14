@@ -21,7 +21,8 @@ public class Sorter
         this.prefsEdit = prefs.edit();
         try
         {
-            oldBackups = Integer.valueOf(prefs.getString("oldBackups", "0"));
+            oldBackups = Integer.valueOf(prefs.getString(
+                Constants.PREFS_OLDBACKUPS, "0"));
         }
         catch(NumberFormatException e)
         {}

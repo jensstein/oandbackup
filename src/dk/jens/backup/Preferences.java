@@ -16,7 +16,9 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        FileBrowserEditTextPreference backupFolderPref = (FileBrowserEditTextPreference) findPreference("pathBackupFolder");
+        FileBrowserEditTextPreference backupFolderPref =
+            (FileBrowserEditTextPreference) findPreference(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY);
         // det ser ikke ud til at setDefaultValue() virker som den skal
         if(backupFolderPref.getText() == null)
         {
@@ -36,7 +38,8 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
         // for some reason preferencesactivity doesn't behave like the other
         // activities when setting locale so it can't be done in onCreate
         // http://stackoverflow.com/a/20057397
-        ListPreference languages = (ListPreference) findPreference("languages");
+        ListPreference languages = (ListPreference) findPreference(
+            Constants.PREFS_LANGUAGES);
         if(languages != null)
             LanguageHelper.initLanguage(this, languages.getValue());
     }
@@ -45,7 +48,9 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     {
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        FileBrowserEditTextPreference backupFolderPref = (FileBrowserEditTextPreference) findPreference("pathBackupFolder");
+        FileBrowserEditTextPreference backupFolderPref =
+            (FileBrowserEditTextPreference) findPreference(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY);
         if(FileBrowser.getPath() != null)
         {
             backupFolderPref.getEditText().setText(FileBrowser.getPath());
@@ -61,10 +66,10 @@ public class Preferences extends PreferenceActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
     {
-        if(key.equals("languages"))
+        if(key.equals(Constants.PREFS_LANGUAGES))
         {
-            if(new LanguageHelper().changeLanguage(this, preferences.getString("languages", "system")))
-            {
+            if(new LanguageHelper().changeLanguage(this, preferences.getString(
+                Constants.PREFS_LANGUAGES, "system"))) {
                 Utils.reloadWithParentStack(Preferences.this);
             }
         }

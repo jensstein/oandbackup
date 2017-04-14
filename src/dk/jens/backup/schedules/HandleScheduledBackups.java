@@ -10,6 +10,7 @@ import dk.jens.backup.AppInfo;
 import dk.jens.backup.AppInfoHelper;
 import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.BlacklistsDBHelper;
+import dk.jens.backup.Constants;
 import dk.jens.backup.Crypto;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
@@ -51,7 +52,9 @@ public class HandleScheduledBackups
         {
             public void run()
             {
-                String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+                String backupDirPath = prefs.getString(
+                    Constants.PREFS_PATH_BACKUP_DIRECTORY,
+                    FileCreationHelper.getDefaultBackupDirPath());
                 backupDir = new File(backupDirPath);
                 ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(context, backupDir, false);
                 ArrayList<AppInfo> listToBackUp;
@@ -104,7 +107,10 @@ public class HandleScheduledBackups
                     case 4:
                         // custom package list
                         listToBackUp = new ArrayList<AppInfo>();
-                        FileReaderWriter frw = new FileReaderWriter(prefs.getString("pathBackupFolder", FileCreationHelper.defaultBackupDirPath), Scheduler.SCHEDULECUSTOMLIST + id);
+                        FileReaderWriter frw = new FileReaderWriter(
+                            prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
+                            FileCreationHelper.defaultBackupDirPath),
+                            Scheduler.SCHEDULECUSTOMLIST + id);
                         for(AppInfo appInfo : list)
                         {
                             if(frw.contains(appInfo.getPackageName()))
@@ -128,8 +134,8 @@ public class HandleScheduledBackups
                 public void run()
                 {
                     Crypto crypto = null;
-                    if(prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(context))
-                    {
+                    if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO,
+                            false) && Crypto.isAvailable(context)) {
                         crypto = new Crypto(prefs);
                         crypto.bind(context);
                     }

@@ -14,4 +14,12 @@ public class Constants {
     public final static String PREFS_SCHEDULES_SUBMODE = "scheduleSubMode";
     public final static String PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent";
     public final static String PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem";
+
+    public final static String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
+    public final static String PREFS_PATH_BUSYBOX = "pathBusybox";
+    public final static String PREFS_TIMESTAMP = "timestamp";
+    public final static String PREFS_OLDBACKUPS = "oldBackups";
+    public final static String PREFS_LANGUAGES = "languages";
+    public final static String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
+    public final static String PREFS_ENABLECRYPTO = "enableCrypto";
 }

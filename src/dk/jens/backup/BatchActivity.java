@@ -75,7 +75,9 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String backupDirPath = prefs.getString("pathBackupFolder", FileCreationHelper.getDefaultBackupDirPath());
+        String backupDirPath = prefs.getString(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY,
+            FileCreationHelper.getDefaultBackupDirPath());
         backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath);
 
         int filteringMethodId = 0;
@@ -263,7 +265,9 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         if(backupDir != null)
         {
             Crypto crypto = null;
-            if(backupBoolean && prefs.getBoolean("enableCrypto", false) && Crypto.isAvailable(this))
+            if(backupBoolean && prefs.getBoolean(
+                    Constants.PREFS_ENABLECRYPTO, false) &&
+                    Crypto.isAvailable(this))
                 crypto = getCrypto();
             PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             if(prefs.getBoolean("acquireWakelock", true))
