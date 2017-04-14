@@ -70,7 +70,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
 
         if(savedInstanceState != null)
         {
-            threadId = savedInstanceState.getLong("threadId");
+            threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             Utils.reShowMessage(handleMessages, threadId);
         }
 
@@ -153,7 +153,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putLong("threadId", threadId);
+        outState.putLong(Constants.BUNDLE_THREADID, threadId);
     }
     @Override
     public void onClick(View v)

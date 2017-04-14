@@ -74,11 +74,12 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         ArrayList<String> users = null;
         if(savedInstanceState != null)
         {
-            threadId = savedInstanceState.getLong("threadId");
+            threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             Utils.reShowMessage(handleMessages, threadId);
-            checked = savedInstanceState.getBoolean("stateChecked");
-            firstVisiblePosition = savedInstanceState.getInt("firstVisiblePosition");
-            users = savedInstanceState.getStringArrayList("users");
+            checked = savedInstanceState.getBoolean(Constants.BUNDLE_STATECHECKED);
+            firstVisiblePosition = savedInstanceState.getInt(
+                Constants.BUNDLE_FIRSTVISIBLEPOSITION);
+            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
         }
 
         Thread initThread = new Thread(new InitRunnable(checked, firstVisiblePosition, users));
@@ -118,14 +119,15 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("stateChecked", true);
-        outState.putLong("threadId", threadId);
+        outState.putBoolean(Constants.BUNDLE_STATECHECKED, true);
+        outState.putLong(Constants.BUNDLE_THREADID, threadId);
         int firstVisiblePosition = 0;
         if(listView != null)
             firstVisiblePosition = listView.getFirstVisiblePosition();
-        outState.putInt("firstVisiblePosition", firstVisiblePosition);
+        outState.putInt(Constants.BUNDLE_FIRSTVISIBLEPOSITION, firstVisiblePosition);
         if(shellCommands != null)
-            outState.putStringArrayList("users", shellCommands.getUsers());
+            outState.putStringArrayList(Constants.BUNDLE_USERS,
+                shellCommands.getUsers());
     }
     public void displayDialog(AppInfo appInfo)
     {

@@ -23,4 +23,11 @@ public class Constants {
     public final static String PREFS_LANGUAGES_DEFAULT = "system";
     public final static String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public final static String PREFS_ENABLECRYPTO = "enableCrypto";
+
+    public final static String BUNDLE_THREADID = "threadId";
+    public final static String BUNDLE_STATECHECKED = "stateChecked";
+    public final static String BUNDLE_FIRSTVISIBLEPOSITION = "firstVisiblePosition";
+    public final static String BUNDLE_USERS = "users";
+    public final static String BUNDLE_FILEBROWSER_ROOT = "root";
+    public final static String BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT = "edittext";
 }

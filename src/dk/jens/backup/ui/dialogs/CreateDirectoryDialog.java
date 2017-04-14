@@ -8,6 +8,7 @@ import android.app.DialogFragment;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
+import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
@@ -20,14 +21,15 @@ public class CreateDirectoryDialog extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         Bundle arguments = getArguments();
-        final String root = arguments.getString("root");
+        final String root = arguments.getString(Constants.BUNDLE_FILEBROWSER_ROOT);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.filebrowser_createDirectory);
         builder.setMessage(R.string.filebrowser_createDirectoryDlgMsg);
 
         editText = new EditText(getActivity());
         if(savedInstanceState != null)
-            editText.setText(savedInstanceState.getString("edittext"));
+            editText.setText(savedInstanceState.getString(
+                Constants.BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT));
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         editText.setLayoutParams(lp);
         builder.setView(editText);
@@ -55,7 +57,8 @@ public class CreateDirectoryDialog extends DialogFragment
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putString("edittext", editText.getText().toString());
+        outState.putString(Constants.BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT,
+            editText.getText().toString());
     }
     public interface PathListener
     {

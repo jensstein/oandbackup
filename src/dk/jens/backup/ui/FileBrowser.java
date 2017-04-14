@@ -55,7 +55,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(savedInstanceState != null)
-            root = savedInstanceState.getString("root");
+            root = savedInstanceState.getString(Constants.BUNDLE_FILEBROWSER_ROOT);
         else
             root = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
                 FileCreationHelper.getDefaultBackupDirPath());
@@ -86,7 +86,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putString("root", root);
+        outState.putString(Constants.BUNDLE_FILEBROWSER_ROOT, root);
     }
     public ArrayList<File> getFilesList(String path)
     {
@@ -205,7 +205,7 @@ implements View.OnClickListener, CreateDirectoryDialog.PathListener
         {
         case R.id.createDirectory:
             Bundle arguments = new Bundle();
-            arguments.putString("root", root);
+            arguments.putString(Constants.BUNDLE_FILEBROWSER_ROOT, root);
             CreateDirectoryDialog dialog = new CreateDirectoryDialog();
             dialog.setArguments(arguments);
             dialog.show(getFragmentManager(), "DialogFragment");
