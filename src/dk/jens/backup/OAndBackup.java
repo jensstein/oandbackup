@@ -624,33 +624,18 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
         CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
         new AlertDialog.Builder(this)
             .setTitle(title)
-            .setMultiChoiceItems(users, null, new DialogInterface.OnMultiChoiceClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int chosen, boolean checked)
-                {
-                    if(checked)
-                    {
-                        selectedUsers.add(userList.get(chosen));
-                    }
-                    else if(selectedUsers.contains(userList.get(chosen))) {
-                        selectedUsers.remove(userList.get(chosen));
-                    }
+            .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
+                if(checked) {
+                    selectedUsers.add(userList.get(chosen));
+                } else if(selectedUsers.contains(userList.get(chosen))) {
+                    selectedUsers.remove(userList.get(chosen));
                 }
             })
-            .setPositiveButton(R.string.dialogOK, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                }
-            })
-            .setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which){}
-            })
+            .setPositiveButton(R.string.dialogOK, (dialog, which) ->
+                shellCommands.enableDisablePackage(packageName,
+                    selectedUsers, enable)
+            )
+            .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {})
             .show();
     }
     public void checkBusybox()
