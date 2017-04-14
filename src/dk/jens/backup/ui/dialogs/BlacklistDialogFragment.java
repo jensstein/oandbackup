@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.BlacklistListener;
 import dk.jens.backup.OAndBackup;
@@ -23,7 +22,6 @@ public class BlacklistDialogFragment extends DialogFragment {
     }
 
     @Override
-    @NonNull
     public Dialog onCreateDialog(Bundle savedInstance) {
         final ArrayList<String> selections = new ArrayList<>();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
