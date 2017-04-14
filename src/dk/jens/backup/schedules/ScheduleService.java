@@ -29,15 +29,16 @@ implements BackupRestoreHelper.OnBackupRestoreListener
             prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
             edit = prefs.edit();
             long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
-                prefs.getInt("repeatTime" + id, 0),
-                prefs.getInt("hourOfDay" + id, 0));
-            edit.putLong("timeUntilNextEvent" + id, timeUntilNextEvent);
-            edit.putLong("timePlaced" + id, System.currentTimeMillis());
+                prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, 0),
+                prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, 0));
+            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + id, timeUntilNextEvent);
+            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, System.currentTimeMillis());
             edit.commit();
             Log.i(TAG, getString(R.string.sched_startingbackup));
-            int mode = prefs.getInt("scheduleMode" + id, 1);
-            int subMode = prefs.getInt("scheduleSubMode" + id, 2);
-            boolean excludeSystem = prefs.getBoolean("excludeSystem" + id, false);
+            int mode = prefs.getInt(Constants.PREFS_SCHEDULES_MODE + id, 1);
+            int subMode = prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + id, 2);
+            boolean excludeSystem = prefs.getBoolean(
+                Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, false);
             handleScheduledBackups.initiateBackup(id, mode, subMode + 1,
                 excludeSystem); // add one to submode to have it correspond to AppInfo.MODE_*
         } else {
