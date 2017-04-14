@@ -633,9 +633,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
                     {
                         selectedUsers.add(userList.get(chosen));
                     }
-                    else if(selectedUsers.contains(chosen))
-                    {
-                        selectedUsers.remove(Integer.valueOf(chosen));
+                    else if(selectedUsers.contains(userList.get(chosen))) {
+                        selectedUsers.remove(userList.get(chosen));
                     }
                 }
             })
