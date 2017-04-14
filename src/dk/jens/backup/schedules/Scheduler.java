@@ -26,6 +26,7 @@ import dk.jens.backup.BaseActivity;
 import dk.jens.backup.BlacklistContract;
 import dk.jens.backup.BlacklistListener;
 import dk.jens.backup.BlacklistsDBHelper;
+import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.OAndBackup;
@@ -66,7 +67,7 @@ BlacklistListener
         handleAlarms = new HandleAlarms(this);
 
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs = getSharedPreferences("schedules", 0);
+        prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
         edit = prefs.edit();
 
         transferOldValues();
@@ -127,11 +128,12 @@ BlacklistListener
             case R.id.globalBlacklist:
                 new Thread(() -> {
                     Bundle args = new Bundle();
-                    args.putInt("blacklistId", GLOBALBLACKLISTID);
+                    args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
                     SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
                     ArrayList<String> blacklistedPackages = blacklistsDBHelper
                         .getBlacklistedPackages(db, GLOBALBLACKLISTID);
-                    args.putStringArrayList("blacklistedPackages", blacklistedPackages);
+                    args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
+                        blacklistedPackages);
                     BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
                     blacklistDialogFragment.setArguments(args);
                     blacklistDialogFragment.addBlacklistListener(this);

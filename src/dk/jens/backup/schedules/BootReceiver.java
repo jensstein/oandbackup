@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 
 public class BootReceiver extends BroadcastReceiver
@@ -18,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         handleAlarms = new HandleAlarms(context);
-        prefs = context.getSharedPreferences("schedules", 0);
+        prefs = context.getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
         for(int i = 0; i <= prefs.getInt("total", 0); i++)
         {
             if(prefs.getBoolean("enabled" + i, false) && prefs.getInt("repeatTime" + i, 0) > 0)

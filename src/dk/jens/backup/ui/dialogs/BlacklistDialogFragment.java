@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.BlacklistListener;
+import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 import dk.jens.backup.Sorter;
@@ -26,8 +27,10 @@ public class BlacklistDialogFragment extends DialogFragment {
         final ArrayList<String> selections = new ArrayList<>();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         Bundle args = getArguments();
-        int blacklistId = args.getInt("blacklistId", Scheduler.GLOBALBLACKLISTID);
-        ArrayList<String> blacklistedPackages = args.getStringArrayList("blacklistedPackages");
+        int blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID,
+            Scheduler.GLOBALBLACKLISTID);
+        ArrayList<String> blacklistedPackages = args.getStringArrayList(
+            Constants.BLACKLIST_ARGS_PACKAGES);
         ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
         boolean[] checkedPackages = new boolean[appInfoList.size()];
         ArrayList<String> labels = new ArrayList<>();

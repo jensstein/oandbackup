@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 import dk.jens.backup.BackupRestoreHelper;
+import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
@@ -25,7 +26,7 @@ implements BackupRestoreHelper.OnBackupRestoreListener
             HandleAlarms handleAlarms = new HandleAlarms(this);
             HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
             handleScheduledBackups.setOnBackupListener(this);
-            prefs = getSharedPreferences("schedules", 0);
+            prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
             edit = prefs.edit();
             long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
                 prefs.getInt("repeatTime" + id, 0),
