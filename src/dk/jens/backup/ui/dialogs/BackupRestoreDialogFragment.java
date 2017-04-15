@@ -50,9 +50,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                     backupDialog.setArguments(arguments);
                     for(ActionListener listener : listeners)
                         backupDialog.setListener(listener);
-                    backupDialog.show(getActivity().getFragmentManager(), "DialogFragment");
-//                    OAndBackup obackup = (OAndBackup) getActivity();
-//                    obackup.callBackup(appInfo);
+                    backupDialog.show(getFragmentManager(), "backupDialog");
                 }
             });
         }
@@ -68,8 +66,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                     restoreDialog.setArguments(arguments);
                     for(ActionListener listener : listeners)
                         restoreDialog.setListener(listener);
-//                    restoreDialog.show(getFragmentManager(), "DialogFragment");
-                    restoreDialog.show(getActivity().getFragmentManager(), "DialogFragment");
+                    restoreDialog.show(getFragmentManager(), "restoreDialog");
                 }
             });
         }
