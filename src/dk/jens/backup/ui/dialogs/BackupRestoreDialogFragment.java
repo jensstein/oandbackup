@@ -5,15 +5,30 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import dk.jens.backup.ActionListener;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BackupRestoreDialogFragment extends DialogFragment
 {
     final static String TAG = OAndBackup.TAG;
+
+    private List<ActionListener> listeners;
+
+    public BackupRestoreDialogFragment() {
+        listeners = new ArrayList<>();
+    }
+
+    public void setListener(ActionListener listener) {
+        listeners.add(listener);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -33,6 +48,8 @@ public class BackupRestoreDialogFragment extends DialogFragment
                         BackupRestoreHelper.ActionType.BACKUP);
                     BackupRestoreOptionsDialogFragment backupDialog = new BackupRestoreOptionsDialogFragment();
                     backupDialog.setArguments(arguments);
+                    for(ActionListener listener : listeners)
+                        backupDialog.setListener(listener);
                     backupDialog.show(getActivity().getFragmentManager(), "DialogFragment");
 //                    OAndBackup obackup = (OAndBackup) getActivity();
 //                    obackup.callBackup(appInfo);
@@ -49,6 +66,8 @@ public class BackupRestoreDialogFragment extends DialogFragment
                         BackupRestoreHelper.ActionType.RESTORE);
                     BackupRestoreOptionsDialogFragment restoreDialog = new BackupRestoreOptionsDialogFragment();
                     restoreDialog.setArguments(arguments);
+                    for(ActionListener listener : listeners)
+                        restoreDialog.setListener(listener);
 //                    restoreDialog.show(getFragmentManager(), "DialogFragment");
                     restoreDialog.show(getActivity().getFragmentManager(), "DialogFragment");
                 }

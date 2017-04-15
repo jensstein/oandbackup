@@ -34,7 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class OAndBackup extends BaseActivity
-implements SharedPreferences.OnSharedPreferenceChangeListener
+implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
 {
     public static final String TAG = OAndBackup.class.getSimpleName().toLowerCase();
     static final int BATCH_REQUEST = 1;
@@ -129,6 +129,19 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             outState.putStringArrayList(Constants.BUNDLE_USERS,
                 shellCommands.getUsers());
     }
+
+    @Override
+    public void onActionCalled(AppInfo appInfo,
+            BackupRestoreHelper.ActionType actionType, int mode) {
+        if(actionType == BackupRestoreHelper.ActionType.BACKUP) {
+            callBackup(appInfo, mode);
+        } else if(actionType == BackupRestoreHelper.ActionType.RESTORE) {
+            callRestore(appInfo, mode);
+        } else {
+            Log.e(TAG, "unknown actionType: " + actionType);
+        }
+    }
+
     public void displayDialog(AppInfo appInfo)
     {
         if(!appInfo.isInstalled() && appInfo.getBackupMode() == AppInfo.MODE_DATA)
@@ -140,6 +153,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener
             Bundle arguments = new Bundle();
             arguments.putParcelable("appinfo", appInfo);
             BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment();
+            dialog.setListener(this);
             dialog.setArguments(arguments);
     //        dialog.show(getFragmentManager(), "DialogFragment");
             dialog.show(getFragmentManager(), "DialogFragment");

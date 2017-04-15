@@ -6,15 +6,30 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import dk.jens.backup.ActionListener;
 import dk.jens.backup.AppInfo;
 import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BackupRestoreOptionsDialogFragment extends DialogFragment
 {
     final static String TAG = OAndBackup.TAG;
+
+    private List<ActionListener> listeners;
+
+    public BackupRestoreOptionsDialogFragment() {
+        listeners = new ArrayList<>();
+    }
+
+    public void setListener(ActionListener listener) {
+        listeners.add(listener);
+    }
+
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
         final AppInfo appInfo = arguments.getParcelable("appinfo");
@@ -41,16 +56,18 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callBackup(appInfo, AppInfo.MODE_APK);
+                    for(ActionListener listener : listeners)
+                        listener.onActionCalled(appInfo,
+                            BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_APK);
                 }
             });
             builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callBackup(appInfo, AppInfo.MODE_BOTH);
+                    for(ActionListener listener : listeners)
+                        listener.onActionCalled(appInfo,
+                            BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_BOTH);
                 }
             });
         }
@@ -58,8 +75,9 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                OAndBackup obackup = (OAndBackup) getActivity();
-                obackup.callBackup(appInfo, AppInfo.MODE_DATA);
+                for(ActionListener listener : listeners)
+                    listener.onActionCalled(appInfo,
+                        BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_DATA);
             }
         });
         return builder.create();
@@ -77,8 +95,9 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, AppInfo.MODE_APK);
+                    for(ActionListener listener : listeners)
+                        listener.onActionCalled(appInfo,
+                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_APK);
                 }
             });
         }
@@ -88,8 +107,9 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, AppInfo.MODE_DATA);
+                    for(ActionListener listener : listeners)
+                        listener.onActionCalled(appInfo,
+                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_DATA);
                 }
             });
         }
@@ -104,8 +124,9 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    OAndBackup obackup = (OAndBackup) getActivity();
-                    obackup.callRestore(appInfo, AppInfo.MODE_BOTH);
+                    for(ActionListener listener : listeners)
+                        listener.onActionCalled(appInfo,
+                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_BOTH);
                 }
             });
         }
