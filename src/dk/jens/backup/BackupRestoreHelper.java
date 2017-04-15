@@ -8,6 +8,11 @@ import java.io.File;
 public class BackupRestoreHelper
 {
     final static String TAG = OAndBackup.TAG;
+
+    public enum ActionType {
+        BACKUP, RESTORE
+    }
+
     public static int backup(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int backupMode)
     {
         int ret = 0;

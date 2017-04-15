@@ -30,4 +30,6 @@ public class Constants {
     public final static String BUNDLE_USERS = "users";
     public final static String BUNDLE_FILEBROWSER_ROOT = "root";
     public final static String BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT = "edittext";
+
+    public final static String BUNDLE_ACTIONTYPE = "actionType";
 }

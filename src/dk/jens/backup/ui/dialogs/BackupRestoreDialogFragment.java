@@ -6,6 +6,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import dk.jens.backup.AppInfo;
+import dk.jens.backup.BackupRestoreHelper;
+import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
@@ -27,6 +29,8 @@ public class BackupRestoreDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
+                    arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
+                        BackupRestoreHelper.ActionType.BACKUP);
                     BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment();
                     backupDialog.setArguments(arguments);
                     backupDialog.show(getActivity().getFragmentManager(), "DialogFragment");
@@ -41,7 +45,9 @@ public class BackupRestoreDialogFragment extends DialogFragment
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
-                    RestoreOptionsDialogFragment restoreDialog = new RestoreOptionsDialogFragment();
+                    arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
+                        BackupRestoreHelper.ActionType.RESTORE);
+                    BackupOptionsDialogFragment restoreDialog = new BackupOptionsDialogFragment();
                     restoreDialog.setArguments(arguments);
 //                    restoreDialog.show(getFragmentManager(), "DialogFragment");
                     restoreDialog.show(getActivity().getFragmentManager(), "DialogFragment");
