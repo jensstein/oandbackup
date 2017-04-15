@@ -36,98 +36,45 @@ public class BackupRestoreOptionsDialogFragment extends DialogFragment
         BackupRestoreHelper.ActionType actionType =
             (BackupRestoreHelper.ActionType) arguments.getSerializable(
             Constants.BUNDLE_ACTIONTYPE);
-        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            return setUpBackupDialog(appInfo);
-        } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            return setUpRestoreDialog(appInfo);
-        } else {
-            Log.e(TAG, "unknown actionType: " + actionType);
-        }
-        return null;
-    }
-
-    private Dialog setUpBackupDialog(AppInfo appInfo) {
+        boolean showApkBtn = (actionType == BackupRestoreHelper.ActionType
+            .BACKUP) ? appInfo.getSourceDir().length() > 0 :
+            appInfo.getBackupMode() != AppInfo.MODE_DATA;
+        boolean showDataBtn = actionType == BackupRestoreHelper.ActionType
+            .BACKUP || appInfo.isInstalled() && appInfo.getBackupMode() !=
+            AppInfo.MODE_APK;
+        boolean showBothBtn = (actionType == BackupRestoreHelper.ActionType
+            .BACKUP) ? appInfo.getSourceDir().length() > 0 : appInfo
+            .getBackupMode() != AppInfo.MODE_APK && appInfo.getBackupMode() !=
+            AppInfo.MODE_DATA;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(appInfo.getLabel());
-        builder.setMessage(R.string.backup);
-        if(appInfo.getSourceDir().length() > 0)
-        {
-            builder.setNegativeButton(R.string.handleApk, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    for(ActionListener listener : listeners)
-                        listener.onActionCalled(appInfo,
-                            BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_APK);
-                }
-            });
-            builder.setPositiveButton(R.string.handleBoth, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    for(ActionListener listener : listeners)
-                        listener.onActionCalled(appInfo,
-                            BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_BOTH);
-                }
-            });
-        }
-        builder.setNeutralButton(R.string.handleData, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
-            {
-                for(ActionListener listener : listeners)
+        int dialogMessage = actionType == BackupRestoreHelper.ActionType
+            .BACKUP ? R.string.backup : R.string.restore;
+        builder.setMessage(dialogMessage);
+        if(showApkBtn) {
+            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
+                for (ActionListener listener : listeners)
                     listener.onActionCalled(appInfo,
-                        BackupRestoreHelper.ActionType.BACKUP, AppInfo.MODE_DATA);
-            }
-        });
-        return builder.create();
-    }
-
-    private Dialog setUpRestoreDialog(AppInfo appInfo) {
-        int backupMode = appInfo.getBackupMode();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(appInfo.getLabel());
-        builder.setMessage(R.string.restore);
-        //midlertidigt indtil custom layout med flere muligheder
-        if(backupMode != AppInfo.MODE_DATA)
-        {
-            builder.setNegativeButton(R.string.handleApk, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    for(ActionListener listener : listeners)
-                        listener.onActionCalled(appInfo,
-                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_APK);
-                }
+                        actionType, AppInfo.MODE_APK);
             });
         }
-        if(appInfo.isInstalled() && backupMode != AppInfo.MODE_APK)
-        {
-            builder.setNeutralButton(R.string.handleData, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    for(ActionListener listener : listeners)
-                        listener.onActionCalled(appInfo,
-                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_DATA);
-                }
+        if(showDataBtn) {
+            builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
+                for (ActionListener listener : listeners)
+                    listener.onActionCalled(appInfo,
+                        actionType, AppInfo.MODE_DATA);
             });
         }
-        if(backupMode != AppInfo.MODE_APK && backupMode != AppInfo.MODE_DATA)
-        {
+        if(showBothBtn) {
             /* an uninstalled package cannot have data as a restore option
              * so the option to restore both apk and data cannot read 'both'
              * since there would only be one other option ('apk').
              */
             int textId = appInfo.isInstalled() ? R.string.handleBoth : R.string.radioBoth;
-            builder.setPositiveButton(textId, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    for(ActionListener listener : listeners)
-                        listener.onActionCalled(appInfo,
-                            BackupRestoreHelper.ActionType.RESTORE, AppInfo.MODE_BOTH);
-                }
+            builder.setPositiveButton(textId, (dialog, id) -> {
+                for(ActionListener listener : listeners)
+                    listener.onActionCalled(appInfo,
+                        actionType, AppInfo.MODE_BOTH);
             });
         }
         return builder.create();
