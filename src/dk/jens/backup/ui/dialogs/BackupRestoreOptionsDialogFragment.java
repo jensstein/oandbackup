@@ -12,7 +12,7 @@ import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 
-public class BackupOptionsDialogFragment extends DialogFragment
+public class BackupRestoreOptionsDialogFragment extends DialogFragment
 {
     final static String TAG = OAndBackup.TAG;
     public Dialog onCreateDialog(Bundle savedInstanceState) {

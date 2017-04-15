@@ -31,7 +31,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                 {
                     arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
                         BackupRestoreHelper.ActionType.BACKUP);
-                    BackupOptionsDialogFragment backupDialog = new BackupOptionsDialogFragment();
+                    BackupRestoreOptionsDialogFragment backupDialog = new BackupRestoreOptionsDialogFragment();
                     backupDialog.setArguments(arguments);
                     backupDialog.show(getActivity().getFragmentManager(), "DialogFragment");
 //                    OAndBackup obackup = (OAndBackup) getActivity();
@@ -47,7 +47,7 @@ public class BackupRestoreDialogFragment extends DialogFragment
                 {
                     arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
                         BackupRestoreHelper.ActionType.RESTORE);
-                    BackupOptionsDialogFragment restoreDialog = new BackupOptionsDialogFragment();
+                    BackupRestoreOptionsDialogFragment restoreDialog = new BackupRestoreOptionsDialogFragment();
                     restoreDialog.setArguments(arguments);
 //                    restoreDialog.show(getFragmentManager(), "DialogFragment");
                     restoreDialog.show(getActivity().getFragmentManager(), "DialogFragment");
