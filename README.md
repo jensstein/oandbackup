@@ -6,7 +6,7 @@ restoring system apps should be possible without requiring a reboot afterwards. 
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
 a working busybox installation is required at the moment.   
-you can get the source for busybox here: http://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: http://busybox.net/downloads/binaries/latest/.   
+you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
 if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
 ```
     make defconfig # makes a config file with the default options
