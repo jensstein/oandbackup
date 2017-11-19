@@ -1,11 +1,10 @@
 package dk.jens.backup;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -21,6 +20,10 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
+
 import dk.jens.backup.adapters.AppInfoAdapter;
 import dk.jens.backup.schedules.Scheduler;
 import dk.jens.backup.ui.HandleMessages;
@@ -29,9 +32,6 @@ import dk.jens.backup.ui.LanguageHelper;
 import dk.jens.backup.ui.NotificationHelper;
 import dk.jens.backup.ui.dialogs.BackupRestoreDialogFragment;
 import dk.jens.backup.ui.dialogs.ShareDialogFragment;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class OAndBackup extends BaseActivity
 implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
@@ -662,7 +662,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             }
 
             listView = (ListView) findViewById(R.id.listview);
-            registerForContextMenu(listView);
+
+            // TODO find another way to allow a long-click-like operation (uninstall/backup/etc)
+            //registerForContextMenu(listView);
 
             adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
             adapter.setLocalTimestampFormat(prefs.getBoolean(
@@ -683,8 +685,27 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
                         {
-                            AppInfo appInfo = adapter.getItem(pos);
-                            displayDialog(appInfo);
+                            if (adapter.isMultipleSelection())
+                            {
+                                adapter.toggleSelected(pos);
+                            }
+                            else
+                            {
+                                AppInfo appInfo = adapter.getItem(pos);
+                                displayDialog(appInfo);
+                            }
+                        }
+                    });
+                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            if (adapter.isMultipleSelection())
+                                return false;
+
+                            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                            adapter.setMultipleChoice(true);
+                            adapter.toggleSelected(position);
+                            return true;
                         }
                     });
                 }

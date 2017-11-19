@@ -7,18 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import dk.jens.backup.AppInfo;
-import dk.jens.backup.LogFile;
-import dk.jens.backup.R;
-import dk.jens.backup.Sorter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+
+import dk.jens.backup.AppInfo;
+import dk.jens.backup.LogFile;
+import dk.jens.backup.R;
+import dk.jens.backup.Sorter;
 
 public class AppInfoAdapter extends ArrayAdapter<AppInfo>
 {
@@ -26,6 +28,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
     ArrayList<AppInfo> items;
     int iconSize, layout;
     String currentFilter;
+    boolean multipleSelection;
 
     private ArrayList<AppInfo> originalValues;
     private MyArrayFilter mFilter;
@@ -82,6 +85,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             viewHolder.versionName = (TextView) convertView.findViewById(R.id.versionCode);
             viewHolder.lastBackup = (TextView) convertView.findViewById(R.id.lastBackup);
             viewHolder.backupMode = (TextView) convertView.findViewById(R.id.backupMode);
+            viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.cb);
             viewHolder.icon = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(viewHolder);
         }
@@ -104,6 +108,16 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
             {
                 viewHolder.icon.setVisibility(View.GONE);
             }
+            if (multipleSelection)
+            {
+                viewHolder.checkBox.setChecked(appInfo.isChecked());
+                viewHolder.checkBox.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                viewHolder.checkBox.setVisibility(View.GONE);
+            }
+
             viewHolder.label.setText(appInfo.getLabel());
             viewHolder.packageName.setText(appInfo.getPackageName());
             if(appInfo.getLogInfo() != null && (appInfo.getLogInfo().getVersionCode() != 0 && appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))
@@ -156,6 +170,21 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         }
         return convertView;
     }
+
+    public void setMultipleChoice(boolean enabled) {
+        multipleSelection = enabled;
+        notifyDataSetChanged();
+    }
+
+    public boolean isMultipleSelection() {
+        return multipleSelection;
+    }
+
+    public void toggleSelected(int pos) {
+        items.get(pos).setChecked(!items.get(pos).isChecked());
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder
     {
         TextView label;
@@ -163,6 +192,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         TextView versionName;
         TextView lastBackup;
         TextView backupMode;
+        CheckBox checkBox;
         ImageView icon;
     }
     @Override
