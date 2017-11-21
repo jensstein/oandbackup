@@ -1,7 +1,6 @@
 package dk.jens.backup;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -9,14 +8,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -32,7 +27,6 @@ import dk.jens.backup.ui.Help;
 import dk.jens.backup.ui.LanguageHelper;
 import dk.jens.backup.ui.NotificationHelper;
 import dk.jens.backup.ui.dialogs.BackupRestoreDialogFragment;
-import dk.jens.backup.ui.dialogs.ShareDialogFragment;
 
 public class OAndBackup extends BaseActivity
 implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
@@ -431,6 +425,18 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (adapter != null && adapter.isMultipleSelection())
+        {
+            onMultipleSelectionMenuItem(item);
+        }
+        else
+        {
+            onMainMenuItem(item);
+        }
+        return true;
+    }
+    private void onMainMenuItem(MenuItem item)
+    {
         switch(item.getItemId())
         {
             case R.id.refresh:
@@ -465,26 +471,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 sorter.sort(item.getItemId());
                 break;
         }
-        return true;
-    }    
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.contextmenu, menu);
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-        AppInfo appInfo = adapter.getItem(info.position);
-        if(appInfo.getLogInfo() == null)
-        {
-            menu.removeItem(R.id.deleteBackup);
-            menu.removeItem(R.id.share);
-        }
-        menu.setHeaderTitle(appInfo.getLabel());
     }
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
+    private void onMultipleSelectionMenuItem(MenuItem item)
     {
-        final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        /* TODO actually support handling multiple items at once
         switch(item.getItemId())
         {
             case R.id.uninstall:
@@ -523,7 +513,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
-                return true;
+                break;
             case R.id.deleteBackup:
                 new AlertDialog.Builder(this)
                 .setTitle(adapter.getItem(info.position).getLabel())
@@ -553,13 +543,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
-                return true;
+                break;
             case R.id.enablePackage:
                 displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), true);
-                return true;
+                break;
             case R.id.disablePackage:
                 displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), false);
-                return true;
+                break;
             case R.id.share:
                 AppInfo appInfo = adapter.getItem(info.position);
                 File apk = new File(backupDir, appInfo.getPackageName() + "/" + appInfo.getLogInfo().getApk());
@@ -579,10 +569,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 ShareDialogFragment shareDialog = new ShareDialogFragment();
                 shareDialog.setArguments(arguments);
                 shareDialog.show(getFragmentManager(), "DialogFragment");
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+                break;
         }
+        */
     }
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
