@@ -173,6 +173,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
 
     public void setMultipleChoice(boolean enabled) {
         multipleSelection = enabled;
+        if (!enabled)
+        {
+            for (AppInfo item : items)
+                item.setChecked(false);
+        }
         notifyDataSetChanged();
     }
 

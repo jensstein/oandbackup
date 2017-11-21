@@ -139,6 +139,20 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         }
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (adapter != null && adapter.isMultipleSelection())
+        {
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            adapter.setMultipleChoice(false);
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
+
     public void displayDialog(AppInfo appInfo)
     {
         if(!appInfo.isInstalled() && appInfo.getBackupMode() == AppInfo.MODE_DATA)
