@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -41,6 +42,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     static final int TOOLS_REQUEST = 2;
 
     File backupDir;
+
+    Menu menu;
     MenuItem mSearchItem;
 
     AppInfoAdapter adapter;
@@ -318,10 +321,16 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        this.menu = menu;
+        prepareMainMenu();
+        return true;
+    }
+
+    private void prepareMainMenu()
+    {
         // clear menu so menus from other activities aren't shown also
         menu.clear();
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             mSearchItem = menu.findItem(R.id.search);
@@ -362,23 +371,51 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 }
             });
         }
-        return true;
     }
+
+    private void prepareMultipleSelectionMenu()
+    {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.contextmenu, menu);
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
-        MenuItem filterItem = menu.findItem(filteringId);
-        if(filterItem != null)
+        if (adapter != null && adapter.isMultipleSelection())
         {
-            filterItem.setChecked(true);
+            menu.findItem(R.id.deleteBackup).setVisible(true);
+            menu.findItem(R.id.share).setVisible(true);
+
+            // hide delete backup and share as soon as there's an item without backup selected
+            SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
+            for (int i = listView.getCount(); i-- != 0;) {
+                if (checkedItems.get(i)) {
+                    AppInfo appInfo = adapter.getItem(i);
+                    if(appInfo.getLogInfo() == null)
+                    {
+                        menu.findItem(R.id.deleteBackup).setVisible(false);
+                        menu.findItem(R.id.share).setVisible(false);
+                        break;
+                    }
+                }
+            }
         }
-        int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
-        MenuItem sortItem = menu.findItem(sortingId);
-        if(sortItem != null)
+        else
         {
-            sortItem.setChecked(true);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
+            MenuItem filterItem = menu.findItem(filteringId);
+            if (filterItem != null)
+            {
+                filterItem.setChecked(true);
+            }
+            int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
+            MenuItem sortItem = menu.findItem(sortingId);
+            if (sortItem != null)
+            {
+                sortItem.setChecked(true);
+            }
         }
         return true;
     }
@@ -705,6 +742,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                             listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                             adapter.setMultipleChoice(true);
                             adapter.toggleSelected(position);
+                            prepareMultipleSelectionMenu();
                             return true;
                         }
                     });
