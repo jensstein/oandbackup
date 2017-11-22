@@ -1,25 +1,26 @@
 package dk.jens.backup;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.SparseBooleanArray;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
-
-import java.io.File;
-import java.util.ArrayList;
-
 import dk.jens.backup.adapters.AppInfoAdapter;
 import dk.jens.backup.schedules.Scheduler;
 import dk.jens.backup.ui.HandleMessages;
@@ -27,6 +28,10 @@ import dk.jens.backup.ui.Help;
 import dk.jens.backup.ui.LanguageHelper;
 import dk.jens.backup.ui.NotificationHelper;
 import dk.jens.backup.ui.dialogs.BackupRestoreDialogFragment;
+import dk.jens.backup.ui.dialogs.ShareDialogFragment;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class OAndBackup extends BaseActivity
 implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
@@ -36,8 +41,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     static final int TOOLS_REQUEST = 2;
 
     File backupDir;
-
-    Menu menu;
     MenuItem mSearchItem;
 
     AppInfoAdapter adapter;
@@ -57,7 +60,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     Sorter sorter;
-    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -136,21 +138,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             callRestore(appInfo, mode);
         } else {
             Log.e(TAG, "unknown actionType: " + actionType);
-        }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        if (adapter != null && adapter.isMultipleSelection())
-        {
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            adapter.setMultipleChoice(false);
-            prepareMainMenu();
-        }
-        else
-        {
-            super.onBackPressed();
         }
     }
 
@@ -330,16 +317,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        this.menu = menu;
-        prepareMainMenu();
-        return true;
-    }
-
-    private void prepareMainMenu()
-    {
         // clear menu so menus from other activities aren't shown also
         menu.clear();
-        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             mSearchItem = menu.findItem(R.id.search);
@@ -380,51 +361,23 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 }
             });
         }
+        return true;
     }
-
-    private void prepareMultipleSelectionMenu()
-    {
-        menu.clear();
-        getMenuInflater().inflate(R.menu.contextmenu, menu);
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        if (adapter != null && adapter.isMultipleSelection())
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
+        MenuItem filterItem = menu.findItem(filteringId);
+        if(filterItem != null)
         {
-            menu.findItem(R.id.deleteBackup).setVisible(true);
-            menu.findItem(R.id.share).setVisible(true);
-
-            // hide delete backup and share as soon as there's an item without backup selected
-            SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
-            for (int i = listView.getCount(); i-- != 0;) {
-                if (checkedItems.get(i)) {
-                    AppInfo appInfo = adapter.getItem(i);
-                    if(appInfo.getLogInfo() == null)
-                    {
-                        menu.findItem(R.id.deleteBackup).setVisible(false);
-                        menu.findItem(R.id.share).setVisible(false);
-                        break;
-                    }
-                }
-            }
+            filterItem.setChecked(true);
         }
-        else
+        int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
+        MenuItem sortItem = menu.findItem(sortingId);
+        if(sortItem != null)
         {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            int filteringId = Sorter.convertFilteringId(prefs.getInt("filteringId", 0));
-            MenuItem filterItem = menu.findItem(filteringId);
-            if (filterItem != null)
-            {
-                filterItem.setChecked(true);
-            }
-            int sortingId = Sorter.convertSortingId(prefs.getInt("sortingId", 1));
-            MenuItem sortItem = menu.findItem(sortingId);
-            if (sortItem != null)
-            {
-                sortItem.setChecked(true);
-            }
+            sortItem.setChecked(true);
         }
         return true;
     }
@@ -439,18 +392,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (adapter != null && adapter.isMultipleSelection())
-        {
-            onMultipleSelectionMenuItem(item);
-        }
-        else
-        {
-            onMainMenuItem(item);
-        }
-        return true;
-    }
-    private void onMainMenuItem(MenuItem item)
     {
         switch(item.getItemId())
         {
@@ -485,10 +426,26 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 sorter.sort(item.getItemId());
                 break;
         }
+        return true;
     }
-    private void onMultipleSelectionMenuItem(MenuItem item)
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
     {
-        /* TODO actually support handling multiple items at once
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.contextmenu, menu);
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        AppInfo appInfo = adapter.getItem(info.position);
+        if(appInfo.getLogInfo() == null)
+        {
+            menu.removeItem(R.id.deleteBackup);
+            menu.removeItem(R.id.share);
+        }
+        menu.setHeaderTitle(appInfo.getLabel());
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId())
         {
             case R.id.uninstall:
@@ -527,7 +484,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
-                break;
+                return true;
             case R.id.deleteBackup:
                 new AlertDialog.Builder(this)
                 .setTitle(adapter.getItem(info.position).getLabel())
@@ -557,13 +514,13 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
-                break;
+                return true;
             case R.id.enablePackage:
                 displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), true);
-                break;
+                return true;
             case R.id.disablePackage:
                 displayDialogEnableDisable(adapter.getItem(info.position).getPackageName(), false);
-                break;
+                return true;
             case R.id.share:
                 AppInfo appInfo = adapter.getItem(info.position);
                 File apk = new File(backupDir, appInfo.getPackageName() + "/" + appInfo.getLogInfo().getApk());
@@ -583,9 +540,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 ShareDialogFragment shareDialog = new ShareDialogFragment();
                 shareDialog.setArguments(arguments);
                 shareDialog.show(getFragmentManager(), "DialogFragment");
-                break;
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
-        */
     }
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key)
@@ -702,9 +660,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             }
 
             listView = (ListView) findViewById(R.id.listview);
-
-            // TODO find another way to allow a long-click-like operation (uninstall/backup/etc)
-            //registerForContextMenu(listView);
+            registerForContextMenu(listView);
 
             adapter = new AppInfoAdapter(OAndBackup.this, R.layout.listlayout, appInfoList);
             adapter.setLocalTimestampFormat(prefs.getBoolean(
@@ -725,28 +681,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                         @Override
                         public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
                         {
-                            if (adapter.isMultipleSelection())
-                            {
-                                adapter.toggleSelected(pos);
-                            }
-                            else
-                            {
-                                AppInfo appInfo = adapter.getItem(pos);
-                                displayDialog(appInfo);
-                            }
-                        }
-                    });
-                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                        @Override
-                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                            if (adapter.isMultipleSelection())
-                                return false;
-
-                            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                            adapter.setMultipleChoice(true);
-                            adapter.toggleSelected(position);
-                            prepareMultipleSelectionMenu();
-                            return true;
+                            AppInfo appInfo = adapter.getItem(pos);
+                            displayDialog(appInfo);
                         }
                     });
                 }
