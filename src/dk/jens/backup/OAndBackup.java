@@ -146,6 +146,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         {
             listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             adapter.setMultipleChoice(false);
+            prepareMainMenu();
         }
         else
         {
