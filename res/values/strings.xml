@@ -17,6 +17,7 @@
     <string name="refresh">refresh</string>
     <string name="batchbackup">batch backup</string>
     <string name="batchrestore">batch restore</string>
+    <string name="batch_uninstall">batch uninstall</string>
     <string name="search">search</string>
     <string name="searchHint">search for apps</string>
     <string name="deleteBackup">delete backup</string>

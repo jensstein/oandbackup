@@ -30,6 +30,9 @@ public class BatchConfirmDialog extends DialogFragment
             case R.id.batchrestore:
                 title = getString(R.string.restoreConfirmation);
                 break;
+            case R.id.batchuninstall:
+                title = getString(R.string.uninstallDialogMessage);
+                break;
             default:
                 throw new UnsupportedOperationException("not implemented.");
         }

@@ -459,6 +459,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 break;
             case R.id.batchbackup:
             case R.id.batchrestore:
+            case R.id.batchuninstall:
                 startActivityForResult(batchIntent(BatchActivity.class, item.getItemId()), BATCH_REQUEST);
                 break;
             case R.id.preferences:
