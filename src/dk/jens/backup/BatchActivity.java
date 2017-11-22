@@ -34,7 +34,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
 {
     ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     final static String TAG = OAndBackup.TAG;
-    boolean backupBoolean;
+    int operation;
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
     final static int DISMISS_DIALOG = 2;
@@ -85,7 +85,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         Bundle extra = getIntent().getExtras();
         if(extra != null)
         {
-            backupBoolean = extra.getBoolean("dk.jens.backup.backupBoolean");
+            operation = extra.getInt("dk.jens.backup.operation");
             filteringMethodId = extra.getInt("dk.jens.backup.filteringMethodId");
             sortingMethodId = extra.getInt("dk.jens.backup.sortingMethodId");
         }
@@ -101,19 +101,23 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
 
         if(appInfoList == null)
             appInfoList = AppInfoHelper.getPackageInfo(this, backupDir, true);
-        if(backupBoolean)
-        {
-            list = new ArrayList<AppInfo>();
-            for(AppInfo appInfo : appInfoList)
-                if(appInfo.isInstalled())
-                    list.add(appInfo);
 
-            bt.setText(R.string.backup);
-        }
-        else
+        switch (operation)
         {
-            list = new ArrayList<AppInfo>(appInfoList);
-            bt.setText(R.string.restore);
+            case R.id.batchbackup:
+                list = new ArrayList<AppInfo>();
+                for(AppInfo appInfo : appInfoList)
+                    if(appInfo.isInstalled())
+                        list.add(appInfo);
+
+                bt.setText(R.string.backup);
+                break;
+            case R.id.batchrestore:
+                list = new ArrayList<AppInfo>(appInfoList);
+                bt.setText(R.string.restore);
+                break;
+            default:
+                throw new UnsupportedOperationException("not implemented.");
         }
 
         ListView listView = (ListView) findViewById(R.id.listview);
@@ -168,7 +172,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         }
         Bundle arguments = new Bundle();
         arguments.putParcelableArrayList("selectedList", selectedList);
-        arguments.putBoolean("backupBoolean", backupBoolean);
+        arguments.putInt("operation", operation);
         BatchConfirmDialog dialog = new BatchConfirmDialog();
         dialog.setArguments(arguments);
         dialog.show(getFragmentManager(), "DialogFragment");
@@ -262,10 +266,13 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
     }
     public void doAction(ArrayList<AppInfo> selectedList)
     {
+        if (operation != R.id.batchbackup || operation != R.id.batchrestore)
+            throw new UnsupportedOperationException("not implemented.");
+
         if(backupDir != null)
         {
             Crypto crypto = null;
-            if(backupBoolean && prefs.getBoolean(
+            if(operation == R.id.batchbackup && prefs.getBoolean(
                     Constants.PREFS_ENABLECRYPTO, false) &&
                     Crypto.isAvailable(this))
                 crypto = getCrypto();
@@ -283,12 +290,12 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
             for(AppInfo appInfo: selectedList)
             {
                 // crypto may be needed for restoring even if the preference is set to false
-                if(!backupBoolean && appInfo.getLogInfo() != null && appInfo.getLogInfo().isEncrypted() && Crypto.isAvailable(this))
+                if(operation == R.id.batchrestore && appInfo.getLogInfo() != null && appInfo.getLogInfo().isEncrypted() && Crypto.isAvailable(this))
                     crypto = getCrypto();
                 if(appInfo.isChecked())
                 {
                     String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                    String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
+                    String title = operation == R.id.batchbackup ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
                     title = title + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
                     handleMessages.setMessage(appInfo.getLabel(), message);
@@ -297,7 +304,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                         mode = AppInfo.MODE_APK;
                     else if(rbData.isChecked())
                         mode = AppInfo.MODE_DATA;
-                    if(backupBoolean)
+                    if(operation == R.id.batchbackup)
                     {
                         if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
@@ -318,7 +325,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                     }
                     if(i == total)
                     {
-                        String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
+                        String msg = operation == R.id.batchbackup ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
                         String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
                         NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, notificationTitle, msg, true);
                         handleMessages.endMessage();
