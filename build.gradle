@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -14,12 +15,11 @@ repositories {
 }
 
 dependencies {
-        compile 'org.sufficientlysecure:openpgp-api:9.0'
+        implementation 'org.sufficientlysecure:openpgp-api:9.0'
 }
 
 android {
-    compileSdkVersion 'android-25'
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 'android-26'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
