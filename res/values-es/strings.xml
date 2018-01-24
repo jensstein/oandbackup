@@ -43,7 +43,7 @@
     <string name="dialogNo">No</string>
     <string name="noBackupYet">Sin respaldo</string>
     <string name="restoreDataWithoutApkError">No es posible restaurar los datos sin la APK, el paquete no está instalado :</string>
-    <string name="collectingData">>Obteniendo información de paquetes</string>
+    <string name="collectingData">Obteniendo información de paquetes</string>
     <string name="suCheck">Verificando superusuario y busybox</string>
     <string name="noSu">No fue posible obtener permisos de superusuario</string>
     <string name="busyboxProblem">No se encontró busybox. Consulte el registro de errores</string>
@@ -99,7 +99,7 @@
     <string name="prefs_oldBackups">Filtrar respaldos por antigüedad</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>
-    <string name="prefs_copySelfApk">Autocopiar/string>
+    <string name="prefs_copySelfApk">Autocopiar</string>
     <string name="prefs_summaryCopySelfApk">Poner una copia de oandbackup en el nivel superior del directorio de respaldos cuando se respalde.</string>
     <string name="prefs_languages">Idiomas</string>
     <string name="prefs_languageSystemDefault">Idioma del sistema</string>
@@ -126,7 +126,7 @@
     <string name="sched_checkbox">Habilitar</string>
     <string name="sched_updateButton">Actualizar</string>
     <string name="sched_removeButton">Remover</string>
-    <string name="sched_activateButton">Iniciar respaldo ahora/string>
+    <string name="sched_activateButton">Iniciar respaldo ahora</string>
     <string name="sched_startingbackup">Iniciar respaldos programados</string>
     <string name="sched_backupMode">Modo de respaldo</string>
     <string name="sched_timeLeft">Horas hasta el próximo respaldo</string>
