@@ -1,5 +1,6 @@
 package dk.jens.backup.schedules;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
@@ -28,12 +29,17 @@ implements BackupRestoreHelper.OnBackupRestoreListener
             handleScheduledBackups.setOnBackupListener(this);
             prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
             edit = prefs.edit();
+            int repeatTime = prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, 0);
             long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
-                prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, 0),
+                repeatTime,
                 prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, 0));
             edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + id, timeUntilNextEvent);
             edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, System.currentTimeMillis());
             edit.commit();
+            // fix the time at which the alarm will be run the next time.
+            // it can be wrong when scheduled in BootReceiver#onReceive()
+            // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
+            handleAlarms.setAlarm(id, timeUntilNextEvent, repeatTime * AlarmManager.INTERVAL_DAY);
             Log.i(TAG, getString(R.string.sched_startingbackup));
             int mode = prefs.getInt(Constants.PREFS_SCHEDULES_MODE + id, 1);
             int subMode = prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + id, 2);
