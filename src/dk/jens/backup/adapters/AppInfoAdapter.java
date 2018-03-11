@@ -42,11 +42,11 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         {
             DisplayMetrics metrics = new DisplayMetrics();
             ((android.app.Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            iconSize = 32 * (int) metrics.density;
+            iconSize = 64 * (int) metrics.density;
         }
         catch(ClassCastException e)
         {
-            iconSize = 32;
+            iconSize = 64;
         }
     }
     public void add(AppInfo appInfo)
