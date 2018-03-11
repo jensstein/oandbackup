@@ -2,11 +2,11 @@
 <resources>
     <!-- translators should ensure that all items are translated. there is no graceful fallback if the number of items in a translated file doesn't match the source and the app will crash on that particular language. -->
     <string-array name="scheduleModes">
-        <item>all apps</item>
-        <item>user apps</item>
-        <item>system apps</item>
-        <item>new and updated apps</item>
-        <item>custom list</item>
+        <item>All apps</item>
+        <item>User apps</item>
+        <item>System apps</item>
+        <item>New and Updated apps</item>
+        <item>Custom list</item>
     </string-array>
     <!-- entries in scheduleSubModes are taken from strings.xml and should be left as-is here -->
     <string-array name="scheduleSubModes" translatable="false">
@@ -16,13 +16,13 @@
     </string-array>
 
     <string-array name="tools_titles">
-        <item>quick reboot</item>
-        <item>delete backups</item>
-        <item>view error log</item>
+        <item>Quick reboot</item>
+        <item>Delete backups</item>
+        <item>View log</item>
     </string-array>
     <string-array name="tools_descriptions">
-        <item>kills the system_server process to force a restart of user space</item>
-        <item>delete backups of all apps not currently installed</item>
+        <item>Kills the system_server process to force a restart of user space</item>
+        <item>Delete backups of all apps which are not currently installed.</item>
         <item></item>
     </string-array>
 </resources>
