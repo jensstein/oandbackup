@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-       <LinearLayout
+         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -41,7 +41,7 @@
             android:gravity="right"
             android:ellipsize="marquee"
             android:maxLines="1"/>
-    </LinearLayout>
+        </LinearLayout>
 
      <TextView
             android:id="@+id/packageName"
