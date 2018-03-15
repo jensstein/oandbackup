@@ -20,8 +20,22 @@ public class BatchConfirmDialog extends DialogFragment
     {
         Bundle arguments = getArguments();
         final ArrayList<AppInfo> selectedList = arguments.getParcelableArrayList("selectedList");
-        boolean backupBoolean = arguments.getBoolean("backupBoolean");
-        String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
+        int operation = arguments.getInt("operation");
+        String title;
+        switch (operation)
+        {
+            case R.id.batchbackup:
+                title = getString(R.string.backupConfirmation);
+                break;
+            case R.id.batchrestore:
+                title = getString(R.string.restoreConfirmation);
+                break;
+            case R.id.batchuninstall:
+                title = getString(R.string.uninstallDialogMessage);
+                break;
+            default:
+                throw new UnsupportedOperationException("not implemented.");
+        }
         String message = "";
         for(AppInfo appInfo : selectedList)
             message = message + appInfo.getLabel() + "\n";

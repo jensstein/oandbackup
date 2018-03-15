@@ -60,7 +60,6 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     Sorter sorter;
-    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -382,10 +381,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         }
         return true;
     }
-    public Intent batchIntent(Class batchClass, boolean backup)
+    public Intent batchIntent(Class batchClass, int operation)
     {
         Intent batchIntent = new Intent(this, batchClass);
-        batchIntent.putExtra("dk.jens.backup.backupBoolean", backup);
+        batchIntent.putExtra("dk.jens.backup.operation", operation);
         batchIntent.putStringArrayListExtra("dk.jens.backup.users", shellCommands.getUsers());
         batchIntent.putExtra("dk.jens.backup.filteringMethodId", sorter.getFilteringMethod().getId());
         batchIntent.putExtra("dk.jens.backup.sortingMethodId", sorter.getSortingMethod().getId());
@@ -400,10 +399,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 refresh();
                 break;
             case R.id.batchbackup:
-                startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST);
-                break;
             case R.id.batchrestore:
-                startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST);
+            case R.id.batchuninstall:
+                startActivityForResult(batchIntent(BatchActivity.class, item.getItemId()), BATCH_REQUEST);
                 break;
             case R.id.preferences:
                 startActivity(new Intent(this, Preferences.class));
@@ -429,7 +427,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 break;
         }
         return true;
-    }    
+    }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
     {

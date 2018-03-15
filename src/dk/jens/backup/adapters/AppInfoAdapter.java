@@ -36,7 +36,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo>
         this.context = context;
         this.items = new ArrayList<AppInfo>(items);
         this.layout = layout;
-        
+
         originalValues = new ArrayList<AppInfo>(items);
         try
         {

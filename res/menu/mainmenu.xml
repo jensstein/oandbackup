@@ -8,6 +8,8 @@
         android:title="@string/batchbackup" />
     <item android:id="@+id/batchrestore"
         android:title="@string/batchrestore" />
+    <item android:id="@+id/batchuninstall"
+        android:title="@string/batch_uninstall" />
     <item android:id="@+id/search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_category_default"

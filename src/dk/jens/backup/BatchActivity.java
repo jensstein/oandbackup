@@ -34,7 +34,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
 {
     ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     final static String TAG = OAndBackup.TAG;
-    boolean backupBoolean;
+    int operation;
     final static int SHOW_DIALOG = 0;
     final static int CHANGE_DIALOG = 1;
     final static int DISMISS_DIALOG = 2;
@@ -85,7 +85,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         Bundle extra = getIntent().getExtras();
         if(extra != null)
         {
-            backupBoolean = extra.getBoolean("dk.jens.backup.backupBoolean");
+            operation = extra.getInt("dk.jens.backup.operation");
             filteringMethodId = extra.getInt("dk.jens.backup.filteringMethodId");
             sortingMethodId = extra.getInt("dk.jens.backup.sortingMethodId");
         }
@@ -101,19 +101,27 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
 
         if(appInfoList == null)
             appInfoList = AppInfoHelper.getPackageInfo(this, backupDir, true);
-        if(backupBoolean)
-        {
-            list = new ArrayList<AppInfo>();
-            for(AppInfo appInfo : appInfoList)
-                if(appInfo.isInstalled())
-                    list.add(appInfo);
 
-            bt.setText(R.string.backup);
-        }
-        else
+        switch (operation)
         {
-            list = new ArrayList<AppInfo>(appInfoList);
-            bt.setText(R.string.restore);
+            case R.id.batchbackup:
+                list = new ArrayList<AppInfo>();
+                for(AppInfo appInfo : appInfoList)
+                    if(appInfo.isInstalled())
+                        list.add(appInfo);
+
+                bt.setText(R.string.backup);
+                break;
+            case R.id.batchrestore:
+                list = new ArrayList<AppInfo>(appInfoList);
+                bt.setText(R.string.restore);
+                break;
+            case R.id.batchuninstall:
+                list = new ArrayList<AppInfo>(appInfoList);
+                bt.setText(R.string.uninstall);
+                break;
+            default:
+                throw new UnsupportedOperationException("not implemented.");
         }
 
         ListView listView = (ListView) findViewById(R.id.listview);
@@ -168,7 +176,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         }
         Bundle arguments = new Bundle();
         arguments.putParcelableArrayList("selectedList", selectedList);
-        arguments.putBoolean("backupBoolean", backupBoolean);
+        arguments.putInt("operation", operation);
         BatchConfirmDialog dialog = new BatchConfirmDialog();
         dialog.setArguments(arguments);
         dialog.show(getFragmentManager(), "DialogFragment");
@@ -262,79 +270,126 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
     }
     public void doAction(ArrayList<AppInfo> selectedList)
     {
-        if(backupDir != null)
+        switch (operation)
         {
-            Crypto crypto = null;
-            if(backupBoolean && prefs.getBoolean(
-                    Constants.PREFS_ENABLECRYPTO, false) &&
-                    Crypto.isAvailable(this))
-                crypto = getCrypto();
-            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-            if(prefs.getBoolean("acquireWakelock", true))
-            {
-                wl.acquire();
-                Log.i(TAG, "wakelock acquired");
-            }
-            changesMade = true;
-            int id = (int) System.currentTimeMillis();
-            int total = selectedList.size();
-            int i = 1;
-            boolean errorFlag = false;
-            for(AppInfo appInfo: selectedList)
-            {
-                // crypto may be needed for restoring even if the preference is set to false
-                if(!backupBoolean && appInfo.getLogInfo() != null && appInfo.getLogInfo().isEncrypted() && Crypto.isAvailable(this))
-                    crypto = getCrypto();
-                if(appInfo.isChecked())
+            case R.id.batchbackup:
+            case R.id.batchrestore:
+                if(backupDir != null)
                 {
-                    String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
-                    String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
-                    title = title + " (" + i + "/" + total + ")";
-                    NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
-                    handleMessages.setMessage(appInfo.getLabel(), message);
-                    int mode = AppInfo.MODE_BOTH;
-                    if(rbApk.isChecked())
-                        mode = AppInfo.MODE_APK;
-                    else if(rbData.isChecked())
-                        mode = AppInfo.MODE_DATA;
-                    if(backupBoolean)
+                    doBackupRestore(selectedList);
+                }
+                break;
+            case R.id.batchuninstall:
+                doUninstall(selectedList);
+                break;
+            default:
+                throw new UnsupportedOperationException("not implemented.");
+        }
+    }
+    public void doBackupRestore(ArrayList<AppInfo> selectedList)
+    {
+        Crypto crypto = null;
+        if(operation == R.id.batchbackup && prefs.getBoolean(
+                Constants.PREFS_ENABLECRYPTO, false) &&
+                Crypto.isAvailable(this))
+            crypto = getCrypto();
+        PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        if(prefs.getBoolean("acquireWakelock", true))
+        {
+            wl.acquire();
+            Log.i(TAG, "wakelock acquired");
+        }
+        changesMade = true;
+        int id = (int) System.currentTimeMillis();
+        int total = selectedList.size();
+        int i = 1;
+        boolean errorFlag = false;
+        for(AppInfo appInfo: selectedList)
+        {
+            // crypto may be needed for restoring even if the preference is set to false
+            if(operation == R.id.batchrestore && appInfo.getLogInfo() != null && appInfo.getLogInfo().isEncrypted() && Crypto.isAvailable(this))
+                crypto = getCrypto();
+            if(appInfo.isChecked())
+            {
+                String message = "(" + Integer.toString(i) + "/" + Integer.toString(total) + ")";
+                String title = operation == R.id.batchbackup ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
+                title = title + " (" + i + "/" + total + ")";
+                NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, title, appInfo.getLabel(), false);
+                handleMessages.setMessage(appInfo.getLabel(), message);
+                int mode = AppInfo.MODE_BOTH;
+                if(rbApk.isChecked())
+                    mode = AppInfo.MODE_APK;
+                else if(rbData.isChecked())
+                    mode = AppInfo.MODE_DATA;
+                if(operation == R.id.batchbackup)
+                {
+                    if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
+                        errorFlag = true;
+                    else if(crypto != null)
                     {
-                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
-                            errorFlag = true;
-                        else if(crypto != null)
+                        crypto.encryptFromAppInfo(this, backupDir, appInfo, mode, prefs);
+                        if(crypto.isErrorSet())
                         {
-                            crypto.encryptFromAppInfo(this, backupDir, appInfo, mode, prefs);
-                            if(crypto.isErrorSet())
-                            {
-                                Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), mode, prefs.getBoolean("backupExternalFiles", false));
-                                errorFlag = true;
-                            }
+                            Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), mode, prefs.getBoolean("backupExternalFiles", false));
+                            errorFlag = true;
                         }
                     }
-                    else
-                    {
-                        if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode, crypto) != 0)
-                            errorFlag = true;
-                    }
-                    if(i == total)
-                    {
-                        String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
-                        String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
-                        NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, notificationTitle, msg, true);
-                        handleMessages.endMessage();
-                    }
-                    i++;
                 }
+                else
+                {
+                    if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode, crypto) != 0)
+                        errorFlag = true;
+                }
+                if(i == total)
+                {
+                    String msg = operation == R.id.batchbackup ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
+                    String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
+                    NotificationHelper.showNotification(BatchActivity.this, BatchActivity.class, id, notificationTitle, msg, true);
+                    handleMessages.endMessage();
+                }
+                i++;
             }
-            if(wl.isHeld())
+        }
+        if(wl.isHeld())
+        {
+            wl.release();
+            Log.i(TAG, "wakelock released");
+        }
+        if(errorFlag)
+        {
+            Utils.showErrors(BatchActivity.this);
+        }
+    }
+    public void doUninstall(ArrayList<AppInfo> selectedList)
+    {
+        int id = (int) System.currentTimeMillis();
+        int total = selectedList.size();
+        int i = 1;
+        int ret = 0;
+        StringBuilder labels = new StringBuilder();
+        for(AppInfo appInfo: selectedList)
+        {
+            Log.i(TAG, "uninstalling " + appInfo.getLabel());
+            handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
+            ret |= shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem());
+            labels.append(appInfo.getLabel());
+            labels.append(", ");
+            if (i == total)
             {
-                wl.release();
-                Log.i(TAG, "wakelock released");
+                labels.setLength(labels.length() - ", ".length());
+                if(ret == 0)
+                {
+                    NotificationHelper.showNotification(BatchActivity.this, OAndBackup.class, id, getString(R.string.uninstallSuccess), labels.toString(), true);
+                }
+                else
+                {
+                    NotificationHelper.showNotification(BatchActivity.this, OAndBackup.class, id, getString(R.string.uninstallFailure), labels.toString(), true);
+                    Utils.showErrors(BatchActivity.this);
+                }
+
+                handleMessages.endMessage();
             }
-            if(errorFlag)
-            {
-                Utils.showErrors(BatchActivity.this);
-            }
+            i++;
         }
     }
 }
