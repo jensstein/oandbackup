@@ -3,6 +3,7 @@
     <!-- languageEntries shouldn't be translated -->
     <string-array name="languageEntries">
         <item>@string/prefs_languageSystemDefault</item>
+        <item>Chinese (简体中文)</item>
         <item>deutsch (deutschland)</item>
         <item>deutsch (österreich)</item>
         <item>english</item>
@@ -20,6 +21,7 @@
     <!-- languageEntryValues shouldn't be translated -->
     <string-array name="languageEntryValues">
         <item>system</item>
+        <item>zh_CN</item>
         <item>de</item>
         <item>de_AT</item>
         <item>en</item>
