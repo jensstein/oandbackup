@@ -1,0 +1,7 @@
+[package]
+name = "oab-utils"
+version = "0.1.0"
+authors = ["jens stein"]
+
+[dependencies]
+clap = "2.31"
