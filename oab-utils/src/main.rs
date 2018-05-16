@@ -6,7 +6,7 @@ use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
-use clap::{Arg, App, SubCommand};
+use clap::{Arg, App, AppSettings, SubCommand};
 
 // https://blog.rust-lang.org/2016/05/13/rustup.html
 // https://users.rust-lang.org/t/announcing-cargo-apk/5501
@@ -57,6 +57,7 @@ fn set_permissions(p: &str, mode: u32) -> bool {
 fn main() {
     // https://github.com/kbknapp/clap-rs
     let args = App::new("oab-utils")
+        .setting(AppSettings::ArgRequiredElseHelp)
         .subcommand(SubCommand::with_name("owner")
             .arg(Arg::with_name("input")
                 .help("file to get info from")
@@ -69,22 +70,30 @@ fn main() {
                 .required(true))
         )
         .get_matches();
-    if let Some(args) = args.subcommand_matches("owner") {
-        let input = args.value_of("input").unwrap();
-        let ids = get_owner_ids(input);
-        println!("uid: {}\ngid: {}", ids.uid, ids.gid);
-    } else if let Some(args) = args.subcommand_matches("set-permissions") {
-        let input = args.value_of("input").unwrap();
-        let mode_str = args.value_of("mode").unwrap();
-        let mode = match u32::from_str_radix(mode_str, 8) {
-            Err(e) => {
-                eprintln!("error parsing input {}: {}", mode_str, e.description());
+    match args.subcommand() {
+        ("owner", Some(args)) => {
+            let input = args.value_of("input").unwrap();
+            let ids = get_owner_ids(input);
+            println!("uid: {}\ngid: {}", ids.uid, ids.gid);
+        },
+        ("set-permissions", Some(args)) => {
+            let input = args.value_of("input").unwrap();
+            let mode_str = args.value_of("mode").unwrap();
+            let mode = match u32::from_str_radix(mode_str, 8) {
+                Err(e) => {
+                    eprintln!("error parsing input {}: {}", mode_str, e.description());
+                    std::process::exit(1);
+                }
+                Ok(value) => value
+            };
+            if !set_permissions(input, mode) {
                 std::process::exit(1);
-            }
-            Ok(value) => value
-        };
-        if !set_permissions(input, mode) {
+            };
+        },
+        ("", None) => {
+            eprintln!("no commands specified");
             std::process::exit(1);
-        };
+        },
+        _ => unreachable!()
     }
 }
