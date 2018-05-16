@@ -30,7 +30,7 @@ fn get_owner_ids(path: &str) -> OwnerId {
     ids
 }
 
-fn set_permissions(p: &str) -> bool {
+fn set_permissions(p: &str, mode: u32) -> bool {
     let path = Path::new(p);
     let mut perms = match fs::metadata(path) {
         Err(e) => {
@@ -40,7 +40,6 @@ fn set_permissions(p: &str) -> bool {
         }
         Ok(metadata) => metadata.permissions()
     };
-    let mode = 0o664;
     if perms.mode() & 0o777 != mode {
         perms.set_mode(mode);
         match std::fs::set_permissions(path, perms) {
@@ -63,6 +62,9 @@ fn main() {
                 .help("file to get info from")
                 .required(true)))
         .subcommand(SubCommand::with_name("set-permissions")
+            .arg(Arg::with_name("mode")
+                .help("mode to set, in octal (e.g. 644)")
+                .required(true))
             .arg(Arg::with_name("input")
                 .required(true))
         )
@@ -73,7 +75,15 @@ fn main() {
         println!("uid: {}\ngid: {}", ids.uid, ids.gid);
     } else if let Some(args) = args.subcommand_matches("set-permissions") {
         let input = args.value_of("input").unwrap();
-        if !set_permissions(input) {
+        let mode_str = args.value_of("mode").unwrap();
+        let mode = match u32::from_str_radix(mode_str, 8) {
+            Err(e) => {
+                eprintln!("error parsing input {}: {}", mode_str, e.description());
+                std::process::exit(1);
+            }
+            Ok(value) => value
+        };
+        if !set_permissions(input, mode) {
             std::process::exit(1);
         };
     }
