@@ -1,4 +1,5 @@
 extern crate clap;
+extern crate libc;
 
 use std::error::Error;
 use std::fs;
@@ -14,6 +15,75 @@ use clap::{Arg, App, AppSettings, SubCommand};
 fn get_owner_ids(path: &str) -> Result<(u32, u32), std::io::Error> {
     let metadata = fs::metadata(Path::new(path))?;
     Ok((metadata.uid(), metadata.gid()))
+}
+
+fn str_to_cstring(s: &str) -> Result<std::ffi::CString, String> {
+    match std::ffi::CString::new(s) {
+        Ok(s) => Ok(s),
+        Err(e) => {
+            return Err(e.description().to_string())
+        }
+    }
+}
+
+fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), String> {
+    if let Some(index) = id.find(":") {
+        let uid_str = &id[..index];
+        let uid = match uid_str.parse::<u32>() {
+            Ok(uid) => uid,
+            Err(_) => get_uid(uid_str)?
+        };
+        let gid_str = &id[index + 1..];
+        let gid = match gid_str.parse::<u32>() {
+            Ok(gid) => gid,
+            Err(_) => get_gid(gid_str)?
+        };
+        return Ok((uid, Some(gid)));
+    }
+    let uid = match id.parse::<u32>() {
+        Ok(uid) => uid,
+        Err(e) => get_uid(id)?
+    };
+    Ok((uid, None))
+}
+
+fn get_uid(name: &str) -> Result<u32, String> {
+    unsafe {
+        let name_cstring = str_to_cstring(name)?;
+        let mut buf = Vec::with_capacity(512);
+        let mut passwd: libc::passwd = std::mem::zeroed();
+        let mut result = std::ptr::null_mut();
+        match libc::getpwnam_r(name_cstring.as_ptr(), &mut passwd,
+                buf.as_mut_ptr(), buf.capacity(), &mut result) {
+            0 if !result.is_null() => Ok((*result).pw_uid),
+            _ => Err(format!("no uid found for user {}", name))
+        }
+    }
+}
+
+fn get_gid(name: &str) -> Result<u32, String> {
+    unsafe {
+        let name_cstring = str_to_cstring(name)?;
+        let mut buf = Vec::with_capacity(512);
+        let mut group: libc::group = std::mem::zeroed();
+        let mut result = std::ptr::null_mut();
+        match libc::getgrnam_r(name_cstring.as_ptr(), &mut group,
+                buf.as_mut_ptr(), buf.capacity(), &mut result) {
+            0 if !result.is_null() => Ok((*result).gr_gid),
+            _ => Err(format!("no gid found for group {}", name))
+        }
+    }
+}
+
+fn change_owner(path: &str, uid: u32, gid: u32) -> Result<(), String> {
+    let path_cstring = str_to_cstring(path)?;
+    unsafe {
+        match libc::chown(path_cstring.as_ptr(), uid, gid) {
+            0 => Ok(()),
+            _ => Err(format!("unable to change owner of {} to {}:{}", path,
+                uid, gid))
+        }
+    }
 }
 
 fn set_permissions(p: &str, mode: u32) -> bool {
@@ -55,6 +125,13 @@ fn main() {
             .arg(Arg::with_name("input")
                 .required(true))
         )
+        .subcommand(SubCommand::with_name("change-owner")
+            .arg(Arg::with_name("id")
+                .help("uid and optionally gid to set, separated by :")
+                .required(true))
+            .arg(Arg::with_name("path")
+                .required(true))
+        )
         .get_matches();
     match args.subcommand() {
         ("owner", Some(args)) => {
@@ -82,6 +159,30 @@ fn main() {
             };
             if !set_permissions(input, mode) {
                 std::process::exit(1);
+            };
+        },
+        ("change-owner", Some(args)) => {
+            let id = args.value_of("id").unwrap();
+            let path = args.value_of("path").unwrap();
+            match parse_id_input(args.value_of("id").unwrap()) {
+                Ok((uid, gid_option)) => {
+                    let gid = match gid_option {
+                        Some(gid) => gid,
+                        None => match get_owner_ids(path) {
+                            Ok((_, gid)) => gid,
+                            Err(e) => {
+                                eprintln!("unable to get group id for {}: {}",
+                                    path, e.description());
+                                std::process::exit(1);
+                            }
+                        }
+                    };
+                    if let Err(e) = change_owner(path, uid, gid) {
+                        eprintln!("{}", e);
+                        std::process::exit(1);
+                    };
+                },
+                Err(e) => eprintln!("unable to parse input: {}", e)
             };
         },
         ("", None) => {
