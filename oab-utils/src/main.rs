@@ -11,23 +11,9 @@ use clap::{Arg, App, AppSettings, SubCommand};
 // https://blog.rust-lang.org/2016/05/13/rustup.html
 // https://users.rust-lang.org/t/announcing-cargo-apk/5501
 
-struct OwnerId {
-    uid: u32,
-    gid: u32
-}
-
-fn get_owner_ids(path: &str) -> OwnerId {
-    let ids = match fs::metadata(Path::new(path)) {
-        Err(e) => {
-            eprintln!("error getting owner ids for {}: {}", path,
-                e.description());
-            std::process::exit(1);
-        }
-        Ok(metadata) => OwnerId{
-            uid: metadata.uid(), gid: metadata.gid()
-        }
-    };
-    ids
+fn get_owner_ids(path: &str) -> Result<(u32, u32), std::io::Error> {
+    let metadata = fs::metadata(Path::new(path))?;
+    Ok((metadata.uid(), metadata.gid()))
 }
 
 fn set_permissions(p: &str, mode: u32) -> bool {
@@ -73,8 +59,16 @@ fn main() {
     match args.subcommand() {
         ("owner", Some(args)) => {
             let input = args.value_of("input").unwrap();
-            let ids = get_owner_ids(input);
-            println!("uid: {}\ngid: {}", ids.uid, ids.gid);
+            match get_owner_ids(input) {
+                Ok((uid, gid)) => {
+                    println!("uid: {}\ngid: {}", uid, gid);
+                },
+                Err(e) => {
+                    eprintln!("error getting owner ids for {}: {}", input,
+                        e.description());
+                    std::process::exit(1);
+                }
+            };
         },
         ("set-permissions", Some(args)) => {
             let input = args.value_of("input").unwrap();
