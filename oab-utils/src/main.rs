@@ -64,13 +64,12 @@ fn get_uid(name: &str) -> Result<u32, String> {
 fn get_gid(name: &str) -> Result<u32, String> {
     unsafe {
         let name_cstring = str_to_cstring(name)?;
-        let mut buf = Vec::with_capacity(512);
-        let mut group: libc::group = std::mem::zeroed();
-        let mut result = std::ptr::null_mut();
-        match libc::getgrnam_r(name_cstring.as_ptr(), &mut group,
-                buf.as_mut_ptr(), buf.capacity(), &mut result) {
-            0 if !result.is_null() => Ok((*result).gr_gid),
-            _ => Err(format!("no gid found for group {}", name))
+        // armv7-linux-androideabi doesn't have getgrnam_r so we have to
+        // use getgrnam instead
+        let group = libc::getgrnam(name_cstring.as_ptr());
+        match group.as_ref() {
+            Some(group) => Ok((*group).gr_gid),
+            None => Err(format!("no gid found for group {}", name))
         }
     }
 }
