@@ -42,7 +42,7 @@ fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), String> {
     }
     let uid = match id.parse::<u32>() {
         Ok(uid) => uid,
-        Err(e) => get_uid(id)?
+        Err(_e) => get_uid(id)?
     };
     Ok((uid, None))
 }
@@ -161,7 +161,6 @@ fn main() {
             };
         },
         ("change-owner", Some(args)) => {
-            let id = args.value_of("id").unwrap();
             let path = args.value_of("path").unwrap();
             match parse_id_input(args.value_of("id").unwrap()) {
                 Ok((uid, gid_option)) => {
