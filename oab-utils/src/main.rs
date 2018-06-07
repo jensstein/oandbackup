@@ -1,6 +1,7 @@
 extern crate clap;
 extern crate libc;
 
+use std::fmt;
 use std::error::Error;
 use std::fs;
 use std::os::unix::fs::MetadataExt;
@@ -12,21 +13,41 @@ use clap::{Arg, App, AppSettings, SubCommand};
 // https://blog.rust-lang.org/2016/05/13/rustup.html
 // https://users.rust-lang.org/t/announcing-cargo-apk/5501
 
+#[derive(Debug, Clone)]
+pub struct OabError {
+    pub message: String
+}
+
+impl fmt::Display for OabError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(f, "{}", self.message)
+    }
+}
+
+impl std::error::Error for OabError {
+    fn description(&self) -> &str {
+        &self.message
+    }
+}
+
 fn get_owner_ids(path: &str) -> Result<(u32, u32), std::io::Error> {
     let metadata = fs::metadata(Path::new(path))?;
     Ok((metadata.uid(), metadata.gid()))
 }
 
-fn str_to_cstring(s: &str) -> Result<std::ffi::CString, String> {
+fn str_to_cstring(s: &str) -> Result<std::ffi::CString, OabError> {
     match std::ffi::CString::new(s) {
         Ok(s) => Ok(s),
         Err(e) => {
-            return Err(e.description().to_string())
+            return Err(OabError {
+                    message: e.description().to_string()
+                }
+            )
         }
     }
 }
 
-fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), String> {
+fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), OabError> {
     if let Some(index) = id.find(":") {
         let uid_str = &id[..index];
         let uid = match uid_str.parse::<u32>() {
@@ -47,7 +68,7 @@ fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), String> {
     Ok((uid, None))
 }
 
-fn get_uid(name: &str) -> Result<u32, String> {
+fn get_uid(name: &str) -> Result<u32, OabError> {
     unsafe {
         let name_cstring = str_to_cstring(name)?;
         let mut buf = Vec::with_capacity(512);
@@ -56,12 +77,15 @@ fn get_uid(name: &str) -> Result<u32, String> {
         match libc::getpwnam_r(name_cstring.as_ptr(), &mut passwd,
                 buf.as_mut_ptr(), buf.capacity(), &mut result) {
             0 if !result.is_null() => Ok((*result).pw_uid),
-            _ => Err(format!("no uid found for user {}", name))
+            _ => Err(OabError {
+                    message: format!("no uid found for user {}", name)
+                }
+            )
         }
     }
 }
 
-fn get_gid(name: &str) -> Result<u32, String> {
+fn get_gid(name: &str) -> Result<u32, OabError> {
     unsafe {
         let name_cstring = str_to_cstring(name)?;
         // armv7-linux-androideabi doesn't have getgrnam_r so we have to
@@ -69,18 +93,24 @@ fn get_gid(name: &str) -> Result<u32, String> {
         let group = libc::getgrnam(name_cstring.as_ptr());
         match group.as_ref() {
             Some(group) => Ok((*group).gr_gid),
-            None => Err(format!("no gid found for group {}", name))
+            None => Err(OabError {
+                    message: format!("no gid found for group {}", name)
+                }
+            )
         }
     }
 }
 
-fn change_owner(path: &str, uid: u32, gid: u32) -> Result<(), String> {
+fn change_owner(path: &str, uid: u32, gid: u32) -> Result<(), OabError> {
     let path_cstring = str_to_cstring(path)?;
     unsafe {
         match libc::chown(path_cstring.as_ptr(), uid, gid) {
             0 => Ok(()),
-            _ => Err(format!("unable to change owner of {} to {}:{}", path,
-                uid, gid))
+            _ => Err(OabError {
+                    message: format!("unable to change owner of {} to {}:{}", path,
+                        uid, gid)
+                }
+            )
         }
     }
 }
@@ -176,11 +206,11 @@ fn main() {
                         }
                     };
                     if let Err(e) = change_owner(path, uid, gid) {
-                        eprintln!("{}", e);
+                        eprintln!("{}", e.description());
                         std::process::exit(1);
                     };
                 },
-                Err(e) => eprintln!("unable to parse input: {}", e)
+                Err(e) => eprintln!("unable to parse input: {}", e.description())
             };
         },
         ("", None) => {
