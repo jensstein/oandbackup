@@ -220,3 +220,6 @@ fn main() {
         _ => unreachable!()
     }
 }
+
+#[cfg(test)]
+mod test_main;
