@@ -30,6 +30,50 @@ impl std::error::Error for OabError {
     }
 }
 
+// put code related to looking up user and group ids into a trait both to
+// facilitate mocking in unit tests and to isolate the os-specific code.
+trait IdRetrieverModel {
+    fn get_uid(&self, name: &str) -> Result<u32, OabError>;
+    fn get_gid(&self, name: &str) -> Result<u32, OabError>;
+}
+
+struct IdRetriever {
+}
+impl IdRetrieverModel for IdRetriever {
+    fn get_uid(&self, name: &str) -> Result<u32, OabError> {
+        unsafe {
+            let name_cstring = str_to_cstring(name)?;
+            let mut buf = Vec::with_capacity(512);
+            let mut passwd: libc::passwd = std::mem::zeroed();
+            let mut result = std::ptr::null_mut();
+            match libc::getpwnam_r(name_cstring.as_ptr(), &mut passwd,
+                    buf.as_mut_ptr(), buf.capacity(), &mut result) {
+                0 if !result.is_null() => Ok((*result).pw_uid),
+                _ => Err(OabError {
+                        message: format!("no uid found for user {}", name)
+                    }
+                )
+            }
+        }
+    }
+
+    fn get_gid(&self, name: &str) -> Result<u32, OabError> {
+        unsafe {
+            let name_cstring = str_to_cstring(name)?;
+            // armv7-linux-androideabi doesn't have getgrnam_r so we have to
+            // use getgrnam instead
+            let group = libc::getgrnam(name_cstring.as_ptr());
+            match group.as_ref() {
+                Some(group) => Ok((*group).gr_gid),
+                None => Err(OabError {
+                        message: format!("no gid found for group {}", name)
+                    }
+                )
+            }
+        }
+    }
+}
+
 fn get_owner_ids(path: &str) -> Result<(u32, u32), std::io::Error> {
     let metadata = fs::metadata(Path::new(path))?;
     Ok((metadata.uid(), metadata.gid()))
@@ -47,59 +91,28 @@ fn str_to_cstring(s: &str) -> Result<std::ffi::CString, OabError> {
     }
 }
 
-fn parse_id_input(id: &str) -> Result<(u32, Option<u32>), OabError> {
+fn parse_id_input<M: IdRetrieverModel>(id_retriever: &M, id: &str) ->
+        Result<(u32, Option<u32>), OabError> {
     if let Some(index) = id.find(":") {
         let uid_str = &id[..index];
         let uid = match uid_str.parse::<u32>() {
             Ok(uid) => uid,
-            Err(_) => get_uid(uid_str)?
+            Err(_) => id_retriever.get_uid(uid_str)?
         };
         let gid_str = &id[index + 1..];
         let gid = match gid_str.parse::<u32>() {
             Ok(gid) => gid,
-            Err(_) => get_gid(gid_str)?
+            Err(_) => id_retriever.get_gid(gid_str)?
         };
         return Ok((uid, Some(gid)));
     }
     let uid = match id.parse::<u32>() {
         Ok(uid) => uid,
-        Err(_e) => get_uid(id)?
+        Err(_e) => id_retriever.get_uid(id)?
     };
     Ok((uid, None))
 }
 
-fn get_uid(name: &str) -> Result<u32, OabError> {
-    unsafe {
-        let name_cstring = str_to_cstring(name)?;
-        let mut buf = Vec::with_capacity(512);
-        let mut passwd: libc::passwd = std::mem::zeroed();
-        let mut result = std::ptr::null_mut();
-        match libc::getpwnam_r(name_cstring.as_ptr(), &mut passwd,
-                buf.as_mut_ptr(), buf.capacity(), &mut result) {
-            0 if !result.is_null() => Ok((*result).pw_uid),
-            _ => Err(OabError {
-                    message: format!("no uid found for user {}", name)
-                }
-            )
-        }
-    }
-}
-
-fn get_gid(name: &str) -> Result<u32, OabError> {
-    unsafe {
-        let name_cstring = str_to_cstring(name)?;
-        // armv7-linux-androideabi doesn't have getgrnam_r so we have to
-        // use getgrnam instead
-        let group = libc::getgrnam(name_cstring.as_ptr());
-        match group.as_ref() {
-            Some(group) => Ok((*group).gr_gid),
-            None => Err(OabError {
-                    message: format!("no gid found for group {}", name)
-                }
-            )
-        }
-    }
-}
 
 fn change_owner(path: &str, uid: u32, gid: u32) -> Result<(), OabError> {
     let path_cstring = str_to_cstring(path)?;
@@ -192,7 +205,8 @@ fn main() {
         },
         ("change-owner", Some(args)) => {
             let path = args.value_of("path").unwrap();
-            match parse_id_input(args.value_of("id").unwrap()) {
+            let id_retriever = IdRetriever {};
+            match parse_id_input(&id_retriever, args.value_of("id").unwrap()) {
                 Ok((uid, gid_option)) => {
                     let gid = match gid_option {
                         Some(gid) => gid,
