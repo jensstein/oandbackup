@@ -1,4 +1,7 @@
+extern crate tempfile;
+
 use super::*;
+use std::os::unix::fs::MetadataExt;
 
 struct MockIdRetriever {
     mock_uid: u32,
@@ -98,5 +101,52 @@ fn get_mocked_id_retriever(uid: u32, gid: u32, error: Option<String>) ->
         mock_uid: uid,
         mock_gid: gid,
         mock_error: error
+    }
+}
+
+#[test]
+fn test_get_owner_ids() {
+    if !can_create_file_file() {
+        return;
+    }
+    let file = tempfile::NamedTempFile::new().unwrap();
+    let metadata = file.as_file().metadata().unwrap();
+    let uid_tempfile = metadata.uid();
+    let gid_tempfile = metadata.gid();
+    match get_owner_ids(file.path().to_str().unwrap()) {
+        Ok((uid, gid)) => {
+            assert_eq!(uid, uid_tempfile);
+            assert_eq!(gid, gid_tempfile);
+        }
+        Err(_err) => assert!(false, "shouldn't fail")
+    }
+}
+
+#[test]
+fn test_get_owner_ids_no_such_file() {
+    if !can_create_file_file() {
+        return;
+    }
+    let path: String;
+    {
+        // create a temporary file and make it go out of scope immediately
+        // while copying its path.  this gives us a path to a file which
+        // probably doesn't exist when we try to query its metadata (which
+        // is what we want to test for). of course, another file with the
+        // same path could be created in the meantime and a bug could prevent
+        // the file from being removed when the variable goes out of scope.
+        let file = tempfile::NamedTempFile::new().unwrap();
+        path = file.path().to_str().unwrap().clone().to_string();
+    }
+    match get_owner_ids(&path) {
+        Ok(_) => assert!(false, "should fail"),
+        Err(err) => assert_eq!(err.kind(), std::io::ErrorKind::NotFound)
+    }
+}
+
+fn can_create_file_file() -> bool {
+    match tempfile::tempfile() {
+        Ok(_) => true,
+        Err(_) => false
     }
 }
