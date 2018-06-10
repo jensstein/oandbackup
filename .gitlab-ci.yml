@@ -13,7 +13,9 @@ before_script:
   - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android-sdk-linux/licenses/android-sdk-license
   - android-sdk-linux/tools/bin/sdkmanager --verbose "tools" "build-tools;$ANDROID_BUILD_TOOLS" "platform-tools" "platforms;android-$ANDROID_COMPILE_SDK" "extras;android;m2repository" "extras;google;m2repository"
   - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
+  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/:$PWD/android-sdk-linux/build-tools/$ANDROID_BUILD_TOOLS/
+  # put into variable with `cat $keystore | base64 -w 0 | xclip -in -selection clipboard`
+  - echo $ANDROID_KEY_BASE64 | base64 -d > android-release-key.jks
 
 stages:
   - build
@@ -22,6 +24,10 @@ build:
   stage: build
   script:
     - ./gradlew build
+    - zipalign -v -p 4 build/outputs/apk/release/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed.apk oandbackup-unsigned-aligned.apk
+
   artifacts:
     paths:
     - build/outputs/apk/debug/oandbackup-debug.apk
+    - oandbackup-signed.apk
