@@ -1,9 +1,22 @@
 oandbackup
 =======
+[![pipeline status](https://gitlab.com/jensstein/oandbackup/badges/master/pipeline.svg)](https://gitlab.com/jensstein/oandbackup/commits/master)
+
 a backup program for android. requires root and allows you to backup individual apps and their data.
 both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores).  
 restoring system apps should be possible without requiring a reboot afterwards. oandbackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
+
+version control
+==============
+oandbackup is handled on both gitlab and github:   
+https://gitlab.com/jensstein/oandbackup/   
+https://github.com/jensstein/oandbackup   
+a debug apk is built by gitlab for each commit. the latest successful build can be found here:   
+https://gitlab.com/jensstein/oandbackup/builds/artifacts/master/raw/build/outputs/apk/debug/oandbackup-debug.apk?job=build
+
+busybox
+======
 
 a working busybox installation is required at the moment.   
 you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
