@@ -19,6 +19,7 @@ function build {
 	set -x
 	cargo test
 	cargo build $cargo_options --target armv7-linux-androideabi
+	mkdir -p ../assets
 	cp -v target/armv7-linux-androideabi/release/oab-utils ../assets
 
 	cd ../
