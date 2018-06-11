@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -80,6 +81,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             firstVisiblePosition = savedInstanceState.getInt(
                 Constants.BUNDLE_FIRSTVISIBLEPOSITION);
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
+        } else {
+            // only copy assets if onCreate is not called due to a configuration change
+            final AssetHandlerTask assetHandlerTask =
+                new AssetHandlerTask();
+            assetHandlerTask.execute(this);
         }
 
         Thread initThread = new Thread(new InitRunnable(checked, firstVisiblePosition, users));
@@ -689,6 +695,30 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                     });
                 }
             });
+        }
+    }
+
+    private static class AssetHandlerTask extends AsyncTask<Context, Void, Context> {
+        private Throwable throwable;
+
+        @Override
+        public Context doInBackground(Context... contexts) {
+            try {
+                AssetsHandler.copyOabutils(contexts[0]);
+            } catch (AssetsHandler.AssetsHandlerException e) {
+                throwable = e;
+            }
+            return contexts[0];
+        }
+        @Override
+        public void onPostExecute(Context context) {
+            if(throwable != null) {
+                Log.e(TAG, String.format(
+                    "error during AssetHandlerTask.onPostExecute: %s",
+                    throwable.toString()));
+                Toast.makeText(context, throwable.toString(),
+                    Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
