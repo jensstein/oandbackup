@@ -19,15 +19,27 @@ before_script:
 
 stages:
   - build
+  - sign
 
 build:
   stage: build
   script:
     - ./gradlew build
-    - zipalign -v -p 4 build/outputs/apk/release/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned.apk
-    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed.apk oandbackup-unsigned-aligned.apk
 
   artifacts:
     paths:
     - build/outputs/apk/debug/oandbackup-debug.apk
+    - build/outputs/apk/release/oandbackup-release-unsigned.apk
+
+sign:
+  stage: sign
+  dependencies:
+  - build
+  script:
+    - zipalign -v -p 4 build/outputs/apk/release/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed.apk oandbackup-unsigned-aligned.apk
+  artifacts:
+    paths:
     - oandbackup-signed.apk
+  only:
+    - master
