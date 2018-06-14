@@ -1,41 +1,44 @@
-image: openjdk:8-jdk
-
 variables:
   ANDROID_COMPILE_SDK: "26"
   ANDROID_BUILD_TOOLS: "26.0.2"
 
-before_script:
-  - apt-get --quiet update -y
-  - apt-get --quiet install -y curl unzip lib32stdc++6 lib32z1
-  - curl -L -o android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
-  - unzip -q android-sdk.zip -d android-sdk-linux
-  - mkdir android-sdk-linux/licenses
-  - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android-sdk-linux/licenses/android-sdk-license
-  - android-sdk-linux/tools/bin/sdkmanager --verbose "tools" "build-tools;$ANDROID_BUILD_TOOLS" "platform-tools" "platforms;android-$ANDROID_COMPILE_SDK" "extras;android;m2repository" "extras;google;m2repository"
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/:$PWD/android-sdk-linux/build-tools/$ANDROID_BUILD_TOOLS/
-  # put into variable with `cat $keystore | base64 -w 0 | xclip -in -selection clipboard`
-  - echo $ANDROID_KEY_BASE64 | base64 -d > android-release-key.jks
+# the android sdk is too large to save as an artifact so we have to
+# download and set it up for each job
+.setup_android: &setup_android |
+  apt-get --quiet update -y
+  apt-get --quiet install -y curl unzip lib32stdc++6 lib32z1
+  curl -L -o android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+  unzip -q android-sdk.zip -d android-sdk-linux
+  mkdir android-sdk-linux/licenses
+  printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android-sdk-linux/licenses/android-sdk-license
+  android-sdk-linux/tools/bin/sdkmanager --verbose "tools" "build-tools;$ANDROID_BUILD_TOOLS" "platform-tools" "platforms;android-$ANDROID_COMPILE_SDK" "extras;android;m2repository" "extras;google;m2repository"
+  export ANDROID_HOME=$PWD/android-sdk-linux
+  export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/:$PWD/android-sdk-linux/build-tools/$ANDROID_BUILD_TOOLS/
 
 stages:
   - build
   - sign
 
 build:
+  image: openjdk:8-jdk
   stage: build
   script:
+    - *setup_android
     - ./gradlew build
-
   artifacts:
     paths:
     - build/outputs/apk/debug/oandbackup-debug.apk
     - build/outputs/apk/release/oandbackup-release-unsigned.apk
 
 sign:
+  image: openjdk:8-jdk
   stage: sign
   dependencies:
   - build
   script:
+    - *setup_android
+    # put into variable with `cat $keystore | base64 -w 0 | xclip -in -selection clipboard`
+    - echo $ANDROID_KEY_BASE64 | base64 -d > android-release-key.jks
     - zipalign -v -p 4 build/outputs/apk/release/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned.apk
     - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed.apk oandbackup-unsigned-aligned.apk
   artifacts:
