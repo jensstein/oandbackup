@@ -12,8 +12,10 @@ version control
 oandbackup is handled on both gitlab and github:   
 https://gitlab.com/jensstein/oandbackup/   
 https://github.com/jensstein/oandbackup   
-a debug apk is built by gitlab for each commit. the latest successful build can be found here:   
-https://gitlab.com/jensstein/oandbackup/builds/artifacts/master/raw/build/outputs/apk/debug/oandbackup-debug.apk?job=build
+debug apks are built by gitlab for each commit on every branch. the latest successful build can be found here (substitute $branch for the desired branch, e.g. master):   
+https://gitlab.com/jensstein/oandbackup/builds/artifacts/$branch/raw/build/outputs/apk/debug/oandbackup-debug.apk?job=build   
+and a signed release apk is built for every commit on the master branch:   
+https://gitlab.com/jensstein/oandbackup/builds/artifacts/master/raw/oandbackup-signed.apk?job=sign   
 
 busybox
 ======
