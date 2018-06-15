@@ -26,6 +26,8 @@ build:
   stage: build
   script:
     - *setup_android
+    - mkdir -p assets
+    - cp oab-utils/target/armv7-linux-androideabi/release/oab-utils assets
     - ./gradlew build
   artifacts:
     paths:
