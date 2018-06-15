@@ -27,12 +27,30 @@ build:
   script:
     - *setup_android
     - mkdir -p assets
+    - mkdir -p apks/arm apks/arm64 apks/i686 apks/x86_64
+
     - cp oab-utils/target/armv7-linux-androideabi/release/oab-utils assets
-    - ./gradlew build
+    - ./gradlew clean build
+    - cp build/outputs/apk/debug/oandbackup-debug.apk apks/arm
+    - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/arm
+
+    - cp oab-utils/target/aarch64-linux-android/release/oab-utils assets
+    - ./gradlew clean build
+    - cp build/outputs/apk/debug/oandbackup-debug.apk apks/arm64
+    - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/arm64
+
+    - cp oab-utils/target/i686-linux-android/release/oab-utils assets
+    - ./gradlew clean build
+    - cp build/outputs/apk/debug/oandbackup-debug.apk apks/i686
+    - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/i686
+
+    - cp oab-utils/target/x86_64-linux-android/release/oab-utils assets
+    - ./gradlew clean build
+    - cp build/outputs/apk/debug/oandbackup-debug.apk apks/x86_64
+    - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/x86_64
   artifacts:
     paths:
-    - build/outputs/apk/debug/oandbackup-debug.apk
-    - build/outputs/apk/release/oandbackup-release-unsigned.apk
+    - apks
   dependencies:
   - build:cargo
 
@@ -45,11 +63,24 @@ sign:
     - *setup_android
     # put into variable with `cat $keystore | base64 -w 0 | xclip -in -selection clipboard`
     - echo $ANDROID_KEY_BASE64 | base64 -d > android-release-key.jks
-    - zipalign -v -p 4 build/outputs/apk/release/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned.apk
-    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed.apk oandbackup-unsigned-aligned.apk
+
+    - zipalign -v -p 4 apks/arm/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned-arm.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed-arm.apk oandbackup-unsigned-aligned-arm.apk
+
+    - zipalign -v -p 4 apks/arm64/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned-arm64.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed-arm64.apk oandbackup-unsigned-aligned-arm64.apk
+
+    - zipalign -v -p 4 apks/i686/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned-i686.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed-i686.apk oandbackup-unsigned-aligned-i686.apk
+
+    - zipalign -v -p 4 apks/x86_64/oandbackup-release-unsigned.apk oandbackup-unsigned-aligned-x86_64.apk
+    - apksigner sign --ks android-release-key.jks --ks-pass pass:$ANDROID_KEY_PASSWORD --out oandbackup-signed-x86_64.apk oandbackup-unsigned-aligned-x86_64.apk
   artifacts:
     paths:
-    - oandbackup-signed.apk
+    - oandbackup-signed-arm.apk
+    - oandbackup-signed-arm64.apk
+    - oandbackup-signed-i686.apk
+    - oandbackup-signed-x86_64.apk
   only:
     - master
 
@@ -65,17 +96,32 @@ build:cargo:
   stage: cargo
   variables:
     ARMV7_TOOLCHAIN: armv7_toolchain
+    ARM64_TOOLCHAIN: arm64_toolchain
+    x86_TOOLCHAIN: x86_toolchain
+    x86_64_TOOLCHAIN: x86_64_toolchain
   script:
     - apt-get update -q
     - apt-get install curl python unzip -yq
     - rustup target add armv7-linux-androideabi
+    - rustup target add aarch64-linux-android
+    - rustup target add i686-linux-android
+    - rustup target add x86_64-linux-android
     - curl -L https://dl.google.com/android/repository/android-ndk-r17-linux-x86_64.zip -o android-ndk
     - unzip -q android-ndk
     - ./android-ndk-r17/build/tools/make_standalone_toolchain.py --api 18 --install-dir=$ARMV7_TOOLCHAIN --arch=arm
+    - ./android-ndk-r17/build/tools/make_standalone_toolchain.py --api 21 --install-dir=$ARM64_TOOLCHAIN --arch=arm64
+    - ./android-ndk-r17/build/tools/make_standalone_toolchain.py --api 18 --install-dir=$x86_TOOLCHAIN --arch=x86
+    - ./android-ndk-r17/build/tools/make_standalone_toolchain.py --api 21 --install-dir=$x86_64_TOOLCHAIN --arch=x86_64
     - cd oab-utils
     - mkdir .cargo
-    - printf '[target.armv7-linux-androideabi]\nlinker = "'$(realpath ../$ARMV7_TOOLCHAIN)'/bin/arm-linux-androideabi-clang"\n' > .cargo/config
+    - printf "[target.armv7-linux-androideabi]\n linker = \""$(realpath ../$ARMV7_TOOLCHAIN)"/bin/arm-linux-androideabi-clang\"\n [target.aarch64-linux-android]\n linker = \""$(realpath ../$ARM64_TOOLCHAIN)"/bin/aarch64-linux-android-clang\"\n [target.i686-linux-android]\n linker = \""$(realpath ../$x86_TOOLCHAIN)"/bin/i686-linux-android-clang\"\n [target.x86_64-linux-android]\n linker = \""$(realpath ../$x86_64_TOOLCHAIN)"/bin/x86_64-linux-android-clang\"\n" > .cargo/config
     - cargo build --release --target armv7-linux-androideabi
+    - cargo build --release --target aarch64-linux-android
+    - cargo build --release --target i686-linux-android
+    - cargo build --release --target x86_64-linux-android
   artifacts:
     paths:
     - oab-utils/target/armv7-linux-androideabi/release/oab-utils
+    - oab-utils/target/aarch64-linux-android/release/oab-utils
+    - oab-utils/target/i686-linux-android/release/oab-utils
+    - oab-utils/target/x86_64-linux-android/release/oab-utils
