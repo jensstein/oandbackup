@@ -149,27 +149,26 @@ fn change_owner_recurse(path: &Path, uid: u32, gid: u32) -> Result<(), OabError>
     Ok(())
 }
 
-fn set_permissions(path: &Path, mode: u32) -> bool {
+fn set_permissions(path: &Path, mode: u32) -> Result<(), OabError> {
     let mut perms = match fs::metadata(path) {
         Err(e) => {
-            eprintln!("error getting permissions for {:?}: {}", path,
-                e.description());
-            return false
+            return Err(OabError {
+                message: format!("error getting permissions for {:?}: {}", path,
+                    e.description())
+            });
         }
         Ok(metadata) => metadata.permissions()
     };
     if perms.mode() & 0o777 != mode {
         perms.set_mode(mode);
-        match std::fs::set_permissions(path, perms) {
-                Err(e) => {
-                    eprintln!("unable to set mode {:o} on path {:?}: {}",
-                        mode, path, e.description());
-                    return false;
-                }
-                Ok(_) => return true
-        };
+        if let Err(e) = std::fs::set_permissions(path, perms) {
+            return Err(OabError {
+                message: format!("unable to set mode {:o} on path {:?}: {}",
+                    mode, path, e.description())
+            });
+        }
     }
-    false
+    Ok(())
 }
 
 fn main() {
@@ -223,7 +222,8 @@ fn main() {
                 }
                 Ok(value) => value
             };
-            if !set_permissions(input, mode) {
+            if let Err(err) = set_permissions(input, mode) {
+                eprintln!("{}", err.description());
                 std::process::exit(1);
             };
         },
