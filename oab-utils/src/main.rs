@@ -171,6 +171,18 @@ fn set_permissions(path: &Path, mode: u32) -> Result<(), OabError> {
     Ok(())
 }
 
+fn set_permissions_recurse(path: &Path, mode: u32) -> Result<(), OabError> {
+    set_permissions(path, mode)?;
+    if path.is_dir() {
+        let files = path.read_dir()?;
+        for file in files {
+            let entry = file?;
+            set_permissions_recurse(&entry.path(), mode)?;
+        }
+    }
+    Ok(())
+}
+
 fn main() {
     // https://github.com/kbknapp/clap-rs
     let args = App::new("oab-utils")
@@ -183,6 +195,10 @@ fn main() {
             .arg(Arg::with_name("mode")
                 .help("mode to set, in octal (e.g. 644)")
                 .required(true))
+            .arg(Arg::with_name("recursive")
+                .short("r")
+                .long("recursive")
+                .help("set permissions recursively"))
             .arg(Arg::with_name("input")
                 .required(true))
         )
@@ -222,10 +238,17 @@ fn main() {
                 }
                 Ok(value) => value
             };
-            if let Err(err) = set_permissions(input, mode) {
-                eprintln!("{}", err.description());
-                std::process::exit(1);
-            };
+            if args.is_present("recursive") {
+                if let Err(err) = set_permissions_recurse(input, mode) {
+                    eprintln!("{}", err.description());
+                    std::process::exit(1);
+                }
+            } else {
+                if let Err(err) = set_permissions(input, mode) {
+                    eprintln!("{}", err.description());
+                    std::process::exit(1);
+                }
+            }
         },
         ("change-owner", Some(args)) => {
             let path = Path::new(args.value_of("path").unwrap());
