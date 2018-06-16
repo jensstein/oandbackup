@@ -4,6 +4,7 @@ extern crate libc;
 use std::fmt;
 use std::error::Error;
 use std::fs;
+use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
@@ -27,6 +28,14 @@ impl fmt::Display for OabError {
 impl std::error::Error for OabError {
     fn description(&self) -> &str {
         &self.message
+    }
+}
+
+impl From<io::Error> for OabError {
+    fn from(error: io::Error) -> Self {
+        OabError {
+            message: error.description().to_string()
+        }
     }
 }
 
@@ -128,6 +137,18 @@ fn change_owner(path: &Path, uid: u32, gid: u32) -> Result<(), OabError> {
     }
 }
 
+fn change_owner_recurse(path: &Path, uid: u32, gid: u32) -> Result<(), OabError> {
+    change_owner(path, uid, gid)?;
+    if path.is_dir() {
+        let files = path.read_dir()?;
+        for file in files {
+            let entry = file?;
+            change_owner_recurse(&entry.path(), uid, gid)?;
+        }
+    }
+    Ok(())
+}
+
 fn set_permissions(p: &str, mode: u32) -> bool {
     let path = Path::new(p);
     let mut perms = match fs::metadata(path) {
@@ -171,6 +192,10 @@ fn main() {
             .arg(Arg::with_name("id")
                 .help("uid and optionally gid to set, separated by :")
                 .required(true))
+            .arg(Arg::with_name("recursive")
+                .short("r")
+                .long("recursive")
+                .help("change owner of files recursively"))
             .arg(Arg::with_name("path")
                 .required(true))
         )
@@ -219,10 +244,17 @@ fn main() {
                             }
                         }
                     };
-                    if let Err(e) = change_owner(path, uid, gid) {
-                        eprintln!("{}", e.description());
-                        std::process::exit(1);
-                    };
+                    if args.is_present("recursive") {
+                        if let Err(e) = change_owner_recurse(path, uid, gid) {
+                            eprintln!("{}", e.description());
+                            std::process::exit(1);
+                        }
+                    } else {
+                        if let Err(e) = change_owner(path, uid, gid) {
+                            eprintln!("{}", e.description());
+                            std::process::exit(1);
+                        }
+                    }
                 },
                 Err(e) => eprintln!("unable to parse input: {}", e.description())
             };
