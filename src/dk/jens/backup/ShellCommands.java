@@ -377,11 +377,20 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) +
                     " $dir; " + busybox + " chmod -R 771 $dir; fi; done");
                 } else {
-                    // android 6 has moved to toybox which doesn't include [ or [[
-                    // meanwhile its implementation of test seems to be broken at least in cm 13
-                    // cf. https://github.com/jensstein/oandbackup/issues/116
-                    commands.add(String.format("%s chown -R %s:%s %s", busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
-                    commands.add(String.format("%s chmod -R 771 %s", busybox, packageDir));
+                    if(!legacyMode) {
+                        commands.add(String.format("%s change-owner -r %s:%s %s",
+                            oabUtils, uid_gid.get(0), uid_gid.get(1), packageDir));
+                        commands.add(String.format("%s set-permissions -r 771 %s", oabUtils,
+                            packageDir));
+                    } else {
+                        // android 6 has moved to toybox which doesn't include [ or [[
+                        // meanwhile its implementation of test seems to be broken at least in cm 13
+                        // cf. https://github.com/jensstein/oandbackup/issues/116
+                        commands.add(String.format("%s chown -R %s:%s %s",
+                            busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
+                        commands.add(String.format("%s chmod -R 771 %s",
+                            busybox, packageDir));
+                    }
                 }
                 // midlertidig indtil mere detaljeret som i fix_permissions l.367
                 int ret = CommandHandler.runCmd("su", commands, line -> {},
