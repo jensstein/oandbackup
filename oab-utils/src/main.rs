@@ -74,8 +74,8 @@ impl IdRetrieverModel for IdRetriever {
     }
 }
 
-fn get_owner_ids(path: &str) -> Result<(u32, u32), std::io::Error> {
-    let metadata = fs::metadata(Path::new(path))?;
+fn get_owner_ids(path: &Path) -> Result<(u32, u32), std::io::Error> {
+    let metadata = fs::metadata(path)?;
     Ok((metadata.uid(), metadata.gid()))
 }
 
@@ -114,13 +114,13 @@ fn parse_id_input<M: IdRetrieverModel>(id_retriever: &M, id: &str) ->
 }
 
 
-fn change_owner(path: &str, uid: u32, gid: u32) -> Result<(), OabError> {
-    let path_cstring = str_to_cstring(path)?;
+fn change_owner(path: &Path, uid: u32, gid: u32) -> Result<(), OabError> {
+    let path_cstring = str_to_cstring(path.to_str().unwrap())?;
     unsafe {
         match libc::chown(path_cstring.as_ptr(), uid, gid) {
             0 => Ok(()),
             _ => Err(OabError {
-                    message: format!("unable to change owner of {} to {}:{}", path,
+                    message: format!("unable to change owner of {:?} to {}:{}", path,
                         uid, gid)
                 }
             )
@@ -177,13 +177,13 @@ fn main() {
         .get_matches();
     match args.subcommand() {
         ("owner", Some(args)) => {
-            let input = args.value_of("input").unwrap();
+            let input = Path::new(args.value_of("input").unwrap());
             match get_owner_ids(input) {
                 Ok((uid, gid)) => {
                     println!("uid: {}\ngid: {}", uid, gid);
                 },
                 Err(e) => {
-                    eprintln!("error getting owner ids for {}: {}", input,
+                    eprintln!("error getting owner ids for {:?}: {}", input,
                         e.description());
                     std::process::exit(1);
                 }
@@ -204,7 +204,7 @@ fn main() {
             };
         },
         ("change-owner", Some(args)) => {
-            let path = args.value_of("path").unwrap();
+            let path = Path::new(args.value_of("path").unwrap());
             let id_retriever = IdRetriever {};
             match parse_id_input(&id_retriever, args.value_of("id").unwrap()) {
                 Ok((uid, gid_option)) => {
@@ -213,7 +213,7 @@ fn main() {
                         None => match get_owner_ids(path) {
                             Ok((_, gid)) => gid,
                             Err(e) => {
-                                eprintln!("unable to get group id for {}: {}",
+                                eprintln!("unable to get group id for {:?}: {}",
                                     path, e.description());
                                 std::process::exit(1);
                             }
