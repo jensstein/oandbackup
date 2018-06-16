@@ -149,8 +149,7 @@ fn change_owner_recurse(path: &Path, uid: u32, gid: u32) -> Result<(), OabError>
     Ok(())
 }
 
-fn set_permissions(p: &str, mode: u32) -> bool {
-    let path = Path::new(p);
+fn set_permissions(path: &Path, mode: u32) -> bool {
     let mut perms = match fs::metadata(path) {
         Err(e) => {
             eprintln!("error getting permissions for {:?}: {}", path,
@@ -215,7 +214,7 @@ fn main() {
             };
         },
         ("set-permissions", Some(args)) => {
-            let input = args.value_of("input").unwrap();
+            let input = Path::new(args.value_of("input").unwrap());
             let mode_str = args.value_of("mode").unwrap();
             let mode = match u32::from_str_radix(mode_str, 8) {
                 Err(e) => {
