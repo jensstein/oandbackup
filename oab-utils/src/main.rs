@@ -219,7 +219,7 @@ fn main() {
             let input = Path::new(args.value_of("input").unwrap());
             match get_owner_ids(input) {
                 Ok((uid, gid)) => {
-                    println!("uid: {}\ngid: {}", uid, gid);
+                    println!("{{\"uid\": {}, \"gid\": {}}}", uid, gid);
                 },
                 Err(e) => {
                     eprintln!("error getting owner ids for {:?}: {}", input,
