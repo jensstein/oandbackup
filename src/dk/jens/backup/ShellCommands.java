@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -337,27 +339,55 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public Ownership getOwnership(String packageDir, String shellPrivs)
         throws OwnershipException
     {
-        List<String> commands = new ArrayList<>();
-        /*
-        * some packages can have 0 / UNKNOWN as uid and gid for a short
-        * time before being switched to their proper ids so to work
-        * around the race condition we sleep a little.
-        */
-        commands.add("sleep 1");
-        commands.add(busybox + " stat " + packageDir);
-        StringBuilder sb = new StringBuilder();
-        // you don't need su for stat - you do for ls -l /data/
-        // and for stat on single files
-        int ret = CommandHandler.runCmd(shellPrivs, commands, sb::append,
-            line -> writeErrorLog("", line),
-            e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
-        Log.i(TAG, "getOwnership return: " + ret);
-        ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
-        if(uid_gid == null || uid_gid.isEmpty()) {
-            throw new OwnershipException(
-                "no uid or gid found while trying to set permissions");
+        if(!legacyMode) {
+            List<String> result = new ArrayList<>();
+            CommandHandler.runCmd(shellPrivs, String.format("%s owner %s", oabUtils, packageDir),
+                result::add, line -> writeErrorLog("oab-utils", line),
+                e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
+            if(result.size() != 1) {
+                if(result.size() < 1) {
+                    throw new OwnershipException(
+                        "got empty result from oab-utils");
+                }
+                StringBuilder sb = new StringBuilder();
+                for(String line : result) {
+                    sb.append(line).append("\n");
+                }
+                throw new OwnershipException(String.format(
+                    "unexpected ownership result from oab-utils: %s",
+                    sb.toString()));
+            }
+            try {
+                JSONObject ownershipJson = new JSONObject(result.get(0));
+                return new Ownership(ownershipJson.getInt("uid"),
+                    ownershipJson.getInt("gid"));
+            } catch (JSONException e) {
+                throw new OwnershipException(String.format(
+                    "error parsing ownership json: %s", e.toString()));
+            }
+        } else {
+            List<String> commands = new ArrayList<>();
+            /*
+             * some packages can have 0 / UNKNOWN as uid and gid for a short
+             * time before being switched to their proper ids so to work
+             * around the race condition we sleep a little.
+             */
+            commands.add("sleep 1");
+            commands.add(busybox + " stat " + packageDir);
+            StringBuilder sb = new StringBuilder();
+            // you don't need su for stat - you do for ls -l /data/
+            // and for stat on single files
+            int ret = CommandHandler.runCmd(shellPrivs, commands, sb::append,
+                line -> writeErrorLog("", line),
+                e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
+            Log.i(TAG, "getOwnership return: " + ret);
+            ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
+            if(uid_gid == null || uid_gid.isEmpty()) {
+                throw new OwnershipException(
+                    "no uid or gid found while trying to set permissions");
+            }
+            return new Ownership(uid_gid.get(0), uid_gid.get(1));
         }
-        return new Ownership(uid_gid.get(0), uid_gid.get(1));
     }
     public int setPermissions(String packageDir)
     {
