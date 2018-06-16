@@ -266,10 +266,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             List<String> commands = new ArrayList<>();
             if(files != null)
             {
-                ArrayList<String> uid_gid;
                 for(String file : files)
                 {
-                    uid_gid = getOwnership(file);
+                    Ownership ownership = getOwnership(file);
                     String filename = Utils.getName(file);
                     if(file.endsWith(File.separator))
                         file = file.substring(0, file.length() - 1);
@@ -296,19 +295,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     }
                     else
                     {
-                        uid_gid = getOwnership(file, "su");
+                        ownership = getOwnership(file, "su");
                     }
                     commands.add("cp -r " + backupSubDirPath + "/" + filename + " " + dest);
-                    if(uid_gid != null && !uid_gid.isEmpty())
-                    {
-                        commands.add(busybox + " chown -R " + uid_gid.get(0) +
-                            ":" + uid_gid.get(1) + " " + file);
-                        commands.add(busybox + " chmod -R 0771 " + file);
-                    }
-                    else
-                    {
-                        Log.e(TAG, "couldn't find ownership: " + file);
-                    }
+                    commands.add(String.format("%s -R %s %s", busybox,
+                        ownership.toString(), file));
+                    commands.add(busybox + " chmod -R 0771 " + file);
                 }
             }
             int ret = CommandHandler.runCmd("su", commands, line -> {},
@@ -316,7 +308,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 e -> Log.e(TAG, "restoreSpecial: " + e.toString()), this);
             return ret + unzipRet;
         }
-        catch(IndexOutOfBoundsException e)
+        catch(IndexOutOfBoundsException | OwnershipException e)
         {
             Log.e(TAG, "restoreSpecial: " + e.toString());
         }
@@ -338,11 +330,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         res.add(gid.group(1));
         return res;
     }
-    public ArrayList<String> getOwnership(String packageDir)
+    public Ownership getOwnership(String packageDir) throws OwnershipException
     {
         return getOwnership(packageDir, "sh");
     }
-    public ArrayList<String> getOwnership(String packageDir, String shellPrivs)
+    public Ownership getOwnership(String packageDir, String shellPrivs)
+        throws OwnershipException
     {
         List<String> commands = new ArrayList<>();
         /*
@@ -360,53 +353,48 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
         Log.i(TAG, "getOwnership return: " + ret);
         ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
-        return uid_gid;
+        if(uid_gid == null || uid_gid.isEmpty()) {
+            throw new OwnershipException(
+                "no uid or gid found while trying to set permissions");
+        }
+        return new Ownership(uid_gid.get(0), uid_gid.get(1));
     }
     public int setPermissions(String packageDir)
     {
-        ArrayList<String> uid_gid = getOwnership(packageDir);
         try
         {
-            if(uid_gid != null && !uid_gid.isEmpty())
-            {
-                List<String> commands = new ArrayList<>();
-                if(Build.VERSION.SDK_INT < 23) {
-                    commands.add("for dir in " + packageDir + "/*; do if " +
-                    busybox + " test `" + busybox +
-                    " basename $dir` != \"lib\"; then " + busybox +
-                    " chown -R " + uid_gid.get(0) + ":" + uid_gid.get(1) +
-                    " $dir; " + busybox + " chmod -R 771 $dir; fi; done");
+            Ownership ownership = getOwnership(packageDir);
+            List<String> commands = new ArrayList<>();
+            if(Build.VERSION.SDK_INT < 23) {
+                commands.add("for dir in " + packageDir + "/*; do if " +
+                busybox + " test `" + busybox +
+                " basename $dir` != \"lib\"; then " + busybox +
+                " chown -R " + ownership.toString() +
+                " $dir; " + busybox + " chmod -R 771 $dir; fi; done");
+            } else {
+                if(!legacyMode) {
+                    commands.add(String.format("%s change-owner -r %s %s",
+                        oabUtils, ownership.toString(), packageDir));
+                    commands.add(String.format("%s set-permissions -r 771 %s", oabUtils,
+                        packageDir));
                 } else {
-                    if(!legacyMode) {
-                        commands.add(String.format("%s change-owner -r %s:%s %s",
-                            oabUtils, uid_gid.get(0), uid_gid.get(1), packageDir));
-                        commands.add(String.format("%s set-permissions -r 771 %s", oabUtils,
-                            packageDir));
-                    } else {
-                        // android 6 has moved to toybox which doesn't include [ or [[
-                        // meanwhile its implementation of test seems to be broken at least in cm 13
-                        // cf. https://github.com/jensstein/oandbackup/issues/116
-                        commands.add(String.format("%s chown -R %s:%s %s",
-                            busybox, uid_gid.get(0), uid_gid.get(1), packageDir));
-                        commands.add(String.format("%s chmod -R 771 %s",
-                            busybox, packageDir));
-                    }
+                    // android 6 has moved to toybox which doesn't include [ or [[
+                    // meanwhile its implementation of test seems to be broken at least in cm 13
+                    // cf. https://github.com/jensstein/oandbackup/issues/116
+                    commands.add(String.format("%s chown -R %s %s",
+                        busybox, ownership.toString(), packageDir));
+                    commands.add(String.format("%s chmod -R 771 %s",
+                        busybox, packageDir));
                 }
-                // midlertidig indtil mere detaljeret som i fix_permissions l.367
-                int ret = CommandHandler.runCmd("su", commands, line -> {},
-                    line -> writeErrorLog(packageDir, line),
-                    e -> Log.e(TAG, "error while setPermissions: " + e.toString()), this);
-                Log.i(TAG, "setPermissions return: " + ret);
-                return ret;
             }
-            else
-            {
-                Log.e(TAG, "no uid and gid found while trying to set permissions");
-                writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
-            }
-            return 1;
+            // midlertidig indtil mere detaljeret som i fix_permissions l.367
+            int ret = CommandHandler.runCmd("su", commands, line -> {},
+                line -> writeErrorLog(packageDir, line),
+                e -> Log.e(TAG, "error while setPermissions: " + e.toString()), this);
+            Log.i(TAG, "setPermissions return: " + ret);
+            return ret;
         }
-        catch(IndexOutOfBoundsException e)
+        catch(IndexOutOfBoundsException | OwnershipException e)
         {
             Log.e(TAG, "error while setPermissions: " + e.toString());
             writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
@@ -866,5 +854,47 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 return externalFilesDir;
         }
         return null;
+    }
+
+    private class Ownership {
+        private int uid;
+        private int gid;
+        private final boolean legacyMode;
+
+        public Ownership(int uid, int gid) {
+            this.uid = uid;
+            this.gid = gid;
+            this.legacyMode = false;
+        }
+
+        // only for legacy compatibility
+        public Ownership(String uidStr, String gidStr) throws OwnershipException {
+            if((uidStr == null || uidStr.isEmpty()) ||
+                    (gidStr == null || gidStr.isEmpty())) {
+                throw new OwnershipException(
+                    "cannot initiate ownership object with empty uid or gid");
+            }
+            this.uidStr = uidStr;
+            this.gidStr = gidStr;
+            this.legacyMode = true;
+        }
+        private String uidStr;
+        private String gidStr;
+
+        @Override
+        public String toString() {
+            if(legacyMode) {
+                return String.format("%s:%s", uidStr, gidStr);
+            } else {
+                return String.format("%s:%s", uid, gid);
+            }
+        }
+
+    }
+
+    private class OwnershipException extends Exception {
+        public OwnershipException(String msg) {
+            super(msg);
+        }
     }
 }
