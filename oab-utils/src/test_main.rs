@@ -2,6 +2,7 @@ extern crate tempfile;
 
 use super::*;
 use std::os::unix::fs::MetadataExt;
+use std::path::PathBuf;
 
 struct MockIdRetriever {
     mock_uid: u32,
@@ -113,7 +114,7 @@ fn test_get_owner_ids() {
     let metadata = file.as_file().metadata().unwrap();
     let uid_tempfile = metadata.uid();
     let gid_tempfile = metadata.gid();
-    match get_owner_ids(file.path().to_str().unwrap()) {
+    match get_owner_ids(file.path()) {
         Ok((uid, gid)) => {
             assert_eq!(uid, uid_tempfile);
             assert_eq!(gid, gid_tempfile);
@@ -127,7 +128,7 @@ fn test_get_owner_ids_no_such_file() {
     if !can_create_file_file() {
         return;
     }
-    let path: String;
+    let path: PathBuf;
     {
         // create a temporary file and make it go out of scope immediately
         // while copying its path.  this gives us a path to a file which
@@ -136,9 +137,9 @@ fn test_get_owner_ids_no_such_file() {
         // same path could be created in the meantime and a bug could prevent
         // the file from being removed when the variable goes out of scope.
         let file = tempfile::NamedTempFile::new().unwrap();
-        path = file.path().to_str().unwrap().clone().to_string();
+        path = file.path().to_owned();
     }
-    match get_owner_ids(&path) {
+    match get_owner_ids(&path.as_path()) {
         Ok(_) => assert!(false, "should fail"),
         Err(err) => assert_eq!(err.kind(), std::io::ErrorKind::NotFound)
     }
