@@ -90,7 +90,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
             sortingMethodId = extra.getInt("dk.jens.backup.sortingMethodId");
         }
         ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
-        shellCommands = new ShellCommands(prefs, users);
+        shellCommands = new ShellCommands(prefs, users, getFilesDir());
 
         Button bt = (Button) findViewById(R.id.backupRestoreButton);
         bt.setOnClickListener(this);

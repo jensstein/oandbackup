@@ -564,7 +564,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         }
         else if(key.equals(Constants.PREFS_PATH_BUSYBOX))
         {
-            shellCommands = new ShellCommands(preferences);
+            shellCommands = new ShellCommands(preferences, getFilesDir());
             checkBusybox();
         }
         else if(key.equals(Constants.PREFS_TIMESTAMP))
@@ -621,6 +621,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         if(!shellCommands.checkBusybox())
             Utils.showWarning(this, "", getString(R.string.busyboxProblem));
     }
+    private void checkOabUtils() {
+        if(!shellCommands.checkOabUtils()) {
+            Utils.showWarning(this, "", getString(R.string.oabUtilsProblem));
+        }
+    }
     private class InitRunnable implements Runnable
     {
         boolean checked;
@@ -636,7 +641,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
             prefs.registerOnSharedPreferenceChangeListener(OAndBackup.this);
-            shellCommands = new ShellCommands(prefs, users);
+            shellCommands = new ShellCommands(prefs, users, getFilesDir());
             String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
                 Constants.PREFS_LANGUAGES_DEFAULT);
             LanguageHelper.initLanguage(OAndBackup.this, langCode);
@@ -656,6 +661,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                     Utils.showWarning(OAndBackup.this, "", getString(R.string.noSu));
                 }
                 checkBusybox();
+                handleMessages.changeMessage("", getString(
+                    R.string.oabUtilsCheck));
+                checkOabUtils();
                 handleMessages.endMessage();
             }
 

@@ -38,7 +38,7 @@ public class HandleScheduledBackups
     {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        shellCommands = new ShellCommands(prefs);
+        shellCommands = new ShellCommands(prefs, context.getFilesDir());
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         listeners = new ArrayList<BackupRestoreHelper.OnBackupRestoreListener>();
     }

@@ -24,6 +24,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 {
     final static String TAG = OAndBackup.TAG;
     final static String EXTERNAL_FILES = "external_files";
+
+    private final String oabUtils;
+    private boolean legacyMode;
+
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
@@ -31,7 +35,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     boolean multiuserEnabled;
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
     private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
-    public ShellCommands(SharedPreferences prefs, ArrayList<String> users)
+    public ShellCommands(SharedPreferences prefs, ArrayList<String> users,
+        File filesDir)
     {
         this.users = users;
         this.prefs = prefs;
@@ -45,10 +50,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
         this.users = getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
+
+        this.oabUtils = new File(filesDir, AssetsHandler.OAB_UTILS)
+            .getAbsolutePath();
+        if(!checkOabUtils()) {
+            legacyMode = true;
+        }
     }
-    public ShellCommands(SharedPreferences prefs)
+    public ShellCommands(SharedPreferences prefs, File filesDir)
     {
-        this(prefs, null);
+        this(prefs, null, filesDir);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
 
@@ -649,6 +660,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         int ret = CommandHandler.runCmd("sh", commands,
             line -> {}, line -> writeErrorLog("busybox", line),
             e -> Log.e(TAG, "checkBusybox: ", e), this);
+        return ret == 0;
+    }
+    public boolean checkOabUtils() {
+        int ret = CommandHandler.runCmd("su", oabUtils, line -> {},
+            line -> writeErrorLog("oab-utils", line),
+            e -> Log.e(TAG, "checkOabUtils: ", e), this);
+        Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
         return ret == 0;
     }
     public void copyNativeLibraries(File apk, File outputDir, String packageName)

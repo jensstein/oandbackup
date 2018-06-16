@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AssetsHandler {
-    private static final String OAB_UTILS = "oab-utils";
+    public static final String OAB_UTILS = "oab-utils";
 
     /**
      * copy oab-utils asset to private storage

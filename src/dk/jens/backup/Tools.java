@@ -52,7 +52,8 @@ public class Tools extends ListActivity
         }
         // get users to prevent an unnecessary call to su
         ArrayList<String> users = getIntent().getStringArrayListExtra("dk.jens.backup.users");
-        shellCommands = new ShellCommands(PreferenceManager.getDefaultSharedPreferences(this), users);
+        shellCommands = new ShellCommands(PreferenceManager
+            .getDefaultSharedPreferences(this), users, getFilesDir());
                 
         String[] titles = getResources().getStringArray(R.array.tools_titles);
         String[] descriptions = getResources().getStringArray(R.array.tools_descriptions);

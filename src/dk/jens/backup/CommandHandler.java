@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandHandler {
@@ -37,6 +38,14 @@ public class CommandHandler {
             exceptionHandler.accept(e);
             return 1;
         }
+    }
+
+    public static int runCmd(String shell, String command,
+            OutputConsumer outputHandler, OutputConsumer errorHandler,
+            ExceptionConsumer exceptionHandler, UnexpectedExceptionListener
+            exceptionListener) {
+        return runCmd(shell, Collections.singletonList(command),
+            outputHandler, errorHandler, exceptionHandler, exceptionListener);
     }
 
     public interface OutputConsumer {
