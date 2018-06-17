@@ -2,6 +2,6 @@
 *.swp
 .gradle
 .idea
-assets
+src/main/assets
 build
 local.properties

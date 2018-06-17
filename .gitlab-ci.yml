@@ -24,27 +24,29 @@ stages:
 build:
   image: openjdk:8-jdk
   stage: build
+  variables:
+    ASSETS: "src/main/assets"
   script:
     - *setup_android
-    - mkdir -p assets
+    - mkdir -p $ASSETS
     - mkdir -p apks/arm apks/arm64 apks/i686 apks/x86_64
 
-    - cp oab-utils/target/armv7-linux-androideabi/release/oab-utils assets
+    - cp oab-utils/target/armv7-linux-androideabi/release/oab-utils $ASSETS
     - ./gradlew clean build
     - cp build/outputs/apk/debug/oandbackup-debug.apk apks/arm
     - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/arm
 
-    - cp oab-utils/target/aarch64-linux-android/release/oab-utils assets
+    - cp oab-utils/target/aarch64-linux-android/release/oab-utils $ASSETS
     - ./gradlew clean build
     - cp build/outputs/apk/debug/oandbackup-debug.apk apks/arm64
     - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/arm64
 
-    - cp oab-utils/target/i686-linux-android/release/oab-utils assets
+    - cp oab-utils/target/i686-linux-android/release/oab-utils $ASSETS
     - ./gradlew clean build
     - cp build/outputs/apk/debug/oandbackup-debug.apk apks/i686
     - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/i686
 
-    - cp oab-utils/target/x86_64-linux-android/release/oab-utils assets
+    - cp oab-utils/target/x86_64-linux-android/release/oab-utils $ASSETS
     - ./gradlew clean build
     - cp build/outputs/apk/debug/oandbackup-debug.apk apks/x86_64
     - cp build/outputs/apk/release/oandbackup-release-unsigned.apk apks/x86_64
