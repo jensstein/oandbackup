@@ -690,8 +690,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return ret == 0;
     }
     public boolean checkOabUtils() {
-        int ret = CommandHandler.runCmd("su", oabUtils, line -> {},
-            line -> writeErrorLog("oab-utils", line),
+        int ret = CommandHandler.runCmd("su", String.format("%s -h", oabUtils),
+            line -> {}, line -> writeErrorLog("oab-utils", line),
             e -> Log.e(TAG, "checkOabUtils: ", e), this);
         Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
         return ret == 0;
