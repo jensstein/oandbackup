@@ -694,6 +694,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             line -> {}, line -> writeErrorLog("oab-utils", line),
             e -> Log.e(TAG, "checkOabUtils: ", e), this);
         Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
+        if(ret != 0) {
+            final List<String> commands = new ArrayList<>();
+            commands.add(String.format("ls -l %s", oabUtils));
+            commands.add(String.format("file %s", oabUtils));
+            CommandHandler.runCmd("su", commands, line -> {
+                Log.i(TAG, "oab-utils" + line);
+                writeErrorLog("oab-utils", line);
+            }, line -> {
+                Log.e(TAG, "oab-utils" + line);
+                writeErrorLog("oab-utils", line);
+            }, e -> Log.e(TAG, "checkOabUtils (ret != 0): ", e), this);
+        }
         return ret == 0;
     }
     public void copyNativeLibraries(File apk, File outputDir, String packageName)
