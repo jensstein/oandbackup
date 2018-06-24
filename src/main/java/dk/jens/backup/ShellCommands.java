@@ -204,8 +204,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 commands.add(restoreCommand);
-                if(Build.VERSION.SDK_INT >= 23)
-                    commands.add("restorecon -R " + dataDir);
+                if(Build.VERSION.SDK_INT >= 23) {
+                    commands.add("restorecon -R " + dataDir + " || true");
+                }
                 int ret = CommandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(label, line),
                     e -> Log.e(TAG, "doRestore: " + e.toString()), this);
