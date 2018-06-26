@@ -25,32 +25,23 @@ public class FileReaderWriter
     }
     public boolean putString(String string, boolean append)
     {
-        if(string != null)
-        {
-            try
-            {
-                if(file != null)
-                {
-                    FileWriter fw = new FileWriter(file.getAbsoluteFile(), append);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    bw.write(string + "\n");
-                    bw.close();        
-                }
+        if(string != null && file != null) {
+            try(FileWriter fw = new FileWriter(file.getAbsoluteFile(), append);
+                    BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(string + "\n");
+                return true;
             }
             catch(IOException e)
             {
                 Log.i(TAG, e.toString());
             }
-            return true;
         }
         return false;
     }
     public String read()
     {
         BufferedReader reader = null;
-        try
-        {
-            FileReader fr = new FileReader(file);
+        try(FileReader fr = new FileReader(file)) {
             reader = new BufferedReader(fr);
             StringBuilder sb = new StringBuilder();
             String line;
