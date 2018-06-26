@@ -238,12 +238,14 @@ public class Crypto
                     else
                         outputFilename = file.getAbsolutePath() + ".gpg";
                     Log.i(TAG, "crypto input: " + file.getAbsolutePath() + " output: " + outputFilename);
-                    FileInputStream is = new FileInputStream(file);
-                    FileOutputStream os = new FileOutputStream(outputFilename);
-                    OpenPgpApi api = new OpenPgpApi(context, service.getService());
-                    Intent result = api.executeApi(intent, is, os);
-                    handleResult(context, result, requestCode);
-                    waitForResult();
+                    try(FileInputStream is = new FileInputStream(file);
+                            FileOutputStream os = new FileOutputStream(
+                            outputFilename)) {
+                        OpenPgpApi api = new OpenPgpApi(context, service.getService());
+                        Intent result = api.executeApi(intent, is, os);
+                        handleResult(context, result, requestCode);
+                        waitForResult();
+                    }
                 }
             }
             else
