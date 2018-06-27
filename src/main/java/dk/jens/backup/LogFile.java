@@ -127,9 +127,10 @@ public class LogFile implements Parcelable
             String json = jsonObject.toString(4);
             File outFile = new File(backupSubDir, appInfo.getPackageName() + ".log");
             outFile.createNewFile();
-            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-            bw = new BufferedWriter(fw);
-            bw.write(json + "\n");
+            try(FileWriter fw = new FileWriter(outFile.getAbsoluteFile())) {
+                bw = new BufferedWriter(fw);
+                bw.write(json + "\n");
+            }
         }
         catch(JSONException e)
         {
