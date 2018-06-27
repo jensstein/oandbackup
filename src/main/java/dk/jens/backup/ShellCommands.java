@@ -647,10 +647,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             File outFile = new FileCreationHelper().createLogFile(FileCreationHelper.getDefaultLogFilePath());
             if(outFile != null)
             {
-                FileWriter fw = new FileWriter(outFile.getAbsoluteFile(), true); // true: append
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(dateFormated + ": " + err + " [" + packageName + "]\n");
-                bw.close();
+                try(FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
+                        true);
+                        BufferedWriter bw = new BufferedWriter(fw)) {
+                    bw.write(dateFormated + ": " + err + " [" + packageName + "]\n");
+                }
             }
         }
         catch(IOException e)
