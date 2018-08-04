@@ -71,7 +71,7 @@ public class FileReaderWriter
             }
             catch(IOException e)
             {
-                return e.toString();
+                Log.e(TAG, "error closing reader: " + e.toString());
             }
         }
     }
