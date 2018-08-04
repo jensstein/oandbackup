@@ -46,9 +46,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         busybox = prefs.getString(Constants.PREFS_PATH_BUSYBOX, defaultBox).trim();
         if(busybox.length() == 0)
         {
-            busybox = "toybox";
-            if(!checkBusybox())
+            String[] boxPaths = new String[] {"toybox", "busybox",
+                "/system/xbin/busybox"};
+            for(String box : boxPaths) {
+                if(checkBusybox(box)) {
+                    busybox = box;
+                    break;
+                }
+                // fallback:
                 busybox = "busybox";
+            }
         }
         this.users = getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
@@ -681,11 +688,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
         return false;
     }
-    public boolean checkBusybox()
+    public boolean checkBusybox() {
+        return checkBusybox(busybox);
+    }
+    public boolean checkBusybox(String busyboxPath)
     {
-        List<String> commands = new ArrayList<>();
-        commands.add(busybox);
-        int ret = CommandHandler.runCmd("sh", commands,
+        int ret = CommandHandler.runCmd("sh", busyboxPath,
             line -> {}, line -> writeErrorLog("busybox", line),
             e -> Log.e(TAG, "checkBusybox: ", e), this);
         return ret == 0;
