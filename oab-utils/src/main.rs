@@ -39,6 +39,12 @@ impl From<io::Error> for OabError {
     }
 }
 
+#[derive(Debug)]
+struct FilePerms {
+    path: std::path::PathBuf,
+    permissions: u32
+}
+
 // put code related to looking up user and group ids into a trait both to
 // facilitate mocking in unit tests and to isolate the os-specific code.
 trait IdRetrieverModel {
@@ -181,6 +187,41 @@ fn set_permissions_recurse(path: &Path, mode: u32) -> Result<(), OabError> {
         }
     }
     Ok(())
+}
+
+fn get_permissions(path: &Path) -> Result<Vec<FilePerms>, OabError>{
+    let mut files_vector = Vec::with_capacity(128);
+    let mut file_perms_vector = Vec::with_capacity(128);
+    files_vector.push(path.to_path_buf());
+    while files_vector.len() > 0 {
+        if let Some(file) = files_vector.pop() {
+            if file.is_dir() {
+                let files = file.read_dir()?;
+                files_vector.extend(files.map(|f| {
+                    match f {
+                        Ok(entry) => return entry.path().to_owned(),
+                        Err(_) => {
+                            eprintln!("error getting path from {:?}", f);
+                            return std::path::PathBuf::new();
+                        }
+                    }
+                }));
+            } else {
+                match fs::metadata(&file) {
+                    Ok(metadata) => {
+                        file_perms_vector.push(
+                            FilePerms{
+                                path: (&file).to_owned(),
+                                permissions: metadata.permissions().mode()
+                            }
+                        )
+                    },
+                    Err(e) => eprintln!("{:?}", e)
+                }
+            }
+        }
+    }
+    Ok(file_perms_vector)
 }
 
 fn setup_args<'b>() -> ArgMatches<'b> {

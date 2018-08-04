@@ -145,6 +145,28 @@ fn test_get_owner_ids_no_such_file() {
     }
 }
 
+#[test]
+fn test_get_permissions() {
+    let dir = tempfile::tempdir().unwrap();
+    let file1 = tempfile::NamedTempFile::new_in(dir.path()).unwrap();
+    let file2 = tempfile::NamedTempFile::new_in(dir.path()).unwrap();
+    let file3 = tempfile::NamedTempFile::new_in(dir.path()).unwrap();
+
+    let permissions = fs::metadata(&file1).unwrap();
+
+    let results = match get_permissions(dir.path()) {
+        Ok(results) => results,
+        Err(_) => return assert!(false, "shouldn't fail")
+    };
+    assert_eq!(results.len(), 3);
+    assert_eq!(results[0].path, file1.path());
+    assert_eq!(results[0].permissions, permissions.mode());
+    assert_eq!(results[1].path, file2.path());
+    assert_eq!(results[1].permissions, permissions.mode());
+    assert_eq!(results[2].path, file3.path());
+    assert_eq!(results[2].permissions, permissions.mode());
+}
+
 fn can_create_file_file() -> bool {
     match tempfile::tempfile() {
         Ok(_) => true,
