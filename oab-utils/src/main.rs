@@ -9,7 +9,7 @@ use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
-use clap::{Arg, App, AppSettings, SubCommand};
+use clap::{Arg, ArgMatches, App, AppSettings, SubCommand};
 
 // https://blog.rust-lang.org/2016/05/13/rustup.html
 // https://users.rust-lang.org/t/announcing-cargo-apk/5501
@@ -183,7 +183,7 @@ fn set_permissions_recurse(path: &Path, mode: u32) -> Result<(), OabError> {
     Ok(())
 }
 
-fn main() {
+fn setup_args<'b>() -> ArgMatches<'b> {
     // https://github.com/kbknapp/clap-rs
     let args = App::new("oab-utils")
         .setting(AppSettings::ArgRequiredElseHelp)
@@ -214,6 +214,11 @@ fn main() {
                 .required(true))
         )
         .get_matches();
+    args
+}
+
+fn main() {
+    let args = setup_args();
     match args.subcommand() {
         ("owner", Some(args)) => {
             let input = Path::new(args.value_of("input").unwrap());
