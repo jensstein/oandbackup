@@ -686,6 +686,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         catch(InterruptedException e)
         {
             Log.e(TAG, "checkSuperUser: " + e.toString());
+            Thread.currentThread().interrupt();
         }
         return false;
     }

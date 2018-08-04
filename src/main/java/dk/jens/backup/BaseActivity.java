@@ -91,7 +91,8 @@ public class BaseActivity extends Activity
                 }
                 catch(InterruptedException e)
                 {
-                    Log.e(TAG, "getCrypto interrupted");
+                    Log.w(TAG, "getCrypto thread interrupted");
+                    Thread.currentThread().interrupt();
                 }
             }
         }

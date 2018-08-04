@@ -293,6 +293,7 @@ public class Crypto
             catch(InterruptedException e)
             {
                 logError("Crypto.waitForServiceBound interrupted");
+                Thread.currentThread().interrupt();
             }
         }
         return service.getService() != null;
@@ -315,6 +316,7 @@ public class Crypto
         catch(InterruptedException e)
         {
             logError("Crypto.waitForResult interrupted");
+            Thread.currentThread().interrupt();
         }
     }
     private void handleResult(Context context, Intent result, int requestCode)

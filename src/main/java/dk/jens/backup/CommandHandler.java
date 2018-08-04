@@ -34,8 +34,12 @@ public class CommandHandler {
             stdoutHandler.start();
             stderrHandler.start();
             return p.waitFor();
-        } catch(IOException | InterruptedException e) {
+        } catch(IOException e) {
             exceptionHandler.accept(e);
+            return 1;
+        } catch(InterruptedException e) {
+            exceptionHandler.accept(e);
+            Thread.currentThread().interrupt();
             return 1;
         }
     }
