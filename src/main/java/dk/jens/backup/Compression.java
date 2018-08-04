@@ -18,29 +18,23 @@ public class Compression
     final static String TAG = OAndBackup.TAG;
     public static int zip(File dir)
     {
-        try
-        {
-            ArrayList<String> fileList = new ArrayList<String>();
-            byte[] buffer = new byte[1024];
-            File zipDir = new File(dir.getAbsolutePath() + ".zip");
-            String baseDir = dir.getAbsolutePath().substring(0, dir.getAbsolutePath().length() - dir.getName().length());
-            FileOutputStream fos = new FileOutputStream(zipDir);
-            ZipOutputStream zos = new ZipOutputStream(fos);
-
+        ArrayList<String> fileList = new ArrayList<>();
+        byte[] buffer = new byte[1024];
+        File zipDir = new File(dir.getAbsolutePath() + ".zip");
+        String baseDir = dir.getAbsolutePath().substring(0, dir.getAbsolutePath().length() - dir.getName().length());
+        try(FileOutputStream fos = new FileOutputStream(zipDir);
+            ZipOutputStream zos = new ZipOutputStream(fos)) {
             getFiles(dir, fileList);
             for(String file : fileList)
             {
-                try
-                {
-                    ZipEntry entry = new ZipEntry(file.substring(baseDir.length(), file.length()));
-                    FileInputStream in = new FileInputStream(file);
+                ZipEntry entry = new ZipEntry(file.substring(baseDir.length(), file.length()));
+                try(FileInputStream in = new FileInputStream(file)) {
                     zos.putNextEntry(entry);
                     int len;
                     while((len = in.read(buffer)) > 0)
                     {
                         zos.write(buffer, 0, len);
                     }
-                    in.close();
                 }
                 catch(FileNotFoundException e)
                 {
@@ -77,11 +71,9 @@ public class Compression
     }
     public static int unzip(File zipfile, File outputDir, ArrayList<String> files)
     {
-        try
-        {
-            byte[] buffer = new byte[1024];
-            FileInputStream in = new FileInputStream(zipfile);
-            ZipInputStream zis = new ZipInputStream(in);
+        byte[] buffer = new byte[1024];
+        try(FileInputStream in = new FileInputStream(zipfile);
+                ZipInputStream zis = new ZipInputStream(in)) {
             ZipEntry entry;
             while((entry = zis.getNextEntry()) != null)
             {
@@ -91,16 +83,14 @@ public class Compression
                     continue;
                 File file = new File(outputDir, filename);
                 new File(file.getParent()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(file);
-                int len;
-                while((len = zis.read(buffer)) > 0)
-                {
-                    fos.write(buffer, 0, len);
+                try(FileOutputStream fos = new FileOutputStream(file)) {
+                    int len;
+                    while((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
                 }
-                fos.close();
             }
             zis.closeEntry();
-            zis.close();
             return 0;
         }
         catch(IOException e)
@@ -112,11 +102,10 @@ public class Compression
     }
     public static ArrayList<String> list(File zipfile, String... matches)
     {
-        try
+        ArrayList<String> filelist = new ArrayList<>();
+        try(FileInputStream in = new FileInputStream(zipfile);
+            ZipInputStream zis = new ZipInputStream(in))
         {
-            ArrayList<String> filelist = new ArrayList<String>();
-            FileInputStream in = new FileInputStream(zipfile);
-            ZipInputStream zis = new ZipInputStream(in);
             ZipEntry entry;
             while((entry = zis.getNextEntry()) != null)
             {
@@ -131,7 +120,6 @@ public class Compression
                 }
             }
             zis.closeEntry();
-            zis.close();
             return filelist;
         }
         catch(IOException e)
