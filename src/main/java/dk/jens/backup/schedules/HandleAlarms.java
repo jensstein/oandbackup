@@ -36,7 +36,7 @@ public class HandleAlarms
             am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
         }
         */
-        Log.i(TAG, "backup starting in: " + (start / 1000 / 60 / 60f));
+        Log.i(TAG, "backup starting in: " + (start / 1000f / 60 / 60f));
     }
     public void cancelAlarm(int id)
     {

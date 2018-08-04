@@ -334,7 +334,7 @@ BlacklistListener
             }
             else
             {
-                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000 / 60 / 60f));
+                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
             }
         }
     }
