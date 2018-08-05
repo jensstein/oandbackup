@@ -224,6 +224,54 @@ fn get_permissions(path: &Path) -> Result<Vec<FilePerms>, OabError>{
     Ok(file_perms_vector)
 }
 
+fn print_permissions_for_path(input: &Path, output_path: Option<&str>) ->
+        Result<(), OabError> {
+    let mut output: Box<io::Write> = match output_path {
+        Some(output) => {
+            if Path::new(output).is_dir() {
+                return Err(OabError {
+                    message: format!("error: output path {:?} is a directory",
+                        output)
+                });
+            }
+            match fs::File::create(output) {
+                Ok(file) => Box::new(file),
+                Err(e) => {
+                    return Err(OabError {
+                        message: format!("couldn't create output file {}: {}",
+                            output, e)
+                    });
+                }
+            }
+        },
+        None => Box::new(io::stdout())
+    };
+
+    match get_permissions(input) {
+        Ok(files) => {
+            for file in files {
+                let mode = file.permissions & 0o777;
+                if let Some(path) = file.path.to_str() {
+                    if let Err(e) = output.write(format!("{} {:o}\n", path, mode).as_bytes()) {
+                        return Err(OabError {
+                            message: format!("error writing to file {}: {}", output_path.unwrap_or("stdout"), e)
+                        });
+                    }
+                } else {
+                    eprintln!("warning: path {:?} couldn't be displayed properly", file.path);
+                }
+            }
+        },
+        Err(e) => {
+            return Err(OabError {
+                message: format!("error while getting permissions: {}",
+                    e.message)
+            });
+        }
+    }
+    Ok(())
+}
+
 fn setup_args<'b>() -> ArgMatches<'b> {
     // https://github.com/kbknapp/clap-rs
     let args = App::new("oab-utils")
@@ -232,6 +280,16 @@ fn setup_args<'b>() -> ArgMatches<'b> {
             .arg(Arg::with_name("input")
                 .help("file to get info from")
                 .required(true)))
+        .subcommand(SubCommand::with_name("get-permissions")
+            .arg(Arg::with_name("path").required(true)
+                .help("path to get permissions for"))
+            .arg(Arg::with_name("output")
+                .short("o")
+                .long("output")
+                .help("file to write permissions info to")
+                .takes_value(true)
+            )
+        )
         .subcommand(SubCommand::with_name("set-permissions")
             .arg(Arg::with_name("mode")
                 .help("mode to set, in octal (e.g. 644)")
@@ -272,6 +330,14 @@ fn main() {
                         e.description());
                     std::process::exit(1);
                 }
+            };
+        },
+        ("get-permissions", Some(args)) => {
+            let input = Path::new(args.value_of("path").unwrap());
+            let output = args.value_of("output");
+            if let Err(e) = print_permissions_for_path(input, output) {
+                eprintln!("{}", e.message);
+                std::process::exit(1);
             };
         },
         ("set-permissions", Some(args)) => {
