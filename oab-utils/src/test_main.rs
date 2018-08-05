@@ -158,12 +158,18 @@ fn test_get_permissions() {
         Ok(results) => results,
         Err(_) => return assert!(false, "shouldn't fail")
     };
+
+    // order in results vector is platform-dependent so check if the vector
+    // contains all the paths not their specific position
+    let paths: Vec<PathBuf> = results.iter().map(|f| f.path.to_owned())
+        .collect();
     assert_eq!(results.len(), 3);
-    assert_eq!(results[0].path, file1.path());
+    assert!(paths.contains(&file1.path().to_path_buf()));
+    assert!(paths.contains(&file2.path().to_path_buf()));
+    assert!(paths.contains(&file3.path().to_path_buf()));
+
     assert_eq!(results[0].permissions, permissions.mode());
-    assert_eq!(results[1].path, file2.path());
     assert_eq!(results[1].permissions, permissions.mode());
-    assert_eq!(results[2].path, file3.path());
     assert_eq!(results[2].permissions, permissions.mode());
 }
 
