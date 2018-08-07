@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -24,7 +22,9 @@ public class AppInfoHelper
 {
     final static String TAG = OAndBackup.TAG;
 
-    public static ArrayList<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups)
+    public static ArrayList<AppInfo> getPackageInfo(Context context,
+        File backupDir, boolean includeUnistalledBackups,
+        boolean includeSpecialBackups)
     {
         ArrayList<AppInfo> list = new ArrayList<AppInfo>();
         ArrayList<String> packageNames = new ArrayList<String>();
@@ -34,9 +34,9 @@ public class AppInfoHelper
         // list seemingly starts scrambled on 4.3
 
         ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if(prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true))
+        if(includeSpecialBackups) {
             addSpecialBackups(context, backupDir, list, packageNames);
+        }
         for(PackageInfo pinfo : pinfoList)
         {
             packageNames.add(pinfo.packageName);

@@ -100,7 +100,8 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
         rbBoth.setChecked(true);
 
         if(appInfoList == null)
-            appInfoList = AppInfoHelper.getPackageInfo(this, backupDir, true);
+            appInfoList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
         if(backupBoolean)
         {
             list = new ArrayList<AppInfo>();
