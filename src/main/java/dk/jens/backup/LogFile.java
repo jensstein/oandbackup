@@ -102,7 +102,6 @@ public class LogFile implements Parcelable
     }
     public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted)
     {
-        BufferedWriter bw = null;
         try
         {
             // path to apk should only be logged if it is backed up
@@ -127,8 +126,8 @@ public class LogFile implements Parcelable
             String json = jsonObject.toString(4);
             File outFile = new File(backupSubDir, appInfo.getPackageName() + ".log");
             outFile.createNewFile();
-            try(FileWriter fw = new FileWriter(outFile.getAbsoluteFile())) {
-                bw = new BufferedWriter(fw);
+            try(BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(outFile.getAbsoluteFile()))) {
                 bw.write(json + "\n");
             }
         }
@@ -139,18 +138,6 @@ public class LogFile implements Parcelable
         catch(IOException e)
         {
             Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
-        }
-        finally
-        {
-            try
-            {
-                if(bw != null)
-                    bw.close();
-            }
-            catch(IOException e)
-            {
-                Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
-            }
         }
     }
     public static String formatDate(Date date, boolean localTimestampFormat)
