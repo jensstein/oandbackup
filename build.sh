@@ -2,6 +2,8 @@
 
 set -e
 
+TARGET=armv7-linux-androideabi
+
 function build {
 	build_mode=$1
 	cargo_options=""
@@ -19,9 +21,9 @@ function build {
 	cd oab-utils
 	set -x
 	cargo test
-	cargo build $cargo_options --target armv7-linux-androideabi
+	cargo build $cargo_options --target $TARGET
 	mkdir -p ../assets
-	cp -v target/armv7-linux-androideabi/$build_mode/oab-utils ../assets
+	cp -v target/$TARGET/$build_mode/oab-utils ../assets
 
 	cd ../
 	./gradlew $gradle_mode
@@ -36,6 +38,10 @@ fi
 ACTION=
 while test $# -gt 0; do
 	case $1 in
+	"--target")
+		TARGET=$2
+		shift
+		;;
 	"release" | "debug")
 		ACTION="build $1"
 		;;
