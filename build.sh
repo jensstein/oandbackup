@@ -3,12 +3,13 @@
 set -e
 
 function build {
+	build_mode=$1
 	cargo_options=""
 	gradle_mode=""
-	if test $1 = "release"; then
+	if test $build_mode = "release"; then
 		cargo_options="--release"
 		gradle_mode="build"
-	elif test $1 = "debug"; then
+	elif test $build_mode = "debug"; then
 		cargo_options=""
 		gradle_mode="assembleDebug"
 	fi
@@ -20,7 +21,7 @@ function build {
 	cargo test
 	cargo build $cargo_options --target armv7-linux-androideabi
 	mkdir -p ../assets
-	cp -v target/armv7-linux-androideabi/release/oab-utils ../assets
+	cp -v target/armv7-linux-androideabi/$build_mode/oab-utils ../assets
 
 	cd ../
 	./gradlew $gradle_mode
