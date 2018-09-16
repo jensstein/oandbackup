@@ -252,7 +252,10 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             public void run()
             {
                 handleMessages.showMessage("", getString(R.string.collectingData));
-                appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this, backupDir, true);
+                appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this,
+                    backupDir, true, PreferenceManager.getDefaultSharedPreferences(
+                    OAndBackup.this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS,
+                    true));
                 runOnUiThread(new Runnable()
                 {
                     public void run()
@@ -670,7 +673,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             if(appInfoList == null)
             {
                 handleMessages.changeMessage("", getString(R.string.collectingData));
-                appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this, backupDir, true);
+                appInfoList = AppInfoHelper.getPackageInfo(OAndBackup.this,
+                    backupDir, true, prefs.getBoolean(Constants.
+                    PREFS_ENABLESPECIALBACKUPS, true));
                 LanguageHelper.legacyKeepLanguage(OAndBackup.this, langCode);
                 handleMessages.endMessage();
             }
