@@ -33,10 +33,11 @@ if test $# -eq 0; then
 	exit 1
 fi
 
+ACTION=
 while test $# -gt 0; do
 	case $1 in
 	"release" | "debug")
-		build $1
+		ACTION="build $1"
 		;;
 	*)
 		printf "unknown option $1\n"
@@ -45,3 +46,5 @@ while test $# -gt 0; do
 	esac
 	shift
 done
+
+$ACTION
