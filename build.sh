@@ -3,6 +3,7 @@
 set -e
 
 TARGET=armv7-linux-androideabi
+TARGET_ABI=armeabi-v7a
 
 function build {
 	build_mode=$1
@@ -22,8 +23,8 @@ function build {
 	set -x
 	cargo test
 	cargo build $cargo_options --target $TARGET
-	mkdir -p ../assets
-	cp -v target/$TARGET/$build_mode/oab-utils ../assets
+	mkdir -p ../assets/$TARGET_ABI
+	cp -v target/$TARGET/$build_mode/oab-utils ../assets/$TARGET_ABI
 
 	cd ../
 	./gradlew $gradle_mode
@@ -42,6 +43,10 @@ while test $# -gt 0; do
 		TARGET=$2
 		shift
 		;;
+	"--abi")
+	    TARGET_ABI=$2
+	    shift
+	    ;;
 	"release" | "debug")
 		ACTION="build $1"
 		;;
