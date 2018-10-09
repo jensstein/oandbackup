@@ -22,8 +22,92 @@ dependencies {
         implementation 'org.sufficientlysecure:openpgp-api:9.0'
 }
 
+int versionMajor = 0
+int versionMinor = 3
+int versionPath = 0
+
+// translate from product flavour names to abi names
+Map<String, String> abiFlavorMap = [
+    "arm": "armeabi-v7a",
+    "arm64": "aarch64",
+    "x86":"x86",
+    "x86_64": "x86_64"
+]
+
+Map<String, Integer> abiVersionCodes = [
+    "armeabi-v7a": 1,
+    "aarch64": 2,
+    "x86": 3,
+    "x86_64": 4
+]
+
 android {
     compileSdkVersion 'android-26'
+
+    defaultConfig {
+        // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
+        versionCode = versionMajor * 10000 +
+            versionMinor * 100 +
+            versionPath
+        versionName = "${versionMajor}.${versionMinor}.${versionPath}"
+    }
+
+    flavorDimensions "abi"
+    productFlavors {
+        arm { flavor ->
+            exec {
+                executable "./build.sh"
+                // TODO: determine buildtype to specify if the rust binary
+                // should be built debug or release
+                args "release", "--target", "armv7-linux-androideabi",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+            }
+        }
+        arm64 { flavor ->
+            exec {
+                executable "./build.sh"
+                args "release", "--target", "aarch64-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+            }
+        }
+        x86 { flavor ->
+            exec {
+                executable "./build.sh"
+                args "release", "--target", "i686-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+            }
+        }
+        x86_64 { flavor ->
+            exec {
+                executable "./build.sh"
+                args "release", "--target", "x86_64-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+            }
+        }
+        universal {
+            // flavor containing all abi versions
+        }
+        // https://medium.com/@ookami.kb/adding-flavor-specific-tasks-to-gradle-b52b40a3c1b7
+        all { flavor ->
+            String name = flavor.name.capitalize()
+            task("copy${name}Assets", type: Copy) {
+                if(flavor.name != "universal") {
+                    from "assets/${abiFlavorMap.get(flavor.name)}"
+                    into "src/main/assets/${abiFlavorMap.get(flavor.name)}"
+                } else {
+                    from "assets"
+                    into "src/main/assets"
+                }
+                eachFile { logger.info("copying file: ${it.file}") }
+            }
+            task("clean${name}Assets", type: Delete) {
+                delete "src/main/assets"
+                targetFiles.getFiles().forEach { file ->
+                    logger.info("deleting file: ${file}")
+                }
+            }
+        }
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -32,6 +116,33 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    afterEvaluate {
+        android.productFlavors.all { flavor ->
+            String name = flavor.name.capitalize()
+            tasks."copy${name}Assets".dependsOn "clean${name}Assets"
+
+            tasks."generate${name}DebugResources".dependsOn "copy${name}Assets"
+            tasks."generate${name}ReleaseResources".dependsOn "copy${name}Assets"
+        }
+    }
+}
+
+android.applicationVariants.all { variant ->
+    // at the moment product flavours are only used for distinguishing abi
+    // versions so this should be safe
+    variant.outputs.each { output ->
+        String flavor = variant.productFlavors[0].name
+        String abi = abiFlavorMap.get(flavor)
+        Integer abiVersionCode = abiVersionCodes.get(abi)
+        // apks requiring higher api levels should have higher version codes:
+        // https://developer.android.com/google/play/publishing/multiple-apks#VersionCodes
+        if(abiVersionCode != null) {
+            output.versionCodeOverride =
+                Integer.parseInt("${abiVersionCode}${variant.versionCode}")
+        }
+        output.versionNameOverride = variant.versionName + "-" + flavor
     }
 }
 
