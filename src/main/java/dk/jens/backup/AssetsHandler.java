@@ -1,6 +1,7 @@
 package dk.jens.backup;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -19,7 +20,8 @@ public class AssetsHandler {
      */
     public static void copyOabutils(Context context)
             throws AssetsHandlerException {
-        copyAsset(context, OAB_UTILS, OAB_UTILS);
+        final String assetPath = new File(getAbi(), OAB_UTILS).toString();
+        copyAsset(context, assetPath, OAB_UTILS);
         final File file = new File(context.getFilesDir(), OAB_UTILS);
         if(!file.setExecutable(true)) {
             final String msg = String.format("error making %s executable",
@@ -54,6 +56,14 @@ public class AssetsHandler {
             final String msg = String.format("error copying asset %s",
                 assetPath);
             throw new AssetsHandlerException(msg, e);
+        }
+    }
+
+    private static String getAbi() {
+        if(Build.VERSION.SDK_INT <= 21) {
+            return Build.CPU_ABI;
+        } else {
+            return Build.SUPPORTED_ABIS[0];
         }
     }
 
