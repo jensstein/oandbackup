@@ -59,29 +59,29 @@ android {
                 executable "./build.sh"
                 // TODO: determine buildtype to specify if the rust binary
                 // should be built debug or release
-                args "release", "--target", "armv7-linux-androideabi",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+                args = ["release", "--target", "armv7-linux-androideabi",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"]
             }
         }
         arm64 { flavor ->
             exec {
                 executable "./build.sh"
-                args "release", "--target", "aarch64-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+                args = ["release", "--target", "aarch64-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"]
             }
         }
         x86 { flavor ->
             exec {
                 executable "./build.sh"
-                args "release", "--target", "i686-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+                args = ["release", "--target", "i686-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"]
             }
         }
         x86_64 { flavor ->
             exec {
                 executable "./build.sh"
-                args "release", "--target", "x86_64-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
+                args = ["release", "--target", "x86_64-linux-android",
+                    "--abi", "${abiFlavorMap.get(flavor.name)}"]
             }
         }
         universal {
