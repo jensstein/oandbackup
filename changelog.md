@@ -1,6 +1,40 @@
 changelog
 =========
 
+0.3.1 (2018-10-11)
+------------------
+ * build and package rust binary from gradle build configuration
+
+0.3.0 (2018-09-16)
+------------------
+ * add binary written in rust to handle tasks which can only be done as root. this will eventually enable us to get rid of the dependency on a \*box installation.
+    at the moment it is compiled for armv7a, arm64, x86, and x86_64. it is able to get and set file ownership and set file permissions.
+ * add gitlab ci configuration
+ * ignore errors from restorecon, hopefully only temporarily (5821c01f5fb149c6ec06c0f56197e28d2669feae)
+
+0.2.13 (2018-03-15)
+-------------------
+ * fix java package hierarchies
+ * ignore errors with firefox lock files (https://github.com/jensstein/oandbackup/issues/155)
+ * bump java version to 1.8 (or at least the limited subset of 1.8 which android supports)
+ * add global blacklist for scheduled backups
+ * restructure how shell commands are run
+ * bump minimun api version to 16
+ * remove dependency on android support library
+ * updated spanish translation. thanks to sebastian05067
+ * fix scheduling logic. thanks to Niklas Wenzel.
+
+0.2.12.1 (2017-01-28)
+---------------------
+ * fix backing up data of system package (2b2b00ceb1d65c167b73507e5e3192ff98db4b8e)
+ * fix backing up account data on android versions >= 24 (7b84d0834bf19ee3132d2596a4b9b504a3359246)
+
+0.2.12 (2017-01-19)
+-------------------
+ * remove usage of awk
+ * mark disabled apps by separate colour (https://github.com/jensstein/oandbackup/issues/126)
+ * run scheduled backups in a foreground service (https://github.com/jensstein/oandbackup/issues/133)
+
 0.2.11 (2016-01-17)
 -------------------
  * new permission: READ_EXTERNAL_STORAGE
