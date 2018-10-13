@@ -34,6 +34,13 @@ Map<String, String> abiFlavorMap = [
     "x86_64": "x86_64"
 ]
 
+Map<String, String> flavorTargetMap = [
+    "arm": "armv7-linux-androideabi",
+    "arm64": "aarch64-linux-android",
+    "x86": "i686-linux-android",
+    "x86_64": "x86_64-linux-android"
+]
+
 Map<String, Integer> abiVersionCodes = [
     "armeabi-v7a": 1,
     "aarch64": 2,
@@ -54,60 +61,66 @@ android {
 
     flavorDimensions "abi"
     productFlavors {
-        arm { flavor ->
-            exec {
-                executable "./build.sh"
-                // TODO: determine buildtype to specify if the rust binary
-                // should be built debug or release
-                args "release", "--target", "armv7-linux-androideabi",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
-            }
-        }
-        arm64 { flavor ->
-            exec {
-                executable "./build.sh"
-                args "release", "--target", "aarch64-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
-            }
-        }
-        x86 { flavor ->
-            exec {
-                executable "./build.sh"
-                args "release", "--target", "i686-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
-            }
-        }
-        x86_64 { flavor ->
-            exec {
-                executable "./build.sh"
-                args "release", "--target", "x86_64-linux-android",
-                    "--abi", "${abiFlavorMap.get(flavor.name)}"
-            }
-        }
-        universal {
-            // flavor containing all abi versions
-        }
+        arm {}
+        arm64 {}
+        x86 {}
+        x86_64 {}
+        universal {} // flavor containing all abi versions
         // https://medium.com/@ookami.kb/adding-flavor-specific-tasks-to-gradle-b52b40a3c1b7
         all { flavor ->
             String name = flavor.name.capitalize()
-            task("copy${name}Assets", type: Copy) {
-                if(flavor.name != "universal") {
-                    from "assets/${abiFlavorMap.get(flavor.name)}"
-                    into "src/main/assets/${abiFlavorMap.get(flavor.name)}"
-                } else {
-                    from "assets"
+            /* workaround for the issue that we have to execute the copy
+             * tasks both when packaging debug and release apks but a gradle
+             * task can only be run once during a build. so this defines two
+             * separate sets of tasks with the same content.
+             */
+            ["Release", "Debug"].each { buildType ->
+                task("copy${name}${buildType}Assets", type: Copy) {
                     into "src/main/assets"
+                    if (flavor.name != "universal") {
+                        into("${abiFlavorMap.get(flavor.name)}") {
+                            from "assets/${abiFlavorMap.get(flavor.name)}"
+                        }
+                    } else {
+                        from "assets"
+                    }
+                    eachFile { logger.info("copying file: ${it.file}") }
                 }
-                eachFile { logger.info("copying file: ${it.file}") }
-            }
-            task("clean${name}Assets", type: Delete) {
-                delete "src/main/assets"
-                targetFiles.getFiles().forEach { file ->
-                    logger.info("deleting file: ${file}")
+                task("clean${name}${buildType}Assets", type: Delete) {
+                    doFirst {
+                        delete "src/main/assets"
+                        targetFiles.getFiles().forEach { file ->
+                            logger.info("deleting file: ${file}")
+                        }
+                    }
                 }
             }
         }
     }
+
+    android.productFlavors.each { flavor ->
+        task("build${flavor.name.capitalize()}Binary") {
+            if(flavor.name != "universal") {
+                doLast {
+                    exec {
+                        executable "./build.sh"
+                        // TODO: determine buildtype to specify if the rust binary
+                        // should be built debug or release
+                        args = ["release", "--target", "${flavorTargetMap.get(flavor.name)}",
+                                "--abi", "${abiFlavorMap.get(flavor.name)}"]
+                    }
+                }
+            }
+        }
+    }
+    android.productFlavors.each { flavor ->
+        if(flavor.name != "universal") {
+            // ensure that packaging the universal apk happens after all
+            // the binaries have been built
+            tasks."buildUniversalBinary".mustRunAfter "build${flavor.name.capitalize()}Binary"
+        }
+    }
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -121,10 +134,11 @@ android {
     afterEvaluate {
         android.productFlavors.all { flavor ->
             String name = flavor.name.capitalize()
-            tasks."copy${name}Assets".dependsOn "clean${name}Assets"
 
-            tasks."generate${name}DebugResources".dependsOn "copy${name}Assets"
-            tasks."generate${name}ReleaseResources".dependsOn "copy${name}Assets"
+            tasks."generate${name}DebugResources".dependsOn "build${name}Binary",
+                "copy${name}DebugAssets", "clean${name}DebugAssets"
+            tasks."generate${name}ReleaseResources".dependsOn "build${name}Binary",
+                "copy${name}ReleaseAssets", "clean${name}ReleaseAssets"
         }
     }
 }
@@ -148,4 +162,12 @@ android.applicationVariants.all { variant ->
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.8'
+}
+
+clean {
+    String[] abiVersions = ["armeabi-v7a", "aarch64", "x86", "x86_64"]
+    abiVersions.each {
+        delete "assets/${it}"
+        delete "src/main/assets/${it}"
+    }
 }
