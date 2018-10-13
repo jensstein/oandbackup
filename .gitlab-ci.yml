@@ -57,7 +57,7 @@ build:
     - *setup_rust
     - mkdir -p $ASSETS
     - mkdir apks
-    - ./gradlew clean assembleRelease
+    - ./gradlew clean build
     - cp -v build/outputs/apk/{arm/release/oandbackup-arm-release-unsigned.apk,arm64/release/oandbackup-arm64-release-unsigned.apk,x86/release/oandbackup-x86-release-unsigned.apk,x86_64/release/oandbackup-x86_64-release-unsigned.apk,universal/release/oandbackup-universal-release-unsigned.apk} -t apks
   artifacts:
     paths:
