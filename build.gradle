@@ -163,3 +163,11 @@ android.applicationVariants.all { variant ->
 task wrapper(type: Wrapper) {
     gradleVersion = '2.8'
 }
+
+clean {
+    String[] abiVersions = ["armeabi-v7a", "aarch64", "x86", "x86_64"]
+    abiVersions.each {
+        delete "assets/${it}"
+        delete "src/main/assets/${it}"
+    }
+}
