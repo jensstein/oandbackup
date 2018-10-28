@@ -29,7 +29,7 @@ int versionPath = 2
 // translate from product flavour names to abi names
 Map<String, String> abiFlavorMap = [
     "arm": "armeabi-v7a",
-    "arm64": "aarch64",
+    "arm64": "arm64-v8a",
     "x86":"x86",
     "x86_64": "x86_64"
 ]
@@ -43,7 +43,7 @@ Map<String, String> flavorTargetMap = [
 
 Map<String, Integer> abiVersionCodes = [
     "armeabi-v7a": 1,
-    "aarch64": 2,
+    "arm64-v8a": 2,
     "x86": 3,
     "x86_64": 4
 ]
