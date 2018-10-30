@@ -1,6 +1,14 @@
 changelog
 =========
 
+0.3.3 (2018-10-30)
+------------------
+ * correct abi name for 64bit arm
+
+0.3.2 (2018-10-18)
+------------------
+ * fix gradle build
+
 0.3.1 (2018-10-11)
 ------------------
  * build and package rust binary from gradle build configuration
