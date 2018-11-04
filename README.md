@@ -60,20 +60,13 @@ the code which does these things are in the methods doRestore and setPermissions
 
 building
 ========
-oandbackups can be built with both gradle and apache ant. and in both cases you also need the android sdk.
-with gradle you can either use the wrapper script or call a binary of gradle version 2.8 directly.
+oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
 ```
-# using the wrapper on linux
+./gradlew build
+# building only debug
 ./gradlew assembleDebug
-# using the gradle binary
-gradle assembleDebug
-```
-building with ant is a little more complicated since it requires manually modifying the openpgp-api-lib source to be buildable with ant (it is possible). instructions for doing this may come later.
-```
-    cd $path_to_this_project
-    # obtain the code for openpgp-api-lib, change it to be ant-compatible and place it in the libs directory
-    $path_to_sdk/tools/android update project -t $target_number -p . --library libs/openpgp-api-lib
-    ant debug
+# building for a specific abi target
+./gradlew assembleArm64
 ```
 
 licenses
