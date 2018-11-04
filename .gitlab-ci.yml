@@ -39,6 +39,7 @@ variables:
 
 stages:
   - test
+  - cargo:test:nightly
   - cargo
   - build
   - sign
@@ -103,3 +104,11 @@ test:cargo:
   script:
     - cd oab-utils
     - cargo test
+
+cargo:test:nightly:
+  image: rustlang/rust:nightly
+  stage: cargo:test:nightly
+  script:
+    - cd oab-utils
+    - cargo test
+  allow_failure: true
