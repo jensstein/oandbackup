@@ -13,14 +13,16 @@ oandbackup is handled on both gitlab and github:
 https://gitlab.com/jensstein/oandbackup/   
 https://github.com/jensstein/oandbackup   
 debug apks are built by gitlab for each commit on every branch. the latest successful build can be found here (substitute $branch for the desired branch, e.g. master):   
-https://gitlab.com/jensstein/oandbackup/builds/artifacts/$branch/raw/build/outputs/apk/debug/oandbackup-debug.apk?job=build   
-and a signed release apk is built for every commit on the master branch:   
-https://gitlab.com/jensstein/oandbackup/builds/artifacts/master/raw/oandbackup-signed.apk?job=sign   
+https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/$branch/browse/apks?job=build  
+(e.g. https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse/apks?job=build)  
+and signed release apks are built for every commit on the master branch:  
+https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse?job=sign
 
-busybox
+busybox / toybox / oab-utils
 ======
 
-a working busybox installation is required at the moment.   
+a working busybox or toybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
+
 you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
 if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
 ```
@@ -58,20 +60,13 @@ the code which does these things are in the methods doRestore and setPermissions
 
 building
 ========
-oandbackups can be built with both gradle and apache ant. and in both cases you also need the android sdk.
-with gradle you can either use the wrapper script or call a binary of gradle version 2.8 directly.
+oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
 ```
-# using the wrapper on linux
+./gradlew build
+# building only debug
 ./gradlew assembleDebug
-# using the gradle binary
-gradle assembleDebug
-```
-building with ant is a little more complicated since it requires manually modifying the openpgp-api-lib source to be buildable with ant (it is possible). instructions for doing this may come later.
-```
-    cd $path_to_this_project
-    # obtain the code for openpgp-api-lib, change it to be ant-compatible and place it in the libs directory
-    $path_to_sdk/tools/android update project -t $target_number -p . --library libs/openpgp-api-lib
-    ant debug
+# building for a specific abi target
+./gradlew assembleArm64
 ```
 
 licenses
