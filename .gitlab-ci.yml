@@ -98,7 +98,7 @@ sign:
     - master
 
 test:cargo:
-  image: rust:1.26-slim-stretch
+  image: rust:1.30-slim-stretch
   stage: test
   script:
     - cd oab-utils
