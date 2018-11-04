@@ -18,10 +18,11 @@ https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/$branch/browse/apks?job
 and signed release apks are built for every commit on the master branch:  
 https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse?job=sign
 
-busybox
+busybox / toybox / oab-utils
 ======
 
-a working busybox installation is required at the moment.   
+a working busybox or toybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
+
 you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
 if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
 ```
