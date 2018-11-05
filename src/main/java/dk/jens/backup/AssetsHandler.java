@@ -59,7 +59,7 @@ public class AssetsHandler {
         }
     }
 
-    private static String getAbi() {
+    public static String getAbi() {
         if(Build.VERSION.SDK_INT <= 21) {
             return Build.CPU_ABI;
         } else {

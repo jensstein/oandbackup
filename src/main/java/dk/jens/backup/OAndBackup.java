@@ -66,6 +66,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Utils.logDeviceInfo(this, TAG);
         setContentView(R.layout.main);
         handleMessages = new HandleMessages(this);
 

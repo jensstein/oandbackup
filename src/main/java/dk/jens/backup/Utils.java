@@ -6,6 +6,9 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.Toast;
 import dk.jens.backup.ui.HandleMessages;
 
@@ -113,6 +116,22 @@ public class Utils
         if(path.endsWith(File.separator))
             path = path.substring(0, path.length() - 1);
         return path.substring(path.lastIndexOf(File.separator) + 1);
+    }
+    public static void logDeviceInfo(Context context, String tag) {
+        final String abiVersion = AssetsHandler.getAbi();
+        try {
+            final String packageName = context.getPackageName();
+            final PackageInfo packageInfo = context.getPackageManager()
+                .getPackageInfo(packageName, 0);
+            final int versionCode = packageInfo.versionCode;
+            final String versionName = packageInfo.versionName;
+            Log.i(tag, String.format("running version %s/%s on abi %s",
+                versionCode, versionName, abiVersion));
+        } catch (PackageManager.NameNotFoundException e){
+            Log.i(tag, String.format(
+                "unable to determine package version (%s), abi version %s",
+                e.toString(), abiVersion));
+        }
     }
     public interface Command
     {
