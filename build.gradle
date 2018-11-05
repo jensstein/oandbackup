@@ -110,6 +110,26 @@ android {
                                 "--abi", "${abiFlavorMap.get(flavor.name)}"]
                     }
                 }
+            } else {
+                // check if any binaries need to be built
+                final Map<String, String> missingBinariesMap = [:]
+                abiFlavorMap.entrySet().each { entry ->
+                    final abi = entry.value
+                    if (!(new File("assets", abi).exists())) {
+                        missingBinariesMap.put(entry.key, abi)
+                    }
+                }
+                missingBinariesMap.each { entry ->
+                    println("missing abi for universal flavour: " + entry.value)
+                    doLast {
+                        exec {
+                            executable "./build.sh"
+                            args = ["release", "--target",
+                                "${flavorTargetMap.get(entry.key)}",
+                                "--abi", "${entry.value}"]
+                        }
+                    }
+                }
             }
         }
     }
@@ -165,9 +185,10 @@ task wrapper(type: Wrapper) {
 }
 
 clean {
-    String[] abiVersions = ["armeabi-v7a", "aarch64", "x86", "x86_64"]
-    abiVersions.each {
-        delete "assets/${it}"
-        delete "src/main/assets/${it}"
+    doLast {
+        abiFlavorMap.values().each {
+            delete "assets/${it}"
+            delete "src/main/assets/${it}"
+        }
     }
 }
