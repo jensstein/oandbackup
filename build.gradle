@@ -95,6 +95,54 @@ android {
                     }
                 }
             }
+            // adding files to an apk:
+            // https://discuss.gradle.org/t/add-generated-file-to-meta-inf/11831
+
+            /* this task generates a dummy lib directory in the apk which
+             * should trick fdroid into believing that the apk ships native
+             * code without needing to build an actual jni library with the ndk.
+             *
+             * this should work because fdroid uses aapt (not aapt2) to determine if an
+             * app ships with native code (fdroidserver/update.py:1172 as of 568256f75cb393611769bfc0ff94bf16b4124d3d)
+             * and aapt scans a lib directory for subdirectories to populate its "native-code" field
+             * (android/platform/frameworks/base/tools/aapt/Command.cpp:2296 as of 009b2dd158183062f4c9ad681636797350699f57).
+             *
+             * this is probably not a good strategy for fdroid in the long run -
+             * and since this code is only meant to handle the fdroid case it
+             * may need to change in unforeseen ways in the future.
+             */
+            task("generate${flavor.name.capitalize()}LibDir") {
+                def resDir = getTemporaryDir()
+                android {
+                    sourceSets {
+                        // the temporary directory needs to be added to the
+                        // source set of the abi flavor, not the main source
+                        // set, to avoid the different flavors poluting each
+                        // other's classpaths
+                        sourceSets.findByName(flavor.name).resources {
+                            srcDir resDir
+                        }
+                    }
+                }
+                doLast {
+                    List<String> arches = []
+                    if(flavor.name != "universal") {
+                        arches.push(abiFlavorMap.get(flavor.name))
+                    } else {
+                        abiFlavorMap.values().each {
+                            arches.push(it)
+                        }
+                    }
+                    arches.each { arch ->
+                        def destDir = new File(resDir, "lib")
+                        destDir.mkdirs()
+                        def file = new File(destDir, arch)
+                        // the file seem to need to have some dummy content
+                        // to be included
+                        file.text = "${arch}"
+                    }
+                }
+            }
         }
     }
 
@@ -159,6 +207,8 @@ android {
                 "copy${name}DebugAssets", "clean${name}DebugAssets"
             tasks."generate${name}ReleaseResources".dependsOn "build${name}Binary",
                 "copy${name}ReleaseAssets", "clean${name}ReleaseAssets"
+            tasks."merge${name}DebugResources".dependsOn "generate${name}LibDir"
+            tasks."merge${name}ReleaseResources".dependsOn "generate${name}LibDir"
         }
     }
 }
