@@ -159,17 +159,17 @@ android {
                     }
                 }
             } else {
-                // check if any binaries need to be built
-                final Map<String, String> missingBinariesMap = [:]
-                abiFlavorMap.entrySet().each { entry ->
-                    final abi = entry.value
-                    if (!(new File("assets", abi).exists())) {
-                        missingBinariesMap.put(entry.key, abi)
+                doLast {
+                    // check if any binaries need to be built
+                    final Map<String, String> missingBinariesMap = [:]
+                    abiFlavorMap.entrySet().each { entry ->
+                        final abi = entry.value
+                        if (!(new File("assets", abi).exists())) {
+                            missingBinariesMap.put(entry.key, abi)
+                        }
                     }
-                }
-                missingBinariesMap.each { entry ->
-                    println("missing abi for universal flavour: " + entry.value)
-                    doLast {
+                    missingBinariesMap.each { entry ->
+                        println("missing abi for universal flavour: " + entry.value)
                         exec {
                             executable "./build.sh"
                             args = ["release", "--target",
