@@ -112,19 +112,24 @@ android {
              * may need to change in unforeseen ways in the future.
              */
             task("generate${flavor.name.capitalize()}LibDir") {
-                def resDir = getTemporaryDir()
-                android {
-                    sourceSets {
-                        // the temporary directory needs to be added to the
-                        // source set of the abi flavor, not the main source
-                        // set, to avoid the different flavors poluting each
-                        // other's classpaths
-                        sourceSets.findByName(flavor.name).resources {
-                            srcDir resDir
-                        }
-                    }
-                }
+                /*
+                 * at first i tried adding a temporary directory to the resources classpath.
+                 * that works well but only for filenames without extensions.
+                 * for some reason i couldn't make it include any files ending
+                 * with .so for example, seemingly no matter what i put into the include method.
+                 * and even though aapt gets tricked by the dummy file not ending in .so,
+                 * com_android_internal_content_NativeLibraryHelper.cpp, which copies out
+                 * library binaries included in the apk, skips files not ending in .so.
+                 * so installing the apk would fail with "Failed to extract native libraries, res=-113]".
+                 * therefore i now put the files into src/main/jniLibs.
+                 * the disadvantage to this method is that i have to manage
+                 * the state of the directory because it isn't temporary.
+                 */
+                def resDir = file("src/main/jniLibs")
+
                 doLast {
+                    resDir.deleteDir()
+                    resDir.mkdirs()
                     List<String> arches = []
                     if(flavor.name != "universal") {
                         arches.push(abiFlavorMap.get(flavor.name))
@@ -134,9 +139,9 @@ android {
                         }
                     }
                     arches.each { arch ->
-                        def destDir = new File(resDir, "lib")
+                        def destDir = new File(resDir, arch)
                         destDir.mkdirs()
-                        def file = new File(destDir, arch)
+                        def file = new File(destDir, "dummy.so")
                         // the file seem to need to have some dummy content
                         // to be included
                         file.text = "${arch}"
