@@ -24,7 +24,7 @@ dependencies {
 
 int versionMajor = 0
 int versionMinor = 3
-int versionPath = 3
+int versionPath = 4
 
 // translate from product flavour names to abi names
 Map<String, String> abiFlavorMap = [
