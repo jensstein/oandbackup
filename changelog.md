@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.3.4 (development)
+0.3.4 (2018-11-15)
 -------------------
  * add ci test against nightly rust
  * fix assembleUniversal{,Debug,Release} tasks
