@@ -1,6 +1,16 @@
 changelog
 =========
 
+0.3.4 (development)
+-------------------
+ * add ci test against nightly rust
+ * fix assembleUniversal{,Debug,Release} tasks
+ * add simplified chinese translation (zh_CN). thanks to Aining.
+ * trick aapt into reporting that the apks ship native code.
+    the purpose of this is to make fdroid filter the apks
+    based on the version of the pab-utils binary they contain
+    even though no jni or ndk building is involved.
+
 0.3.3 (2018-10-30)
 ------------------
  * correct abi name for 64bit arm
