@@ -443,8 +443,25 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     {
         // swapBackupDirPath is not needed with pm install
         List<String> commands = new ArrayList<>();
-        if(backupDir.getAbsolutePath().startsWith(ownDataDir))
-        {
+        /* in newer android versions selinux rules prevent system_server
+         * from accessing many directories. in android 9 this prevents pm
+         * install from installing from other directories that the package
+         * staging directory (/data/local/tmp).
+         * you can also pipe the apk data to the install command providing
+         * it with a -S $apk_size value. but judging from this answer
+         * https://issuetracker.google.com/issues/80270303#comment14 this
+         * could potentially be unwise to use.
+         */
+        final File packageStagingDirectory = new File("/data/local/tmp");
+        if(packageStagingDirectory.exists()) {
+            final String apkDestPath = String.format("%s/%s",
+                packageStagingDirectory, System.currentTimeMillis() + ".apk");
+            commands.add(String.format("%s cp %s %s", busybox,
+                swapBackupDirPath(backupDir.getAbsolutePath() + "/" + apk),
+                apkDestPath));
+            commands.add(String.format("pm install -r %s", apkDestPath));
+            commands.add(String.format("%s rm -r %s", busybox, apkDestPath));
+        } else if(backupDir.getAbsolutePath().startsWith(ownDataDir)) {
             /**
                 * pm cannot install from a file on the data partition
                 * Failure [INSTALL_FAILED_INVALID_URI] is reported
