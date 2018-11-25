@@ -1,18 +1,7 @@
-buildscript {
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-    }
-}
-
 plugins {
+    id "com.android.application" version "3.0.1"
     id "org.sonarqube" version "2.6"
 }
-
-apply plugin: 'com.android.application'
 
 repositories {
     jcenter()
