@@ -441,10 +441,34 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public int restoreUserApk(File backupDir, String label, String apk, String ownDataDir)
     {
+        /* according to a comment in the android 8 source code for
+         * /frameworks/base/cmds/pm/src/com/android/commands/pm/Pm.java
+         * pm install is now discouraged / deprecated in favor of cmd
+         * package install.
+         */
+        final String installCmd = Build.VERSION.SDK_INT >= 28 ?
+            "cmd package install" : "pm install";
         // swapBackupDirPath is not needed with pm install
         List<String> commands = new ArrayList<>();
-        if(backupDir.getAbsolutePath().startsWith(ownDataDir))
-        {
+        /* in newer android versions selinux rules prevent system_server
+         * from accessing many directories. in android 9 this prevents pm
+         * install from installing from other directories that the package
+         * staging directory (/data/local/tmp).
+         * you can also pipe the apk data to the install command providing
+         * it with a -S $apk_size value. but judging from this answer
+         * https://issuetracker.google.com/issues/80270303#comment14 this
+         * could potentially be unwise to use.
+         */
+        final File packageStagingDirectory = new File("/data/local/tmp");
+        if(packageStagingDirectory.exists()) {
+            final String apkDestPath = String.format("%s/%s",
+                packageStagingDirectory, System.currentTimeMillis() + ".apk");
+            commands.add(String.format("%s cp %s %s", busybox,
+                swapBackupDirPath(backupDir.getAbsolutePath() + "/" + apk),
+                apkDestPath));
+            commands.add(String.format("%s -r %s", installCmd, apkDestPath));
+            commands.add(String.format("%s rm -r %s", busybox, apkDestPath));
+        } else if(backupDir.getAbsolutePath().startsWith(ownDataDir)) {
             /**
                 * pm cannot install from a file on the data partition
                 * Failure [INSTALL_FAILED_INVALID_URI] is reported
@@ -457,10 +481,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " cp " + swapBackupDirPath(
                 backupDir.getAbsolutePath() + "/" + apk) + " " +
                 swapBackupDirPath(tempPath));
-            commands.add("pm install -r " + tempPath + "/" + apk);
+            commands.add(String.format("%s -r %s/%s", installCmd, tempPath, apk));
             commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
         } else {
-            commands.add("pm install -r " + backupDir.getAbsolutePath() + "/" + apk);
+            commands.add(String.format("%s -r %s/%s", installCmd,
+                backupDir.getAbsolutePath(), apk));
         }
         List<String> err = new ArrayList<>();
         int ret = CommandHandler.runCmd("su", commands, line -> {},
