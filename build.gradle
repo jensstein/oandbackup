@@ -57,6 +57,8 @@ android {
             versionMinor * 100 +
             versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
+        minSdkVersion 16
+        targetSdkVersion 17
     }
 
     flavorDimensions "abi"
