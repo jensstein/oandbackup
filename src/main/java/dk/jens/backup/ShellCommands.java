@@ -342,7 +342,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public Ownership getOwnership(String packageDir) throws OwnershipException
     {
-        return getOwnership(packageDir, "sh");
+        return getOwnership(packageDir, "su");
     }
     public Ownership getOwnership(String packageDir, String shellPrivs)
         throws OwnershipException
