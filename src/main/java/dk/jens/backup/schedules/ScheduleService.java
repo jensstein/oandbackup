@@ -41,7 +41,8 @@ implements BackupRestoreHelper.OnBackupRestoreListener
             // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
             handleAlarms.setAlarm(id, timeUntilNextEvent, repeatTime * AlarmManager.INTERVAL_DAY);
             Log.i(TAG, getString(R.string.sched_startingbackup));
-            int mode = prefs.getInt(Constants.PREFS_SCHEDULES_MODE + id, 1);
+            final int mode = prefs.getInt(
+                Constants.PREFS_SCHEDULES_MODE + id, 0);
             int subMode = prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + id, 2);
             boolean excludeSystem = prefs.getBoolean(
                 Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, false);
