@@ -33,7 +33,8 @@ public class AppInfoHelper
         Collections.sort(pinfoList, pInfoPackageNameComparator);
         // list seemingly starts scrambled on 4.3
 
-        ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
+        ArrayList<String> disabledPackages = ShellCommands
+            .getDisabledPackages(new CommandHandler());
         if(includeSpecialBackups) {
             addSpecialBackups(context, backupDir, list, packageNames);
         }

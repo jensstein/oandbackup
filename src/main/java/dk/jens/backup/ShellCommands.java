@@ -27,6 +27,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     final static String TAG = OAndBackup.TAG;
     final static String EXTERNAL_FILES = "external_files";
 
+    CommandHandler commandHandler = new CommandHandler();
+
     private final String oabUtils;
     private boolean legacyMode;
 
@@ -125,7 +127,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             deleteBackup(new File(backupSubDir, EXTERNAL_FILES  + "/" + data + ".zip.gpg"));
         }
         List<String> errors = new ArrayList<>();
-        int ret = CommandHandler.runCmd("su", commands, line -> {},
+        int ret = commandHandler.runCmd("su", commands, line -> {},
             errors::add, e -> {
                 Log.e(TAG, String.format("Exception caught running: %s",
                     TextUtils.join(", ", commands)), e);
@@ -214,7 +216,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 if(Build.VERSION.SDK_INT >= 23) {
                     commands.add("restorecon -R " + dataDir + " || true");
                 }
-                int ret = CommandHandler.runCmd("su", commands, line -> {},
+                int ret = commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(label, line),
                     e -> Log.e(TAG, "doRestore: " + e.toString()), this);
                 if(multiuserEnabled)
@@ -246,7 +248,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if(files != null)
             for(String file : files)
                 commands.add("cp -r " + file + " " + backupSubDirPath);
-        int ret = CommandHandler.runCmd("su", commands, line -> {},
+        int ret = commandHandler.runCmd("su", commands, line -> {},
             line -> writeErrorLog(label, line),
             e -> Log.e(TAG, "backupSpecial: " + e.toString()), this);
         if(files != null)
@@ -313,7 +315,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     commands.add(busybox + " chmod -R 0771 " + file);
                 }
             }
-            int ret = CommandHandler.runCmd("su", commands, line -> {},
+            int ret = commandHandler.runCmd("su", commands, line -> {},
                 line -> writeErrorLog(label, line),
                 e -> Log.e(TAG, "restoreSpecial: " + e.toString()), this);
             return ret + unzipRet;
@@ -349,7 +351,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     {
         if(!legacyMode) {
             List<String> result = new ArrayList<>();
-            CommandHandler.runCmd(shellPrivs, String.format("%s owner %s", oabUtils, packageDir),
+            commandHandler.runCmd(shellPrivs, String.format("%s owner %s", oabUtils, packageDir),
                 result::add, line -> writeErrorLog("oab-utils", line),
                 e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
             if(result.size() != 1) {
@@ -385,7 +387,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             StringBuilder sb = new StringBuilder();
             // you don't need su for stat - you do for ls -l /data/
             // and for stat on single files
-            int ret = CommandHandler.runCmd(shellPrivs, commands, sb::append,
+            int ret = commandHandler.runCmd(shellPrivs, commands, sb::append,
                 line -> writeErrorLog("", line),
                 e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
             Log.i(TAG, "getOwnership return: " + ret);
@@ -426,7 +428,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 }
             }
             // midlertidig indtil mere detaljeret som i fix_permissions l.367
-            int ret = CommandHandler.runCmd("su", commands, line -> {},
+            int ret = commandHandler.runCmd("su", commands, line -> {},
                 line -> writeErrorLog(packageDir, line),
                 e -> Log.e(TAG, "error while setPermissions: " + e.toString()), this);
             Log.i(TAG, "setPermissions return: " + ret);
@@ -488,7 +490,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 backupDir.getAbsolutePath(), apk));
         }
         List<String> err = new ArrayList<>();
-        int ret = CommandHandler.runCmd("su", commands, line -> {},
+        int ret = commandHandler.runCmd("su", commands, line -> {},
             err::add, e -> Log.e(TAG, "restoreUserApk: ", e), this);
         // pm install returns 0 even for errors and prints part of its normal output to stderr
         // on api level 10 successful output spans three lines while it spans one line on the other api levels
@@ -528,7 +530,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             backupDir.getAbsolutePath()) + "/" + apk + " " + basePath);
         commands.add(busybox + " chmod 644 " + basePath + apk);
         commands.add("mount -o remount,ro /system");
-        return CommandHandler.runCmd("su", commands, line -> {},
+        return commandHandler.runCmd("su", commands, line -> {},
             line -> writeErrorLog(label, line),
             e -> Log.e(TAG, "restoreSystemApk: ", e), this);
     }
@@ -575,7 +577,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " rm -r /data/app-lib/" + packageName + "*");
         }
         List<String> err = new ArrayList<>();
-        int ret = CommandHandler.runCmd("su", commands, line -> {},
+        int ret = commandHandler.runCmd("su", commands, line -> {},
             err::add, e -> Log.e(TAG, "uninstall", e), this);
         if(ret != 0)
         {
@@ -600,7 +602,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         List<String> commands = new ArrayList<>();
         commands.add(busybox + " pkill system_server");
 //            dos.writeBytes("restart\n"); // restart doesn't seem to work here even though it works fine from ssh
-        int ret = CommandHandler.runCmd("su", commands, line -> {},
+        int ret = commandHandler.runCmd("su", commands, line -> {},
             line -> writeErrorLog("", line),
             e -> Log.e(TAG, "quickReboot: ", e), this);
         return ret;
@@ -649,7 +651,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             {
                 List<String> commands = new ArrayList<>();
                 commands.add("kill " + process.pid);
-                CommandHandler.runCmd("su", commands, line -> {},
+                commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(packageName, line),
                     e -> Log.e(TAG, "killPackage: ", e), this);
             }
@@ -720,13 +722,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     public boolean checkBusybox(String busyboxPath)
     {
-        int ret = CommandHandler.runCmd("sh", busyboxPath,
+        int ret = commandHandler.runCmd("sh", busyboxPath,
             line -> {}, line -> writeErrorLog("busybox", line),
             e -> Log.e(TAG, "checkBusybox: ", e), this);
         return ret == 0;
     }
     public boolean checkOabUtils() {
-        int ret = CommandHandler.runCmd("su", String.format("%s -h", oabUtils),
+        int ret = commandHandler.runCmd("su", String.format("%s -h", oabUtils),
             line -> {}, line -> writeErrorLog("oab-utils", line),
             e -> Log.e(TAG, "checkOabUtils: ", e), this);
         Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
@@ -734,7 +736,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             final List<String> commands = new ArrayList<>();
             commands.add(String.format("ls -l %s", oabUtils));
             commands.add(String.format("file %s", oabUtils));
-            CommandHandler.runCmd("su", commands, line -> {
+            commandHandler.runCmd("su", commands, line -> {
                 Log.i(TAG, "oab-utils" + line);
                 writeErrorLog("oab-utils", line);
             }, line -> {
@@ -770,7 +772,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     commands.add("chmod 644 /system/lib/" + Utils.getName(lib));
                 }
                 commands.add("mount -o remount,ro /system");
-                CommandHandler.runCmd("su", commands, line -> {},
+                commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(packageName, line),
                     e -> Log.e(TAG, "copyNativeLibraries: ", e), this);
             }
@@ -791,7 +793,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 List<String> commands = new ArrayList<>();
                 commands.add("pm list users | " + busybox + " sed -nr 's/.*\\{([0-9]+):.*/\\1/p'");
                 ArrayList<String> users = new ArrayList<>();
-                int ret = CommandHandler.runCmd("su", commands, line -> {
+                int ret = commandHandler.runCmd("su", commands, line -> {
                     if(line.trim().length() != 0)
                         users.add(line.trim());
                     }, line -> writeErrorLog("", line),
@@ -823,12 +825,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         catch(IllegalAccessException e){}
         return 0;
     }
-    public static ArrayList<String> getDisabledPackages()
+    public static ArrayList<String> getDisabledPackages(CommandHandler commandHandler)
     {
         List<String> commands = new ArrayList<>();
         commands.add("pm list packages -d");
         ArrayList<String> packages = new ArrayList<>();
-        int ret = CommandHandler.runCmd("sh", commands, line -> {
+        int ret = commandHandler.runCmd("sh", commands, line -> {
             if(line.contains(":"))
                 packages.add(line.substring(line.indexOf(":") + 1).trim());
         }, line -> {}, e -> Log.e(TAG, "getDisabledPackages: ", e), e -> {});
@@ -845,7 +847,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             {
                 List<String> commands = new ArrayList<>();
                 commands.add("pm " + option + " --user " + user + " " + packageName);
-                CommandHandler.runCmd("su", commands, line -> {},
+                commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(packageName, line),
                     e -> Log.e(TAG, "enableDisablePackage: ", e), this);
             }
@@ -877,7 +879,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         commands.add("for user in " + userString + "; do if [ $user != " +
             currentUser + " ] && " + grep + " && " + enabled + "; then " +
             disable + "; fi; done");
-        CommandHandler.runCmd("su", commands, line -> {},
+        commandHandler.runCmd("su", commands, line -> {},
             line -> writeErrorLog(packageName, line),
             e -> Log.e(TAG, "disablePackage: ", e), this);
     }
@@ -914,7 +916,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             {
                 List<String> commands = new ArrayList<>();
                 commands.add(busybox + " cp " + apkPath + " " + parent);
-                CommandHandler.runCmd("sh", commands, line -> {},
+                commandHandler.runCmd("sh", commands, line -> {},
                     line -> writeErrorLog("", line),
                     e -> Log.e(TAG, "copySelfApk: ", e), this);
             }
