@@ -1,6 +1,15 @@
 changelog
 =========
 
+0.3.5 (2018-28-12)
+-------------------
+ * fix restoring on android 9. selinux rules has become more strict and as a
+    result system_server is not allowed to install from directories other
+    than the package staging directory (/data/local/tmp)
+    (c9ee0df7a7ea94b309cd8cde8e750068527f2152)
+ * use `cmd package install` instead of `pm install` for restoring apks
+    (677d991c9e95de962a96f30f1e1290720aa31aae)
+
 0.3.4 (2018-11-15)
 -------------------
  * add ci test against nightly rust
