@@ -10,8 +10,6 @@ pluginManagement {
             // https://medium.com/@StefMa/its-time-to-ditch-the-buildscript-block-a1ab12e0d9ce
             if(requested.id.id == "com.android.application") {
                 useModule("com.android.tools.build:gradle:${requested.version}")
-            } else if(requested.id.id == "de.mannodermaus.android-junit5") {
-                useModule("de.mannodermaus.gradle.plugins:android-junit5:${requested.version}")
             }
         }
     }
