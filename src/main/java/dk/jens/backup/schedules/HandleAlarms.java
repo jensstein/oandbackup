@@ -50,7 +50,7 @@ public class HandleAlarms
     {
         return timeUntilNextEvent(interval, hour, false);
     }
-    public long timeUntilNextEvent(int interval, int hour, boolean init)
+    public static long timeUntilNextEvent(int interval, int hour, boolean init)
     {
         Calendar c = Calendar.getInstance();
         // init: only subtract when the alarm is set first

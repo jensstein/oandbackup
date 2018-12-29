@@ -68,6 +68,7 @@ android {
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
         minSdkVersion 16
         targetSdkVersion 17
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     flavorDimensions "abi"
