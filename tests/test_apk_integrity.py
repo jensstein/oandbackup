@@ -27,7 +27,7 @@ class ApkTest(unittest.TestCase):
 
     def assert_apk_asset_contains(self, filename):
         for flavor, assets in flavor_asset_dict.items():
-            if os.sep + flavor + os.sep in filename:
+            if os.sep + flavor + os.sep in filename and "androidTest" not in filename:
                 with zipfile.ZipFile(filename, "r") as z:
                     for asset in assets:
                         self.assertEqual(asset in z.namelist(), True,
