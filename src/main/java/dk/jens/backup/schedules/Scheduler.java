@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import dk.jens.backup.BaseActivity;
 import dk.jens.backup.BlacklistContract;
 import dk.jens.backup.BlacklistListener;
@@ -91,11 +92,17 @@ BlacklistListener
         viewList = new ArrayList<View>();
         for(int i = 0; i <= totalSchedules; i++)
         {
-            View v = buildUi(i);
-            viewList.add(v);
-            main.addView(v);
-            if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + i, false))
-                setTimeLeftTextView(i);
+            try {
+                View v = buildUi(prefs, i);
+                viewList.add(v);
+                main.addView(v);
+                if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + i, false))
+                    setTimeLeftTextView(i);
+            } catch (SchedulingException e) {
+                Toast.makeText(this, String.format(
+                    "Unable to add schedule: %s", e.toString()),
+                    Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -119,11 +126,17 @@ BlacklistListener
         switch(item.getItemId())
         {
             case R.id.addSchedule:
-                View v = buildUi(++totalSchedules);
-                viewList.add(v);
-                ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
-                edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, totalSchedules);
-                edit.commit();
+                try {
+                    View v = buildUi(prefs, ++totalSchedules);
+                    viewList.add(v);
+                    ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
+                    edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, totalSchedules);
+                    edit.commit();
+                } catch (SchedulingException e) {
+                    Toast.makeText(this, String.format(
+                        "Unable to add schedule: %s", e.toString()),
+                        Toast.LENGTH_LONG).show();
+                }
                 return true;
             case R.id.globalBlacklist:
                 new Thread(() -> {
@@ -143,8 +156,11 @@ BlacklistListener
         }
         return super.onOptionsItemSelected(item);
     }
-    public View buildUi(int number)
-    {
+    public View buildUi(SharedPreferences preferences, int number)
+            throws SchedulingException {
+        final ScheduleData scheduleData = ScheduleData.fromPreferences(
+            preferences, number);
+
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
 
@@ -155,24 +171,29 @@ BlacklistListener
         Button activateButton = (Button) view.findViewById(R.id.activateButton);
         activateButton.setOnClickListener(this);
         EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-        String repeatString = Integer.toString(prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, 0));
+        final String repeatString = Integer.toString(
+            scheduleData.getInterval());
         intervalDays.setText(repeatString);
         EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-        String timeOfDayString = Integer.toString(prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0));
+        final String timeOfDayString = Integer.toString(
+            scheduleData.getHour());
         timeOfDay.setText(timeOfDayString);
         CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
-        cb.setChecked(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false));
+        cb.setChecked(scheduleData.isEnabled());
         Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
         Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(prefs.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0), false); // false has the effect that onItemSelected() is not called when the spinner is added
+        // false has the effect that onItemSelected() is not called when
+        // the spinner is added
+        spinner.setSelection(scheduleData.getMode().getValue(), false);
         spinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapterSubModes = ArrayAdapter.createFromResource(this, R.array.scheduleSubModes, android.R.layout.simple_spinner_item);
         adapterSubModes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubModes.setAdapter(adapterSubModes);
-        spinnerSubModes.setSelection(prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 2), false);
+        spinnerSubModes.setSelection(scheduleData.getSubmode().getValue(),
+            false);
         spinnerSubModes.setOnItemSelectedListener(this);
         
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
