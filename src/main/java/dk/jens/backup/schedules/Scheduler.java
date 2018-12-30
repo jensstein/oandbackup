@@ -302,8 +302,9 @@ BlacklistListener
         final Spinner submodeSpinner = scheduleView.findViewById(
             R.id.sched_spinnerSubModes);
 
-        final boolean enabled = prefs.getBoolean(
-            Constants.PREFS_SCHEDULES_ENABLED + id, false);
+        final CheckBox enabledCheckbox = scheduleView.findViewById(
+            R.id.checkbox);
+        final boolean enabled = enabledCheckbox.isChecked();
         final int hour = Integer.parseInt(hourText.getText()
             .toString());
         final int interval = Integer.parseInt(intervalText
