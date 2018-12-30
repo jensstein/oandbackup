@@ -7,6 +7,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -63,5 +64,54 @@ public class SchedulerTest {
             R.id.sched_spinnerSubModes);
         assertThat("submode", submodeSpinner.getSelectedItemPosition(),
             is(ScheduleData.Submode.DATA.getValue()));
+    }
+
+    @Test
+    public void test_onClick_updateButton() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = PreferenceManager
+            .getDefaultSharedPreferences(appContext);
+        preferences.edit().clear().commit();
+
+        // Because the application logic is tied to a list of views at the
+        // moment, set the id according to the size of this list.
+        // This logic should be changed.
+        final int id = schedulerActivityTestRule.getActivity().viewList.size();
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(id)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(2)
+            .withSubmode(1)
+            .withEnabled(true)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View view = schedulerActivityTestRule.getActivity().buildUi(
+            preferences, id);
+        final EditText intervalText = view.findViewById(R.id.intervalDays);
+        intervalText.setText("1");
+        final EditText hourText = view.findViewById(R.id.timeOfDay);
+        hourText.setText("23");
+        final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
+        enabledCheckbox.setChecked(false);
+        final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
+        modeSpinner.setSelection(ScheduleData.Mode.ALL.getValue());
+        final Spinner submodeSpinner = view.findViewById(R.id.sched_spinnerSubModes);
+        submodeSpinner.setSelection(ScheduleData.Submode.APK.getValue());
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        final Button updateButton = view.findViewById(R.id.updateButton);
+        schedulerActivityTestRule.getActivity().onClick(updateButton);
+
+        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            schedulerActivityTestRule.getActivity().prefs, id);
+        assertThat("hour", resultScheduleData.getHour(), is(23));
+        assertThat("interval", resultScheduleData.getInterval(), is(1));
+        assertThat("enabled", resultScheduleData.isEnabled(), is(false));
+        assertThat("mode", resultScheduleData.getMode(),
+            is(ScheduleData.Mode.ALL));
+        assertThat("submode", resultScheduleData.getSubmode(),
+            is(ScheduleData.Submode.APK));
     }
 }

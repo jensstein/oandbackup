@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -243,26 +244,10 @@ BlacklistListener
         try
         {
             View view = viewList.get(number);
-            EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-            EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-
             switch(v.getId())
             {
                 case R.id.updateButton:
-                    Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-                    Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
-                    edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, System.currentTimeMillis());
-                    edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, hourOfDay);
-                    edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, repeatTime);
-                    if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false))
-                    {
-                        long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
-                        edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, startTime);
-    //                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
-                        handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
-                    }
-                    edit.commit();
-                    setTimeLeftTextView(number);
+                    updateScheduleData(view, number);
                     break;
                 case R.id.removeButton:
                     handleAlarms.cancelAlarm(number);
@@ -292,6 +277,52 @@ BlacklistListener
             e.printStackTrace();
         }
     }
+
+    private void updateScheduleData(View scheduleView, int id) {
+        final EditText intervalText = scheduleView.findViewById(
+            R.id.intervalDays);
+        final EditText hourText = scheduleView.findViewById(
+            R.id.timeOfDay);
+        final Spinner modeSpinner = scheduleView.findViewById(
+            R.id.sched_spinner);
+        final Spinner submodeSpinner = scheduleView.findViewById(
+            R.id.sched_spinnerSubModes);
+
+        try {
+            final boolean enabled = prefs.getBoolean(
+                Constants.PREFS_SCHEDULES_ENABLED + id, false);
+            final int hour = Integer.valueOf(hourText.getText()
+                .toString());
+            final int interval = Integer.valueOf(intervalText
+                .getText().toString());
+            long nextEvent = 0;
+            if (enabled) {
+                nextEvent = HandleAlarms.timeUntilNextEvent(
+                    interval, hour, true);
+                handleAlarms.setAlarm(id, nextEvent,
+                    interval * AlarmManager.INTERVAL_DAY);
+            }
+            final ScheduleData scheduleData = new ScheduleData.Builder()
+                .withId(id)
+                .withHour(hour)
+                .withInterval(interval)
+                .withMode(modeSpinner.getSelectedItemPosition())
+                .withSubmode(submodeSpinner.getSelectedItemPosition())
+                .withPlaced(System.currentTimeMillis())
+                .withEnabled(enabled)
+                .withTimeUntilNextEvent(nextEvent)
+                .build();
+            scheduleData.persist(prefs);
+            setTimeLeftTextView(id);
+        } catch (SchedulingException e) {
+            Log.e(TAG, String.format("Unable to update schedule %s",
+                id));
+            Toast.makeText(this, String.format(
+                "Unable to update schedule %s", id),
+                Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
