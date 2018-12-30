@@ -122,6 +122,57 @@ public class SchedulerTest {
     }
 
     @Test
+    public void test_onClick_excludeSystemCheckbox() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = PreferenceManager
+            .getDefaultSharedPreferences(appContext);
+        preferences.edit().clear().commit();
+
+        final int id = schedulerActivityTestRule.getActivity().viewList.size();
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(id)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(ScheduleData.Mode.NEW_UPDATED.getValue())
+            .withSubmode(1)
+            .withEnabled(true)
+            .withExcludeSystem(false)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View view = schedulerActivityTestRule.getActivity().buildUi(
+            preferences, id);
+        final EditText intervalText = view.findViewById(R.id.intervalDays);
+        intervalText.setText("1");
+        final EditText hourText = view.findViewById(R.id.timeOfDay);
+        hourText.setText("23");
+        final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
+        enabledCheckbox.setChecked(false);
+        final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
+        modeSpinner.setSelection(ScheduleData.Mode.ALL.getValue());
+        final Spinner submodeSpinner = view.findViewById(R.id.sched_spinnerSubModes);
+        submodeSpinner.setSelection(ScheduleData.Submode.APK.getValue());
+        final CheckBox excludeSystemCheckbox = view.findViewById(
+            Scheduler.EXCLUDESYSTEMCHECKBOXID);
+        excludeSystemCheckbox.setChecked(true);
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        schedulerActivityTestRule.getActivity().onClick(excludeSystemCheckbox);
+
+        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            schedulerActivityTestRule.getActivity().prefs, id);
+        assertThat("hour", resultScheduleData.getHour(), is(23));
+        assertThat("interval", resultScheduleData.getInterval(), is(1));
+        assertThat("enabled", resultScheduleData.isEnabled(), is(false));
+        assertThat("mode", resultScheduleData.getMode(),
+            is(ScheduleData.Mode.ALL));
+        assertThat("submode", resultScheduleData.getSubmode(),
+            is(ScheduleData.Submode.APK));
+        assertThat("exclude system", resultScheduleData.isExcludeSystem(),
+            is(true));
+    }
+
+    @Test
     public void test_onClick_updateButton_invalidMode()
             throws SchedulingException {
         final Context appContext = InstrumentationRegistry.getTargetContext();

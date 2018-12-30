@@ -233,6 +233,7 @@ BlacklistListener
             View view = viewList.get(number);
             switch(v.getId())
             {
+                case EXCLUDESYSTEMCHECKBOXID:
                 case R.id.updateButton:
                     updateScheduleData(view, number);
                     break;
@@ -252,10 +253,6 @@ BlacklistListener
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
                     CustomPackageList.showList(this, number);
-                    break;
-                case EXCLUDESYSTEMCHECKBOXID:
-                    edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, ((CheckBox) v).isChecked());
-                    edit.commit();
                     break;
             }
         }
@@ -290,6 +287,10 @@ BlacklistListener
             R.id.sched_spinner);
         final Spinner submodeSpinner = scheduleView.findViewById(
             R.id.sched_spinnerSubModes);
+        final CheckBox excludeSystemCheckbox = scheduleView.findViewById(
+            EXCLUDESYSTEMCHECKBOXID);
+        final boolean excludeSystemPackages = excludeSystemCheckbox != null
+            && excludeSystemCheckbox.isChecked();
 
         final CheckBox enabledCheckbox = scheduleView.findViewById(
             R.id.checkbox);
@@ -314,6 +315,7 @@ BlacklistListener
             .withPlaced(System.currentTimeMillis())
             .withEnabled(enabled)
             .withTimeUntilNextEvent(nextEvent)
+            .withExcludeSystem(excludeSystemPackages)
             .build();
     }
 

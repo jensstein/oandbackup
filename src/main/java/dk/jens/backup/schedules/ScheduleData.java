@@ -179,6 +179,8 @@ public class ScheduleData {
         edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + id, startTime);
         edit.putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value);
         edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value);
+        edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id,
+            excludeSystem);
 
         edit.apply();
     }
