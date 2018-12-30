@@ -40,7 +40,7 @@ public class Scheduler extends BaseActivity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener,
 BlacklistListener
 {
-    private final static String TAG = Constants.TAG;
+    private static final String TAG = Constants.TAG;
     public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
