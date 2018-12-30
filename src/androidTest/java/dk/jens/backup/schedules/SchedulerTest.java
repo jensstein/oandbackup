@@ -159,4 +159,75 @@ public class SchedulerTest {
             schedulerActivityTestRule.getActivity().getWindow()
             .getDecorView()))).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void test_checkboxOnClick() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = PreferenceManager
+            .getDefaultSharedPreferences(appContext);
+        preferences.edit().clear().commit();
+
+        final int id = schedulerActivityTestRule.getActivity().viewList.size();
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(id)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(2)
+            .withSubmode(1)
+            .withEnabled(false)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View view = schedulerActivityTestRule.getActivity().buildUi(
+            preferences, id);
+        final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
+        enabledCheckbox.setChecked(true);
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        schedulerActivityTestRule.getActivity().checkboxOnClick(enabledCheckbox);
+
+        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            schedulerActivityTestRule.getActivity().prefs, id);
+        assertThat("enabled", resultScheduleData.isEnabled(), is(true));
+    }
+
+    @Test
+    public void test_checkboxOnClick_invalidMode() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = PreferenceManager
+            .getDefaultSharedPreferences(appContext);
+        preferences.edit().clear().commit();
+
+        final int id = schedulerActivityTestRule.getActivity().viewList.size();
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(id)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(2)
+            .withSubmode(1)
+            .withEnabled(false)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View view = schedulerActivityTestRule.getActivity().buildUi(
+            preferences, id);
+        final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
+        enabledCheckbox.setChecked(true);
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
+        modeSpinner.setSelection(6);
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
+            schedulerActivityTestRule.getActivity().checkboxOnClick(enabledCheckbox);
+        });
+        final String expectedText = String.format(
+            "Unable to enable schedule %s: dk.jens.backup.schedules.SchedulingException: Unknown mode 6",
+            id);
+        onView(withText(expectedText)).inRoot(withDecorView(not(
+            schedulerActivityTestRule.getActivity().getWindow()
+            .getDecorView()))).check(matches(isDisplayed()));
+
+    }
 }

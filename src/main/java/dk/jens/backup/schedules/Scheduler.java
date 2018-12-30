@@ -208,31 +208,20 @@ BlacklistListener
     }
     public void checkboxOnClick(View v)
     {
-        int number = (Integer) v.getTag();
-        boolean checked = ((CheckBox) v).isChecked();
-        View view = viewList.get(number);
-        EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-        EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-
-        if(checked)
-        {
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, true);
-            Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
-            Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-            long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
-//            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
-            handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, System.currentTimeMillis());
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, startTime);
-            edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, repeatTime);
-            edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, hourOfDay);
-            edit.commit();
-        }
-        else
-        {
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false);
-            edit.commit();
-            handleAlarms.cancelAlarm(number);
+        final int number = (int) v.getTag();
+        try {
+            final View scheduleView = viewList.get(number);
+            final ScheduleData scheduleData = getScheduleDataFromView(
+                scheduleView, number);
+            scheduleData.persist(prefs);
+            if(!scheduleData.isEnabled()) {
+                handleAlarms.cancelAlarm(number);
+            }
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to enable schedule %s: %s", number, e.toString());
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
         setTimeLeftTextView(number);
     }
