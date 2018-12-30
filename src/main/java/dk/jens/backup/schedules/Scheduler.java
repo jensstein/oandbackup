@@ -277,39 +277,9 @@ BlacklistListener
     }
 
     private void updateScheduleData(View scheduleView, int id) {
-        final EditText intervalText = scheduleView.findViewById(
-            R.id.intervalDays);
-        final EditText hourText = scheduleView.findViewById(
-            R.id.timeOfDay);
-        final Spinner modeSpinner = scheduleView.findViewById(
-            R.id.sched_spinner);
-        final Spinner submodeSpinner = scheduleView.findViewById(
-            R.id.sched_spinnerSubModes);
-
         try {
-            final boolean enabled = prefs.getBoolean(
-                Constants.PREFS_SCHEDULES_ENABLED + id, false);
-            final int hour = Integer.parseInt(hourText.getText()
-                .toString());
-            final int interval = Integer.parseInt(intervalText
-                .getText().toString());
-            long nextEvent = 0;
-            if (enabled) {
-                nextEvent = HandleAlarms.timeUntilNextEvent(
-                    interval, hour, true);
-                handleAlarms.setAlarm(id, nextEvent,
-                    interval * AlarmManager.INTERVAL_DAY);
-            }
-            final ScheduleData scheduleData = new ScheduleData.Builder()
-                .withId(id)
-                .withHour(hour)
-                .withInterval(interval)
-                .withMode(modeSpinner.getSelectedItemPosition())
-                .withSubmode(submodeSpinner.getSelectedItemPosition())
-                .withPlaced(System.currentTimeMillis())
-                .withEnabled(enabled)
-                .withTimeUntilNextEvent(nextEvent)
-                .build();
+            final ScheduleData scheduleData = getScheduleDataFromView(
+                scheduleView, id);
             scheduleData.persist(prefs);
             setTimeLeftTextView(id);
         } catch (SchedulingException e) {
@@ -319,6 +289,42 @@ BlacklistListener
                 "Unable to update schedule %s", id),
                 Toast.LENGTH_LONG).show();
         }
+    }
+
+    private ScheduleData getScheduleDataFromView(View scheduleView, int id)
+            throws SchedulingException {
+        final EditText intervalText = scheduleView.findViewById(
+            R.id.intervalDays);
+        final EditText hourText = scheduleView.findViewById(
+            R.id.timeOfDay);
+        final Spinner modeSpinner = scheduleView.findViewById(
+            R.id.sched_spinner);
+        final Spinner submodeSpinner = scheduleView.findViewById(
+            R.id.sched_spinnerSubModes);
+
+        final boolean enabled = prefs.getBoolean(
+            Constants.PREFS_SCHEDULES_ENABLED + id, false);
+        final int hour = Integer.parseInt(hourText.getText()
+            .toString());
+        final int interval = Integer.parseInt(intervalText
+            .getText().toString());
+        long nextEvent = 0;
+        if (enabled) {
+            nextEvent = HandleAlarms.timeUntilNextEvent(
+                interval, hour, true);
+            handleAlarms.setAlarm(id, nextEvent,
+                interval * AlarmManager.INTERVAL_DAY);
+        }
+        return new ScheduleData.Builder()
+            .withId(id)
+            .withHour(hour)
+            .withInterval(interval)
+            .withMode(modeSpinner.getSelectedItemPosition())
+            .withSubmode(submodeSpinner.getSelectedItemPosition())
+            .withPlaced(System.currentTimeMillis())
+            .withEnabled(enabled)
+            .withTimeUntilNextEvent(nextEvent)
+            .build();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
