@@ -17,7 +17,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -113,5 +119,44 @@ public class SchedulerTest {
             is(ScheduleData.Mode.ALL));
         assertThat("submode", resultScheduleData.getSubmode(),
             is(ScheduleData.Submode.APK));
+    }
+
+    @Test
+    public void test_onClick_updateButton_invalidMode()
+            throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = PreferenceManager
+            .getDefaultSharedPreferences(appContext);
+        preferences.edit().clear().commit();
+
+        // Because the application logic is tied to a list of views at the
+        // moment, set the id according to the size of this list.
+        // This logic should be changed.
+        final int id = schedulerActivityTestRule.getActivity().viewList.size();
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(id)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(2)
+            .withSubmode(1)
+            .withEnabled(true)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View view = schedulerActivityTestRule.getActivity().buildUi(
+            preferences, id);
+        final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
+        modeSpinner.setSelection(6);
+        schedulerActivityTestRule.getActivity().viewList.add(view);
+
+        final Button updateButton = view.findViewById(R.id.updateButton);
+        schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
+            schedulerActivityTestRule.getActivity().onClick(updateButton);
+        });
+        final String expectedText = String.format(
+            "Unable to update schedule %s", id);
+        onView(withText(expectedText)).inRoot(withDecorView(not(
+            schedulerActivityTestRule.getActivity().getWindow()
+            .getDecorView()))).check(matches(isDisplayed()));
     }
 }
