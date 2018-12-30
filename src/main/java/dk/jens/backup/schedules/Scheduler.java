@@ -70,8 +70,6 @@ BlacklistListener
         prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
         edit = prefs.edit();
 
-        transferOldValues();
-
         viewList = new ArrayList<View>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
     }
@@ -524,27 +522,6 @@ BlacklistListener
             Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
             .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
-    }
-    public void transferOldValues()
-    {
-        if(prefs.contains(Constants.PREFS_SCHEDULES_ENABLED))
-        {
-            edit.putBoolean("enabled0", prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED, false));
-            edit.putInt("hourOfDay0", prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY, 0));
-            edit.putInt("repeatTime0", prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME, 0));
-            edit.putInt("scheduleMode0", prefs.getInt(Constants.PREFS_SCHEDULES_MODE, 0));
-            edit.putLong("timePlaced0", prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEPLACED, System.currentTimeMillis()));
-            edit.putLong("timeUntilNextEvent0", prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT, 0));
-            edit.remove(Constants.PREFS_SCHEDULES_ENABLED);
-            edit.remove(Constants.PREFS_SCHEDULES_HOUROFDAY);
-            edit.remove(Constants.PREFS_SCHEDULES_REPEATTIME);
-            edit.remove(Constants.PREFS_SCHEDULES_MODE);
-            edit.remove(Constants.PREFS_SCHEDULES_TIMEPLACED);
-            edit.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT);
-            edit.commit();
-        }
     }
     private class StartSchedule implements Utils.Command
     {
