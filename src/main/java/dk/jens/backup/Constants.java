@@ -1,6 +1,8 @@
 package dk.jens.backup;
 
 public class Constants {
+    public static final String TAG = "oandbackup";
+
     public final static String BLACKLIST_ARGS_ID = "blacklistId";
     public final static String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
 

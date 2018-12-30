@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +29,6 @@ import dk.jens.backup.BlacklistsDBHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
-import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
@@ -41,7 +39,7 @@ public class Scheduler extends BaseActivity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener,
 BlacklistListener
 {
-    static final String TAG = OAndBackup.TAG;
+    private final static String TAG = Constants.TAG;
     public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
