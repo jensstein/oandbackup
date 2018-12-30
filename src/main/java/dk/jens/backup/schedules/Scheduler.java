@@ -291,9 +291,9 @@ BlacklistListener
         try {
             final boolean enabled = prefs.getBoolean(
                 Constants.PREFS_SCHEDULES_ENABLED + id, false);
-            final int hour = Integer.valueOf(hourText.getText()
+            final int hour = Integer.parseInt(hourText.getText()
                 .toString());
-            final int interval = Integer.valueOf(intervalText
+            final int interval = Integer.parseInt(intervalText
                 .getText().toString());
             long nextEvent = 0;
             if (enabled) {
