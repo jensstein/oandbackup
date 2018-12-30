@@ -1,6 +1,7 @@
 plugins {
     id "com.android.application" version "3.2.1"
     id "org.sonarqube" version "2.6"
+    id "jacoco"
 }
 
 repositories {
@@ -57,6 +58,18 @@ Map<String, Integer> abiVersionCodes = [
     "x86_64": 4
 ]
 
+sonarqube {
+    properties {
+        def jacocoReports = []
+        fileTree("${buildDir}/outputs/code-coverage").forEach({f ->
+            if(f.path.endsWith(".ec") || f.path.endsWith(".exec")){
+                jacocoReports << f
+            }
+        })
+        property "sonar.jacoco.reportPaths", jacocoReports
+    }
+}
+
 android {
     compileSdkVersion 'android-26'
 
@@ -69,6 +82,11 @@ android {
         minSdkVersion 16
         targetSdkVersion 17
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
     }
 
     flavorDimensions "abi"
