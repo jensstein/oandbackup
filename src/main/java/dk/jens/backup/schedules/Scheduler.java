@@ -342,8 +342,7 @@ BlacklistListener
                 changeScheduleMode(pos, number);
                 break;
             case R.id.sched_spinnerSubModes:
-                edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + number, pos);
-                edit.commit();
+                changeScheduleSubmode(pos, number);
                 break;
         }
     }
@@ -359,6 +358,20 @@ BlacklistListener
         } catch (SchedulingException e) {
             final String message = String.format(
                 "Unable to set mode of schedule %s to %s", id, mode);
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void changeScheduleSubmode(int submode, int id) {
+        try {
+            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+                prefs, id);
+            scheduleData.setSubmode(submode);
+            scheduleData.persist(prefs);
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to set submode of schedule %s to %s", id, submode);
             Log.e(TAG, message);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }

@@ -128,6 +128,10 @@ public class ScheduleData {
         return submode;
     }
 
+    public void setSubmode(int submode) throws SchedulingException {
+        this.submode = Submode.intToSubmode(submode);
+    }
+
     public long getTimeUntilNextEvent() {
         return timeUntilNextEvent;
     }

@@ -420,4 +420,74 @@ public class SchedulerTest {
             schedulerActivityTestRule.getActivity().getWindow()
             .getDecorView()))).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void test_onItemSelected_changeScheduleSubmode() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = appContext
+            .getSharedPreferences("SCHEDULE-TEST", 0);
+        preferences.edit().clear().commit();
+        schedulerActivityTestRule.getActivity().prefs = preferences;
+        assertThat("clean preferences", preferences.getAll().isEmpty(),
+            is(true));
+
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(0)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(ScheduleData.Mode.ALL.getValue())
+            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withEnabled(false)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(preferences, 0);
+
+        final Spinner spinnerSubmode = scheduleView.findViewById(
+            R.id.sched_spinnerSubModes);
+        schedulerActivityTestRule.getActivity().onItemSelected(
+            spinnerSubmode, null, ScheduleData.Submode.APK.getValue(), 0);
+        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            preferences, 0);
+        assertThat("submode", resultScheduleData.getSubmode(),
+            is(ScheduleData.Submode.APK));
+    }
+
+    @Test
+    public void test_onItemSelected_changeScheduleSubmodeInvalidSubmode()
+            throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = appContext
+            .getSharedPreferences("SCHEDULE-TEST", 0);
+        preferences.edit().clear().commit();
+        schedulerActivityTestRule.getActivity().prefs = preferences;
+        assertThat("clean preferences", preferences.getAll().isEmpty(),
+            is(true));
+
+        final ScheduleData scheduleData = new ScheduleData.Builder()
+            .withId(0)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(ScheduleData.Mode.ALL.getValue())
+            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withEnabled(false)
+            .build();
+        scheduleData.persist(preferences);
+
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(preferences, 0);
+
+        final Spinner spinnerSubmode = scheduleView.findViewById(
+            R.id.sched_spinnerSubModes);
+
+        schedulerActivityTestRule.getActivity().runOnUiThread(() ->
+            schedulerActivityTestRule.getActivity().onItemSelected(
+                spinnerSubmode, null, 40, 0)
+        );
+        final String expectedText = "Unable to set submode of schedule 0 to 40";
+        onView(withText(expectedText)).inRoot(withDecorView(not(
+            schedulerActivityTestRule.getActivity().getWindow()
+            .getDecorView()))).check(matches(isDisplayed()));
+    }
 }
