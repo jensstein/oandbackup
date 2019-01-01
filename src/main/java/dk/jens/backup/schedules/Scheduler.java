@@ -331,19 +331,15 @@ BlacklistListener
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         int number = (Integer) parent.getTag();
-        switch(parent.getId())
-        {
-            case R.id.sched_spinner:
-                toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
-                if(pos == 4)
-                {
-                    CustomPackageList.showList(this, number);
-                }
-                changeScheduleMode(pos, number);
-                break;
-            case R.id.sched_spinnerSubModes:
-                changeScheduleSubmode(pos, number);
-                break;
+        final int spinnerId = parent.getId();
+        if(spinnerId == R.id.sched_spinner) {
+            toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
+            if (pos == 4) {
+                CustomPackageList.showList(this, number);
+            }
+            changeScheduleMode(pos, number);
+        } else if(spinnerId == R.id.sched_spinnerSubModes) {
+            changeScheduleSubmode(pos, number);
         }
     }
     public void onNothingSelected(AdapterView<?> parent)
