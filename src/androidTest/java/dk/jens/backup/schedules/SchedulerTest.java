@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import dk.jens.backup.R;
+import dk.jens.backup.schedules.db.ScheduleData;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;

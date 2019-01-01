@@ -1,7 +1,9 @@
-package dk.jens.backup.schedules;
+package dk.jens.backup.schedules.db;
 
 import android.content.SharedPreferences;
 import dk.jens.backup.Constants;
+import dk.jens.backup.schedules.HandleAlarms;
+import dk.jens.backup.schedules.SchedulingException;
 
 /**
  * Holds scheduling data

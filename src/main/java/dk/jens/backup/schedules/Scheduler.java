@@ -32,6 +32,7 @@ import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
+import dk.jens.backup.schedules.db.ScheduleData;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
 import java.util.ArrayList;
