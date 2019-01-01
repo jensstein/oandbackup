@@ -238,14 +238,23 @@ BlacklistListener
                     updateScheduleData(view, number);
                     break;
                 case R.id.removeButton:
-                    handleAlarms.cancelAlarm(number);
-                    removePreferenceEntries(number);
-                    removeCustomListFile(number);
-                    ((LinearLayout) findViewById(R.id.linearLayout)).removeView(view);
-                    migrateSchedules(number, totalSchedules);
-                    viewList.remove(number);
-                    edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, --totalSchedules);
-                    edit.commit();
+                    try {
+                        handleAlarms.cancelAlarm(number);
+                        removePreferenceEntries(number);
+                        removeCustomListFile(number);
+                        ((LinearLayout) findViewById(R.id.linearLayout)).removeView(view);
+                        migrateSchedules(number, totalSchedules);
+                        viewList.remove(number);
+                        edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, --totalSchedules);
+                        edit.commit();
+                    } catch (SchedulingException e) {
+                        final String message = String.format(
+                            "Error removing schedule %s: %s", number,
+                            e.toString());
+                        Log.e(TAG, message);
+                        Toast.makeText(this, message, Toast.LENGTH_LONG)
+                            .show();
+                    }
                     break;
                 case R.id.activateButton:
                     Utils.showConfirmDialog(this, "", getString(R.string.sched_activateButton),
@@ -429,7 +438,7 @@ BlacklistListener
         }
     }
     public void migrateSchedules(int number, int total)
-    {
+            throws SchedulingException {
         for(int i = number; i < total; i++)
         {
             // decrease alarm id by one if set
@@ -448,24 +457,10 @@ BlacklistListener
             }
 
             // move settings one place back
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + i,
-                prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + (i + 1), false));
-            edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + i,
-                prefs.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + (i + 1), false));
-            edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_MODE + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_MODE + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + (i + 1), 0));
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + i,
-                prefs.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + (i + 1),
-                System.currentTimeMillis()));
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + i,
-                prefs.getLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + (i + 1), 0));
-            edit.commit();
+            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+                prefs, number + 1);
+            scheduleData.setId(number);
+            scheduleData.persist(prefs);
 
             // update tags on view elements
             View view = viewList.get(i + 1);
