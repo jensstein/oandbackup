@@ -8,7 +8,7 @@ import dk.jens.backup.schedules.SchedulingException;
 /**
  * Holds scheduling data
  */
-public class ScheduleData {
+public class Schedule {
     /**
      * Scheduling mode, which packages to include in the scheduled backup
      */
@@ -142,7 +142,7 @@ public class ScheduleData {
         return excludeSystem;
     }
 
-    private ScheduleData() {
+    private Schedule() {
         mode = Mode.ALL;
         submode = Submode.BOTH;
     }
@@ -155,27 +155,27 @@ public class ScheduleData {
      * @param number number of schedule to fetch
      * @return scheduling data object
      */
-    public static ScheduleData fromPreferences(SharedPreferences preferences,
-            int number) throws SchedulingException {
-        final ScheduleData scheduleData = new ScheduleData();
-        scheduleData.id = number;
-        scheduleData.enabled = preferences.getBoolean(
+    public static Schedule fromPreferences(SharedPreferences preferences,
+                                           int number) throws SchedulingException {
+        final Schedule schedule = new Schedule();
+        schedule.id = number;
+        schedule.enabled = preferences.getBoolean(
             Constants.PREFS_SCHEDULES_ENABLED + number, false);
-        scheduleData.hour = preferences.getInt(
+        schedule.hour = preferences.getInt(
             Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0);
-        scheduleData.interval = preferences.getInt(
+        schedule.interval = preferences.getInt(
             Constants.PREFS_SCHEDULES_REPEATTIME + number, 0);
-        scheduleData.placed = preferences.getLong(
+        schedule.placed = preferences.getLong(
             Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
-        scheduleData.mode = Mode.intToMode(preferences.getInt(
+        schedule.mode = Mode.intToMode(preferences.getInt(
             Constants.PREFS_SCHEDULES_MODE + number, 0));
-        scheduleData.submode = Submode.intToSubmode(preferences.getInt(
+        schedule.submode = Submode.intToSubmode(preferences.getInt(
             Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
-        scheduleData.timeUntilNextEvent = preferences.getLong(
+        schedule.timeUntilNextEvent = preferences.getLong(
             Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, 0);
-        scheduleData.excludeSystem = preferences.getBoolean(
+        schedule.excludeSystem = preferences.getBoolean(
             Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
-        return scheduleData;
+        return schedule;
     }
 
     /**
@@ -200,48 +200,48 @@ public class ScheduleData {
     }
 
     public static class Builder {
-        final ScheduleData scheduleData;
+        final Schedule schedule;
         public Builder() {
-            scheduleData = new ScheduleData();
+            schedule = new Schedule();
         }
         public Builder withId(int id) {
-            scheduleData.id = id;
+            schedule.id = id;
             return this;
         }
         public Builder withEnabled(boolean enabled) {
-            scheduleData.enabled = enabled;
+            schedule.enabled = enabled;
             return this;
         }
         public Builder withHour(int hour) {
-            scheduleData.hour = hour;
+            schedule.hour = hour;
             return this;
         }
         public Builder withInterval(int interval) {
-            scheduleData.interval = interval;
+            schedule.interval = interval;
             return this;
         }
         public Builder withPlaced(long placed) {
-            scheduleData.placed = placed;
+            schedule.placed = placed;
             return this;
         }
         public Builder withMode(int mode) throws SchedulingException {
-            scheduleData.mode = Mode.intToMode(mode);
+            schedule.mode = Mode.intToMode(mode);
             return this;
         }
         public Builder withSubmode(int submode) throws SchedulingException {
-            scheduleData.submode = Submode.intToSubmode(submode);
+            schedule.submode = Submode.intToSubmode(submode);
             return this;
         }
         public Builder withTimeUntilNextEvent(long timeUntilNextEvent) {
-            scheduleData.timeUntilNextEvent = timeUntilNextEvent;
+            schedule.timeUntilNextEvent = timeUntilNextEvent;
             return this;
         }
         public Builder withExcludeSystem(boolean excludeSystem) {
-            scheduleData.excludeSystem = excludeSystem;
+            schedule.excludeSystem = excludeSystem;
             return this;
         }
-        public ScheduleData build() {
-            return scheduleData;
+        public Schedule build() {
+            return schedule;
         }
     }
 }

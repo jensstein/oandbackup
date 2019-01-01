@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import dk.jens.backup.R;
-import dk.jens.backup.schedules.db.ScheduleData;
+import dk.jens.backup.schedules.db.Schedule;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class SchedulerTest {
             .getDefaultSharedPreferences(appContext);
         preferences.edit().clear().commit();
 
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withHour(12)
             .withInterval(3)
@@ -55,7 +55,7 @@ public class SchedulerTest {
             .withSubmode(1)
             .withEnabled(true)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, 0);
@@ -68,11 +68,11 @@ public class SchedulerTest {
         assertThat("enabled", enabledCheckbox.isChecked(), is(true));
         final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
         assertThat("mode", modeSpinner.getSelectedItemPosition(),
-            is(ScheduleData.Mode.SYSTEM.getValue()));
+            is(Schedule.Mode.SYSTEM.getValue()));
         final Spinner submodeSpinner = view.findViewById(
             R.id.sched_spinnerSubModes);
         assertThat("submode", submodeSpinner.getSelectedItemPosition(),
-            is(ScheduleData.Submode.DATA.getValue()));
+            is(Schedule.Submode.DATA.getValue()));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class SchedulerTest {
         // moment, set the id according to the size of this list.
         // This logic should be changed.
         final int id = schedulerActivityTestRule.getActivity().viewList.size();
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
@@ -94,7 +94,7 @@ public class SchedulerTest {
             .withSubmode(1)
             .withEnabled(true)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id);
@@ -105,23 +105,23 @@ public class SchedulerTest {
         final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
         enabledCheckbox.setChecked(false);
         final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
-        modeSpinner.setSelection(ScheduleData.Mode.ALL.getValue());
+        modeSpinner.setSelection(Schedule.Mode.ALL.getValue());
         final Spinner submodeSpinner = view.findViewById(R.id.sched_spinnerSubModes);
-        submodeSpinner.setSelection(ScheduleData.Submode.APK.getValue());
+        submodeSpinner.setSelection(Schedule.Submode.APK.getValue());
         schedulerActivityTestRule.getActivity().viewList.add(view);
 
         final Button updateButton = view.findViewById(R.id.updateButton);
         schedulerActivityTestRule.getActivity().onClick(updateButton);
 
-        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+        final Schedule resultSchedule = Schedule.fromPreferences(
             schedulerActivityTestRule.getActivity().prefs, id);
-        assertThat("hour", resultScheduleData.getHour(), is(23));
-        assertThat("interval", resultScheduleData.getInterval(), is(1));
-        assertThat("enabled", resultScheduleData.isEnabled(), is(false));
-        assertThat("mode", resultScheduleData.getMode(),
-            is(ScheduleData.Mode.ALL));
-        assertThat("submode", resultScheduleData.getSubmode(),
-            is(ScheduleData.Submode.APK));
+        assertThat("hour", resultSchedule.getHour(), is(23));
+        assertThat("interval", resultSchedule.getInterval(), is(1));
+        assertThat("enabled", resultSchedule.isEnabled(), is(false));
+        assertThat("mode", resultSchedule.getMode(),
+            is(Schedule.Mode.ALL));
+        assertThat("submode", resultSchedule.getSubmode(),
+            is(Schedule.Submode.APK));
     }
 
     @Test
@@ -132,16 +132,16 @@ public class SchedulerTest {
         preferences.edit().clear().commit();
 
         final int id = schedulerActivityTestRule.getActivity().viewList.size();
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.NEW_UPDATED.getValue())
+            .withMode(Schedule.Mode.NEW_UPDATED.getValue())
             .withSubmode(1)
             .withEnabled(true)
             .withExcludeSystem(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id);
@@ -152,9 +152,9 @@ public class SchedulerTest {
         final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
         enabledCheckbox.setChecked(false);
         final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
-        modeSpinner.setSelection(ScheduleData.Mode.ALL.getValue());
+        modeSpinner.setSelection(Schedule.Mode.ALL.getValue());
         final Spinner submodeSpinner = view.findViewById(R.id.sched_spinnerSubModes);
-        submodeSpinner.setSelection(ScheduleData.Submode.APK.getValue());
+        submodeSpinner.setSelection(Schedule.Submode.APK.getValue());
         final CheckBox excludeSystemCheckbox = view.findViewById(
             Scheduler.EXCLUDESYSTEMCHECKBOXID);
         excludeSystemCheckbox.setChecked(true);
@@ -162,16 +162,16 @@ public class SchedulerTest {
 
         schedulerActivityTestRule.getActivity().onClick(excludeSystemCheckbox);
 
-        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+        final Schedule resultSchedule = Schedule.fromPreferences(
             schedulerActivityTestRule.getActivity().prefs, id);
-        assertThat("hour", resultScheduleData.getHour(), is(23));
-        assertThat("interval", resultScheduleData.getInterval(), is(1));
-        assertThat("enabled", resultScheduleData.isEnabled(), is(false));
-        assertThat("mode", resultScheduleData.getMode(),
-            is(ScheduleData.Mode.ALL));
-        assertThat("submode", resultScheduleData.getSubmode(),
-            is(ScheduleData.Submode.APK));
-        assertThat("exclude system", resultScheduleData.isExcludeSystem(),
+        assertThat("hour", resultSchedule.getHour(), is(23));
+        assertThat("interval", resultSchedule.getInterval(), is(1));
+        assertThat("enabled", resultSchedule.isEnabled(), is(false));
+        assertThat("mode", resultSchedule.getMode(),
+            is(Schedule.Mode.ALL));
+        assertThat("submode", resultSchedule.getSubmode(),
+            is(Schedule.Submode.APK));
+        assertThat("exclude system", resultSchedule.isExcludeSystem(),
             is(true));
     }
 
@@ -187,7 +187,7 @@ public class SchedulerTest {
         // moment, set the id according to the size of this list.
         // This logic should be changed.
         final int id = schedulerActivityTestRule.getActivity().viewList.size();
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
@@ -195,7 +195,7 @@ public class SchedulerTest {
             .withSubmode(1)
             .withEnabled(true)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id);
@@ -228,24 +228,24 @@ public class SchedulerTest {
             is(true));
 
         final int id = 0;
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.USER.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.USER.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(true)
             .build();
-        scheduleData.persist(preferences);
-        final ScheduleData scheduleData2 = new ScheduleData.Builder()
+        schedule.persist(preferences);
+        final Schedule schedule2 = new Schedule.Builder()
             .withId(id + 1)
             .withHour(23)
             .withInterval(6)
-            .withMode(ScheduleData.Mode.ALL.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.ALL.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(false)
             .build();
-        scheduleData2.persist(preferences);
+        schedule2.persist(preferences);
         // set to total minus one because of zero-indexing
         schedulerActivityTestRule.getActivity().totalSchedules = 1;
 
@@ -267,14 +267,14 @@ public class SchedulerTest {
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             schedulerActivityTestRule.getActivity().onClick(removeButton);
             try {
-                final ScheduleData lastScheduleData = ScheduleData.fromPreferences(
+                final Schedule lastSchedule = Schedule.fromPreferences(
                     preferences, id);
-                assertThat("hour", lastScheduleData.getHour(), is(23));
-                assertThat("interval", lastScheduleData.getInterval(), is(6));
-                assertThat("mode", lastScheduleData.getMode(),
-                    is(ScheduleData.Mode.ALL));
-                assertThat("submode", lastScheduleData.getSubmode(),
-                    is(ScheduleData.Submode.DATA));
+                assertThat("hour", lastSchedule.getHour(), is(23));
+                assertThat("interval", lastSchedule.getInterval(), is(6));
+                assertThat("mode", lastSchedule.getMode(),
+                    is(Schedule.Mode.ALL));
+                assertThat("submode", lastSchedule.getSubmode(),
+                    is(Schedule.Submode.DATA));
             } catch (SchedulingException e) {
                 fail("Caught exception: " + e.toString());
             }
@@ -289,7 +289,7 @@ public class SchedulerTest {
         preferences.edit().clear().commit();
 
         final int id = schedulerActivityTestRule.getActivity().viewList.size();
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
@@ -297,7 +297,7 @@ public class SchedulerTest {
             .withSubmode(1)
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id);
@@ -307,9 +307,9 @@ public class SchedulerTest {
 
         schedulerActivityTestRule.getActivity().checkboxOnClick(enabledCheckbox);
 
-        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+        final Schedule resultSchedule = Schedule.fromPreferences(
             schedulerActivityTestRule.getActivity().prefs, id);
-        assertThat("enabled", resultScheduleData.isEnabled(), is(true));
+        assertThat("enabled", resultSchedule.isEnabled(), is(true));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class SchedulerTest {
         preferences.edit().clear().commit();
 
         final int id = schedulerActivityTestRule.getActivity().viewList.size();
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(id)
             .withHour(12)
             .withInterval(3)
@@ -328,7 +328,7 @@ public class SchedulerTest {
             .withSubmode(1)
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View view = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id);
@@ -362,15 +362,15 @@ public class SchedulerTest {
         assertThat("clean preferences", preferences.getAll().isEmpty(),
             is(true));
 
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.ALL.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.ALL.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View scheduleView = schedulerActivityTestRule.getActivity()
             .buildUi(preferences, 0);
@@ -378,11 +378,11 @@ public class SchedulerTest {
         final Spinner spinnerMode = scheduleView.findViewById(
             R.id.sched_spinner);
         schedulerActivityTestRule.getActivity().onItemSelected(
-            spinnerMode, null, ScheduleData.Mode.USER.getValue(), 0);
-        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            spinnerMode, null, Schedule.Mode.USER.getValue(), 0);
+        final Schedule resultSchedule = Schedule.fromPreferences(
             preferences, 0);
-        assertThat("mode", resultScheduleData.getMode(),
-            is(ScheduleData.Mode.USER));
+        assertThat("mode", resultSchedule.getMode(),
+            is(Schedule.Mode.USER));
     }
 
     @Test
@@ -396,15 +396,15 @@ public class SchedulerTest {
         assertThat("clean preferences", preferences.getAll().isEmpty(),
             is(true));
 
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.ALL.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.ALL.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View scheduleView = schedulerActivityTestRule.getActivity()
             .buildUi(preferences, 0);
@@ -432,15 +432,15 @@ public class SchedulerTest {
         assertThat("clean preferences", preferences.getAll().isEmpty(),
             is(true));
 
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.ALL.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.ALL.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View scheduleView = schedulerActivityTestRule.getActivity()
             .buildUi(preferences, 0);
@@ -448,11 +448,11 @@ public class SchedulerTest {
         final Spinner spinnerSubmode = scheduleView.findViewById(
             R.id.sched_spinnerSubModes);
         schedulerActivityTestRule.getActivity().onItemSelected(
-            spinnerSubmode, null, ScheduleData.Submode.APK.getValue(), 0);
-        final ScheduleData resultScheduleData = ScheduleData.fromPreferences(
+            spinnerSubmode, null, Schedule.Submode.APK.getValue(), 0);
+        final Schedule resultSchedule = Schedule.fromPreferences(
             preferences, 0);
-        assertThat("submode", resultScheduleData.getSubmode(),
-            is(ScheduleData.Submode.APK));
+        assertThat("submode", resultSchedule.getSubmode(),
+            is(Schedule.Submode.APK));
     }
 
     @Test
@@ -466,15 +466,15 @@ public class SchedulerTest {
         assertThat("clean preferences", preferences.getAll().isEmpty(),
             is(true));
 
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withHour(12)
             .withInterval(3)
-            .withMode(ScheduleData.Mode.ALL.getValue())
-            .withSubmode(ScheduleData.Submode.DATA.getValue())
+            .withMode(Schedule.Mode.ALL.getValue())
+            .withSubmode(Schedule.Submode.DATA.getValue())
             .withEnabled(false)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         final View scheduleView = schedulerActivityTestRule.getActivity()
             .buildUi(preferences, 0);

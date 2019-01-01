@@ -13,7 +13,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class ScheduleDataTest {
+public class ScheduleTest {
     @Test
     public void test_fromPreferences() throws SchedulingException {
         final Context appContext = InstrumentationRegistry.getTargetContext();
@@ -29,15 +29,15 @@ public class ScheduleDataTest {
         edit.putLong("timeUntilNextEvent0", 1500L);
         edit.commit();
 
-        final ScheduleData scheduleData = ScheduleData.fromPreferences(
+        final Schedule schedule = Schedule.fromPreferences(
             preferences, 0);
-        assertThat("enabled", scheduleData.isEnabled(), is(true));
-        assertThat("hour", scheduleData.getHour(), is(12));
-        assertThat("repeat time", scheduleData.getInterval(), is(2));
-        assertThat("mode", scheduleData.getMode(), is(ScheduleData.Mode.USER));
-        assertThat("submode", scheduleData.getSubmode(), is(ScheduleData.Submode.APK));
-        assertThat("placed", scheduleData.getPlaced(), is(1546100595221L));
-        assertThat("next event", scheduleData.getTimeUntilNextEvent(),
+        assertThat("enabled", schedule.isEnabled(), is(true));
+        assertThat("hour", schedule.getHour(), is(12));
+        assertThat("repeat time", schedule.getInterval(), is(2));
+        assertThat("mode", schedule.getMode(), is(Schedule.Mode.USER));
+        assertThat("submode", schedule.getSubmode(), is(Schedule.Submode.APK));
+        assertThat("placed", schedule.getPlaced(), is(1546100595221L));
+        assertThat("next event", schedule.getTimeUntilNextEvent(),
             is(1500L));
     }
 
@@ -48,7 +48,7 @@ public class ScheduleDataTest {
             .getDefaultSharedPreferences(appContext);
         assertThat("clear preferences", preferences.edit().clear().commit(),
             is(true));
-        final ScheduleData scheduleData = new ScheduleData.Builder()
+        final Schedule schedule = new Schedule.Builder()
             .withId(0)
             .withEnabled(true)
             .withHour(12)
@@ -57,7 +57,7 @@ public class ScheduleDataTest {
             .withSubmode(1)
             .withPlaced(1546100595221L)
             .build();
-        scheduleData.persist(preferences);
+        schedule.persist(preferences);
 
         assertThat("enabled", preferences.getBoolean("enabled0", false),
             is(true));

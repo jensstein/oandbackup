@@ -32,7 +32,7 @@ import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
-import dk.jens.backup.schedules.db.ScheduleData;
+import dk.jens.backup.schedules.db.Schedule;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
 import java.util.ArrayList;
@@ -156,7 +156,7 @@ BlacklistListener
     }
     public View buildUi(SharedPreferences preferences, int number)
             throws SchedulingException {
-        final ScheduleData scheduleData = ScheduleData.fromPreferences(
+        final Schedule schedule = Schedule.fromPreferences(
             preferences, number);
 
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
@@ -170,14 +170,14 @@ BlacklistListener
         activateButton.setOnClickListener(this);
         EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
         final String repeatString = Integer.toString(
-            scheduleData.getInterval());
+            schedule.getInterval());
         intervalDays.setText(repeatString);
         EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
         final String timeOfDayString = Integer.toString(
-            scheduleData.getHour());
+            schedule.getHour());
         timeOfDay.setText(timeOfDayString);
         CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
-        cb.setChecked(scheduleData.isEnabled());
+        cb.setChecked(schedule.isEnabled());
         Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
         Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
@@ -185,12 +185,12 @@ BlacklistListener
         spinner.setAdapter(adapter);
         // false has the effect that onItemSelected() is not called when
         // the spinner is added
-        spinner.setSelection(scheduleData.getMode().getValue(), false);
+        spinner.setSelection(schedule.getMode().getValue(), false);
         spinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapterSubModes = ArrayAdapter.createFromResource(this, R.array.scheduleSubModes, android.R.layout.simple_spinner_item);
         adapterSubModes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubModes.setAdapter(adapterSubModes);
-        spinnerSubModes.setSelection(scheduleData.getSubmode().getValue(),
+        spinnerSubModes.setSelection(schedule.getSubmode().getValue(),
             false);
         spinnerSubModes.setOnItemSelectedListener(this);
         
@@ -212,10 +212,10 @@ BlacklistListener
         final int number = (int) v.getTag();
         try {
             final View scheduleView = viewList.get(number);
-            final ScheduleData scheduleData = getScheduleDataFromView(
+            final Schedule schedule = getScheduleDataFromView(
                 scheduleView, number);
-            scheduleData.persist(prefs);
-            if(!scheduleData.isEnabled()) {
+            schedule.persist(prefs);
+            if(!schedule.isEnabled()) {
                 handleAlarms.cancelAlarm(number);
             }
         } catch (SchedulingException e) {
@@ -274,9 +274,9 @@ BlacklistListener
 
     private void updateScheduleData(View scheduleView, int id) {
         try {
-            final ScheduleData scheduleData = getScheduleDataFromView(
+            final Schedule schedule = getScheduleDataFromView(
                 scheduleView, id);
-            scheduleData.persist(prefs);
+            schedule.persist(prefs);
             setTimeLeftTextView(id);
         } catch (SchedulingException e) {
             Log.e(TAG, String.format("Unable to update schedule %s",
@@ -287,7 +287,7 @@ BlacklistListener
         }
     }
 
-    private ScheduleData getScheduleDataFromView(View scheduleView, int id)
+    private Schedule getScheduleDataFromView(View scheduleView, int id)
             throws SchedulingException {
         final EditText intervalText = scheduleView.findViewById(
             R.id.intervalDays);
@@ -316,7 +316,7 @@ BlacklistListener
             handleAlarms.setAlarm(id, nextEvent,
                 interval * AlarmManager.INTERVAL_DAY);
         }
-        return new ScheduleData.Builder()
+        return new Schedule.Builder()
             .withId(id)
             .withHour(hour)
             .withInterval(interval)
@@ -348,10 +348,10 @@ BlacklistListener
 
     private void changeScheduleMode(int mode, int id) {
         try {
-            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+            final Schedule schedule = Schedule.fromPreferences(
                 prefs, id);
-            scheduleData.setMode(mode);
-            scheduleData.persist(prefs);
+            schedule.setMode(mode);
+            schedule.persist(prefs);
         } catch (SchedulingException e) {
             final String message = String.format(
                 "Unable to set mode of schedule %s to %s", id, mode);
@@ -362,10 +362,10 @@ BlacklistListener
 
     private void changeScheduleSubmode(int submode, int id) {
         try {
-            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+            final Schedule schedule = Schedule.fromPreferences(
                 prefs, id);
-            scheduleData.setSubmode(submode);
-            scheduleData.persist(prefs);
+            schedule.setSubmode(submode);
+            schedule.persist(prefs);
         } catch (SchedulingException e) {
             final String message = String.format(
                 "Unable to set submode of schedule %s to %s", id, submode);
@@ -480,10 +480,10 @@ BlacklistListener
             }
 
             // move settings one place back
-            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+            final Schedule schedule = Schedule.fromPreferences(
                 prefs, number + 1);
-            scheduleData.setId(number);
-            scheduleData.persist(prefs);
+            schedule.setId(number);
+            schedule.persist(prefs);
 
             // update tags on view elements
             View view = viewList.get(i + 1);
