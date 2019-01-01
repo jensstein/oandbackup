@@ -15,15 +15,24 @@ ext {
     hamcrest_version = "1.3"
     junit_version = "4.12"
     mockito_version = "2.23.4"
+    room_version = "2.1.0-alpha03"
 }
 
 dependencies {
         implementation 'org.sufficientlysecure:openpgp-api:9.0'
+    implementation group: "androidx.room", name: "room-runtime",
+        version: "$room_version"
+    annotationProcessor group: "androidx.room", name: "room-compiler",
+        version: "$room_version"
+
     testImplementation group: "org.hamcrest", name: "hamcrest-core",
         version: hamcrest_version
     testImplementation group: "org.mockito", name: "mockito-core",
         version: mockito_version
     testImplementation group: "junit", name: "junit", version: junit_version
+    testImplementation group: "androidx.room", name: "room-testing",
+        version: "$room_version"
+
     androidTestImplementation group: "com.android.support.test",
         name: "runner", version: android_support_test_version
     androidTestImplementation group: "com.android.support.test.espresso",
@@ -71,7 +80,7 @@ sonarqube {
 }
 
 android {
-    compileSdkVersion 'android-26'
+    compileSdkVersion 28
 
     defaultConfig {
         // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
@@ -82,6 +91,12 @@ android {
         minSdkVersion 16
         targetSdkVersion 17
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas"
+                    .toString()]
+            }
+        }
     }
     buildTypes {
         debug {

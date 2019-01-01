@@ -1,6 +1,10 @@
 package dk.jens.backup.schedules.db;
 
 import android.content.SharedPreferences;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 import dk.jens.backup.Constants;
 import dk.jens.backup.schedules.HandleAlarms;
 import dk.jens.backup.schedules.SchedulingException;
@@ -8,6 +12,7 @@ import dk.jens.backup.schedules.SchedulingException;
 /**
  * Holds scheduling data
  */
+@Entity
 public class Schedule {
     /**
      * Scheduling mode, which packages to include in the scheduled backup
@@ -84,21 +89,24 @@ public class Schedule {
             }
         }
     }
-    private int id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
     private boolean enabled;
     private int hour;
     private int interval;
     private long placed;
+    @TypeConverters(ModeConverter.class)
     private Mode mode;
+    @TypeConverters(SubmodeConverter.class)
     private Submode submode;
     private long timeUntilNextEvent;
     private boolean excludeSystem;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -106,20 +114,40 @@ public class Schedule {
         return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public int getHour() {
         return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 
     public int getInterval() {
         return interval;
     }
 
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
     public long getPlaced() {
         return placed;
     }
 
+    public void setPlaced(long placed) {
+        this.placed = placed;
+    }
+
     public Mode getMode() {
         return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public void setMode(int mode) throws SchedulingException {
@@ -134,15 +162,27 @@ public class Schedule {
         this.submode = Submode.intToSubmode(submode);
     }
 
+    public void setSubmode(Submode submode) {
+        this.submode = submode;
+    }
+
     public long getTimeUntilNextEvent() {
         return timeUntilNextEvent;
+    }
+
+    public void setTimeUntilNextEvent(long timeUntilNextEvent) {
+        this.timeUntilNextEvent = timeUntilNextEvent;
     }
 
     public boolean isExcludeSystem() {
         return excludeSystem;
     }
 
-    private Schedule() {
+    public void setExcludeSystem(boolean excludeSystem) {
+        this.excludeSystem = excludeSystem;
+    }
+
+    public Schedule() {
         mode = Mode.ALL;
         submode = Submode.BOTH;
     }
@@ -199,6 +239,52 @@ public class Schedule {
         edit.apply();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule = (Schedule) o;
+        return id == schedule.id &&
+            enabled == schedule.enabled &&
+            hour == schedule.hour &&
+            interval == schedule.interval &&
+            placed == schedule.placed &&
+            timeUntilNextEvent == schedule.timeUntilNextEvent &&
+            excludeSystem == schedule.excludeSystem &&
+            mode == schedule.mode &&
+            submode == schedule.submode;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (int)id;
+        hash = 31 * hash + (enabled ? 1 : 0);
+        hash = 31 * hash + hour;
+        hash = 31 * hash + interval;
+        hash = 31 * hash + (int)placed;
+        hash = 31 * hash + mode.hashCode();
+        hash = 31 * hash + submode.hashCode();
+        hash = 31 * hash + (int)timeUntilNextEvent;
+        hash = 31 * hash + (excludeSystem ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+            "id=" + id +
+            ", enabled=" + enabled +
+            ", hour=" + hour +
+            ", interval=" + interval +
+            ", placed=" + placed +
+            ", mode=" + mode +
+            ", submode=" + submode +
+            ", timeUntilNextEvent=" + timeUntilNextEvent +
+            ", excludeSystem=" + excludeSystem +
+            '}';
+    }
+
     public static class Builder {
         final Schedule schedule;
         public Builder() {
@@ -224,8 +310,16 @@ public class Schedule {
             schedule.placed = placed;
             return this;
         }
+        public Builder withMode(Mode mode) {
+            schedule.mode = mode;
+            return this;
+        }
         public Builder withMode(int mode) throws SchedulingException {
             schedule.mode = Mode.intToMode(mode);
+            return this;
+        }
+        public Builder withSubmode(Submode submode) {
+            schedule.submode = submode;
             return this;
         }
         public Builder withSubmode(int submode) throws SchedulingException {
@@ -242,6 +336,28 @@ public class Schedule {
         }
         public Schedule build() {
             return schedule;
+        }
+    }
+
+    static class ModeConverter {
+        @TypeConverter
+        public static String toString(Mode mode) {
+            return mode.name();
+        }
+        @TypeConverter
+        public static Mode toMode(String name) {
+            return Mode.valueOf(name);
+        }
+    }
+
+    static class SubmodeConverter {
+        @TypeConverter
+        public static String toString(Submode submode) {
+            return submode.name();
+        }
+        @TypeConverter
+        public static Submode toSubmode(String name) {
+            return Submode.valueOf(name);
         }
     }
 }
