@@ -339,8 +339,7 @@ BlacklistListener
                 {
                     CustomPackageList.showList(this, number);
                 }
-                edit.putInt(Constants.PREFS_SCHEDULES_MODE + number, pos);
-                edit.commit();
+                changeScheduleMode(pos, number);
                 break;
             case R.id.sched_spinnerSubModes:
                 edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + number, pos);
@@ -350,6 +349,20 @@ BlacklistListener
     }
     public void onNothingSelected(AdapterView<?> parent)
     {}
+
+    private void changeScheduleMode(int mode, int id) {
+        try {
+            final ScheduleData scheduleData = ScheduleData.fromPreferences(
+                prefs, id);
+            scheduleData.setMode(mode);
+            scheduleData.persist(prefs);
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to set mode of schedule %s to %s", id, mode);
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onBlacklistChanged(CharSequence[] blacklist, int id) {

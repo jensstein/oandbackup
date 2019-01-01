@@ -120,6 +120,10 @@ public class ScheduleData {
         return mode;
     }
 
+    public void setMode(int mode) throws SchedulingException {
+        this.mode = Mode.intToMode(mode);
+    }
+
     public Submode getSubmode() {
         return submode;
     }
