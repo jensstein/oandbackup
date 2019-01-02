@@ -39,6 +39,22 @@ dependencies {
         name: "espresso-core", version: espresso_version
     androidTestImplementation group: "com.android.support.test",
         name: "rules", version: android_support_test_version
+    androidTestImplementation(group: "org.mockito", name: "mockito-android",
+            version: mockito_version) {
+        exclude group: "net.bytebuddy", module: "byte-buddy"
+        exclude group: "net.bytebuddy", module: "byte-buddy-android"
+        exclude group: "net.bytebuddy", module: "byte-buddy-agent"
+    }
+    /* The version of byte-buddy included in mockito 2.23.4 causes runtime
+     * errors when run with gradle android plugin versions before 3.3.0.
+     * https://github.com/mockito/mockito/issues/1511
+     */
+    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy",
+        version: "1.8.22"
+    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy-android",
+        version: "1.8.22"
+    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy-agent",
+        version: "1.8.22"
 }
 
 int versionMajor = 0

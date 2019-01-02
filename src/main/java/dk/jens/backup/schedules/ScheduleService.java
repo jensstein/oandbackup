@@ -11,6 +11,7 @@ import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
+import dk.jens.backup.schedules.db.Schedule;
 
 public class ScheduleService extends Service
 implements BackupRestoreHelper.OnBackupRestoreListener
@@ -23,37 +24,45 @@ implements BackupRestoreHelper.OnBackupRestoreListener
         int id = intent.getIntExtra("dk.jens.backup.schedule_id", -1);
         if(id >= 0) {
             SharedPreferences prefs;
-            SharedPreferences.Editor edit;
             HandleAlarms handleAlarms = new HandleAlarms(this);
-            HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(this);
+            final HandleScheduledBackups handleScheduledBackups =
+                getHandleScheduledBackups();
             handleScheduledBackups.setOnBackupListener(this);
             prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
-            edit = prefs.edit();
-            int repeatTime = prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, 0);
-            long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
-                repeatTime,
-                prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, 0));
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + id, timeUntilNextEvent);
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, System.currentTimeMillis());
-            edit.commit();
-            // fix the time at which the alarm will be run the next time.
-            // it can be wrong when scheduled in BootReceiver#onReceive()
-            // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-            handleAlarms.setAlarm(id, timeUntilNextEvent, repeatTime * AlarmManager.INTERVAL_DAY);
-            Log.i(TAG, getString(R.string.sched_startingbackup));
-            final int mode = prefs.getInt(
-                Constants.PREFS_SCHEDULES_MODE + id, 0);
-            int subMode = prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + id, 2);
-            boolean excludeSystem = prefs.getBoolean(
-                Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, false);
-            handleScheduledBackups.initiateBackup(id, mode, subMode + 1,
-                excludeSystem); // add one to submode to have it correspond to AppInfo.MODE_*
+            try {
+                final Schedule schedule = Schedule.fromPreferences(prefs, id);
+
+                final int interval = schedule.getInterval();
+                long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
+                    interval,
+                    prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, 0));
+                schedule.setTimeUntilNextEvent(timeUntilNextEvent);
+                schedule.setPlaced(System.currentTimeMillis());
+                schedule.persist(prefs);
+                // fix the time at which the alarm will be run the next time.
+                // it can be wrong when scheduled in BootReceiver#onReceive()
+                // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                handleAlarms.setAlarm(id, timeUntilNextEvent, interval * AlarmManager.INTERVAL_DAY);
+                Log.i(TAG, getString(R.string.sched_startingbackup));
+                // add one to submode to have it correspond to AppInfo.MODE_*
+                handleScheduledBackups.initiateBackup(id, schedule.getMode()
+                    .getValue(), schedule.getSubmode().getValue() + 1,
+                    schedule.isExcludeSystem());
+            } catch (SchedulingException e) {
+                Log.e(TAG, String.format("Unable to start schedule %s: %s",
+                    id, e.toString()));
+            }
         } else {
             Log.e(TAG, "got id: " + id + " from " + intent.toString());
         }
 
         return Service.START_NOT_STICKY;
     }
+
+    HandleScheduledBackups getHandleScheduledBackups() {
+        return new HandleScheduledBackups(this);
+    }
+
     @Override
     public void onCreate()
     {
