@@ -115,4 +115,28 @@ public class ScheduleDatabaseIT {
         assertThat("schedule 2", schedules.get(1), is(schedule2));
         assertThat("schedule 3", schedules.get(2), is(schedule3));
     }
+
+    @Test
+    public void test_update() {
+        final Schedule schedule = new Schedule.Builder()
+            .withId(3)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.USER)
+            .withSubmode(Schedule.Submode.APK)
+            .build();
+        final long[] insertedScheduleIds = scheduleDao.insert(schedule);
+        assertThat("inserted", insertedScheduleIds.length, is(1));
+        assertThat("id", insertedScheduleIds[0], is(3L));
+
+        schedule.setHour(23);
+        schedule.setInterval(1);
+        schedule.setMode(Schedule.Mode.ALL);
+        schedule.setSubmode(Schedule.Submode.DATA);
+        scheduleDao.update(schedule);
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            insertedScheduleIds[0]);
+        assertThat("updated schedule", resultSchedule, is(schedule));
+    }
 }

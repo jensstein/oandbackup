@@ -3,6 +3,7 @@ package dk.jens.backup.schedules.db;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface ScheduleDao {
     Schedule getSchedule(long id);
     @Query("SELECT * FROM schedule")
     List<Schedule> getAll();
+    @Update
+    void update(Schedule schedule);
 }
