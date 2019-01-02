@@ -22,7 +22,8 @@ public class ScheduleDatabaseIT {
     @Before
     public void createDb() {
         final Context appContext = InstrumentationRegistry.getTargetContext();
-        scheduleDatabase = Room.inMemoryDatabaseBuilder(appContext, ScheduleDatabase.class).build();
+        scheduleDatabase = Room.inMemoryDatabaseBuilder(appContext,
+            ScheduleDatabase.class).build();
         scheduleDao = scheduleDatabase.scheduleDao();
     }
 
