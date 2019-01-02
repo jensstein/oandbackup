@@ -33,6 +33,9 @@ import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
 import dk.jens.backup.schedules.db.Schedule;
+import dk.jens.backup.schedules.db.ScheduleDao;
+import dk.jens.backup.schedules.db.ScheduleDatabase;
+import dk.jens.backup.schedules.db.ScheduleDatabaseHelper;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
 import java.util.ArrayList;
@@ -460,6 +463,23 @@ BlacklistListener
             parent.removeView(cb);
         }
     }
+
+    void migrateSchedulesToDatabase(SharedPreferences preferences,
+            String databasename) throws SchedulingException {
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(this, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        for(int i = 0; i < totalSchedules; i++) {
+            final Schedule schedule = Schedule.fromPreferences(preferences,
+                i);
+             // The database is one-indexed so in order to preserve the
+             // order of the inserted schedules we have to increment the id.
+            schedule.setId(i + 1L);
+            scheduleDao.insert(schedule);
+            removePreferenceEntries(preferences, i);
+        }
+    }
+
     public void migrateSchedules(int number, int total)
             throws SchedulingException {
         for(int i = number; i < total; i++)

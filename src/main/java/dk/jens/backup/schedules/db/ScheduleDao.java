@@ -15,8 +15,10 @@ public interface ScheduleDao {
     long[] insert(Schedule ...schedules);
     @Query("SELECT * FROM schedule WHERE id = :id")
     Schedule getSchedule(long id);
-    @Query("SELECT * FROM schedule")
+    @Query("SELECT * FROM schedule ORDER BY id ASC")
     List<Schedule> getAll();
     @Update
     void update(Schedule schedule);
+    @Query("DELETE FROM schedule")
+    void deleteAll();
 }

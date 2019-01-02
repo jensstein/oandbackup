@@ -14,10 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import dk.jens.backup.R;
 import dk.jens.backup.schedules.db.Schedule;
+import dk.jens.backup.schedules.db.ScheduleDao;
+import dk.jens.backup.schedules.db.ScheduleDatabase;
+import dk.jens.backup.schedules.db.ScheduleDatabaseHelper;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -565,5 +570,77 @@ public class SchedulerTest {
             is(schedule2));
         assertThat("schedule 3 after removal", Schedule.fromPreferences(
             preferences, 2), is(not(schedule3)));
+    }
+
+    @Test
+    public void test_migrateSchedulesToDatabase() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = appContext
+            .getSharedPreferences("SCHEDULE-TEST", 0);
+        preferences.edit().clear().commit();
+        assertThat("clean preferences", preferences.getAll().isEmpty(),
+            is(true));
+
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(0)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule1.persist(preferences);
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(1)
+            .withHour(23)
+            .withInterval(4)
+            .withMode(Schedule.Mode.USER)
+            .withSubmode(Schedule.Submode.APK)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule2.persist(preferences);
+        final Schedule schedule3 = new Schedule.Builder()
+            .withId(2)
+            .withHour(6)
+            .withInterval(1)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule3.persist(preferences);
+        schedulerActivityTestRule.getActivity().totalSchedules = 3;
+
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        schedulerActivityTestRule.getActivity().migrateSchedulesToDatabase(
+            preferences, databasename);
+        assertThat("preferences empty", preferences.getAll().isEmpty(),
+            is(true));
+
+        assertThat("count after insert", scheduleDao.count(), is(3L));
+
+        // Because time until next event is calculated upon persistence we
+        // cannot use schedule object equality to test here. This should be
+        // fixed in the application logic.
+        final List<Schedule> resultSchedules = scheduleDao.getAll();
+        assertThat("schedule 1 hour", resultSchedules.get(0).getHour(),
+            is(12));
+        assertThat("schedule 1 mode", resultSchedules.get(0).getMode(),
+            is(Schedule.Mode.ALL));
+        assertThat("schedule 2 hour", resultSchedules.get(1).getHour(),
+            is(23));
+        assertThat("schedule 2 submode", resultSchedules.get(1).getSubmode(),
+            is(Schedule.Submode.APK));
+        assertThat("schedule 3 hour", resultSchedules.get(2).getHour(),
+            is(6));
+        assertThat("schedule 3 interval", resultSchedules.get(2)
+            .getInterval(), is(1));
     }
 }
