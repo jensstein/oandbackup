@@ -241,7 +241,7 @@ BlacklistListener
                 case R.id.removeButton:
                     try {
                         handleAlarms.cancelAlarm(number);
-                        removePreferenceEntries(number);
+                        removePreferenceEntries(prefs, number);
                         removeCustomListFile(number);
                         ((LinearLayout) findViewById(R.id.linearLayout)).removeView(view);
                         migrateSchedules(number, totalSchedules);
@@ -511,19 +511,20 @@ BlacklistListener
             
             renameCustomListFile(i);
         }
-        removePreferenceEntries(total);
+        removePreferenceEntries(prefs, total);
     }
-    public void removePreferenceEntries(int number)
-    {
-        edit.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
-        edit.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
-        edit.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
-        edit.remove(Constants.PREFS_SCHEDULES_REPEATTIME + number);
-        edit.remove(Constants.PREFS_SCHEDULES_MODE + number);
-        edit.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
-        edit.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);
-        edit.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
-        edit.commit();
+    public void removePreferenceEntries(SharedPreferences preferences,
+            int number) {
+        final SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
+        editor.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
+        editor.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
+        editor.remove(Constants.PREFS_SCHEDULES_REPEATTIME + number);
+        editor.remove(Constants.PREFS_SCHEDULES_MODE + number);
+        editor.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
+        editor.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);
+        editor.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
+        editor.apply();
     }
     public void renameCustomListFile(int number)
     {

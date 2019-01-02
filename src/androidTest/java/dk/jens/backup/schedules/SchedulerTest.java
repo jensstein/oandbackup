@@ -491,4 +491,79 @@ public class SchedulerTest {
             schedulerActivityTestRule.getActivity().getWindow()
             .getDecorView()))).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void test_removePreferenceEntries() throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = appContext
+            .getSharedPreferences("SCHEDULE-TEST", 0);
+        preferences.edit().clear().commit();
+        assertThat("clean preferences", preferences.getAll().isEmpty(),
+            is(true));
+
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(0)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule1.persist(preferences);
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(1)
+            .withHour(23)
+            .withInterval(4)
+            .withMode(Schedule.Mode.USER)
+            .withSubmode(Schedule.Submode.APK)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule2.persist(preferences);
+        final Schedule schedule3 = new Schedule.Builder()
+            .withId(2)
+            .withHour(6)
+            .withInterval(1)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule3.persist(preferences);
+
+        final Schedule resultSchedule1 = Schedule.fromPreferences(
+            preferences, 0);
+        // TODO: for the moment, timeUntilNextEvent depends on
+        //  System.currentTimeMillis. Until this is fixed in the application
+        //  set timeUntilNextEvent here.
+        resultSchedule1.setTimeUntilNextEvent(schedule1
+            .getTimeUntilNextEvent());
+        final Schedule resultSchedule2 = Schedule.fromPreferences(
+            preferences, 1);
+        resultSchedule2.setTimeUntilNextEvent(schedule2
+            .getTimeUntilNextEvent());
+        final Schedule resultSchedule3 = Schedule.fromPreferences(
+            preferences, 2);
+        resultSchedule3.setTimeUntilNextEvent(schedule3
+            .getTimeUntilNextEvent());
+        assertThat("schedule 1", resultSchedule1, is(schedule1));
+        assertThat("schedule 2", resultSchedule2, is(schedule2));
+        assertThat("schedule 3", resultSchedule3, is(schedule3));
+
+        schedulerActivityTestRule.getActivity().removePreferenceEntries(
+            preferences, 0);
+        schedulerActivityTestRule.getActivity().removePreferenceEntries(
+            preferences, 2);
+        assertThat("schedule 1 after removal", Schedule.fromPreferences(
+            preferences, 0), is(not(schedule1)));
+        final Schedule scheduleAfterRemoval = Schedule.fromPreferences(
+            preferences, 1);
+        scheduleAfterRemoval.setTimeUntilNextEvent(schedule1
+            .getTimeUntilNextEvent());
+        assertThat("schedule 2 after removal", scheduleAfterRemoval,
+            is(schedule2));
+        assertThat("schedule 3 after removal", Schedule.fromPreferences(
+            preferences, 2), is(not(schedule3)));
+    }
 }
