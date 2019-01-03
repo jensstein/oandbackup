@@ -37,12 +37,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
 public class SchedulerTest {
     @Rule
     public ActivityTestRule<Scheduler> schedulerActivityTestRule =
         new ActivityTestRule<>(Scheduler.class, false, true);
+
+    private static final HandleAlarms handleAlarms = mock(HandleAlarms.class);
 
     @After
     public void tearDown() {
@@ -585,6 +590,8 @@ public class SchedulerTest {
         assertThat("clean preferences", preferences.getAll().isEmpty(),
             is(true));
 
+        schedulerActivityTestRule.getActivity().handleAlarms = handleAlarms;
+
         final Schedule schedule1 = new Schedule.Builder()
             .withId(0)
             .withHour(12)
@@ -602,7 +609,7 @@ public class SchedulerTest {
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
             .withTimeUntilNextEvent(1500L)
-            .withEnabled(false)
+            .withEnabled(true)
             .build();
         schedule2.persist(preferences);
         final Schedule schedule3 = new Schedule.Builder()
@@ -612,7 +619,7 @@ public class SchedulerTest {
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
             .withTimeUntilNextEvent(1500L)
-            .withEnabled(false)
+            .withEnabled(true)
             .build();
         schedule3.persist(preferences);
         schedulerActivityTestRule.getActivity().totalSchedules = 3;
@@ -634,18 +641,33 @@ public class SchedulerTest {
         // cannot use schedule object equality to test here. This should be
         // fixed in the application logic.
         final List<Schedule> resultSchedules = scheduleDao.getAll();
-        assertThat("schedule 1 hour", resultSchedules.get(0).getHour(),
-            is(12));
-        assertThat("schedule 1 mode", resultSchedules.get(0).getMode(),
+        final Schedule resultSchedule1 = resultSchedules.get(0);
+        final Schedule resultSchedule2 = resultSchedules.get(1);
+        final Schedule resultSchedule3 = resultSchedules.get(2);
+
+        assertThat("schedule 1 hour", schedule1.getHour(), is(12));
+        assertThat("schedule 1 mode", schedule1.getMode(),
             is(Schedule.Mode.ALL));
-        assertThat("schedule 2 hour", resultSchedules.get(1).getHour(),
-            is(23));
-        assertThat("schedule 2 submode", resultSchedules.get(1).getSubmode(),
+        assertThat("schedule 2 hour", schedule2.getHour(), is(23));
+        assertThat("schedule 2 submode", resultSchedule2.getSubmode(),
             is(Schedule.Submode.APK));
-        assertThat("schedule 3 hour", resultSchedules.get(2).getHour(),
-            is(6));
-        assertThat("schedule 3 interval", resultSchedules.get(2)
-            .getInterval(), is(1));
+        assertThat("schedule 3 hour", resultSchedule3.getHour(), is(6));
+        assertThat("schedule 3 interval", resultSchedule3.getInterval(),
+            is(1));
+
+        verify(handleAlarms, never()).cancelAlarm(0);
+        verify(handleAlarms).cancelAlarm(1);
+        verify(handleAlarms).cancelAlarm(2);
+
+        verify(handleAlarms, never()).setAlarm((int)resultSchedule1.getId(),
+            resultSchedule1.getTimeUntilNextEvent(),
+            resultSchedule1.getInterval());
+        verify(handleAlarms).setAlarm((int)resultSchedule2.getId(),
+            resultSchedule2.getTimeUntilNextEvent(),
+            resultSchedule2.getInterval());
+        verify(handleAlarms).setAlarm((int)resultSchedule3.getId(),
+            resultSchedule3.getTimeUntilNextEvent(),
+            resultSchedule3.getInterval());
     }
 
     @Test

@@ -480,6 +480,11 @@ BlacklistListener
             //  the renaming logic to propagate errors properly.
             renameCustomListFile(i, ids[0]);
             removePreferenceEntries(preferences, i);
+            if(schedule.isEnabled()) {
+                handleAlarms.cancelAlarm(i);
+                handleAlarms.setAlarm((int) ids[0],
+                    schedule.getTimeUntilNextEvent(), schedule.getInterval());
+            }
         }
     }
 
