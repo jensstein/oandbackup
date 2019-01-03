@@ -12,6 +12,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import dk.jens.backup.Constants;
+import dk.jens.backup.FileCreationHelper;
+import dk.jens.backup.FileReaderWriter;
 import dk.jens.backup.R;
 import dk.jens.backup.schedules.db.Schedule;
 import dk.jens.backup.schedules.db.ScheduleDao;
@@ -22,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -642,5 +646,84 @@ public class SchedulerTest {
             is(6));
         assertThat("schedule 3 interval", resultSchedules.get(2)
             .getInterval(), is(1));
+    }
+
+    @Test
+    public void test_migrateSchedulesToDatabase_migrateCustomListFile()
+            throws SchedulingException {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final SharedPreferences preferences = appContext
+            .getSharedPreferences("SCHEDULE-TEST", 0);
+        preferences.edit().clear().commit();
+        assertThat("clean preferences", preferences.getAll().isEmpty(),
+            is(true));
+
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(0)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule1.persist(preferences);
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(1)
+            .withHour(23)
+            .withInterval(4)
+            .withMode(Schedule.Mode.USER)
+            .withSubmode(Schedule.Submode.APK)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule2.persist(preferences);
+        final Schedule schedule3 = new Schedule.Builder()
+            .withId(2)
+            .withHour(6)
+            .withInterval(1)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        schedule3.persist(preferences);
+        schedulerActivityTestRule.getActivity().totalSchedules = 3;
+
+        // The application logic depends on this value from the preferences
+        // file. This should be decoupled but in the meantime we will use it
+        // for testing.
+        final String customListDestination = schedulerActivityTestRule
+            .getActivity().defaultPrefs.getString(
+            Constants.PREFS_PATH_BACKUP_DIRECTORY,
+            FileCreationHelper.getDefaultBackupDirPath());
+
+        final FileReaderWriter fileReaderWriter = new FileReaderWriter(
+            customListDestination, Scheduler.SCHEDULECUSTOMLIST + 2);
+        fileReaderWriter.putString("TEST", false);
+
+        final File customListFile = new File(customListDestination,
+            Scheduler.SCHEDULECUSTOMLIST + 2);
+        assertThat("custom list created", customListFile.exists(), is(true));
+
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        schedulerActivityTestRule.getActivity().migrateSchedulesToDatabase(
+            preferences, databasename);
+        assertThat("preferences empty", preferences.getAll().isEmpty(),
+            is(true));
+
+        final List<Schedule> resultSchedules = scheduleDao.getAll();
+        assertThat("count result schedules", resultSchedules.size(), is(3));
+        final long lastId = resultSchedules.get(2).getId();
+
+        final FileReaderWriter resultFileReaderWriter = new FileReaderWriter(
+            customListDestination, Scheduler.SCHEDULECUSTOMLIST + lastId);
+        assertThat("result custom list file", resultFileReaderWriter.read(),
+            is("TEST\n"));
     }
 }

@@ -475,7 +475,10 @@ BlacklistListener
              // The database is one-indexed so in order to preserve the
              // order of the inserted schedules we have to increment the id.
             schedule.setId(i + 1L);
-            scheduleDao.insert(schedule);
+            final long[] ids = scheduleDao.insert(schedule);
+            // TODO: throw an exception if renaming failed. This requires
+            //  the renaming logic to propagate errors properly.
+            renameCustomListFile(i, ids[0]);
             removePreferenceEntries(preferences, i);
         }
     }
@@ -529,7 +532,7 @@ BlacklistListener
                 excludeSystemCB.setTag(i);
             }
             
-            renameCustomListFile(i);
+            renameCustomListFile(i + 1L, i);
         }
         removePreferenceEntries(prefs, total);
     }
@@ -546,12 +549,12 @@ BlacklistListener
         editor.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
         editor.apply();
     }
-    public void renameCustomListFile(int number)
+    public void renameCustomListFile(long id, long destinationId)
     {
         FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
             Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
-            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + (number + 1));
-        frw.rename(SCHEDULECUSTOMLIST + number);
+            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + id);
+        frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
     public void removeCustomListFile(int number)
     {
