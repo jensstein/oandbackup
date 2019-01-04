@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,7 +58,7 @@ BlacklistListener
 
     static final String DATABASE_NAME = "schedules.db";
 
-    ArrayList<View> viewList;
+    LongSparseArray<View> viewList;
     HandleAlarms handleAlarms;
 
     int totalSchedules;
@@ -80,7 +81,7 @@ BlacklistListener
         prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
         edit = prefs.edit();
 
-        viewList = new ArrayList<View>();
+        viewList = new LongSparseArray<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
     }
     @Override
@@ -90,18 +91,19 @@ BlacklistListener
         LinearLayout main = (LinearLayout) findViewById(R.id.linearLayout);
         totalSchedules = prefs.getInt(Constants.PREFS_SCHEDULES_TOTAL, 0);
         totalSchedules = totalSchedules < 0 ? 0 : totalSchedules; // set to zero so there is always at least one schedule on activity start
-        for(View view : viewList)
+        for(int i = 0; i < viewList.size(); i++)
         {
+            final View view = viewList.valueAt(i);
             android.view.ViewGroup parent = (android.view.ViewGroup) view.getParent();
             if(parent != null)
                 parent.removeView(view);
         }
-        viewList = new ArrayList<View>();
+        viewList = new LongSparseArray<>();
         for(int i = 0; i <= totalSchedules; i++)
         {
             try {
                 View v = buildUi(prefs, i);
-                viewList.add(v);
+                viewList.put(i, v);
                 main.addView(v);
                 if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + i, false))
                     setTimeLeftTextView(i);
@@ -135,7 +137,7 @@ BlacklistListener
             case R.id.addSchedule:
                 try {
                     View v = buildUi(prefs, ++totalSchedules);
-                    viewList.add(v);
+                    viewList.put(totalSchedules, v);
                     ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
                     edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, totalSchedules);
                     edit.commit();
@@ -221,9 +223,10 @@ BlacklistListener
         
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
 
-        final int number = (int) schedule.getId();
+        final long number = schedule.getId();
         toggleSecondaryButtons(ll, spinner, number);
 
+        view.setTag(number);
         updateButton.setTag(number);
         removeButton.setTag(number);
         activateButton.setTag(number);
@@ -235,14 +238,14 @@ BlacklistListener
     }
     public void checkboxOnClick(View v)
     {
-        final int number = (int) v.getTag();
+        final long number = (long) v.getTag();
         try {
             final View scheduleView = viewList.get(number);
             final Schedule schedule = getScheduleDataFromView(
-                scheduleView, number);
+                scheduleView, (int)number);
             schedule.persist(prefs);
             if(!schedule.isEnabled()) {
-                handleAlarms.cancelAlarm(number);
+                handleAlarms.cancelAlarm((int)number);
             }
         } catch (SchedulingException e) {
             final String message = String.format(
@@ -254,7 +257,15 @@ BlacklistListener
     }
     public void onClick(View v)
     {
-        int number = (Integer) v.getTag();
+        /*
+         * First cast the tag to long and then cast that long to int
+         * this is necessary for the time being because the tag contains
+         * the schedule id which comes from the database but is used by
+         * AlarmManager-related methods which expect int values.
+         * This should obviously be fixed.
+         */
+        final int number = (int) (long) v.getTag();
+
         try
         {
             View view = viewList.get(number);
@@ -357,7 +368,7 @@ BlacklistListener
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        int number = (Integer) parent.getTag();
+        final long number = (long) parent.getTag();
         final int spinnerId = parent.getId();
         if(spinnerId == R.id.sched_spinner) {
             toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
@@ -372,7 +383,7 @@ BlacklistListener
     public void onNothingSelected(AdapterView<?> parent)
     {}
 
-    private void changeScheduleMode(int mode, int id) {
+    private void changeScheduleMode(int mode, long id) {
         try {
             final Schedule schedule = Schedule.fromPreferences(
                 prefs, id);
@@ -386,7 +397,7 @@ BlacklistListener
         }
     }
 
-    private void changeScheduleSubmode(int submode, int id) {
+    private void changeScheduleSubmode(int submode, long id) {
         try {
             final Schedule schedule = Schedule.fromPreferences(
                 prefs, id);
@@ -414,7 +425,7 @@ BlacklistListener
         }).start();
     }
 
-    public void setTimeLeftTextView(int number)
+    public void setTimeLeftTextView(long number)
     {
         View view = viewList.get(number);
         if(view != null)
@@ -442,7 +453,7 @@ BlacklistListener
             }
         }
     }
-    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, int number)
+    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, long number)
     {
         switch(spinner.getSelectedItemPosition())
         {
@@ -537,12 +548,12 @@ BlacklistListener
 
             // move settings one place back
             final Schedule schedule = Schedule.fromPreferences(
-                prefs, number + 1);
+                prefs, number + 1L);
             schedule.setId(number);
             schedule.persist(prefs);
 
             // update tags on view elements
-            View view = viewList.get(i + 1);
+            View view = viewList.get(i + 1L);
             Button updateButton = (Button) view.findViewById(R.id.updateButton);
             Button removeButton = (Button) view.findViewById(R.id.removeButton);
             Button customListUpdateButton = (Button) view.findViewById(CUSTOMLISTUPDATEBUTTONID);
@@ -649,7 +660,7 @@ BlacklistListener
             final Scheduler scheduler = activityReference.get();
             if(scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getObject().ifPresent(view -> {
-                    scheduler.viewList.add(view);
+                    scheduler.viewList.put((long)view.getTag(), view);
                     ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
                         .addView(view);
                     scheduler.edit.putInt(Constants.PREFS_SCHEDULES_TOTAL,

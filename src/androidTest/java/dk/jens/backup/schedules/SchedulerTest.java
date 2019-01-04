@@ -124,7 +124,7 @@ public class SchedulerTest {
         modeSpinner.setSelection(Schedule.Mode.ALL.getValue());
         final Spinner submodeSpinner = view.findViewById(R.id.sched_spinnerSubModes);
         submodeSpinner.setSelection(Schedule.Submode.APK.getValue());
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         final Button updateButton = view.findViewById(R.id.updateButton);
         schedulerActivityTestRule.getActivity().onClick(updateButton);
@@ -174,7 +174,7 @@ public class SchedulerTest {
         final CheckBox excludeSystemCheckbox = view.findViewById(
             Scheduler.EXCLUDESYSTEMCHECKBOXID);
         excludeSystemCheckbox.setChecked(true);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         schedulerActivityTestRule.getActivity().onClick(excludeSystemCheckbox);
 
@@ -217,7 +217,7 @@ public class SchedulerTest {
             preferences, id);
         final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
         modeSpinner.setSelection(6);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         final Button updateButton = view.findViewById(R.id.updateButton);
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
@@ -269,8 +269,8 @@ public class SchedulerTest {
             preferences, id);
         final View view2 = schedulerActivityTestRule.getActivity().buildUi(
             preferences, id + 1);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
-        schedulerActivityTestRule.getActivity().viewList.add(view2);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
+        schedulerActivityTestRule.getActivity().viewList.put(id + 1L, view2);
 
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             final LinearLayout mainLayout = schedulerActivityTestRule
@@ -319,7 +319,7 @@ public class SchedulerTest {
             preferences, id);
         final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
         enabledCheckbox.setChecked(true);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         schedulerActivityTestRule.getActivity().checkboxOnClick(enabledCheckbox);
 
@@ -350,11 +350,11 @@ public class SchedulerTest {
             preferences, id);
         final CheckBox enabledCheckbox = view.findViewById(R.id.checkbox);
         enabledCheckbox.setChecked(true);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         final Spinner modeSpinner = view.findViewById(R.id.sched_spinner);
         modeSpinner.setSelection(6);
-        schedulerActivityTestRule.getActivity().viewList.add(view);
+        schedulerActivityTestRule.getActivity().viewList.put(id, view);
 
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             schedulerActivityTestRule.getActivity().checkboxOnClick(enabledCheckbox);
@@ -756,7 +756,10 @@ public class SchedulerTest {
         // Schedules might be added during the activity onResume run just
         // before this test
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
-            for(View view : schedulerActivityTestRule.getActivity().viewList) {
+            for(int i = 0; i < schedulerActivityTestRule.getActivity()
+                    .viewList.size(); i++) {
+                final View view = schedulerActivityTestRule.getActivity()
+                    .viewList.valueAt(i);
                 final ViewGroup parent = (ViewGroup) view.getParent();
                 if(parent != null) {
                     parent.removeView(view);

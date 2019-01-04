@@ -196,7 +196,7 @@ public class Schedule {
      * @return scheduling data object
      */
     public static Schedule fromPreferences(SharedPreferences preferences,
-                                           int number) throws SchedulingException {
+            long number) throws SchedulingException {
         final Schedule schedule = new Schedule();
         schedule.id = number;
         schedule.enabled = preferences.getBoolean(
