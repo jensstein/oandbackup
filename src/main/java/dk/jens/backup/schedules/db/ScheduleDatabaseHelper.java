@@ -6,6 +6,8 @@ import androidx.room.Room;
 public class ScheduleDatabaseHelper {
     private static ScheduleDatabase scheduleDatabase = null;
 
+    private ScheduleDatabaseHelper() {}
+
     // the room documentation recommends using a singleton pattern for
     // handling database objects:
     // https://developer.android.com/training/data-storage/room/
