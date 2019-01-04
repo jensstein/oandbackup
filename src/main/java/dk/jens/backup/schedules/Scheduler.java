@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -475,15 +476,20 @@ BlacklistListener
              // The database is one-indexed so in order to preserve the
              // order of the inserted schedules we have to increment the id.
             schedule.setId(i + 1L);
-            final long[] ids = scheduleDao.insert(schedule);
-            // TODO: throw an exception if renaming failed. This requires
-            //  the renaming logic to propagate errors properly.
-            renameCustomListFile(i, ids[0]);
-            removePreferenceEntries(preferences, i);
-            if(schedule.isEnabled()) {
-                handleAlarms.cancelAlarm(i);
-                handleAlarms.setAlarm((int) ids[0],
-                    schedule.getTimeUntilNextEvent(), schedule.getInterval());
+            try {
+                final long[] ids = scheduleDao.insert(schedule);
+                // TODO: throw an exception if renaming failed. This requires
+                //  the renaming logic to propagate errors properly.
+                renameCustomListFile(i, ids[0]);
+                removePreferenceEntries(preferences, i);
+                if (schedule.isEnabled()) {
+                    handleAlarms.cancelAlarm(i);
+                    handleAlarms.setAlarm((int) ids[0],
+                        schedule.getTimeUntilNextEvent(), schedule.getInterval());
+                }
+            } catch (SQLException e) {
+                throw new SchedulingException(
+                    "Unable to migrate schedules to database", e);
             }
         }
     }

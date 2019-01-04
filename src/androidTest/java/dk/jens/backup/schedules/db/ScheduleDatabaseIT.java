@@ -1,6 +1,7 @@
 package dk.jens.backup.schedules.db;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import androidx.room.Room;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class ScheduleDatabaseIT {
@@ -33,7 +35,7 @@ public class ScheduleDatabaseIT {
     }
 
     @Test
-    public void test_insert() {
+    public void test_insert() throws SQLException {
         final Schedule schedule = new Schedule.Builder()
             .withEnabled(true)
             .withHour(23)
@@ -62,7 +64,22 @@ public class ScheduleDatabaseIT {
     }
 
     @Test
-    public void test_count() {
+    public void test_insert_constraintException() {
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(1)
+            .build();
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(1)
+            .build();
+        try {
+            scheduleDao.insert(schedule1, schedule2);
+            fail("No exception thrown");
+        } catch (SQLException e) {}
+        assertThat("count", scheduleDao.count(), is(0L));
+    }
+
+    @Test
+    public void test_count() throws SQLException {
         final Schedule schedule1 = new Schedule.Builder()
             .withHour(23)
             .withInterval(3)
@@ -86,7 +103,7 @@ public class ScheduleDatabaseIT {
     }
 
     @Test
-    public void test_getAll() {
+    public void test_getAll() throws SQLException {
         final Schedule schedule1 = new Schedule.Builder()
             .withId(1)
             .withHour(2)
@@ -117,7 +134,7 @@ public class ScheduleDatabaseIT {
     }
 
     @Test
-    public void test_update() {
+    public void test_update() throws SQLException {
         final Schedule schedule = new Schedule.Builder()
             .withId(3)
             .withHour(12)
