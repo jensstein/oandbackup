@@ -2,6 +2,7 @@ package dk.jens.backup.schedules.db;
 
 import android.database.SQLException;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -22,4 +23,8 @@ public interface ScheduleDao {
     void update(Schedule schedule);
     @Query("DELETE FROM schedule")
     void deleteAll();
+    @Delete
+    void delete(Schedule schedule);
+    @Query("DELETE FROM schedule WHERE id = :id")
+    void deleteById(long id);
 }

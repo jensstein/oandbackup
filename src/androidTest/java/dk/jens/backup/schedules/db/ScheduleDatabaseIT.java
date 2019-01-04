@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -155,5 +156,116 @@ public class ScheduleDatabaseIT {
         final Schedule resultSchedule = scheduleDao.getSchedule(
             insertedScheduleIds[0]);
         assertThat("updated schedule", resultSchedule, is(schedule));
+    }
+
+    @Test
+    public void test_delete() throws SQLException {
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(1)
+            .withHour(2)
+            .withInterval(1)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.APK)
+            .build();
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(2)
+            .withHour(12)
+            .withInterval(2)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .build();
+        scheduleDao.insert(schedule1, schedule2);
+
+        scheduleDao.delete(schedule1);
+        assertThat("count", scheduleDao.count(), is(1L));
+        assertThat("schedule 1 doesn't exist", scheduleDao.getSchedule(
+            schedule1.getId()), is(nullValue()));
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule2.getId());
+        assertThat("result schedule", resultSchedule, is(schedule2));
+    }
+
+    @Test
+    public void test_delete_nonExistingSchedule() throws SQLException {
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(1)
+            .withHour(2)
+            .withInterval(1)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.APK)
+            .build();
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(2)
+            .withHour(12)
+            .withInterval(2)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .build();
+        scheduleDao.insert(schedule2);
+
+        // deleting a non-existing entity should have no effect
+        scheduleDao.delete(schedule1);
+        assertThat("count", scheduleDao.count(), is(1L));
+        assertThat("schedule 1 doesn't exist", scheduleDao.getSchedule(
+            schedule1.getId()), is(nullValue()));
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule2.getId());
+        assertThat("result schedule", resultSchedule, is(schedule2));
+    }
+
+    @Test
+    public void test_delete_byId() throws SQLException {
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(1)
+            .withHour(2)
+            .withInterval(1)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.APK)
+            .build();
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(2)
+            .withHour(12)
+            .withInterval(2)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .build();
+        scheduleDao.insert(schedule2);
+
+        // deleting a non-existing entity should have no effect
+        scheduleDao.deleteById(schedule1.getId());
+        assertThat("count", scheduleDao.count(), is(1L));
+        assertThat("schedule 1 doesn't exist", scheduleDao.getSchedule(
+            schedule1.getId()), is(nullValue()));
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule2.getId());
+        assertThat("result schedule", resultSchedule, is(schedule2));
+    }
+
+    @Test
+    public void test_delete_byNonExistingId() throws SQLException {
+        final Schedule schedule1 = new Schedule.Builder()
+            .withId(1)
+            .withHour(2)
+            .withInterval(1)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.APK)
+            .build();
+        final Schedule schedule2 = new Schedule.Builder()
+            .withId(2)
+            .withHour(12)
+            .withInterval(2)
+            .withMode(Schedule.Mode.CUSTOM)
+            .withSubmode(Schedule.Submode.BOTH)
+            .build();
+        scheduleDao.insert(schedule2);
+
+        // deleting a non-existing entity should have no effect
+        scheduleDao.deleteById(schedule1.getId());
+        assertThat("count", scheduleDao.count(), is(1L));
+        assertThat("schedule 1 doesn't exist", scheduleDao.getSchedule(
+            schedule1.getId()), is(nullValue()));
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule2.getId());
+        assertThat("result schedule", resultSchedule, is(schedule2));
     }
 }
