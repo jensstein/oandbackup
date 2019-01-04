@@ -602,7 +602,7 @@ BlacklistListener
             .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
-    public void removeCustomListFile(int number)
+    public void removeCustomListFile(long number)
     {
         FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
             Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
@@ -668,6 +668,61 @@ BlacklistListener
                     scheduler.edit.putInt(Constants.PREFS_SCHEDULES_TOTAL,
                         scheduler.totalSchedules);
                     scheduler.edit.commit();
+                });
+            }
+        }
+    }
+
+    static class RemoveScheduleTask extends AsyncTask<Long, Void, ResultHolder<Long>> {
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+
+        RemoveScheduleTask(Scheduler scheduler) {
+            activityReference = new WeakReference<>(scheduler);
+            databasename = DATABASE_NAME;
+        }
+
+        RemoveScheduleTask(Scheduler scheduler, String databasename) {
+            activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+        }
+
+        @Override
+        public ResultHolder<Long> doInBackground(Long... ids) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler == null || scheduler.isFinishing()) {
+                return new ResultHolder<>();
+            }
+            if(ids.length == 0) {
+                final IllegalStateException error =
+                    new IllegalStateException(
+                    "No id supplied to the schedule removing task");
+                return new ResultHolder<>(error);
+            }
+            final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                .getScheduleDatabase(scheduler, databasename);
+            final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+            scheduleDao.deleteById(ids[0]);
+            return new ResultHolder<>(ids[0]);
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<Long> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                resultHolder.getError().ifPresent(error -> {
+                    final String message = String.format(
+                        "Unable to remove schedule: %s", error.toString());
+                    Log.e(TAG, message);
+                    Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show();
+                });
+                resultHolder.getObject().ifPresent(id -> {
+                    final View view = scheduler.viewList.get(id);
+                    scheduler.handleAlarms.cancelAlarm((int)(long)id);
+                    scheduler.removeCustomListFile(id);
+                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                        .removeView(view);
+                    scheduler.viewList.remove(id);
                 });
             }
         }

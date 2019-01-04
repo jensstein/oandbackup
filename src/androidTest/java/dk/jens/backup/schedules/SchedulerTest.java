@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -773,5 +774,49 @@ public class SchedulerTest {
         onView(withId(R.id.ll)).check(matches(isDisplayed()));
         onView(withId(R.id.updateButton)).check(matches(isDisplayed()));
         onView(withId(R.id.removeButton)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void test_RemoveScheduleTask() {
+        final String database = "schedules-test.db";
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, database);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("database count", scheduleDao.count(), is(0L));
+
+        schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
+            for(int i = 0; i < schedulerActivityTestRule.getActivity()
+                    .viewList.size(); i++) {
+                final View view = schedulerActivityTestRule.getActivity()
+                    .viewList.valueAt(i);
+                final ViewGroup parent = (ViewGroup) view.getParent();
+                if(parent != null) {
+                    parent.removeView(view);
+                }
+                final long key = schedulerActivityTestRule.getActivity()
+                    .viewList.keyAt(i);
+                schedulerActivityTestRule.getActivity().viewList.remove(key);
+            }
+        });
+        new Scheduler.AddScheduleTask(
+            schedulerActivityTestRule.getActivity(), database)
+            .execute();
+        // assert that only a single view for each of these ids is added
+        onView(withId(R.id.ll)).check(matches(isDisplayed()));
+        onView(withId(R.id.updateButton)).check(matches(isDisplayed()));
+        onView(withId(R.id.removeButton)).check(matches(isDisplayed()));
+
+        final List<Schedule> schedules = scheduleDao.getAll();
+        assertThat("schedules list", schedules.size(), is(1));
+        final Schedule resultSchedule = schedules.get(0);
+
+        new Scheduler.RemoveScheduleTask(schedulerActivityTestRule
+            .getActivity(), database).execute(resultSchedule.getId());
+
+        onView(withId(R.id.ll)).check(doesNotExist());
+        onView(withId(R.id.updateButton)).check(doesNotExist());
+        onView(withId(R.id.removeButton)).check(doesNotExist());
     }
 }
