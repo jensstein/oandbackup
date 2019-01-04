@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.annimon.stream.Optional;
 import dk.jens.backup.BaseActivity;
 import dk.jens.backup.BlacklistContract;
 import dk.jens.backup.BlacklistListener;
@@ -39,6 +41,7 @@ import dk.jens.backup.schedules.db.ScheduleDatabase;
 import dk.jens.backup.schedules.db.ScheduleDatabaseHelper;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class Scheduler extends BaseActivity
@@ -51,6 +54,8 @@ BlacklistListener
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
 
     public static final int GLOBALBLACKLISTID = -1;
+
+    static final String DATABASE_NAME = "schedules.db";
 
     ArrayList<View> viewList;
     HandleAlarms handleAlarms;
@@ -158,11 +163,27 @@ BlacklistListener
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private View buildUiForNewSchedule(String databasename) {
+        final Schedule schedule = new Schedule.Builder()
+            // Set id to 0 to make the database generate a new id
+            .withId(0)
+            .build();
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(this, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.insert(schedule);
+        return buildUi(schedule);
+    }
+
     public View buildUi(SharedPreferences preferences, int number)
             throws SchedulingException {
         final Schedule schedule = Schedule.fromPreferences(
             preferences, number);
+        return buildUi(schedule);
+    }
 
+    public View buildUi(Schedule schedule) {
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
 
@@ -200,6 +221,7 @@ BlacklistListener
         
         TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
 
+        final int number = (int) schedule.getId();
         toggleSecondaryButtons(ll, spinner, number);
 
         updateButton.setTag(number);
@@ -593,6 +615,76 @@ BlacklistListener
                 Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + scheduleNumber, false);
             HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
             handleScheduledBackups.initiateBackup(scheduleNumber, mode, subMode + 1, excludeSystem);
+        }
+    }
+
+    static class AddScheduleTask extends AsyncTask<Void, Void, ResultHolder<View>> {
+        // Use a weak reference to avoid leaking the activity if it's
+        // destroyed while this task is still running.
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+
+        AddScheduleTask(Scheduler scheduler) {
+            activityReference = new WeakReference<>(scheduler);
+            databasename = DATABASE_NAME;
+        }
+
+        AddScheduleTask(Scheduler scheduler, String databasename) {
+            activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+        }
+
+        @Override
+        public ResultHolder<View> doInBackground(Void... _void) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler == null || scheduler.isFinishing()) {
+                return new ResultHolder<>();
+            }
+            return new ResultHolder<>(scheduler.buildUiForNewSchedule(
+                databasename));
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<View> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                resultHolder.getObject().ifPresent(view -> {
+                    scheduler.viewList.add(view);
+                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                        .addView(view);
+                    scheduler.edit.putInt(Constants.PREFS_SCHEDULES_TOTAL,
+                        scheduler.totalSchedules);
+                    scheduler.edit.commit();
+                });
+            }
+        }
+    }
+
+    private static class ResultHolder<T> {
+        private final Optional<T> object;
+        private final Optional<Throwable> error;
+
+        ResultHolder() {
+            object = Optional.empty();
+            error = Optional.empty();
+        }
+
+        ResultHolder(T object) {
+            this.object = Optional.of(object);
+            error = Optional.empty();
+        }
+
+        ResultHolder(Throwable error) {
+            this.error = Optional.of(error);
+            object = Optional.empty();
+        }
+
+        Optional<T> getObject() {
+            return object;
+        }
+
+        Optional<Throwable> getError() {
+            return error;
         }
     }
 }
