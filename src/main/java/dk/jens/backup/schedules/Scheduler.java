@@ -755,4 +755,28 @@ BlacklistListener
             return error;
         }
     }
+
+    static class UpdateScheduleRunnable implements Runnable {
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+        private final Schedule schedule;
+
+        public UpdateScheduleRunnable(Scheduler scheduler, String databasename,
+                Schedule schedule) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+            this.schedule = schedule;
+        }
+
+        @Override
+        public void run() {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                scheduleDao.update(schedule);
+            }
+        }
+    }
 }

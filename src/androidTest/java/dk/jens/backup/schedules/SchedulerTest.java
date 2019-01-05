@@ -819,4 +819,79 @@ public class SchedulerTest {
         onView(withId(R.id.updateButton)).check(doesNotExist());
         onView(withId(R.id.removeButton)).check(doesNotExist());
     }
+
+    @Test
+    public void test_UpdateScheduleRunnable() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+        schedule.setId(ids[0]);
+
+        schedule.setHour(24);
+        schedule.setInterval(1);
+        schedule.setMode(Schedule.Mode.USER);
+        schedule.setSubmode(Schedule.Submode.BOTH);
+
+        Scheduler.UpdateScheduleRunnable updateScheduleRunnable =
+            new Scheduler.UpdateScheduleRunnable(schedulerActivityTestRule
+            .getActivity(), databasename, schedule);
+        updateScheduleRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule.getId());
+        assertThat("updated schedule", resultSchedule, is(schedule));
+    }
+
+    @Test
+    public void test_UpdateScheduleRunnable_isFinishing() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+        schedule.setId(ids[0]);
+
+        schedule.setHour(24);
+        schedule.setInterval(1);
+        schedule.setMode(Schedule.Mode.USER);
+        schedule.setSubmode(Schedule.Submode.BOTH);
+
+        Scheduler.UpdateScheduleRunnable updateScheduleRunnable =
+            new Scheduler.UpdateScheduleRunnable(schedulerActivityTestRule
+            .getActivity(), databasename, schedule);
+        schedulerActivityTestRule.getActivity().finish();
+        updateScheduleRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(
+            schedule.getId());
+        assertThat("updated schedule", resultSchedule, is(not(schedule)));
+    }
 }
