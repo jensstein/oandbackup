@@ -779,4 +779,45 @@ BlacklistListener
             }
         }
     }
+
+    static class ModeChangerRunnable implements Runnable {
+        private final WeakReference<Scheduler> activityReference;
+        private final long id;
+        private final Optional<Schedule.Mode> mode;
+        private final Optional<Schedule.Submode> submode;
+        private String databasename;
+
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.mode = Optional.of(mode);
+            submode = Optional.empty();
+            databasename = DATABASE_NAME;
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.submode = Optional.of(submode);
+            mode = Optional.empty();
+            databasename = DATABASE_NAME;
+        }
+
+        void setDatabasename(String databasename) {
+            this.databasename = databasename;
+        }
+
+        @Override
+        public void run() {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final Schedule schedule = scheduleDao.getSchedule(id);
+                mode.ifPresent(schedule::setMode);
+                submode.ifPresent(schedule::setSubmode);
+                scheduleDao.update(schedule);
+            }
+        }
+    }
 }

@@ -894,4 +894,128 @@ public class SchedulerTest {
             schedule.getId());
         assertThat("updated schedule", resultSchedule, is(not(schedule)));
     }
+
+    @Test
+    public void test_ModeChangerRunnable_mode() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+
+        Scheduler.ModeChangerRunnable modeChangerRunnable =
+            new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
+            .getActivity(), ids[0], Schedule.Mode.USER);
+        modeChangerRunnable.setDatabasename(databasename);
+        modeChangerRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
+        assertThat("mode", resultSchedule.getMode(), is(Schedule.Mode.USER));
+    }
+
+    @Test
+    public void test_ModeChangerRunnable_mode_isFinishing() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+
+        Scheduler.ModeChangerRunnable modeChangerRunnable =
+            new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
+            .getActivity(), ids[0], Schedule.Mode.USER);
+        modeChangerRunnable.setDatabasename(databasename);
+        schedulerActivityTestRule.getActivity().finish();
+        modeChangerRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
+        assertThat("mode", resultSchedule.getMode(), is(Schedule.Mode.ALL));
+    }
+
+    @Test
+    public void test_ModeChangerRunnable_submode() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+
+        Scheduler.ModeChangerRunnable modeChangerRunnable =
+            new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
+            .getActivity(), ids[0], Schedule.Submode.BOTH);
+        modeChangerRunnable.setDatabasename(databasename);
+        modeChangerRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
+        assertThat("submode", resultSchedule.getSubmode(),
+            is(Schedule.Submode.BOTH));
+    }
+
+    @Test
+    public void test_ModeChangerRunnable_submode_isFinishing() {
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        final String databasename = "schedules-test.db";
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(appContext, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        scheduleDao.deleteAll();
+        assertThat("count before insert", scheduleDao.count(), is(0L));
+        final long[] ids = scheduleDao.insert(schedule);
+        assertThat("ids length", ids.length, is(1));
+
+        Scheduler.ModeChangerRunnable modeChangerRunnable =
+            new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
+            .getActivity(), ids[0], Schedule.Submode.BOTH);
+        modeChangerRunnable.setDatabasename(databasename);
+        schedulerActivityTestRule.getActivity().finish();
+        modeChangerRunnable.run();
+
+        final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
+        assertThat("submode", resultSchedule.getSubmode(),
+            is(Schedule.Submode.DATA));
+    }
 }
