@@ -206,8 +206,6 @@ BlacklistListener
             false);
         spinnerSubModes.setOnItemSelectedListener(this);
         
-        TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
-
         final long number = schedule.getId();
         toggleSecondaryButtons(ll, spinner, number);
 
