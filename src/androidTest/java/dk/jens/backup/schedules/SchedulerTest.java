@@ -1005,6 +1005,33 @@ public class SchedulerTest {
             is(Schedule.Submode.DATA));
     }
 
+    @Test
+    public void test_StartSchedule() throws InterruptedException {
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.USER)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withEnabled(true)
+            .build();
+        final long id = insertSingleSchedule(schedule);
+        schedule.setId(id);
+
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final HandleScheduledBackups handleScheduledBackups = mock(
+            HandleScheduledBackups.class);
+        final Scheduler.StartSchedule startSchedule =
+            new Scheduler.StartSchedule(appContext, handleScheduledBackups,
+            id, databasename);
+        startSchedule.execute();
+        assertThat("scheduled backup thread", startSchedule.getThread()
+            .isPresent(), is(true));
+        startSchedule.getThread().get().join();
+        verify(handleScheduledBackups).initiateBackup((int)id,
+            Schedule.Mode.USER.getValue(), Schedule.Submode.BOTH.getValue()
+            + 1, false);
+    }
+
     private long insertSingleSchedule(Schedule schedule) {
         final long[] ids = scheduleDao.insert(schedule);
         assertThat("inserted ids length", ids.length, is(1));

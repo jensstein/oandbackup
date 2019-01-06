@@ -271,7 +271,8 @@ BlacklistListener
                     break;
                 case R.id.activateButton:
                     Utils.showConfirmDialog(this, "", getString(R.string.sched_activateButton),
-                        new StartSchedule(this, prefs, number));
+                        new StartSchedule(this, new HandleScheduledBackups(
+                        this), number, DATABASE_NAME));
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
                     CustomPackageList.showList(this, number);
@@ -532,25 +533,52 @@ BlacklistListener
             .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
-    private class StartSchedule implements Utils.Command
+
+    // TODO: this class should ideally just implement Runnable but the
+    //  confirmation dialog needs to accept those also
+    static class StartSchedule implements Utils.Command
     {
-        Context context;
-        SharedPreferences preferences;
-        int scheduleNumber;
-        public StartSchedule(Context context, SharedPreferences preferences, int scheduleNumber)
+        private final WeakReference<Context> contextReference;
+        private final WeakReference<HandleScheduledBackups> handleScheduledBackupsReference;
+        private final long id;
+        private final String databasename;
+        private Optional<Thread> thread;
+
+        public StartSchedule(Context context, HandleScheduledBackups
+            handleScheduledBackups, long id, String databasename)
         {
-            this.context = context;
-            this.preferences = preferences;
-            this.scheduleNumber = scheduleNumber;
+            this.contextReference = new WeakReference<>(context);
+            // set the handlescheduledbackups object here to facilitate testing
+            this.handleScheduledBackupsReference = new WeakReference<>(
+                handleScheduledBackups);
+            this.id = id;
+            this.databasename = databasename;
         }
         public void execute()
         {
-            int mode = preferences.getInt(Constants.PREFS_SCHEDULES_MODE + scheduleNumber, 0);
-            int subMode = preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + scheduleNumber, 2);
-            boolean excludeSystem = preferences.getBoolean(
-                Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + scheduleNumber, false);
-            HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
-            handleScheduledBackups.initiateBackup(scheduleNumber, mode, subMode + 1, excludeSystem);
+            final Thread t = new Thread(() -> {
+                final Context context = contextReference.get();
+                if(context != null) {
+                    final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                        .getScheduleDatabase(context, databasename);
+                    final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                    final Schedule schedule = scheduleDao.getSchedule(id);
+
+                    final HandleScheduledBackups handleScheduledBackups =
+                        handleScheduledBackupsReference.get();
+                    if(handleScheduledBackups != null) {
+                        handleScheduledBackups.initiateBackup((int) id,
+                            schedule.getMode().getValue(), schedule.getSubmode()
+                                .getValue() + 1, schedule.isExcludeSystem());
+                    }
+                }
+            });
+            thread = Optional.of(t);
+            t.start();
+        }
+        // expose the thread for testing
+        Optional<Thread> getThread() {
+            return thread;
         }
     }
 
