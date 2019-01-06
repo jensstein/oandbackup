@@ -96,7 +96,7 @@ BlacklistListener
             if(parent != null)
                 parent.removeView(view);
         }
-        new UiLoaderTask(this).execute(prefs);
+        new UiLoaderTask(this, prefs).execute();
     }
 
     private void populateViews(List<Schedule> schedules) {
@@ -651,27 +651,23 @@ BlacklistListener
         }
     }
 
-    private static class UiLoaderTask extends AsyncTask<SharedPreferences,
+    private static class UiLoaderTask extends AsyncTask<Void,
             Void, ResultHolder<List<Schedule>>> {
-        private WeakReference<Scheduler> activityReference;
-        UiLoaderTask(Scheduler scheduler) {
+        private final WeakReference<Scheduler> activityReference;
+        private final SharedPreferences preferences;
+
+        UiLoaderTask(Scheduler scheduler, SharedPreferences preferences) {
             activityReference = new WeakReference<>(scheduler);
+            this.preferences = preferences;
         }
 
         @Override
-        public ResultHolder<List<Schedule>> doInBackground(SharedPreferences... preferencesList) {
+        public ResultHolder<List<Schedule>> doInBackground(Void... _void) {
             final Scheduler scheduler = activityReference.get();
             if(scheduler == null || scheduler.isFinishing()) {
                 return new ResultHolder<>();
             }
-            if(preferencesList.length == 0) {
-                final IllegalStateException error =
-                    new IllegalStateException(
-                    "No preferences passed to ui loader task");
-                return new ResultHolder<>(error);
-            }
 
-            final SharedPreferences preferences = preferencesList[0];
             if(preferences.contains(Constants.PREFS_SCHEDULES_TOTAL)) {
                 scheduler.totalSchedules = preferences.getInt(
                     Constants.PREFS_SCHEDULES_TOTAL, 0);
