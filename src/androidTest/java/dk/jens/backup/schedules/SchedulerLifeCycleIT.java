@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import android.widget.LinearLayout;
 import dk.jens.backup.Constants;
+import dk.jens.backup.R;
 import dk.jens.backup.schedules.db.Schedule;
 import dk.jens.backup.schedules.db.ScheduleDao;
 import dk.jens.backup.schedules.db.ScheduleDatabase;
@@ -20,6 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -57,6 +67,27 @@ public class SchedulerLifeCycleIT {
 
     @Test
     public void test_onResume() {
+        schedulerActivityTestRule.launchActivity(new Intent());
+        final LinearLayout mainLayout = schedulerActivityTestRule
+            .getActivity().findViewById(R.id.linearLayout);
+        final Schedule initialSchedule = new Schedule.Builder()
+            .withId(1)
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.ALL)
+            .withSubmode(Schedule.Submode.DATA)
+            .withTimeUntilNextEvent(1500L)
+            .withEnabled(false)
+            .build();
+        final View initialView = schedulerActivityTestRule.getActivity()
+            .buildUi(initialSchedule);
+        schedulerActivityTestRule.getActivity().viewList.put(1, initialView);
+        schedulerActivityTestRule.getActivity().runOnUiThread(() ->
+            mainLayout.addView(initialView)
+        );
+        onView(withId(R.id.ll)).check(matches(isDisplayed()));
+
+        schedulerActivityTestRule.getActivity().finish();
         final Schedule schedule1 = new Schedule.Builder()
             .withId(0)
             .withHour(12)
@@ -107,5 +138,12 @@ public class SchedulerLifeCycleIT {
         Collections.addAll(expectedSchedules, schedule1, schedule2, schedule3);
         assertThat("contains all", schedules.containsAll(expectedSchedules),
             is(true));
+
+        onView(allOf(withId(R.id.timeOfDay), withText("12"))).check(matches(
+            isDisplayed()));
+        onView(allOf(withId(R.id.timeOfDay), withText("23"))).check(matches(
+            isEnabled()));
+        onView(allOf(withId(R.id.timeOfDay), withText("6"))).check(matches(
+            isEnabled()));
     }
 }
