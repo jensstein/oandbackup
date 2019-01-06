@@ -163,13 +163,6 @@ BlacklistListener
         return buildUi(schedule);
     }
 
-    public View buildUi(SharedPreferences preferences, int number)
-            throws SchedulingException {
-        final Schedule schedule = Schedule.fromPreferences(
-            preferences, number);
-        return buildUi(schedule);
-    }
-
     public View buildUi(Schedule schedule) {
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
