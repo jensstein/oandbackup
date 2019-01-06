@@ -605,9 +605,6 @@ BlacklistListener
                     scheduler.viewList.put((long)view.getTag(), view);
                     ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
                         .addView(view);
-                    scheduler.edit.putInt(Constants.PREFS_SCHEDULES_TOTAL,
-                        scheduler.totalSchedules);
-                    scheduler.edit.commit();
                 });
             }
         }
