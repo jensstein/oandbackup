@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
@@ -1030,6 +1031,69 @@ public class SchedulerTest {
         verify(handleScheduledBackups).initiateBackup((int)id,
             Schedule.Mode.USER.getValue(), Schedule.Submode.BOTH.getValue()
             + 1, false);
+    }
+
+    @Test
+    public void test_setTimeLeftTextView() {
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.USER)
+            .withPlaced(1525161018L)
+            .withTimeUntilNextEvent(21600000L)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withEnabled(true)
+            .build();
+
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(schedule);
+        schedulerActivityTestRule.getActivity().setTimeLeftTextView(schedule,
+            scheduleView, 1535961018L);
+        final TextView timeLeftText = scheduleView.findViewById(
+            R.id.sched_timeLeft);
+        assertThat(timeLeftText.getText(), is("hours until next backup: 3.0"));
+    }
+
+    @Test
+    public void test_setTimeLeftTextView_invalidInterval() {
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(-3)
+            .withMode(Schedule.Mode.USER)
+            .withPlaced(1525161018L)
+            .withTimeUntilNextEvent(21600000L)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withEnabled(true)
+            .build();
+
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(schedule);
+        schedulerActivityTestRule.getActivity().setTimeLeftTextView(schedule,
+            scheduleView, 1535961018L);
+        final TextView timeLeftText = scheduleView.findViewById(
+            R.id.sched_timeLeft);
+        assertThat(timeLeftText.getText(), is("error: interval cannot be 0"));
+    }
+
+    @Test
+    public void test_setTimeLeftTextView_disabled() {
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(-3)
+            .withMode(Schedule.Mode.USER)
+            .withPlaced(1525161018L)
+            .withTimeUntilNextEvent(21600000L)
+            .withSubmode(Schedule.Submode.BOTH)
+            .withEnabled(false)
+            .build();
+
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(schedule);
+        schedulerActivityTestRule.getActivity().setTimeLeftTextView(schedule,
+            scheduleView, 1535961018L);
+        final TextView timeLeftText = scheduleView.findViewById(
+            R.id.sched_timeLeft);
+        assertThat(timeLeftText.getText(), is(""));
     }
 
     private long insertSingleSchedule(Schedule schedule) {

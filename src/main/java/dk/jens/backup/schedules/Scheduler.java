@@ -107,7 +107,7 @@ BlacklistListener
             viewList.put(schedule.getId(), v);
             mainLayout.addView(v);
             if(schedule.isEnabled()) {
-                setTimeLeftTextView(schedules.indexOf(schedule));
+                setTimeLeftTextView(schedule, v);
             }
         }
     }
@@ -238,13 +238,13 @@ BlacklistListener
             if(!schedule.isEnabled()) {
                 handleAlarms.cancelAlarm((int)number);
             }
+            setTimeLeftTextView(schedule, scheduleView);
         } catch (SchedulingException e) {
             final String message = String.format(
                 "Unable to enable schedule %s: %s", number, e.toString());
             Log.e(TAG, message);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
-        setTimeLeftTextView(number);
     }
     public void onClick(View v)
     {
@@ -292,7 +292,7 @@ BlacklistListener
             UpdateScheduleRunnable updateScheduleRunnable =
                 new UpdateScheduleRunnable(this, DATABASE_NAME, schedule);
             new Thread(updateScheduleRunnable).start();
-            setTimeLeftTextView(id);
+            setTimeLeftTextView(schedule, scheduleView);
         } catch (SchedulingException e) {
             Log.e(TAG, String.format("Unable to update schedule %s",
                 id));
@@ -404,32 +404,21 @@ BlacklistListener
         }).start();
     }
 
-    public void setTimeLeftTextView(long number)
-    {
-        View view = viewList.get(number);
-        if(view != null)
-        {
-            TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
-            long timePlaced = prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
-            long repeat = (long)(prefs.getInt(
-                Constants.PREFS_SCHEDULES_REPEATTIME + number, 0) *
-                AlarmManager.INTERVAL_DAY);
-            long timePassed = System.currentTimeMillis() - timePlaced;
-            long timeLeft = prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, 0) - timePassed;
-            if(!prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false))
-            {
-                timeLeftTextView.setText("");
-            }
-            else if(repeat <= 0)
-            {
-                timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
-            }
-            else
-            {
-                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
-            }
+    private void setTimeLeftTextView(Schedule schedule, View view) {
+        setTimeLeftTextView(schedule, view, System.currentTimeMillis());
+    }
+
+    void setTimeLeftTextView(Schedule schedule, View view, long now) {
+        final TextView timeLeftTextView = view.findViewById(R.id.sched_timeLeft);
+        final long repeat = schedule.getInterval() * AlarmManager.INTERVAL_DAY;
+        final long timePassed = now - schedule.getPlaced();
+        final long timeLeft = schedule.getTimeUntilNextEvent() - timePassed;
+        if(!schedule.isEnabled()) {
+            timeLeftTextView.setText("");
+        } else if(repeat <= 0) {
+            timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
+        } else {
+            timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
         }
     }
     public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, long number)
