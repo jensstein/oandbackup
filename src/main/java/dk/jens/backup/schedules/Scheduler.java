@@ -65,8 +65,6 @@ BlacklistListener
     int totalSchedules;
 
     SharedPreferences defaultPrefs;
-    SharedPreferences prefs;
-    SharedPreferences.Editor edit;
 
     private BlacklistsDBHelper blacklistsDBHelper;
 
@@ -79,8 +77,6 @@ BlacklistListener
         handleAlarms = new HandleAlarms(this);
 
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
-        edit = prefs.edit();
 
         viewList = new LongSparseArray<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
@@ -96,7 +92,7 @@ BlacklistListener
             if(parent != null)
                 parent.removeView(view);
         }
-        new UiLoaderTask(this, prefs).execute();
+        new UiLoaderTask(this).execute();
     }
 
     private void populateViews(List<Schedule> schedules) {
@@ -668,11 +664,9 @@ BlacklistListener
     private static class UiLoaderTask extends AsyncTask<Void,
             Void, ResultHolder<List<Schedule>>> {
         private final WeakReference<Scheduler> activityReference;
-        private final SharedPreferences preferences;
 
-        UiLoaderTask(Scheduler scheduler, SharedPreferences preferences) {
+        UiLoaderTask(Scheduler scheduler) {
             activityReference = new WeakReference<>(scheduler);
-            this.preferences = preferences;
         }
 
         @Override
@@ -682,6 +676,8 @@ BlacklistListener
                 return new ResultHolder<>();
             }
 
+            final SharedPreferences preferences = scheduler
+                .getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
             if(preferences.contains(Constants.PREFS_SCHEDULES_TOTAL)) {
                 scheduler.totalSchedules = preferences.getInt(
                     Constants.PREFS_SCHEDULES_TOTAL, 0);

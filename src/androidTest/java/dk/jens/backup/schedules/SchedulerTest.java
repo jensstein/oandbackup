@@ -279,17 +279,6 @@ public class SchedulerTest {
 
     @Test
     public void test_onClick_removeButton() throws SchedulingException {
-        // TODO: this test and the logic it tests relies way to much on the
-        //  shared preferences implementation. The logic should be changed
-        //  to be backed by a database to be more manageable.
-        final Context appContext = InstrumentationRegistry.getTargetContext();
-        final SharedPreferences preferences = appContext
-            .getSharedPreferences("SCHEDULE-TEST", 0);
-        preferences.edit().clear().commit();
-        schedulerActivityTestRule.getActivity().prefs = preferences;
-        assertThat("clean preferences", preferences.getAll().isEmpty(),
-            is(true));
-
         final Schedule schedule = new Schedule.Builder()
             .withHour(12)
             .withInterval(3)
