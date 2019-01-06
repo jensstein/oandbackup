@@ -2,7 +2,6 @@ package dk.jens.backup.schedules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -34,6 +33,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -42,7 +42,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -119,6 +118,33 @@ public class SchedulerTest {
             R.id.sched_spinnerSubModes);
         assertThat("submode", submodeSpinner.getSelectedItemPosition(),
             is(Schedule.Submode.DATA.getValue()));
+    }
+
+    @Test
+    public void test_buildUi_excludeSystemPackages() {
+        final Schedule schedule = new Schedule.Builder()
+            .withHour(12)
+            .withInterval(3)
+            .withMode(Schedule.Mode.NEW_UPDATED)
+            .withSubmode(Schedule.Submode.DATA)
+            .withExcludeSystem(true)
+            .withEnabled(true)
+            .build();
+        final long id = insertSingleSchedule(schedule);
+        schedule.setId(id);
+
+        schedulerActivityTestRule.getActivity().DATABASE_NAME = databasename;
+        final LinearLayout mainLayout = schedulerActivityTestRule
+            .getActivity().findViewById(R.id.linearLayout);
+        final View scheduleView = schedulerActivityTestRule.getActivity()
+            .buildUi(schedule);
+        schedulerActivityTestRule.getActivity().viewList.put(
+            schedule.getId(), scheduleView);
+        schedulerActivityTestRule.getActivity().runOnUiThread(() ->
+            mainLayout.addView(scheduleView)
+        );
+        onView(withId(Scheduler.EXCLUDESYSTEMCHECKBOXID)).check(matches(
+            isChecked()));
     }
 
     @Test

@@ -440,7 +440,7 @@ BlacklistListener
                 cb.setId(EXCLUDESYSTEMCHECKBOXID);
                 cb.setText(getString(R.string.sched_excludeSystemCheckBox));
                 cb.setTag(number);
-                cb.setChecked(prefs.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false));
+                new SystemExcludeCheckboxSetTask(this, number, cb).execute();
                 cb.setOnClickListener(this);
                 LayoutParams cblp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 parent.addView(cb, cblp);
@@ -703,6 +703,42 @@ BlacklistListener
                     Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show();
                 });
                 resultHolder.getObject().ifPresent(scheduler::populateViews);
+            }
+        }
+    }
+
+    static class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,
+            ResultHolder<Boolean>> {
+        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<CheckBox> checkBoxReference;
+        private final long id;
+
+        SystemExcludeCheckboxSetTask(Scheduler scheduler, long id, CheckBox checkBox) {
+            activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.checkBoxReference = new WeakReference<>(checkBox);
+        }
+
+        @Override
+        public ResultHolder<Boolean> doInBackground(Void... _void) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, DATABASE_NAME);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final Schedule schedule = scheduleDao.getSchedule(id);
+                return new ResultHolder<>(schedule.isExcludeSystem());
+            }
+            return new ResultHolder<>();
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<Boolean> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            final CheckBox checkBox = checkBoxReference.get();
+            if(scheduler != null && !scheduler.isFinishing() &&
+                    checkBox != null) {
+                resultHolder.getObject().ifPresent(checkBox::setChecked);
             }
         }
     }
