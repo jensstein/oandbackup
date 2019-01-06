@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +25,7 @@ public class ScheduleServiceTest {
         ServiceTestRule.withTimeout(15L, TimeUnit.SECONDS);
 
     @Test
-    public void test_startService() throws TimeoutException {
+    public void test_startService() throws TimeoutException, InterruptedException {
         final Context appContext = InstrumentationRegistry.getTargetContext();
         final int id = 0;
         final Schedule schedule = new Schedule.Builder()
@@ -44,6 +46,10 @@ public class ScheduleServiceTest {
         final Intent intent = new Intent(appContext, TestScheduleService.class);
         intent.putExtra("dk.jens.backup.schedule_id", id);
         serviceTestRule.startService(intent);
+
+        assertThat("service thread", TestScheduleService.thread.isPresent(),
+            is(true));
+        TestScheduleService.thread.get().join();
         verify(TestScheduleService.handleScheduledBackups).initiateBackup(
             id, Schedule.Mode.USER.getValue(), Schedule.Submode.DATA
             .getValue() + 1, schedule.isExcludeSystem());

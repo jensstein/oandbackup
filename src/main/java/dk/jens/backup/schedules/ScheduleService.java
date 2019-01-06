@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import androidx.annotation.RestrictTo;
+import com.annimon.stream.Optional;
 import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.OAndBackup;
@@ -21,6 +23,10 @@ implements BackupRestoreHelper.OnBackupRestoreListener
 {
     static final String TAG = OAndBackup.TAG;
     static final int ID = 2;
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    static Optional<Thread> thread = Optional.empty();
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -31,23 +37,28 @@ implements BackupRestoreHelper.OnBackupRestoreListener
                 getHandleScheduledBackups();
             handleScheduledBackups.setOnBackupListener(this);
 
-            final ScheduleDao scheduleDao = getScheduleDao(Scheduler.DATABASE_NAME);
-            final Schedule schedule = scheduleDao.getSchedule(id);
-            final int interval = schedule.getInterval();
-            final long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
-                interval, schedule.getHour());
-            schedule.setTimeUntilNextEvent(timeUntilNextEvent);
-            schedule.setPlaced(System.currentTimeMillis());
-            scheduleDao.update(schedule);
-            // fix the time at which the alarm will be run the next time.
-            // it can be wrong when scheduled in BootReceiver#onReceive()
-            // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-            handleAlarms.setAlarm(id, timeUntilNextEvent, interval * AlarmManager.INTERVAL_DAY);
-            Log.i(TAG, getString(R.string.sched_startingbackup));
-            // add one to submode to have it correspond to AppInfo.MODE_*
-            handleScheduledBackups.initiateBackup(id, schedule.getMode()
-                .getValue(), schedule.getSubmode().getValue() + 1,
-                schedule.isExcludeSystem());
+            final Thread t = new Thread(() -> {
+                final ScheduleDao scheduleDao = getScheduleDao(Scheduler.DATABASE_NAME);
+                final Schedule schedule = scheduleDao.getSchedule(id);
+                final int interval = schedule.getInterval();
+                final long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
+                    interval, schedule.getHour());
+                schedule.setTimeUntilNextEvent(timeUntilNextEvent);
+                schedule.setPlaced(System.currentTimeMillis());
+                scheduleDao.update(schedule);
+                // fix the time at which the alarm will be run the next time.
+                // it can be wrong when scheduled in BootReceiver#onReceive()
+                // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                handleAlarms.setAlarm(id, timeUntilNextEvent, interval * AlarmManager.INTERVAL_DAY);
+                Log.i(TAG, getString(R.string.sched_startingbackup));
+                // add one to submode to have it correspond to AppInfo.MODE_*
+                handleScheduledBackups.initiateBackup(id, schedule.getMode()
+                        .getValue(), schedule.getSubmode().getValue() + 1,
+                    schedule.isExcludeSystem());
+
+            });
+            thread = Optional.of(t);
+            t.start();
         } else {
             Log.e(TAG, "got id: " + id + " from " + intent.toString());
         }
