@@ -108,7 +108,7 @@ android {
             versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
         minSdkVersion 16
-        targetSdkVersion 17
+        targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
