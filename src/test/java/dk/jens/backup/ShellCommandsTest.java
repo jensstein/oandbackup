@@ -1,7 +1,7 @@
 package dk.jens.backup;
 
 import android.content.SharedPreferences;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,12 +16,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-class ShellCommandsTest {
+public class ShellCommandsTest {
     private SharedPreferences sharedPreferences = mock(SharedPreferences.class);
     private CommandHandler commandHandler = mock(CommandHandler.class);
 
     @Test
-    void test_checkOabUtils() {
+    public void test_checkOabUtils() {
         ShellCommands shellCommands = getShellCommands();
         when(commandHandler.runCmd(anyString(), anyList(),
             any(CommandHandler.OutputConsumer.class),
@@ -39,7 +39,7 @@ class ShellCommandsTest {
     }
 
     @Test
-    void test_checkOabUtils_noOabUtils() {
+    public void test_checkOabUtils_noOabUtils() {
         ShellCommands shellCommands = getShellCommands();
         when(commandHandler.runCmd(anyString(), anyList(),
             any(CommandHandler.OutputConsumer.class),

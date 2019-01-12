@@ -56,5 +56,6 @@
             </intent-filter>
         </receiver>
         <service android:name="dk.jens.backup.schedules.ScheduleService" />
+        <service android:name="dk.jens.backup.schedules.TestScheduleService" />
     </application>
 </manifest>

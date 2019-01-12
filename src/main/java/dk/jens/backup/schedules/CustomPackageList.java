@@ -19,7 +19,7 @@ public class CustomPackageList
 {
     static ArrayList<AppInfo> appInfoList = OAndBackup.appInfoList;
     // for use with schedules
-    public static void showList(Activity activity, int number)
+    public static void showList(Activity activity, long number)
     {
         showList(activity, Scheduler.SCHEDULECUSTOMLIST + number);
     }

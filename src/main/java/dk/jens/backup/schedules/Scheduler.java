@@ -4,10 +4,13 @@ import android.app.AlarmManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +25,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.annimon.stream.Optional;
 import dk.jens.backup.BaseActivity;
 import dk.jens.backup.BlacklistContract;
 import dk.jens.backup.BlacklistListener;
@@ -29,32 +34,37 @@ import dk.jens.backup.BlacklistsDBHelper;
 import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
-import dk.jens.backup.OAndBackup;
 import dk.jens.backup.R;
 import dk.jens.backup.Utils;
+import dk.jens.backup.schedules.db.Schedule;
+import dk.jens.backup.schedules.db.ScheduleDao;
+import dk.jens.backup.schedules.db.ScheduleDatabase;
+import dk.jens.backup.schedules.db.ScheduleDatabaseHelper;
 import dk.jens.backup.ui.dialogs.BlacklistDialogFragment;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Scheduler extends BaseActivity
 implements View.OnClickListener, AdapterView.OnItemSelectedListener,
 BlacklistListener
 {
-    static final String TAG = OAndBackup.TAG;
+    private static final String TAG = Constants.TAG;
     public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
 
     public static final int GLOBALBLACKLISTID = -1;
 
-    ArrayList<View> viewList;
+    static String DATABASE_NAME = "schedules.db";
+
+    LongSparseArray<View> viewList;
     HandleAlarms handleAlarms;
 
     int totalSchedules;
 
     SharedPreferences defaultPrefs;
-    SharedPreferences prefs;
-    SharedPreferences.Editor edit;
 
     private BlacklistsDBHelper blacklistsDBHelper;
 
@@ -67,35 +77,34 @@ BlacklistListener
         handleAlarms = new HandleAlarms(this);
 
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs = getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
-        edit = prefs.edit();
 
-        transferOldValues();
-
-        viewList = new ArrayList<View>();
+        viewList = new LongSparseArray<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
     }
     @Override
     public void onResume()
     {
         super.onResume();
-        LinearLayout main = (LinearLayout) findViewById(R.id.linearLayout);
-        totalSchedules = prefs.getInt(Constants.PREFS_SCHEDULES_TOTAL, 0);
-        totalSchedules = totalSchedules < 0 ? 0 : totalSchedules; // set to zero so there is always at least one schedule on activity start
-        for(View view : viewList)
+        for(int i = 0; i < viewList.size(); i++)
         {
+            final View view = viewList.valueAt(i);
             android.view.ViewGroup parent = (android.view.ViewGroup) view.getParent();
             if(parent != null)
                 parent.removeView(view);
         }
-        viewList = new ArrayList<View>();
-        for(int i = 0; i <= totalSchedules; i++)
-        {
-            View v = buildUi(i);
-            viewList.add(v);
-            main.addView(v);
-            if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + i, false))
-                setTimeLeftTextView(i);
+        new UiLoaderTask(this).execute();
+    }
+
+    private void populateViews(List<Schedule> schedules) {
+        final LinearLayout mainLayout = findViewById(R.id.linearLayout);
+        viewList = new LongSparseArray<>();
+        for(Schedule schedule : schedules) {
+            final View v = buildUi(schedule);
+            viewList.put(schedule.getId(), v);
+            mainLayout.addView(v);
+            if(schedule.isEnabled()) {
+                setTimeLeftTextView(schedule, v);
+            }
         }
     }
 
@@ -119,11 +128,7 @@ BlacklistListener
         switch(item.getItemId())
         {
             case R.id.addSchedule:
-                View v = buildUi(++totalSchedules);
-                viewList.add(v);
-                ((LinearLayout) findViewById(R.id.linearLayout)).addView(v);
-                edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, totalSchedules);
-                edit.commit();
+                new AddScheduleTask(this).execute();
                 return true;
             case R.id.globalBlacklist:
                 new Thread(() -> {
@@ -143,8 +148,22 @@ BlacklistListener
         }
         return super.onOptionsItemSelected(item);
     }
-    public View buildUi(int number)
-    {
+
+    private View buildUiForNewSchedule(String databasename) {
+        final Schedule schedule = new Schedule.Builder()
+            // Set id to 0 to make the database generate a new id
+            .withId(0)
+            .build();
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(this, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        final long[] ids = scheduleDao.insert(schedule);
+        // update schedule id with one generated by the database
+        schedule.setId(ids[0]);
+        return buildUi(schedule);
+    }
+
+    public View buildUi(Schedule schedule) {
         View view = LayoutInflater.from(this).inflate(R.layout.schedule, null);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll);
 
@@ -155,30 +174,35 @@ BlacklistListener
         Button activateButton = (Button) view.findViewById(R.id.activateButton);
         activateButton.setOnClickListener(this);
         EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-        String repeatString = Integer.toString(prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, 0));
+        final String repeatString = Integer.toString(
+            schedule.getInterval());
         intervalDays.setText(repeatString);
         EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-        String timeOfDayString = Integer.toString(prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0));
+        final String timeOfDayString = Integer.toString(
+            schedule.getHour());
         timeOfDay.setText(timeOfDayString);
         CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
-        cb.setChecked(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false));
+        cb.setChecked(schedule.isEnabled());
         Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
         Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(prefs.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0), false); // false has the effect that onItemSelected() is not called when the spinner is added
+        // false has the effect that onItemSelected() is not called when
+        // the spinner is added
+        spinner.setSelection(schedule.getMode().getValue(), false);
         spinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapterSubModes = ArrayAdapter.createFromResource(this, R.array.scheduleSubModes, android.R.layout.simple_spinner_item);
         adapterSubModes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubModes.setAdapter(adapterSubModes);
-        spinnerSubModes.setSelection(prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 2), false);
+        spinnerSubModes.setSelection(schedule.getSubmode().getValue(),
+            false);
         spinnerSubModes.setOnItemSelectedListener(this);
         
-        TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
-
+        final long number = schedule.getId();
         toggleSecondaryButtons(ll, spinner, number);
 
+        view.setTag(number);
         updateButton.setTag(number);
         removeButton.setTag(number);
         activateButton.setTag(number);
@@ -190,81 +214,55 @@ BlacklistListener
     }
     public void checkboxOnClick(View v)
     {
-        int number = (Integer) v.getTag();
-        boolean checked = ((CheckBox) v).isChecked();
-        View view = viewList.get(number);
-        EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-        EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-
-        if(checked)
-        {
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, true);
-            Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
-            Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-            long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
-//            Log.i(TAG, "starttime checked: " + (startTime / 1000 / 60 / 60f));
-            handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, System.currentTimeMillis());
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, startTime);
-            edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, repeatTime);
-            edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, hourOfDay);
-            edit.commit();
+        final long number = (long) v.getTag();
+        try {
+            final View scheduleView = viewList.get(number);
+            final Schedule schedule = getScheduleDataFromView(
+                scheduleView, (int)number);
+            final UpdateScheduleRunnable updateScheduleRunnable =
+                new UpdateScheduleRunnable(this, DATABASE_NAME, schedule);
+            new Thread(updateScheduleRunnable).start();
+            if(!schedule.isEnabled()) {
+                handleAlarms.cancelAlarm((int)number);
+            }
+            setTimeLeftTextView(schedule, scheduleView);
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to enable schedule %s: %s", number, e.toString());
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
-        else
-        {
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false);
-            edit.commit();
-            handleAlarms.cancelAlarm(number);
-        }
-        setTimeLeftTextView(number);
     }
     public void onClick(View v)
     {
-        int number = (Integer) v.getTag();
+        /*
+         * First cast the tag to long and then cast that long to int
+         * this is necessary for the time being because the tag contains
+         * the schedule id which comes from the database but is used by
+         * AlarmManager-related methods which expect int values.
+         * This should obviously be fixed.
+         */
+        final int number = (int) (long) v.getTag();
+
         try
         {
             View view = viewList.get(number);
-            EditText intervalDays = (EditText) view.findViewById(R.id.intervalDays);
-            EditText timeOfDay = (EditText) view.findViewById(R.id.timeOfDay);
-
             switch(v.getId())
             {
+                case EXCLUDESYSTEMCHECKBOXID:
                 case R.id.updateButton:
-                    Integer hourOfDay = Integer.valueOf(timeOfDay.getText().toString());
-                    Integer repeatTime = Integer.valueOf(intervalDays.getText().toString());
-                    edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, System.currentTimeMillis());
-                    edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, hourOfDay);
-                    edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + number, repeatTime);
-                    if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false))
-                    {
-                        long startTime = handleAlarms.timeUntilNextEvent(repeatTime, hourOfDay, true);
-                        edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, startTime);
-    //                    Log.i(TAG, number + ": starttime update: " + (startTime / 1000 / 60 / 60f));
-                        handleAlarms.setAlarm(number, startTime, repeatTime.longValue() * AlarmManager.INTERVAL_DAY);
-                    }
-                    edit.commit();
-                    setTimeLeftTextView(number);
+                    updateScheduleData(view, number);
                     break;
                 case R.id.removeButton:
-                    handleAlarms.cancelAlarm(number);
-                    removePreferenceEntries(number);
-                    removeCustomListFile(number);
-                    ((LinearLayout) findViewById(R.id.linearLayout)).removeView(view);
-                    migrateSchedules(number, totalSchedules);
-                    viewList.remove(number);
-                    edit.putInt(Constants.PREFS_SCHEDULES_TOTAL, --totalSchedules);
-                    edit.commit();
+                    new RemoveScheduleTask(this).execute((long)number);
                     break;
                 case R.id.activateButton:
                     Utils.showConfirmDialog(this, "", getString(R.string.sched_activateButton),
-                        new StartSchedule(this, prefs, number));
+                        new StartSchedule(this, new HandleScheduledBackups(
+                        this), number, DATABASE_NAME));
                     break;
                 case CUSTOMLISTUPDATEBUTTONID:
                     CustomPackageList.showList(this, number);
-                    break;
-                case EXCLUDESYSTEMCHECKBOXID:
-                    edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, ((CheckBox) v).isChecked());
-                    edit.commit();
                     break;
             }
         }
@@ -273,28 +271,111 @@ BlacklistListener
             e.printStackTrace();
         }
     }
+
+    private void updateScheduleData(View scheduleView, int id) {
+        try {
+            final Schedule schedule = getScheduleDataFromView(
+                scheduleView, id);
+            UpdateScheduleRunnable updateScheduleRunnable =
+                new UpdateScheduleRunnable(this, DATABASE_NAME, schedule);
+            new Thread(updateScheduleRunnable).start();
+            setTimeLeftTextView(schedule, scheduleView);
+        } catch (SchedulingException e) {
+            Log.e(TAG, String.format("Unable to update schedule %s",
+                id));
+            Toast.makeText(this, String.format(
+                "Unable to update schedule %s", id),
+                Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private Schedule getScheduleDataFromView(View scheduleView, int id)
+            throws SchedulingException {
+        final EditText intervalText = scheduleView.findViewById(
+            R.id.intervalDays);
+        final EditText hourText = scheduleView.findViewById(
+            R.id.timeOfDay);
+        final Spinner modeSpinner = scheduleView.findViewById(
+            R.id.sched_spinner);
+        final Spinner submodeSpinner = scheduleView.findViewById(
+            R.id.sched_spinnerSubModes);
+        final CheckBox excludeSystemCheckbox = scheduleView.findViewById(
+            EXCLUDESYSTEMCHECKBOXID);
+        final boolean excludeSystemPackages = excludeSystemCheckbox != null
+            && excludeSystemCheckbox.isChecked();
+
+        final CheckBox enabledCheckbox = scheduleView.findViewById(
+            R.id.checkbox);
+        final boolean enabled = enabledCheckbox.isChecked();
+        final int hour = Integer.parseInt(hourText.getText()
+            .toString());
+        final int interval = Integer.parseInt(intervalText
+            .getText().toString());
+        long nextEvent = 0;
+        if (enabled) {
+            nextEvent = HandleAlarms.timeUntilNextEvent(
+                interval, hour, true);
+            handleAlarms.setAlarm(id, nextEvent,
+                interval * AlarmManager.INTERVAL_DAY);
+        }
+        return new Schedule.Builder()
+            .withId(id)
+            .withHour(hour)
+            .withInterval(interval)
+            .withMode(modeSpinner.getSelectedItemPosition())
+            .withSubmode(submodeSpinner.getSelectedItemPosition())
+            .withPlaced(System.currentTimeMillis())
+            .withEnabled(enabled)
+            .withTimeUntilNextEvent(nextEvent)
+            .withExcludeSystem(excludeSystemPackages)
+            .build();
+    }
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        int number = (Integer) parent.getTag();
-        switch(parent.getId())
-        {
-            case R.id.sched_spinner:
-                toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
-                if(pos == 4)
-                {
-                    CustomPackageList.showList(this, number);
-                }
-                edit.putInt(Constants.PREFS_SCHEDULES_MODE + number, pos);
-                edit.commit();
-                break;
-            case R.id.sched_spinnerSubModes:
-                edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + number, pos);
-                edit.commit();
-                break;
+        final long number = (long) parent.getTag();
+        final int spinnerId = parent.getId();
+        if(spinnerId == R.id.sched_spinner) {
+            toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
+            if (pos == 4) {
+                CustomPackageList.showList(this, number);
+            }
+            changeScheduleMode(pos, number);
+        } else if(spinnerId == R.id.sched_spinnerSubModes) {
+            changeScheduleSubmode(pos, number);
         }
     }
     public void onNothingSelected(AdapterView<?> parent)
     {}
+
+    private void changeScheduleMode(int modeInt, long id) {
+        try {
+            final Schedule.Mode mode = Schedule.Mode.intToMode(modeInt);
+            final ModeChangerRunnable modeChangerRunnable =
+                new ModeChangerRunnable(this, id, mode);
+            new Thread(modeChangerRunnable).start();
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to set mode of schedule %s to %s", id, modeInt);
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void changeScheduleSubmode(int submodeInt, long id) {
+        try {
+            final Schedule.Submode submode = Schedule.Submode.intToSubmode(
+                submodeInt);
+            final ModeChangerRunnable modeChangerRunnable =
+                new ModeChangerRunnable(this, id, submode);
+            new Thread(modeChangerRunnable).start();
+        } catch (SchedulingException e) {
+            final String message = String.format(
+                "Unable to set submode of schedule %s to %s", id, submodeInt);
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onBlacklistChanged(CharSequence[] blacklist, int id) {
@@ -310,35 +391,24 @@ BlacklistListener
         }).start();
     }
 
-    public void setTimeLeftTextView(int number)
-    {
-        View view = viewList.get(number);
-        if(view != null)
-        {
-            TextView timeLeftTextView = (TextView) view.findViewById(R.id.sched_timeLeft);
-            long timePlaced = prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
-            long repeat = (long)(prefs.getInt(
-                Constants.PREFS_SCHEDULES_REPEATTIME + number, 0) *
-                AlarmManager.INTERVAL_DAY);
-            long timePassed = System.currentTimeMillis() - timePlaced;
-            long timeLeft = prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, 0) - timePassed;
-            if(!prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false))
-            {
-                timeLeftTextView.setText("");
-            }
-            else if(repeat <= 0)
-            {
-                timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
-            }
-            else
-            {
-                timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
-            }
+    private void setTimeLeftTextView(Schedule schedule, View view) {
+        setTimeLeftTextView(schedule, view, System.currentTimeMillis());
+    }
+
+    void setTimeLeftTextView(Schedule schedule, View view, long now) {
+        final TextView timeLeftTextView = view.findViewById(R.id.sched_timeLeft);
+        final long repeat = schedule.getInterval() * AlarmManager.INTERVAL_DAY;
+        final long timePassed = now - schedule.getPlaced();
+        final long timeLeft = schedule.getTimeUntilNextEvent() - timePassed;
+        if(!schedule.isEnabled()) {
+            timeLeftTextView.setText("");
+        } else if(repeat <= 0) {
+            timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
+        } else {
+            timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
         }
     }
-    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, int number)
+    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, long number)
     {
         switch(spinner.getSelectedItemPosition())
         {
@@ -347,7 +417,7 @@ BlacklistListener
                 cb.setId(EXCLUDESYSTEMCHECKBOXID);
                 cb.setText(getString(R.string.sched_excludeSystemCheckBox));
                 cb.setTag(number);
-                cb.setChecked(prefs.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false));
+                new SystemExcludeCheckboxSetTask(this, number, cb).execute();
                 cb.setOnClickListener(this);
                 LayoutParams cblp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 parent.addView(cb, cblp);
@@ -382,139 +452,384 @@ BlacklistListener
             parent.removeView(cb);
         }
     }
-    public void migrateSchedules(int number, int total)
-    {
-        for(int i = number; i < total; i++)
-        {
-            // decrease alarm id by one if set
-            if(prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + (i + 1), false))
-            {
-                long timePassed = System.currentTimeMillis() - prefs.getLong(
-                    Constants.PREFS_SCHEDULES_TIMEPLACED + (i + 1), 0);
-                long timeLeft = prefs.getLong(
-                    Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + (i + 1), 0) -
-                    timePassed;
-                long repeat = (long)(prefs.getInt(
-                    Constants.PREFS_SCHEDULES_REPEATTIME + (i + 1), 0) *
-                    AlarmManager.INTERVAL_DAY);
-                handleAlarms.cancelAlarm(i + 1);
-                handleAlarms.setAlarm(i, timeLeft, repeat);
-            }
 
-            // move settings one place back
-            edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + i,
-                prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + (i + 1), false));
-            edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + i,
-                prefs.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + (i + 1), false));
-            edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_MODE + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_MODE + (i + 1), 0));
-            edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + i,
-                prefs.getInt(Constants.PREFS_SCHEDULES_SUBMODE + (i + 1), 0));
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + i,
-                prefs.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + (i + 1),
-                System.currentTimeMillis()));
-            edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + i,
-                prefs.getLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + (i + 1), 0));
-            edit.commit();
-
-            // update tags on view elements
-            View view = viewList.get(i + 1);
-            Button updateButton = (Button) view.findViewById(R.id.updateButton);
-            Button removeButton = (Button) view.findViewById(R.id.removeButton);
-            Button customListUpdateButton = (Button) view.findViewById(CUSTOMLISTUPDATEBUTTONID);
-            CheckBox cb = (CheckBox) view.findViewById(R.id.checkbox);
-            CheckBox excludeSystemCB = (CheckBox) view.findViewById(EXCLUDESYSTEMCHECKBOXID);
-            Spinner spinner = (Spinner) view.findViewById(R.id.sched_spinner);
-            Spinner spinnerSubModes = (Spinner) view.findViewById(R.id.sched_spinnerSubModes);
-
-            updateButton.setTag(i);
-            removeButton.setTag(i);
-            cb.setTag(i);
-            spinner.setTag(i);
-            spinnerSubModes.setTag(i);
-            if(customListUpdateButton != null)
-            {
-                customListUpdateButton.setTag(i);
+    void migrateSchedulesToDatabase(SharedPreferences preferences,
+            String databasename) throws SchedulingException {
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+            .getScheduleDatabase(this, databasename);
+        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+        for(int i = 0; i < totalSchedules; i++) {
+            final Schedule schedule = Schedule.fromPreferences(preferences,
+                i);
+             // The database is one-indexed so in order to preserve the
+             // order of the inserted schedules we have to increment the id.
+            schedule.setId(i + 1L);
+            try {
+                final long[] ids = scheduleDao.insert(schedule);
+                // TODO: throw an exception if renaming failed. This requires
+                //  the renaming logic to propagate errors properly.
+                renameCustomListFile(i, ids[0]);
+                removePreferenceEntries(preferences, i);
+                if (schedule.isEnabled()) {
+                    handleAlarms.cancelAlarm(i);
+                    handleAlarms.setAlarm((int) ids[0],
+                        schedule.getTimeUntilNextEvent(), schedule.getInterval());
+                }
+            } catch (SQLException e) {
+                throw new SchedulingException(
+                    "Unable to migrate schedules to database", e);
             }
-            if(excludeSystemCB != null)
-            {
-                excludeSystemCB.setTag(i);
-            }
-            
-            renameCustomListFile(i);
         }
-        removePreferenceEntries(total);
     }
-    public void removePreferenceEntries(int number)
-    {
-        edit.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
-        edit.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
-        edit.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
-        edit.remove(Constants.PREFS_SCHEDULES_REPEATTIME + number);
-        edit.remove(Constants.PREFS_SCHEDULES_MODE + number);
-        edit.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
-        edit.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);
-        edit.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
-        edit.commit();
+
+    public void removePreferenceEntries(SharedPreferences preferences,
+            int number) {
+        final SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
+        editor.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
+        editor.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
+        editor.remove(Constants.PREFS_SCHEDULES_REPEATTIME + number);
+        editor.remove(Constants.PREFS_SCHEDULES_MODE + number);
+        editor.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
+        editor.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);
+        editor.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
+        editor.apply();
     }
-    public void renameCustomListFile(int number)
+    public void renameCustomListFile(long id, long destinationId)
     {
         FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
             Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
-            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + (number + 1));
-        frw.rename(SCHEDULECUSTOMLIST + number);
+            .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + id);
+        frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
-    public void removeCustomListFile(int number)
+    public void removeCustomListFile(long number)
     {
         FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
             Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
             .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
-    public void transferOldValues()
+
+    // TODO: this class should ideally just implement Runnable but the
+    //  confirmation dialog needs to accept those also
+    static class StartSchedule implements Utils.Command
     {
-        if(prefs.contains(Constants.PREFS_SCHEDULES_ENABLED))
+        private final WeakReference<Context> contextReference;
+        private final WeakReference<HandleScheduledBackups> handleScheduledBackupsReference;
+        private final long id;
+        private final String databasename;
+        private Optional<Thread> thread;
+
+        public StartSchedule(Context context, HandleScheduledBackups
+            handleScheduledBackups, long id, String databasename)
         {
-            edit.putBoolean("enabled0", prefs.getBoolean(Constants.PREFS_SCHEDULES_ENABLED, false));
-            edit.putInt("hourOfDay0", prefs.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY, 0));
-            edit.putInt("repeatTime0", prefs.getInt(Constants.PREFS_SCHEDULES_REPEATTIME, 0));
-            edit.putInt("scheduleMode0", prefs.getInt(Constants.PREFS_SCHEDULES_MODE, 0));
-            edit.putLong("timePlaced0", prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEPLACED, System.currentTimeMillis()));
-            edit.putLong("timeUntilNextEvent0", prefs.getLong(
-                Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT, 0));
-            edit.remove(Constants.PREFS_SCHEDULES_ENABLED);
-            edit.remove(Constants.PREFS_SCHEDULES_HOUROFDAY);
-            edit.remove(Constants.PREFS_SCHEDULES_REPEATTIME);
-            edit.remove(Constants.PREFS_SCHEDULES_MODE);
-            edit.remove(Constants.PREFS_SCHEDULES_TIMEPLACED);
-            edit.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT);
-            edit.commit();
-        }
-    }
-    private class StartSchedule implements Utils.Command
-    {
-        Context context;
-        SharedPreferences preferences;
-        int scheduleNumber;
-        public StartSchedule(Context context, SharedPreferences preferences, int scheduleNumber)
-        {
-            this.context = context;
-            this.preferences = preferences;
-            this.scheduleNumber = scheduleNumber;
+            this.contextReference = new WeakReference<>(context);
+            // set the handlescheduledbackups object here to facilitate testing
+            this.handleScheduledBackupsReference = new WeakReference<>(
+                handleScheduledBackups);
+            this.id = id;
+            this.databasename = databasename;
         }
         public void execute()
         {
-            int mode = preferences.getInt(Constants.PREFS_SCHEDULES_MODE + scheduleNumber, 0);
-            int subMode = preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + scheduleNumber, 2);
-            boolean excludeSystem = preferences.getBoolean(
-                Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + scheduleNumber, false);
-            HandleScheduledBackups handleScheduledBackups = new HandleScheduledBackups(context);
-            handleScheduledBackups.initiateBackup(scheduleNumber, mode, subMode + 1, excludeSystem);
+            final Thread t = new Thread(() -> {
+                final Context context = contextReference.get();
+                if(context != null) {
+                    final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                        .getScheduleDatabase(context, databasename);
+                    final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                    final Schedule schedule = scheduleDao.getSchedule(id);
+
+                    final HandleScheduledBackups handleScheduledBackups =
+                        handleScheduledBackupsReference.get();
+                    if(handleScheduledBackups != null) {
+                        handleScheduledBackups.initiateBackup((int) id,
+                            schedule.getMode().getValue(), schedule.getSubmode()
+                                .getValue() + 1, schedule.isExcludeSystem());
+                    }
+                }
+            });
+            thread = Optional.of(t);
+            t.start();
+        }
+        // expose the thread for testing
+        Optional<Thread> getThread() {
+            return thread;
+        }
+    }
+
+    static class AddScheduleTask extends AsyncTask<Void, Void, ResultHolder<View>> {
+        // Use a weak reference to avoid leaking the activity if it's
+        // destroyed while this task is still running.
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+
+        AddScheduleTask(Scheduler scheduler) {
+            activityReference = new WeakReference<>(scheduler);
+            databasename = DATABASE_NAME;
+        }
+
+        AddScheduleTask(Scheduler scheduler, String databasename) {
+            activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+        }
+
+        @Override
+        public ResultHolder<View> doInBackground(Void... _void) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler == null || scheduler.isFinishing()) {
+                return new ResultHolder<>();
+            }
+            return new ResultHolder<>(scheduler.buildUiForNewSchedule(
+                databasename));
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<View> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                resultHolder.getObject().ifPresent(view -> {
+                    scheduler.viewList.put((long)view.getTag(), view);
+                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                        .addView(view);
+                });
+            }
+        }
+    }
+
+    static class RemoveScheduleTask extends AsyncTask<Long, Void, ResultHolder<Long>> {
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+
+        RemoveScheduleTask(Scheduler scheduler) {
+            activityReference = new WeakReference<>(scheduler);
+            databasename = DATABASE_NAME;
+        }
+
+        RemoveScheduleTask(Scheduler scheduler, String databasename) {
+            activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+        }
+
+        @Override
+        public ResultHolder<Long> doInBackground(Long... ids) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler == null || scheduler.isFinishing()) {
+                return new ResultHolder<>();
+            }
+            if(ids.length == 0) {
+                final IllegalStateException error =
+                    new IllegalStateException(
+                    "No id supplied to the schedule removing task");
+                return new ResultHolder<>(error);
+            }
+            final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                .getScheduleDatabase(scheduler, databasename);
+            final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+            scheduleDao.deleteById(ids[0]);
+            return new ResultHolder<>(ids[0]);
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<Long> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                resultHolder.getError().ifPresent(error -> {
+                    final String message = String.format(
+                        "Unable to remove schedule: %s", error.toString());
+                    Log.e(TAG, message);
+                    Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show();
+                });
+                resultHolder.getObject().ifPresent(id -> {
+                    final View view = scheduler.viewList.get(id);
+                    scheduler.handleAlarms.cancelAlarm((int)(long)id);
+                    scheduler.removeCustomListFile(id);
+                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                        .removeView(view);
+                    scheduler.viewList.remove(id);
+                });
+            }
+        }
+    }
+
+    private static class UiLoaderTask extends AsyncTask<Void,
+            Void, ResultHolder<List<Schedule>>> {
+        private final WeakReference<Scheduler> activityReference;
+
+        UiLoaderTask(Scheduler scheduler) {
+            activityReference = new WeakReference<>(scheduler);
+        }
+
+        @Override
+        public ResultHolder<List<Schedule>> doInBackground(Void... _void) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler == null || scheduler.isFinishing()) {
+                return new ResultHolder<>();
+            }
+
+            final SharedPreferences preferences = scheduler
+                .getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
+            if(preferences.contains(Constants.PREFS_SCHEDULES_TOTAL)) {
+                scheduler.totalSchedules = preferences.getInt(
+                    Constants.PREFS_SCHEDULES_TOTAL, 0);
+                // set to zero so there is always at least one schedule on activity start
+                scheduler.totalSchedules = scheduler.totalSchedules < 0 ?
+                    0 : scheduler.totalSchedules;
+                try {
+                    scheduler.migrateSchedulesToDatabase(preferences, DATABASE_NAME);
+                    preferences.edit().remove(Constants.PREFS_SCHEDULES_TOTAL).apply();
+                } catch (SchedulingException e) {
+                    return new ResultHolder<>(e);
+                }
+            }
+            final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                .getScheduleDatabase(scheduler, DATABASE_NAME);
+            final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+            return new ResultHolder<>(scheduleDao.getAll());
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<List<Schedule>> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                resultHolder.getError().ifPresent(error -> {
+                    final String message = String.format(
+                        "Unable to migrate schedules to database: %s",
+                        error.toString());
+                    Log.e(TAG, message);
+                    Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show();
+                });
+                resultHolder.getObject().ifPresent(scheduler::populateViews);
+            }
+        }
+    }
+
+    static class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,
+            ResultHolder<Boolean>> {
+        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<CheckBox> checkBoxReference;
+        private final long id;
+
+        SystemExcludeCheckboxSetTask(Scheduler scheduler, long id, CheckBox checkBox) {
+            activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.checkBoxReference = new WeakReference<>(checkBox);
+        }
+
+        @Override
+        public ResultHolder<Boolean> doInBackground(Void... _void) {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, DATABASE_NAME);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final Schedule schedule = scheduleDao.getSchedule(id);
+                return new ResultHolder<>(schedule.isExcludeSystem());
+            }
+            return new ResultHolder<>();
+        }
+
+        @Override
+        public void onPostExecute(ResultHolder<Boolean> resultHolder) {
+            final Scheduler scheduler = activityReference.get();
+            final CheckBox checkBox = checkBoxReference.get();
+            if(scheduler != null && !scheduler.isFinishing() &&
+                    checkBox != null) {
+                resultHolder.getObject().ifPresent(checkBox::setChecked);
+            }
+        }
+    }
+
+    private static class ResultHolder<T> {
+        private final Optional<T> object;
+        private final Optional<Throwable> error;
+
+        ResultHolder() {
+            object = Optional.empty();
+            error = Optional.empty();
+        }
+
+        ResultHolder(T object) {
+            this.object = Optional.of(object);
+            error = Optional.empty();
+        }
+
+        ResultHolder(Throwable error) {
+            this.error = Optional.of(error);
+            object = Optional.empty();
+        }
+
+        Optional<T> getObject() {
+            return object;
+        }
+
+        Optional<Throwable> getError() {
+            return error;
+        }
+    }
+
+    static class UpdateScheduleRunnable implements Runnable {
+        private final WeakReference<Scheduler> activityReference;
+        private final String databasename;
+        private final Schedule schedule;
+
+        public UpdateScheduleRunnable(Scheduler scheduler, String databasename,
+                Schedule schedule) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.databasename = databasename;
+            this.schedule = schedule;
+        }
+
+        @Override
+        public void run() {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                scheduleDao.update(schedule);
+            }
+        }
+    }
+
+    static class ModeChangerRunnable implements Runnable {
+        private final WeakReference<Scheduler> activityReference;
+        private final long id;
+        private final Optional<Schedule.Mode> mode;
+        private final Optional<Schedule.Submode> submode;
+        private String databasename;
+
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.mode = Optional.of(mode);
+            submode = Optional.empty();
+            databasename = DATABASE_NAME;
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+            this.activityReference = new WeakReference<>(scheduler);
+            this.id = id;
+            this.submode = Optional.of(submode);
+            mode = Optional.empty();
+            databasename = DATABASE_NAME;
+        }
+
+        void setDatabasename(String databasename) {
+            this.databasename = databasename;
+        }
+
+        @Override
+        public void run() {
+            final Scheduler scheduler = activityReference.get();
+            if(scheduler != null && !scheduler.isFinishing()) {
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final Schedule schedule = scheduleDao.getSchedule(id);
+                mode.ifPresent(schedule::setMode);
+                submode.ifPresent(schedule::setSubmode);
+                scheduleDao.update(schedule);
+            }
         }
     }
 }
