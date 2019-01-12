@@ -413,6 +413,9 @@ BlacklistListener
         switch(spinner.getSelectedItemPosition())
         {
             case 3:
+                if(parent.findViewById(EXCLUDESYSTEMCHECKBOXID) != null) {
+                    break;
+                }
                 CheckBox cb = new CheckBox(this);
                 cb.setId(EXCLUDESYSTEMCHECKBOXID);
                 cb.setText(getString(R.string.sched_excludeSystemCheckBox));
@@ -424,6 +427,9 @@ BlacklistListener
                 removeSecondaryButton(parent, cb);
                 break;
             case 4:
+                if(parent.findViewById(CUSTOMLISTUPDATEBUTTONID) != null) {
+                    break;
+                }
                 Button bt = new Button(this);
                 bt.setId(CUSTOMLISTUPDATEBUTTONID);
                 bt.setText(getString(R.string.sched_customListUpdateButton));
