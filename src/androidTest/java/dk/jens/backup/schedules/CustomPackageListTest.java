@@ -40,5 +40,7 @@ public class CustomPackageListTest {
         assertThat("result 1", result[0], is("SpongeBob"));
         assertThat("result 2", result[1], is("Patrick"));
         assertThat("result 3", result[2], is("Sandy"));
+
+        CustomPackageList.appInfoList = Optional.empty();
     }
 }
