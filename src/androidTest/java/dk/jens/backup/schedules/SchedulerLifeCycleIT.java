@@ -112,7 +112,7 @@ public class SchedulerLifeCycleIT {
             .withId(2)
             .withHour(6)
             .withInterval(1)
-            .withMode(Schedule.Mode.CUSTOM)
+            .withMode(Schedule.Mode.NEW_UPDATED)
             .withSubmode(Schedule.Submode.BOTH)
             .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
