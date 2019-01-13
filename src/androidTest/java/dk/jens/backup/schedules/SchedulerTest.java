@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import dk.jens.backup.AbstractInstrumentationTest;
 import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
-public class SchedulerTest {
+public class SchedulerTest extends AbstractInstrumentationTest {
     @Rule
     public ActivityTestRule<Scheduler> schedulerActivityTestRule =
         new ActivityTestRule<>(Scheduler.class, false, true);

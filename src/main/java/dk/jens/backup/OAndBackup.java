@@ -1,13 +1,18 @@
 package dk.jens.backup;
 
+import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -22,6 +27,12 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.annimon.stream.IntStream;
+import com.annimon.stream.Optional;
 import dk.jens.backup.adapters.AppInfoAdapter;
 import dk.jens.backup.schedules.Scheduler;
 import dk.jens.backup.ui.HandleMessages;
@@ -33,6 +44,7 @@ import dk.jens.backup.ui.dialogs.ShareDialogFragment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class OAndBackup extends BaseActivity
 implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
@@ -40,6 +52,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     public static final String TAG = Constants.TAG;
     static final int BATCH_REQUEST = 1;
     static final int TOOLS_REQUEST = 2;
+    private static final int REQUEST_PERMISSIONS_CODE = 3;
 
     File backupDir;
     MenuItem mSearchItem;
@@ -57,6 +70,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     boolean languageChanged; // flag for work-around for fixing language change on older android versions
     int notificationId = (int) System.currentTimeMillis();
     long threadId = -1;
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    Optional<Thread> uiThread = Optional.empty();
 
     ShellCommands shellCommands;
     HandleMessages handleMessages;
@@ -88,18 +104,86 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
                 new AssetHandlerTask();
             assetHandlerTask.execute(this);
         }
-
-        Thread initThread = new Thread(new InitRunnable(checked, firstVisiblePosition, users));
-        initThread.start();
-        /*
-         * only set threadId here if this is not after a configuration change.
-         * otherwise it could overwrite the value of a running backup / restore thread.
-         * a better fix would probably be to check for the thread name or have the threads
-         * in an array.
-         */
-        if(!checked)
-            threadId = initThread.getId();
+        final String[] perms = {
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.READ_EXTERNAL_STORAGE",
+        };
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission
+                .WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, perms,
+                REQUEST_PERMISSIONS_CODE);
+        } else {
+            /*
+             * only set threadId here if this is not after a configuration change.
+             * otherwise it could overwrite the value of a running backup / restore thread.
+             * a better fix would probably be to check for the thread name or have the threads
+             * in an array.
+             */
+            threadId = startUiThread(checked, firstVisiblePosition, users);
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+            @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == REQUEST_PERMISSIONS_CODE) {
+            if(IntStream.of(grantResults).allMatch(result -> result ==
+                    PackageManager.PERMISSION_GRANTED)) {
+                threadId = startUiThread(false, 0, new ArrayList<>());
+                if(!canAccessExternalStorage()) {
+                    /*
+                     * Check if the external storage is accessible after the
+                     * permissions have been granted. If this is not the case
+                     * then the device might be afflicted by an android bug
+                     * where the READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE
+                     * are only fully in affect after the application process
+                     * have been restarted. This should only happen on very few
+                     * devices hopefully.
+                     * This issue has been discussed in different SO questions:
+                     * https://stackoverflow.com/q/32699129
+                     * https://stackoverflow.com/q/32471888
+                     */
+                    restart();
+                }
+            } else {
+                Log.w(TAG, String.format("Permissions were not granted: %s -> %s",
+                    Arrays.toString(permissions), Arrays.toString(grantResults)));
+                Toast.makeText(this, getString(
+                    R.string.permission_not_granted), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Log.w(TAG, String.format("Unknown permissions request code: %s",
+                requestCode));
+        }
+    }
+
+    private boolean canAccessExternalStorage() {
+        final File externalStorage = Environment.getExternalStorageDirectory();
+        return externalStorage != null && externalStorage.canRead() &&
+            externalStorage.canWrite();
+    }
+
+    private void restart() {
+        final PendingIntent pendingIntent = PendingIntent.getActivity(this,
+            0, getIntent(), PendingIntent.FLAG_CANCEL_CURRENT);
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.restart_dialog)
+            .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
+                final AlarmManager alarmManager = (AlarmManager) getSystemService(
+                    Context.ALARM_SERVICE);
+                if(alarmManager != null) {
+                    // Schedule an immediate restart
+                    alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() +
+                        500L, pendingIntent);
+                    System.exit(0);
+                } else {
+                    Log.w(TAG, "Restart could not be scheduled");
+                }
+            })
+            .setNegativeButton(R.string.dialogNo, (dialog, which) -> {})
+            .show();
+    }
+
     @Override
     public void onResume()
     {
@@ -113,6 +197,18 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             languageChanged = false;
         }
     }
+
+    // The users parameter should ideally be List instead of ArrayList
+    // but the following methods expect ArrayList.
+    private long startUiThread(boolean checked, int firstVisiblePosition,
+            ArrayList<String> users) {
+        final Thread initThread = new Thread(new InitRunnable(checked,
+            firstVisiblePosition, users));
+        uiThread = Optional.of(initThread);
+        initThread.start();
+        return initThread.getId();
+    }
+
     @Override
     public void onDestroy()
     {

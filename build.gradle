@@ -17,6 +17,8 @@ ext {
     lightweight_stream_api_version = "1.2.1"
     mockito_version = "2.23.4"
     room_version = "2.1.0-alpha03"
+    uiautomator_version = "2.2.0"
+    lifecycle_version = "2.0.0"
 }
 
 dependencies {
@@ -58,6 +60,10 @@ dependencies {
         version: "1.8.22"
     androidTestImplementation group: "net.bytebuddy", name: "byte-buddy-agent",
         version: "1.8.22"
+    androidTestImplementation group: "androidx.test.uiautomator",
+        name: "uiautomator", version: uiautomator_version
+    implementation group: "androidx.lifecycle", name: "lifecycle-livedata",
+        version: lifecycle_version
 }
 
 int versionMajor = 0
@@ -107,7 +113,7 @@ android {
             versionMinor * 100 +
             versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
