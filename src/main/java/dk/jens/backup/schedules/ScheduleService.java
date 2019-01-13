@@ -2,12 +2,16 @@ package dk.jens.backup.schedules;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 import androidx.annotation.RestrictTo;
+import androidx.core.app.NotificationCompat;
 import com.annimon.stream.Optional;
 import dk.jens.backup.BackupRestoreHelper;
 import dk.jens.backup.Constants;
@@ -79,11 +83,31 @@ implements BackupRestoreHelper.OnBackupRestoreListener
     @Override
     public void onCreate()
     {
-        // build an empty notification for the service since progress
-        // notifications are handled elsewhere
-        Notification notification = new Notification.Builder(this).build();
+        final String channelId = Constants.TAG;
+        if(Build.VERSION.SDK_INT >= 26) {
+            final NotificationChannel notificationChannel =
+                new NotificationChannel(channelId, channelId,
+                NotificationManager.IMPORTANCE_DEFAULT);
+            final NotificationManager notificationManager = getSystemService(
+                NotificationManager.class);
+            if(notificationManager != null) {
+                notificationManager.createNotificationChannel(
+                notificationChannel);
+            } else {
+                Log.w(TAG, "Unable to create notification channel");
+                Toast.makeText(this, getString(
+                    R.string.error_creating_notification_channel),
+                    Toast.LENGTH_LONG).show();
+            }
+        }
+        final Notification notification = new NotificationCompat.Builder(this, channelId)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .build();
         startForeground(ID, notification);
     }
+
     @Override
     public IBinder onBind(Intent intent)
     {

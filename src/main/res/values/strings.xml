@@ -160,4 +160,6 @@
 
     <string name="logviewer_message_loading">loading log file</string>
     <string name="logviewer_next_lines_button">next</string>
+
+    <string name="error_creating_notification_channel">Unable to create notification channel</string>
 </resources>
