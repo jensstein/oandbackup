@@ -73,17 +73,13 @@ public class SchedulerTest {
 
     @Before
     public void removeViews() {
-        schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
-            for(int i = 0; i < schedulerActivityTestRule.getActivity()
-                .viewList.size(); i++) {
-                final View view = schedulerActivityTestRule.getActivity()
-                    .viewList.valueAt(i);
-                final ViewGroup parent = (ViewGroup) view.getParent();
-                if(parent != null) {
-                    parent.removeView(view);
-                }
-            }
-        });
+        final LinearLayout mainLayout = schedulerActivityTestRule
+            .getActivity().findViewById(R.id.linearLayout);
+        schedulerActivityTestRule.getActivity().runOnUiThread(
+            mainLayout::removeAllViews);
+        onView(withId(R.id.ll)).check(doesNotExist());
+        schedulerActivityTestRule.getActivity().viewList.clear();
+        schedulerActivityTestRule.getActivity().totalSchedules = 0;
     }
 
     @After
