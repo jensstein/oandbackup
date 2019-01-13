@@ -65,7 +65,7 @@ public class SchedulerTest {
         scheduleDao = scheduleDatabase.scheduleDao();
     }
 
-    @Before
+    @After
     public void cleanDatabase() {
         scheduleDao.deleteAll();
         assertThat("clean database", scheduleDao.count(), is(0L));
