@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -60,6 +61,13 @@ public class BootReceiverTest {
         final Context appContext = InstrumentationRegistry.getTargetContext();
         final BootReceiver bootReceiver = new TestBootReceiver();
         bootReceiver.onReceive(appContext, new Intent());
+        bootReceiver.thread.ifPresent(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                fail(e.toString());
+            }
+        });
         verify(TestBootReceiver.handleAlarms).setAlarm(1, 10800000,
             schedule1.getInterval() * AlarmManager.INTERVAL_DAY);
         verify(TestBootReceiver.handleAlarms).setAlarm(2,
