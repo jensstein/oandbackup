@@ -37,12 +37,6 @@
         android:inputType="number"
         />
     <CheckBoxPreference
-        android:key="disableNotifications"
-        android:title="@string/prefs_disableNotifications"
-        android:summary="@string/prefs_summaryDisableNotifications"
-        android:defaultValue="false"
-        />
-    <CheckBoxPreference
         android:key="followSymlinks"
         android:title="@string/prefs_followSymlinks"
         android:summary="@string/prefs_summaryFollowSymlinks"

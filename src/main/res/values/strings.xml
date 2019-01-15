@@ -110,8 +110,6 @@
     <string name="prefs_languageSystemDefault">system default</string>
     <string name="prefs_rememberFiltering">remember sort and filter</string>
     <string name="prefs_summaryRememberFiltering">saves the chosen sorting and filtering method. only those marked by a checkbox in the menu is considered.</string>
-    <string name="prefs_disableNotifications">disable notifications</string>
-    <string name="prefs_summaryDisableNotifications">when checked, oandbackup doesn\'t show any notifications</string>
     <string name="prefs_followSymlinks">follow symbolic links</string>
     <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
     <string name="prefs_enableSpecialBackups">enable special backups</string>
