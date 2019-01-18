@@ -473,16 +473,18 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .buildUi(schedule);
 
         schedulerActivityTestRule.getActivity().DATABASE_NAME = databasename;
-        final Spinner spinnerSubmode = scheduleView.findViewById(
-            R.id.sched_spinnerSubModes);
 
         final LinearLayout mainLayout = schedulerActivityTestRule
             .getActivity().findViewById(R.id.linearLayout);
         schedulerActivityTestRule.getActivity().viewList.put(id, scheduleView);
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             mainLayout.addView(scheduleView);
-            spinnerSubmode.setSelection(Schedule.Submode.APK.getValue());
         });
+        onView(withId(R.id.sched_spinnerSubModes)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("apk"))).perform(
+            click());
+        onView(withId(R.id.sched_spinnerSubModes)).check(matches(withSpinnerText(
+            containsString("apk"))));
         onView(withId(R.id.ll)).check(matches(isDisplayed()));
         final Schedule resultSchedule = scheduleDao.getSchedule(id);
         assertThat("submode", resultSchedule.getSubmode(),
