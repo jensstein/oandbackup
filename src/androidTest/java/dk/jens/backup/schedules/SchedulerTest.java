@@ -899,8 +899,7 @@ public class SchedulerTest extends AbstractInstrumentationTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Mode.USER);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Mode.USER, databasename);
         modeChangerRunnable.run();
 
         final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
@@ -929,8 +928,7 @@ public class SchedulerTest extends AbstractInstrumentationTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Mode.USER);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Mode.USER, databasename);
         schedulerActivityTestRule.getActivity().finish();
         modeChangerRunnable.run();
 
@@ -960,8 +958,7 @@ public class SchedulerTest extends AbstractInstrumentationTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Submode.BOTH);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Submode.BOTH, databasename);
         modeChangerRunnable.run();
 
         final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
@@ -991,8 +988,7 @@ public class SchedulerTest extends AbstractInstrumentationTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Submode.BOTH);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Submode.BOTH, databasename);
         schedulerActivityTestRule.getActivity().finish();
         modeChangerRunnable.run();
 

@@ -803,24 +803,28 @@ BlacklistListener
         private final long id;
         private final Optional<Schedule.Mode> mode;
         private final Optional<Schedule.Submode> submode;
-        private String databasename;
+        private final String databasename;
 
         ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode) {
+            this(scheduler, id, mode, DATABASE_NAME);
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+            this(scheduler, id, submode, DATABASE_NAME);
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode,
+                String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.mode = Optional.of(mode);
             submode = Optional.empty();
-            databasename = DATABASE_NAME;
+            this.databasename = databasename;
         }
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode,
+                String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.submode = Optional.of(submode);
             mode = Optional.empty();
-            databasename = DATABASE_NAME;
-        }
-
-        void setDatabasename(String databasename) {
             this.databasename = databasename;
         }
 
