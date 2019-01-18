@@ -2,13 +2,12 @@ package dk.jens.backup;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.GrantPermissionRule;
+import android.util.Log;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 import org.junit.Rule;
-
-import static org.junit.Assert.fail;
 
 public abstract class AbstractInstrumentationTest {
     @Rule
@@ -28,7 +27,7 @@ public abstract class AbstractInstrumentationTest {
             rememberCheckBox.click();
             confirmButton.click();
         } catch (UiObjectNotFoundException e) {
-            fail("Failed granting root privileges");
+            Log.w(Constants.TAG, "Unable to grant root privileges from test");
         }
     }
 }
