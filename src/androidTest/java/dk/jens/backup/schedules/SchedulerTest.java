@@ -31,15 +31,20 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.util.List;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -409,8 +414,12 @@ public class SchedulerTest extends AbstractInstrumentationTest {
         schedulerActivityTestRule.getActivity().viewList.put(id, scheduleView);
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             mainLayout.addView(scheduleView);
-            spinnerMode.setSelection(Schedule.Mode.USER.getValue());
         });
+        onView(withId(R.id.sched_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("user apps"))).perform(
+            click());
+        onView(withId(R.id.sched_spinner)).check(matches(withSpinnerText(
+            containsString("user apps"))));
         onView(withId(R.id.ll)).check(matches(isDisplayed()));
         final Schedule resultSchedule = scheduleDao.getSchedule(id);
         assertThat("mode", resultSchedule.getMode(),
