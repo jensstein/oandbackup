@@ -12,9 +12,11 @@
         <item>日本語</item>
         <item>nederlands (nederland)</item>
         <item>norsk bokmål</item>
+        <item>polski (polska)</item>
         <item>português (portugal)</item>
         <item>русский</item>
         <item>Српски</item>
+        <item>svenska (sverige)</item>
         <item>简体中文</item>
     </string-array>
 
@@ -30,9 +32,11 @@
         <item>ja</item>
         <item>nl_NL</item>
         <item>nb</item>
+        <item>pl_PL</item>
         <item>pt</item>
         <item>ru</item>
         <item>sr</item>
+        <item>sv_SE</item>
         <item>zh_CN</item>
     </string-array>
 </resources>
