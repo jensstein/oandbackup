@@ -1,7 +1,7 @@
 changelog
 =========
 
-0.3.5 (2018-28-12)
+0.3.5 (2018-12-28)
 -------------------
  * fix restoring on android 9. selinux rules has become more strict and as a
     result system_server is not allowed to install from directories other
