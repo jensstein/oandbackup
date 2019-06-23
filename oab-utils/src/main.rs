@@ -256,26 +256,17 @@ fn print_permissions_for_path(input: &Path, output_path: Option<&str>) ->
         None => Box::new(io::stdout())
     };
 
-    match get_permissions(input) {
-        Ok(files) => {
-            for file in files {
-                let mode = file.permissions & 0o777;
-                if let Some(path) = file.path.to_str() {
-                    if let Err(e) = output.write(format!("{} {:o}\n", path, mode).as_bytes()) {
-                        return Err(OabError {
-                            message: format!("error writing to file {}: {}", output_path.unwrap_or("stdout"), e)
-                        });
-                    }
-                } else {
-                    eprintln!("warning: path {:?} couldn't be displayed properly", file.path);
-                }
+    let files = get_permissions(input)?;
+    for file in files {
+        let mode = file.permissions & 0o777;
+        if let Some(path) = file.path.to_str() {
+            if let Err(e) = output.write(format!("{} {:o}\n", path, mode).as_bytes()) {
+                return Err(OabError {
+                    message: format!("error writing to file {}: {}", output_path.unwrap_or("stdout"), e)
+                });
             }
-        },
-        Err(e) => {
-            return Err(OabError {
-                message: format!("error while getting permissions: {}",
-                    e.message)
-            });
+        } else {
+            eprintln!("warning: path {:?} couldn't be displayed properly", file.path);
         }
     }
     Ok(())
