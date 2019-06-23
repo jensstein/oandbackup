@@ -19,6 +19,14 @@ pub struct OabError {
     pub message: String
 }
 
+impl OabError {
+    fn new(message: &str) -> Self {
+        OabError {
+            message: message.to_owned()
+        }
+    }
+}
+
 impl fmt::Display for OabError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f, "{}", self.message)
@@ -216,7 +224,8 @@ fn get_permissions(path: &Path) -> Result<Vec<FilePerms>, OabError>{
                             }
                         )
                     },
-                    Err(e) => eprintln!("{:?}", e)
+                    Err(e) => return Err(OabError::new(&format!(
+                        "Couldn't get metadata for file {:?}: {:?}", file, e)))
                 }
             }
         }
