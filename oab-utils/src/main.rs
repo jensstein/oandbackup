@@ -4,7 +4,10 @@ extern crate libc;
 use std::fmt;
 use std::error::Error;
 use std::fs;
+use std::fs::File;
 use std::io;
+use std::io::BufReader;
+use std::io::prelude::*;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
@@ -231,6 +234,21 @@ fn get_permissions(path: &Path) -> Result<Vec<FilePerms>, OabError>{
         }
     }
     Ok(file_perms_vector)
+}
+
+fn set_permissions_from_file(permissions_file_path: &Path)
+        -> Result<(), OabError> {
+    let file = File::open(permissions_file_path)?;
+    for line in BufReader::new(file).lines() {
+        let l = line?;
+        let parts: Vec<&str> = l.rsplitn(2, " ").collect();
+        match u32::from_str_radix(parts[0], 8) {
+            Ok(mode) => set_permissions(Path::new(parts[1]), mode)?,
+            Err(error) => return Err(OabError::new(&format!(
+                "Couldn't parse mode {}: {}", parts[0], error.description())))
+        };
+    }
+    Ok(())
 }
 
 fn print_permissions_for_path(input: &Path, output_path: Option<&str>) ->

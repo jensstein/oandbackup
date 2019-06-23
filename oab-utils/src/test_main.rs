@@ -179,3 +179,66 @@ fn can_create_file_file() -> bool {
         Err(_) => false
     }
 }
+
+#[test]
+fn test_set_permissions_from_file() {
+    let dir = tempfile::tempdir().unwrap();
+    let file1_path = dir.path().join("file1.txt");
+    File::create(&file1_path).unwrap();
+    let file2_path = dir.path().join("filename with spaces.txt");
+    File::create(&file2_path).unwrap();
+    let file3_path = dir.path().join("Weird näme hereø.txt");
+    File::create(&file3_path).unwrap();
+
+    let mode = u32::from_str_radix("500", 8).unwrap();
+    let initial_permissions = set_permissions_recurse(dir.path(), mode);
+    assert_eq!(initial_permissions.is_ok(), true);
+
+    let permissions_file_result = tempfile::NamedTempFile::new();
+    assert_eq!(permissions_file_result.is_ok(), true);
+    let mut permissions_file = permissions_file_result.unwrap();
+    let write_result = write!(permissions_file, "{} 755\n{} 600\n{} 644\n",
+        file1_path.display(), file2_path.display(),
+        file3_path.display());
+    assert_eq!(write_result.is_ok(), true);
+    let result = set_permissions_from_file(permissions_file.path());
+    assert_eq!(result.is_ok(), true);
+
+    let perms1_result = get_permissions(&file1_path);
+    assert_eq!(perms1_result.is_ok(), true);
+    let perms1 = perms1_result.unwrap();
+    assert_eq!(perms1.len(), 1);
+    // 493 => 0o755
+    assert_eq!(perms1[0].permissions & 0o777, 493);
+
+    let perms2_result = get_permissions(&file2_path);
+    assert_eq!(perms2_result.is_ok(), true);
+    let perms2 = perms2_result.unwrap();
+    assert_eq!(perms2.len(), 1);
+    // 384 => 0o600
+    assert_eq!(perms2[0].permissions & 0o777, 384);
+
+    let perms3_result = get_permissions(&file3_path);
+    assert_eq!(perms3_result.is_ok(), true);
+    let perms3 = perms3_result.unwrap();
+    assert_eq!(perms3.len(), 1);
+    // 420 => 0o644
+    assert_eq!(perms3[0].permissions & 0o777, 420);
+}
+
+#[test]
+fn test_set_permissions_from_file_invalid_mode() {
+    let dir = tempfile::tempdir().unwrap();
+    let file1 = tempfile::NamedTempFile::new_in(dir.path()).unwrap();
+    let permissions_file_result = tempfile::NamedTempFile::new();
+    assert_eq!(permissions_file_result.is_ok(), true);
+    let mut permissions_file = permissions_file_result.unwrap();
+    let write_result = write!(permissions_file, "{} -181818\n",
+        file1.path().display());
+    assert_eq!(write_result.is_ok(), true);
+
+    let result = set_permissions_from_file(permissions_file.path());
+    assert_eq!(result.is_err(), true);
+    assert_eq!(result.unwrap_err().message,
+        "Couldn\'t parse mode -181818: invalid digit found in string");
+}
