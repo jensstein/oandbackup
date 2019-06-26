@@ -68,7 +68,8 @@ public class FileCreationHelper
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            Log.e(TAG, String.format(
+                "Caught exception when creating log file: %s", e));
             return null;
         }
     }

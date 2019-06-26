@@ -110,8 +110,8 @@ public class HandleMessages
                         }
                         catch(IllegalArgumentException e)
                         {
-                            Log.e(TAG, "could not dismiss dialog: " + e.toString());
-                            e.printStackTrace();
+                            Log.e(TAG, String.format(
+                                "Could not dismiss dialog: %s", e));
                         }
                         finally
                         {

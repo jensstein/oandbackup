@@ -268,7 +268,9 @@ BlacklistListener
         }
         catch(IndexOutOfBoundsException e)
         {
-            e.printStackTrace();
+            Log.e(TAG, String.format(
+                "Caught unexpected exception while handling onClick for schedule %s: %s",
+                number, e));
         }
     }
 

@@ -53,15 +53,15 @@ public class Compression
             }
             else
             {
-                e.printStackTrace();
-                Log.i(TAG, e.toString());
+                Log.e(TAG, String.format(
+                    "Caught exception when creating zip file: %s", e));
                 return 1;
             }
         }
         catch(IOException e)
         {
-            e.printStackTrace();
-            Log.i(TAG, e.toString());
+            Log.e(TAG, String.format(
+                "Caught exception when creating zip file: %s", e));
             return 1;
         }
     }
@@ -95,8 +95,8 @@ public class Compression
         }
         catch(IOException e)
         {
-            e.printStackTrace();
-            Log.i(TAG, e.toString());
+            Log.e(TAG, String.format("Caught exception when unzipping: %s",
+                e));
             return 1;
         }
     }
@@ -124,8 +124,8 @@ public class Compression
         }
         catch(IOException e)
         {
-            e.printStackTrace();
-            Log.e(TAG, "Compression.list: " + e.toString());
+            Log.e(TAG, String.format(
+                "Caught exception when listing zip entries: %s", e));
         }
         return null;
     }
