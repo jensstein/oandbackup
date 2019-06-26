@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import dk.jens.backup.Constants;
-import dk.jens.backup.schedules.HandleAlarms;
 import dk.jens.backup.schedules.SchedulingException;
 
 /**
