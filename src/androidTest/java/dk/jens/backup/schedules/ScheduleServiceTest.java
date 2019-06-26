@@ -36,7 +36,6 @@ public class ScheduleServiceTest {
             .withPlaced(1546100595221L)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(Long.MAX_VALUE)
             .withExcludeSystem(false)
             .build();
 

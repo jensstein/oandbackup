@@ -311,12 +311,8 @@ BlacklistListener
             .toString());
         final int interval = Integer.parseInt(intervalText
             .getText().toString());
-        long nextEvent = 0;
         if (enabled) {
-            nextEvent = HandleAlarms.timeUntilNextEvent(
-                interval, hour, true);
-            handleAlarms.setAlarm(id, nextEvent,
-                interval * AlarmManager.INTERVAL_DAY);
+            handleAlarms.setAlarm(id, interval, hour);
         }
         return new Schedule.Builder()
             .withId(id)
@@ -326,7 +322,6 @@ BlacklistListener
             .withSubmode(submodeSpinner.getSelectedItemPosition())
             .withPlaced(System.currentTimeMillis())
             .withEnabled(enabled)
-            .withTimeUntilNextEvent(nextEvent)
             .withExcludeSystem(excludeSystemPackages)
             .build();
     }
@@ -397,14 +392,14 @@ BlacklistListener
 
     void setTimeLeftTextView(Schedule schedule, View view, long now) {
         final TextView timeLeftTextView = view.findViewById(R.id.sched_timeLeft);
-        final long repeat = schedule.getInterval() * AlarmManager.INTERVAL_DAY;
-        final long timePassed = now - schedule.getPlaced();
-        final long timeLeft = schedule.getTimeUntilNextEvent() - timePassed;
         if(!schedule.isEnabled()) {
             timeLeftTextView.setText("");
-        } else if(repeat <= 0) {
+        } else if(schedule.getInterval() <= 0) {
             timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
         } else {
+            final long timeLeft = handleAlarms.timeUntilNextEvent(
+                schedule.getInterval(), schedule.getHour(),
+                schedule.getPlaced(), now);
             timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
         }
     }
@@ -479,7 +474,7 @@ BlacklistListener
                 if (schedule.isEnabled()) {
                     handleAlarms.cancelAlarm(i);
                     handleAlarms.setAlarm((int) ids[0],
-                        schedule.getTimeUntilNextEvent(), schedule.getInterval());
+                        schedule.getInterval(), schedule.getHour());
                 }
             } catch (SQLException e) {
                 throw new SchedulingException(

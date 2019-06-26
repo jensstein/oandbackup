@@ -30,17 +30,15 @@ public class BootReceiverTest {
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
             .withPlaced(1535970125)
-            .withTimeUntilNextEvent(21600000)
             .withEnabled(true)
             .build();
         final Schedule schedule2 = new Schedule.Builder()
             .withId(2)
-            .withHour(23)
-            .withInterval(4)
+            .withHour(12)
+            .withInterval(1)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withPlaced(1535970125)
-            .withTimeUntilNextEvent(10800000)
+            .withPlaced(1460370125)
             .withEnabled(true)
             .build();
         final Schedule schedule3 = new Schedule.Builder()
@@ -50,7 +48,6 @@ public class BootReceiverTest {
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
             .withPlaced(1535970125)
-            .withTimeUntilNextEvent(21600000)
             .withEnabled(false)
             .build();
 
@@ -68,13 +65,12 @@ public class BootReceiverTest {
                 fail(e.toString());
             }
         });
-        verify(TestBootReceiver.handleAlarms).setAlarm(1, 10800000,
-            schedule1.getInterval() * AlarmManager.INTERVAL_DAY);
+        verify(TestBootReceiver.handleAlarms).setAlarm(1, schedule1.getInterval(),
+            schedule1.getHour());
         verify(TestBootReceiver.handleAlarms).setAlarm(2,
-            AlarmManager.INTERVAL_FIFTEEN_MINUTES, schedule2.getInterval()
-            * AlarmManager.INTERVAL_DAY);
-        verify(TestBootReceiver.handleAlarms, never()).setAlarm(3, 10800000,
-            schedule3.getInterval() * AlarmManager.INTERVAL_DAY);
+            AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+        verify(TestBootReceiver.handleAlarms, never()).setAlarm(3, schedule3.getInterval(),
+            schedule3.getHour());
         verifyNoMoreInteractions(TestBootReceiver.handleAlarms);
     }
 }

@@ -44,16 +44,12 @@ implements BackupRestoreHelper.OnBackupRestoreListener
             final Thread t = new Thread(() -> {
                 final ScheduleDao scheduleDao = getScheduleDao(Scheduler.DATABASE_NAME);
                 final Schedule schedule = scheduleDao.getSchedule(id);
-                final int interval = schedule.getInterval();
-                final long timeUntilNextEvent = handleAlarms.timeUntilNextEvent(
-                    interval, schedule.getHour());
-                schedule.setTimeUntilNextEvent(timeUntilNextEvent);
                 schedule.setPlaced(System.currentTimeMillis());
                 scheduleDao.update(schedule);
                 // fix the time at which the alarm will be run the next time.
                 // it can be wrong when scheduled in BootReceiver#onReceive()
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-                handleAlarms.setAlarm(id, timeUntilNextEvent, interval * AlarmManager.INTERVAL_DAY);
+                handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getHour());
                 Log.i(TAG, getString(R.string.sched_startingbackup));
                 // add one to submode to have it correspond to AppInfo.MODE_*
                 handleScheduledBackups.initiateBackup(id, schedule.getMode()

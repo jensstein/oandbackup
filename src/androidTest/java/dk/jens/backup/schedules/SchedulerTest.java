@@ -537,7 +537,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -547,7 +546,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule2.persist(preferences);
@@ -557,7 +555,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule3.persist(preferences);
@@ -614,7 +611,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -624,7 +620,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(true)
             .build();
         schedule2.persist(preferences);
@@ -634,7 +629,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(true)
             .build();
         schedule3.persist(preferences);
@@ -670,14 +664,14 @@ public class SchedulerTest extends AbstractInstrumentationTest {
         verify(handleAlarms).cancelAlarm(2);
 
         verify(handleAlarms, never()).setAlarm((int)resultSchedule1.getId(),
-            resultSchedule1.getTimeUntilNextEvent(),
-            resultSchedule1.getInterval());
+            resultSchedule1.getInterval(),
+            resultSchedule1.getHour());
         verify(handleAlarms).setAlarm((int)resultSchedule2.getId(),
-            resultSchedule2.getTimeUntilNextEvent(),
-            resultSchedule2.getInterval());
+            resultSchedule2.getInterval(),
+            resultSchedule2.getHour());
         verify(handleAlarms).setAlarm((int)resultSchedule3.getId(),
-            resultSchedule3.getTimeUntilNextEvent(),
-            resultSchedule3.getInterval());
+            resultSchedule3.getInterval(),
+            resultSchedule3.getHour());
     }
 
     @Test
@@ -696,7 +690,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -706,7 +699,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule2.persist(preferences);
@@ -716,7 +708,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule3.persist(preferences);
@@ -824,7 +815,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
 
@@ -855,7 +845,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
 
@@ -887,7 +876,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -916,7 +904,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -946,7 +933,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -976,7 +962,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -1033,7 +1018,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(true)
             .build();
@@ -1044,7 +1028,7 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             scheduleView, 1535961018L);
         final TextView timeLeftText = scheduleView.findViewById(
             R.id.sched_timeLeft);
-        assertThat(timeLeftText.getText(), is("hours until next backup: 3.0"));
+        assertThat(timeLeftText.getText(), is("hours until next backup: 64.35"));
     }
 
     @Test
@@ -1054,7 +1038,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(-3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(true)
             .build();
@@ -1075,7 +1058,6 @@ public class SchedulerTest extends AbstractInstrumentationTest {
             .withInterval(-3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(false)
             .build();

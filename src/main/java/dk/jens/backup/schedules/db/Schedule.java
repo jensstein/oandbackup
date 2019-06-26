@@ -211,8 +211,6 @@ public class Schedule {
             Constants.PREFS_SCHEDULES_MODE + number, 0));
         schedule.submode = Submode.intToSubmode(preferences.getInt(
             Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
-        schedule.timeUntilNextEvent = preferences.getLong(
-            Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number, 0);
         schedule.excludeSystem = preferences.getBoolean(
             Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
         return schedule;
@@ -229,8 +227,6 @@ public class Schedule {
         edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, hour);
         edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, interval);
         edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, placed);
-        final long startTime = HandleAlarms.timeUntilNextEvent(interval, hour, true);
-        edit.putLong(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + id, startTime);
         edit.putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value);
         edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value);
         edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id,
@@ -249,7 +245,6 @@ public class Schedule {
             hour == schedule.hour &&
             interval == schedule.interval &&
             placed == schedule.placed &&
-            timeUntilNextEvent == schedule.timeUntilNextEvent &&
             excludeSystem == schedule.excludeSystem &&
             mode == schedule.mode &&
             submode == schedule.submode;
@@ -265,7 +260,6 @@ public class Schedule {
         hash = 31 * hash + (int)placed;
         hash = 31 * hash + mode.hashCode();
         hash = 31 * hash + submode.hashCode();
-        hash = 31 * hash + (int)timeUntilNextEvent;
         hash = 31 * hash + (excludeSystem ? 1 : 0);
         return hash;
     }
@@ -280,7 +274,6 @@ public class Schedule {
             ", placed=" + placed +
             ", mode=" + mode +
             ", submode=" + submode +
-            ", timeUntilNextEvent=" + timeUntilNextEvent +
             ", excludeSystem=" + excludeSystem +
             '}';
     }
@@ -324,10 +317,6 @@ public class Schedule {
         }
         public Builder withSubmode(int submode) throws SchedulingException {
             schedule.submode = Submode.intToSubmode(submode);
-            return this;
-        }
-        public Builder withTimeUntilNextEvent(long timeUntilNextEvent) {
-            schedule.timeUntilNextEvent = timeUntilNextEvent;
             return this;
         }
         public Builder withExcludeSystem(boolean excludeSystem) {

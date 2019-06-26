@@ -74,17 +74,14 @@ public class BootReceiver extends BroadcastReceiver
                 .filter(schedule -> schedule.isEnabled() &&
                     schedule.getInterval() > 0).collect(Collectors.toList());
             for(Schedule schedule : schedules) {
-                final long repeat = schedule.getInterval() *
-                    AlarmManager.INTERVAL_DAY;
-                final long timePassed = currentTime - schedule
-                    .getPlaced();
-                final long timeLeft = schedule.getTimeUntilNextEvent() -
-                    timePassed;
+                final long timeLeft = HandleAlarms.timeUntilNextEvent(
+                    schedule.getInterval(), schedule.getHour(),
+                    schedule.getPlaced(), currentTime);
                 if(timeLeft < (5 * 60000)) {
                     handleAlarms.setAlarm((int) schedule.getId(),
-                        AlarmManager.INTERVAL_FIFTEEN_MINUTES, repeat);
+                        AlarmManager.INTERVAL_FIFTEEN_MINUTES);
                 } else {
-                    handleAlarms.setAlarm((int) schedule.getId(), timeLeft, repeat);
+                    handleAlarms.setAlarm((int) schedule.getId(), schedule.getInterval(), schedule.getHour());
                 }
             }
         }
