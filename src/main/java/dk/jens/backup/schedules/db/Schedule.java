@@ -328,6 +328,7 @@ public class Schedule {
     }
 
     static class ModeConverter {
+        private ModeConverter() {}
         @TypeConverter
         public static String toString(Mode mode) {
             return mode.name();
@@ -339,6 +340,7 @@ public class Schedule {
     }
 
     static class SubmodeConverter {
+        private SubmodeConverter() {}
         @TypeConverter
         public static String toString(Submode submode) {
             return submode.name();
