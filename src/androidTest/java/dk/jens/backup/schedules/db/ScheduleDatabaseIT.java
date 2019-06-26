@@ -44,7 +44,6 @@ public class ScheduleDatabaseIT {
             .withPlaced(1546100595221L)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withExcludeSystem(false)
             .build();
         final long[] insertedRowIds = scheduleDao.insert(schedule);
@@ -59,7 +58,7 @@ public class ScheduleDatabaseIT {
         assertThat("submode", resultSchedule.getSubmode(),
             is(Schedule.Submode.DATA));
         assertThat("next event", resultSchedule.getTimeUntilNextEvent(),
-            is(1500L));
+            is(0L));
         assertThat("exclude system packages", resultSchedule.isExcludeSystem(),
             is(false));
     }

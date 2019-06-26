@@ -15,7 +15,6 @@
             android:text="@string/sched_interval"
             android:layout_weight="0.7"
             android:textSize="14sp"
-            android:textColor="#fff"
             android:padding="5sp"
             />
         <EditText
@@ -36,7 +35,6 @@
             android:layout_weight="0.7"
             android:text="@string/sched_hourOfDay"
             android:textSize="14sp"
-            android:textColor="#fff"
             android:padding="5sp"
             />
         <EditText
@@ -53,7 +51,6 @@
         android:layout_height="wrap_content"
         android:text="@string/sched_backupMode"
         android:textSize="14sp"
-        android:textColor="#fff"
         android:padding="5sp"
         />
     <Spinner
@@ -71,7 +68,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="#fff"
         android:padding="5sp"
         />
     <CheckBox

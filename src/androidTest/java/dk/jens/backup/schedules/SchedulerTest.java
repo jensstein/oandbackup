@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import dk.jens.backup.AbstractInstrumentationTest;
 import dk.jens.backup.Constants;
 import dk.jens.backup.FileCreationHelper;
 import dk.jens.backup.FileReaderWriter;
@@ -30,15 +31,20 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.util.List;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -48,7 +54,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
-public class SchedulerTest {
+public class SchedulerTest extends AbstractInstrumentationTest {
     @Rule
     public ActivityTestRule<Scheduler> schedulerActivityTestRule =
         new ActivityTestRule<>(Scheduler.class, false, true);
@@ -65,7 +71,7 @@ public class SchedulerTest {
         scheduleDao = scheduleDatabase.scheduleDao();
     }
 
-    @Before
+    @After
     public void cleanDatabase() {
         scheduleDao.deleteAll();
         assertThat("clean database", scheduleDao.count(), is(0L));
@@ -73,17 +79,13 @@ public class SchedulerTest {
 
     @Before
     public void removeViews() {
-        schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
-            for(int i = 0; i < schedulerActivityTestRule.getActivity()
-                .viewList.size(); i++) {
-                final View view = schedulerActivityTestRule.getActivity()
-                    .viewList.valueAt(i);
-                final ViewGroup parent = (ViewGroup) view.getParent();
-                if(parent != null) {
-                    parent.removeView(view);
-                }
-            }
-        });
+        final LinearLayout mainLayout = schedulerActivityTestRule
+            .getActivity().findViewById(R.id.linearLayout);
+        schedulerActivityTestRule.getActivity().runOnUiThread(
+            mainLayout::removeAllViews);
+        onView(withId(R.id.ll)).check(doesNotExist());
+        schedulerActivityTestRule.getActivity().viewList.clear();
+        schedulerActivityTestRule.getActivity().totalSchedules = 0;
     }
 
     @After
@@ -412,8 +414,12 @@ public class SchedulerTest {
         schedulerActivityTestRule.getActivity().viewList.put(id, scheduleView);
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             mainLayout.addView(scheduleView);
-            spinnerMode.setSelection(Schedule.Mode.USER.getValue());
         });
+        onView(withId(R.id.sched_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("user apps"))).perform(
+            click());
+        onView(withId(R.id.sched_spinner)).check(matches(withSpinnerText(
+            containsString("user apps"))));
         onView(withId(R.id.ll)).check(matches(isDisplayed()));
         final Schedule resultSchedule = scheduleDao.getSchedule(id);
         assertThat("mode", resultSchedule.getMode(),
@@ -467,16 +473,18 @@ public class SchedulerTest {
             .buildUi(schedule);
 
         schedulerActivityTestRule.getActivity().DATABASE_NAME = databasename;
-        final Spinner spinnerSubmode = scheduleView.findViewById(
-            R.id.sched_spinnerSubModes);
 
         final LinearLayout mainLayout = schedulerActivityTestRule
             .getActivity().findViewById(R.id.linearLayout);
         schedulerActivityTestRule.getActivity().viewList.put(id, scheduleView);
         schedulerActivityTestRule.getActivity().runOnUiThread(() -> {
             mainLayout.addView(scheduleView);
-            spinnerSubmode.setSelection(Schedule.Submode.APK.getValue());
         });
+        onView(withId(R.id.sched_spinnerSubModes)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("apk"))).perform(
+            click());
+        onView(withId(R.id.sched_spinnerSubModes)).check(matches(withSpinnerText(
+            containsString("apk"))));
         onView(withId(R.id.ll)).check(matches(isDisplayed()));
         final Schedule resultSchedule = scheduleDao.getSchedule(id);
         assertThat("submode", resultSchedule.getSubmode(),
@@ -529,7 +537,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -539,7 +546,6 @@ public class SchedulerTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule2.persist(preferences);
@@ -549,7 +555,6 @@ public class SchedulerTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule3.persist(preferences);
@@ -606,7 +611,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -616,7 +620,6 @@ public class SchedulerTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(true)
             .build();
         schedule2.persist(preferences);
@@ -626,7 +629,6 @@ public class SchedulerTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(true)
             .build();
         schedule3.persist(preferences);
@@ -662,14 +664,14 @@ public class SchedulerTest {
         verify(handleAlarms).cancelAlarm(2);
 
         verify(handleAlarms, never()).setAlarm((int)resultSchedule1.getId(),
-            resultSchedule1.getTimeUntilNextEvent(),
-            resultSchedule1.getInterval());
+            resultSchedule1.getInterval(),
+            resultSchedule1.getHour());
         verify(handleAlarms).setAlarm((int)resultSchedule2.getId(),
-            resultSchedule2.getTimeUntilNextEvent(),
-            resultSchedule2.getInterval());
+            resultSchedule2.getInterval(),
+            resultSchedule2.getHour());
         verify(handleAlarms).setAlarm((int)resultSchedule3.getId(),
-            resultSchedule3.getTimeUntilNextEvent(),
-            resultSchedule3.getInterval());
+            resultSchedule3.getInterval(),
+            resultSchedule3.getHour());
     }
 
     @Test
@@ -688,7 +690,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -698,7 +699,6 @@ public class SchedulerTest {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule2.persist(preferences);
@@ -708,7 +708,6 @@ public class SchedulerTest {
             .withInterval(1)
             .withMode(Schedule.Mode.CUSTOM)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule3.persist(preferences);
@@ -816,7 +815,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
 
@@ -847,7 +845,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
 
@@ -879,7 +876,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -893,8 +889,7 @@ public class SchedulerTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Mode.USER);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Mode.USER, databasename);
         modeChangerRunnable.run();
 
         final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
@@ -909,7 +904,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -923,8 +917,7 @@ public class SchedulerTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Mode.USER);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Mode.USER, databasename);
         schedulerActivityTestRule.getActivity().finish();
         modeChangerRunnable.run();
 
@@ -940,7 +933,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -954,8 +946,7 @@ public class SchedulerTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Submode.BOTH);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Submode.BOTH, databasename);
         modeChangerRunnable.run();
 
         final Schedule resultSchedule = scheduleDao.getSchedule(ids[0]);
@@ -971,7 +962,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final String databasename = "schedules-test.db";
@@ -985,8 +975,7 @@ public class SchedulerTest {
 
         Scheduler.ModeChangerRunnable modeChangerRunnable =
             new Scheduler.ModeChangerRunnable(schedulerActivityTestRule
-            .getActivity(), ids[0], Schedule.Submode.BOTH);
-        modeChangerRunnable.setDatabasename(databasename);
+            .getActivity(), ids[0], Schedule.Submode.BOTH, databasename);
         schedulerActivityTestRule.getActivity().finish();
         modeChangerRunnable.run();
 
@@ -1029,7 +1018,6 @@ public class SchedulerTest {
             .withInterval(3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(true)
             .build();
@@ -1040,7 +1028,7 @@ public class SchedulerTest {
             scheduleView, 1535961018L);
         final TextView timeLeftText = scheduleView.findViewById(
             R.id.sched_timeLeft);
-        assertThat(timeLeftText.getText(), is("hours until next backup: 3.0"));
+        assertThat(timeLeftText.getText(), is("hours until next backup: 64.35"));
     }
 
     @Test
@@ -1050,7 +1038,6 @@ public class SchedulerTest {
             .withInterval(-3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(true)
             .build();
@@ -1071,7 +1058,6 @@ public class SchedulerTest {
             .withInterval(-3)
             .withMode(Schedule.Mode.USER)
             .withPlaced(1525161018L)
-            .withTimeUntilNextEvent(21600000L)
             .withSubmode(Schedule.Submode.BOTH)
             .withEnabled(false)
             .build();

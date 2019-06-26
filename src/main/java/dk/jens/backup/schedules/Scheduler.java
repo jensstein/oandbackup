@@ -311,12 +311,8 @@ BlacklistListener
             .toString());
         final int interval = Integer.parseInt(intervalText
             .getText().toString());
-        long nextEvent = 0;
         if (enabled) {
-            nextEvent = HandleAlarms.timeUntilNextEvent(
-                interval, hour, true);
-            handleAlarms.setAlarm(id, nextEvent,
-                interval * AlarmManager.INTERVAL_DAY);
+            handleAlarms.setAlarm(id, interval, hour);
         }
         return new Schedule.Builder()
             .withId(id)
@@ -326,7 +322,6 @@ BlacklistListener
             .withSubmode(submodeSpinner.getSelectedItemPosition())
             .withPlaced(System.currentTimeMillis())
             .withEnabled(enabled)
-            .withTimeUntilNextEvent(nextEvent)
             .withExcludeSystem(excludeSystemPackages)
             .build();
     }
@@ -397,14 +392,14 @@ BlacklistListener
 
     void setTimeLeftTextView(Schedule schedule, View view, long now) {
         final TextView timeLeftTextView = view.findViewById(R.id.sched_timeLeft);
-        final long repeat = schedule.getInterval() * AlarmManager.INTERVAL_DAY;
-        final long timePassed = now - schedule.getPlaced();
-        final long timeLeft = schedule.getTimeUntilNextEvent() - timePassed;
         if(!schedule.isEnabled()) {
             timeLeftTextView.setText("");
-        } else if(repeat <= 0) {
+        } else if(schedule.getInterval() <= 0) {
             timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
         } else {
+            final long timeLeft = handleAlarms.timeUntilNextEvent(
+                schedule.getInterval(), schedule.getHour(),
+                schedule.getPlaced(), now);
             timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
         }
     }
@@ -413,6 +408,9 @@ BlacklistListener
         switch(spinner.getSelectedItemPosition())
         {
             case 3:
+                if(parent.findViewById(EXCLUDESYSTEMCHECKBOXID) != null) {
+                    break;
+                }
                 CheckBox cb = new CheckBox(this);
                 cb.setId(EXCLUDESYSTEMCHECKBOXID);
                 cb.setText(getString(R.string.sched_excludeSystemCheckBox));
@@ -424,6 +422,9 @@ BlacklistListener
                 removeSecondaryButton(parent, cb);
                 break;
             case 4:
+                if(parent.findViewById(CUSTOMLISTUPDATEBUTTONID) != null) {
+                    break;
+                }
                 Button bt = new Button(this);
                 bt.setId(CUSTOMLISTUPDATEBUTTONID);
                 bt.setText(getString(R.string.sched_customListUpdateButton));
@@ -473,7 +474,7 @@ BlacklistListener
                 if (schedule.isEnabled()) {
                     handleAlarms.cancelAlarm(i);
                     handleAlarms.setAlarm((int) ids[0],
-                        schedule.getTimeUntilNextEvent(), schedule.getInterval());
+                        schedule.getInterval(), schedule.getHour());
                 }
             } catch (SQLException e) {
                 throw new SchedulingException(
@@ -797,24 +798,28 @@ BlacklistListener
         private final long id;
         private final Optional<Schedule.Mode> mode;
         private final Optional<Schedule.Submode> submode;
-        private String databasename;
+        private final String databasename;
 
         ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode) {
+            this(scheduler, id, mode, DATABASE_NAME);
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+            this(scheduler, id, submode, DATABASE_NAME);
+        }
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode,
+                String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.mode = Optional.of(mode);
             submode = Optional.empty();
-            databasename = DATABASE_NAME;
+            this.databasename = databasename;
         }
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode,
+                String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.submode = Optional.of(submode);
             mode = Optional.empty();
-            databasename = DATABASE_NAME;
-        }
-
-        void setDatabasename(String databasename) {
             this.databasename = databasename;
         }
 
@@ -826,9 +831,23 @@ BlacklistListener
                     .getScheduleDatabase(scheduler, databasename);
                 final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
                 final Schedule schedule = scheduleDao.getSchedule(id);
-                mode.ifPresent(schedule::setMode);
-                submode.ifPresent(schedule::setSubmode);
-                scheduleDao.update(schedule);
+                if(schedule != null) {
+                    mode.ifPresent(schedule::setMode);
+                    submode.ifPresent(schedule::setSubmode);
+                    scheduleDao.update(schedule);
+                } else {
+                    final List<Schedule> schedules = scheduleDao.getAll();
+                    Log.e(TAG, String.format(
+                        "Unable to change mode for %s, couldn't get schedule " +
+                        "from database. Persisted schedules: %s", id, schedules));
+                    scheduler.runOnUiThread(() -> {
+                        final String state = mode.isPresent() ?
+                            "mode" : "submode";
+                        Toast.makeText(scheduler, scheduler.getString(
+                            R.string.error_updating_schedule_mode, state, id),
+                            Toast.LENGTH_LONG).show();
+                    });
+                }
             }
         }
     }

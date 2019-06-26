@@ -37,8 +37,6 @@ public class ScheduleTest {
         assertThat("mode", schedule.getMode(), is(Schedule.Mode.USER));
         assertThat("submode", schedule.getSubmode(), is(Schedule.Submode.APK));
         assertThat("placed", schedule.getPlaced(), is(1546100595221L));
-        assertThat("next event", schedule.getTimeUntilNextEvent(),
-            is(1500L));
     }
 
     @Test

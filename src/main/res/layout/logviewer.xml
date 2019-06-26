@@ -20,7 +20,6 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:text="@string/logviewer_message_loading"
-            android:textColor="#fff"
             android:textSize="16sp">
         </TextView>
     </LinearLayout>
@@ -36,7 +35,6 @@
                 android:id="@+id/log_text"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                android:textColor="#fff"
                 android:textSize="16sp"
                 android:textIsSelectable="true"
                 />

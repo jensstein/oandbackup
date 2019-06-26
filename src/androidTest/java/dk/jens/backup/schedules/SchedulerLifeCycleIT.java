@@ -76,7 +76,6 @@ public class SchedulerLifeCycleIT {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         final View initialView = schedulerActivityTestRule.getActivity()
@@ -94,7 +93,6 @@ public class SchedulerLifeCycleIT {
             .withInterval(3)
             .withMode(Schedule.Mode.ALL)
             .withSubmode(Schedule.Submode.DATA)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule1.persist(preferences);
@@ -104,7 +102,6 @@ public class SchedulerLifeCycleIT {
             .withInterval(4)
             .withMode(Schedule.Mode.USER)
             .withSubmode(Schedule.Submode.APK)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule2.persist(preferences);
@@ -112,9 +109,8 @@ public class SchedulerLifeCycleIT {
             .withId(2)
             .withHour(6)
             .withInterval(1)
-            .withMode(Schedule.Mode.CUSTOM)
+            .withMode(Schedule.Mode.NEW_UPDATED)
             .withSubmode(Schedule.Submode.BOTH)
-            .withTimeUntilNextEvent(1500L)
             .withEnabled(false)
             .build();
         schedule3.persist(preferences);

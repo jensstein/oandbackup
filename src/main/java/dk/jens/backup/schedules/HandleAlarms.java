@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import dk.jens.backup.OAndBackup;
 
@@ -18,25 +19,27 @@ public class HandleAlarms
     {
         this.context = context;
     }
-    public void setAlarm(int id, long start, long repeat)
+    public void setAlarm(int id, int interval, int hour) {
+        if(interval > 0) {
+            final long nextEvent = timeUntilNextEvent(interval, hour,
+                System.currentTimeMillis(), System.currentTimeMillis());
+            setAlarm(id, System.currentTimeMillis() + nextEvent);
+        }
+    }
+    public void setAlarm(int id, long start)
     {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("id", id); // requestCode of PendingIntent is not used yet so a separate extra is needed
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
-        if(repeat > 0)
-        {
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, repeat, pendingIntent);
+        if(Build.VERSION.SDK_INT >= 23) {
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, start, pendingIntent);
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         }
-        // used for testing:
-        /*
-        else
-        {
-            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + start, pendingIntent);
-        }
-        */
-        Log.i(TAG, "backup starting in: " + (start / 1000f / 60 / 60f));
+        Log.i(TAG, "backup starting in: " +
+            ((start - System.currentTimeMillis()) / 1000f / 60 / 60f));
     }
     public void cancelAlarm(int id)
     {
@@ -46,28 +49,13 @@ public class HandleAlarms
         am.cancel(pendingIntent);
         pendingIntent.cancel();
     }
-    public long timeUntilNextEvent(int interval, int hour)
-    {
-        return timeUntilNextEvent(interval, hour, false);
-    }
-    public static long timeUntilNextEvent(int interval, int hour, boolean init)
-    {
+    public static long timeUntilNextEvent(int interval, int hour,
+            long placed, long now) {
         Calendar c = Calendar.getInstance();
-        // init: only subtract when the alarm is set first
-        if(init && ((interval == 1 && hour > c.get(Calendar.HOUR_OF_DAY)) || interval > 1))
-        {
-            /**
-            * to account for the day the schedule was set on
-            * the interval is subtracted by one.
-            * the check that the scheduled hour is larger
-            * than the current hour prevents things getting
-            * scheduled in the past.
-            */
-            interval--;
-        }
+        c.setTimeInMillis(placed);
         c.add(Calendar.DAY_OF_MONTH, interval);
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, 0);
-        return c.getTimeInMillis() - System.currentTimeMillis();
+        return c.getTimeInMillis() - now;
     }
 }
