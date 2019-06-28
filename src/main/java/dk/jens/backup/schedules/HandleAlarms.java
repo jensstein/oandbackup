@@ -13,11 +13,13 @@ import java.util.Calendar;
 public class HandleAlarms
 {
     static final String TAG = OAndBackup.TAG;
+    AlarmManager alarmManager;
 
     Context context;
     public HandleAlarms(Context context)
     {
         this.context = context;
+        this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
     public void setAlarm(int id, int interval, int hour) {
         if(interval > 0) {
@@ -28,15 +30,14 @@ public class HandleAlarms
     }
     public void setAlarm(int id, long start)
     {
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("id", id); // requestCode of PendingIntent is not used yet so a separate extra is needed
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
-        am.cancel(pendingIntent);
+        alarmManager.cancel(pendingIntent);
         if(Build.VERSION.SDK_INT >= 23) {
-            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, start, pendingIntent);
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         } else {
-            am.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         }
         Log.i(TAG, "backup starting in: " +
             ((start - System.currentTimeMillis()) / 1000f / 60 / 60f));
