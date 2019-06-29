@@ -13,11 +13,15 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class HandleAlarmsTest extends AbstractInstrumentationTest {
     @Mock
     private AlarmManager alarmManager = mock(AlarmManager.class);
+
+    @Mock
+    private HandleAlarms.DeviceIdleChecker deviceIdleChecker = mock(HandleAlarms.DeviceIdleChecker.class);
 
     @Rule
     public ActivityTestRule<Scheduler> schedulerActivityTestRule =
@@ -28,6 +32,12 @@ public class HandleAlarmsTest extends AbstractInstrumentationTest {
         final HandleAlarms handleAlarms = new HandleAlarms(
             schedulerActivityTestRule.getActivity());
         handleAlarms.alarmManager = alarmManager;
+        handleAlarms.deviceIdleChecker = deviceIdleChecker;
+
+        when(deviceIdleChecker.isIdleModeSupported()).thenReturn(true);
+        when(deviceIdleChecker.isIgnoringBatteryOptimizations())
+            .thenReturn(true);
+
         handleAlarms.setAlarm(2, 1020);
         final Intent intent = new Intent(
             schedulerActivityTestRule.getActivity(), AlarmReceiver.class);
