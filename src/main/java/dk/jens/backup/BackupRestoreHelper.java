@@ -49,7 +49,7 @@ public class BackupRestoreHelper
         LogFile.writeLogFile(backupSubDir, appInfo, backupMode);
         return ret;
     }
-    public static int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode, Crypto crypto)
+    public int restore(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int mode, Crypto crypto)
     {
         int apkRet, restoreRet, permRet, cryptoRet;
         apkRet = restoreRet = permRet = cryptoRet = 0;

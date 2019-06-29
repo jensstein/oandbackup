@@ -36,6 +36,7 @@ import com.annimon.stream.Optional;
 import dk.jens.backup.adapters.AppInfoAdapter;
 import dk.jens.backup.schedules.Scheduler;
 import dk.jens.backup.tasks.BackupTask;
+import dk.jens.backup.tasks.RestoreTask;
 import dk.jens.backup.ui.HandleMessages;
 import dk.jens.backup.ui.Help;
 import dk.jens.backup.ui.LanguageHelper;
@@ -271,34 +272,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     }
     public void callRestore(final AppInfo appInfo, final int mode)
     {
-        Thread restoreThread = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                int ret = 0;
-                if(backupDir != null)
-                {
-                    handleMessages.showMessage(appInfo.getLabel(), getString(R.string.restore));
-                    Crypto crypto = null;
-                    if(Crypto.isAvailable(OAndBackup.this) && Crypto.needToDecrypt(backupDir, appInfo, mode))
-                        crypto = getCrypto();
-                    ret = BackupRestoreHelper.restore(OAndBackup.this, backupDir, appInfo, shellCommands, mode, crypto);
-                    refresh();
-                }
-                handleMessages.endMessage();
-                if(ret == 0)
-                {
-                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreSuccess), appInfo.getLabel(), true);
-                }
-                else
-                {
-                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.restoreFailure), appInfo.getLabel(), true);
-                    Utils.showErrors(OAndBackup.this);
-                }
-            }
-        });
-        restoreThread.start();
-        threadId = restoreThread.getId();
+        final RestoreTask restoreTask = new RestoreTask(appInfo,
+            handleMessages, this, backupDir, shellCommands, mode);
+        restoreTask.execute();
     }
     public Thread refresh()
     {
