@@ -81,7 +81,7 @@ Map<String, Integer> abiVersionCodes = [
 sonarqube {
     properties {
         def jacocoReports = []
-        fileTree("${buildDir}/outputs/code-coverage").forEach({f ->
+        fileTree("${buildDir}/outputs/code_coverage").forEach({f ->
             if(f.path.endsWith(".ec") || f.path.endsWith(".exec")){
                 jacocoReports << f
             }
