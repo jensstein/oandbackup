@@ -13,14 +13,11 @@ import dk.jens.backup.ui.HandleMessages;
 import java.io.File;
 
 public class BackupTask extends ActionTask {
-    private final int backupMode;
     public BackupTask(AppInfo appInfo, HandleMessages handleMessages,
             OAndBackup oAndBackup, File backupDirectory,
             ShellCommands shellCommands, int backupMode) {
         super(BackupRestoreHelper.ActionType.BACKUP, appInfo, handleMessages,
-            oAndBackup, backupDirectory, shellCommands);
-        this.backupMode = backupMode;
-        this.backupRestoreHelper = new BackupRestoreHelper();
+            oAndBackup, backupDirectory, shellCommands, backupMode);
     }
 
     @Override
@@ -37,15 +34,15 @@ public class BackupTask extends ActionTask {
             Crypto.isAvailable(oAndBackup))
             crypto = oAndBackup.getCrypto();
         int result = backupRestoreHelper.backup(oAndBackup, backupDirectory,
-            appInfo, shellCommands, backupMode);
+            appInfo, shellCommands, mode);
         if(result == 0 && crypto != null)
         {
-            crypto.encryptFromAppInfo(oAndBackup, backupDirectory, appInfo, backupMode, prefs);
+            crypto.encryptFromAppInfo(oAndBackup, backupDirectory, appInfo, mode, prefs);
             if(crypto.isErrorSet())
             {
                 Crypto.cleanUpEncryptedFiles(new File(backupDirectory,
                     appInfo.getPackageName()), appInfo.getSourceDir(),
-                    appInfo.getDataDir(), backupMode,
+                    appInfo.getDataDir(), mode,
                     prefs.getBoolean("backupExternalFiles", false));
                 result++;
             }

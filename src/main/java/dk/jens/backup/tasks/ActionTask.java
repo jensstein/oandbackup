@@ -23,6 +23,7 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
     final WeakReference<OAndBackup> oAndBackupReference;
     final File backupDirectory;
     final ShellCommands shellCommands;
+    final int mode;
 
     @VisibleForTesting
     CountDownLatch signal;
@@ -32,13 +33,15 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
 
     public ActionTask(BackupRestoreHelper.ActionType actionType,
             AppInfo appInfo, HandleMessages handleMessages,
-            OAndBackup oAndBackup, File backupDirectory, ShellCommands shellCommands) {
+            OAndBackup oAndBackup, File backupDirectory, ShellCommands shellCommands, int mode) {
         this.actionType = actionType;
         this.appInfo = appInfo;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
         this.oAndBackupReference = new WeakReference<>(oAndBackup);
         this.backupDirectory = backupDirectory;
         this.shellCommands = shellCommands;
+        this.mode = mode;
+        backupRestoreHelper = new BackupRestoreHelper();
     }
 
     @Override

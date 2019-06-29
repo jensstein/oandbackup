@@ -10,15 +10,11 @@ import dk.jens.backup.ui.HandleMessages;
 import java.io.File;
 
 public class RestoreTask extends ActionTask {
-    private final int restoreMode;
-
     public RestoreTask(AppInfo appInfo, HandleMessages handleMessages,
                        OAndBackup oAndBackup, File backupDirectory,
                        ShellCommands shellCommands, int restoreMode) {
         super(BackupRestoreHelper.ActionType.RESTORE, appInfo, handleMessages,
-            oAndBackup, backupDirectory, shellCommands);
-        this.restoreMode = restoreMode;
-        this.backupRestoreHelper = new BackupRestoreHelper();
+            oAndBackup, backupDirectory, shellCommands, restoreMode);
     }
 
     public Integer doInBackground(Void... _void) {
@@ -29,11 +25,11 @@ public class RestoreTask extends ActionTask {
         publishProgress();
         Crypto crypto = null;
         if(Crypto.isAvailable(oAndBackup) && Crypto.needToDecrypt(
-                backupDirectory, appInfo, restoreMode)) {
+                backupDirectory, appInfo, mode)) {
             crypto = oAndBackup.getCrypto();
         }
         final int result = backupRestoreHelper.restore(oAndBackup,
-            backupDirectory, appInfo, shellCommands, restoreMode, crypto);
+            backupDirectory, appInfo, shellCommands, mode, crypto);
         oAndBackup.refresh();
         return result;
     }
