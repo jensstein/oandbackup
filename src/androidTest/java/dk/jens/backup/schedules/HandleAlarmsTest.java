@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,5 +93,15 @@ public class HandleAlarmsTest extends AbstractInstrumentationTest {
                 2, intent, 0);
         verify(alarmManager).set(AlarmManager.RTC_WAKEUP,
             1020L, pendingIntent);
+    }
+
+    @Test
+    public void test_timeUntilNextEvent() {
+        // 1561791600000 => 2019-06-29T09:00:00
+        final long now = 1561791600000L;
+        final long nextEvent = HandleAlarms.timeUntilNextEvent(1, 10, now,
+            now);
+        // 90000000 => 25h
+        assertThat(nextEvent, is(90000000L));
     }
 }
