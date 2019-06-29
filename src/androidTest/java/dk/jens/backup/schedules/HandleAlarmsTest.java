@@ -28,7 +28,7 @@ public class HandleAlarmsTest extends AbstractInstrumentationTest {
         new ActivityTestRule<>(Scheduler.class, false, true);
 
     @Test
-    public void test_setAlarm() {
+    public void test_setAlarm_ignoringOptimizations() {
         final HandleAlarms handleAlarms = new HandleAlarms(
             schedulerActivityTestRule.getActivity());
         handleAlarms.alarmManager = alarmManager;
@@ -46,6 +46,50 @@ public class HandleAlarmsTest extends AbstractInstrumentationTest {
             PendingIntent.getBroadcast(schedulerActivityTestRule.getActivity(),
             2, intent, 0);
         verify(alarmManager).setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+            1020L, pendingIntent);
+    }
+
+    @Test
+    public void test_setAlarm_hasBatteryOptimizations() {
+        final HandleAlarms handleAlarms = new HandleAlarms(
+            schedulerActivityTestRule.getActivity());
+        handleAlarms.alarmManager = alarmManager;
+        handleAlarms.deviceIdleChecker = deviceIdleChecker;
+
+        when(deviceIdleChecker.isIdleModeSupported()).thenReturn(true);
+        when(deviceIdleChecker.isIgnoringBatteryOptimizations())
+            .thenReturn(false);
+
+        handleAlarms.setAlarm(2, 1020);
+        final Intent intent = new Intent(
+            schedulerActivityTestRule.getActivity(), AlarmReceiver.class);
+        intent.putExtra("id", 2);
+        final PendingIntent pendingIntent =
+            PendingIntent.getBroadcast(schedulerActivityTestRule.getActivity(),
+                2, intent, 0);
+        verify(alarmManager).set(AlarmManager.RTC_WAKEUP,
+            1020L, pendingIntent);
+    }
+
+    @Test
+    public void test_setAlarm_idleModeNotSupported() {
+        final HandleAlarms handleAlarms = new HandleAlarms(
+            schedulerActivityTestRule.getActivity());
+        handleAlarms.alarmManager = alarmManager;
+        handleAlarms.deviceIdleChecker = deviceIdleChecker;
+
+        when(deviceIdleChecker.isIdleModeSupported()).thenReturn(false);
+        when(deviceIdleChecker.isIgnoringBatteryOptimizations())
+            .thenReturn(false);
+
+        handleAlarms.setAlarm(2, 1020);
+        final Intent intent = new Intent(
+            schedulerActivityTestRule.getActivity(), AlarmReceiver.class);
+        intent.putExtra("id", 2);
+        final PendingIntent pendingIntent =
+            PendingIntent.getBroadcast(schedulerActivityTestRule.getActivity(),
+                2, intent, 0);
+        verify(alarmManager).set(AlarmManager.RTC_WAKEUP,
             1020L, pendingIntent);
     }
 }
