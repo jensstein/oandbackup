@@ -300,7 +300,8 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                         mode = AppInfo.MODE_DATA;
                     if(backupBoolean)
                     {
-                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
+                        final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+                        if(backupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
                         else if(crypto != null)
                         {

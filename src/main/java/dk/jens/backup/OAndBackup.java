@@ -35,6 +35,7 @@ import com.annimon.stream.IntStream;
 import com.annimon.stream.Optional;
 import dk.jens.backup.adapters.AppInfoAdapter;
 import dk.jens.backup.schedules.Scheduler;
+import dk.jens.backup.tasks.BackupTask;
 import dk.jens.backup.ui.HandleMessages;
 import dk.jens.backup.ui.Help;
 import dk.jens.backup.ui.LanguageHelper;
@@ -264,52 +265,9 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
     }
     public void callBackup(final AppInfo appInfo, final int backupMode)
     {
-        Thread backupThread = new Thread(new Runnable()
-        {
-            int backupRet = 0;
-            public void run()
-            {
-                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.backup));
-                if(backupDir != null)
-                {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackup.this);
-                    Crypto crypto = null;
-                    if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false) &&
-                            Crypto.isAvailable(OAndBackup.this))
-                        crypto = getCrypto();
-                    backupRet = BackupRestoreHelper.backup(OAndBackup.this, backupDir, appInfo, shellCommands, backupMode);
-                    if(backupRet == 0 && crypto != null)
-                    {
-                        crypto.encryptFromAppInfo(OAndBackup.this, backupDir, appInfo, backupMode, prefs);
-                        if(crypto.isErrorSet())
-                        {
-                            Crypto.cleanUpEncryptedFiles(new File(backupDir, appInfo.getPackageName()), appInfo.getSourceDir(), appInfo.getDataDir(), backupMode, prefs.getBoolean("backupExternalFiles", false));
-                            backupRet++;
-                        }
-                    }
-                    // køre på uitråd for at undgå WindowLeaked
-                    runOnUiThread(new Runnable()
-                    {
-                        public void run()
-                        {
-                            refreshSingle(appInfo);
-                        }
-                    });
-                }
-                handleMessages.endMessage();
-                if(backupRet == 0)
-                {
-                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.backupSuccess), appInfo.getLabel(), true);
-                }
-                else
-                {
-                    NotificationHelper.showNotification(OAndBackup.this, OAndBackup.class, notificationId++, getString(R.string.backupFailure), appInfo.getLabel(), true);
-                    Utils.showErrors(OAndBackup.this);
-                }
-            }
-        });
-        backupThread.start();
-        threadId = backupThread.getId();
+        final BackupTask backupTask = new BackupTask(appInfo,
+            handleMessages, this, backupDir, shellCommands, backupMode);
+        backupTask.execute();
     }
     public void callRestore(final AppInfo appInfo, final int mode)
     {
@@ -342,7 +300,7 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         restoreThread.start();
         threadId = restoreThread.getId();
     }
-    public void refresh()
+    public Thread refresh()
     {
         Thread refreshThread = new Thread(new Runnable()
         {
@@ -373,6 +331,8 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
         });
         refreshThread.start();
         threadId = refreshThread.getId();
+        // This method return a thread here to facilitate testing
+        return refreshThread;
     }
     public void refreshSingle(AppInfo appInfo)
     {
@@ -385,6 +345,11 @@ implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener
             adapter.notifyDataSetChanged();
         }
     }
+
+    public void setAppInfoAdapter(AppInfoAdapter adapter) {
+        this.adapter = adapter;
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {

@@ -13,7 +13,7 @@ public class BackupRestoreHelper
         BACKUP, RESTORE
     }
 
-    public static int backup(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int backupMode)
+    public int backup(Context context, File backupDir, AppInfo appInfo, ShellCommands shellCommands, int backupMode)
     {
         int ret = 0;
         File backupSubDir = new File(backupDir, appInfo.getPackageName());
