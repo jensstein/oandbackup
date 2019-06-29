@@ -6,3 +6,4 @@
 src/main/assets
 build
 local.properties
+sonarqube-env

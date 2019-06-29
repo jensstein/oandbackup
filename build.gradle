@@ -1,5 +1,5 @@
 plugins {
-    id "com.android.application" version "3.2.1"
+    id "com.android.application" version "3.4.1"
     id "org.sonarqube" version "2.6"
     id "jacoco"
 }
@@ -15,7 +15,7 @@ ext {
     hamcrest_version = "1.3"
     junit_version = "4.12"
     lightweight_stream_api_version = "1.2.1"
-    mockito_version = "2.23.4"
+    mockito_version = "2.24.0"
     room_version = "2.1.0-alpha03"
     uiautomator_version = "2.2.0"
     lifecycle_version = "2.0.0"
@@ -45,21 +45,7 @@ dependencies {
     androidTestImplementation group: "com.android.support.test",
         name: "rules", version: android_support_test_version
     androidTestImplementation(group: "org.mockito", name: "mockito-android",
-            version: mockito_version) {
-        exclude group: "net.bytebuddy", module: "byte-buddy"
-        exclude group: "net.bytebuddy", module: "byte-buddy-android"
-        exclude group: "net.bytebuddy", module: "byte-buddy-agent"
-    }
-    /* The version of byte-buddy included in mockito 2.23.4 causes runtime
-     * errors when run with gradle android plugin versions before 3.3.0.
-     * https://github.com/mockito/mockito/issues/1511
-     */
-    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy",
-        version: "1.8.22"
-    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy-android",
-        version: "1.8.22"
-    androidTestImplementation group: "net.bytebuddy", name: "byte-buddy-agent",
-        version: "1.8.22"
+            version: mockito_version)
     androidTestImplementation group: "androidx.test.uiautomator",
         name: "uiautomator", version: uiautomator_version
     implementation group: "androidx.lifecycle", name: "lifecycle-livedata",
@@ -95,7 +81,7 @@ Map<String, Integer> abiVersionCodes = [
 sonarqube {
     properties {
         def jacocoReports = []
-        fileTree("${buildDir}/outputs/code-coverage").forEach({f ->
+        fileTree("${buildDir}/outputs/code_coverage").forEach({f ->
             if(f.path.endsWith(".ec") || f.path.endsWith(".exec")){
                 jacocoReports << f
             }
@@ -303,10 +289,6 @@ android.applicationVariants.all { variant ->
         }
         output.versionNameOverride = variant.versionName + "-" + flavor
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
 }
 
 clean {
