@@ -277,7 +277,7 @@ public class Crypto
         // to be used if the openpgp provider crashes so there isn't any usable callback
         logError("Crypto error set. Did the openpgp provider crash?");
     }
-    private boolean waitForServiceBound()
+    boolean waitForServiceBound()
     {
         int i = 0;
         while(service.getService() == null)
