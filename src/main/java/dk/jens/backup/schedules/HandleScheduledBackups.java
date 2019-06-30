@@ -166,7 +166,8 @@ public class HandleScheduledBackups
                         }
                         String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                         NotificationHelper.showNotification(context, OAndBackup.class, id, title, appInfo.getLabel(), false);
-                        int ret = BackupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
+                        final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+                        int ret = backupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
                         if(ret != 0)
                             errorFlag = true;
                         else if(crypto != null)

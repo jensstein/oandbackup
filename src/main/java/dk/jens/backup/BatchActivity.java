@@ -298,9 +298,10 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                         mode = AppInfo.MODE_APK;
                     else if(rbData.isChecked())
                         mode = AppInfo.MODE_DATA;
+                    final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
                     if(backupBoolean)
                     {
-                        if(BackupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
+                        if(backupRestoreHelper.backup(this, backupDir, appInfo, shellCommands, mode) != 0)
                             errorFlag = true;
                         else if(crypto != null)
                         {
@@ -314,7 +315,7 @@ implements OnClickListener, BatchConfirmDialog.ConfirmListener
                     }
                     else
                     {
-                        if(BackupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode, crypto) != 0)
+                        if(backupRestoreHelper.restore(this, backupDir, appInfo, shellCommands, mode, crypto) != 0)
                             errorFlag = true;
                     }
                     if(i == total)
