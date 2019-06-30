@@ -40,7 +40,13 @@ an apk build of oandbackup is available on f-droid's servers: https://f-droid.or
 translations are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
 so please come help us there or spread the link if you want the app available in your own language.
 
-if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com 
+if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com
+
+Cryptography
+============
+oandbackup supports encrypting the backups using an external cryptography provider.
+First you need to install an app which implements the openpgp-api, e.g. OpenKeychain: https://www.openkeychain.org/, and set up an identity.
+The "Cryptography" section of the preferences of oandbackup is then enabled and here you can choose which openpgp and identity to use.
 
 special usage notes
 ===========
