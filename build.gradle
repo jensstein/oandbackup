@@ -16,13 +16,15 @@ ext {
     junit_version = "4.12"
     lightweight_stream_api_version = "1.2.1"
     mockito_version = "2.24.0"
+    openpgp_api_version = "12.0"
     room_version = "2.1.0-alpha03"
     uiautomator_version = "2.2.0"
     lifecycle_version = "2.0.0"
 }
 
 dependencies {
-        implementation 'org.sufficientlysecure:openpgp-api:9.0'
+    implementation group: "org.sufficientlysecure", name: "openpgp-api",
+        version: "$openpgp_api_version"
     implementation group: "androidx.room", name: "room-runtime",
         version: "$room_version"
     annotationProcessor group: "androidx.room", name: "room-compiler",
