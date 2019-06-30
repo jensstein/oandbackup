@@ -73,7 +73,13 @@ public class BaseActivity extends Activity
         {
             public void run()
             {
-                crypto = new Crypto(PreferenceManager.getDefaultSharedPreferences(BaseActivity.this));
+                final String userIds = PreferenceManager
+                    .getDefaultSharedPreferences(BaseActivity.this)
+                    .getString("cryptoUserIds", "");
+                final String provider =  PreferenceManager
+                    .getDefaultSharedPreferences(BaseActivity.this).getString(
+                    "openpgpProviderList", "org.sufficientlysecure.keychain");
+                crypto = new Crypto(userIds, provider);
                 crypto.bind(BaseActivity.this);
             }
         }).start();
