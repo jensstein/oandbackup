@@ -174,7 +174,10 @@ public class AppInfoHelper
         list.add(wallpaper);
 
         AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);
-        wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
+        if(versionCode >= Build.VERSION_CODES.O)
+            wap.setFilesList(new String[] {"/data/misc/wifi/WifiConfigStore.xml", "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum"});
+        else 
+            wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
         list.add(wap);
 
         return list;
