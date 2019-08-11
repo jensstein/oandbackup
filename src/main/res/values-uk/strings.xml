@@ -20,7 +20,7 @@
     <string name="search">Пошук</string>
     <string name="searchHint">Пошук додатків</string>
     <string name="deleteBackup">Видалити резервні копії</string>
-    <string name="uninstall">Деінсталювати доаток</string>
+    <string name="uninstall">Деінсталювати додаток</string>
     <string name="uninstallProgress">Деінсталяція</string>
     <string name="showAll">Показати всі додатки</string>
     <string name="showOnlySystem">Показати лише системні додатки</string>
@@ -32,7 +32,7 @@
     <string name="showOnlyApkBackedUp">Показувати лише програми з зарезервованим apk</string>
     <string name="showOnlyDataBackedUp">Показувати лише програми з зарезервованими даними</string>
     <string name="showOnlySpecialBackups">Показувати лише особливі резервні копії</string>
-    <string name="sortByLabel">Сортувати за етикеткою</string>
+    <string name="sortByLabel">Сортувати за ярликом</string>
     <string name="sortByPackageName">Сортувати за назвою пакунку</string>
     <string name="sort">Сортувати і фільтрувати</string>
     <string name="uninstallDialogMessage">Деінсталювати додаток?</string>
@@ -46,10 +46,7 @@
     <string name="collectingData">Збір інформації про пакет</string>
     <string name="suCheck">Перевірка суперкористувача та busybox</string>
     <string name="oabUtilsCheck">Перевірка oab-утиліт</string>
-    <string name="oabUtilsProblem">
-        Не вдалося знайти oab-utils - запущений у застарілому режимі.
-        Будь-ласка, повідомте про це розробнику.
-    </string>
+    <string name="oabUtilsProblem">Не вдалося знайти oab-утиліти - запущено у застарілому режимі. Будь-ласка, повідомте про це розробнику.</string>
     <string name="noSu">Не вдалося отримати дозволу суперкористувача</string>
     <string name="busyboxProblem">Не вдалося знайти busybox. Будь-ласка, перевірте журнал помилок.</string>
         <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
@@ -105,13 +102,13 @@
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">Фільтрувати резервні копії, старші за значення в днях. Використовується з фільтром \"показати старі резервні копії\"</string>
     <string name="prefs_copySelfApk">Копіювати власний apk</string>
-    <string name="prefs_summaryCopySelfApk">Помістити копію oandbackup у верхньому рівні теки резервного копіювання, після резервного копіювання.</string>
+    <string name="prefs_summaryCopySelfApk">Помістити копію oandbackup у верхньому рівні теки резервного копіювання.</string>
     <string name="prefs_languages">Мова</string>
     <string name="prefs_languageSystemDefault">За замовчуванням</string>
-    <string name="prefs_rememberFiltering">Пам'ятати сортування та фільтрування</string>
-    <string name="prefs_summaryRememberFiltering">Зберігає обраний спосіб сортування та фільтрування. Враховуються лише позначені прапорцем у меню.</string>
+    <string name="prefs_rememberFiltering">Пам\'ятати сортування та фільтрування</string>
+    <string name="prefs_summaryRememberFiltering">Зберігає обраний спосіб сортування та фільтрування. Враховуються лише елементи, позначені прапорцем у меню.</string>
     <string name="prefs_followSymlinks">Переходити по символічним посиланням</string>
-    <string name="prefs_summaryFollowSymlinks">Завжди переходити по символьним посиланням при копіюванні (cp -L)</string>
+    <string name="prefs_summaryFollowSymlinks">Завжди переходити по символічним посиланням при копіюванні (cp -L)</string>
     <string name="prefs_enableSpecialBackups">Включити спеціальні резервні копії</string>
     <string name="prefs_backupExternalFiles">Обробляти зовнішні дані</string>
     <string name="prefs_summaryBackupExternalFiles">Створює резервну копію та відновлює дані, розміщені на зовнішньому носії (наприклад, /sdcard/Android/data/)</string>
