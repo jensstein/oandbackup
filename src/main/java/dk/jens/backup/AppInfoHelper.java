@@ -137,26 +137,29 @@ public class AppInfoHelper
         boolean apiCheck = versionCode >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
         AppInfoSpecial accounts = new AppInfoSpecial("accounts", context.getString(R.string.spec_accounts), versionName, versionCode);
-        if(versionCode >= Build.VERSION_CODES.N)
+        if(versionCode >= Build.VERSION_CODES.N) {
             accounts.setFilesList("/data/system_ce/" + currentUser + "/accounts_ce.db");
-        else if(apiCheck)
+        } else if(apiCheck) {
             accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
-        else
+        } else {
             accounts.setFilesList("/data/system/accounts.db");
+        }
         list.add(accounts);
 
         AppInfoSpecial appWidgets = new AppInfoSpecial("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode);
-        if(apiCheck)
+        if(apiCheck) {
             appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
-        else
+        } else {
             appWidgets.setFilesList("/data/system/appwidgets.xml");
+        }
         list.add(appWidgets);
 
         AppInfoSpecial bluetooth = new AppInfoSpecial("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode);
-        if(apiCheck)
+        if(apiCheck) {
             bluetooth.setFilesList("/data/misc/bluedroid/");
-        else
+        } else {
             bluetooth.setFilesList(new String[] {"/data/misc/bluetooth", "/data/misc/bluetoothd"});
+        }
         list.add(bluetooth);
 
         if(apiCheck)
@@ -167,17 +170,19 @@ public class AppInfoHelper
         }
 
         AppInfoSpecial wallpaper = new AppInfoSpecial("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode);
-        if(apiCheck)
+        if(apiCheck) {
             wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
-        else
+        } else {
             wallpaper.setFilesList(new String[] {"/data/system/wallpaper", "/data/system/wallpaper_info.xml"});
+        }
         list.add(wallpaper);
 
         AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);
-        if(versionCode >= Build.VERSION_CODES.O)
-            wap.setFilesList(new String[] {"/data/misc/wifi/WifiConfigStore.xml", "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum"});
-        else 
+        if(versionCode >= Build.VERSION_CODES.O) {
+            wap.setFilesList(new String[]{"/data/misc/wifi/WifiConfigStore.xml", "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum"});
+        } else {
             wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
+        }
         list.add(wap);
 
         return list;
