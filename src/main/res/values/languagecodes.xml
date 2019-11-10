@@ -17,6 +17,7 @@
         <item>русский</item>
         <item>Српски</item>
         <item>svenska (sverige)</item>
+        <item>українська</item>
         <item>简体中文</item>
     </string-array>
 
@@ -37,6 +38,7 @@
         <item>ru</item>
         <item>sr</item>
         <item>sv_SE</item>
+        <item>uk</item>
         <item>zh_CN</item>
     </string-array>
 </resources>

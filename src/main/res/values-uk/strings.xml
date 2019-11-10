@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">oandbackup</string>
+    <string name="backup">Резервувати</string>
+    <string name="restore">Відновити</string>
+    <string name="backupConfirmation">Резервувати?</string>
+    <string name="restoreConfirmation">Відновити?</string>
+    <string name="handleApk">apk</string>
+    <string name="handleData">Дані</string>
+    <string name="handleBoth">Дані + apk</string>
+    <string name="radioApk">apk</string>
+    <string name="radioData">Дані</string>
+    <string name="radioBoth">Дані + apk</string>
+#    <string name="de_selectAll">de/select all</string>
+    <string name="onlyApkBackedUp">Лише apk</string>
+    <string name="onlyDataBackedUp">Лише дані</string>
+    <string name="refresh">Оновити</string>
+    <string name="batchbackup">Пакетне резервування</string>
+    <string name="batchrestore">Пакетне відновлення</string>
+    <string name="search">Пошук</string>
+    <string name="searchHint">Пошук додатків</string>
+    <string name="deleteBackup">Видалити резервні копії</string>
+    <string name="uninstall">Деінсталювати додаток</string>
+    <string name="uninstallProgress">Деінсталяція</string>
+    <string name="showAll">Показати всі додатки</string>
+    <string name="showOnlySystem">Показати лише системні додатки</string>
+    <string name="showOnlyUser">Показати лише додатки користувача</string>
+    <string name="showNotBackedup">Показати незарезервовані додатки</string>
+    <string name="showNotInstalled">Показати невстановлені додатки</string>
+    <string name="showNewAndUpdated">Показати нові та оновлені додатки</string>
+    <string name="showOldBackups">Показати старі резервні копії</string>
+    <string name="showOnlyApkBackedUp">Показувати лише програми з зарезервованим apk</string>
+    <string name="showOnlyDataBackedUp">Показувати лише програми з зарезервованими даними</string>
+    <string name="showOnlySpecialBackups">Показувати лише особливі резервні копії</string>
+    <string name="sortByLabel">Сортувати за ярликом</string>
+    <string name="sortByPackageName">Сортувати за назвою пакунку</string>
+    <string name="sort">Сортувати і фільтрувати</string>
+    <string name="uninstallDialogMessage">Деінсталювати додаток?</string>
+    <string name="deleteBackupDialogMessage">Видалити резервні копії?</string>
+    <string name="dialogOK">Гаразд</string>
+    <string name="dialogCancel">Скасувати</string>
+    <string name="dialogYes">Так</string>
+    <string name="dialogNo">Ні</string>
+    <string name="noBackupYet">Ще немає резервних копій</string>
+    <string name="restoreDataWithoutApkError">Не вдається відновити дані без відновлення apk, пакет не встановлено</string>
+    <string name="collectingData">Збір інформації про пакет</string>
+    <string name="suCheck">Перевірка суперкористувача та busybox</string>
+    <string name="oabUtilsCheck">Перевірка oab-утиліт</string>
+    <string name="oabUtilsProblem">Не вдалося знайти oab-утиліти - запущено у застарілому режимі. Будь-ласка, повідомте про це розробнику.</string>
+    <string name="noSu">Не вдалося отримати дозволу суперкористувача</string>
+    <string name="busyboxProblem">Не вдалося знайти busybox. Будь-ласка, перевірте журнал помилок.</string>
+        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <string name="mkfileError">Не вдається створити</string>
+        <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">Повернутися до типового значення</string>
+    <string name="backupFolderError">Будь ласка, встановіть правильний шлях у налаштуваннях та переконайтесь, що він існує чи створюється</string>
+    <string name="shellReturnSuccess">Успіх</string>
+    <string name="shellReturnError">Помилка</string>
+    <string name="backupProgress">Резервування</string>
+    <string name="backupSuccess">Резервування вдале</string>
+    <string name="backupFailure">Помилка резервування</string>
+    <string name="restoreProgress">Відновлення</string>
+    <string name="restoreSuccess">Відновлення завершено</string>
+    <string name="restoreFailure">Помилка відновлення</string>
+    <string name="batchSuccess">Операція завершена</string>
+    <string name="batchFailure">Завершено з помилками</string>
+    <string name="uninstallSuccess">Деінсталяція вдала</string>
+    <string name="uninstallFailure">Помилка деінсталяції</string>
+    <string name="errorDialogTitle">Сталися помилки</string>
+    <string name="customListTitle">Власний список</string>
+    <string name="quickReboot">Швидке перезавантаження</string>
+    <string name="quickRebootMessage">Перезапустити оболонку користувача?</string>
+    <string name="help_title">Допомога</string>
+    <string name="notInstalledModeDataWarning">Додаток неможливо відновити з резервної копії без apk</string>
+    <string name="shareTitle">Поділитися</string>
+    <string name="filebrowser_title">Файловий браузер</string>
+
+    <string name="tools_title">Інструменти</string>
+    <string name="tools_batchDeleteTitle">Видалити резервні копії?</string>
+    <string name="tools_batchDeleteMessage">Видалення резервних копій</string>
+    <string name="tools_notificationTitle">Видалити резервні копії</string>
+        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="tools_backupsDeleted">Резервні копії видалено:</string>
+    <string name="tools_nothingToDelete">Немає резервних копій для видалення</string>
+
+    <string name="enablePackage">Включити</string>
+        <!-- enablePackageTitle: title for a list of checkable users -->
+    <string name="enablePackageTitle">Включити для користувачів</string>
+    <string name="disablePackage">Відключити</string>
+    <string name="disablePackageTitle">Відключити для користувачів</string>
+
+    <string name="prefs_title">Налаштування</string>
+    <string name="prefs_timestamp">Використовувати місцевий формат дати</string>
+    <string name="prefs_acquireWakelock">Перешкоджати сну</string>
+    <string name="prefs_summaryAcquireWakelock">Використовувати wakelock під час запуску пакетних операцій, щоб запобігти сну. Значно прискорить резервне копіювання та відновлення, але витратить більше енергії.</string>
+    <string name="prefs_pathscategory">Користувацькі шляхи</string>
+    <string name="prefs_pathBackupFolder">Тека резервної копії</string>
+    <string name="prefs_summaryBackupFolder">Шлях до теки резервного копіювання. Залишити порожнім за замовчуванням.</string>
+    <string name="prefs_pathBusybox">busybox</string>
+    <string name="prefs_summaryBusybox">Шлях до виконуваного файлу busybox. Переконайтеся, що він правильний. Залишити порожнім за замовчуванням.</string>
+    <string name="prefs_oldBackups">Фільтрувати резервні копії за віком</string>
+        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
+    <string name="prefs_summaryOldBackups">Фільтрувати резервні копії, старші за значення в днях. Використовується з фільтром \"показати старі резервні копії\"</string>
+    <string name="prefs_copySelfApk">Копіювати власний apk</string>
+    <string name="prefs_summaryCopySelfApk">Помістити копію oandbackup у верхньому рівні теки резервного копіювання.</string>
+    <string name="prefs_languages">Мова</string>
+    <string name="prefs_languageSystemDefault">За замовчуванням</string>
+    <string name="prefs_rememberFiltering">Пам\'ятати сортування та фільтрування</string>
+    <string name="prefs_summaryRememberFiltering">Зберігає обраний спосіб сортування та фільтрування. Враховуються лише елементи, позначені прапорцем у меню.</string>
+    <string name="prefs_followSymlinks">Переходити по символічним посиланням</string>
+    <string name="prefs_summaryFollowSymlinks">Завжди переходити по символічним посиланням при копіюванні (cp -L)</string>
+    <string name="prefs_enableSpecialBackups">Включити спеціальні резервні копії</string>
+    <string name="prefs_backupExternalFiles">Обробляти зовнішні дані</string>
+    <string name="prefs_summaryBackupExternalFiles">Створює резервну копію та відновлює дані, розміщені на зовнішньому носії (наприклад, /sdcard/Android/data/)</string>
+    <string name="prefs_cryptoMenu">Криптографія</string>
+    <string name="prefs_enableCrypto">Включити</string>
+    <string name="prefs_summaryEnableCrypto">Включити шифрування під час резервного копіювання та розшифрування під час відновлення</string>
+    <string name="prefs_cryptoUserIds">Ідентифікатори користувача openpgp</string>
+    <string name="prefs_summaryCryptoUserIds">Електронні листи ідентифікаторів користувачів, які використовуються для шифрування файлів. Розділити за допомогою \",\" </string>
+    <string name="prefs_openpgpProviderList">Постачальник openpgp</string>
+
+    <string name="sched_title">Планування</string>
+    <string name="sched_notificationMessage">Заплановане резервування</string>
+    <string name="sched_interval">Інтервал у днях</string>
+    <string name="sched_hourOfDay">Години (0..23)</string>
+    <string name="sched_checkbox">Включити</string>
+    <string name="sched_updateButton">Оновити</string>
+    <string name="sched_removeButton">Видалити</string>
+    <string name="sched_activateButton">Запустити резервування зараз</string>
+    <string name="sched_startingbackup">Запуск запланованого резервування</string>
+    <string name="sched_backupMode">Режим резервування</string>
+    <string name="sched_timeLeft">Годин до наступного резервування</string>
+    <string name="sched_addSchudule">Додати розклад</string>
+    <string name="sched_customListUpdateButton">Оновити користувацький список</string>
+    <string name="sched_excludeSystemCheckBox">Виключити системні програми</string>
+    <string name="sched_warningIntervalZero">Помилка: інтервал не може бути 0</string>
+    <string name="sched_globalBlacklist">Встановити глобальний чорний список</string>
+
+    <string name="blacklistDialogTitle">Чорний список</string>
+
+    <string name="spec_accounts">Облікові записи</string>
+    <string name="spec_appwidgets">Віджети програми</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Використання даних та політика</string>
+    <string name="spec_wallpaper">Шпалера</string>
+    <string name="spec_wifiAccessPoints">Точки доступу Wifi</string>
+
+    <string name="filebrowser_setButton">Встановити</string>
+    <string name="filebrowser_createDirectory">Створити теку</string>
+    <string name="filebrowser_createDirectoryDlgMsg">Введіть назву теки</string>
+    <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
+    <string name="filebrowser_createDirectoryError">Не вдалося створити теку:</string>
+    <string name="filebrowser_refresh">Оновити</string>
+    <string name="filebrowser_contextSetBackupDirectory">Встановити як теку резервного копіювання</string>
+
+    <string name="logviewer_message_loading">Завантаження файлу журналу</string>
+    <string name="logviewer_next_lines_button">Далі</string>
+
+    <string name="error_creating_notification_channel">Неможливо створити канал сповіщень</string>
+    <string name="error_updating_schedule_mode">Помилка оновлення %1$s з розкладу %2$d</string>
+    <string name="permission_not_granted">Потрібен дозвіл на доступ до зовнішнього носія</string>
+    <string name="restart_dialog">Здається, програму потрібно перезапустити</string>
+</resources>

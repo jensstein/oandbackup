@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- translators should ensure that all items are translated. there is no graceful fallback if the number of items in a translated file doesn't match the source and the app will crash on that particular language. -->
+    <string-array name="scheduleModes">
+        <item>всі додатки</item>
+        <item>додатки користувача</item>
+        <item>системні додатки</item>
+        <item>нові та оновлені додатки</item>
+        <item>власний список</item>
+    </string-array>
+    <!-- entries in scheduleSubModes are taken from strings.xml and should be left as-is here -->
+    <string-array name="scheduleSubModes" translatable="false">
+        <item>@string/radioApk</item>
+        <item>@string/radioData</item>
+        <item>@string/radioBoth</item>
+    </string-array>
+
+    <string-array name="tools_titles">
+        <item>швидке перезавантаження</item>
+        <item>видалити оновлення</item>
+        <item>переглянути журнал помилок</item>
+    </string-array>
+    <string-array name="tools_descriptions">
+        <item>завершує процес system_server, щоб примусити перезапустити простір користувача</item>
+        <item>видалити резервні копії всіх програм, які наразі не встановлені</item>
+        <item></item>
+    </string-array>
+</resources>
