@@ -158,28 +158,33 @@ public class AppInfoHelper
         if(apiCheck) {
             bluetooth.setFilesList("/data/misc/bluedroid/");
         } else {
-            bluetooth.setFilesList(new String[] {"/data/misc/bluetooth", "/data/misc/bluetoothd"});
+            bluetooth.setFilesList("/data/misc/bluetooth",
+                "/data/misc/bluetoothd");
         }
         list.add(bluetooth);
 
         if(apiCheck)
         {
             AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode);
-            data.setFilesList(new String[] {"/data/system/netpolicy.xml", "/data/system/netstats/"});
+            data.setFilesList("/data/system/netpolicy.xml",
+                "/data/system/netstats/");
             list.add(data);
         }
 
         AppInfoSpecial wallpaper = new AppInfoSpecial("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode);
         if(apiCheck) {
-            wallpaper.setFilesList(new String[] {"/data/system/users/" + currentUser + "/wallpaper", "/data/system/users/" + currentUser + "/wallpaper_info.xml"});
+            wallpaper.setFilesList("/data/system/users/" + currentUser + "/wallpaper",
+                "/data/system/users/" + currentUser + "/wallpaper_info.xml");
         } else {
-            wallpaper.setFilesList(new String[] {"/data/system/wallpaper", "/data/system/wallpaper_info.xml"});
+            wallpaper.setFilesList("/data/system/wallpaper",
+                "/data/system/wallpaper_info.xml");
         }
         list.add(wallpaper);
 
         AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);
         if(versionCode >= Build.VERSION_CODES.O) {
-            wap.setFilesList(new String[]{"/data/misc/wifi/WifiConfigStore.xml", "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum"});
+            wap.setFilesList("/data/misc/wifi/WifiConfigStore.xml",
+                "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum");
         } else {
             wap.setFilesList("/data/misc/wifi/wpa_supplicant.conf");
         }
