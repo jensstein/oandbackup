@@ -7,6 +7,17 @@ both backup and restore of individual programs one at a time and batch backup an
 restoring system apps should be possible without requiring a reboot afterwards. oandbackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
+building
+========
+oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
+```
+./gradlew build
+# building only debug
+./gradlew assembleDebug
+# building for a specific abi target
+./gradlew assembleArm64
+```
+
 version control
 ==============
 oandbackup is handled on both gitlab and github:   
@@ -63,17 +74,6 @@ restoring data can also be done manually from the backup files. oandbackup store
 after restoring the files, the user and group id of the package need to be set. therefore data can only be restored for packages where an apk has been installed successfully. uid and gid can be obtained with the ```stat``` program (e.g. ```stat /data/data/dk.jens.backup```) and set with ```chown```. finally, the correct permissions need to be set with ```chmod```. oandbackup does this by setting 771 for all data files although this is probably not the best method. the subdirectory lib/ needs to be excluded from both ```chown``` and ```chmod```.  
 on android 6 / marshmallow (api 23) you would also need to use the ```restorecon``` command on the data directory (e.g. ```restorecon -R /data/data/dk.jens.backup```) or use another method of restoring the file security contexts.  
 the code which does these things are in the methods doRestore and setPermissions of ShellCommands.java.
-
-building
-========
-oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
-```
-./gradlew build
-# building only debug
-./gradlew assembleDebug
-# building for a specific abi target
-./gradlew assembleArm64
-```
 
 licenses
 =======
