@@ -28,7 +28,7 @@ public class NotificationHelper {
         if(Build.VERSION.SDK_INT >= 26) {
             final NotificationChannel notificationChannel =
                 new NotificationChannel(channelId, channelId,
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_LOW);
             final NotificationManager notificationManager = context
                 .getSystemService(NotificationManager.class);
             if(notificationManager != null) {
