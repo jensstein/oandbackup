@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OandBackup</string>
+    <string name="backup">备份</string>
+    <string name="restore">恢复</string>
+    <string name="backupConfirmation">备份?</string>
+    <string name="restoreConfirmation">恢复?</string>
+    <string name="handleApk">应用</string>
+    <string name="handleData">数据</string>
+    <string name="handleBoth">两者</string>
+    <string name="radioApk">应用</string>
+    <string name="radioData">数据</string>
+    <string name="radioBoth">数据+应用</string>
+    <string name="de_selectAll">取消/全选</string>
+    <string name="onlyApkBackedUp">仅应用</string>
+    <string name="onlyDataBackedUp">仅数据</string>
+    <string name="refresh">刷新</string>
+    <string name="batchbackup">批量备份</string>
+    <string name="batchrestore">批量恢复</string>
+    <string name="search">搜索</string>
+    <string name="searchHint">搜索应用</string>
+    <string name="deleteBackup">删除备份</string>
+    <string name="uninstall">卸载应用</string>
+    <string name="uninstallProgress">卸载中...</string>
+    <string name="showAll">显示所有应用</string>
+    <string name="showOnlySystem">仅显示系统应用</string>
+    <string name="showOnlyUser">仅显示用户应用</string>
+    <string name="showNotBackedup">显示未备份的应用</string>
+    <string name="showNotInstalled">显示未安装的应用</string>
+    <string name="showNewAndUpdated">显示新的应用</string>
+    <string name="showOldBackups">显示旧备份</string>
+    <string name="showOnlyApkBackedUp">仅显示备份apk的应用</string>
+    <string name="showOnlyDataBackedUp">仅显示备份数据的应用</string>
+    <string name="showOnlySpecialBackups">仅显示特殊备份</string>
+    <string name="sortByLabel">按标签排序</string>
+    <string name="sortByPackageName">按包名排序</string>
+    <string name="sort">排序和过滤</string>
+    <string name="uninstallDialogMessage">卸载该应用?</string>
+    <string name="deleteBackupDialogMessage">删除备份文件?</string>
+    <string name="dialogOK">确定</string>
+    <string name="dialogCancel">取消</string>
+    <string name="dialogYes">是</string>
+    <string name="dialogNo">否</string>
+    <string name="noBackupYet">没有备份</string>
+    <string name="restoreDataWithoutApkError">无法恢复数据而不恢复apk,包未安装</string>
+    <string name="collectingData">正在收集应用包信息...</string>
+    <string name="suCheck">检查超级用户和busybox</string>
+    <string name="noSu">无法获得超级用户权限</string>
+    <string name="busyboxProblem">找不到busybox,请检查错误日志</string>
+        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <string name="mkfileError">无法创建</string>
+        <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">返回到默认值</string>
+    <string name="backupFolderError">请在设置中设置正确的路径并确保其存在或可创建</string>
+    <string name="shellReturnSuccess">成功</string>
+    <string name="shellReturnError">错误</string>
+    <string name="backupProgress">备份中</string>
+    <string name="backupSuccess">备份完成</string>
+    <string name="backupFailure">备份错误</string>
+    <string name="restoreProgress">恢复中</string>
+    <string name="restoreSuccess">恢复完成</string>
+    <string name="restoreFailure">恢复错误</string>
+    <string name="batchSuccess">操作完成</string>
+    <string name="batchFailure">完成与错误</string>
+    <string name="uninstallSuccess">卸载完成</string>
+    <string name="uninstallFailure">卸载错误</string>
+    <string name="errorDialogTitle">发生错误</string>
+    <string name="customListTitle">自定义列表</string>
+    <string name="quickReboot">快速重启</string>
+    <string name="quickRebootMessage">您是否希望重新启动用户空间?</string>
+    <string name="help_title">帮助</string>
+    <string name="notInstalledModeDataWarning">应用无法从没有apk的备份恢复</string>
+    <string name="shareTitle">分享</string>
+    <string name="filebrowser_title">文件浏览器</string>
+    
+    <string name="tools_title">工具</string>
+    <string name="tools_batchDeleteTitle">删除备份?</string>
+    <string name="tools_batchDeleteMessage">删除备份中</string>
+    <string name="tools_notificationTitle">删除备份</string>
+        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="tools_backupsDeleted">备份已删除:</string>
+    <string name="tools_nothingToDelete">没有备份删除</string>
+
+    <string name="enablePackage">启用</string>
+        <!-- enablePackageTitle: title for a list of checkable users -->
+    <string name="enablePackageTitle">开启用户</string>
+    <string name="disablePackage">禁用</string>
+    <string name="disablePackageTitle">禁用用户</string>
+
+    <string name="prefs_title">设置</string>
+    <string name="prefs_timestamp">使用本地日期格式</string>
+    <string name="prefs_acquireWakelock">防止睡眠</string>
+    <string name="prefs_summaryAcquireWakelock">批处理运行时获取唤醒锁以防止睡眠让加速备份和恢复,但将消耗更多电量</string>
+    <string name="prefs_pathscategory">自定义路径</string>
+    <string name="prefs_pathBackupFolder">备份文件夹</string>
+    <string name="prefs_summaryBackupFolder">备份文件夹路径 默认为空</string>
+    <string name="prefs_pathBusybox">busybox</string>
+    <string name="prefs_summaryBusybox">busybox可执行文件的路径确保它是正确的 默认为空</string>
+    <string name="prefs_oldBackups">过滤器按年龄备份</string>
+        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
+    <string name="prefs_summaryOldBackups">过滤日期超过值的备份,与过滤器一起使用'显示旧备份'</string>
+    <string name="prefs_copySelfApk">复制自身apk</string>
+    <string name="prefs_summaryCopySelfApk">备份时将OandBackup的副本放在备份文件夹顶层</string>
+    <string name="prefs_languages">语言</string>
+    <string name="prefs_languageSystemDefault">系统默认</string>
+    <string name="prefs_rememberFiltering">记住排序和过滤</string>
+    <string name="prefs_summaryRememberFiltering">保存所选择的排序和过滤方法,仅考虑菜单中的复选框标记那些</string>
+    <string name="prefs_disableNotifications">禁用通知</string>
+    <string name="prefs_summaryDisableNotifications">当选中时OandBackup不会显示任何通知</string>
+    <string name="prefs_followSymlinks">遵循符号链接</string>
+    <string name="prefs_summaryFollowSymlinks">复制时始终遵循符号链接(cp -L)</string>
+    <string name="prefs_enableSpecialBackups">启用特殊备份</string>
+    <string name="prefs_backupExternalFiles">处理外部数据</string>
+    <string name="prefs_summaryBackupExternalFiles">备份和恢复放置在外部存储的数据(例如/sdcard/Android/data/)</string>
+    <string name="prefs_cryptoMenu">加密</string>
+    <string name="prefs_enableCrypto">启用</string>
+    <string name="prefs_summaryEnableCrypto">启用加密时备份文件和解密时恢复</string>
+    <string name="prefs_cryptoUserIds">openpgp用户ID</string>
+    <string name="prefs_summaryCryptoUserIds">用于加密文件的用户ID电子邮件\",\"</string>
+    <string name="prefs_openpgpProviderList">由openpgp提供程序</string>
+
+    <string name="sched_title">计划</string>
+    <string name="sched_notificationMessage">计划备份</string>
+    <string name="sched_interval">间隔(天)</string>
+    <string name="sched_hourOfDay">小时(0..23)</string>
+    <string name="sched_checkbox">启用</string>
+    <string name="sched_updateButton">更新</string>
+    <string name="sched_removeButton">移除</string>
+    <string name="sched_activateButton">现在开始备份</string>
+    <string name="sched_startingbackup">启动计划备份</string>
+    <string name="sched_backupMode">备份模式</string>
+    <string name="sched_timeLeft">小时直到下一次备份</string>
+    <string name="sched_addSchudule">添加时间表</string>
+    <string name="sched_customListUpdateButton">更新自定义列表</string>
+    <string name="sched_excludeSystemCheckBox">排除系统应用程序</string>
+    <string name="sched_warningIntervalZero">错误:间隔不能为0</string>
+
+    <string name="spec_accounts">帐户</string>
+    <string name="spec_appwidgets">应用小部件</string>
+    <string name="spec_bluetooth">蓝牙</string>
+    <string name="spec_data">数据使用和策略</string>
+    <string name="spec_wallpaper">壁纸</string>
+    <string name="spec_wifiAccessPoints">Wifi接入点</string>
+
+    <string name="filebrowser_setButton">设置</string>
+    <string name="filebrowser_createDirectory">创建文件夹</string>
+    <string name="filebrowser_createDirectoryDlgMsg">输入要创建的文件夹名称</string>
+    <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
+    <string name="filebrowser_createDirectoryError">无法创建这个文件夹: </string>
+    <string name="filebrowser_refresh">刷新</string>
+    <string name="filebrowser_contextSetBackupDirectory">设置为备份文件夹</string>
+
+    <string name="logviewer_message_loading">载入日志文件</string>
+    <string name="logviewer_next_lines_button">下一页</string>
+</resources>
