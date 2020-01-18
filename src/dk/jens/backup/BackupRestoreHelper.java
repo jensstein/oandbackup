@@ -94,7 +94,7 @@ public class BackupRestoreHelper
                 }
                 else
                 {
-                    restoreRet = shellCommands.doRestore(context, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+                    restoreRet = shellCommands.doRestore(context, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir(), appInfo.getLogInfo().getDeviceProtectedDataDir());
 
                     permRet = shellCommands.setPermissions(dataDir);
                 }

@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class LogFile implements Parcelable
 {
     final static String TAG = OAndBackup.TAG;
-    String label, packageName, versionName, sourceDir, dataDir;
+    String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
     int versionCode, backupMode;
     long lastBackupMillis;
     boolean encrypted, system;
@@ -34,6 +34,11 @@ public class LogFile implements Parcelable
             this.versionName = jsonObject.getString("versionName");
             this.sourceDir = jsonObject.getString("sourceDir");
             this.dataDir = jsonObject.getString("dataDir");
+            //check that the value exists in case backups have come from an old version of oandbackup
+            if(jsonObject.has("deviceProtectedDataDir"))
+                this.deviceProtectedDataDir = jsonObject.getString("deviceProtectedDataDir");
+            else
+                deviceProtectedDataDir = null;
             this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
             this.versionCode = jsonObject.getInt("versionCode");
             this.encrypted = jsonObject.optBoolean("isEncrypted");
@@ -79,6 +84,9 @@ public class LogFile implements Parcelable
     {
         return dataDir;
     }
+    public String getDeviceProtectedDataDir() {
+        return deviceProtectedDataDir;
+    }
     public long getLastBackupMillis()
     {
         return lastBackupMillis;
@@ -120,6 +128,7 @@ public class LogFile implements Parcelable
             jsonObject.put("packageName", appInfo.getPackageName());
             jsonObject.put("sourceDir", sourceDir);
             jsonObject.put("dataDir", appInfo.getDataDir());
+            jsonObject.put("deviceProtectedDataDir", appInfo.getDeviceProtectedDataDir());
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
             jsonObject.put("isEncrypted", encrypted);
             jsonObject.put("isSystem", appInfo.isSystem());

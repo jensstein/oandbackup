@@ -3,6 +3,7 @@ package dk.jens.backup;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 {
     final static String TAG = OAndBackup.TAG;
     final static String EXTERNAL_FILES = "external_files";
+    final static String DEVICE_PROTECTED_FILES = "device_protected_files";
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
@@ -62,6 +64,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+        String deviceProtectedPackageData = appInfo.getDeviceProtectedDataDir();
         Log.i(TAG, "backup: " + label);
         // since api 24 (android 7) ApplicationInfo.dataDir can be null
         // this doesn't seem to be documented. proper sanity checking is needed
@@ -74,6 +77,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // -L because fat (which will often be used to store the backup files)
         // doesn't support symlinks
         String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+        File backupSubDirDeviceProtectedFiles = null;
         switch(backupMode)
         {
             case AppInfo.MODE_APK:
@@ -81,9 +85,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 break;
             case AppInfo.MODE_DATA:
                 commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+
+                backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir())
+                    commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
                 break;
             default: // defaults to MODE_BOTH
                 commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+
+                backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir())
+                    commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
+                
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
@@ -147,6 +160,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             int zipret = compress(new File(backupSubDir, folder));
             if(backupSubDirExternalFiles != null)
                 zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            if(backupSubDirDeviceProtectedFiles != null)
+                zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if(zipret != 0)
                 ret += zipret;
         }
@@ -155,7 +170,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
         return ret;
     }
-    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir)
+    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir, String deviceProtectedDataDir)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);

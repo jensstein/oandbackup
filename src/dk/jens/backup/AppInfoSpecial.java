@@ -9,7 +9,7 @@ implements Parcelable
     String[] files;
     public AppInfoSpecial(String packageName, String label, String versionName, int versionCode)
     {
-        super(packageName, label, versionName, versionCode, "", "", true, true);
+        super(packageName, label, versionName, versionCode, "", "", "", true, true);
     }
     public String[] getFilesList()
     {
