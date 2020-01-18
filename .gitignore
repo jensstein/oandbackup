@@ -1,0 +1,9 @@
+*.iml
+*.pyc
+*.swp
+.gradle
+.idea
+src/main/assets
+build
+local.properties
+sonarqube-env

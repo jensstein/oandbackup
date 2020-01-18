@@ -1,6 +1,67 @@
 changelog
 =========
 
+0.3.5 (2018-12-28)
+-------------------
+ * fix restoring on android 9. selinux rules has become more strict and as a
+    result system_server is not allowed to install from directories other
+    than the package staging directory (/data/local/tmp)
+    (c9ee0df7a7ea94b309cd8cde8e750068527f2152)
+ * use `cmd package install` instead of `pm install` for restoring apks
+    (677d991c9e95de962a96f30f1e1290720aa31aae)
+
+0.3.4 (2018-11-15)
+-------------------
+ * add ci test against nightly rust
+ * fix assembleUniversal{,Debug,Release} tasks
+ * add simplified chinese translation (zh_CN). thanks to Aining.
+ * trick aapt into reporting that the apks ship native code.
+    the purpose of this is to make fdroid filter the apks
+    based on the version of the pab-utils binary they contain
+    even though no jni or ndk building is involved.
+
+0.3.3 (2018-10-30)
+------------------
+ * correct abi name for 64bit arm
+
+0.3.2 (2018-10-18)
+------------------
+ * fix gradle build
+
+0.3.1 (2018-10-11)
+------------------
+ * build and package rust binary from gradle build configuration
+
+0.3.0 (2018-09-16)
+------------------
+ * add binary written in rust to handle tasks which can only be done as root. this will eventually enable us to get rid of the dependency on a \*box installation.
+    at the moment it is compiled for armv7a, arm64, x86, and x86_64. it is able to get and set file ownership and set file permissions.
+ * add gitlab ci configuration
+ * ignore errors from restorecon, hopefully only temporarily (5821c01f5fb149c6ec06c0f56197e28d2669feae)
+
+0.2.13 (2018-03-15)
+-------------------
+ * fix java package hierarchies
+ * ignore errors with firefox lock files (https://github.com/jensstein/oandbackup/issues/155)
+ * bump java version to 1.8 (or at least the limited subset of 1.8 which android supports)
+ * add global blacklist for scheduled backups
+ * restructure how shell commands are run
+ * bump minimun api version to 16
+ * remove dependency on android support library
+ * updated spanish translation. thanks to sebastian05067
+ * fix scheduling logic. thanks to Niklas Wenzel.
+
+0.2.12.1 (2017-01-28)
+---------------------
+ * fix backing up data of system package (2b2b00ceb1d65c167b73507e5e3192ff98db4b8e)
+ * fix backing up account data on android versions >= 24 (7b84d0834bf19ee3132d2596a4b9b504a3359246)
+
+0.2.12 (2017-01-19)
+-------------------
+ * remove usage of awk
+ * mark disabled apps by separate colour (https://github.com/jensstein/oandbackup/issues/126)
+ * run scheduled backups in a foreground service (https://github.com/jensstein/oandbackup/issues/133)
+
 0.2.11 (2016-01-17)
 -------------------
  * new permission: READ_EXTERNAL_STORAGE

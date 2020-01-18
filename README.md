@@ -1,12 +1,40 @@
 oandbackup
 =======
+[![pipeline status](https://gitlab.com/jensstein/oandbackup/badges/master/pipeline.svg)](https://gitlab.com/jensstein/oandbackup/commits/master)
+
 a backup program for android. requires root and allows you to backup individual apps and their data.
 both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores).  
 restoring system apps should be possible without requiring a reboot afterwards. oandbackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
-a working busybox installation is required at the moment.   
-you can get the source for busybox here: http://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: http://busybox.net/downloads/binaries/latest/.   
+building
+========
+oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
+```
+./gradlew build
+# building only debug
+./gradlew assembleDebug
+# building for a specific abi target
+./gradlew assembleArm64
+```
+
+version control
+==============
+oandbackup is handled on both gitlab and github:   
+https://gitlab.com/jensstein/oandbackup/   
+https://github.com/jensstein/oandbackup   
+debug apks are built by gitlab for each commit on every branch. the latest successful build can be found here (substitute $branch for the desired branch, e.g. master):   
+https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/$branch/browse/apks?job=build  
+(e.g. https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse/apks?job=build)  
+and signed release apks are built for every commit on the master branch:  
+https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse?job=sign
+
+busybox / toybox / oab-utils
+======
+
+a working busybox or toybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
+
+you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
 if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
 ```
     make defconfig # makes a config file with the default options
@@ -23,7 +51,13 @@ an apk build of oandbackup is available on f-droid's servers: https://f-droid.or
 translations are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
 so please come help us there or spread the link if you want the app available in your own language.
 
-if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com 
+if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com
+
+Cryptography
+============
+oandbackup supports encrypting the backups using an external cryptography provider.
+First you need to install an app which implements the openpgp-api, e.g. OpenKeychain: https://www.openkeychain.org/, and set up an identity.
+The "Cryptography" section of the preferences of oandbackup is then enabled and here you can choose which openpgp and identity to use.
 
 special usage notes
 ===========
@@ -40,24 +74,6 @@ restoring data can also be done manually from the backup files. oandbackup store
 after restoring the files, the user and group id of the package need to be set. therefore data can only be restored for packages where an apk has been installed successfully. uid and gid can be obtained with the ```stat``` program (e.g. ```stat /data/data/dk.jens.backup```) and set with ```chown```. finally, the correct permissions need to be set with ```chmod```. oandbackup does this by setting 771 for all data files although this is probably not the best method. the subdirectory lib/ needs to be excluded from both ```chown``` and ```chmod```.  
 on android 6 / marshmallow (api 23) you would also need to use the ```restorecon``` command on the data directory (e.g. ```restorecon -R /data/data/dk.jens.backup```) or use another method of restoring the file security contexts.  
 the code which does these things are in the methods doRestore and setPermissions of ShellCommands.java.
-
-building
-========
-oandbackups can be built with both gradle and apache ant. and in both cases you also need the android sdk.
-with gradle you can either use the wrapper script or call a binary of gradle version 2.8 directly.
-```
-# using the wrapper on linux
-./gradlew assembleDebug
-# using the gradle binary
-gradle assembleDebug
-```
-building with ant is a little more complicated since it requires manually modifying the openpgp-api-lib source to be buildable with ant (it is possible). instructions for doing this may come later.
-```
-    cd $path_to_this_project
-    # obtain the code for openpgp-api-lib, change it to be ant-compatible and place it in the libs directory
-    $path_to_sdk/tools/android update project -t $target_number -p . --library libs/openpgp-api-lib
-    ant debug
-```
 
 licenses
 =======
