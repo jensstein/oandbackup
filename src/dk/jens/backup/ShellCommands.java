@@ -96,7 +96,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
                 if(backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir())
                     commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
-                
+
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
@@ -206,8 +206,37 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 commands.add(restoreCommand);
-                if(Build.VERSION.SDK_INT >= 23)
+
+                File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(deviceProtectedDataDir != null && deviceProtectedFiles.exists())
+                {
+
+                    Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles);
+                    restoreCommand = busybox + " cp -r " + deviceProtectedFiles + "/" + dataDirName + "/* " + deviceProtectedDataDir + "\n";
+
+                    try {
+                        PackageManager packageManager = context.getPackageManager();
+                        String user = String.valueOf(packageManager.getApplicationInfo(dataDirName, PackageManager.GET_META_DATA).uid);
+                        restoreCommand = restoreCommand + " chown -R " + user + ":" + user + " " + deviceProtectedDataDir + "\n";
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    restoreCommand = restoreCommand + " chmod -R 777 " + deviceProtectedDataDir + "\n";
+                    if(!(new File(deviceProtectedDataDir).exists()))
+                    {
+                        restoreCommand = "mkdir " + deviceProtectedDataDir + "\n" + restoreCommand;
+                        // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
+                    }
+                    commands.add(restoreCommand);
+
+                }
+
+                
+                if(Build.VERSION.SDK_INT >= 23) {
                     commands.add("restorecon -R " + dataDir);
+                    commands.add("restorecon -R " + deviceProtectedDataDir);
+                }
                 int ret = CommandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(label, line),
                     e -> Log.e(TAG, "doRestore: " + e.toString()), this);
@@ -229,6 +258,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             {
                 deleteBackup(new File(backupSubDir, dataDirName));
             }
+            deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
         }
     }
     public int backupSpecial(File backupSubDir, String label, String... files)
@@ -426,10 +456,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " cp " + swapBackupDirPath(
                 backupDir.getAbsolutePath() + "/" + apk) + " " +
                 swapBackupDirPath(tempPath));
-            commands.add("pm install -r " + tempPath + "/" + apk);
+            commands.add("cat" + tempPath + "/" + apk + " | pm install -r -t -S " + new File(tempPath + "/" + apk).length());
             commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
         } else {
-            commands.add("pm install -r " + backupDir.getAbsolutePath() + "/" + apk);
+            commands.add("cat " + backupDir.getAbsolutePath() + "/" + apk + " | pm install -r -t -S " + new File(backupDir.getAbsolutePath() + "/" + apk).length());
         }
         List<String> err = new ArrayList<>();
         int ret = CommandHandler.runCmd("su", commands, line -> {},
