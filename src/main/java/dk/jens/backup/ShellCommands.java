@@ -82,10 +82,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         errors += t.toString();
     }
 
-    public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode)
+    public int doBackup(Context context, File backupSubDir, String label, String packageData, String deviceProtectedPackageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
-        String deviceProtectedPackageData = appInfo.getDeviceProtectedDataDir();
         Log.i(TAG, "backup: " + label);
         // since api 24 (android 7) ApplicationInfo.dataDir can be null
         // this doesn't seem to be documented. proper sanity checking is needed
@@ -258,7 +257,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     commands.add("restorecon -R " + dataDir + " || true");
                     commands.add("restorecon -R " + deviceProtectedDataDir + " || true");
                 }
-                int ret = CommandHandler.runCmd("su", commands, line -> {},
+                int ret = commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(label, line),
                     e -> Log.e(TAG, "doRestore: " + e.toString()), this);
                 if(multiuserEnabled)
@@ -526,10 +525,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " cp " + swapBackupDirPath(
                 backupDir.getAbsolutePath() + "/" + apk) + " " +
                 swapBackupDirPath(tempPath));
-            commands.add("cat" + tempPath + "/" + apk + " | pm install -r -t -S " + new File(tempPath + "/" + apk).length());
+            commands.add(String.format("%s -r %s/%s", installCmd, tempPath, apk));
             commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
         } else {
-            commands.add("cat " + backupDir.getAbsolutePath() + "/" + apk + " | pm install -r -t -S " + new File(backupDir.getAbsolutePath() + "/" + apk).length());
+            commands.add(String.format("%s -r %s/%s", installCmd,
+                    backupDir.getAbsolutePath(), apk));
         }
         List<String> err = new ArrayList<>();
         int ret = commandHandler.runCmd("su", commands, line -> {},

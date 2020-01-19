@@ -41,7 +41,7 @@ public class BackupRestoreHelper
         }
         else
         {
-            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getDeviceProtectedDataDir(), appInfo.getSourceDir(), backupMode);
             appInfo.setBackupMode(backupMode);
         }
 
