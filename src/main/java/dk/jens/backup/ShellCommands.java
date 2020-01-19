@@ -3,6 +3,7 @@ package dk.jens.backup;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,12 +27,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 {
     final static String TAG = OAndBackup.TAG;
     final static String EXTERNAL_FILES = "external_files";
+    final static String DEVICE_PROTECTED_FILES = "device_protected_files";
 
     CommandHandler commandHandler = new CommandHandler();
 
     private final String oabUtils;
     private boolean legacyMode;
-
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
@@ -81,7 +82,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         errors += t.toString();
     }
 
-    public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode)
+    public int doBackup(Context context, File backupSubDir, String label, String packageData, String deviceProtectedPackageData, String packageApk, int backupMode)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
@@ -96,6 +97,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // -L because fat (which will often be used to store the backup files)
         // doesn't support symlinks
         String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+        File backupSubDirDeviceProtectedFiles = null;
         switch(backupMode)
         {
             case AppInfo.MODE_APK:
@@ -103,9 +105,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 break;
             case AppInfo.MODE_DATA:
                 commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+
+                backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir())
+                    commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
                 break;
             default: // defaults to MODE_BOTH
                 commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+
+                backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir())
+                    commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
+
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
@@ -169,6 +180,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             int zipret = compress(new File(backupSubDir, folder));
             if(backupSubDirExternalFiles != null)
                 zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            if(backupSubDirDeviceProtectedFiles != null)
+                zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if(zipret != 0)
                 ret += zipret;
         }
@@ -177,7 +190,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
         return ret;
     }
-    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir)
+    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir, String deviceProtectedDataDir)
     {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
@@ -213,8 +226,36 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 commands.add(restoreCommand);
+
+                File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if(deviceProtectedDataDir != null && deviceProtectedFiles.exists())
+                {
+
+                    Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles);
+                    restoreCommand = busybox + " cp -r " + deviceProtectedFiles + "/" + dataDirName + "/* " + deviceProtectedDataDir + "\n";
+
+                    try {
+                        PackageManager packageManager = context.getPackageManager();
+                        String user = String.valueOf(packageManager.getApplicationInfo(dataDirName, PackageManager.GET_META_DATA).uid);
+                        restoreCommand = restoreCommand + " chown -R " + user + ":" + user + " " + deviceProtectedDataDir + "\n";
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    restoreCommand = restoreCommand + " chmod -R 777 " + deviceProtectedDataDir + "\n";
+                    if(!(new File(deviceProtectedDataDir).exists()))
+                    {
+                        restoreCommand = "mkdir " + deviceProtectedDataDir + "\n" + restoreCommand;
+                        // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
+                    }
+                    commands.add(restoreCommand);
+
+                }
+
+                
                 if(Build.VERSION.SDK_INT >= 23) {
                     commands.add("restorecon -R " + dataDir + " || true");
+                    commands.add("restorecon -R " + deviceProtectedDataDir + " || true");
                 }
                 int ret = commandHandler.runCmd("su", commands, line -> {},
                     line -> writeErrorLog(label, line),
@@ -237,6 +278,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             {
                 deleteBackup(new File(backupSubDir, dataDirName));
             }
+            deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
         }
     }
     public int backupSpecial(File backupSubDir, String label, String... files)
@@ -487,7 +529,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " rm -r " + swapBackupDirPath(tempPath));
         } else {
             commands.add(String.format("%s -r %s/%s", installCmd,
-                backupDir.getAbsolutePath(), apk));
+                    backupDir.getAbsolutePath(), apk));
         }
         List<String> err = new ArrayList<>();
         int ret = commandHandler.runCmd("su", commands, line -> {},

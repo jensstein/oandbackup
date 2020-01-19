@@ -79,10 +79,12 @@ public class AppInfoHelper
                 // package at least on cm14
                 if(pinfo.packageName.equals("android") && dataDir == null)
                     dataDir = "/data/system";
+                //determine the directory where device-protected data will be stored for android N and above
+                String deviceProtectedDataDir = pinfo.applicationInfo.deviceProtectedDataDir;
                 AppInfo appInfo = new AppInfo(pinfo.packageName,
                     pinfo.applicationInfo.loadLabel(pm).toString(),
                     pinfo.versionName, pinfo.versionCode,
-                    pinfo.applicationInfo.sourceDir, dataDir, isSystem,
+                    pinfo.applicationInfo.sourceDir, dataDir, deviceProtectedDataDir, isSystem,
                     true);
                 File subdir = new File(backupDir, pinfo.packageName);
                 if(subdir.exists())
@@ -115,7 +117,7 @@ public class AppInfoHelper
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                         if(logInfo.getLastBackupMillis() > 0)
                         {
-                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false);
+                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getDeviceProtectedDataDir(), logInfo.isSystem(), false);
                             appInfo.setLogInfo(logInfo);
                             list.add(appInfo);
                         }

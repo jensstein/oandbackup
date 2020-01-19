@@ -41,7 +41,7 @@ public class BackupRestoreHelper
         }
         else
         {
-            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getSourceDir(), backupMode);
+            ret = shellCommands.doBackup(context, backupSubDir, appInfo.getLabel(), appInfo.getDataDir(), appInfo.getDeviceProtectedDataDir(), appInfo.getSourceDir(), backupMode);
             appInfo.setBackupMode(backupMode);
         }
 
@@ -94,7 +94,7 @@ public class BackupRestoreHelper
                 }
                 else
                 {
-                    restoreRet = shellCommands.doRestore(context, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir());
+                    restoreRet = shellCommands.doRestore(context, backupSubDir, appInfo.getLabel(), appInfo.getPackageName(), appInfo.getLogInfo().getDataDir(), appInfo.getLogInfo().getDeviceProtectedDataDir());
 
                     permRet = shellCommands.setPermissions(dataDir);
                 }
