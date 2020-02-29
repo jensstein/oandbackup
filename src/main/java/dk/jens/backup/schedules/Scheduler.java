@@ -441,7 +441,7 @@ BlacklistListener
                 break;
         }
     }
-    public void removeSecondaryButton(LinearLayout parent, View v)
+    public static void removeSecondaryButton(LinearLayout parent, View v)
     {
         int id = (v != null) ? v.getId() : -1;
         Button bt = (Button) parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
