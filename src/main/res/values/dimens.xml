@@ -1,0 +1,24 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Height of each list item -->
+    <dimen name="list_item_height">100dp</dimen>
+    <!-- Items margins and padding -->
+    <dimen name="icon_padding">16dp</dimen>
+    <dimen name="cards_margin">8dp</dimen>
+    <dimen name="text_padding">8dp</dimen>
+    <!-- Sizes of texts -->
+    <dimen name="main_text">24sp</dimen>
+    <dimen name="miwok_text">20sp</dimen>
+    <dimen name="default_text">16sp</dimen>
+    <!-- layout sizes -->
+    <dimen name="to_weight">0dp</dimen>
+    <dimen name="icon_size">64dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+</resources>

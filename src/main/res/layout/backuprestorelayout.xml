@@ -3,45 +3,70 @@
     android:orientation="vertical"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent">
-    <Button
-        android:id="@+id/backupRestoreButton"
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fastScrollEnabled="true" />
+
+    <LinearLayout
+        style="@style/mainBarView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-    />
-    <RadioGroup
-        android:id="@+id/radiogroup"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent">     
-        <RadioButton
-            android:id="@+id/radioApk"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/backupRestoreButton"
+            style="@style/roundedButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content" 
-            android:text="@string/radioApk"
-        />
-        <RadioButton
-            android:id="@+id/radioData"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content" 
-            android:text="@string/radioData"
-        />
-        <RadioButton
-            android:id="@+id/radioBoth"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content" 
-            android:text="@string/radioBoth"
-        />
-    </RadioGroup>
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="@string/de_selectAll" />
+
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.6"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioApk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioApk" />
+
+                <RadioButton
+                    android:id="@+id/radioData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioData" />
+
+                <RadioButton
+                    android:id="@+id/radioBoth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioBoth" />
+            </RadioGroup>
+        </LinearLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/backupLinear"
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent">
-        </LinearLayout>
-    <ListView
-        android:id="@+id/listview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fastScrollEnabled="true"
-        />
+    </LinearLayout>
 </LinearLayout>
