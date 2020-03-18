@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
-  <string name="backup">Резервна копија</string>
+    <string name="backup">Резервна копија</string>
   <string name="restore">Враћање</string>
   <string name="backupConfirmation">Направити резервну копију?</string>
   <string name="restoreConfirmation">Вратити резервну копију?</string>

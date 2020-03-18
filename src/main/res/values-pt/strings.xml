@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
-  <string name="backup">Backup</string>
+    <string name="backup">Backup</string>
   <string name="restore">Restauro</string>
   <string name="backupConfirmation">Backup?</string>
   <string name="restoreConfirmation">Restaurar?</string>

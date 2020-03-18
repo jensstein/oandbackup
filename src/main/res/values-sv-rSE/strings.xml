@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
-  <string name="backup">säkerhetskopiera</string>
+    <string name="backup">säkerhetskopiera</string>
   <string name="restore">återställ</string>
   <string name="backupConfirmation">säkerhetskopiera?</string>
   <string name="restoreConfirmation">återställ?</string>

@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
-  <string name="backup">kopia zapasowa</string>
+    <string name="backup">kopia zapasowa</string>
   <string name="restore">przywracanie</string>
   <string name="backupConfirmation">utworzyć kopię zapasową?</string>
   <string name="restoreConfirmation">przywracać?</string>

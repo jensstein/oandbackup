@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Oandbackup</string>
     <string name="backup">Зарезервировать</string>
     <string name="restore">Восстановить</string>
     <string name="backupConfirmation">Зарезервировать?</string>

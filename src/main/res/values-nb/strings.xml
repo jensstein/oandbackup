@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">oandbackup</string>
-  <string name="backup">Lag sikkerhetskopi</string>
+    <string name="backup">Lag sikkerhetskopi</string>
   <string name="restore">Gjenopprett</string>
   <string name="backupConfirmation">Lag sikkerhetskopi?</string>
   <string name="restoreConfirmation">Gjenopprett?</string>
