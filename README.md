@@ -1,15 +1,14 @@
-oandbackup
+OAndBackupX
 =======
-[![pipeline status](https://gitlab.com/jensstein/oandbackup/badges/master/pipeline.svg)](https://gitlab.com/jensstein/oandbackup/commits/master)
 
 a backup program for android. requires root and allows you to backup individual apps and their data.
 both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores).  
-restoring system apps should be possible without requiring a reboot afterwards. oandbackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
+restoring system apps should be possible without requiring a reboot afterwards. oandbackupx is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
 building
 ========
-oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
+oandbackupx is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
 ```
 ./gradlew build
 # building only debug
@@ -20,14 +19,8 @@ oandbackup is built with gradle. you need the android sdk, rust for building the
 
 version control
 ==============
-oandbackup is handled on both gitlab and github:   
-https://gitlab.com/jensstein/oandbackup/   
-https://github.com/jensstein/oandbackup   
-debug apks are built by gitlab for each commit on every branch. the latest successful build can be found here (substitute $branch for the desired branch, e.g. master):   
-https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/$branch/browse/apks?job=build  
-(e.g. https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse/apks?job=build)  
-and signed release apks are built for every commit on the master branch:  
-https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse?job=sign
+oandbackupx is handled on both github:   
+https://github.com/machiav3lli/oandbackupx   
 
 busybox / toybox / oab-utils
 ======
@@ -44,20 +37,18 @@ if you have a working toolchain for your target device, you should only need to 
         # build as a static binary if needed
     make
 ```
-copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackup. in the oandbackup preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
+copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackupx. in the oandbackupx preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
 
-an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
 
-translations are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
+translations of the original OAndBackup are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
 so please come help us there or spread the link if you want the app available in your own language.
 
-if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com
 
 Cryptography
 ============
-oandbackup supports encrypting the backups using an external cryptography provider.
+oandbackupx supports encrypting the backups using an external cryptography provider.
 First you need to install an app which implements the openpgp-api, e.g. OpenKeychain: https://www.openkeychain.org/, and set up an identity.
-The "Cryptography" section of the preferences of oandbackup is then enabled and here you can choose which openpgp and identity to use.
+The "Cryptography" section of the preferences of oandbackupx is then enabled and here you can choose which openpgp and identity to use.
 
 special usage notes
 ===========
@@ -77,7 +68,7 @@ the code which does these things are in the methods doRestore and setPermissions
 
 licenses
 =======
-oandbackup is licensed under the MIT license (see LICENSE.txt)
+as a fork of oandbackup, oandbackupx is licensed under the MIT license (see LICENSE.txt)
 
 android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs directory)
 
@@ -85,4 +76,4 @@ openpgp-api-lib is written by Dominik Schürmann and licensed under Apache Licen
 
 author
 ======
-jens stein
+antonios hazim
