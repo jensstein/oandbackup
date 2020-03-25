@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.ListPreference
         android:key="languages"
         android:title="@string/prefs_languages"
         android:entries="@array/languageEntries"
         android:entryValues="@array/languageEntryValues"
         android:defaultValue="system"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="timestamp"
         android:title="@string/prefs_timestamp"
         android:defaultValue="true"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="copySelfApk"
         android:title="@string/prefs_copySelfApk"
         android:summary="@string/prefs_summaryCopySelfApk"
         android:defaultValue="false"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="acquireWakelock"
         android:title="@string/prefs_acquireWakelock"
         android:summary="@string/prefs_summaryAcquireWakelock"
         android:defaultValue="true"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="rememberFiltering"
         android:title="@string/prefs_rememberFiltering"
         android:summary="@string/prefs_summaryRememberFiltering"
         android:defaultValue="false"
         />
-    <EditTextPreference
+    <androidx.preference.EditTextPreference
         android:key="oldBackups"
         android:title="@string/prefs_oldBackups"
         android:summary="@string/prefs_summaryOldBackups"
         android:inputType="number"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="followSymlinks"
         android:title="@string/prefs_followSymlinks"
         android:summary="@string/prefs_summaryFollowSymlinks"
         android:defaultValue="true"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="backupExternalFiles"
         android:title="@string/prefs_backupExternalFiles"
         android:summary="@string/prefs_summaryBackupExternalFiles"
         android:defaultValue="false"
         />
-    <CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="enableSpecialBackups"
         android:title="@string/prefs_enableSpecialBackups"
         android:defaultValue="true"
         />
-    <PreferenceScreen
+    <androidx.preference.PreferenceScreen
         android:title="@string/prefs_cryptoMenu"
         android:key="cryptoMenu">
-        <CheckBoxPreference
+        <androidx.preference.CheckBoxPreference
             android:key="enableCrypto"
             android:title="@string/prefs_enableCrypto"
             android:summary="@string/prefs_summaryEnableCrypto"
             android:defaultValue="false"
             />
-        <EditTextPreference
+        <androidx.preference.EditTextPreference
             android:key="cryptoUserIds"
             android:title="@string/prefs_cryptoUserIds"
             android:summary="@string/prefs_summaryCryptoUserIds"
@@ -71,8 +71,8 @@
             android:key="openpgpProviderList"
             android:title="@string/prefs_openpgpProviderList"
             />
-    </PreferenceScreen>
-    <PreferenceCategory
+    </androidx.preference.PreferenceScreen>
+    <androidx.preference.PreferenceCategory
         android:title="@string/prefs_pathscategory"
         android:key="pathscategory" >
         <com.machiav3lli.backup.FileBrowserEditTextPreference
@@ -85,5 +85,5 @@
             android:title="@string/prefs_pathBusybox"
             android:summary="@string/prefs_summaryBusybox"
             />
-    </PreferenceCategory>
-</PreferenceScreen>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

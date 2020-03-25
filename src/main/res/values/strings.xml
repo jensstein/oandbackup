@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">oandbackupx</string>
+    <string name="app_name" translatable="false">OAndBackupX</string>
     <string name="backup">backup</string>
     <string name="restore">restore</string>
     <string name="backupConfirmation">backup?</string>
@@ -164,7 +164,16 @@
     <string name="permission_not_granted">Permission to access external storage is required</string>
     <string name="restart_dialog">Application seems to need to be restarted</string>
     
-    
-    <string name=""
-    
+
+    <string name="filter_options">Filters:</string>
+    <string name="sort_options">Sort by:</string>
+    <string name="sortLabel">Label</string>
+    <string name="sortPackageName">Package Name</string>
+    <string name="filterAll">System &amp; User Apps</string>
+    <string name="filterUser">User Apps</string>
+    <string name="filterSystem">System Apps</string>
+    <string name="app_s_icon">app\'s icon</string>
+    <string name="prefs_disableNotifications">Disable notification</string>
+    <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
+
 </resources>

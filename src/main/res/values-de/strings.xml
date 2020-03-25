@@ -23,7 +23,7 @@
   <string name="uninstallProgress">Deinstalliere…</string>
   <string name="showAll">Alle Apps anzeigen</string>
   <string name="showOnlySystem">Nur System-Apps anzeigen</string>
-  <string name="showOnlyUser">Nur Benuter-Apps anzeigen</string>
+  <string name="showOnlyUser">Nur Benutzer-Apps anzeigen</string>
   <string name="showNotBackedup">Apps ohne Sicherung anzeigen</string>
   <string name="showNotInstalled">Nicht installierte Apps anzeigen</string>
   <string name="showNewAndUpdated">Neue und aktualisierte Apps anzeigen</string>
@@ -102,7 +102,7 @@
   <string name="prefs_rememberFiltering">Sortierung und Filter behalten</string>
   <string name="prefs_summaryRememberFiltering">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü angekreuzten werden beachtet</string>
   <string name="prefs_disableNotifications">Benachrichtigungen ausschalten</string>
-  <string name="prefs_summaryDisableNotifications">Oandbackup zeigt keine Benachrichtigungen an</string>
+  <string name="prefs_summaryDisableNotifications">OAndBackupX zeigt keine Benachrichtigungen an</string>
   <string name="prefs_followSymlinks">Symbolischen Links folgen</string>
   <string name="prefs_summaryFollowSymlinks">Symbolischen Links beim Kopieren immer folgen (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
@@ -144,4 +144,19 @@
   <string name="filebrowser_contextSetBackupDirectory">Als Sicherungsordner festlegen</string>
   <string name="logviewer_message_loading">Protokolldatei laden...</string>
   <string name="logviewer_next_lines_button">Weiter</string>
+    <string name="blacklistDialogTitle">Schwarze Liste</string>
+  <string name="sched_globalBlacklist">Schwarze Liste einrichten</string>
+  <string name="filter_options">Filter:</string>
+  <string name="sort_options">Sortieren nach:</string>
+  <string name="sortPackageName">Paketname</string>
+  <string name="sortLabel">Bezeichnung</string>
+  <string name="filterAll">System &amp; Benutzer-Apps</string>
+  <string name="filterUser">Benutzer-Apps</string>
+  <string name="filterSystem">System-Apps</string>
+  <string name="app_s_icon">Apps Symbol</string>
+  <string name="permission_not_granted">Teilen</string>
+  <string name="restart_dialog">Dateien-Browser</string>
+  <string name="error_updating_schedule_mode">App kann nicht wiederhergestellt werden mit einer Sicherung ohne Apk</string>
+  <string name="error_creating_notification_channel">Hilfe</string>
+  <string name="oabUtilsCheck">Prüfen nach oab-utils</string>
 </resources>

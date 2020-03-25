@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fastScrollEnabled="true"
+            android:paddingBottom="@dimen/bottom_margin" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/tan_background" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_margin"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_batch_backup"
+                android:drawableTop="@drawable/ic_backup_white"
+                android:text="@string/backup"
+                style="@style/navbarButton" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_batch_restore"
+                android:drawableTop="@drawable/ic_restore_white"
+                android:text="@string/restore"
+                style="@style/navbarButton" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_schedule"
+                android:drawableTop="@drawable/ic_sched_white"
+                android:text="@string/sched_title"
+                style="@style/navbarButton" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_settings"
+                android:drawableTop="@drawable/ic_settings_white"
+                android:text="@string/prefs_title"
+                style="@style/navbarButton" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="72dp"
+        android:layout_marginRight="@dimen/large_margin"
+        android:text="@string/sort"
+        app:icon="@drawable/ic_filter_white_48dp"
+        android:textAppearance="@style/TextAppearance.Button"
+        android:backgroundTint="@color/btn_background"/>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

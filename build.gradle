@@ -12,11 +12,11 @@ repositories {
 ext {
     openpgp_api_version = "12.0"
     room_version = "2.2.4"
-    hamcrest_version = "2.2"
+    // hamcrest_version = "2.2"
     mockito_version = "2.24.0"
     lifecycle_version = "2.2.0"
+    lightweight_stream_api_version = "1.2.1"
 
-    // lightweight_stream_api_version = "1.2.1"
     // junit_version = "5.6.0"
 
     appcompat_version = "1.1.0"
@@ -28,6 +28,8 @@ ext {
     android_support_test_version = "1.1.1"
     espresso_version = "3.2.0"
     uiautomator_version = "2.2.0"
+    butterknife_version = "10.2.1"
+    flexbox_version = "2.0.1"
 }
 
 
@@ -36,12 +38,16 @@ dependencies {
     implementation "org.sufficientlysecure:openpgp-api:$openpgp_api_version"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-    implementation "org.hamcrest:hamcrest:$hamcrest_version"
+    // implementation "org.hamcrest:hamcrest:$hamcrest_version"
     implementation "org.mockito:mockito-core:$mockito_version"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "com.annimon:stream:$lightweight_stream_api_version"
 
-    // implementation "com.annimon:$lightweight_stream_api_version"
     // implementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+
+    //ButterKnife
+    implementation "com.jakewharton:butterknife:$butterknife_version"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
 
     // UI
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -49,6 +55,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "androidx.preference:preference:$preference_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version"
+    implementation "com.google.android:flexbox:$flexbox_version"
 
     // Tests
     implementation "androidx.room:room-testing:$room_version"
@@ -94,8 +101,8 @@ sonarqube {
 }
 
 int versionMajor = 0
-int versionMinor = 3
-int versionPath = 5
+int versionMinor = 1
+int versionPath = 1
 
 android {
     compileSdkVersion 29
@@ -106,7 +113,7 @@ android {
             versionMinor * 100 +
             versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 29
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         javaCompileOptions {

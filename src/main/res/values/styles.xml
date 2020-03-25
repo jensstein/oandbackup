@@ -1,20 +1,30 @@
 <resources>
 
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/app_accent</item>
+        <item name="colorPrimaryDark">@color/tan_background</item>
+        <item name="colorAccent">@color/app_accent</item>
+        <item name="toolbarStyle">@style/Widget.Toolbar.Dark</item>
+        <item name="android:strokeColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/tan_background</item>
+        <item name="android:colorBackground">@color/tan_background</item>
+        <item name="colorBackgroundFloating">@color/tan_background</item>
+    </style>
+
+
     <!-- Style for a list items -->
     <style name="itemFrame">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/list_item_height</item>
-        <item name="android:padding">@dimen/cards_margin</item>
+        <item name="android:padding">4dp</item>
     </style>
 
-    <style name="mainTextView" parent="android:Widget.TextView">
+    <style name="itemHolder" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/list_item_height</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:background">@drawable/card_rc15</item>
-        <item name="android:backgroundTint">@color/tan_background</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@drawable/card_rc8</item>
+        <item name="android:backgroundTint">@color/colorDarkPrimaryDark</item>
     </style>
 
     <style name="mainBarView" parent="android:Widget.TextView">
@@ -22,13 +32,54 @@
         <item name="android:layout_height">@dimen/list_item_height</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:background">@drawable/bar_rc15</item>
-        <item name="android:backgroundTint">@color/tan_background</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@color/tan_background</item>
     </style>
 
+
+
+    <!-- Buttons & Widgets -->
     <style name="roundedButton" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/card_rc15</item>
+        <item name="android:background">@drawable/card_rc8</item>
+        <item name="android:backgroundTint">@color/app_accent</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+    <style name="filterChip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="checkedIconTint">@color/app_accent</item>
+    </style>
+
+    <style name="navbarButton" parent="android:Widget.Material.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">0.25</item>
+        <item name="android:padding">@dimen/cards_margin</item>
+        <item name="android:background">@drawable/ripple_nav_buttons</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+
+    <!-- Toolbar & AppBar -->
+    <style name="AppTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="AppTheme.PopupTheme.Dark" parent="ThemeOverlay.MaterialComponents.Dark" />
+
+    <style name="Widget.Toolbar.Dark" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?android:attr/windowBackground</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Title</item>
+        <item name="popupTheme">@style/AppTheme.PopupTheme.Dark</item>
+    </style>
+
+    <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+        <item name="popupTheme">@style/AppTheme.PopupTheme</item>
+        <item name="android:background">?android:attr/windowBackground</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
 </resources>

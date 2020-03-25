@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
-      package="com.machiav3lli.backup">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"></uses-permission>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <application android:label="@string/app_name" android:icon="@drawable/backup2">
-        <activity android:name="com.machiav3lli.backup.OAndBackupX"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.machiav3lli.backup">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true">
+        <activity
+            android:name="com.machiav3lli.backup.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -17,46 +25,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.machiav3lli.backup.BatchActivity"
+        <activity
+            android:name="com.machiav3lli.backup.BatchActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.machiav3lli.backup.OAndBackupX" >
-        </activity>
-        <activity android:name="com.machiav3lli.backup.Preferences"
-            android:label="@string/prefs_title"
-            android:parentActivityName="com.machiav3lli.backup.OAndBackupX"
-            android:launchMode="singleTop">
-        </activity>
-        <activity android:name="com.machiav3lli.backup.schedules.Scheduler"
+            android:parentActivityName="com.machiav3lli.backup.MainActivity" />
+        <activity
+            android:name="com.machiav3lli.backup.schedules.SchedulerActivity"
             android:label="@string/sched_title"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.machiav3lli.backup.OAndBackupX" >
-        </activity>
-        <activity android:name="com.machiav3lli.backup.ui.Help"
+            android:parentActivityName="com.machiav3lli.backup.MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.machiav3lli.backup.ui.Help"
             android:label="@string/help_title"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.machiav3lli.backup.OAndBackupX" >
-        </activity>
-        <activity android:name="com.machiav3lli.backup.Tools"
+            android:parentActivityName="com.machiav3lli.backup.MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.machiav3lli.backup.Tools"
             android:label="@string/tools_title"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.machiav3lli.backup.OAndBackupX"
-            android:launchMode="singleTop">
-        </activity>
-        <activity android:name="com.machiav3lli.backup.ui.FileBrowser"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.machiav3lli.backup.MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <!-- activity
+            android:name="com.machiav3lli.backup.ui.FileBrowser"
             android:label="@string/filebrowser_title"
-            android:parentActivityName=".Preferences" >
-        </activity>
-        <activity android:name="com.machiav3lli.backup.LogViewer"
+            android:parentActivityName=".Preferences" /-->
+        <activity
+            android:name="com.machiav3lli.backup.LogViewer"
             android:label="logviewer"
-            android:parentActivityName=".Tools" >
-        </activity>
+            android:parentActivityName=".Tools" />
+
         <receiver android:name="com.machiav3lli.backup.schedules.AlarmReceiver" />
         <receiver android:name="com.machiav3lli.backup.schedules.BootReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service android:name="com.machiav3lli.backup.schedules.ScheduleService" />
-        <service android:name="com.machiav3lli.backup.schedules.TestScheduleService" />
     </application>
 </manifest>

@@ -5,18 +5,28 @@
 
     <!-- Height of each list item -->
     <dimen name="list_item_height">100dp</dimen>
+
     <!-- Items margins and padding -->
     <dimen name="icon_padding">16dp</dimen>
-    <dimen name="cards_margin">8dp</dimen>
     <dimen name="text_padding">8dp</dimen>
+    <dimen name="small_margin">2dp</dimen>
+    <dimen name="cards_margin">8dp</dimen>
+    <dimen name="med_margin">12dp</dimen>
+    <dimen name="large_margin">16dp</dimen>
+    <dimen name="bottom_margin">64dp</dimen>
+
     <!-- Sizes of texts -->
-    <dimen name="main_text">24sp</dimen>
-    <dimen name="miwok_text">20sp</dimen>
-    <dimen name="default_text">16sp</dimen>
+    <dimen name="main_text">16sp</dimen>
+    <dimen name="secondary_text">12sp</dimen>
+    <dimen name="title_text">24sp</dimen>
+
     <!-- layout sizes -->
     <dimen name="to_weight">0dp</dimen>
-    <dimen name="icon_size">64dp</dimen>
-    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="batch_nav_height">112dp</dimen>
+    <dimen name="batch_fab_height">120dp</dimen>
+    <dimen name="main_nav_height">64dp</dimen>
+    <dimen name="main_fab_height">72dp</dimen>
+    <dimen name="wrapped_icon_size">32dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
