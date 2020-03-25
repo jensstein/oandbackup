@@ -2,7 +2,7 @@ extern crate clap;
 extern crate libc;
 
 use std::fmt;
-use std::error::Error;
+// use std::error::Error;
 use std::fs;
 use std::io;
 use std::os::unix::fs::MetadataExt;
@@ -24,17 +24,18 @@ impl fmt::Display for OabError {
         write!(f, "{}", self.message)
     }
 }
-
+/*
 impl std::error::Error for OabError {
     fn description(&self) -> &str {
         &self.message
     }
 }
 
+*/
 impl From<io::Error> for OabError {
     fn from(error: io::Error) -> Self {
         OabError {
-            message: error.description().to_string()
+            message: error.to_string()
         }
     }
 }
@@ -93,7 +94,7 @@ fn str_to_cstring(s: &str) -> Result<std::ffi::CString, OabError> {
         Ok(s) => Ok(s),
         Err(e) => {
             return Err(OabError {
-                    message: e.description().to_string()
+                    message: format!("{}", e.to_string())
                 }
             )
         }
@@ -154,7 +155,7 @@ fn set_permissions(path: &Path, mode: u32) -> Result<(), OabError> {
         Err(e) => {
             return Err(OabError {
                 message: format!("error getting permissions for {:?}: {}", path,
-                    e.description())
+                    e.to_string())
             });
         }
         Ok(metadata) => metadata.permissions()
@@ -164,7 +165,7 @@ fn set_permissions(path: &Path, mode: u32) -> Result<(), OabError> {
         if let Err(e) = std::fs::set_permissions(path, perms) {
             return Err(OabError {
                 message: format!("unable to set mode {:o} on path {:?}: {}",
-                    mode, path, e.description())
+                    mode, path, e.to_string())
             });
         }
     }
@@ -222,8 +223,7 @@ fn main() {
                     println!("{{\"uid\": {}, \"gid\": {}}}", uid, gid);
                 },
                 Err(e) => {
-                    eprintln!("error getting owner ids for {:?}: {}", input,
-                        e.description());
+                    eprintln!("error getting owner ids for {:?}: {}", input, e.to_string());
                     std::process::exit(1);
                 }
             };
@@ -233,19 +233,19 @@ fn main() {
             let mode_str = args.value_of("mode").unwrap();
             let mode = match u32::from_str_radix(mode_str, 8) {
                 Err(e) => {
-                    eprintln!("error parsing input {}: {}", mode_str, e.description());
+                    eprintln!("error parsing input {}: {}", mode_str, e.to_string());
                     std::process::exit(1);
                 }
                 Ok(value) => value
             };
             if args.is_present("recursive") {
                 if let Err(err) = set_permissions_recurse(input, mode) {
-                    eprintln!("{}", err.description());
+                    eprintln!("{}", err.to_string());
                     std::process::exit(1);
                 }
             } else {
                 if let Err(err) = set_permissions(input, mode) {
-                    eprintln!("{}", err.description());
+                    eprintln!("{}", err.to_string());
                     std::process::exit(1);
                 }
             }
@@ -261,24 +261,24 @@ fn main() {
                             Ok((_, gid)) => gid,
                             Err(e) => {
                                 eprintln!("unable to get group id for {:?}: {}",
-                                    path, e.description());
+                                    path, e.to_string());
                                 std::process::exit(1);
                             }
                         }
                     };
                     if args.is_present("recursive") {
                         if let Err(e) = change_owner_recurse(path, uid, gid) {
-                            eprintln!("{}", e.description());
+                            eprintln!("{}", e.to_string());
                             std::process::exit(1);
                         }
                     } else {
                         if let Err(e) = change_owner(path, uid, gid) {
-                            eprintln!("{}", e.description());
+                            eprintln!("{}", e.to_string());
                             std::process::exit(1);
                         }
                     }
                 },
-                Err(e) => eprintln!("unable to parse input: {}", e.description())
+                Err(e) => eprintln!("unable to parse input: {}", e.to_string())
             };
         },
         ("", None) => {

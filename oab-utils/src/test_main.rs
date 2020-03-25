@@ -13,14 +13,18 @@ impl IdRetrieverModel for MockIdRetriever {
     #[allow(unused_variables)]
     fn get_uid(&self, name: &str) -> Result<u32, OabError> {
         if let Some(ref error) = self.mock_error {
-            return Err(OabError {message: error.to_string()});
+            return Err(OabError {
+            message: error.to_string()
+            });
         }
         Ok(self.mock_uid)
     }
     #[allow(unused_variables)]
     fn get_gid(&self, name: &str) -> Result<u32, OabError> {
         if let Some(ref error) = self.mock_error {
-            return Err(OabError {message: error.to_string()});
+            return Err(OabError {
+            message: error.to_string()
+            });
         }
         Ok(self.mock_gid)
     }
@@ -92,7 +96,7 @@ fn test_parse_id_input_error() {
         Some("no such user".to_string()));
     match parse_id_input(&mock_id_retriever, "user1000") {
         Ok((_uid, _gid_option)) => assert!(false, "shouldn't succeed"),
-        Err(err) => assert_eq!("no such user", err.description())
+        Err(err) => assert_eq!("no such user", err.to_string())
     }
 }
 
