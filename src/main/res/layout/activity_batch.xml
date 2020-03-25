@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/listview"
+    <include layout="@layout/bar_search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/main_nav_height"
+        android:layout_marginBottom="@dimen/batch_nav_height"
+        android:divider="@android:color/transparent"
         android:fastScrollEnabled="true"
-        android:paddingBottom="112dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/item_batch_list" />
 
     <FrameLayout
         style="@style/mainBarView"
@@ -32,6 +38,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/cbAll"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"
@@ -72,7 +79,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/backupRestoreButton"
-                style="@style/filterButton"
+                style="@style/filterChip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="" />
@@ -80,4 +87,18 @@
         </LinearLayout>
 
     </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/sort_filter_fab"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/batch_fab_height"
+        android:backgroundTint="@color/app_accent"
+        android:text="@string/sort"
+        android:textAppearance="@style/TextAppearance.Button"
+        app:icon="@drawable/ic_filter_white_48dp" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

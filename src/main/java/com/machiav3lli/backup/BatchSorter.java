@@ -3,13 +3,13 @@ package com.machiav3lli.backup;
 import android.content.SharedPreferences;
 import android.util.SparseIntArray;
 
-import com.machiav3lli.backup.adapters.AppInfoAdapter;
 import com.machiav3lli.backup.adapters.BatchAdapter;
 
 import java.util.Comparator;
+import java.util.Objects;
 
-public class MainSorter {
-    AppInfoAdapter adapter;
+public class BatchSorter {
+    BatchAdapter adapter;
     FilteringMethod filteringMethod = FilteringMethod.ALL;
     SortingMethod sortingMethod = SortingMethod.PACKAGENAME;
     // SparseIntArray is more memory efficient than mapping integers to integers using a hashmap
@@ -17,13 +17,13 @@ public class MainSorter {
     SharedPreferences.Editor prefsEdit;
     int oldBackups = 0;
 
-    public MainSorter(AppInfoAdapter adapter, SharedPreferences prefs) {
+    public BatchSorter(BatchAdapter adapter, SharedPreferences prefs) {
         this.adapter = adapter;
         this.prefsEdit = prefs.edit();
         try {
-            oldBackups = Integer.valueOf(prefs.getString(
-                    Constants.PREFS_OLDBACKUPS, "0"));
-        } catch (NumberFormatException e) {
+            oldBackups = Integer.parseInt(Objects.requireNonNull(prefs.getString(
+                    Constants.PREFS_OLDBACKUPS, "0")));
+        } catch (NumberFormatException ignored) {
         }
     }
 

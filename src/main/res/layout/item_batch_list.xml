@@ -1,37 +1,38 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/itemFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        style="@style/mainTextView"
+        style="@style/itemHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/checkbox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:clickable="false"
                 android:focusable="false"
-                android:textSize="@dimen/main_text"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textAppearance="@style/labelText" />
 
             <TextView
                 android:id="@+id/backupMode"
                 android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:gravity="end"
-                android:textSize="@dimen/main_text"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="@dimen/main_text" />
         </LinearLayout>
 
         <LinearLayout
@@ -44,11 +45,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                android:paddingStart="@dimen/med_margin"
                 android:singleLine="true"
-                android:textSize="@dimen/secondary_text"/>
+                android:textSize="@dimen/secondary_text"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
-                android:id="@+id/lastBackup"
+                android:id="@+id/versionCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
