@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,14 +14,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.machiav3lli.backup.AppInfo;
 import com.machiav3lli.backup.LogFile;
 import com.machiav3lli.backup.MainSorter;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.ui.HandleMessages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +27,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
+public class MainAdapter extends ArrayAdapter<AppInfo> {
     Context context;
 
     public ArrayList<AppInfo> items;
@@ -58,8 +54,8 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
     ImageView icon;
 
 
-    public AppInfoAdapter(Context context, int layout, ArrayList<AppInfo> items) {
-        super(context,layout,items);
+    public MainAdapter(Context context, int layout, ArrayList<AppInfo> items) {
+        super(context, layout, items);
         this.context = context;
         this.items = new ArrayList<>(items);
         this.layout = layout;
@@ -80,13 +76,13 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_main_list, null);
-            ButterKnife.bind(this,convertView);
-            viewHolder = new ViewHolder(label,packageName,versionName,lastBackup,backupMode,icon);
+            ButterKnife.bind(this, convertView);
+            viewHolder = new ViewHolder(label, packageName, versionName, lastBackup, backupMode, icon);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        onBindViewHolder(viewHolder,position);
+        onBindViewHolder(viewHolder, position);
         return convertView;
     }
 
@@ -105,8 +101,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
     }
 
 
-
-    public void onBindViewHolder(@NonNull AppInfoAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainAdapter.ViewHolder holder, int position) {
         AppInfo appInfo = items.get(position);
         if (appInfo != null) {
 
@@ -116,7 +111,7 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
                 lp.height = lp.width = iconSize;
                 holder.icon.setLayoutParams(lp);
             } else {
-                    holder.icon.setImageDrawable(context.getDrawable(R.drawable.placeholder));
+                holder.icon.setImageDrawable(context.getDrawable(R.drawable.placeholder));
             }
 
             holder.label.setText(appInfo.getLabel());

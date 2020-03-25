@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
     android:layout_marginStart="0dp"
-    app:elevation="12dp"
-    >
+    app:elevation="12dp">
 
     <RelativeLayout
         android:id="@+id/layout"
@@ -17,21 +16,22 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
+            style="@android:style/Widget.Material.SearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:autofillHints="@string/searchHint"
             android:background="@null"
-            app:iconifiedByDefault="false"
             android:clickable="true"
+            android:focusable="true"
             android:imeOptions="flagNoExtractUi|actionSearch"
             android:inputType="text"
-            style="@android:style/Widget.Material.SearchView"
-            app:searchIcon="@drawable/ic_main_bar"
             android:singleLine="true"
             android:textAlignment="center"
-            android:autofillHints="@string/searchHint"
             android:textAppearance="@style/TextAppearance.SearchBar"
-            android:focusable="true" />
+            app:iconifiedByDefault="false"
+            app:searchIcon="@drawable/ic_main_bar" />
+
 
     </RelativeLayout>
 

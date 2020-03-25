@@ -7,9 +7,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,10 +24,7 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -38,8 +35,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.annimon.stream.IntStream;
 import com.annimon.stream.Optional;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.machiav3lli.backup.adapters.AppInfoAdapter;
-import com.machiav3lli.backup.schedules.Scheduler;
+import com.machiav3lli.backup.adapters.MainAdapter;
+import com.machiav3lli.backup.schedules.SchedulerActivity;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
 import com.machiav3lli.backup.ui.HandleMessages;
@@ -59,7 +56,7 @@ import butterknife.OnClick;
 
 import static com.machiav3lli.backup.Constants.classAddress;
 
-public class OAndBackupX extends BaseActivity
+public class MainActivity extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener, ActionListener {
     public static final String TAG = Constants.TAG;
     static final int BATCH_REQUEST = 1;
@@ -88,7 +85,7 @@ public class OAndBackupX extends BaseActivity
     @BindView(R.id.search_view)
     androidx.appcompat.widget.SearchView searchView;
 
-    AppInfoAdapter adapter;
+    MainAdapter adapter;
     SortFilterSheet sheetSortFilter;
     /*
      * appInfoList is too large to transfer as an intent extra.
@@ -130,15 +127,15 @@ public class OAndBackupX extends BaseActivity
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (OAndBackupX.this.adapter != null)
-                    OAndBackupX.this.adapter.getFilter().filter(newText);
+                if (MainActivity.this.adapter != null)
+                    MainActivity.this.adapter.getFilter().filter(newText);
                 return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (OAndBackupX.this.adapter != null)
-                    OAndBackupX.this.adapter.getFilter().filter(query);
+                if (MainActivity.this.adapter != null)
+                    MainActivity.this.adapter.getFilter().filter(query);
                 return true;
             }
         });
@@ -342,16 +339,16 @@ public class OAndBackupX extends BaseActivity
     public void bindNavigationButtons() {
         btnBackup.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST));
         btnRestore.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST));
-        btnSchedule.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Scheduler.class)));
+        btnSchedule.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivity.class)));
         // btnSettings.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Preferences.class)));
     }
 
     public Thread refresh() {
         Thread refreshThread = new Thread(new Runnable() {
             public void run() {
-                appInfoList = AppInfoHelper.getPackageInfo(OAndBackupX.this,
+                appInfoList = AppInfoHelper.getPackageInfo(MainActivity.this,
                         backupDir, true, PreferenceManager.getDefaultSharedPreferences(
-                                OAndBackupX.this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS,
+                                MainActivity.this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS,
                                 true));
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -385,7 +382,7 @@ public class OAndBackupX extends BaseActivity
         }
     }
 
-    public void setAppInfoAdapter(AppInfoAdapter adapter) {
+    public void setAppInfoAdapter(MainAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -481,10 +478,10 @@ public class OAndBackupX extends BaseActivity
                                         refresh();
                                         handleMessages.endMessage();
                                         if (ret == 0) {
-                                            NotificationHelper.showNotification(OAndBackupX.this, OAndBackupX.class, notificationId++, getString(R.string.uninstallSuccess), appInfo.getLabel(), true);
+                                            NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallSuccess), appInfo.getLabel(), true);
                                         } else {
-                                            NotificationHelper.showNotification(OAndBackupX.this, OAndBackupX.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
-                                            Utils.showErrors(OAndBackupX.this);
+                                            NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
+                                            Utils.showErrors(MainActivity.this);
                                         }
                                     }
                                 });
@@ -553,7 +550,7 @@ public class OAndBackupX extends BaseActivity
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
         if (key.equals(Constants.PREFS_PATH_BACKUP_DIRECTORY)) {
             String backupDirPath = preferences.getString(key, FileCreationHelper.getDefaultBackupDirPath());
-            backupDir = Utils.createBackupDir(OAndBackupX.this, backupDirPath);
+            backupDir = Utils.createBackupDir(MainActivity.this, backupDirPath);
             refresh();
         } else if (key.equals(Constants.PREFS_PATH_BUSYBOX)) {
             shellCommands = new ShellCommands(preferences, getFilesDir());
@@ -625,23 +622,23 @@ public class OAndBackupX extends BaseActivity
         }
 
         public void run() {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OAndBackupX.this);
-            prefs.registerOnSharedPreferenceChangeListener(OAndBackupX.this);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+            prefs.registerOnSharedPreferenceChangeListener(MainActivity.this);
             shellCommands = new ShellCommands(prefs, users, getFilesDir());
             String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
                     Constants.PREFS_LANGUAGES_DEFAULT);
-            LanguageHelper.initLanguage(OAndBackupX.this, langCode);
+            LanguageHelper.initLanguage(MainActivity.this, langCode);
             String backupDirPath = prefs.getString(
                     Constants.PREFS_PATH_BACKUP_DIRECTORY,
                     FileCreationHelper.getDefaultBackupDirPath());
-            backupDir = Utils.createBackupDir(OAndBackupX.this, backupDirPath);
+            backupDir = Utils.createBackupDir(MainActivity.this, backupDirPath);
             // temporary method to move logfile from bottom of external storage to bottom of backupdir
             new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
             if (!checked) {
                 handleMessages.showMessage("", getString(R.string.suCheck));
                 boolean haveSu = ShellCommands.checkSuperUser();
                 if (!haveSu) {
-                    Utils.showWarning(OAndBackupX.this, "", getString(R.string.noSu));
+                    Utils.showWarning(MainActivity.this, "", getString(R.string.noSu));
                 }
                 checkBusybox();
                 handleMessages.changeMessage("", getString(
@@ -652,7 +649,7 @@ public class OAndBackupX extends BaseActivity
 
             if (appInfoList == null) {
                 handleMessages.changeMessage("", getString(R.string.collectingData));
-                appInfoList = AppInfoHelper.getPackageInfo(OAndBackupX.this,
+                appInfoList = AppInfoHelper.getPackageInfo(MainActivity.this,
                         backupDir, true, prefs.getBoolean(Constants.
                                 PREFS_ENABLESPECIALBACKUPS, true));
                 handleMessages.endMessage();
@@ -660,7 +657,7 @@ public class OAndBackupX extends BaseActivity
 
             registerForContextMenu(listView);
 
-            adapter = new AppInfoAdapter(OAndBackupX.this, R.layout.item_main_list, appInfoList);
+            adapter = new MainAdapter(MainActivity.this, R.layout.item_main_list, appInfoList);
             adapter.setLocalTimestampFormat(prefs.getBoolean(
                     Constants.PREFS_TIMESTAMP, true));
             mainSorter = new MainSorter(adapter, prefs);

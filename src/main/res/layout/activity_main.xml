@@ -1,78 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/bar_search" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_dodgeInsetEdges="top">
 
         <ListView
-            android:id="@+id/listview"
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:drawSelectorOnTop="true"
             android:fastScrollEnabled="true"
-            android:paddingBottom="@dimen/bottom_margin" />
+            android:paddingTop="?actionBarSize"
+            android:paddingBottom="@dimen/main_nav_height"
+            tools:listitem="@layout/item_main_list" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/main_nav_height"
         android:layout_gravity="bottom"
-        android:background="@color/tan_background" >
+        android:background="@color/tan_background"
+        android:elevation="8dp"
+        android:gravity="bottom|center_horizontal"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_margin"
-            android:gravity="bottom|center_horizontal"
-            android:orientation="horizontal" >
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_batch_backup"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_backup_white"
+            android:focusable="true"
+            android:text="@string/backup" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_batch_backup"
-                android:drawableTop="@drawable/ic_backup_white"
-                android:text="@string/backup"
-                style="@style/navbarButton" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_batch_restore"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_restore_white"
+            android:focusable="true"
+            android:text="@string/restore" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_batch_restore"
-                android:drawableTop="@drawable/ic_restore_white"
-                android:text="@string/restore"
-                style="@style/navbarButton" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_schedule"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_scheduler_white"
+            android:focusable="true"
+            android:text="@string/sched_title" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_schedule"
-                android:drawableTop="@drawable/ic_sched_white"
-                android:text="@string/sched_title"
-                style="@style/navbarButton" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_settings"
-                android:drawableTop="@drawable/ic_settings_white"
-                android:text="@string/prefs_title"
-                style="@style/navbarButton" />
-        </LinearLayout>
-
-    </FrameLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_settings"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_settings_white"
+            android:focusable="true"
+            android:text="@string/prefs_title"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/sort_filter_fab"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="72dp"
-        android:layout_marginRight="@dimen/large_margin"
+        android:layout_marginEnd="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/main_fab_height"
+        android:backgroundTint="@color/app_accent"
+        android:elevation="12dp"
         android:text="@string/sort"
-        app:icon="@drawable/ic_filter_white_48dp"
         android:textAppearance="@style/TextAppearance.Button"
-        android:backgroundTint="@color/btn_background"/>
-
+        app:icon="@drawable/ic_filter_white_48dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

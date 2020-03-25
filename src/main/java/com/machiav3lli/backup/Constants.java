@@ -1,7 +1,9 @@
 package com.machiav3lli.backup;
 
 public class Constants {
-    private Constants() {}
+    private Constants() {
+    }
+
     public static final String TAG = "oandbackup";
 
     public static final String BLACKLIST_ARGS_ID = "blacklistId";
@@ -27,6 +29,7 @@ public class Constants {
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_ENABLECRYPTO = "enableCrypto";
 
+
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_STATECHECKED = "stateChecked";
     public static final String BUNDLE_FIRSTVISIBLEPOSITION = "firstVisiblePosition";
@@ -35,4 +38,8 @@ public class Constants {
     public static final String BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT = "edittext";
 
     public static final String BUNDLE_ACTIONTYPE = "actionType";
+
+    public static String classAddress(String address) {
+        return "com.machiav3lli.backup" + address;
+    }
 }

@@ -3,13 +3,12 @@ package com.machiav3lli.backup;
 import android.content.SharedPreferences;
 import android.util.SparseIntArray;
 
-import com.machiav3lli.backup.adapters.AppInfoAdapter;
-import com.machiav3lli.backup.adapters.BatchAdapter;
+import com.machiav3lli.backup.adapters.MainAdapter;
 
 import java.util.Comparator;
 
-public class Sorter {
-    AppInfoAdapter adapter;
+public class MainSorter {
+    MainAdapter adapter;
     FilteringMethod filteringMethod = FilteringMethod.ALL;
     SortingMethod sortingMethod = SortingMethod.PACKAGENAME;
     // SparseIntArray is more memory efficient than mapping integers to integers using a hashmap
@@ -17,7 +16,7 @@ public class Sorter {
     SharedPreferences.Editor prefsEdit;
     int oldBackups = 0;
 
-    public Sorter(AppInfoAdapter adapter, SharedPreferences prefs) {
+    public MainSorter(MainAdapter adapter, SharedPreferences prefs) {
         this.adapter = adapter;
         this.prefsEdit = prefs.edit();
         try {
@@ -101,30 +100,37 @@ public class Sorter {
             case R.id.showNotBackedup:
                 filteringMethod = FilteringMethod.NOTBACKEDUP;
                 adapter.filterIsBackedup();
+                prefsEdit.commit();
                 break;
             case R.id.showNotInstalled:
                 filteringMethod = FilteringMethod.NOTINSTALLED;
                 adapter.filterIsInstalled();
+                prefsEdit.commit();
                 break;
             case R.id.showNewAndUpdated:
                 filteringMethod = FilteringMethod.NEWANDUPDATED;
                 adapter.filterNewAndUpdated();
+                prefsEdit.commit();
                 break;
             case R.id.showOldBackups:
                 filteringMethod = FilteringMethod.OLDBACKUPS;
                 adapter.filterOldApps(oldBackups);
+                prefsEdit.commit();
                 break;
             case R.id.showOnlyApkBackedUp:
                 filteringMethod = FilteringMethod.ONLYAPK;
                 adapter.filterPartialBackups(AppInfo.MODE_APK);
+                prefsEdit.commit();
                 break;
             case R.id.showOnlyDataBackedUp:
                 filteringMethod = FilteringMethod.ONLYDATA;
                 adapter.filterPartialBackups(AppInfo.MODE_DATA);
+                prefsEdit.commit();
                 break;
             case R.id.showOnlySpecialBackups:
                 filteringMethod = FilteringMethod.ONLYSPECIAL;
                 adapter.filterSpecialBackups();
+                prefsEdit.commit();
                 break;
             case R.id.sortByLabel:
                 sortingMethod = SortingMethod.LABEL;
