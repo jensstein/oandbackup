@@ -24,6 +24,19 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [ ] Updating UI and UX: Design proposales are always welcome
 - [ ] You suggest!...
 
+
+## screenshots
+
+<p float="left">
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/1.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/2.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/3.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/4.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/5.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/6.png" width="170" />
+</p>
+
+
 ## building
 
 OAndBackupX is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
