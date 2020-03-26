@@ -2,10 +2,12 @@ package com.machiav3lli.backup.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+
 import androidx.annotation.VisibleForTesting;
+
 import com.machiav3lli.backup.AppInfo;
 import com.machiav3lli.backup.BackupRestoreHelper;
-import com.machiav3lli.backup.OAndBackupX;
+import com.machiav3lli.backup.MainActivity;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.ShellCommands;
 import com.machiav3lli.backup.Utils;
@@ -20,7 +22,7 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
     final BackupRestoreHelper.ActionType actionType;
     final AppInfo appInfo;
     final WeakReference<HandleMessages> handleMessagesReference;
-    final WeakReference<OAndBackupX> oAndBackupReference;
+    final WeakReference<MainActivity> oAndBackupReference;
     final File backupDirectory;
     final ShellCommands shellCommands;
     final int mode;
@@ -33,7 +35,7 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
 
     public ActionTask(BackupRestoreHelper.ActionType actionType,
                       AppInfo appInfo, HandleMessages handleMessages,
-                      OAndBackupX oAndBackupX, File backupDirectory, ShellCommands shellCommands, int mode) {
+                      MainActivity oAndBackupX, File backupDirectory, ShellCommands shellCommands, int mode) {
         this.actionType = actionType;
         this.appInfo = appInfo;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
@@ -47,8 +49,8 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
     @Override
     public void onProgressUpdate(Void... _void) {
         final HandleMessages handleMessages = handleMessagesReference.get();
-        final OAndBackupX oAndBackupX = oAndBackupReference.get();
-        if(handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
+        final MainActivity oAndBackupX = oAndBackupReference.get();
+        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
             handleMessages.showMessage(appInfo.getLabel(), getProgressMessage(
                     oAndBackupX, actionType));
         }
@@ -57,30 +59,30 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
     @Override
     public void onPostExecute(Integer result) {
         final HandleMessages handleMessages = handleMessagesReference.get();
-        final OAndBackupX oAndBackupX = oAndBackupReference.get();
-        if(handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
+        final MainActivity oAndBackupX = oAndBackupReference.get();
+        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
             handleMessages.endMessage();
             oAndBackupX.refreshSingle(appInfo);
             final String message = getPostExecuteMessage(oAndBackupX, actionType, result);
             if (result == 0) {
-                NotificationHelper.showNotification(oAndBackupX, OAndBackupX.class,
-                    (int) System.currentTimeMillis(),
-                    message,
-                    appInfo.getLabel(), true);
+                NotificationHelper.showNotification(oAndBackupX, MainActivity.class,
+                        (int) System.currentTimeMillis(),
+                        message,
+                        appInfo.getLabel(), true);
             } else {
-                NotificationHelper.showNotification(oAndBackupX, OAndBackupX.class,
-                    (int) System.currentTimeMillis(), message,
-                    appInfo.getLabel(), true);
+                NotificationHelper.showNotification(oAndBackupX, MainActivity.class,
+                        (int) System.currentTimeMillis(), message,
+                        appInfo.getLabel(), true);
                 Utils.showErrors(oAndBackupX);
             }
         }
-        if(signal != null) {
+        if (signal != null) {
             signal.countDown();
         }
     }
 
     private String getProgressMessage(Context context, BackupRestoreHelper.ActionType actionType) {
-        if(actionType == BackupRestoreHelper.ActionType.BACKUP) {
+        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
             return context.getString(R.string.backup);
         } else {
             return context.getString(R.string.restore);
@@ -88,14 +90,14 @@ public abstract class ActionTask extends AsyncTask<Void, Void, Integer> {
     }
 
     private String getPostExecuteMessage(Context context, BackupRestoreHelper.ActionType actionType, int result) {
-        if(result == 0) {
-            if(actionType == BackupRestoreHelper.ActionType.BACKUP) {
+        if (result == 0) {
+            if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
                 return context.getString(R.string.backupSuccess);
             } else {
                 return context.getString(R.string.restoreSuccess);
             }
         } else {
-            if(actionType == BackupRestoreHelper.ActionType.BACKUP) {
+            if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
                 return context.getString(R.string.backupFailure);
             } else {
                 return context.getString(R.string.restoreFailure);

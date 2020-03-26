@@ -12,10 +12,10 @@ import java.util.List;
 
 public class CommandHandler {
     public int runCmd(String shell, List<String> commands,
-            OutputConsumer outHandler, OutputConsumer errorHandler,
-            ExceptionConsumer exceptionHandler, UnexpectedExceptionListener exceptionListener) {
-        if(commands.size() == 0) {
-            Log.w(OAndBackupX.TAG, "no commands to run");
+                      OutputConsumer outHandler, OutputConsumer errorHandler,
+                      ExceptionConsumer exceptionHandler, UnexpectedExceptionListener exceptionListener) {
+        if (commands.size() == 0) {
+            Log.w(MainActivity.TAG, "no commands to run");
             errorHandler.accept("no commands to run");
             return 1;
         }
@@ -28,16 +28,16 @@ public class CommandHandler {
             dos.writeBytes("exit\n");
             dos.flush();
             OutputHandler stdoutHandler = new OutputHandler(p.getInputStream(),
-                outHandler, exceptionListener);
+                    outHandler, exceptionListener);
             OutputHandler stderrHandler = new OutputHandler(p.getErrorStream(),
-                errorHandler, exceptionListener);
+                    errorHandler, exceptionListener);
             stdoutHandler.start();
             stderrHandler.start();
             return p.waitFor();
-        } catch(IOException e) {
+        } catch (IOException e) {
             exceptionHandler.accept(e);
             return 1;
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             exceptionHandler.accept(e);
             Thread.currentThread().interrupt();
             return 1;
@@ -45,11 +45,11 @@ public class CommandHandler {
     }
 
     public int runCmd(String shell, String command,
-            OutputConsumer outputHandler, OutputConsumer errorHandler,
-            ExceptionConsumer exceptionHandler, UnexpectedExceptionListener
-            exceptionListener) {
+                      OutputConsumer outputHandler, OutputConsumer errorHandler,
+                      ExceptionConsumer exceptionHandler, UnexpectedExceptionListener
+                              exceptionListener) {
         return runCmd(shell, Collections.singletonList(command),
-            outputHandler, errorHandler, exceptionHandler, exceptionListener);
+                outputHandler, errorHandler, exceptionHandler, exceptionListener);
     }
 
     public interface OutputConsumer {
@@ -70,7 +70,7 @@ public class CommandHandler {
         private UnexpectedExceptionListener exceptionListener;
 
         private OutputHandler(InputStream is, OutputConsumer errorHandler,
-                UnexpectedExceptionListener exceptionListener) {
+                              UnexpectedExceptionListener exceptionListener) {
             this.is = is;
             this.errorHandler = errorHandler;
             this.exceptionListener = exceptionListener;
@@ -85,7 +85,7 @@ public class CommandHandler {
                 while ((line = br.readLine()) != null) {
                     errorHandler.accept(line);
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
                 exceptionListener.onUnexpectedException(e);
             }
         }

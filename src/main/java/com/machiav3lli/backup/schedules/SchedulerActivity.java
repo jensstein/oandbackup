@@ -11,9 +11,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -25,9 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.ButtonBarLayout;
 
 import com.annimon.stream.Optional;
 import com.machiav3lli.backup.BaseActivity;
@@ -49,11 +43,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class Scheduler extends BaseActivity
+public class SchedulerActivity extends BaseActivity
         implements View.OnClickListener, AdapterView.OnItemSelectedListener,
         BlacklistListener {
     private static final String TAG = Constants.TAG;
@@ -395,10 +388,10 @@ public class Scheduler extends BaseActivity
         } else if (schedule.getInterval() <= 0) {
             timeLeftTextView.setText(getString(R.string.sched_warningIntervalZero));
         } else {
-            final long timeLeft = handleAlarms.timeUntilNextEvent(
+            final long timeLeft = HandleAlarms.timeUntilNextEvent(
                     schedule.getInterval(), schedule.getHour(),
                     schedule.getPlaced(), now);
-            timeLeftTextView.setText(getString(R.string.sched_timeLeft) + ": " + (timeLeft / 1000f / 60 / 60f));
+            timeLeftTextView.setText(String.format("%s: %s", getString(R.string.sched_timeLeft), timeLeft / 1000f / 60 / 60f));
         }
     }
 
@@ -556,22 +549,22 @@ public class Scheduler extends BaseActivity
     static class AddScheduleTask extends AsyncTask<Void, Void, ResultHolder<View>> {
         // Use a weak reference to avoid leaking the activity if it's
         // destroyed while this task is still running.
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
         private final String databasename;
 
-        AddScheduleTask(Scheduler scheduler) {
+        AddScheduleTask(SchedulerActivity scheduler) {
             activityReference = new WeakReference<>(scheduler);
             databasename = DATABASE_NAME;
         }
 
-        AddScheduleTask(Scheduler scheduler, String databasename) {
+        AddScheduleTask(SchedulerActivity scheduler, String databasename) {
             activityReference = new WeakReference<>(scheduler);
             this.databasename = databasename;
         }
 
         @Override
         public ResultHolder<View> doInBackground(Void... _void) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler == null || scheduler.isFinishing()) {
                 return new ResultHolder<>();
             }
@@ -581,7 +574,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void onPostExecute(ResultHolder<View> resultHolder) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getObject().ifPresent(view -> {
                     scheduler.viewList.put((long) view.getTag(), view);
@@ -593,22 +586,22 @@ public class Scheduler extends BaseActivity
     }
 
     static class RemoveScheduleTask extends AsyncTask<Long, Void, ResultHolder<Long>> {
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
         private final String databasename;
 
-        RemoveScheduleTask(Scheduler scheduler) {
+        RemoveScheduleTask(SchedulerActivity scheduler) {
             activityReference = new WeakReference<>(scheduler);
             databasename = DATABASE_NAME;
         }
 
-        RemoveScheduleTask(Scheduler scheduler, String databasename) {
+        RemoveScheduleTask(SchedulerActivity scheduler, String databasename) {
             activityReference = new WeakReference<>(scheduler);
             this.databasename = databasename;
         }
 
         @Override
         public ResultHolder<Long> doInBackground(Long... ids) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler == null || scheduler.isFinishing()) {
                 return new ResultHolder<>();
             }
@@ -627,7 +620,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void onPostExecute(ResultHolder<Long> resultHolder) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getError().ifPresent(error -> {
                     final String message = String.format(
@@ -649,15 +642,15 @@ public class Scheduler extends BaseActivity
 
     private static class UiLoaderTask extends AsyncTask<Void,
             Void, ResultHolder<List<Schedule>>> {
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
 
-        UiLoaderTask(Scheduler scheduler) {
+        UiLoaderTask(SchedulerActivity scheduler) {
             activityReference = new WeakReference<>(scheduler);
         }
 
         @Override
         public ResultHolder<List<Schedule>> doInBackground(Void... _void) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler == null || scheduler.isFinishing()) {
                 return new ResultHolder<>();
             }
@@ -668,8 +661,7 @@ public class Scheduler extends BaseActivity
                 scheduler.totalSchedules = preferences.getInt(
                         Constants.PREFS_SCHEDULES_TOTAL, 0);
                 // set to zero so there is always at least one schedule on activity start
-                scheduler.totalSchedules = scheduler.totalSchedules < 0 ?
-                        0 : scheduler.totalSchedules;
+                scheduler.totalSchedules = Math.max(scheduler.totalSchedules, 0);
                 try {
                     scheduler.migrateSchedulesToDatabase(preferences, DATABASE_NAME);
                     preferences.edit().remove(Constants.PREFS_SCHEDULES_TOTAL).apply();
@@ -685,7 +677,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void onPostExecute(ResultHolder<List<Schedule>> resultHolder) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getError().ifPresent(error -> {
                     final String message = String.format(
@@ -701,11 +693,11 @@ public class Scheduler extends BaseActivity
 
     static class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,
             ResultHolder<Boolean>> {
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
         private final WeakReference<CheckBox> checkBoxReference;
         private final long id;
 
-        SystemExcludeCheckboxSetTask(Scheduler scheduler, long id, CheckBox checkBox) {
+        SystemExcludeCheckboxSetTask(SchedulerActivity scheduler, long id, CheckBox checkBox) {
             activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.checkBoxReference = new WeakReference<>(checkBox);
@@ -713,7 +705,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public ResultHolder<Boolean> doInBackground(Void... _void) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
                         .getScheduleDatabase(scheduler, DATABASE_NAME);
@@ -726,7 +718,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void onPostExecute(ResultHolder<Boolean> resultHolder) {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             final CheckBox checkBox = checkBoxReference.get();
             if (scheduler != null && !scheduler.isFinishing() &&
                     checkBox != null) {
@@ -764,11 +756,11 @@ public class Scheduler extends BaseActivity
     }
 
     static class UpdateScheduleRunnable implements Runnable {
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
         private final String databasename;
         private final Schedule schedule;
 
-        public UpdateScheduleRunnable(Scheduler scheduler, String databasename,
+        public UpdateScheduleRunnable(SchedulerActivity scheduler, String databasename,
                                       Schedule schedule) {
             this.activityReference = new WeakReference<>(scheduler);
             this.databasename = databasename;
@@ -777,7 +769,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void run() {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
                         .getScheduleDatabase(scheduler, databasename);
@@ -788,21 +780,21 @@ public class Scheduler extends BaseActivity
     }
 
     static class ModeChangerRunnable implements Runnable {
-        private final WeakReference<Scheduler> activityReference;
+        private final WeakReference<SchedulerActivity> activityReference;
         private final long id;
         private final Optional<Schedule.Mode> mode;
         private final Optional<Schedule.Submode> submode;
         private final String databasename;
 
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode) {
+        ModeChangerRunnable(SchedulerActivity scheduler, long id, Schedule.Mode mode) {
             this(scheduler, id, mode, DATABASE_NAME);
         }
 
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode) {
+        ModeChangerRunnable(SchedulerActivity scheduler, long id, Schedule.Submode submode) {
             this(scheduler, id, submode, DATABASE_NAME);
         }
 
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Mode mode,
+        ModeChangerRunnable(SchedulerActivity scheduler, long id, Schedule.Mode mode,
                             String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
@@ -811,7 +803,7 @@ public class Scheduler extends BaseActivity
             this.databasename = databasename;
         }
 
-        ModeChangerRunnable(Scheduler scheduler, long id, Schedule.Submode submode,
+        ModeChangerRunnable(SchedulerActivity scheduler, long id, Schedule.Submode submode,
                             String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
@@ -822,7 +814,7 @@ public class Scheduler extends BaseActivity
 
         @Override
         public void run() {
-            final Scheduler scheduler = activityReference.get();
+            final SchedulerActivity scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
                 final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
                         .getScheduleDatabase(scheduler, databasename);

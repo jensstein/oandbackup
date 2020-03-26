@@ -3,13 +3,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5sp">
+
     <TextView
         android:id="@+id/filename"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textColor="#fff"
-        android:textSize="16sp"
+        android:layout_height="wrap_content"
         android:paddingTop="3sp"
         android:paddingBottom="3sp"
-    />
+        android:textColor="#fff"
+        android:textSize="16sp" />
 </LinearLayout>

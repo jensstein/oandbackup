@@ -1,20 +1,22 @@
 package com.machiav3lli.backup.schedules.db;
 
 import android.content.Context;
+
 import androidx.room.Room;
 
 public class ScheduleDatabaseHelper {
     private static ScheduleDatabase scheduleDatabase = null;
 
-    private ScheduleDatabaseHelper() {}
+    private ScheduleDatabaseHelper() {
+    }
 
     // the room documentation recommends using a singleton pattern for
     // handling database objects:
     // https://developer.android.com/training/data-storage/room/
     public static ScheduleDatabase getScheduleDatabase(Context context, String name) {
-        if(scheduleDatabase == null) {
+        if (scheduleDatabase == null) {
             scheduleDatabase = Room.databaseBuilder(context,
-                ScheduleDatabase.class, name).build();
+                    ScheduleDatabase.class, name).build();
         }
         return scheduleDatabase;
     }

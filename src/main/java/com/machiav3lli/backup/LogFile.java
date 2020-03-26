@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,22 +15,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class LogFile implements Parcelable
-{
-    final static String TAG = OAndBackupX.TAG;
+public class LogFile implements Parcelable {
+    final static String TAG = MainActivity.TAG;
     String label, packageName, versionName, sourceDir, dataDir;
     int versionCode, backupMode;
     long lastBackupMillis;
     boolean encrypted, system;
-    public LogFile(File backupSubDir, String packageName)
-    {
+
+    public LogFile(File backupSubDir, String packageName) {
         FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
         String json = frw.read();
-        try
-        {
+        try {
             JSONObject jsonObject = new JSONObject(json);
             this.label = jsonObject.getString("label");
             this.packageName = jsonObject.getString("packageName");
@@ -39,9 +37,7 @@ public class LogFile implements Parcelable
             this.encrypted = jsonObject.optBoolean("isEncrypted");
             this.system = jsonObject.optBoolean("isSystem");
             this.backupMode = jsonObject.optInt("backupMode", AppInfo.MODE_UNSET);
-        }
-        catch(JSONException e)
-        {
+        } catch (JSONException e) {
             Log.e(TAG, packageName + ": error while reading logfile: " + e.toString());
             this.label = this.packageName = this.versionName = this.sourceDir = this.dataDir = "";
             this.lastBackupMillis = this.versionCode = 0;
@@ -49,68 +45,66 @@ public class LogFile implements Parcelable
             this.backupMode = AppInfo.MODE_UNSET;
         }
     }
-    public String getLabel()
-    {
+
+    public String getLabel() {
         return label;
     }
-    public String getPackageName()
-    {
+
+    public String getPackageName() {
         return packageName;
     }
-    public String getVersionName()
-    {
+
+    public String getVersionName() {
         return versionName;
     }
-    public int getVersionCode()
-    {
+
+    public int getVersionCode() {
         return versionCode;
     }
-    public String getSourceDir()
-    {
+
+    public String getSourceDir() {
         return sourceDir;
     }
-    public String getApk()
-    {
-        if(sourceDir != null && sourceDir.length() > 0)
+
+    public String getApk() {
+        if (sourceDir != null && sourceDir.length() > 0)
             return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
         return null;
     }
-    public String getDataDir()
-    {
+
+    public String getDataDir() {
         return dataDir;
     }
-    public long getLastBackupMillis()
-    {
+
+    public long getLastBackupMillis() {
         return lastBackupMillis;
     }
-    public boolean isEncrypted()
-    {
+
+    public boolean isEncrypted() {
         return encrypted;
     }
-    public boolean isSystem()
-    {
+
+    public boolean isSystem() {
         return system;
     }
-    public int getBackupMode()
-    {
+
+    public int getBackupMode() {
         return backupMode;
     }
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode)
-    {
+
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode) {
         // the boolean for encrypted backups are only written if the encrypted succeeded so false is written first by default
         writeLogFile(backupSubDir, appInfo, backupMode, false);
     }
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted)
-    {
-        try
-        {
+
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted) {
+        try {
             // path to apk should only be logged if it is backed up
             String sourceDir = "";
-            if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
+            if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
                 sourceDir = appInfo.getSourceDir();
-            else
-                if(appInfo.getLogInfo() != null)
-                    sourceDir = appInfo.getLogInfo().getSourceDir();
+            else if (appInfo.getLogInfo() != null)
+                sourceDir = appInfo.getLogInfo().getSourceDir();
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("label", appInfo.getLabel());
@@ -126,41 +120,32 @@ public class LogFile implements Parcelable
             String json = jsonObject.toString(4);
             File outFile = new File(backupSubDir, appInfo.getPackageName() + ".log");
             outFile.createNewFile();
-            try(BufferedWriter bw = new BufferedWriter(
+            try (BufferedWriter bw = new BufferedWriter(
                     new FileWriter(outFile.getAbsoluteFile()))) {
                 bw.write(json + "\n");
             }
-        }
-        catch(JSONException e)
-        {
-            Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
-        }
-        catch(IOException e)
-        {
+        } catch (JSONException | IOException e) {
             Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
         }
     }
-    public static String formatDate(Date date, boolean localTimestampFormat)
-    {
+
+    public static String formatDate(Date date, boolean localTimestampFormat) {
         String dateFormated;
-        if(localTimestampFormat)
-        {
+        if (localTimestampFormat) {
             DateFormat dateFormat = DateFormat.getDateTimeInstance();
             dateFormated = dateFormat.format(date);
-        }
-        else
-        {
+        } else {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
             dateFormated = dateFormat.format(date);
         }
         return dateFormated;
     }
-    public int describeContents()
-    {
+
+    public int describeContents() {
         return 0;
     }
-    public void writeToParcel(Parcel out, int flags)
-    {
+
+    public void writeToParcel(Parcel out, int flags) {
         out.writeString(label);
         out.writeString(packageName);
         out.writeString(versionName);
@@ -169,21 +154,20 @@ public class LogFile implements Parcelable
         out.writeInt(versionCode);
         out.writeInt(backupMode);
         out.writeLong(lastBackupMillis);
-        out.writeBooleanArray(new boolean[] {encrypted, system});
+        out.writeBooleanArray(new boolean[]{encrypted, system});
     }
-    public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>()
-    {
-        public LogFile createFromParcel(Parcel in)
-        {
+
+    public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>() {
+        public LogFile createFromParcel(Parcel in) {
             return new LogFile(in);
         }
-        public LogFile[] newArray(int size)
-        {
+
+        public LogFile[] newArray(int size) {
             return new LogFile[size];
         }
     };
-    private LogFile(Parcel in)
-    {
+
+    private LogFile(Parcel in) {
         // data is read in the order it was written
         label = in.readString();
         packageName = in.readString();

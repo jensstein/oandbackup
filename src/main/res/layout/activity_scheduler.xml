@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-    <LinearLayout 
-        android:id="@+id/linearLayout"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        >
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_nav_height"
+        android:layout_gravity="bottom"
+        android:background="@color/tan_background"
+        android:elevation="8dp"
+        android:gravity="bottom|center_horizontal"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addSchedule"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_sched_white"
+            android:focusable="true"
+            android:text="@string/sched_addSchudule" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/globalBlacklist"
+            style="@style/navbarButton"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_blacklist_white"
+            android:focusable="true"
+            android:text="@string/sched_globalBlacklist" />
     </LinearLayout>
-</ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

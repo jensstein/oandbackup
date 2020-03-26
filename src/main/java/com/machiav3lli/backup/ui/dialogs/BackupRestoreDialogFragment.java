@@ -3,21 +3,20 @@ package com.machiav3lli.backup.ui.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
+
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.AppInfo;
 import com.machiav3lli.backup.BackupRestoreHelper;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.OAndBackupX;
+import com.machiav3lli.backup.MainActivity;
 import com.machiav3lli.backup.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackupRestoreDialogFragment extends DialogFragment
-{
-    final static String TAG = OAndBackupX.TAG;
+public class BackupRestoreDialogFragment extends DialogFragment {
+    final static String TAG = MainActivity.TAG;
 
     private List<ActionListener> listeners;
 
@@ -30,44 +29,34 @@ public class BackupRestoreDialogFragment extends DialogFragment
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Bundle arguments = getArguments();
         AppInfo appInfo = arguments.getParcelable("appinfo");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        assert appInfo != null;
         builder.setMessage(appInfo.getPackageName());
         builder.setTitle(appInfo.getLabel());
 
-        if(appInfo.isInstalled())
-        {
-            builder.setPositiveButton(R.string.backup, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
+        if (appInfo.isInstalled()) {
+            builder.setPositiveButton(R.string.backup, (dialog, id) -> {
+                arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
                         BackupRestoreHelper.ActionType.BACKUP);
-                    BackupRestoreOptionsDialogFragment backupDialog = new BackupRestoreOptionsDialogFragment();
-                    backupDialog.setArguments(arguments);
-                    for(ActionListener listener : listeners)
-                        backupDialog.setListener(listener);
-                    backupDialog.show(getFragmentManager(), "backupDialog");
-                }
+                BackupRestoreOptionsDialogFragment backupDialog = new BackupRestoreOptionsDialogFragment();
+                backupDialog.setArguments(arguments);
+                for (ActionListener listener : listeners)
+                    backupDialog.setListener(listener);
+                backupDialog.show(getFragmentManager(), "backupDialog");
             });
         }
-        if(appInfo.getLogInfo() != null)
-        {
-            builder.setNegativeButton(R.string.restore, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
+        if (appInfo.getLogInfo() != null) {
+            builder.setNegativeButton(R.string.restore, (dialog, id) -> {
+                arguments.putSerializable(Constants.BUNDLE_ACTIONTYPE,
                         BackupRestoreHelper.ActionType.RESTORE);
-                    BackupRestoreOptionsDialogFragment restoreDialog = new BackupRestoreOptionsDialogFragment();
-                    restoreDialog.setArguments(arguments);
-                    for(ActionListener listener : listeners)
-                        restoreDialog.setListener(listener);
-                    restoreDialog.show(getFragmentManager(), "restoreDialog");
-                }
+                BackupRestoreOptionsDialogFragment restoreDialog = new BackupRestoreOptionsDialogFragment();
+                restoreDialog.setArguments(arguments);
+                for (ActionListener listener : listeners)
+                    restoreDialog.setListener(listener);
+                restoreDialog.show(getFragmentManager(), "restoreDialog");
             });
         }
         return builder.create();

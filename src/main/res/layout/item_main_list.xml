@@ -4,7 +4,8 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        style="@style/mainTextView"
+        android:id="@+id/itemHolder"
+        style="@style/itemHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -19,8 +20,10 @@
                 android:id="@+id/icon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingEnd="@dimen/cards_margin"
-                android:contentDescription="@string/app_s_icon" />
+                android:layout_marginEnd="@dimen/med_margin"
+                android:contentDescription="@string/app_s_icon"
+                android:maxWidth="64dp"
+                android:src="@drawable/placeholder" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,18 +40,18 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:textSize="@dimen/main_text"
-                        android:singleLine="true" />
+                        android:textAppearance="@style/labelText" />
 
                     <TextView
                         android:id="@+id/lastBackup"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:textSize="@dimen/secondary_text"
-                        android:gravity="end"
                         android:layout_gravity="top"
-                        android:singleLine="true" />
+                        android:layout_weight="0.5"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/secondary_text" />
                 </LinearLayout>
 
 
@@ -62,24 +65,28 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.7"
-                        android:textSize="@dimen/secondary_text"/>
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/secondary_text" />
 
                     <TextView
                         android:id="@+id/backupMode"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:textSize="@dimen/secondary_text"
+                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textSize="@dimen/secondary_text" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/versionCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/secondary_text"
-                    android:singleLine="true" />
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textSize="@dimen/secondary_text" />
 
             </LinearLayout>
         </LinearLayout>

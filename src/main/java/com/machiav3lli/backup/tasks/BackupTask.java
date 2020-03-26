@@ -2,11 +2,11 @@ package com.machiav3lli.backup.tasks;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import com.machiav3lli.backup.AppInfo;
 import com.machiav3lli.backup.BackupRestoreHelper;
-import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.Crypto;
-import com.machiav3lli.backup.OAndBackupX;
+import com.machiav3lli.backup.MainActivity;
 import com.machiav3lli.backup.ShellCommands;
 import com.machiav3lli.backup.ui.HandleMessages;
 
@@ -14,7 +14,7 @@ import java.io.File;
 
 public class BackupTask extends ActionTask {
     public BackupTask(AppInfo appInfo, HandleMessages handleMessages,
-                      OAndBackupX oAndBackupX, File backupDirectory,
+                      MainActivity oAndBackupX, File backupDirectory,
                       ShellCommands shellCommands, int backupMode) {
         super(BackupRestoreHelper.ActionType.BACKUP, appInfo, handleMessages,
                 oAndBackupX, backupDirectory, shellCommands, backupMode);
@@ -22,21 +22,19 @@ public class BackupTask extends ActionTask {
 
     @Override
     public Integer doInBackground(Void... _void) {
-        final OAndBackupX oAndBackupX = oAndBackupReference.get();
-        if(oAndBackupX == null || oAndBackupX.isFinishing()) {
+        final MainActivity oAndBackupX = oAndBackupReference.get();
+        if (oAndBackupX == null || oAndBackupX.isFinishing()) {
             return -1;
         }
         publishProgress();
         SharedPreferences prefs = PreferenceManager
-            .getDefaultSharedPreferences(oAndBackupX);
+                .getDefaultSharedPreferences(oAndBackupX);
         Crypto crypto = null;
-        if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false) &&
+        /* if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false) &&
             Crypto.isAvailable(oAndBackupX))
             crypto = oAndBackupX.getCrypto();
-        int result = backupRestoreHelper.backup(oAndBackupX, backupDirectory,
-            appInfo, shellCommands, mode);
-        if(result == 0 && crypto != null)
-        {
+         */
+        /* if(result == 0 && crypto != null) {
             crypto.encryptFromAppInfo(oAndBackupX, backupDirectory, appInfo, mode, prefs);
             if(crypto.isErrorSet())
             {
@@ -47,6 +45,9 @@ public class BackupTask extends ActionTask {
                 result++;
             }
         }
-        return result;
+         */
+
+        return backupRestoreHelper.backup(oAndBackupX, backupDirectory,
+                appInfo, shellCommands, mode);
     }
 }

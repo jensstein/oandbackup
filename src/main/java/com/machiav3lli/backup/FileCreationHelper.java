@@ -6,41 +6,36 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
-public class FileCreationHelper
-{
-    final static String TAG = OAndBackupX.TAG;
-    public final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackups";
-    public final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackup.log";
+public class FileCreationHelper {
+    final static String TAG = MainActivity.TAG;
+    public final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackupsx";
+    public final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackupx.log";
     boolean fallbackFlag;
-    public static String getDefaultBackupDirPath()
-    {
+
+    public static String getDefaultBackupDirPath() {
         return defaultBackupDirPath;
     }
-    public static String getDefaultLogFilePath()
-    {
+
+    public static String getDefaultLogFilePath() {
         return defaultLogFilePath;
     }
-    public boolean isFallenBack()
-    {
+
+    public boolean isFallenBack() {
         return fallbackFlag;
     }
-    public File createBackupFolder(String path)
-    {
+
+    public File createBackupFolder(String path) {
         fallbackFlag = false;
         File dir = new File(path);
-        if(!dir.exists())
-        {
+        if (!dir.exists()) {
             boolean created = dir.mkdirs();
-            if(!created)
-            {
+            if (!created) {
                 fallbackFlag = true;
                 Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
                 dir = new File(defaultBackupDirPath);
-                if(!dir.exists())
-                {
+                if (!dir.exists()) {
                     boolean defaultCreated = dir.mkdirs();
-                    if(!defaultCreated)
-                    {
+                    if (!defaultCreated) {
                         Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
                         return null;
                     }
@@ -49,34 +44,27 @@ public class FileCreationHelper
         }
         return dir;
     }
-    public File createLogFile(String path)
-    {
+
+    public File createLogFile(String path) {
         File file = new File(path);
-        try
-        {
-            try
-            {
+        try {
+            try {
                 file.createNewFile();
                 return file;
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 file = new File(defaultLogFilePath);
                 file.createNewFile();
                 return file;
             }
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             Log.e(TAG, String.format(
-                "Caught exception when creating log file: %s", e));
+                    "Caught exception when creating log file: %s", e));
             return null;
         }
     }
-    public void moveLogfile(String path)
-    {
-        if(!path.equals(defaultLogFilePath))
-        {
+
+    public void moveLogfile(String path) {
+        if (!path.equals(defaultLogFilePath)) {
             File srcFile = new File(path);
             File dstFile = new File(defaultLogFilePath);
             srcFile.renameTo(dstFile);

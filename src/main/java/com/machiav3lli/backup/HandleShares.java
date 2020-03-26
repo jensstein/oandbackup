@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class HandleShares
-{
+public class HandleShares {
     private static Map<String, String> mimeTypes;
-    public static Intent constructIntentSingle(String title, File file)
-    {
+
+    public static Intent constructIntentSingle(String title, File file) {
         String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase(Locale.ENGLISH);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
@@ -21,11 +20,10 @@ public class HandleShares
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
         return Intent.createChooser(intent, title);
     }
-    public static Intent constructIntentMultiple(String title, File... files)
-    {
-        ArrayList<Uri> uris = new ArrayList<Uri>();
-        for(File file : files)
-        {
+
+    public static Intent constructIntentMultiple(String title, File... files) {
+        ArrayList<Uri> uris = new ArrayList<>();
+        for (File file : files) {
             uris.add(Uri.fromFile(file));
         }
         Intent intent = new Intent();
@@ -35,20 +33,16 @@ public class HandleShares
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         return Intent.createChooser(intent, title);
     }
-    public static String getMimeType(String extension)
-    {
-        if(mimeTypes == null)
-        {
-            mimeTypes = new HashMap<String, String>();
+
+    public static String getMimeType(String extension) {
+        if (mimeTypes == null) {
+            mimeTypes = new HashMap<>();
             mimeTypes.put("apk", "application/vnd.android.package-archive");
             mimeTypes.put("zip", "application/zip");
         }
-        if(mimeTypes.containsKey(extension))
-        {
+        if (mimeTypes.containsKey(extension)) {
             return mimeTypes.get(extension);
-        }
-        else
-        {
+        } else {
             return "*/*"; // catch-all mimetype
         }
     }

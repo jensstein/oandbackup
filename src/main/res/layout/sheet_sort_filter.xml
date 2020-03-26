@@ -39,18 +39,18 @@
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByLabel"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortByLabel" />
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/sortByPackageName"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sortByPackageName" />
+                    android:text="@string/sortPackageName" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/sortByLabel"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sortLabel" />
 
             </com.google.android.material.chip.ChipGroup>
 
@@ -77,18 +77,18 @@
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlySystem"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filterSystem" />
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/showAll"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/filterAll" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/showOnlySystem"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filterSystem" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlyUser"
@@ -115,56 +115,56 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showNewAndUpdated" />
+                    android:text="@string/showNewAndUpdated"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showNotInstalled"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showNotInstalled" />
+                    android:text="@string/showNotInstalled"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showNotBackedup"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showNotBackedup" />
+                    android:text="@string/showNotBackedup"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOldBackups"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showOldBackups" />
+                    android:text="@string/showOldBackups"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlyApkBackedUp"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showOnlyApkBackedUp" />
+                    android:text="@string/showOnlyApkBackedUp"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlyDataBackedUp"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showOnlyDataBackedUp" />
+                    android:text="@string/showOnlyDataBackedUp"
+                    android:visibility="gone" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlySpecialBackups"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="@string/showOnlySpecialBackups" />
+                    android:text="@string/showOnlySpecialBackups"
+                    android:visibility="gone" />
 
             </com.google.android.material.chip.ChipGroup>
 

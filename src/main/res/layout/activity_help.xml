@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:padding="10sp"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10sp">
+
         <TextView
             android:id="@+id/helpVersionName"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5sp"
             android:textIsSelectable="true"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="5sp"
-        />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/helpHtml"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textIsSelectable="true"
-        />
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true" />
     </LinearLayout>
 </ScrollView>

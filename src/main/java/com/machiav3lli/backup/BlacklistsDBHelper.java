@@ -17,23 +17,23 @@ public class BlacklistsDBHelper extends SQLiteOpenHelper {
 
     public void deleteBlacklistFromId(SQLiteDatabase db, int id) {
         String selection = String.format("%s = ?",
-            BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
+                BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
         String[] selectionArgs = {String.valueOf(id)};
         db.delete(BlacklistContract.BlacklistEntry.TABLE_NAME, selection,
-            selectionArgs);
+                selectionArgs);
     }
 
     public ArrayList<String> getBlacklistedPackages(SQLiteDatabase db, int id) {
         String[] projection = {BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME};
         String selection = String.format("%s = ?",
-            BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
+                BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
         String[] selectionArgs = {String.valueOf(id)};
         Cursor cursor = db.query(BlacklistContract.BlacklistEntry.TABLE_NAME,
-            projection, selection, selectionArgs, null, null, null);
+                projection, selection, selectionArgs, null, null, null);
         ArrayList<String> packagenames = new ArrayList<>();
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             int packagenameId = cursor.getColumnIndex(
-                BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME);
+                    BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME);
             packagenames.add(cursor.getString(packagenameId));
         }
         cursor.close();
@@ -47,10 +47,9 @@ public class BlacklistsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (oldVersion) {
-            // no break since changes should be propagated
-            case 1:
-                changeBlacklistIdType(db);
+        // no break since changes should be propagated
+        if (oldVersion == 1) {
+            changeBlacklistIdType(db);
         }
     }
 
@@ -62,12 +61,12 @@ public class BlacklistsDBHelper extends SQLiteOpenHelper {
     private void changeBlacklistIdType(SQLiteDatabase db) {
         String renameTable = "alter table blacklists rename to blacklists_old";
         String moveData = String.format(
-            "insert into %s(%s, %s, %s)" +
-            "select _id, packagename, blacklistId from blacklists_old",
-            BlacklistContract.BlacklistEntry.TABLE_NAME,
-            BlacklistContract.BlacklistEntry._ID,
-            BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME,
-            BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
+                "insert into %s(%s, %s, %s)" +
+                        "select _id, packagename, blacklistId from blacklists_old",
+                BlacklistContract.BlacklistEntry.TABLE_NAME,
+                BlacklistContract.BlacklistEntry._ID,
+                BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME,
+                BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
         String deleteTmpTable = "drop table blacklists_old";
         db.execSQL(renameTable);
         db.execSQL(BlacklistContract.CREATE_DB);

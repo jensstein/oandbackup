@@ -7,56 +7,59 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
-import com.machiav3lli.backup.OAndBackupX;
+
+import com.machiav3lli.backup.MainActivity;
 
 import java.util.Calendar;
 
-public class HandleAlarms
-{
-    static final String TAG = OAndBackupX.TAG;
+public class HandleAlarms {
+    static final String TAG = MainActivity.TAG;
     AlarmManager alarmManager;
     DeviceIdleChecker deviceIdleChecker;
 
     Context context;
-    public HandleAlarms(Context context)
-    {
+
+    public HandleAlarms(Context context) {
         this.context = context;
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.deviceIdleChecker = new DeviceIdleChecker(context);
     }
+
     public void setAlarm(int id, int interval, int hour) {
-        if(interval > 0) {
+        if (interval > 0) {
             final long nextEvent = timeUntilNextEvent(interval, hour,
-                System.currentTimeMillis(), System.currentTimeMillis());
+                    System.currentTimeMillis(), System.currentTimeMillis());
             setAlarm(id, System.currentTimeMillis() + nextEvent);
         }
     }
-    public void setAlarm(int id, long start)
-    {
+
+    public void setAlarm(int id, long start) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("id", id); // requestCode of PendingIntent is not used yet so a separate extra is needed
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         alarmManager.cancel(pendingIntent);
-        if(deviceIdleChecker.isIdleModeSupported() &&
+        if (deviceIdleChecker.isIdleModeSupported() &&
                 deviceIdleChecker.isIgnoringBatteryOptimizations()) {
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         }
         Log.i(TAG, "backup starting in: " +
-            ((start - System.currentTimeMillis()) / 1000f / 60 / 60f));
+                ((start - System.currentTimeMillis()) / 1000f / 60 / 60f));
     }
-    public void cancelAlarm(int id)
-    {
+
+    public void cancelAlarm(int id) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
         pendingIntent.cancel();
     }
+
     public static long timeUntilNextEvent(int interval, int hour,
-            long placed, long now) {
+                                          long placed, long now) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(placed);
         c.add(Calendar.DAY_OF_MONTH, interval);
@@ -76,7 +79,7 @@ public class HandleAlarms
         private DeviceIdleChecker(Context context) {
             this.context = context;
             this.powerManager = (PowerManager) context.getSystemService(
-                Context.POWER_SERVICE);
+                    Context.POWER_SERVICE);
         }
 
         boolean isIdleModeSupported() {
@@ -86,7 +89,7 @@ public class HandleAlarms
         @RequiresApi(api = Build.VERSION_CODES.M)
         boolean isIgnoringBatteryOptimizations() {
             return powerManager.isIgnoringBatteryOptimizations(
-                context.getPackageName());
+                    context.getPackageName());
         }
     }
 }
