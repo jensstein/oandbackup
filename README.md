@@ -11,7 +11,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
 - [x] Rewrite Batch-(Activity, Adapter and Sorter) 
-- [ ] Rewrite Main-(Activity, Adapter and Sorter): only partially
+- [ ] Rewrite Main-(Activity, Adapter and Sorter): partially done
 - [ ] Rewrite Scheduler
 - [x] BottomNavBar-based navigation 
 - [x] Sort/Filter-FAB
@@ -21,7 +21,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [ ] Rewrite backup folder selector
 - [ ] New android external storage permissions compatibility: fixed for Android 10 only for now with legacy mode(fix priority: med)
 - [ ] Update dialogs' UI
-- [ ] Updating UI and UX: Design proposales are always welcome
+- [ ] Updating UI and UX: Design proposales are always welcome: partially done
 - [ ] add more informative dialog when clicking an app in Main
 - [ ] You suggest!...
 
@@ -34,7 +34,6 @@ backups can be scheduled with no limit on the number of individual schedules and
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/3.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/4.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/5.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/6.png" width="170" />
 </p>
 
 

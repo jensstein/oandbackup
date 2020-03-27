@@ -1,8 +1,13 @@
 changelog
 =========
 
+0.1.3 (2020-03-27)
+-------------------
+* new UI for Main, Batch and Scheduler
+* fixed: missing "both" as description of backed up mode
+
 0.1.2 (2020-03-27)
---------------------
+-------------------
 * new Main UI
 * fixed refresh in Main
 
