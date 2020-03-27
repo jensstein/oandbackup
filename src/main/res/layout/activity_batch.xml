@@ -12,7 +12,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/main_nav_height"
+        android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="@dimen/batch_nav_height"
         android:divider="@android:color/transparent"
         android:fastScrollEnabled="true"
