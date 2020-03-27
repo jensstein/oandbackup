@@ -111,7 +111,10 @@ public class MainActivity extends BaseActivity
         ButterKnife.bind(this);
 
         checkForPermissions(savedInstanceState);
-        swipeRefreshLayout.setOnRefreshListener(() -> { refresh(); swipeRefreshLayout.setRefreshing(false);});
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refresh();
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         searchView.setQueryHint(getString(R.string.searchHint));
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
@@ -136,12 +139,6 @@ public class MainActivity extends BaseActivity
         bottomBar.replaceMenu(R.menu.main_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
-                case R.id.backup:
-                    startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST); break;
-                case R.id.restore:
-                    startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST); break;
-                case R.id.scheduler:
-                    startActivity(new Intent(getApplicationContext(), SchedulerActivity.class)); break;
                 // case R.id.preferences: startActivity(new Intent(getApplicationContext(), Preferences.class)); break;
                 case R.id.tools:
                     if (backupDir != null) {
@@ -154,7 +151,8 @@ public class MainActivity extends BaseActivity
                 case R.id.help:
                     startActivity(new Intent(getApplicationContext(), Help.class));
                     break;
-                default: break;
+                default:
+                    break;
             }
             return true;
         });
@@ -169,6 +167,20 @@ public class MainActivity extends BaseActivity
         sheetSortFilter.show(getSupportFragmentManager(), "FILTER");
     }
 
+    @OnClick(R.id.btn_batch_backup)
+    public void btnBatchBackup() {
+        startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST);
+    }
+
+    @OnClick(R.id.btn_batch_restore)
+    public void btnBatchRestore() {
+        startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST);
+    }
+
+    @OnClick(R.id.btn_scheduler)
+    public void btnScheduler() {
+        startActivity(new Intent(getApplicationContext(), SchedulerActivity.class));
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,

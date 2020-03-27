@@ -24,7 +24,7 @@
     <dimen name="to_weight">0dp</dimen>
     <dimen name="batch_nav_height">112dp</dimen>
     <dimen name="batch_fab_height">120dp</dimen>
-    <dimen name="main_nav_height">64dp</dimen>
+    <dimen name="main_nav_height">72dp</dimen>
     <dimen name="main_fab_height">72dp</dimen>
     <dimen name="wrapped_icon_size">32dp</dimen>
     <dimen name="fab_margin">16dp</dimen>

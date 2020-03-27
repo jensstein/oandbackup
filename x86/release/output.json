@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.machiav3lli.backup",
+  "variantName": "x86Release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 3103,
+      "versionName": "3103",
+      "enabled": true,
+      "outputFile": "oandbackupx-x86-release.apk"
+    }
+  ]
+}

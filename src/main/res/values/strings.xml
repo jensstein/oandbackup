@@ -176,5 +176,6 @@
     <string name="prefs_disableNotifications">Disable notification</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
     <string name="bothBackedUp">apk and data</string>
+    <string name="all">all</string>
 
 </resources>

@@ -3,6 +3,7 @@
     android:id="@+id/ll"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/med_margin"
     android:background="@drawable/card_rc8"
     android:backgroundTint="@color/colorDarkPrimaryDark"
     android:orientation="vertical"
@@ -91,6 +92,7 @@
             android:id="@+id/updateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
             android:text="@string/sched_updateButton"
             android:textAlignment="center" />
 
@@ -98,6 +100,7 @@
             android:id="@+id/removeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_gravity="end"
             android:backgroundTint="@color/colorDarkRipple"
             android:text="@string/sched_removeButton" />
@@ -107,6 +110,7 @@
         android:id="@+id/activateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_gravity="center"
         android:text="@string/sched_activateButton"
         android:textAlignment="center" />

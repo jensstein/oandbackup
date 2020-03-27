@@ -160,4 +160,5 @@
   <string name="error_creating_notification_channel">Hilfe</string>
   <string name="oabUtilsCheck">Prüfe nach oab-utils</string>
     <string name="bothBackedUp">Apk und Daten</string>
+    <string name="all">Alle</string>
 </resources>

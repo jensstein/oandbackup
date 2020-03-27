@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.machiav3lli.backup",
+  "variantName": "armRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 1103,
+      "versionName": "1103",
+      "enabled": true,
+      "outputFile": "oandbackupx-arm-release.apk"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annimon.stream.Optional;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.machiav3lli.backup.BaseActivity;
 import com.machiav3lli.backup.BlacklistContract;
 import com.machiav3lli.backup.BlacklistListener;
@@ -43,8 +44,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 public class SchedulerActivity extends BaseActivity
         implements View.OnClickListener, AdapterView.OnItemSelectedListener,
@@ -63,8 +66,8 @@ public class SchedulerActivity extends BaseActivity
 
     int totalSchedules;
 
-    // @BindView(R.id.toolBar)
-    // androidx.appcompat.widget.Toolbar toolBar;
+    @BindView(R.id.bottom_bar)
+    BottomAppBar bottomBar;
 
     SharedPreferences defaultPrefs;
 
@@ -86,28 +89,32 @@ public class SchedulerActivity extends BaseActivity
 
         // setSupportActionBar(toolBar);
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        bottomBar.replaceMenu(R.menu.scheduler_bottom_bar);
+        bottomBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.globalBlacklist) {
+                new Thread(() -> {
+                    Bundle args = new Bundle();
+                    args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
+                    SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
+                    ArrayList<String> blacklistedPackages = blacklistsDBHelper
+                            .getBlacklistedPackages(db, GLOBALBLACKLISTID);
+                    args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
+                            blacklistedPackages);
+                    BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
+                    blacklistDialogFragment.setArguments(args);
+                    blacklistDialogFragment.addBlacklistListener(this);
+                    blacklistDialogFragment.show(getFragmentManager(), "blacklistDialog");
+                }).start();
+            }
+            return true;
+        });
     }
+
 
     @OnClick(R.id.addSchedule)
     public void addSchedule() {
         new AddScheduleTask(this).execute();
-    }
-
-    @OnClick(R.id.globalBlacklist)
-    public void getGlobalblacklist() {
-        new Thread(() -> {
-            Bundle args = new Bundle();
-            args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
-            SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
-            ArrayList<String> blacklistedPackages = blacklistsDBHelper
-                    .getBlacklistedPackages(db, GLOBALBLACKLISTID);
-            args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
-                    blacklistedPackages);
-            BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
-            blacklistDialogFragment.setArguments(args);
-            blacklistDialogFragment.addBlacklistListener(this);
-            blacklistDialogFragment.show(getFragmentManager(), "blacklistDialog");
-        }).start();
     }
 
 

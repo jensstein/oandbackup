@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?actionBarSize" >
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:divider="@drawable/schedules_divider"
+            android:showDividers="middle"
             android:orientation="vertical" />
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/bottomNav"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/app_accent"
+        android:elevation="12dp"
+        android:src="@drawable/ic_sched_white"
+        app:layout_anchor="@id/bottom_bar" />
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/main_nav_height"
+        android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/tan_background"
-        android:elevation="8dp"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/addSchedule"
-            style="@style/navbarButton"
-            android:clickable="true"
-            android:drawableTop="@drawable/ic_sched_white"
-            android:focusable="true"
-            android:text="@string/sched_addSchudule" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/globalBlacklist"
-            style="@style/navbarButton"
-            android:clickable="true"
-            android:drawableTop="@drawable/ic_blacklist_white"
-            android:focusable="true"
-            android:text="@string/sched_globalBlacklist" />
-    </LinearLayout>
+        android:backgroundTint="@color/tan_background"
+        app:fabAlignmentMode="end"
+        app:menu="@menu/scheduler_bottom_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

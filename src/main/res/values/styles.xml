@@ -29,13 +29,12 @@
 
     <style name="mainBarView" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/list_item_height</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">@dimen/cards_margin</item>
         <item name="android:background">@color/tan_background</item>
     </style>
-
 
 
     <!-- Buttons & Widgets -->
@@ -55,13 +54,9 @@
     <style name="navbarButton" parent="android:Widget.Material.Button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">0.25</item>
-        <item name="android:padding">@dimen/cards_margin</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/ripple_nav_buttons</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
-        <item name="android:singleLine">true</item>
     </style>
 
 

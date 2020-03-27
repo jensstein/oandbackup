@@ -89,6 +89,9 @@ public class BatchAdapter extends RecyclerView.Adapter<BatchAdapter.ViewHolder> 
                 case AppInfo.MODE_DATA:
                     holder.backupMode.setText(R.string.onlyDataBackedUp);
                     break;
+                case AppInfo.MODE_BOTH:
+                    holder.backupMode.setText(R.string.bothBackedUp);
+                    break;
                 default:
                     holder.backupMode.setText("");
                     break;
