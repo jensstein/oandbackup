@@ -175,5 +175,6 @@
     <string name="app_s_icon">app\'s icon</string>
     <string name="prefs_disableNotifications">Disable notification</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
+    <string name="bothBackedUp">apk and data</string>
 
 </resources>
