@@ -1,11 +1,11 @@
 package com.machiav3lli.backup;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,12 +17,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,7 +32,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.annimon.stream.IntStream;
 import com.annimon.stream.Optional;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.adapters.MainAdapter;
 import com.machiav3lli.backup.schedules.SchedulerActivity;
 import com.machiav3lli.backup.tasks.BackupTask;
@@ -45,6 +44,8 @@ import com.machiav3lli.backup.ui.LanguageHelper;
 import com.machiav3lli.backup.ui.NotificationHelper;
 import com.machiav3lli.backup.ui.dialogs.BackupRestoreDialogFragment;
 import com.machiav3lli.backup.ui.dialogs.ShareDialogFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,22 +69,16 @@ public class MainActivity extends BaseActivity
 
     @BindView(R.id.listView)
     ListView listView;
-    @BindView(R.id.btn_batch_backup)
-    Button btnBackup;
-    @BindView(R.id.btn_batch_restore)
-    Button btnRestore;
-    @BindView(R.id.btn_schedule)
-    Button btnSchedule;
-    @BindView(R.id.btn_settings)
-    Button btnSettings;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.sort_filter_fab)
-    ExtendedFloatingActionButton fabSortFilter;
+    FloatingActionButton fabSortFilter;
     @BindView(R.id.toolBar)
     androidx.appcompat.widget.Toolbar toolBar;
     @BindView(R.id.search_view)
     androidx.appcompat.widget.SearchView searchView;
+    @BindView(R.id.bottom_bar)
+    BottomAppBar bottomBar;
 
     MainAdapter adapter;
     SortFilterSheet sheetSortFilter;
@@ -116,12 +111,7 @@ public class MainActivity extends BaseActivity
         ButterKnife.bind(this);
 
         checkForPermissions(savedInstanceState);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            refresh();
-            swipeRefreshLayout.setRefreshing(false);
-        });
-
-        setSupportActionBar(toolBar);
+        swipeRefreshLayout.setOnRefreshListener(() -> { refresh(); swipeRefreshLayout.setRefreshing(false);});
 
         searchView.setQueryHint(getString(R.string.searchHint));
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
@@ -138,6 +128,35 @@ public class MainActivity extends BaseActivity
                     MainActivity.this.adapter.getFilter().filter(query);
                 return true;
             }
+        });
+
+
+        setSupportActionBar(toolBar);
+
+        bottomBar.replaceMenu(R.menu.main_bottom_bar);
+        bottomBar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.backup:
+                    startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST); break;
+                case R.id.restore:
+                    startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST); break;
+                case R.id.scheduler:
+                    startActivity(new Intent(getApplicationContext(), SchedulerActivity.class)); break;
+                // case R.id.preferences: startActivity(new Intent(getApplicationContext(), Preferences.class)); break;
+                case R.id.tools:
+                    if (backupDir != null) {
+                        Intent toolsIntent = new Intent(getApplicationContext(), Tools.class);
+                        toolsIntent.putExtra(classAddress(".backupDir"), backupDir);
+                        toolsIntent.putStringArrayListExtra(classAddress(".users"), shellCommands.getUsers());
+                        startActivityForResult(toolsIntent, TOOLS_REQUEST);
+                    }
+                    break;
+                case R.id.help:
+                    startActivity(new Intent(getApplicationContext(), Help.class));
+                    break;
+                default: break;
+            }
+            return true;
         });
     }
 
@@ -259,6 +278,7 @@ public class MainActivity extends BaseActivity
 
     // The users parameter should ideally be List instead of ArrayList
     // but the following methods expect ArrayList.
+    @SuppressLint("RestrictedApi")
     private long startUiThread(boolean checked, int firstVisiblePosition,
                                ArrayList<String> users) {
         final Thread initThread = new Thread(new InitRunnable(checked,
@@ -277,7 +297,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(Constants.BUNDLE_STATECHECKED, true);
         outState.putLong(Constants.BUNDLE_THREADID, threadId);
@@ -309,7 +329,7 @@ public class MainActivity extends BaseActivity
             Bundle arguments = new Bundle();
             arguments.putParcelable("appinfo", appInfo);
             BackupRestoreDialogFragment dialog = new BackupRestoreDialogFragment();
-            dialog.setListener((ActionListener) this);
+            dialog.setListener(this);
             dialog.setArguments(arguments);
             dialog.show(getFragmentManager(), "DialogFragment");
         }
@@ -336,33 +356,22 @@ public class MainActivity extends BaseActivity
         return batchIntent;
     }
 
-    public void bindNavigationButtons() {
-        btnBackup.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivity.class, true), BATCH_REQUEST));
-        btnRestore.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivity.class, false), BATCH_REQUEST));
-        btnSchedule.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivity.class)));
-        // btnSettings.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Preferences.class)));
-    }
-
     public Thread refresh() {
-        Thread refreshThread = new Thread(new Runnable() {
-            public void run() {
-                appInfoList = AppInfoHelper.getPackageInfo(MainActivity.this,
-                        backupDir, true, PreferenceManager.getDefaultSharedPreferences(
-                                MainActivity.this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS,
-                                true));
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        // temporary work-around until the race condition between refresh and oncreate when returning from batchactivity with changesmade have been fixed
-                        if (adapter != null && mainSorter != null) {
-                            // adapter.setNewOriginalValues(appInfoList);
-                            mainSorter.sort(mainSorter.getFilteringMethod().getId());
-                            mainSorter.sort(mainSorter.getSortingMethod().getId());
-                            adapter.restoreFilter();
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-            }
+        Thread refreshThread = new Thread(() -> {
+            appInfoList = AppInfoHelper.getPackageInfo(MainActivity.this,
+                    backupDir, true, PreferenceManager.getDefaultSharedPreferences(
+                            MainActivity.this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS,
+                            true));
+            runOnUiThread(() -> {
+                // temporary work-around until the race condition between refresh and oncreate when returning from batchactivity with changesmade have been fixed
+                if (adapter != null && mainSorter != null) {
+                    adapter.setNewOriginalValues(appInfoList);
+                    mainSorter.sort(mainSorter.getFilteringMethod().getId());
+                    mainSorter.sort(mainSorter.getSortingMethod().getId());
+                    adapter.restoreFilter();
+                    adapter.notifyDataSetChanged();
+                }
+            });
         });
         if (sheetSortFilter != null) sheetSortFilter.setCheckedDefault();
 
@@ -380,10 +389,6 @@ public class MainActivity extends BaseActivity
             appInfoList.set(pos, appInfo);
             adapter.notifyDataSetChanged();
         }
-    }
-
-    public void setAppInfoAdapter(MainAdapter adapter) {
-        this.adapter = adapter;
     }
 
     @Override
@@ -417,35 +422,6 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // clear menu so menus from other activities aren't shown also
-        menu.clear();
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.tools:
-                if (backupDir != null) {
-                    Intent toolsIntent = new Intent(this, Tools.class);
-                    toolsIntent.putExtra(classAddress(".backupDir"), backupDir);
-                    toolsIntent.putStringArrayListExtra(classAddress(".users"), shellCommands.getUsers());
-                    startActivityForResult(toolsIntent, TOOLS_REQUEST);
-                }
-                break;
-            case R.id.help:
-                startActivity(new Intent(this, Help.class));
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.contextmenu, menu);
@@ -466,28 +442,23 @@ public class MainActivity extends BaseActivity
                 new AlertDialog.Builder(this)
                         .setTitle(adapter.items.get(info.position).getLabel())
                         .setMessage(R.string.uninstallDialogMessage)
-                        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Thread uninstallThread = new Thread(new Runnable() {
-                                    public void run() {
-                                        AppInfo appInfo = adapter.items.get(info.position);
-                                        Log.i(TAG, "uninstalling " + appInfo.getLabel());
-                                        handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
-                                        int ret = shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem());
-                                        refresh();
-                                        handleMessages.endMessage();
-                                        if (ret == 0) {
-                                            NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallSuccess), appInfo.getLabel(), true);
-                                        } else {
-                                            NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
-                                            Utils.showErrors(MainActivity.this);
-                                        }
-                                    }
-                                });
-                                uninstallThread.start();
-                                threadId = uninstallThread.getId();
-                            }
+                        .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                            Thread uninstallThread = new Thread(() -> {
+                                AppInfo appInfo = adapter.items.get(info.position);
+                                Log.i(TAG, "uninstalling " + appInfo.getLabel());
+                                handleMessages.showMessage(appInfo.getLabel(), getString(R.string.uninstallProgress));
+                                int ret = shellCommands.uninstall(appInfo.getPackageName(), appInfo.getSourceDir(), appInfo.getDataDir(), appInfo.isSystem());
+                                refresh();
+                                handleMessages.endMessage();
+                                if (ret == 0) {
+                                    NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallSuccess), appInfo.getLabel(), true);
+                                } else {
+                                    NotificationHelper.showNotification(MainActivity.this, MainActivity.class, notificationId++, getString(R.string.uninstallFailure), appInfo.getLabel(), true);
+                                    Utils.showErrors(MainActivity.this);
+                                }
+                            });
+                            uninstallThread.start();
+                            threadId = uninstallThread.getId();
                         })
                         .setNegativeButton(R.string.dialogNo, null)
                         .show();
@@ -496,23 +467,18 @@ public class MainActivity extends BaseActivity
                 new AlertDialog.Builder(this)
                         .setTitle(adapter.items.get(info.position).getLabel())
                         .setMessage(R.string.deleteBackupDialogMessage)
-                        .setPositiveButton(R.string.dialogYes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Thread deleteBackupThread = new Thread(new Runnable() {
-                                    public void run() {
-                                        handleMessages.showMessage(adapter.items.get(info.position).getLabel(), getString(R.string.deleteBackup));
-                                        if (backupDir != null) {
-                                            File backupSubDir = new File(backupDir, adapter.items.get(info.position).getPackageName());
-                                            shellCommands.deleteBackup(backupSubDir);
-                                            refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
-                                        }
-                                        handleMessages.endMessage();
-                                    }
-                                });
-                                deleteBackupThread.start();
-                                threadId = deleteBackupThread.getId();
-                            }
+                        .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                            Thread deleteBackupThread = new Thread(() -> {
+                                handleMessages.showMessage(adapter.items.get(info.position).getLabel(), getString(R.string.deleteBackup));
+                                if (backupDir != null) {
+                                    File backupSubDir = new File(backupDir, adapter.items.get(info.position).getPackageName());
+                                    shellCommands.deleteBackup(backupSubDir);
+                                    refresh(); // behøver ikke refresh af alle pakkerne, men refresh(packageName) kalder readLogFile(), som ikke kan håndtere, hvis logfilen ikke findes
+                                }
+                                handleMessages.endMessage();
+                            });
+                            deleteBackupThread.start();
+                            threadId = deleteBackupThread.getId();
                         })
                         .setNegativeButton(R.string.dialogNo, null)
                         .show();
@@ -578,7 +544,7 @@ public class MainActivity extends BaseActivity
 
     public void displayDialogEnableDisable(final String packageName, final boolean enable) {
         String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
-        final ArrayList<String> selectedUsers = new ArrayList<String>();
+        final ArrayList<String> selectedUsers = new ArrayList<>();
         final ArrayList<String> userList = shellCommands.getUsers();
         CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
         new AlertDialog.Builder(this)
@@ -586,9 +552,7 @@ public class MainActivity extends BaseActivity
                 .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
                     if (checked) {
                         selectedUsers.add(userList.get(chosen));
-                    } else if (selectedUsers.contains(userList.get(chosen))) {
-                        selectedUsers.remove(userList.get(chosen));
-                    }
+                    } else selectedUsers.remove(userList.get(chosen));
                 })
                 .setPositiveButton(R.string.dialogOK, (dialog, which) ->
                         shellCommands.enableDisablePackage(packageName,
@@ -627,10 +591,12 @@ public class MainActivity extends BaseActivity
             shellCommands = new ShellCommands(prefs, users, getFilesDir());
             String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
                     Constants.PREFS_LANGUAGES_DEFAULT);
+            assert langCode != null;
             LanguageHelper.initLanguage(MainActivity.this, langCode);
             String backupDirPath = prefs.getString(
                     Constants.PREFS_PATH_BACKUP_DIRECTORY,
                     FileCreationHelper.getDefaultBackupDirPath());
+            assert backupDirPath != null;
             backupDir = Utils.createBackupDir(MainActivity.this, backupDirPath);
             // temporary method to move logfile from bottom of external storage to bottom of backupdir
             new FileCreationHelper().moveLogfile(prefs.getString("pathLogfile", FileCreationHelper.getDefaultLogFilePath()));
@@ -673,7 +639,6 @@ public class MainActivity extends BaseActivity
                     displayDialog(appInfo);
                 });
             });
-            bindNavigationButtons();
         }
     }
 
