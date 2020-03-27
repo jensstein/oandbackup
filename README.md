@@ -22,6 +22,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [ ] New android external storage permissions compatibility: fixed for Android 10 only for now with legacy mode(fix priority: med)
 - [ ] Update dialogs' UI
 - [ ] Updating UI and UX: Design proposales are always welcome
+- [ ] add more informative dialog when clicking an app in Main
 - [ ] You suggest!...
 
 

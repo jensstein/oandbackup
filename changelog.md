@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.1.2 (2020-03-27)
+--------------------
+* new Main UI
+* fixed refresh in Main
+
 0.1.1 (2020-03-25)
 -------------------
  * initial X release
