@@ -18,7 +18,7 @@
             android:id="@+id/search_view"
             style="@android:style/Widget.Material.SearchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?actionBarSize"
             android:layout_centerVertical="true"
             android:autofillHints="@string/searchHint"
             android:background="@null"

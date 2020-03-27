@@ -34,13 +34,12 @@
         android:backgroundTint="@color/app_accent"
         android:elevation="12dp"
         android:src="@drawable/ic_filter_white_48dp"
-        app:layout_anchor="@id/bottom_bar"
-        app:rippleColor="@color/app_accent"/>
+        app:layout_anchor="@id/bottom_bar" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
         android:backgroundTint="@color/tan_background"
         app:fabAlignmentMode="end"
