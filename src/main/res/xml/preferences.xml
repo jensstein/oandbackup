@@ -1,89 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <androidx.preference.ListPreference
-        android:key="languages"
-        android:title="@string/prefs_languages"
-        android:entries="@array/languageEntries"
-        android:entryValues="@array/languageEntryValues"
-        android:defaultValue="system"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="timestamp"
-        android:title="@string/prefs_timestamp"
-        android:defaultValue="true"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="copySelfApk"
-        android:title="@string/prefs_copySelfApk"
-        android:summary="@string/prefs_summaryCopySelfApk"
-        android:defaultValue="false"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="acquireWakelock"
-        android:title="@string/prefs_acquireWakelock"
-        android:summary="@string/prefs_summaryAcquireWakelock"
-        android:defaultValue="true"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="rememberFiltering"
-        android:title="@string/prefs_rememberFiltering"
-        android:summary="@string/prefs_summaryRememberFiltering"
-        android:defaultValue="false"
-        />
-    <androidx.preference.EditTextPreference
-        android:key="oldBackups"
-        android:title="@string/prefs_oldBackups"
-        android:summary="@string/prefs_summaryOldBackups"
-        android:inputType="number"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="followSymlinks"
-        android:title="@string/prefs_followSymlinks"
-        android:summary="@string/prefs_summaryFollowSymlinks"
-        android:defaultValue="true"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="backupExternalFiles"
-        android:title="@string/prefs_backupExternalFiles"
-        android:summary="@string/prefs_summaryBackupExternalFiles"
-        android:defaultValue="false"
-        />
-    <androidx.preference.CheckBoxPreference
-        android:key="enableSpecialBackups"
-        android:title="@string/prefs_enableSpecialBackups"
-        android:defaultValue="true"
-        />
-    <androidx.preference.PreferenceScreen
-        android:title="@string/prefs_cryptoMenu"
-        android:key="cryptoMenu">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.preference.PreferenceCategory
+        android:key="userPrefs"
+        android:title="@string/prefs_user">
+        <androidx.preference.ListPreference
+            android:defaultValue="system"
+            android:entries="@array/languageEntries"
+            android:entryValues="@array/languageEntryValues"
+            android:key="languages"
+            android:title="@string/prefs_languages" />
         <androidx.preference.CheckBoxPreference
-            android:key="enableCrypto"
-            android:title="@string/prefs_enableCrypto"
-            android:summary="@string/prefs_summaryEnableCrypto"
+            android:defaultValue="true"
+            android:key="timestamp"
+            android:title="@string/prefs_timestamp" />
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
-            />
+            android:key="rememberFiltering"
+            android:summary="@string/prefs_summaryRememberFiltering"
+            android:title="@string/prefs_rememberFiltering" />
+        <androidx.preference.EditTextPreference
+            android:inputType="number"
+            android:key="oldBackups"
+            android:summary="@string/prefs_summaryOldBackups"
+            android:title="@string/prefs_oldBackups" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
+        android:key="servicePrefs"
+        android:title="@string/prefs_service">
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="copySelfApk"
+            android:summary="@string/prefs_summaryCopySelfApk"
+            android:title="@string/prefs_copySelfApk" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="acquireWakelock"
+            android:summary="@string/prefs_summaryAcquireWakelock"
+            android:title="@string/prefs_acquireWakelock" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="followSymlinks"
+            android:summary="@string/prefs_summaryFollowSymlinks"
+            android:title="@string/prefs_followSymlinks" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enableSpecialBackups"
+            android:title="@string/prefs_enableSpecialBackups" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
+        android:key="pathscategory"
+        android:title="@string/prefs_pathscategory">
+        <androidx.preference.Preference
+            android:key="pathBackupFolder"
+            android:title="@string/prefs_pathBackupFolder" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="backupExternalFiles"
+            android:summary="@string/prefs_summaryBackupExternalFiles"
+            android:title="@string/prefs_backupExternalFiles" />
+        <androidx.preference.EditTextPreference
+            android:key="pathBusybox"
+            android:summary="@string/prefs_summaryBusybox"
+            android:title="@string/prefs_pathBusybox" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
+        android:key="prefsTools"
+        android:title="@string/tools_title">
+        <androidx.preference.Preference
+            android:key="quickReboot"
+            android:title="@string/quickRebootTitle"
+            android:summary="@string/prefs_summaryQuickReboot"/>
+        <androidx.preference.Preference
+            android:key="batchDelete"
+            android:title="@string/batchDeleteTitle"
+            android:summary="@string/prefs_summaryBatchDelete"/>
+        <androidx.preference.Preference
+            android:key="logViewer"
+            android:title="@string/logViewerTitle" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceScreen
+        android:key="cryptoMenu"
+        android:title="@string/prefs_cryptoMenu"
+        app:isPreferenceVisible="false">
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enableCrypto"
+            android:summary="@string/prefs_summaryEnableCrypto"
+            android:title="@string/prefs_enableCrypto" />
         <androidx.preference.EditTextPreference
             android:key="cryptoUserIds"
-            android:title="@string/prefs_cryptoUserIds"
             android:summary="@string/prefs_summaryCryptoUserIds"
-            />
-        <org.openintents.openpgp.util.OpenPgpAppPreference
+            android:title="@string/prefs_cryptoUserIds" />
+        <!--org.openintents.openpgp.util.OpenPgpAppPreference
             android:key="openpgpProviderList"
-            android:title="@string/prefs_openpgpProviderList"
-            />
+            android:title="@string/prefs_openpgpProviderList" /-->
     </androidx.preference.PreferenceScreen>
-    <androidx.preference.PreferenceCategory
-        android:title="@string/prefs_pathscategory"
-        android:key="pathscategory" >
-        <com.machiav3lli.backup.FileBrowserEditTextPreference
-            android:key="pathBackupFolder"
-            android:title="@string/prefs_pathBackupFolder"
-            android:summary="@string/prefs_summaryBackupFolder"
-            />
-        <EditTextPreference
-            android:key="pathBusybox"
-            android:title="@string/prefs_pathBusybox"
-            android:summary="@string/prefs_summaryBusybox"
-            />
-    </androidx.preference.PreferenceCategory>
+    <androidx.preference.Preference
+        android:key="help"
+        android:title="@string/help_title"/>
 </androidx.preference.PreferenceScreen>

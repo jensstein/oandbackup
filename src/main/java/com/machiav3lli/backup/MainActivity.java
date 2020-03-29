@@ -39,7 +39,6 @@ import com.machiav3lli.backup.schedules.SchedulerActivity;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
 import com.machiav3lli.backup.ui.HandleMessages;
-import com.machiav3lli.backup.ui.Help;
 import com.machiav3lli.backup.ui.LanguageHelper;
 import com.machiav3lli.backup.ui.NotificationHelper;
 import com.machiav3lli.backup.ui.dialogs.BackupRestoreDialogFragment;
@@ -100,6 +99,7 @@ public class MainActivity extends BaseActivity
     ShellCommands shellCommands;
     HandleMessages handleMessages;
     MainSorter mainSorter;
+    private static Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         handleMessages = new HandleMessages(this);
 
+        mContext = getApplicationContext();
         ButterKnife.bind(this);
 
         checkForPermissions(savedInstanceState);
@@ -138,24 +139,14 @@ public class MainActivity extends BaseActivity
 
         bottomBar.replaceMenu(R.menu.main_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                // case R.id.preferences: startActivity(new Intent(getApplicationContext(), Preferences.class)); break;
-                case R.id.tools:
-                    if (backupDir != null) {
-                        Intent toolsIntent = new Intent(getApplicationContext(), Tools.class);
-                        toolsIntent.putExtra(classAddress(".backupDir"), backupDir);
-                        toolsIntent.putStringArrayListExtra(classAddress(".users"), shellCommands.getUsers());
-                        startActivityForResult(toolsIntent, TOOLS_REQUEST);
-                    }
-                    break;
-                case R.id.help:
-                    startActivity(new Intent(getApplicationContext(), Help.class));
-                    break;
-                default:
-                    break;
-            }
+            if (item.getItemId() == R.id.preferences)
+                startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
             return true;
         });
+    }
+
+    public static Context getContext() {
+        return mContext;
     }
 
     @OnClick(R.id.sort_filter_fab)

@@ -71,7 +71,7 @@
     <string name="uninstallFailure">error on uninstall</string>
     <string name="errorDialogTitle">errors occurred</string>
     <string name="customListTitle">custom list</string>
-    <string name="quickReboot">quick reboot</string>
+    <string name="quickRebootTitle">quick reboot</string>
     <string name="quickRebootMessage">do you wish to restart userspace?</string>
     <string name="help_title">help</string>
     <string name="notInstalledModeDataWarning">app cannot be restored from a backup without apk</string>
@@ -79,12 +79,12 @@
     <string name="filebrowser_title">file browser</string>
     
     <string name="tools_title">tools</string>
-    <string name="tools_batchDeleteTitle">delete backups?</string>
-    <string name="tools_batchDeleteMessage">deleting backups</string>
-    <string name="tools_notificationTitle">delete backups</string>
+    <string name="batchDeleteTitle">delete backups</string>
+    <string name="batchDeleteMessage">deleting backups</string>
+    <string name="batchDeleteNotificationTitle">delete backups</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
-    <string name="tools_backupsDeleted">backups deleted:</string>
-    <string name="tools_nothingToDelete">no backups to delete</string>
+    <string name="batchDeleteBackupsDeleted">backups deleted:</string>
+    <string name="batchDeleteNothingToDelete">no backups to delete</string>
 
     <string name="enablePackage">enable</string>
         <!-- enablePackageTitle: title for a list of checkable users -->
@@ -177,5 +177,10 @@
     <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
     <string name="bothBackedUp">apk and data</string>
     <string name="all">all</string>
+    <string name="prefs_service">service preferences</string>
+    <string name="prefs_user">user preferences</string>
+    <string name="logViewerTitle">view the log</string>
+    <string name="prefs_summaryQuickReboot">kills the system_server process to force a restart of user space</string>
+    <string name="prefs_summaryBatchDelete">delete backups of all apps not currently installed</string>
 
 </resources>

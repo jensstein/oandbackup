@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--item android:title="@string/prefs_title"
+    <item android:title="@string/prefs_title"
         android:id="@+id/preferences"
         android:icon="@drawable/ic_settings_white"
-        app:showAsAction="ifRoom"/-->
-    <item
-        android:id="@+id/tools"
-        android:title="@string/tools_title" />
-    <item
-        android:id="@+id/help"
-        android:title="@string/help_title" />
+        app:showAsAction="ifRoom"/>
 </menu>

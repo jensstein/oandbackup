@@ -1,5 +1,9 @@
 package com.machiav3lli.backup;
 
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
+
 public class Constants {
     private Constants() {
     }
@@ -20,14 +24,18 @@ public class Constants {
     public static final String PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent";
     public static final String PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem";
 
-    public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
-    public static final String PREFS_PATH_BUSYBOX = "pathBusybox";
-    public static final String PREFS_TIMESTAMP = "timestamp";
-    public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
+    public static final String PREFS_TIMESTAMP = "timestamp";
+    public static final String PREFS_OLDBACKUPS = "oldBackups";
+    public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
+    public static final String PREFS_PATH_BUSYBOX = "pathBusybox";
+    public static final String PREFS_QUICK_REBOOT = "quickReboot";
+    public static final String PREFS_BATCH_DELETE = "batchDelete";
+    public static final String PREFS_LOGVIEWER = "logViewer";
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_ENABLECRYPTO = "enableCrypto";
+    public static final String PREFS_HELP = "help";
 
 
     public static final String BUNDLE_THREADID = "threadId";
@@ -42,4 +50,5 @@ public class Constants {
     public static String classAddress(String address) {
         return "com.machiav3lli.backup" + address;
     }
+
 }

@@ -7,28 +7,21 @@
     <dimen name="list_item_height">100dp</dimen>
 
     <!-- Items margins and padding -->
-    <dimen name="icon_padding">16dp</dimen>
-    <dimen name="text_padding">8dp</dimen>
-    <dimen name="small_margin">2dp</dimen>
-    <dimen name="cards_margin">8dp</dimen>
-    <dimen name="med_margin">12dp</dimen>
-    <dimen name="large_margin">16dp</dimen>
-    <dimen name="bottom_margin">64dp</dimen>
+    <dimen name="text_spacing">8dp</dimen>
+    <dimen name="small_spacing">2dp</dimen>
+    <dimen name="cards_spacing">8dp</dimen>
+    <dimen name="med_spacing">12dp</dimen>
+    <dimen name="large_spacing">16dp</dimen>
 
     <!-- Sizes of texts -->
+    <dimen name="title_text">24sp</dimen>
     <dimen name="main_text">16sp</dimen>
     <dimen name="secondary_text">12sp</dimen>
-    <dimen name="title_text">24sp</dimen>
 
     <!-- layout sizes -->
-    <dimen name="to_weight">0dp</dimen>
     <dimen name="batch_nav_height">112dp</dimen>
-    <dimen name="batch_fab_height">120dp</dimen>
     <dimen name="main_nav_height">72dp</dimen>
-    <dimen name="main_fab_height">72dp</dimen>
     <dimen name="wrapped_icon_size">32dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 </resources>

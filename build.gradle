@@ -16,6 +16,7 @@ ext {
     mockito_version = "2.24.0"
     lifecycle_version = "2.2.0"
     lightweight_stream_api_version = "1.2.1"
+    filepicker_version = "4.2.1"
 
     // junit_version = "5.6.0"
 
@@ -42,6 +43,7 @@ dependencies {
     implementation "org.mockito:mockito-core:$mockito_version"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     implementation "com.annimon:stream:$lightweight_stream_api_version"
+    implementation "com.nononsenseapps:filepicker:$filepicker_version"
 
     // implementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
 
@@ -101,8 +103,8 @@ sonarqube {
 }
 
 int versionMajor = 0
-int versionMinor = 1
-int versionPath = 3
+int versionMinor = 2
+int versionPath = 6
 
 android {
     compileSdkVersion 29

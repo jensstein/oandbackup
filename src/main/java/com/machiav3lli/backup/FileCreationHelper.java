@@ -8,12 +8,16 @@ import java.io.IOException;
 
 public class FileCreationHelper {
     final static String TAG = MainActivity.TAG;
-    public final static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackupsx";
+    public static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackupsx";
     public final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackupx.log";
     boolean fallbackFlag;
 
     public static String getDefaultBackupDirPath() {
         return defaultBackupDirPath;
+    }
+
+    public static void setDefaultBackupDirPath(String backupDirPath) {
+        defaultBackupDirPath = backupDirPath;
     }
 
     public static String getDefaultLogFilePath() {
