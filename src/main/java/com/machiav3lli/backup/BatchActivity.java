@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
 
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,9 +38,6 @@ public class BatchActivity extends BaseActivity
     ArrayList<AppInfo> appInfoList = MainActivity.appInfoList;
     final static String TAG = MainActivity.TAG;
     boolean backupBoolean;
-    final static int SHOW_DIALOG = 0;
-    final static int CHANGE_DIALOG = 1;
-    final static int DISMISS_DIALOG = 2;
 
     final static int RESULT_OK = 0;
 
@@ -58,15 +55,15 @@ public class BatchActivity extends BaseActivity
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.radioApk)
-    RadioButton rbApk;
+    AppCompatRadioButton rbApk;
     @BindView(R.id.radioData)
-    RadioButton rbData;
+    AppCompatRadioButton rbData;
     @BindView(R.id.radioBoth)
-    RadioButton rbBoth;
+    AppCompatRadioButton rbBoth;
     @BindView(R.id.backupRestoreButton)
     Button actionButton;
     @BindView(R.id.cbAll)
-    CheckBox cbAll;
+    AppCompatCheckBox cbAll;
     @BindView(R.id.toolBar)
     androidx.appcompat.widget.Toolbar toolBar;
     @BindView(R.id.search_view)
@@ -96,6 +93,7 @@ public class BatchActivity extends BaseActivity
         String backupDirPath = prefs.getString(
                 Constants.PREFS_PATH_BACKUP_DIRECTORY,
                 FileCreationHelper.getDefaultBackupDirPath());
+        assert backupDirPath != null;
         backupDir = Utils.createBackupDir(BatchActivity.this, backupDirPath);
 
         int filteringMethodId = 0;

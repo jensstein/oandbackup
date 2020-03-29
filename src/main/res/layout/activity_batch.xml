@@ -22,6 +22,8 @@
         android:id="@+id/bottom_bar"
         style="@style/mainBarView"
         android:layout_gravity="bottom"
+        android:paddingVertical="@dimen/cards_spacing"
+        android:paddingHorizontal="@dimen/cards_spacing"
         android:backgroundTint="@color/tan_background"
         app:fabAlignmentMode="end">
 
@@ -36,21 +38,21 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioApk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/med_margin"
+                    android:layout_marginEnd="@dimen/med_spacing"
                     android:text="@string/radioApk" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioData"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/med_margin"
+                    android:layout_marginEnd="@dimen/med_spacing"
                     android:text="@string/radioData" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioBoth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -62,11 +64,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <CheckBox
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cbAll"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/med_margin"
+                    android:layout_marginEnd="@dimen/med_spacing"
                     android:singleLine="true"
                     android:text="@string/all" />
 

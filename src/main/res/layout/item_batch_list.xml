@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         style="@style/itemHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -25,7 +25,7 @@
                 android:singleLine="true"
                 android:textAppearance="@style/labelText" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/backupMode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -33,24 +33,24 @@
                 android:gravity="end"
                 android:singleLine="true"
                 android:textSize="@dimen/main_text" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/packageName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:paddingStart="@dimen/med_margin"
+                android:paddingStart="@dimen/med_spacing"
                 android:singleLine="true"
                 android:textSize="@dimen/secondary_text"
                 tools:ignore="RtlSymmetry" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/versionCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:gravity="end"
                 android:singleLine="true"
                 android:textSize="@dimen/secondary_text" />
-        </LinearLayout>
-    </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </FrameLayout>

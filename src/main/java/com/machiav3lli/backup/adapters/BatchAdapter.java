@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.machiav3lli.backup.AppInfo;
@@ -103,8 +103,6 @@ public class BatchAdapter extends RecyclerView.Adapter<BatchAdapter.ViewHolder> 
             appInfo1.setChecked(!appInfo1.isChecked());
             notifyDataSetChanged();
         });
-
-
     }
 
     @Override
@@ -118,11 +116,11 @@ public class BatchAdapter extends RecyclerView.Adapter<BatchAdapter.ViewHolder> 
         @BindView(R.id.checkbox)
         AppCompatCheckBox checkBox;
         @BindView(R.id.packageName)
-        TextView packageName;
+        AppCompatTextView packageName;
         @BindView(R.id.versionCode)
-        TextView versionName;
+        AppCompatTextView versionName;
         @BindView(R.id.backupMode)
-        TextView backupMode;
+        AppCompatTextView backupMode;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
