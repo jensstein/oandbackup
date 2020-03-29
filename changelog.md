@@ -1,6 +1,13 @@
 changelog
 =========
 
+0.2.6 (2020-03-29)
+-------------------
+* rewritten Preferences fully
+* replaced the file browser with a more initiative one
+* fixed toolbar issue for Scheduler and Preferences
+* integrated Help and Tools in the Preferences
+
 0.1.3 (2020-03-27)
 -------------------
 * new UI for Main, Batch and Scheduler

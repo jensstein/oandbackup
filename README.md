@@ -12,16 +12,17 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
 - [x] Rewrite Batch-(Activity, Adapter and Sorter) 
 - [ ] Rewrite Main-(Activity, Adapter and Sorter): partially done
-- [ ] Rewrite Scheduler
+- [x] Rewrite Scheduler
 - [x] BottomNavBar-based navigation 
 - [x] Sort/Filter-FAB
 - [ ] Fix other filters not Responding
 - [ ] Add some new filters
-- [ ] Rewrite Preferences
-- [ ] Rewrite backup folder selector
-- [ ] New android external storage permissions compatibility: fixed for Android 10 only for now with legacy mode(fix priority: med)
+- [x] Rewrite Preferences
+- [x] Rewrite backup folder selector
+- [x] Integrate Tools and Help in Preferences
+- [ ] New android scope storage permissions compatibility: fixed for Android 10 only for now with legacy mode(fix priority: med)
+- [ ] Updating UI and UX: Design proposals are always welcome: partially done
 - [ ] Update dialogs' UI
-- [ ] Updating UI and UX: Design proposales are always welcome: partially done
 - [ ] add more informative dialog when clicking an app in Main
 - [ ] You suggest!...
 
@@ -34,6 +35,7 @@ backups can be scheduled with no limit on the number of individual schedules and
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/3.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/4.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/5.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/6.png" width="170" />
 </p>
 
 
