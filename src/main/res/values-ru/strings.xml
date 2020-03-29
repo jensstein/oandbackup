@@ -67,7 +67,7 @@
     <string name="uninstallFailure">ошибка деинсталляции</string>
     <string name="errorDialogTitle">Произошла ошибка</string>
     <string name="customListTitle">Настраиваемый список</string>
-    <string name="quickReboot">Быстрая перезагрузка</string>
+    <string name="quickRebootTitle">Быстрая перезагрузка</string>
     <string name="quickRebootMessage">Вы хотите перезапустить интерфейс?</string>
     <string name="help_title">Помощь</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
@@ -75,12 +75,12 @@
     <string name="filebrowser_title">Файловый браузер</string>
     
     <string name="tools_title">инструменты</string>
-    <string name="tools_batchDeleteTitle">удалить р.к.?</string>
-    <string name="tools_batchDeleteMessage">удаление р.к.</string>
-    <string name="tools_notificationTitle">удалить р.к.</string>
+    <string name="batchDeleteTitle">удалить р.к.?</string>
+    <string name="batchDeleteMessage">удаление р.к.</string>
+    <string name="batchDeleteNotificationTitle">удалить р.к.</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
-    <string name="tools_backupsDeleted">р.к. удалено:</string>
-    <string name="tools_nothingToDelete">нет р.к. для удаления</string>
+    <string name="batchDeleteBackupsDeleted">р.к. удалено:</string>
+    <string name="batchDeleteNothingToDelete">нет р.к. для удаления</string>
 
     <string name="enablePackage">Включить</string>
         <!-- enablePackageTitle: title for a list of checkable users -->

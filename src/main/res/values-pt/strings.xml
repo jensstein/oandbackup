@@ -65,19 +65,19 @@
   <string name="uninstallFailure">Erro ao desinstalar</string>
   <string name="errorDialogTitle">Ocorreram erros</string>
   <string name="customListTitle">Lista personalizada</string>
-  <string name="quickReboot">Reinicio rápido</string>
+  <string name="quickRebootTitle">Reinicio rápido</string>
   <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
   <string name="help_title">Ajuda</string>
   <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
   <string name="shareTitle">Partilhar</string>
   <string name="filebrowser_title">Gestor de ficheiros</string>
   <string name="tools_title">Ferramentas</string>
-  <string name="tools_batchDeleteTitle">Eliminar backups?</string>
-  <string name="tools_batchDeleteMessage">A eliminar backups...</string>
-  <string name="tools_notificationTitle">Eliminar backups</string>
+  <string name="batchDeleteTitle">Eliminar backups?</string>
+  <string name="batchDeleteMessage">A eliminar backups...</string>
+  <string name="batchDeleteNotificationTitle">Eliminar backups</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">Backups eliminados:</string>
-  <string name="tools_nothingToDelete">Não há backups para eliminar</string>
+  <string name="batchDeleteBackupsDeleted">Backups eliminados:</string>
+  <string name="batchDeleteNothingToDelete">Não há backups para eliminar</string>
   <string name="enablePackage">Ativar</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Ativar para</string>

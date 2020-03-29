@@ -65,19 +65,19 @@
   <string name="uninstallFailure">errore nella disinstallazione</string>
   <string name="errorDialogTitle">si sono verificati degli errori</string>
   <string name="customListTitle">elenco personalizzato</string>
-  <string name="quickReboot">riavvio veloce</string>
+  <string name="quickRebootTitle">riavvio veloce</string>
   <string name="quickRebootMessage">si desidera riavviare l\'ambiente utente?</string>
   <string name="help_title">aiuto</string>
   <string name="notInstalledModeDataWarning">impossibile ripristinare l\'applicazione da un backup senza apk</string>
   <string name="shareTitle">condividi</string>
   <string name="filebrowser_title">gestore file</string>
   <string name="tools_title">strumenti</string>
-  <string name="tools_batchDeleteTitle">eliminare i backup?</string>
-  <string name="tools_batchDeleteMessage">eliminazione dei backup</string>
-  <string name="tools_notificationTitle">cancella i backup</string>
+  <string name="batchDeleteTitle">eliminare i backup?</string>
+  <string name="batchDeleteMessage">eliminazione dei backup</string>
+  <string name="batchDeleteNotificationTitle">cancella i backup</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">backup cancellati:</string>
-  <string name="tools_nothingToDelete">nessun backup da cancellare</string>
+  <string name="batchDeleteBackupsDeleted">backup cancellati:</string>
+  <string name="batchDeleteNothingToDelete">nessun backup da cancellare</string>
   <string name="enablePackage">abilita</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">abilita per gli utenti</string>

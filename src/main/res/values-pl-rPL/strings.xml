@@ -65,19 +65,19 @@
   <string name="uninstallFailure">błąd przy dezinstalacji</string>
   <string name="errorDialogTitle">wystąpiły błędy</string>
   <string name="customListTitle">lista niestandardowa</string>
-  <string name="quickReboot">szybki restart</string>
+  <string name="quickRebootTitle">szybki restart</string>
   <string name="quickRebootMessage">chcesz zrestartować przestrzeń użytkownika?</string>
   <string name="help_title">pomoc</string>
   <string name="notInstalledModeDataWarning">nie można przywrócić aplikacji z kopii zapasowej bez apk</string>
   <string name="shareTitle">udostępnij</string>
   <string name="filebrowser_title">przeglądarka plików</string>
   <string name="tools_title">narzędzia</string>
-  <string name="tools_batchDeleteTitle">usunąć kopie zapasowe?</string>
-  <string name="tools_batchDeleteMessage">usuwanie kopii zapasowych</string>
-  <string name="tools_notificationTitle">usuń kopie zapasowe</string>
+  <string name="batchDeleteTitle">usunąć kopie zapasowe?</string>
+  <string name="batchDeleteMessage">usuwanie kopii zapasowych</string>
+  <string name="batchDeleteNotificationTitle">usuń kopie zapasowe</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">usunięto kopie zapasowe:</string>
-  <string name="tools_nothingToDelete">brak kopii zapasowych do usunięcia</string>
+  <string name="batchDeleteBackupsDeleted">usunięto kopie zapasowe:</string>
+  <string name="batchDeleteNothingToDelete">brak kopii zapasowych do usunięcia</string>
   <string name="enablePackage">włącz</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">włącz dla użytkowników</string>

@@ -18,8 +18,8 @@ public class Help extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-        TextView versionName = (TextView) findViewById(R.id.helpVersionName);
-        TextView html = (TextView) findViewById(R.id.helpHtml);
+        TextView versionName = findViewById(R.id.helpVersionName);
+        TextView html = findViewById(R.id.helpHtml);
         try {
             versionName.setText(String.format("%s %s", getApplicationInfo().loadLabel(getPackageManager()).toString(), getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
             InputStream is = getResources().openRawResource(R.raw.help);

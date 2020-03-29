@@ -65,7 +65,7 @@
     <string name="uninstallFailure">Error al desinstalar</string>
     <string name="errorDialogTitle">Han ocurrido errores</string>
     <string name="customListTitle">Lista personalizada</string>
-    <string name="quickReboot">Reinicio rápido</string>
+    <string name="quickRebootTitle">Reinicio rápido</string>
     <string name="quickRebootMessage">¿Desea reiniciar la interfaz de usuario?</string>
     <string name="help_title">Ayuda</string>
     <string name="notInstalledModeDataWarning">La aplicación no se puede restaurar desde un respaldo sin la APK</string>
@@ -73,12 +73,12 @@
     <string name="filebrowser_title">Explorador de archivos</string>
     
     <string name="tools_title">Herramientas</string>
-    <string name="tools_batchDeleteTitle">¿Eliminar respaldos?</string>
-    <string name="tools_batchDeleteMessage">Eliminando respaldos...</string>
-    <string name="tools_notificationTitle">Eliminar respaldos</string>
+    <string name="batchDeleteTitle">¿Eliminar respaldos?</string>
+    <string name="batchDeleteMessage">Eliminando respaldos...</string>
+    <string name="batchDeleteNotificationTitle">Eliminar respaldos</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
-    <string name="tools_backupsDeleted">Respaldos eliminados:</string>
-    <string name="tools_nothingToDelete">Sin respaldos</string>
+    <string name="batchDeleteBackupsDeleted">Respaldos eliminados:</string>
+    <string name="batchDeleteNothingToDelete">Sin respaldos</string>
 
     <string name="enablePackage">Habilitar</string>
         <!-- enablePackageTitle: title for a list of checkable users -->

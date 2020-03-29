@@ -1,117 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll"
-    android:layout_width="fill_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/itemFrame"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/med_margin"
-    android:background="@drawable/card_rc8"
-    android:backgroundTint="@color/colorDarkPrimaryDark"
-    android:orientation="vertical"
-    android:padding="@dimen/med_margin">
-
+    android:layout_width="match_parent">
     <LinearLayout
+        android:id="@+id/ll"
+        style="@style/itemHolder"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:padding="5sp"
+                android:text="@string/sched_interval"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/intervalDays"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:padding="5sp"
+                android:text="@string/sched_hourOfDay"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/timeOfDay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:inputType="number" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:padding="5sp"
-            android:text="@string/sched_interval"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/intervalDays"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:inputType="number" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:padding="5sp"
-            android:text="@string/sched_hourOfDay"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/timeOfDay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:inputType="number" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/sched_backupMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5sp"
-        android:text="@string/sched_backupMode"
-        android:textSize="14sp" />
-
-    <Spinner
-        android:id="@+id/sched_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Spinner
-        android:id="@+id/sched_spinnerSubModes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/sched_timeLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5sp"
-        android:textSize="14sp" />
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="checkboxOnClick"
-        android:text="@string/sched_checkbox" />
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/updateButton"
+            android:id="@+id/schedBackupMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5sp"
+            android:text="@string/sched_backupMode"
+            android:textSize="14sp" />
+
+        <Spinner
+            android:id="@+id/schedSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/schedSpinnerSubModes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/schedTimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5sp"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkboxOnClick"
+            android:text="@string/sched_checkbox" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/updateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button"
+                android:text="@string/sched_updateButton"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/removeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_gravity="end"
+                android:backgroundTint="@color/colorDarkAccent"
+                android:text="@string/sched_removeButton" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <Button
+            android:id="@+id/activateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Button"
-            android:text="@string/sched_updateButton"
+            android:layout_gravity="center"
+            android:text="@string/sched_activateButton"
             android:textAlignment="center" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/removeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_gravity="end"
-            android:backgroundTint="@color/colorDarkRipple"
-            android:text="@string/sched_removeButton" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>
 
-    <Button
-        android:id="@+id/activateButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_gravity="center"
-        android:text="@string/sched_activateButton"
-        android:textAlignment="center" />
-</LinearLayout>

@@ -65,19 +65,19 @@
   <string name="uninstallFailure">Feil under avinstalleringen</string>
   <string name="errorDialogTitle">En feil har oppstått</string>
   <string name="customListTitle">Tilpasset liste</string>
-  <string name="quickReboot">Hurtig omstart</string>
+  <string name="quickRebootTitle">Hurtig omstart</string>
   <string name="quickRebootMessage">Ønsker du å omstarte \'user space\' (brukerområde)?</string>
   <string name="help_title">Hjelp</string>
   <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
   <string name="shareTitle">Del med</string>
   <string name="filebrowser_title">Filbehandler</string>
   <string name="tools_title">Verktøyer</string>
-  <string name="tools_batchDeleteTitle">Slett sikkerhetskopier?</string>
-  <string name="tools_batchDeleteMessage">Sletter sikkerhetskopier</string>
-  <string name="tools_notificationTitle">Slett sikkerhetskopier</string>
+  <string name="batchDeleteTitle">Slett sikkerhetskopier?</string>
+  <string name="batchDeleteMessage">Sletter sikkerhetskopier</string>
+  <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">Sikkerhetskopier ble slettet: </string>
-  <string name="tools_nothingToDelete">Ingen sikkerhetskopier å slette</string>
+  <string name="batchDeleteBackupsDeleted">Sikkerhetskopier ble slettet: </string>
+  <string name="batchDeleteNothingToDelete">Ingen sikkerhetskopier å slette</string>
   <string name="enablePackage">Aktiver</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Aktiver for brukere</string>

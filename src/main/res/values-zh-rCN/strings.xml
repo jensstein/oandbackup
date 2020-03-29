@@ -70,7 +70,7 @@
     <string name="uninstallFailure">卸载出错</string>
     <string name="errorDialogTitle">出现错误</string>
     <string name="customListTitle">自定义列表</string>
-    <string name="quickReboot">快速重启</string>
+    <string name="quickRebootTitle">快速重启</string>
     <string name="quickRebootMessage">你想重启用户空间么?</string>
     <string name="help_title">帮助</string>
     <string name="notInstalledModeDataWarning">备份中没有apk的情况下，应用无法被恢复</string>
@@ -78,12 +78,12 @@
     <string name="filebrowser_title">文件浏览器</string>
     
     <string name="tools_title">工具</string>
-    <string name="tools_batchDeleteTitle">是否删除备份?</string>
-    <string name="tools_batchDeleteMessage">正在删除备份</string>
-    <string name="tools_notificationTitle">删除备份</string>
+    <string name="batchDeleteTitle">是否删除备份?</string>
+    <string name="batchDeleteMessage">正在删除备份</string>
+    <string name="batchDeleteNotificationTitle">删除备份</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
-    <string name="tools_backupsDeleted">删除备份:</string>
-    <string name="tools_nothingToDelete">无可删除备份</string>
+    <string name="batchDeleteBackupsDeleted">删除备份:</string>
+    <string name="batchDeleteNothingToDelete">无可删除备份</string>
 
     <string name="enablePackage">启用</string>
         <!-- enablePackageTitle: title for a list of checkable users -->

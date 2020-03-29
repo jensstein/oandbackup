@@ -65,19 +65,19 @@
   <string name="uninstallFailure">Fout opgetreden tijdens deïnstallatie</string>
   <string name="errorDialogTitle">Er zijn fouten voorgevallen</string>
   <string name="customListTitle">Aangepaste lijst</string>
-  <string name="quickReboot">Snelle herstart</string>
+  <string name="quickRebootTitle">Snelle herstart</string>
   <string name="quickRebootMessage">Wilt u de userspace herstarten?</string>
   <string name="help_title">Hulp</string>
   <string name="notInstalledModeDataWarning">App kan niet teruggezet worden vanuit een back-up zonder een apk</string>
   <string name="shareTitle">Delen</string>
   <string name="filebrowser_title">Bestandsbeheerder</string>
   <string name="tools_title">Hulpmiddelen</string>
-  <string name="tools_batchDeleteTitle">Verwijder back-ups?</string>
-  <string name="tools_batchDeleteMessage">Back-ups aan het verwijderen</string>
-  <string name="tools_notificationTitle">Verwijder back-ups</string>
+  <string name="batchDeleteTitle">Verwijder back-ups?</string>
+  <string name="batchDeleteMessage">Back-ups aan het verwijderen</string>
+  <string name="batchDeleteNotificationTitle">Verwijder back-ups</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">Back-ups verwijderd:</string>
-  <string name="tools_nothingToDelete">Geen back-ups om te verwijderen</string>
+  <string name="batchDeleteBackupsDeleted">Back-ups verwijderd:</string>
+  <string name="batchDeleteNothingToDelete">Geen back-ups om te verwijderen</string>
   <string name="enablePackage">Aanzetten</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Aanzetten voor gebruikers</string>

@@ -68,6 +68,8 @@ public class SchedulerActivity extends BaseActivity
 
     @BindView(R.id.bottom_bar)
     BottomAppBar bottomBar;
+    @BindView(R.id.toolBar)
+    androidx.appcompat.widget.Toolbar toolBar;
 
     SharedPreferences defaultPrefs;
 
@@ -87,8 +89,9 @@ public class SchedulerActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        // setSupportActionBar(toolBar);
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        setSupportActionBar(toolBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         bottomBar.replaceMenu(R.menu.scheduler_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
@@ -183,8 +186,8 @@ public class SchedulerActivity extends BaseActivity
         timeOfDay.setText(timeOfDayString);
         CheckBox cb = view.findViewById(R.id.checkbox);
         cb.setChecked(schedule.isEnabled());
-        Spinner spinner = view.findViewById(R.id.sched_spinner);
-        Spinner spinnerSubModes = view.findViewById(R.id.sched_spinnerSubModes);
+        Spinner spinner = view.findViewById(R.id.schedSpinner);
+        Spinner spinnerSubModes = view.findViewById(R.id.schedSpinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -294,9 +297,9 @@ public class SchedulerActivity extends BaseActivity
         final EditText hourText = scheduleView.findViewById(
                 R.id.timeOfDay);
         final Spinner modeSpinner = scheduleView.findViewById(
-                R.id.sched_spinner);
+                R.id.schedSpinner);
         final Spinner submodeSpinner = scheduleView.findViewById(
-                R.id.sched_spinnerSubModes);
+                R.id.schedSpinnerSubModes);
         final CheckBox excludeSystemCheckbox = scheduleView.findViewById(
                 EXCLUDESYSTEMCHECKBOXID);
         final boolean excludeSystemPackages = excludeSystemCheckbox != null
@@ -327,13 +330,13 @@ public class SchedulerActivity extends BaseActivity
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         final long number = (long) parent.getTag();
         final int spinnerId = parent.getId();
-        if (spinnerId == R.id.sched_spinner) {
+        if (spinnerId == R.id.schedSpinner) {
             toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
             if (pos == 4) {
                 CustomPackageList.showList(this, number);
             }
             changeScheduleMode(pos, number);
-        } else if (spinnerId == R.id.sched_spinnerSubModes) {
+        } else if (spinnerId == R.id.schedSpinnerSubModes) {
             changeScheduleSubmode(pos, number);
         }
     }
@@ -389,7 +392,7 @@ public class SchedulerActivity extends BaseActivity
     }
 
     void setTimeLeftTextView(Schedule schedule, View view, long now) {
-        final TextView timeLeftTextView = view.findViewById(R.id.sched_timeLeft);
+        final TextView timeLeftTextView = view.findViewById(R.id.schedTimeLeft);
         if (!schedule.isEnabled()) {
             timeLeftTextView.setText("");
         } else if (schedule.getInterval() <= 0) {

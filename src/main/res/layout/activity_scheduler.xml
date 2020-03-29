@@ -5,17 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/bar_standard"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="?actionBarSize" >
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:divider="@drawable/schedules_divider"
-            android:showDividers="middle"
             android:orientation="vertical" />
     </ScrollView>
 

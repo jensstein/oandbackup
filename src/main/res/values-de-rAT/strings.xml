@@ -65,19 +65,19 @@
   <string name="uninstallFailure">Fehler bei Deinstallation</string>
   <string name="errorDialogTitle">Fehler sind aufgetreten</string>
   <string name="customListTitle">Eigene Liste</string>
-  <string name="quickReboot">Gerät neu starten</string>
+  <string name="quickRebootTitle">Gerät neu starten</string>
   <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
   <string name="help_title">Hilfe</string>
   <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden!</string>
   <string name="shareTitle">Teilen</string>
   <string name="filebrowser_title">Datei-Browser</string>
   <string name="tools_title">Hilfsmittel</string>
-  <string name="tools_batchDeleteTitle">Sicherungen löschen?</string>
-  <string name="tools_batchDeleteMessage">Lösche Sicherungen...</string>
-  <string name="tools_notificationTitle">Sicherungen löschen</string>
+  <string name="batchDeleteTitle">Sicherungen löschen?</string>
+  <string name="batchDeleteMessage">Lösche Sicherungen...</string>
+  <string name="batchDeleteNotificationTitle">Sicherungen löschen</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-  <string name="tools_backupsDeleted">Gelöschte Sicherungen:</string>
-  <string name="tools_nothingToDelete">Keine Sicherungen zum Löschen vorhanden</string>
+  <string name="batchDeleteBackupsDeleted">Gelöschte Sicherungen:</string>
+  <string name="batchDeleteNothingToDelete">Keine Sicherungen zum Löschen vorhanden</string>
   <string name="enablePackage">Aktivieren</string>
   <!--enablePackageTitle: title for a list of checkable users-->
   <string name="enablePackageTitle">Für Benutzer aktivieren</string>

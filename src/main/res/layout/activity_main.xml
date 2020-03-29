@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
-        android:layout_marginBottom="@dimen/main_nav_height"
+        android:layout_marginBottom="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <ListView
@@ -34,15 +34,14 @@
         app:menu="@menu/main_bottom_bar">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="320dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/med_margin">
+            android:layout_marginStart="32dp"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_batch_backup"
                 style="@style/navbarButton"
-                android:layout_width="wrap_content"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_backup_white"
                 android:focusable="true"
@@ -51,7 +50,6 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_batch_restore"
                 style="@style/navbarButton"
-                android:layout_width="wrap_content"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_restore_white"
                 android:focusable="true"
@@ -60,13 +58,11 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_scheduler"
                 style="@style/navbarButton"
-                android:layout_width="wrap_content"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_scheduler_white"
                 android:focusable="true"
                 android:text="@string/sched_title" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

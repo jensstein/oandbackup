@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorDarkPrimaryDark">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -31,11 +32,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="@dimen/cards_margin"
+                android:padding="@dimen/cards_spacing"
                 android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_margin"
-                app:chipSpacingHorizontal="@dimen/small_margin"
-                app:chipSpacingVertical="@dimen/small_margin"
+                android:paddingEnd="@dimen/cards_spacing"
+                app:chipSpacingHorizontal="@dimen/small_spacing"
+                app:chipSpacingVertical="@dimen/small_spacing"
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
@@ -69,11 +70,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="@dimen/cards_margin"
+                android:padding="@dimen/cards_spacing"
                 android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_margin"
-                app:chipSpacingHorizontal="@dimen/small_margin"
-                app:chipSpacingVertical="@dimen/small_margin"
+                android:paddingEnd="@dimen/cards_spacing"
+                app:chipSpacingHorizontal="@dimen/small_spacing"
+                app:chipSpacingVertical="@dimen/small_spacing"
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
@@ -106,9 +107,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_margin"
-                app:chipSpacingHorizontal="@dimen/small_margin"
-                app:chipSpacingVertical="@dimen/small_margin">
+                android:paddingEnd="@dimen/cards_spacing"
+                app:chipSpacingHorizontal="@dimen/small_spacing"
+                app:chipSpacingVertical="@dimen/small_spacing">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showNewAndUpdated"

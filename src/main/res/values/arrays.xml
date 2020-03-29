@@ -14,15 +14,4 @@
         <item>@string/radioData</item>
         <item>@string/radioBoth</item>
     </string-array>
-
-    <string-array name="tools_titles">
-        <item>quick reboot</item>
-        <item>delete backups</item>
-        <item>view error log</item>
-    </string-array>
-    <string-array name="tools_descriptions">
-        <item>kills the system_server process to force a restart of user space</item>
-        <item>delete backups of all apps not currently installed</item>
-        <item></item>
-    </string-array>
 </resources>
