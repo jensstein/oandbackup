@@ -15,12 +15,13 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Rewrite Scheduler
 - [x] BottomNavBar-based navigation 
 - [x] Sort/Filter-FAB
+- [ ] Fix sort-filtering functional relation
 - [ ] Fix other filters not Responding
 - [ ] Add some new filters
 - [x] Rewrite Preferences
 - [x] Rewrite backup folder selector
 - [x] Integrate Tools and Help in Preferences
-- [ ] New android scope storage permissions compatibility: fixed for Android 10 only for now with legacy mode(fix priority: med)
+- [ ] New android scope storage permissions compatibility: fixed for Android 10 (only for now) with legacy mode(fix priority: med)
 - [ ] Updating UI and UX: Design proposals are always welcome: partially done
 - [ ] Update dialogs' UI
 - [ ] add more informative dialog when clicking an app in Main

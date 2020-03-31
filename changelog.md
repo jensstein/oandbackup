@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.2.7 (2020-03-31)
+-------------------
+* optimized sort/filter chips' visual behavior
+* other small UI tweaks
+
 0.2.6 (2020-03-29)
 -------------------
 * rewritten Preferences fully
