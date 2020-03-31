@@ -36,7 +36,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="36dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton

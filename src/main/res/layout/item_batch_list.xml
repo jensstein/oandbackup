@@ -32,7 +32,7 @@
                 android:layout_weight="0.4"
                 android:gravity="end"
                 android:singleLine="true"
-                android:textSize="@dimen/main_text" />
+                android:textSize="@dimen/secondary_text" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
