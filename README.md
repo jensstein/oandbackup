@@ -31,12 +31,12 @@ backups can be scheduled with no limit on the number of individual schedules and
 ## screenshots
 
 <p float="left">
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/1.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/2.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/3.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/4.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/5.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/docs/screenshots/6.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/1.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/2.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/3.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/4.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/5.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/6.png" width="170" />
 </p>
 
 
