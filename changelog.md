@@ -1,29 +1,43 @@
 changelog
 =========
 
-0.2.7 (2020-03-31)
+0.9.0 (09.04.2020)
+-------------------
+* adapted FastAdapter for Main and Batch
+* rewritten Main and Batch
+* added AppSheet for apps
+* added Intro to handle permissions
+* restructured the app
+* UI tweaks all over the app
+* Androidx-ify the Dialogs
+* rewritten some Handlers
+* clean up job
+* shot the encryption down for now
+* other small tweaks
+
+0.2.7 (31.03.2020)
 -------------------
 * optimized sort/filter chips' visual behavior
 * other small UI tweaks
 
-0.2.6 (2020-03-29)
+0.2.6 (29.03.2020)
 -------------------
 * rewritten Preferences fully
 * replaced the file browser with a more initiative one
 * fixed toolbar issue for Scheduler and Preferences
 * integrated Help and Tools in the Preferences
 
-0.1.3 (2020-03-27)
+0.1.3 (27.03.2020)
 -------------------
 * new UI for Main, Batch and Scheduler
 * fixed: missing "both" as description of backed up mode
 
-0.1.2 (2020-03-27)
+0.1.2 (27.03.2020)
 -------------------
 * new Main UI
 * fixed refresh in Main
 
-0.1.1 (2020-03-25)
+0.1.1 (25.03.2020)
 -------------------
  * initial X release
  * restructured and cleaned the app: adding Bottombar-based navigation and Sort and Filter FAB(for now: only the basic filters)

@@ -1,5 +1,5 @@
 plugins {
-    id "com.android.application" version "4.0.0-beta03"
+    id "com.android.application" version "4.0.0-beta04"
     id "org.sonarqube" version "2.6"
     id "jacoco"
 }
@@ -10,62 +10,65 @@ repositories {
 }
 
 ext {
-    openpgp_api_version = "12.0"
-    room_version = "2.2.4"
-    // hamcrest_version = "2.2"
-    mockito_version = "2.24.0"
-    lifecycle_version = "2.2.0"
-    lightweight_stream_api_version = "1.2.1"
-    filepicker_version = "4.2.1"
+    versions = [
+            openpgp: "12.0",
+            room: "2.2.4",
+            lifecycle: "2.2.0",
+            stream: "1.2.1",
+            filepicker: "4.2.1",
+            rootBeer: "0.0.7",
 
-    // junit_version = "5.6.0"
+            butterknife: "10.2.1",
 
-    appcompat_version = "1.1.0"
-    material_version = "1.2.0-alpha05"
-    constraintlayout_version = "2.0.0-beta4"
-    preference_version = "1.1.0"
-    swiperefreshlayout_version = "1.0.0"
+            appcompat: "1.1.0",
+            material: "1.2.0-alpha05",
+            constraintlayout: "2.0.0-beta4",
+            preference: "1.1.0",
+            swiperefreshlayout: "1.0.0",
+            fastadapter: "5.0.0",
 
-    android_support_test_version = "1.1.1"
-    espresso_version = "3.2.0"
-    uiautomator_version = "2.2.0"
-    butterknife_version = "10.2.1"
-    flexbox_version = "2.0.1"
+            androidx_test: "1.1.1",
+            espresso: "3.2.0",
+            uiautomator: "2.2.0",
+            mockito: "2.24.0"
+    ]
 }
 
 
 dependencies {
     // Encrypt & Libs
-    implementation "org.sufficientlysecure:openpgp-api:$openpgp_api_version"
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    // implementation "org.hamcrest:hamcrest:$hamcrest_version"
-    implementation "org.mockito:mockito-core:$mockito_version"
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
-    implementation "com.annimon:stream:$lightweight_stream_api_version"
-    implementation "com.nononsenseapps:filepicker:$filepicker_version"
-
-    // implementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    implementation "org.sufficientlysecure:openpgp-api:${versions.openpgp}"
+    implementation "androidx.room:room-runtime:${versions.room}"
+    annotationProcessor "androidx.room:room-compiler:${versions.room}"
+    implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
+    implementation "com.annimon:stream:${versions.stream}"
+    implementation "com.nononsenseapps:filepicker:${versions.filepicker}"
+    implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
 
     //ButterKnife
-    implementation "com.jakewharton:butterknife:$butterknife_version"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
+    implementation "com.jakewharton:butterknife:${versions.butterknife}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
 
     // UI
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-    implementation "androidx.preference:preference:$preference_version"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version"
-    implementation "com.google.android:flexbox:$flexbox_version"
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "com.google.android.material:material:${versions.material}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintlayout}"
+    implementation "androidx.preference:preference:${versions.preference}"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefreshlayout}"
+    implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
+    implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
+    implementation "com.mikepenz:fastadapter-extensions-binding:${versions.fastadapter}"
+    implementation "com.mikepenz:fastadapter-extensions-utils:${versions.fastadapter}"
+
 
     // Tests
-    implementation "androidx.room:room-testing:$room_version"
-    implementation "androidx.test.ext:junit:$android_support_test_version"
-    implementation "androidx.test:rules:$android_support_test_version"
-    implementation "androidx.test.espresso:espresso-core:$espresso_version"
-    implementation "androidx.test.uiautomator:uiautomator:$uiautomator_version"
-    implementation "org.mockito:mockito-android:$mockito_version"
+    implementation "androidx.room:room-testing:${versions.room}"
+    implementation "androidx.test.ext:junit:${versions.androidx_test}"
+    implementation "androidx.test:rules:${versions.androidx_test}"
+    implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    implementation "androidx.test.uiautomator:uiautomator:${versions.uiautomator}"
+    implementation "org.mockito:mockito-core:${versions.mockito}"
+    implementation "org.mockito:mockito-android:${versions.mockito}"
 }
 
 // translate from product flavour names to abi names
@@ -103,15 +106,15 @@ sonarqube {
 }
 
 int versionMajor = 0
-int versionMinor = 2
-int versionPath = 7
+int versionMinor = 9
+int versionPath = 0
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
         // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
-        versionCode = versionMajor * 10000 +
+        versionCode = versionMajor * 1000 +
                 versionMinor * 100 +
                 versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"

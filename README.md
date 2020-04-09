@@ -10,21 +10,24 @@ backups can be scheduled with no limit on the number of individual schedules and
 ## TODO
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
+- [x] Adapt FastAdapter: for Main and Batch
 - [x] Rewrite Batch-(Activity, Adapter and Sorter) 
-- [ ] Rewrite Main-(Activity, Adapter and Sorter): partially done
+- [x] Rewrite Main-(Activity, Adapter and Sorter)
+- [x] Add more informative dialog when clicking an app in Main
 - [x] Rewrite Scheduler
-- [x] BottomNavBar-based navigation 
-- [x] Sort/Filter-FAB
-- [ ] Fix sort-filtering functional relation
-- [ ] Fix other filters not Responding
+- [x] Modeling Sort/Filter
 - [ ] Add some new filters
 - [x] Rewrite Preferences
 - [x] Rewrite backup folder selector
 - [x] Integrate Tools and Help in Preferences
-- [ ] New android scope storage permissions compatibility: fixed for Android 10 (only for now) with legacy mode(fix priority: med)
-- [ ] Updating UI and UX: Design proposals are always welcome: partially done
-- [ ] Update dialogs' UI
-- [ ] add more informative dialog when clicking an app in Main
+- [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(fix priority: med)
+- [x] Updating UI and UX: Design improvement proposals are always welcome
+- [ ] Update dialogs' UI: partially done
+- [ ] Abstracting the structure of the app
+- [ ] Fragmentize the Preferences: partially done
+- [ ] Rewrite the logic of Backup/Restore
+- [ ] add a better encryption solution(fix priority: med)
+- [ ] Add a flashable-ZIP feature
 - [ ] You suggest!...
 
 
@@ -37,6 +40,7 @@ backups can be scheduled with no limit on the number of individual schedules and
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/4.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/5.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/6.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/7.png" width="170" />
 </p>
 
 
