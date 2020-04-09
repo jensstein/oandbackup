@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.schedules;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,30 +16,29 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.Toolbar;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.machiav3lli.backup.BaseActivity;
-import com.machiav3lli.backup.BlacklistContract;
-import com.machiav3lli.backup.BlacklistListener;
-import com.machiav3lli.backup.BlacklistsDBHelper;
+import com.google.android.material.button.MaterialButton;
+import com.machiav3lli.backup.activities.BaseActivity;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.FileCreationHelper;
-import com.machiav3lli.backup.FileReaderWriter;
+import com.machiav3lli.backup.handler.FileCreationHelper;
+import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.Utils;
+import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
-import com.machiav3lli.backup.ui.dialogs.BlacklistDialogFragment;
+import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -56,22 +56,20 @@ public class SchedulerActivity extends BaseActivity
     public static final String SCHEDULECUSTOMLIST = "customlist";
     static final int CUSTOMLISTUPDATEBUTTONID = 1;
     static final int EXCLUDESYSTEMCHECKBOXID = 2;
-
     public static final int GLOBALBLACKLISTID = -1;
-
     static String DATABASE_NAME = "schedules.db";
-
-    LongSparseArray<View> viewList;
-    HandleAlarms handleAlarms;
 
     int totalSchedules;
 
     @BindView(R.id.bottom_bar)
     BottomAppBar bottomBar;
     @BindView(R.id.toolBar)
-    androidx.appcompat.widget.Toolbar toolBar;
+    Toolbar toolBar;
 
-    SharedPreferences defaultPrefs;
+
+    SharedPreferences prefs;
+    LongSparseArray<View> viewList;
+    HandleAlarms handleAlarms;
 
     private BlacklistsDBHelper blacklistsDBHelper;
 
@@ -79,10 +77,8 @@ public class SchedulerActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scheduler);
-
         handleAlarms = new HandleAlarms(this);
-
-        defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         viewList = new LongSparseArray<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
@@ -107,7 +103,7 @@ public class SchedulerActivity extends BaseActivity
                     BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
                     blacklistDialogFragment.setArguments(args);
                     blacklistDialogFragment.addBlacklistListener(this);
-                    blacklistDialogFragment.show(getFragmentManager(), "blacklistDialog");
+                    blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
                 }).start();
             }
             return true;
@@ -119,7 +115,6 @@ public class SchedulerActivity extends BaseActivity
     public void addSchedule() {
         new AddScheduleTask(this).execute();
     }
-
 
     @Override
     public void onResume() {
@@ -134,7 +129,7 @@ public class SchedulerActivity extends BaseActivity
     }
 
     private void populateViews(List<Schedule> schedules) {
-        final LinearLayout mainLayout = findViewById(R.id.linearLayout);
+        final LinearLayoutCompat mainLayout = findViewById(R.id.linearLayout);
         viewList = new LongSparseArray<>();
         for (Schedule schedule : schedules) {
             final View v = buildUi(schedule);
@@ -168,26 +163,27 @@ public class SchedulerActivity extends BaseActivity
 
     public View buildUi(Schedule schedule) {
         View view = LayoutInflater.from(this).inflate(R.layout.item_schedule, null);
-        LinearLayout ll = view.findViewById(R.id.ll);
 
-        Button updateButton = view.findViewById(R.id.updateButton);
+        LinearLayoutCompat ll = view.findViewById(R.id.ll);
+        MaterialButton updateButton = view.findViewById(R.id.updateButton);
+        MaterialButton removeButton = view.findViewById(R.id.removeButton);
+        MaterialButton activateButton = view.findViewById(R.id.activateButton);
+        AppCompatEditText intervalDays = view.findViewById(R.id.intervalDays);
+        AppCompatEditText timeOfDay = view.findViewById(R.id.timeOfDay);
+        AppCompatCheckBox cb = view.findViewById(R.id.checkbox);
+        AppCompatSpinner spinner = view.findViewById(R.id.schedSpinner);
+        AppCompatSpinner spinnerSubModes = view.findViewById(R.id.schedSpinnerSubModes);
+
         updateButton.setOnClickListener(this);
-        Button removeButton = view.findViewById(R.id.removeButton);
         removeButton.setOnClickListener(this);
-        Button activateButton = view.findViewById(R.id.activateButton);
         activateButton.setOnClickListener(this);
-        EditText intervalDays = view.findViewById(R.id.intervalDays);
         final String repeatString = Integer.toString(
                 schedule.getInterval());
         intervalDays.setText(repeatString);
-        EditText timeOfDay = view.findViewById(R.id.timeOfDay);
         final String timeOfDayString = Integer.toString(
                 schedule.getHour());
         timeOfDay.setText(timeOfDayString);
-        CheckBox cb = view.findViewById(R.id.checkbox);
         cb.setChecked(schedule.isEnabled());
-        Spinner spinner = view.findViewById(R.id.schedSpinner);
-        Spinner spinnerSubModes = view.findViewById(R.id.schedSpinnerSubModes);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scheduleModes, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -198,8 +194,7 @@ public class SchedulerActivity extends BaseActivity
         ArrayAdapter<CharSequence> adapterSubModes = ArrayAdapter.createFromResource(this, R.array.scheduleSubModes, android.R.layout.simple_spinner_item);
         adapterSubModes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubModes.setAdapter(adapterSubModes);
-        spinnerSubModes.setSelection(schedule.getSubmode().getValue(),
-                false);
+        spinnerSubModes.setSelection(schedule.getSubmode().getValue(), false);
         spinnerSubModes.setOnItemSelectedListener(this);
 
         final long number = schedule.getId();
@@ -292,29 +287,19 @@ public class SchedulerActivity extends BaseActivity
 
     private Schedule getScheduleDataFromView(View scheduleView, int id)
             throws SchedulingException {
-        final EditText intervalText = scheduleView.findViewById(
-                R.id.intervalDays);
-        final EditText hourText = scheduleView.findViewById(
-                R.id.timeOfDay);
-        final Spinner modeSpinner = scheduleView.findViewById(
-                R.id.schedSpinner);
-        final Spinner submodeSpinner = scheduleView.findViewById(
-                R.id.schedSpinnerSubModes);
-        final CheckBox excludeSystemCheckbox = scheduleView.findViewById(
-                EXCLUDESYSTEMCHECKBOXID);
-        final boolean excludeSystemPackages = excludeSystemCheckbox != null
-                && excludeSystemCheckbox.isChecked();
+        final AppCompatEditText intervalText = scheduleView.findViewById(R.id.intervalDays);
+        final AppCompatEditText hourText = scheduleView.findViewById(R.id.timeOfDay);
+        final AppCompatSpinner modeSpinner = scheduleView.findViewById(R.id.schedSpinner);
+        final AppCompatSpinner submodeSpinner = scheduleView.findViewById(R.id.schedSpinnerSubModes);
+        final AppCompatCheckBox excludeSystemCheckbox = scheduleView.findViewById(EXCLUDESYSTEMCHECKBOXID);
+        final AppCompatCheckBox enabledCheckbox = scheduleView.findViewById(R.id.checkbox);
 
-        final CheckBox enabledCheckbox = scheduleView.findViewById(
-                R.id.checkbox);
+        final boolean excludeSystemPackages = excludeSystemCheckbox != null && excludeSystemCheckbox.isChecked();
         final boolean enabled = enabledCheckbox.isChecked();
-        final int hour = Integer.parseInt(hourText.getText()
-                .toString());
-        final int interval = Integer.parseInt(intervalText
-                .getText().toString());
-        if (enabled) {
-            handleAlarms.setAlarm(id, interval, hour);
-        }
+        final int hour = Integer.parseInt(hourText.getText().toString());
+        final int interval = Integer.parseInt(intervalText.getText().toString());
+        if (enabled) handleAlarms.setAlarm(id, interval, hour);
+
         return new Schedule.Builder()
                 .withId(id)
                 .withHour(hour)
@@ -331,7 +316,7 @@ public class SchedulerActivity extends BaseActivity
         final long number = (long) parent.getTag();
         final int spinnerId = parent.getId();
         if (spinnerId == R.id.schedSpinner) {
-            toggleSecondaryButtons((LinearLayout) parent.getParent(), (Spinner) parent, number);
+            toggleSecondaryButtons((LinearLayoutCompat) parent.getParent(), (AppCompatSpinner) parent, number);
             if (pos == 4) {
                 CustomPackageList.showList(this, number);
             }
@@ -392,7 +377,7 @@ public class SchedulerActivity extends BaseActivity
     }
 
     void setTimeLeftTextView(Schedule schedule, View view, long now) {
-        final TextView timeLeftTextView = view.findViewById(R.id.schedTimeLeft);
+        final AppCompatTextView timeLeftTextView = view.findViewById(R.id.schedTimeLeft);
         if (!schedule.isEnabled()) {
             timeLeftTextView.setText("");
         } else if (schedule.getInterval() <= 0) {
@@ -405,13 +390,13 @@ public class SchedulerActivity extends BaseActivity
         }
     }
 
-    public void toggleSecondaryButtons(LinearLayout parent, Spinner spinner, long number) {
+    public void toggleSecondaryButtons(LinearLayoutCompat parent, AppCompatSpinner spinner, long number) {
         switch (spinner.getSelectedItemPosition()) {
             case 3:
                 if (parent.findViewById(EXCLUDESYSTEMCHECKBOXID) != null) {
                     break;
                 }
-                CheckBox cb = new CheckBox(this);
+                AppCompatCheckBox cb = new AppCompatCheckBox(this);
                 cb.setId(EXCLUDESYSTEMCHECKBOXID);
                 cb.setText(getString(R.string.sched_excludeSystemCheckBox));
                 cb.setTag(number);
@@ -425,7 +410,7 @@ public class SchedulerActivity extends BaseActivity
                 if (parent.findViewById(CUSTOMLISTUPDATEBUTTONID) != null) {
                     break;
                 }
-                Button bt = new Button(this);
+                MaterialButton bt = new MaterialButton(this);
                 bt.setId(CUSTOMLISTUPDATEBUTTONID);
                 bt.setText(getString(R.string.sched_customListUpdateButton));
                 bt.setTag(number);
@@ -440,16 +425,12 @@ public class SchedulerActivity extends BaseActivity
         }
     }
 
-    public void removeSecondaryButton(LinearLayout parent, View v) {
+    public void removeSecondaryButton(LinearLayoutCompat parent, View v) {
         int id = (v != null) ? v.getId() : -1;
-        Button bt = (Button) parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
-        CheckBox cb = (CheckBox) parent.findViewById(EXCLUDESYSTEMCHECKBOXID);
-        if (bt != null && id != CUSTOMLISTUPDATEBUTTONID) {
-            parent.removeView(bt);
-        }
-        if (cb != null && id != EXCLUDESYSTEMCHECKBOXID) {
-            parent.removeView(cb);
-        }
+        MaterialButton btn = parent.findViewById(CUSTOMLISTUPDATEBUTTONID);
+        AppCompatCheckBox cb = parent.findViewById(EXCLUDESYSTEMCHECKBOXID);
+        if (btn != null && id != CUSTOMLISTUPDATEBUTTONID) parent.removeView(btn);
+        if (cb != null && id != EXCLUDESYSTEMCHECKBOXID) parent.removeView(cb);
     }
 
     void migrateSchedulesToDatabase(SharedPreferences preferences,
@@ -458,8 +439,7 @@ public class SchedulerActivity extends BaseActivity
                 .getScheduleDatabase(this, databasename);
         final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
         for (int i = 0; i < totalSchedules; i++) {
-            final Schedule schedule = Schedule.fromPreferences(preferences,
-                    i);
+            final Schedule schedule = Schedule.fromPreferences(preferences, i);
             // The database is one-indexed so in order to preserve the
             // order of the inserted schedules we have to increment the id.
             schedule.setId(i + 1L);
@@ -496,14 +476,14 @@ public class SchedulerActivity extends BaseActivity
     }
 
     public void renameCustomListFile(long id, long destinationId) {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
+        FileReaderWriter frw = new FileReaderWriter(prefs.getString(
                 Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
                         .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
 
     public void removeCustomListFile(long number) {
-        FileReaderWriter frw = new FileReaderWriter(defaultPrefs.getString(
+        FileReaderWriter frw = new FileReaderWriter(prefs.getString(
                 Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
                         .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
         frw.delete();
@@ -588,7 +568,7 @@ public class SchedulerActivity extends BaseActivity
             if (scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getObject().ifPresent(view -> {
                     scheduler.viewList.put((long) view.getTag(), view);
-                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                    ((LinearLayoutCompat) scheduler.findViewById(R.id.linearLayout))
                             .addView(view);
                 });
             }
@@ -642,7 +622,7 @@ public class SchedulerActivity extends BaseActivity
                     final View view = scheduler.viewList.get(id);
                     scheduler.handleAlarms.cancelAlarm((int) (long) id);
                     scheduler.removeCustomListFile(id);
-                    ((LinearLayout) scheduler.findViewById(R.id.linearLayout))
+                    ((LinearLayoutCompat) scheduler.findViewById(R.id.linearLayout))
                             .removeView(view);
                     scheduler.viewList.remove(id);
                 });
@@ -704,10 +684,10 @@ public class SchedulerActivity extends BaseActivity
     static class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,
             ResultHolder<Boolean>> {
         private final WeakReference<SchedulerActivity> activityReference;
-        private final WeakReference<CheckBox> checkBoxReference;
+        private final WeakReference<AppCompatCheckBox> checkBoxReference;
         private final long id;
 
-        SystemExcludeCheckboxSetTask(SchedulerActivity scheduler, long id, CheckBox checkBox) {
+        SystemExcludeCheckboxSetTask(SchedulerActivity scheduler, long id, AppCompatCheckBox checkBox) {
             activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.checkBoxReference = new WeakReference<>(checkBox);
@@ -729,7 +709,7 @@ public class SchedulerActivity extends BaseActivity
         @Override
         public void onPostExecute(ResultHolder<Boolean> resultHolder) {
             final SchedulerActivity scheduler = activityReference.get();
-            final CheckBox checkBox = checkBoxReference.get();
+            final AppCompatCheckBox checkBox = checkBoxReference.get();
             if (scheduler != null && !scheduler.isFinishing() &&
                     checkBox != null) {
                 resultHolder.getObject().ifPresent(checkBox::setChecked);
@@ -822,6 +802,7 @@ public class SchedulerActivity extends BaseActivity
             this.databasename = databasename;
         }
 
+        @SuppressLint("StringFormatInvalid")
         @Override
         public void run() {
             final SchedulerActivity scheduler = activityReference.get();

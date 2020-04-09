@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="backup">Sicherung</string>
+    <string name="backup">Sichern</string>
   <string name="restore">Wiederherstellen</string>
   <string name="backupConfirmation">Sichern?</string>
   <string name="restoreConfirmation">Wiederherstellen?</string>
@@ -167,4 +167,16 @@
   <string name="logViewerTitle">Das Log anzeigen</string>
     <string name="prefs_summaryBatchDelete">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</string>
   <string name="prefs_summaryQuickReboot">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>
+    <string name="ask_for_permissions">Frage für Berichtigungen</string>
+  <string name="systemApp">System-App</string>
+  <string name="userApp">Benutzer-App</string>
+  <string name="resetFilter">Zurücksetze</string>
+  <string name="backup_mode_title">Sicherungsmodus:</string>
+  <string name="version_name_title">Versionname:</string>
+  <string name="available_actions">Mögliche Aktionen:</string>
+  <string name="applyFilter">Verwende</string>
+  <string name="last_backup_title">Letzte Sicherung:</string>
+  <string name="app_s_type_title">Appstypus:</string>
+  <string name="other_filters_options">Spezielle Filters:</string>
+  <string name="deleted_backup">Die Sicherung ist gelöscht</string>
 </resources>

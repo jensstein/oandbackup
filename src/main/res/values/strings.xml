@@ -182,5 +182,17 @@
     <string name="logViewerTitle">view the log</string>
     <string name="prefs_summaryQuickReboot">kills the system_server process to force a restart of user space</string>
     <string name="prefs_summaryBatchDelete">delete backups of all apps not currently installed</string>
+    <string name="ask_for_permissions">ask for permissions</string>
+    <string name="systemApp">System app</string>
+    <string name="userApp">User app</string>
+    <string name="resetFilter">Reset</string>
+    <string name="applyFilter">Apply</string>
+    <string name="available_actions">Available actions:</string>
+    <string name="version_name_title">Version name:</string>
+    <string name="backup_mode_title">Backup mode:</string>
+    <string name="last_backup_title">Last backup:</string>
+    <string name="app_s_type_title">App\'s type:</string>
+    <string name="other_filters_options">Special filters:</string>
+    <string name="deleted_backup">deleted the backup</string>
 
 </resources>

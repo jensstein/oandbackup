@@ -13,26 +13,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
             style="@android:style/Widget.Material.SearchView"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:layout_centerVertical="true"
             android:autofillHints="@string/searchHint"
             android:background="@null"
             android:clickable="true"
             android:focusable="true"
+            android:foregroundGravity="center_horizontal"
             android:imeOptions="flagNoExtractUi|actionSearch"
             android:inputType="text"
             android:singleLine="true"
-            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.SearchBar"
             app:iconifiedByDefault="false"
             app:searchIcon="@drawable/ic_main_bar" />
-
-
     </RelativeLayout>
 
 </androidx.appcompat.widget.Toolbar>

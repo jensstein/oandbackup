@@ -1,23 +1,24 @@
 package com.machiav3lli.backup.schedules;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.annimon.stream.Optional;
-import com.machiav3lli.backup.AppInfo;
+import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.FileCreationHelper;
-import com.machiav3lli.backup.FileReaderWriter;
-import com.machiav3lli.backup.MainActivity;
+import com.machiav3lli.backup.handler.FileCreationHelper;
+import com.machiav3lli.backup.handler.FileReaderWriter;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.R;
 
 import java.util.ArrayList;
 
 public class CustomPackageList {
     static Optional<ArrayList<AppInfo>> appInfoList = Optional.ofNullable(
-            MainActivity.appInfoList);
+            MainActivityX.originalList);
 
     // for use with schedules
     public static void showList(Activity activity, long number) {

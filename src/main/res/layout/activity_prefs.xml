@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/entry_fragment"
-        class="com.machiav3lli.backup.PrefsFragment"
+        class="com.machiav3lli.backup.fragments.PrefsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"/>

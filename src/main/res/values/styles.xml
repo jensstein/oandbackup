@@ -24,9 +24,6 @@
     </style>
 
     <style name="itemHolder" parent="android:Widget.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@android:color/white</item>
         <item name="android:padding">8dp</item>
         <item name="android:background">@drawable/card_rc8</item>
         <item name="android:backgroundTint">@color/colorDarkPrimaryDark</item>
@@ -48,6 +45,12 @@
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
+    <style name="chipGroup" parent="Widget.MaterialComponents.ChipGroup">
+        <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
+        <item name="selectionRequired">true</item>
+        <item name="singleSelection">true</item>
+    </style>
+
     <style name="filterChip" parent="Widget.MaterialComponents.Chip.Filter">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:gravity">center_horizontal</item>
@@ -61,6 +64,18 @@
         <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/ripple_nav_buttons</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+    <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingStart">@dimen/cards_spacing</item>
+        <item name="android:paddingEnd">@dimen/cards_spacing</item>
+        <item name="android:paddingBottom">?actionBarSize</item>
+    </style>
+
+    <style name="bottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyle</item>
+        <item name="colorPrimary">@color/app_accent</item>
     </style>
 
 

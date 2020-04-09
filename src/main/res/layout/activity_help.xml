@@ -1,27 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10sp">
+        android:padding="@dimen/cards_spacing">
 
-        <TextView
-            android:id="@+id/helpVersionName"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5sp"
-            android:textIsSelectable="true"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/large_spacing">
 
-        <TextView
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/app_icon_size"
+                android:layout_height="@dimen/app_icon_size"
+                app:srcCompat="@drawable/ic_main_bar"
+                android:layout_marginEnd="@dimen/med_spacing"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/helpAppName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.7"
+                    android:textIsSelectable="true"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:paddingBottom="@dimen/small_spacing"
+                    android:gravity="bottom"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/helpVersionName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.3"
+                    android:textIsSelectable="true"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/helpHtml"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="true" />
-    </LinearLayout>
-</ScrollView>
+            android:textIsSelectable="true"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>

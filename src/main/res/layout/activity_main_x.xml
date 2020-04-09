@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/bar_search" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:paddingBottom="?actionBarSize"
+            android:clipToPadding="false"
+            android:drawSelectorOnTop="true"
+            android:fastScrollEnabled="true"
+            tools:listitem="@layout/item_main_x" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_bar"
+        style="@style/mainBarView"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/tan_background"
+        app:fabAlignmentMode="end"
+        app:menu="@menu/main_bottom_bar">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="48dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_batch_backup"
+                style="@style/navbarButton"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_backup_white"
+                android:focusable="true"
+                android:text="@string/backup" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_batch_restore"
+                style="@style/navbarButton"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_restore_white"
+                android:focusable="true"
+                android:text="@string/restore" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_scheduler"
+                style="@style/navbarButton"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_scheduler_white"
+                android:focusable="true"
+                android:text="@string/sched_title" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sort_filter_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/app_accent"
+        android:elevation="12dp"
+        android:src="@drawable/ic_filter_white_48dp"
+        app:layout_anchor="@id/bottom_bar" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

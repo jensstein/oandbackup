@@ -1,17 +1,17 @@
 package com.machiav3lli.backup;
 
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
-
 public class Constants {
     private Constants() {
     }
 
-    public static final String TAG = "oandbackup";
+    public static final String TAG = "OAndBackupX";
 
     public static final String BLACKLIST_ARGS_ID = "blacklistId";
     public static final String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
+
+    public static final String PREFS_SHARED = "com.machiav3lli.backup";
+
+    public static final String PREFS_SORT_FILTER = "sortFilter";
 
     public static final String PREFS_SCHEDULES = "schedules";
     public static final String PREFS_SCHEDULES_TOTAL = "total";
@@ -23,6 +23,7 @@ public class Constants {
     public static final String PREFS_SCHEDULES_SUBMODE = "scheduleSubMode";
     public static final String PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent";
     public static final String PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem";
+    public static final String PREFS_HAVE_PERMISSIONS = "havePermissions";
 
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
@@ -36,7 +37,6 @@ public class Constants {
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_ENABLECRYPTO = "enableCrypto";
     public static final String PREFS_HELP = "help";
-
 
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_STATECHECKED = "stateChecked";

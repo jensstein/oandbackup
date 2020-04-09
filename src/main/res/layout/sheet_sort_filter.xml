@@ -1,178 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorDarkPrimaryDark"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/cards_spacing"
+        android:background="@drawable/card_rc8"
+        android:backgroundTint="@color/colorDarkPrimaryDark"
         android:scrollbars="none">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:targetApi="o">
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:layout_margin="@dimen/cards_spacing"
                 android:text="@string/sort_options"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/sortBy"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="@dimen/cards_spacing"
-                android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_spacing"
-                app:chipSpacingHorizontal="@dimen/small_spacing"
-                app:chipSpacingVertical="@dimen/small_spacing"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByPackageName"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/sortBy"
+                    style="@style/chipGroup"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortPackageName" />
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByLabel"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortLabel" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByPackageName"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sortPackageName" />
 
-            </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByLabel"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sortLabel" />
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:layout_margin="@dimen/cards_spacing"
                 android:text="@string/filter_options"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/filters"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="@dimen/cards_spacing"
-                android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_spacing"
-                app:chipSpacingHorizontal="@dimen/small_spacing"
-                app:chipSpacingVertical="@dimen/small_spacing"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showAll"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filters"
+                    style="@style/chipGroup"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filterAll" />
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlySystem"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filterSystem" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showAll"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filterAll" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlyUser"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filterUser" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOnlySystem"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filterSystem" />
 
-            </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOnlyUser"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filterUser" />
+                </com.google.android.material.chip.ChipGroup>
 
+            </HorizontalScrollView>
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/otherFilters"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/cards_spacing"
+                android:text="@string/other_filters_options"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="@dimen/cards_spacing"
-                app:chipSpacingHorizontal="@dimen/small_spacing"
-                app:chipSpacingVertical="@dimen/small_spacing"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showNewAndUpdated"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/otherFilters"
+                    style="@style/chipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/noSpecial"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showAll" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showNewAndUpdated"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNewAndUpdated" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showNotInstalled"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNotInstalled" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showNotBackedup"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNotBackedup" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOldBackups"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOldBackups" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOnlyApkBackedUp"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOnlyApkBackedUp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOnlyDataBackedUp"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOnlyDataBackedUp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/showOnlySpecialBackups"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOnlySpecialBackups" />
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/cards_spacing">
+
+                <Button
+                    android:id="@+id/reset"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/showNewAndUpdated"
-                    android:visibility="gone" />
+                    android:layout_marginEnd="@dimen/cards_spacing"
+                    android:backgroundTint="@color/colorDarkAccent"
+                    android:text="@string/resetFilter"
+                    android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showNotInstalled"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/apply"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/showNotInstalled"
-                    android:visibility="gone" />
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="@string/applyFilter" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showNotBackedup"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showNotBackedup"
-                    android:visibility="gone" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOldBackups"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOldBackups"
-                    android:visibility="gone" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlyApkBackedUp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOnlyApkBackedUp"
-                    android:visibility="gone" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlyDataBackedUp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOnlyDataBackedUp"
-                    android:visibility="gone" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/showOnlySpecialBackups"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOnlySpecialBackups"
-                    android:visibility="gone" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+</FrameLayout>

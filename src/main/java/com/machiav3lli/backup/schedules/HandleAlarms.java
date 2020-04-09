@@ -10,12 +10,12 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.machiav3lli.backup.MainActivity;
+import com.machiav3lli.backup.Constants;
 
 import java.util.Calendar;
 
 public class HandleAlarms {
-    static final String TAG = MainActivity.TAG;
+    static final String TAG = Constants.TAG;
     AlarmManager alarmManager;
     DeviceIdleChecker deviceIdleChecker;
 

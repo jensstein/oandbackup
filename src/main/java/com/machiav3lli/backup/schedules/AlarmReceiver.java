@@ -4,10 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.machiav3lli.backup.MainActivity;
+import com.machiav3lli.backup.Constants;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    static final String TAG = MainActivity.TAG;
+    static final String TAG = Constants.TAG;
 
     @Override
     public void onReceive(Context context, Intent intent) {

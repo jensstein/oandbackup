@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -17,37 +17,40 @@
             android:layout_height="wrap_content"
             android:indeterminate="true" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/logviewer_loading_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/logviewer_message_loading"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:textSize="@dimen/main_text" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/log_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/log_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textIsSelectable="true"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/next_lines_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/logviewer_next_lines_button"
-                android:textAlignment="center" />
-        </LinearLayout>
+            android:layout_marginBottom="?actionBarSize"
+            android:textIsSelectable="true"
+            android:textSize="16sp" />
     </ScrollView>
-</LinearLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next_lines_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/cards_spacing"
+            android:layout_gravity="end"
+            android:text="@string/logviewer_next_lines_button" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

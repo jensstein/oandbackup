@@ -15,9 +15,8 @@ import androidx.annotation.RestrictTo;
 import androidx.core.app.NotificationCompat;
 
 import com.annimon.stream.Optional;
-import com.machiav3lli.backup.BackupRestoreHelper;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.MainActivity;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
@@ -26,7 +25,7 @@ import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 
 public class ScheduleService extends Service
         implements BackupRestoreHelper.OnBackupRestoreListener {
-    static final String TAG = MainActivity.TAG;
+    static final String TAG = Constants.TAG;
     static final int ID = 2;
 
     @RestrictTo(RestrictTo.Scope.TESTS)

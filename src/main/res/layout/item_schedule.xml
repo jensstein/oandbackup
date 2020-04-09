@@ -3,19 +3,19 @@
     style="@style/itemFrame"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll"
         style="@style/itemHolder"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -23,20 +23,20 @@
                 android:text="@string/sched_interval"
                 android:textSize="14sp" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/intervalDays"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:inputType="number" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -44,15 +44,15 @@
                 android:text="@string/sched_hourOfDay"
                 android:textSize="14sp" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/timeOfDay"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:inputType="number" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/schedBackupMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,24 +60,24 @@
             android:text="@string/sched_backupMode"
             android:textSize="14sp" />
 
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/schedSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/schedSpinnerSubModes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/schedTimeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5sp"
             android:textSize="14sp" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/updateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 android:text="@string/sched_updateButton"
                 android:textAlignment="center" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 android:text="@string/sched_removeButton" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/activateButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,7 +115,6 @@
             android:layout_gravity="center"
             android:text="@string/sched_activateButton"
             android:textAlignment="center" />
-    </LinearLayout>
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>
 

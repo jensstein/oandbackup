@@ -13,7 +13,7 @@
         android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="?actionBarSize" >
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -37,6 +37,5 @@
         android:backgroundTint="@color/tan_background"
         app:fabAlignmentMode="end"
         app:menu="@menu/scheduler_bottom_bar" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

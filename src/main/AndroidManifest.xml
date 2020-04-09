@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.machiav3lli.backup">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,43 +10,57 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
     <application
+        android:allowBackup="true"
+        android:allowClearUserData="true"
+        android:banner="@mipmap/ic_launcher"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:targetApi="q">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.IntroActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".BatchActivity"
+            android:name=".activities.MainActivityX"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".activities.BatchActivityX"
             android:label="@string/app_name"
-            android:parentActivityName="com.machiav3lli.backup.MainActivity" />
+            android:parentActivityName=".activities.MainActivityX" />
         <activity
             android:name=".schedules.SchedulerActivity"
             android:label="@string/sched_title"
-            android:parentActivityName="com.machiav3lli.backup.MainActivity"
+            android:parentActivityName=".activities.MainActivityX"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.Help"
+            android:name=".activities.Help"
             android:label="@string/help_title"
-            android:parentActivityName="com.machiav3lli.backup.MainActivity"
+            android:parentActivityName=".activities.MainActivityX"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".LogViewer"
-            android:label="logviewer"
-            android:parentActivityName=".PrefsActivity" />
-        <activity
-            android:name=".PrefsActivity"
+            android:name=".activities.PrefsActivity"
             android:label="@string/prefs_title"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.LogViewer"
+            android:label="logviewer"
+            android:parentActivityName=".activities.PrefsActivity" />
         <activity
             android:name="com.nononsenseapps.filepicker.FilePickerActivity"
             android:label="@string/app_name"

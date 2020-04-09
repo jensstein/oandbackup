@@ -7,18 +7,17 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.machiav3lli.backup.AppInfo;
-import com.machiav3lli.backup.AppInfoHelper;
-import com.machiav3lli.backup.BackupRestoreHelper;
-import com.machiav3lli.backup.BlacklistsDBHelper;
+import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.handler.AppInfoHelper;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.Crypto;
-import com.machiav3lli.backup.FileCreationHelper;
-import com.machiav3lli.backup.FileReaderWriter;
-import com.machiav3lli.backup.MainActivity;
+import com.machiav3lli.backup.tasks.Crypto;
+import com.machiav3lli.backup.handler.FileCreationHelper;
+import com.machiav3lli.backup.handler.FileReaderWriter;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.ShellCommands;
-import com.machiav3lli.backup.ui.NotificationHelper;
+import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.NotificationHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class HandleScheduledBackups {
-    static final String TAG = MainActivity.TAG;
+    static final String TAG = Constants.TAG;
 
     Context context;
     PowerManager powerManager;
@@ -152,7 +151,7 @@ public class HandleScheduledBackups {
                         continue;
                     }
                     String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
-                    NotificationHelper.showNotification(context, MainActivity.class, id, title, appInfo.getLabel(), false);
+                    NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
                     int ret = backupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
                     if (ret != 0)
@@ -167,7 +166,7 @@ public class HandleScheduledBackups {
                     if (i == total) {
                         String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
                         String notificationMessage = context.getString(R.string.sched_notificationMessage);
-                        NotificationHelper.showNotification(context, MainActivity.class, id, notificationTitle, notificationMessage, true);
+                        NotificationHelper.showNotification(context, MainActivityX.class, id, notificationTitle, notificationMessage, true);
                     }
                     i++;
                 }
