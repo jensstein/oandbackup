@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -18,13 +19,14 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.handler.AppInfoHelper;
+import com.machiav3lli.backup.handler.AssetsHandler;
+import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.items.AppInfo;
 import com.scottyab.rootbeer.RootBeer;
 
 import java.io.File;
@@ -54,9 +56,8 @@ public class IntroActivity extends BaseActivity {
 
         Utils.logDeviceInfo(this, Constants.TAG);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
-        if (savedInstanceState != null)
-            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        else users = new ArrayList<>();
+        users = new ArrayList<>();
+        checkRun(savedInstanceState);
         handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(prefs, users, getFilesDir());
 
@@ -67,6 +68,12 @@ public class IntroActivity extends BaseActivity {
             checkResources();
             launchMainActivity();
         }
+    }
+
+    private void checkRun(Bundle savedInstanceState) {
+        if (savedInstanceState != null)
+            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
+        else new AssetHandlerTask().execute(this);
     }
 
     private void getPermissions() {
@@ -116,7 +123,7 @@ public class IntroActivity extends BaseActivity {
         if (!rootBeer.isRooted()) Utils.showWarning(this, "", getString(R.string.noSu));
         if (!checkBusybox()) Utils.showWarning(this, "", getString(R.string.busyboxProblem));
         handleMessages.changeMessage("", getString(R.string.oabUtilsCheck));
-        // if (!checkOabUtils()) Utils.showWarning(this, "", getString(R.string.oabUtilsProblem)); have to be pushed to later time
+        if (!checkOabUtils()) Utils.showWarning(this, "", getString(R.string.oabUtilsProblem));
         handleMessages.endMessage();
     }
 
@@ -138,5 +145,30 @@ public class IntroActivity extends BaseActivity {
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
         startActivity(new Intent(this, MainActivityX.class));
+    }
+
+    private static class AssetHandlerTask extends AsyncTask<Context, Void, Context> {
+        private Throwable throwable;
+
+        @Override
+        public Context doInBackground(Context... contexts) {
+            try {
+                AssetsHandler.copyOabutils(contexts[0]);
+            } catch (AssetsHandler.AssetsHandlerException e) {
+                throwable = e;
+            }
+            return contexts[0];
+        }
+
+        @Override
+        public void onPostExecute(Context context) {
+            if (throwable != null) {
+                Log.e(TAG, String.format(
+                        "error during AssetHandlerTask.onPostExecute: %s",
+                        throwable.toString()));
+                Toast.makeText(context, throwable.toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

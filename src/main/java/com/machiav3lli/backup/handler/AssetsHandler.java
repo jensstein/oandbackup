@@ -67,7 +67,7 @@ public class AssetsHandler {
         return Build.SUPPORTED_ABIS[0];
     }
 
-    static class AssetsHandlerException extends Exception {
+    public static class AssetsHandlerException extends Exception {
         private AssetsHandlerException(String msg) {
             super(msg);
         }
