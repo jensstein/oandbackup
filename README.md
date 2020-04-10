@@ -122,6 +122,8 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Rahul Patel](https://github.com/whyorean) whose work on AuroraStore and Design inspired this design.
 
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter)
+
 ## author
 
-antonios hazim
+Antonios Hazim

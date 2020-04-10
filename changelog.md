@@ -1,6 +1,10 @@
 changelog
 =========
 
+0.9.1 (10.04.2020)
+-------------------
+* fixed the reported Oab-utils-test error
+
 0.9.0 (09.04.2020)
 -------------------
 * adapted FastAdapter for Main and Batch
