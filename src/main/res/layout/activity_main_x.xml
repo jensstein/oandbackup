@@ -18,11 +18,14 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@android:color/transparent"
-            android:paddingBottom="?actionBarSize"
             android:clipToPadding="false"
-            android:drawSelectorOnTop="true"
-            android:fastScrollEnabled="true"
+            android:paddingBottom="?actionBarSize"
+            android:divider="@android:color/transparent"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
+            app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
+            app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
+            app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
             tools:listitem="@layout/item_main_x" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -44,7 +47,7 @@
                 android:id="@+id/btn_batch_backup"
                 style="@style/navbarButton"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_backup_white"
+                android:drawableTop="@drawable/ic_round_backup_32"
                 android:focusable="true"
                 android:text="@string/backup" />
 
@@ -52,7 +55,7 @@
                 android:id="@+id/btn_batch_restore"
                 style="@style/navbarButton"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_restore_white"
+                android:drawableTop="@drawable/ic_round_restore_32"
                 android:focusable="true"
                 android:text="@string/restore" />
 
@@ -60,7 +63,7 @@
                 android:id="@+id/btn_scheduler"
                 style="@style/navbarButton"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_scheduler_white"
+                android:drawableTop="@drawable/ic_round_scheduler_32"
                 android:focusable="true"
                 android:text="@string/sched_title" />
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -72,7 +75,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/app_accent"
         android:elevation="12dp"
-        android:src="@drawable/ic_filter_white_48dp"
+        android:src="@drawable/ic_round_filter_list_32"
         app:layout_anchor="@id/bottom_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

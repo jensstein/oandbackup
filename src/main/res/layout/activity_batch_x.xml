@@ -14,7 +14,11 @@
         android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="@dimen/batch_nav_height"
         android:divider="@android:color/transparent"
-        android:fastScrollEnabled="true"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_batch_x" />
 
@@ -22,9 +26,9 @@
         android:id="@+id/bottom_bar"
         style="@style/mainBarView"
         android:layout_gravity="bottom"
-        android:paddingVertical="@dimen/cards_spacing"
-        android:paddingHorizontal="@dimen/cards_spacing"
         android:backgroundTint="@color/tan_background"
+        android:paddingHorizontal="@dimen/cards_spacing"
+        android:paddingVertical="@dimen/cards_spacing"
         app:fabAlignmentMode="end">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -77,8 +81,8 @@
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
                     android:text="" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -90,6 +94,6 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/app_accent"
         android:elevation="12dp"
-        android:src="@drawable/ic_filter_white_48dp"
+        android:src="@drawable/ic_round_filter_list_32"
         app:layout_anchor="@id/bottom_bar" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
