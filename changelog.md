@@ -1,6 +1,11 @@
 changelog
 =========
 
+0.9.2 (13.04.2020)
+-------------------
+* added fast scroll bars to Main & Batch
+* converted the icons .png to .xml
+
 0.9.1 (10.04.2020)
 -------------------
 * fixed the reported Oab-utils-test error

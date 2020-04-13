@@ -1,9 +1,11 @@
 # OAndBackupX
 
-OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. And so most of the changes at first are optimizing the code and fixing the UX and hopefully will get some time later to rewrite the app as a whole. Therefore all types of contribution are welcome.
+OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore work with any device. Therefore all types of contribution are welcome.
+
+Usecases: a combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  keeping a copy of your apps and data on your server or "stable" device could bring a lot of benefits and save you a lot of work while changing ROMs or just cleaning your mobile device.
 
 Now on OAndBackup: a backup program for android. requires root and allows you to backup individual apps and their data.
-both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores).  
+both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores). 
 restoring system apps should be possible without requiring a reboot afterwards. OAndBackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
@@ -26,7 +28,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [ ] Abstracting the structure of the app
 - [ ] Fragmentize the Preferences: partially done
 - [ ] Rewrite the logic of Backup/Restore
-- [ ] add a better encryption solution(fix priority: med)
+- [ ] Fix and Add a better encryption solution(fix priority: med)
 - [ ] Add a flashable-ZIP feature
 - [ ] You suggest!...
 
