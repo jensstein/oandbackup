@@ -4,6 +4,6 @@
 
     <item android:title="@string/sched_globalBlacklist"
         android:id="@+id/globalBlacklist"
-        android:icon="@drawable/ic_blacklist_white"
+        android:icon="@drawable/ic_round_blacklist_32"
         app:showAsAction="always"/>
 </menu>

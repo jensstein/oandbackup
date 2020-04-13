@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/app_accent"
         android:elevation="12dp"
-        android:src="@drawable/ic_sched_white"
+        android:src="@drawable/ic_round_add_sched_32"
         app:layout_anchor="@id/bottom_bar" />
 
     <com.google.android.material.bottomappbar.BottomAppBar

@@ -10,7 +10,6 @@
         <item name="android:colorBackground">@color/tan_background</item>
         <item name="colorBackgroundFloating">@color/tan_background</item>
     </style>
-
     
     <style name="FilePickerTheme" parent="NNF_BaseTheme">
         <item name="android:backgroundTint">@color/tan_background</item>

@@ -42,7 +42,7 @@
                             android:layout_height="@dimen/app_icon_size"
                             android:layout_marginEnd="@dimen/med_spacing"
                             android:contentDescription="@string/app_s_icon"
-                            android:src="@drawable/placeholder" />
+                            android:src="@drawable/ic_placeholder" />
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="match_parent"

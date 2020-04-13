@@ -140,7 +140,7 @@ public class BatchActivityX extends BaseActivity
         });
         itemAdapter.add(list);
 
-        toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        toolBar.setNavigationIcon(R.drawable.ic_round_arrow_back_32);
         setSupportActionBar(toolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         searchView.setQueryHint(getString(R.string.searchHint));

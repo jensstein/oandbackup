@@ -78,7 +78,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
             final AppInfo app = item.getApp();
 
             if (app.icon != null) icon.setImageBitmap(app.icon);
-            else icon.setImageResource(R.drawable.placeholder);
+            else icon.setImageResource(R.drawable.ic_placeholder);
             label.setText(app.getLabel());
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {

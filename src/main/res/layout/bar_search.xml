@@ -28,7 +28,7 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.SearchBar"
             app:iconifiedByDefault="false"
-            app:searchIcon="@drawable/ic_main_bar" />
+            app:searchIcon="@drawable/ic_app_white" />
     </RelativeLayout>
 
 </androidx.appcompat.widget.Toolbar>

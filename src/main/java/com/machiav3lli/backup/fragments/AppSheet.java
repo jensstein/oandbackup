@@ -142,7 +142,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     private void setupAppInfo() {
         if (app.icon != null) icon.setImageBitmap(app.icon);
-        else icon.setImageResource(R.drawable.placeholder);
+        else icon.setImageResource(R.drawable.ic_placeholder);
         label.setText(app.getLabel());
         packageName.setText(app.getPackageName());
         if (app.isSystem()) appType.setText(R.string.systemApp);

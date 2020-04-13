@@ -85,7 +85,7 @@ public class SchedulerActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        toolBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        toolBar.setNavigationIcon(R.drawable.ic_round_arrow_back_32);
         setSupportActionBar(toolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

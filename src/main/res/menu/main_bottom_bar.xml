@@ -4,6 +4,6 @@
 
     <item android:title="@string/prefs_title"
         android:id="@+id/preferences"
-        android:icon="@drawable/ic_settings_white"
+        android:icon="@drawable/ic_round_settings_32"
         app:showAsAction="ifRoom"/>
 </menu>
