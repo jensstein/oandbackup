@@ -7,3 +7,4 @@ src/main/assets
 build
 local.properties
 sonarqube-env
+src/main/jniLibs/
