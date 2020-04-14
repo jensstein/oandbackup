@@ -3,100 +3,123 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.preference.PreferenceCategory
         android:key="userPrefs"
-        android:title="@string/prefs_user">
+        android:title="@string/prefs_user"
+        app:iconSpaceReserved="false">
         <androidx.preference.ListPreference
             android:defaultValue="system"
             android:entries="@array/languageEntries"
             android:entryValues="@array/languageEntryValues"
             android:key="languages"
-            android:title="@string/prefs_languages" />
+            android:title="@string/prefs_languages"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="timestamp"
-            android:title="@string/prefs_timestamp" />
+            android:title="@string/prefs_timestamp"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="rememberFiltering"
             android:summary="@string/prefs_summaryRememberFiltering"
-            android:title="@string/prefs_rememberFiltering" />
+            android:title="@string/prefs_rememberFiltering"
+            app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
+            android:defaultValue="7"
             android:inputType="number"
             android:key="oldBackups"
             android:summary="@string/prefs_summaryOldBackups"
-            android:title="@string/prefs_oldBackups" />
+            android:title="@string/prefs_oldBackups"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="servicePrefs"
-        android:title="@string/prefs_service">
+        android:title="@string/prefs_service"
+        app:iconSpaceReserved="false">
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="copySelfApk"
             android:summary="@string/prefs_summaryCopySelfApk"
-            android:title="@string/prefs_copySelfApk" />
+            android:title="@string/prefs_copySelfApk"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="acquireWakelock"
             android:summary="@string/prefs_summaryAcquireWakelock"
-            android:title="@string/prefs_acquireWakelock" />
+            android:title="@string/prefs_acquireWakelock"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="followSymlinks"
             android:summary="@string/prefs_summaryFollowSymlinks"
-            android:title="@string/prefs_followSymlinks" />
+            android:title="@string/prefs_followSymlinks"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="enableSpecialBackups"
-            android:title="@string/prefs_enableSpecialBackups" />
+            android:title="@string/prefs_enableSpecialBackups"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="pathscategory"
-        android:title="@string/prefs_pathscategory">
+        android:title="@string/prefs_pathscategory"
+        app:iconSpaceReserved="false">
         <androidx.preference.Preference
             android:key="pathBackupFolder"
-            android:title="@string/prefs_pathBackupFolder" />
+            android:title="@string/prefs_pathBackupFolder"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="backupExternalFiles"
             android:summary="@string/prefs_summaryBackupExternalFiles"
-            android:title="@string/prefs_backupExternalFiles" />
+            android:title="@string/prefs_backupExternalFiles"
+            app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:key="pathBusybox"
             android:summary="@string/prefs_summaryBusybox"
-            android:title="@string/prefs_pathBusybox" />
+            android:title="@string/prefs_pathBusybox"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="prefsTools"
-        android:title="@string/tools_title">
+        android:title="@string/tools_title"
+        app:iconSpaceReserved="false">
         <androidx.preference.Preference
             android:key="quickReboot"
+            android:summary="@string/prefs_summaryQuickReboot"
             android:title="@string/quickRebootTitle"
-            android:summary="@string/prefs_summaryQuickReboot"/>
+            app:iconSpaceReserved="false" />
         <androidx.preference.Preference
             android:key="batchDelete"
+            android:summary="@string/prefs_summaryBatchDelete"
             android:title="@string/batchDeleteTitle"
-            android:summary="@string/prefs_summaryBatchDelete"/>
+            app:iconSpaceReserved="false" />
         <androidx.preference.Preference
             android:key="logViewer"
-            android:title="@string/logViewerTitle" />
+            android:title="@string/logViewerTitle"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceScreen
         android:key="cryptoMenu"
         android:title="@string/prefs_cryptoMenu"
+        app:iconSpaceReserved="false"
         app:isPreferenceVisible="false">
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="enableCrypto"
             android:summary="@string/prefs_summaryEnableCrypto"
-            android:title="@string/prefs_enableCrypto" />
+            android:title="@string/prefs_enableCrypto"
+            app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:key="cryptoUserIds"
             android:summary="@string/prefs_summaryCryptoUserIds"
-            android:title="@string/prefs_cryptoUserIds" />
+            android:title="@string/prefs_cryptoUserIds"
+            app:iconSpaceReserved="false" />
         <!--org.openintents.openpgp.util.OpenPgpAppPreference
             android:key="openpgpProviderList"
             android:title="@string/prefs_openpgpProviderList" /-->
     </androidx.preference.PreferenceScreen>
     <androidx.preference.Preference
         android:key="help"
-        android:title="@string/help_title"/>
+        android:title="@string/help_title"
+        app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>
