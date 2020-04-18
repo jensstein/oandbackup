@@ -24,6 +24,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Integrate Tools and Help in Preferences
 - [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(fix priority: med)
 - [x] Updating UI and UX: Design improvement proposals are always welcome
+- [x] Add Dark/Light themes
 - [ ] Update dialogs' UI: partially done
 - [ ] Abstracting the structure of the app
 - [ ] Fragmentize the Preferences: partially done
@@ -35,6 +36,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 
 ## screenshots
 
+### Dark Theme
 <p float="left">
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/1.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/2.png" width="170" />
@@ -42,9 +44,17 @@ backups can be scheduled with no limit on the number of individual schedules and
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/4.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/5.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/6.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/7.png" width="170" />
 </p>
 
+### Light Theme
+<p float="left">
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/7.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/8.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/9.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/10.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/11.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/phoneScreenshots/12.png" width="170" />
+</p>
 
 ## building
 
@@ -85,12 +95,6 @@ copy the busybox binary to your system, for example /system/xbin or /data/local,
 
 translations of the original OAndBackup are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
 so please come help us there or spread the link if you want the app available in your own language.
-
-## Cryptography
-
-OAndBackupX supports encrypting the backups using an external cryptography provider.
-First you need to install an app which implements the openpgp-api, e.g. OpenKeychain: https://www.openkeychain.org/, and set up an identity.
-The "Cryptography" section of the preferences of OAndBackupX is then enabled and here you can choose which openpgp and identity to use.
 
 ## special usage notes
 

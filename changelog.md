@@ -1,6 +1,12 @@
 changelog
 =========
 
+0.9.3 (18.04.2020)
+-------------------
+* added Theme's settings: Dark/Light/System
+* fixed Settings padding
+* other small tweaks
+
 0.9.2 (13.04.2020)
 -------------------
 * added fast scroll bars to Main & Batch
