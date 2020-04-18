@@ -23,7 +23,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:singleLine="true"
-                android:textAppearance="@style/labelText" />
+                android:textAppearance="@style/TextApperance.Label" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/backupMode"

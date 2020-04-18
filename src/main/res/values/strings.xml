@@ -194,5 +194,9 @@
     <string name="app_s_type_title">App\'s type:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">deleted the backup</string>
+    <string name="prefs_theme">theme</string>
+    <string name="theme_light">light</string>
+    <string name="theme_dark">dark</string>
+    <string name="theme_system">system\'s theme</string>
 
 </resources>

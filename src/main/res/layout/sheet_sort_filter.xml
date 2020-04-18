@@ -8,7 +8,6 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/cards_spacing"
         android:background="@drawable/card_rc8"
-        android:backgroundTint="@color/colorDarkPrimaryDark"
         android:scrollbars="none">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -37,14 +36,14 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByPackageName"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sortPackageName" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByLabel"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sortLabel" />
@@ -73,21 +72,21 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showAll"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/filterAll" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlySystem"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/filterSystem" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyUser"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/filterUser" />
@@ -116,56 +115,56 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/noSpecial"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showAll" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNewAndUpdated"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNotInstalled"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotInstalled" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNotBackedup"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotBackedup" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOldBackups"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyApkBackedUp"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlyApkBackedUp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyDataBackedUp"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlyDataBackedUp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlySpecialBackups"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        style="@style/filterChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlySpecialBackups" />
@@ -176,8 +175,8 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="@dimen/cards_spacing">
+                android:layout_margin="@dimen/cards_spacing"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/reset"
@@ -185,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    android:backgroundTint="@color/colorDarkAccent"
+                    android:backgroundTint="?colorSecondary"
                     android:text="@string/resetFilter"
                     android:textAlignment="center" />
 

@@ -18,7 +18,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/app_icon_size"
                 android:layout_height="@dimen/app_icon_size"
-                app:srcCompat="@drawable/ic_app_white"
+                app:srcCompat="@drawable/ic_app_vv"
                 android:layout_marginEnd="@dimen/med_spacing"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat

@@ -17,7 +17,7 @@
             android:layout_above="@id/title"
             android:layout_marginBottom="@dimen/med_spacing"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/ic_app_white" />
+            app:srcCompat="@drawable/ic_app_vv" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"

@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/cards_spacing"
         android:background="@drawable/card_rc8"
-        android:backgroundTint="@color/colorDarkPrimaryDark"
         android:scrollbars="none">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -21,12 +20,10 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:targetApi="o">
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/itemHolder"
-                    style="@style/itemHolder"
+                    android:layout_margin="@dimen/cards_spacing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -177,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/cards_spacing"
                     android:text="@string/available_actions"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                    android:textAppearance="@style/TextAppearance.Title" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <HorizontalScrollView

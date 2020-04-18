@@ -58,7 +58,6 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setStyle(BottomSheetDialogFragment.STYLE_NORMAL,R.style.bottomSheet);
         BottomSheetDialog sheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         sheet.setOnShowListener(d -> {
             BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) d;

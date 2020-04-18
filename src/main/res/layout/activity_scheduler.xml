@@ -24,17 +24,17 @@
         android:id="@+id/addSchedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/app_accent"
+        android:backgroundTint="?colorAccent"
         android:elevation="12dp"
         android:src="@drawable/ic_round_add_sched_32"
         app:layout_anchor="@id/bottom_bar" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_bar"
+        style="@style/mainBarView"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/tan_background"
         app:fabAlignmentMode="end"
         app:menu="@menu/scheduler_bottom_bar" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

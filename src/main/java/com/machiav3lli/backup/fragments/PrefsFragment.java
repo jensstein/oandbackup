@@ -9,27 +9,30 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.FileCreationHelper;
-import com.machiav3lli.backup.activities.LogViewer;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.activities.Help;
+import com.machiav3lli.backup.activities.LogViewer;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.PrefsActivity;
+import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.activities.Help;
 import com.machiav3lli.backup.handler.LanguageHelper;
 import com.machiav3lli.backup.handler.NotificationHelper;
+import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.items.AppInfo;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.nononsenseapps.filepicker.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
 
 
 public class PrefsFragment extends PreferenceFragmentCompat {
@@ -46,6 +49,21 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
+        findPreference(Constants.PREFS_THEME).setOnPreferenceChangeListener((preference, newValue) -> {
+            com.machiav3lli.backup.handler.Utils.setPrefsString(getContext(), Constants.PREFS_THEME, newValue.toString());
+            switch (newValue.toString()) {
+                case "light":
+                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    break;
+                case "dark":
+                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    break;
+                default:
+                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            }
+            return true;
+        });
+
         Preference pref;
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         pref.setSummary(FileCreationHelper.getDefaultBackupDirPath());
@@ -61,8 +79,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_LANGUAGES);
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
             if (new LanguageHelper().changeLanguage(getContext(),
-                    getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
+                    getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
                 com.machiav3lli.backup.handler.Utils.reloadWithParentStack(getActivity());
+            }
             return true;
         });
 
@@ -79,6 +98,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
                     .show();
             return true;
         });
+
 
         pref = findPreference(Constants.PREFS_LOGVIEWER);
         Bundle extra = getActivity().getIntent().getExtras();

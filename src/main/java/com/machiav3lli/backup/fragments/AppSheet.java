@@ -23,22 +23,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.FileCreationHelper;
-import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.items.MainItemX;
-import com.machiav3lli.backup.tasks.BackupTask;
-import com.machiav3lli.backup.tasks.RestoreTask;
-import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.dialogs.BackupDialogFragment;
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment;
 import com.machiav3lli.backup.dialogs.ShareDialogFragment;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
+import com.machiav3lli.backup.handler.FileCreationHelper;
+import com.machiav3lli.backup.handler.HandleMessages;
+import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.LogFile;
+import com.machiav3lli.backup.items.MainItemX;
+import com.machiav3lli.backup.tasks.BackupTask;
+import com.machiav3lli.backup.tasks.RestoreTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,7 +94,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.bottomSheet);
         BottomSheetDialog sheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         sheet.setOnShowListener(d -> {
             BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) d;

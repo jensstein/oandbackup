@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_gravity="end"
-                android:backgroundTint="@color/colorDarkAccent"
+                android:backgroundTint="?colorSecondary"
                 android:text="@string/sched_removeButton" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

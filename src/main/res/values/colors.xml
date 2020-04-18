@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Background color for list item -->
-    <color name="tan_background">#000000</color>
-    <color name="app_accent">#E91E63</color>
+    <color name="app_background_dark">#000000</color>
+    <color name="app_background_light">#FAFBFC</color>
+    <color name="app_accent_dark">#E0163D</color>
+    <color name="app_accent_light">#F77067</color>
+    <color name="app_primary_dark">#232629</color>
+    <color name="app_primary_light">#ECECEC</color>
+    <color name="app_secondary_dark">#163de0</color>
+    <color name="app_secondary_light">#67eef7</color>
     <color name="ic_launcher_background">#FFFFFF</color>
-
-
-    <!--Theme-->
-    <color name="colorDarkAccent">#4285f4</color>
-    <color name="colorDarkRipple">#4C5368</color>
-    <color name="colorDarkPrimary">#202124</color>
-    <color name="colorDarkPrimaryDark">#202124</color>
-    <color name="colorDarkBackground">#2d2e31</color>
-    <color name="colorDarkWindowBackground">#202124</color>
-
 </resources>

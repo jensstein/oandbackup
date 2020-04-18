@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/app_accent_dark</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorAccent">@color/app_accent_dark</item>
+        <item name="colorSecondary">@color/app_secondary_dark</item>
+        <item name="toolbarStyle">@style/Widget.Toolbar</item>
+        <item name="android:strokeColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/app_background_dark</item>
+        <item name="backgroundColor">@color/app_background_dark</item>
+        <item name="colorBackgroundFloating">@color/app_primary_dark</item>
+        <item name="bottomSheetDialogTheme">@style/bottomSheet</item>
+        <item name="android:statusBarColor">@color/app_background_dark</item>
+    </style>
+
+    <style name="FilePickerTheme" parent="NNF_BaseTheme">
+        <item name="android:backgroundTint">@color/app_background_dark</item>
+        <item name="colorBackgroundFloating">@color/app_background_dark</item>
+        <item name="nnf_dir_icon_color">@color/app_accent_dark</item>
+        <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
+    </style>
+
+    <style name="FilePickerAlertDialogTheme" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorPrimary">@color/app_accent_dark</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorAccent">@color/app_accent_dark</item>
+    </style>
+
+
+    <!-- Items & Sheets -->
+    <style name="itemFrame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="itemHolder" parent="android:Widget.TextView">
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@drawable/card_rc8</item>
+    </style>
+
+    <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="chipStyle">@style/filterChip</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingStart">@dimen/cards_spacing</item>
+        <item name="android:paddingEnd">@dimen/cards_spacing</item>
+        <item name="android:paddingBottom">?actionBarSize</item>
+    </style>
+
+    <style name="bottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyle</item>
+        <item name="colorPrimary">@color/app_accent_dark</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorSecondary">@color/app_secondary_dark</item>
+        <item name="colorAccent">@color/app_accent_dark</item>
+    </style>
+
+
+    <!-- Bars -->
+    <style name="mainBarView" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:backgroundTint">?backgroundColor</item>
+    </style>
+
+    <style name="AppTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="AppTheme.PopupTheme.Dark" parent="ThemeOverlay.MaterialComponents.Dark" />
+
+    <style name="Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?android:attr/windowBackground</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Title</item>
+        <item name="popupTheme">@style/AppTheme.PopupTheme.Dark</item>
+    </style>
+
+    <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+        <item name="popupTheme">@style/AppTheme.PopupTheme</item>
+        <item name="android:background">?android:windowBackground</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+
+    <!-- Buttons & Chips -->
+    <style name="roundedButton" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/card_rc8</item>
+        <item name="android:backgroundTint">@color/app_accent_dark</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+    <style name="chipGroup" parent="Widget.MaterialComponents.ChipGroup">
+        <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
+        <item name="selectionRequired">true</item>
+        <item name="singleSelection">true</item>
+    </style>
+
+    <style name="filterChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">?android:strokeColor</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="checkedIconTint">?colorAccent</item>
+    </style>
+
+    <style name="navbarButton" parent="android:Widget.Material.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/ripple_nav_buttons</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+</resources>

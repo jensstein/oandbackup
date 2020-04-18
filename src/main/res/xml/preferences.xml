@@ -5,6 +5,14 @@
         android:key="userPrefs"
         android:title="@string/prefs_user"
         app:iconSpaceReserved="false">
+        <ListPreference
+            app:defaultValue="system"
+            app:entries="@array/themeEntries"
+            app:entryValues="@array/themeEntryValues"
+            app:iconSpaceReserved="false"
+            app:key="themes"
+            app:title="@string/prefs_theme"
+            app:useSimpleSummaryProvider="true" />
         <androidx.preference.ListPreference
             android:defaultValue="system"
             android:entries="@array/languageEntries"

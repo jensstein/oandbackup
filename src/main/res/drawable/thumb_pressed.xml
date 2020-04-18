@@ -9,9 +9,9 @@
         android:paddingLeft="22dp"
         android:paddingRight="22dp" />
 
-    <solid android:color="@color/colorDarkPrimaryDark" />
+    <solid android:color="?colorPrimaryDark" />
 
     <stroke
         android:width="1dp"
-        android:color="@color/app_accent" />
+        android:color="?colorAccent" />
 </shape>

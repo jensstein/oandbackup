@@ -23,8 +23,8 @@ public class Constants {
     public static final String PREFS_SCHEDULES_SUBMODE = "scheduleSubMode";
     public static final String PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent";
     public static final String PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem";
-    public static final String PREFS_HAVE_PERMISSIONS = "havePermissions";
 
+    public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
     public static final String PREFS_TIMESTAMP = "timestamp";
@@ -39,13 +39,7 @@ public class Constants {
     public static final String PREFS_HELP = "help";
 
     public static final String BUNDLE_THREADID = "threadId";
-    public static final String BUNDLE_STATECHECKED = "stateChecked";
-    public static final String BUNDLE_FIRSTVISIBLEPOSITION = "firstVisiblePosition";
     public static final String BUNDLE_USERS = "users";
-    public static final String BUNDLE_FILEBROWSER_ROOT = "root";
-    public static final String BUNDLE_CREATEDIRECTORYDIALOG_EDITTEXT = "edittext";
-
-    public static final String BUNDLE_ACTIONTYPE = "actionType";
 
     public static String classAddress(String address) {
         return "com.machiav3lli.backup" + address;

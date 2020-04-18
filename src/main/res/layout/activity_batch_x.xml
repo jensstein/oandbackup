@@ -26,7 +26,6 @@
         android:id="@+id/bottom_bar"
         style="@style/mainBarView"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/tan_background"
         android:paddingHorizontal="@dimen/cards_spacing"
         android:paddingVertical="@dimen/cards_spacing"
         app:fabAlignmentMode="end">
@@ -92,7 +91,7 @@
         android:id="@+id/sort_filter_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/app_accent"
+        android:backgroundTint="?colorAccent"
         android:elevation="12dp"
         android:src="@drawable/ic_round_filter_list_32"
         app:layout_anchor="@id/bottom_bar" />
