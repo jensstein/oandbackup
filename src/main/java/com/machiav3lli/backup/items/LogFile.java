@@ -15,9 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class LogFile implements Parcelable {
     final static String TAG = Constants.TAG;
@@ -143,14 +141,8 @@ public class LogFile implements Parcelable {
 
     public static String formatDate(Date date) {
         String dateFormated;
-        if (localTimestampFormat) {
-            DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            dateFormated = dateFormat.format(date);
-        } else {
-            // TODO maybe use the local format!
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
-            dateFormated = dateFormat.format(date);
-        }
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        dateFormated = dateFormat.format(date);
         return dateFormated;
     }
 

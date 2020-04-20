@@ -44,7 +44,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
 
     @Override
     public long getIdentifier() {
-        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled()?0:1) + (app.isInstalled()?1:0);
+        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
                 if (updatedVersionString.length() < 15) versionCode.setEllipsize(null);
             } else versionCode.setText(app.getVersionName());
             if (app.getLogInfo() != null)
-                lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis()), localTimestampFormat));
+                lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
             else lastBackup.setText(R.string.noBackupYet);
             switch (app.getBackupMode()) {
                 case AppInfo.MODE_APK:

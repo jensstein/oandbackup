@@ -151,7 +151,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             versionCode.setText(updatedVersionString);
         } else versionCode.setText(app.getVersionName());
         if (app.getLogInfo() != null)
-            lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis()), true));
+            lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
         else lastBackup.setText(R.string.noBackupYet);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
