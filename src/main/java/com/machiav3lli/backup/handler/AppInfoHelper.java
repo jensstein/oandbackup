@@ -11,11 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
-import com.machiav3lli.backup.items.AppInfoSpecial;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoSpecial;
+import com.machiav3lli.backup.items.LogFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,25 +32,24 @@ public class AppInfoHelper {
         ArrayList<AppInfo> list = new ArrayList<>();
         ArrayList<String> packageNames = new ArrayList<>();
         PackageManager pm = context.getPackageManager();
-        List<PackageInfo> pinfoList = pm.getInstalledPackages(0);
-        Collections.sort(pinfoList, pInfoPackageNameComparator);
-        // list seemingly starts scrambled on 4.3
+        List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
+        Collections.sort(packageInfoList, pInfoPackageNameComparator);
 
         ArrayList<String> disabledPackages = ShellCommands
                 .getDisabledPackages(new CommandHandler());
         if (includeSpecialBackups) {
             addSpecialBackups(context, backupDir, list, packageNames);
         }
-        for (PackageInfo pinfo : pinfoList) {
-            packageNames.add(pinfo.packageName);
+        for (PackageInfo packageInfo : packageInfoList) {
+            packageNames.add(packageInfo.packageName);
             String lastBackup = context.getString(R.string.noBackupYet);
             boolean isSystem = false;
-            if ((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                 isSystem = true;
             }
             if (backupDir != null) {
                 Bitmap icon = null;
-                Drawable apkIcon = pm.getApplicationIcon(pinfo.applicationInfo);
+                Drawable apkIcon = pm.getApplicationIcon(packageInfo.applicationInfo);
                 try {
                     if (apkIcon instanceof BitmapDrawable) {
                         // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
@@ -61,7 +60,7 @@ public class AppInfoHelper {
                         } else {
                             Log.d(TAG, String.format(
                                     "icon for %s had invalid height or width (h: %d w: %d)",
-                                    pinfo.packageName, src.getHeight(), src.getWidth()));
+                                    packageInfo.packageName, src.getHeight(), src.getWidth()));
                         }
                     } else {
                         icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -69,26 +68,26 @@ public class AppInfoHelper {
                         apkIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
                         apkIcon.draw(canvas);
                     }
-                } catch (ClassCastException e) {
+                } catch (ClassCastException ignored) {
                 }
                 // for now the error is ignored since logging it would fill a lot in the log
-                String dataDir = pinfo.applicationInfo.dataDir;
-                // workaround for dataDir being null for the android system
-                // package at least on cm14
-                if (pinfo.packageName.equals("android") && dataDir == null)
+
+                String dataDir = packageInfo.applicationInfo.dataDir;
+                String deDataDir = packageInfo.applicationInfo.deviceProtectedDataDir;
+                if (packageInfo.packageName.equals("android") && dataDir == null)
                     dataDir = "/data/system";
-                AppInfo appInfo = new AppInfo(pinfo.packageName,
-                        pinfo.applicationInfo.loadLabel(pm).toString(),
-                        pinfo.versionName, pinfo.versionCode,
-                        pinfo.applicationInfo.sourceDir, dataDir, isSystem,
+                AppInfo appInfo = new AppInfo(packageInfo.packageName,
+                        packageInfo.applicationInfo.loadLabel(pm).toString(),
+                        packageInfo.versionName, packageInfo.versionCode,
+                        packageInfo.applicationInfo.sourceDir, dataDir, deDataDir, isSystem,
                         true);
-                File subdir = new File(backupDir, pinfo.packageName);
+                File subdir = new File(backupDir, packageInfo.packageName);
                 if (subdir.exists()) {
-                    LogFile logInfo = new LogFile(subdir, pinfo.packageName);
+                    LogFile logInfo = new LogFile(subdir, packageInfo.packageName);
                     appInfo.setLogInfo(logInfo);
                 }
                 appInfo.icon = icon;
-                if (disabledPackages != null && disabledPackages.contains(pinfo.packageName))
+                if (disabledPackages != null && disabledPackages.contains(packageInfo.packageName))
                     appInfo.setDisabled(true);
                 list.add(appInfo);
             }
@@ -107,7 +106,7 @@ public class AppInfoHelper {
                     if (!packageNames.contains(folder)) {
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                         if (logInfo.getLastBackupMillis() > 0) {
-                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.isSystem(), false);
+                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getDeviceProtectedDataDir(), logInfo.isSystem(), false);
                             appInfo.setLogInfo(logInfo);
                             list.add(appInfo);
                         }

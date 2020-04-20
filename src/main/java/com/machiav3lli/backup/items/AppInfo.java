@@ -7,7 +7,7 @@ import android.os.Parcelable;
 public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
     LogFile logInfo;
-    String label, packageName, versionName, sourceDir, dataDir;
+    String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
     int versionCode, backupMode;
     private boolean system, installed, checked, disabled;
     public Bitmap icon;
@@ -16,13 +16,14 @@ public class AppInfo
     public static final int MODE_DATA = 2;
     public static final int MODE_BOTH = 3;
 
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, boolean system, boolean installed) {
+    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
         this.label = label;
         this.packageName = packageName;
         this.versionName = versionName;
         this.versionCode = versionCode;
         this.sourceDir = sourceDir;
         this.dataDir = dataDir;
+        this.deviceProtectedDataDir = deviceProtectedDataDir;
         this.system = system;
         this.installed = installed;
         this.backupMode = MODE_UNSET;
@@ -50,6 +51,10 @@ public class AppInfo
 
     public String getDataDir() {
         return dataDir;
+    }
+
+    public String getDeviceProtectedDataDir() {
+        return deviceProtectedDataDir;
     }
 
     public int getBackupMode() {
@@ -126,6 +131,7 @@ public class AppInfo
         out.writeString(versionName);
         out.writeString(sourceDir);
         out.writeString(dataDir);
+        out.writeString(deviceProtectedDataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
         out.writeBooleanArray(new boolean[]{system, installed, checked});
@@ -149,6 +155,7 @@ public class AppInfo
         versionName = in.readString();
         sourceDir = in.readString();
         dataDir = in.readString();
+        deviceProtectedDataDir = in.readString();
         versionCode = in.readInt();
         backupMode = in.readInt();
         boolean[] bools = new boolean[4];

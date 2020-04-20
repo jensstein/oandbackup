@@ -3,15 +3,16 @@ package com.machiav3lli.backup.handler;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.machiav3lli.backup.tasks.Compression;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.tasks.Crypto;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.tasks.Compression;
+import com.machiav3lli.backup.tasks.Crypto;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +25,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ShellCommands implements CommandHandler.UnexpectedExceptionListener {
     final static String TAG = Constants.TAG;
     public final static String EXTERNAL_FILES = "external_files";
+    public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
 
     CommandHandler commandHandler = new CommandHandler();
 
@@ -84,11 +87,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         errors += t.toString();
     }
 
-    public int doBackup(Context context, File backupSubDir, String label, String packageData, String packageApk, int backupMode) {
+    public int doBackup(Context context, File backupSubDir, String label, String packageData, String deviceProtectedPackageData, String packageApk, int backupMode) {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
-        // since api 24 (android 7) ApplicationInfo.dataDir can be null
-        // this doesn't seem to be documented. proper sanity checking is needed
+
         if (packageData == null) {
             writeErrorLog(label, "packageData is null. this is unexpected, please report it.");
             return 1;
@@ -97,6 +99,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // -L because fat (which will often be used to store the backup files)
         // doesn't support symlinks
         String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+
         switch (backupMode) {
             case AppInfo.MODE_APK:
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
@@ -109,9 +112,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
+
+        File backupSubDirDeviceProtectedFiles = null;
+        boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
+        if (backupMode != AppInfo.MODE_APK) {
+            backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+            if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
+                commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
+            }
+        }
+
         File externalFilesDir = getExternalFilesDirPath(context, packageData);
         File backupSubDirExternalFiles = null;
-        boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
         if (backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
             backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
             if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
@@ -167,6 +179,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             int zipret = compress(new File(backupSubDir, folder));
             if (backupSubDirExternalFiles != null)
                 zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            if (backupSubDirDeviceProtectedFiles != null)
+                zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if (zipret != 0)
                 ret += zipret;
         }
@@ -176,7 +190,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return ret;
     }
 
-    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir) {
+    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir, String deviceProtectedDataDir) {
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
         int unzipRet = -1;
@@ -206,9 +220,29 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
                 commands.add(restoreCommand);
-                if (Build.VERSION.SDK_INT >= 23) {
-                    commands.add("restorecon -R " + dataDir + " || true");
+                File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
+                if (deviceProtectedDataDir != null && deviceProtectedFiles.exists()) {
+                    Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles);
+                    restoreCommand = busybox + " cp -r " + deviceProtectedFiles + "/" + dataDirName + "/* " + deviceProtectedDataDir + "\n";
+
+                    try {
+                        PackageManager packageManager = context.getPackageManager();
+                        String user = String.valueOf(packageManager.getApplicationInfo(dataDirName, PackageManager.GET_META_DATA).uid);
+                        restoreCommand = restoreCommand + " chown -R " + user + ":" + user + " " + deviceProtectedDataDir + "\n";
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    restoreCommand = restoreCommand + " chmod -R 777 " + deviceProtectedDataDir + "\n";
+                    if (!(new File(deviceProtectedDataDir).exists())) {
+                        restoreCommand = "mkdir " + deviceProtectedDataDir + "\n" + restoreCommand;
+                        // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
+                    }
+                    commands.add(restoreCommand);
                 }
+                commands.add("restorecon -R " + dataDir + " || true");
+                commands.add("restorecon -R " + deviceProtectedDataDir + " || true");
+
                 int ret = commandHandler.runCmd("su", commands, line -> {
                         },
                         line -> writeErrorLog(label, line),
@@ -225,6 +259,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             if (unzipRet == 0) {
                 deleteBackup(new File(backupSubDir, dataDirName));
             }
+            deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
         }
     }
 
@@ -560,18 +595,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    public void deleteOldApk(File backupfolder, String newApkPath) {
-        final String apk = new File(newApkPath).getName();
-        File[] files = backupfolder.listFiles((dir, filename) -> (!filename.equals(apk) && filename.endsWith(".apk")));
-        if (files != null) {
-            for (File file : files) {
-                file.delete();
-            }
-        } else {
-            Log.e(TAG, "deleteOldApk: listFiles returned null");
-        }
-    }
-
     public void killPackage(Context context, String packageName) {
         List<ActivityManager.RunningAppProcessInfo> runningList;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -596,7 +619,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public static void writeErrorLog(String packageName, String err) {
         errors += packageName + ": " + err + "\n";
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
         String dateFormated = dateFormat.format(date);
         try {
             File outFile = new FileCreationHelper().createLogFile(FileCreationHelper.getDefaultLogFilePath());
@@ -662,9 +685,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
          * in the android source
          */
         String libPrefix = "lib/";
-        ArrayList<String> libs = Compression.list(apk, libPrefix + Build.CPU_ABI);
+        ArrayList<String> libs = Compression.list(apk, libPrefix + Build.SUPPORTED_ABIS[0]);
         if (libs == null || libs.size() == 0)
-            libs = Compression.list(apk, libPrefix + Build.CPU_ABI2);
+            libs = Compression.list(apk, libPrefix + Build.SUPPORTED_ABIS[0]);
         if (libs != null && libs.size() > 0) {
             if (Compression.unzip(apk, outputDir, libs) == 0) {
                 List<String> commands = new ArrayList<>();
@@ -784,8 +807,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
     */
 
-    // due to changes in 4.3 (api level 18) the root user cannot see /storage/emulated/$user/ so calls using su (except pm in restoreApk) should swap the first part with /mnt/shell/emulated/, which is readable by the root user
-    // api 23 (android 6) seems to have reverted to the old behaviour
     public String swapBackupDirPath(String path) {
         return path;
     }
@@ -813,7 +834,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return null;
     }
 
-    private class Ownership {
+    private static class Ownership {
         private int uid;
         private int gid;
         private final boolean legacyMode;
@@ -849,7 +870,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    private class OwnershipException extends Exception {
+    private static class OwnershipException extends Exception {
         public OwnershipException(String msg) {
             super(msg);
         }
