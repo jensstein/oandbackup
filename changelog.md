@@ -1,6 +1,12 @@
 changelog
 =========
 
+0.9.4 (20.04.2020)
+-------------------
+* added support for protected data backup
+* switched to local date format for apps in Main
+* some other small changes
+
 0.9.3 (18.04.2020)
 -------------------
 * added Theme's settings: Dark/Light/System

@@ -29,6 +29,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [ ] Abstracting the structure of the app
 - [ ] Fragmentize the Preferences: partially done
 - [ ] Rewrite the logic of Backup/Restore
+- [x] Add suppor for protected data backup
 - [ ] Fix and Add a better encryption solution(fix priority: med)
 - [ ] Add a flashable-ZIP feature
 - [ ] You suggest!...

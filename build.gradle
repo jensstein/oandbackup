@@ -12,7 +12,7 @@ repositories {
 ext {
     versions = [
             openpgp: "12.0",
-            room: "2.2.4",
+            room: "2.2.5",
             lifecycle: "2.2.0",
             stream: "1.2.1",
             filepicker: "4.2.1",
@@ -21,13 +21,14 @@ ext {
             butterknife: "10.2.1",
 
             appcompat: "1.1.0",
-            material: "1.2.0-alpha05",
+            material: "1.2.0-alpha06",
             constraintlayout: "2.0.0-beta4",
-            preference: "1.1.0",
+            preference: "1.1.1",
             swiperefreshlayout: "1.0.0",
             fastadapter: "5.0.0",
 
-            androidx_test: "1.1.1",
+            androidx_test: "1.2.0",
+            junit: "1.1.1",
             espresso: "3.2.0",
             uiautomator: "2.2.0",
             mockito: "2.24.0"
@@ -63,8 +64,8 @@ dependencies {
 
     // Tests
     implementation "androidx.room:room-testing:${versions.room}"
-    implementation "androidx.test.ext:junit:${versions.androidx_test}"
     implementation "androidx.test:rules:${versions.androidx_test}"
+    implementation "androidx.test.ext:junit:${versions.junit}"
     implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
     implementation "androidx.test.uiautomator:uiautomator:${versions.uiautomator}"
     implementation "org.mockito:mockito-core:${versions.mockito}"
@@ -107,7 +108,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 3
+int versionPath = 4
 
 android {
     compileSdkVersion 29
@@ -118,7 +119,7 @@ android {
                 versionMinor * 100 +
                 versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         javaCompileOptions {
