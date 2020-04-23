@@ -1,25 +1,27 @@
-package com.machiav3lli.backup.activities;
-
+package com.machiav3lli.backup.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
-import com.machiav3lli.backup.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class LogViewer extends BaseActivity
-        implements View.OnClickListener {
-    String[] textParts;
-    int index;
+public class LogsFragment extends Fragment {
 
     @BindView(R.id.scrollview)
     ScrollView sv;
@@ -29,19 +31,29 @@ public class LogViewer extends BaseActivity
     ProgressBar pb;
     @BindView(R.id.logviewer_loading_textview)
     AppCompatTextView loading;
-    @BindView(R.id.next_lines_button)
+    @BindView(R.id.btn_logs)
     MaterialButton btn;
 
+    String[] textParts;
+    int index;
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_viewer);
-        ButterKnife.bind(this);
-        btn.setOnClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_logs, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         new Thread(new TextLoadRunnable()).start();
     }
 
-    private void appendNextLines() {
+    @OnClick(R.id.btn_logs)
+    public void moreLog() {
         appendNextLines(false);
     }
 
@@ -60,17 +72,12 @@ public class LogViewer extends BaseActivity
         sv.postDelayed(() -> sv.scrollTo(0, pos), 700);
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.next_lines_button) appendNextLines();
-    }
-
     private class TextLoadRunnable implements Runnable {
         public void run() {
             String txt = new FileReaderWriter(FileCreationHelper.defaultLogFilePath).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
-            runOnUiThread(() -> appendNextLines(true));
+            requireActivity().runOnUiThread(() -> appendNextLines(true));
         }
     }
 }

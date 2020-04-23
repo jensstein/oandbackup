@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/bar_standard" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout"
+        style="@style/Widget.AppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cards_spacing"
+        android:background="@drawable/card_rc8"
+        android:orientation="horizontal"
+        app:elevation="@dimen/small_spacing">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/cards_spacing"
+            android:contentDescription=""
+            app:srcCompat="@drawable/ic_round_arrow_back_32" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <fragment
-        android:id="@+id/entry_fragment"
+        android:id="@+id/prefs_fragement"
         class="com.machiav3lli.backup.fragments.PrefsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

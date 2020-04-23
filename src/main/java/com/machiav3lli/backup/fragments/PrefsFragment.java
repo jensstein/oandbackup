@@ -16,8 +16,6 @@ import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.Help;
-import com.machiav3lli.backup.activities.LogViewer;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.PrefsActivity;
 import com.machiav3lli.backup.handler.FileCreationHelper;
@@ -50,7 +48,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         findPreference(Constants.PREFS_THEME).setOnPreferenceChangeListener((preference, newValue) -> {
-            com.machiav3lli.backup.handler.Utils.setPrefsString(getContext(), Constants.PREFS_THEME, newValue.toString());
+            com.machiav3lli.backup.handler.Utils.setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
             switch (newValue.toString()) {
                 case "light":
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -66,6 +64,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         Preference pref;
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        assert pref != null;
         pref.setSummary(FileCreationHelper.getDefaultBackupDirPath());
         pref.setOnPreferenceClickListener(preference -> {
             Intent intent = new Intent(getActivity(), FilePickerActivity.class);
@@ -77,20 +76,23 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         });
 
         pref = findPreference(Constants.PREFS_LANGUAGES);
+        assert pref != null;
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (new LanguageHelper().changeLanguage(getContext(),
+            if (LanguageHelper.changeLanguage(getContext(),
                     getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
-                com.machiav3lli.backup.handler.Utils.reloadWithParentStack(getActivity());
+                com.machiav3lli.backup.handler.Utils.reloadWithParentStack(requireActivity());
             }
             return true;
         });
 
-        pref = findPreference(Constants.PREFS_QUICK_REBOOT);
-        ArrayList<String> users = getActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
+        ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
         shellCommands = new ShellCommands(androidx.preference.PreferenceManager
-                .getDefaultSharedPreferences(getContext()), users, getContext().getFilesDir());
+                .getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
+
+        pref = findPreference(Constants.PREFS_QUICK_REBOOT);
+        assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.quickRebootTitle)
                     .setMessage(R.string.quickRebootMessage)
                     .setPositiveButton(R.string.dialogYes, (dialog, which) -> shellCommands.quickReboot())
@@ -99,10 +101,11 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-
-        pref = findPreference(Constants.PREFS_LOGVIEWER);
-        Bundle extra = getActivity().getIntent().getExtras();
+        Bundle extra = requireActivity().getIntent().getExtras();
         if (extra != null) backupDir = (File) extra.get("com.machiav3lli.backup.backupDir");
+
+        pref = findPreference(Constants.PREFS_BATCH_DELETE);
+        assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
             final ArrayList<AppInfo> deleteList = new ArrayList<>();
             StringBuilder message = new StringBuilder();
@@ -113,7 +116,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
                 }
             }
             if (!deleteList.isEmpty()) {
-                new AlertDialog.Builder(getContext())
+                new AlertDialog.Builder(requireContext())
                         .setTitle(R.string.batchDeleteTitle)
                         .setMessage(message.toString().trim())
                         .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
@@ -129,14 +132,16 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         });
 
         pref = findPreference(Constants.PREFS_LOGVIEWER);
+        assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
-            startActivity(new Intent(getActivity(), LogViewer.class));
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragement, new LogsFragment()).commit();
             return true;
         });
 
         pref = findPreference(Constants.PREFS_HELP);
+        assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
-            startActivity(new Intent(getActivity(), Help.class));
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragement, new HelpFragment()).commit();
             return true;
         });
     }
@@ -168,7 +173,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     public void changesMade() {
         Intent result = new Intent();
         result.putExtra("changesMade", true);
-        getActivity().setResult(RESULT_OK, result);
+        requireActivity().setResult(RESULT_OK, result);
     }
 
     public void deleteBackups(ArrayList<AppInfo> deleteList) {

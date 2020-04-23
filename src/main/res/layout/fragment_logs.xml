@@ -3,10 +3,11 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/cards_spacing">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -19,7 +20,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/logviewer_loading_textview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/logviewer_message_loading"
             android:textSize="@dimen/main_text" />
@@ -39,18 +40,11 @@
             android:textSize="16sp" />
     </ScrollView>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/next_lines_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/cards_spacing"
-            android:layout_gravity="end"
-            android:text="@string/logviewer_next_lines_button" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_logs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/small_spacing"
+        android:text="@string/logviewer_next_lines_button" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
