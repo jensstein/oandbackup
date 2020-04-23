@@ -1,63 +1,78 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/itemFrame"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/cards_spacing"
+    android:paddingVertical="4dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        style="@style/itemHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/card_rc8"
+        android:orientation="horizontal"
+        android:padding="@dimen/cards_spacing">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/checkbox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.6"
-                android:clickable="false"
-                android:focusable="false"
-                android:singleLine="true"
-                android:textAppearance="@style/TextApperance.Label" />
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/backupMode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/label"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.Label" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/backupMode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:gravity="end|center_vertical"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.4"
-                android:gravity="end"
-                android:singleLine="true"
-                android:textSize="@dimen/secondary_text" />
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/packageName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/versionCode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:gravity="end"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/packageName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:paddingStart="@dimen/med_spacing"
-                android:singleLine="true"
-                android:textSize="@dimen/secondary_text"
-                tools:ignore="RtlSymmetry" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/versionCode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="end"
-                android:singleLine="true"
-                android:textSize="@dimen/secondary_text" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>

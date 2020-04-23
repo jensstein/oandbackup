@@ -10,8 +10,8 @@
                 android:color="#000000" />
             <!-- Set the same value for both width and height to get a circular shape -->
             <size
-                android:width="64dp"
-                android:height="64dp" />
+                android:width="48dp"
+                android:height="48dp" />
         </shape>
     </item>
     <item>

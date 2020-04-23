@@ -45,7 +45,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
 
     @Override
     public long getIdentifier() {
-        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled()?0:1) + (app.isInstalled()?1:0);
+        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0);
     }
 
     @Override
@@ -91,6 +91,8 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
         @BindView(R.id.checkbox)
         AppCompatCheckBox checkbox;
+        @BindView(R.id.label)
+        AppCompatTextView label;
         @BindView(R.id.packageName)
         AppCompatTextView packageName;
         @BindView(R.id.versionCode)
@@ -108,8 +110,8 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
         public void bindView(@NotNull BatchItemX item, @NotNull List<?> list) {
             final AppInfo app = item.getApp();
 
-            checkbox.setText(app.getLabel());
             checkbox.setChecked(app.isChecked());
+            label.setText(app.getLabel());
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
                 String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
@@ -141,6 +143,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
         @Override
         public void unbindView(@NotNull BatchItemX item) {
             checkbox.setText(null);
+            label.setText(null);
             packageName.setText(null);
             versionCode.setText(null);
             backupMode.setText(null);

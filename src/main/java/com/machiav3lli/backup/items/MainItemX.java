@@ -57,16 +57,12 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
         AppCompatTextView label;
         @BindView(R.id.packageName)
         AppCompatTextView packageName;
-        @BindView(R.id.versionCode)
-        AppCompatTextView versionCode;
         @BindView(R.id.lastBackup)
         AppCompatTextView lastBackup;
         @BindView(R.id.backupMode)
         AppCompatTextView backupMode;
         @BindView(R.id.icon)
         AppCompatImageView icon;
-
-        static boolean localTimestampFormat;
 
         public ViewHolder(View view) {
             super(view);
@@ -81,14 +77,8 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
             else icon.setImageResource(R.drawable.ic_placeholder);
             label.setText(app.getLabel());
             packageName.setText(app.getPackageName());
-            if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
-                String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
-                versionCode.setText(updatedVersionString);
-                if (updatedVersionString.length() < 15) versionCode.setEllipsize(null);
-            } else versionCode.setText(app.getVersionName());
             if (app.getLogInfo() != null)
                 lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
-            else lastBackup.setText(R.string.noBackupYet);
             switch (app.getBackupMode()) {
                 case AppInfo.MODE_APK:
                     backupMode.setText(R.string.onlyApkBackedUp);
@@ -115,7 +105,6 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements Bas
         public void unbindView(@NotNull MainItemX item) {
             label.setText(null);
             packageName.setText(null);
-            versionCode.setText(null);
             lastBackup.setText(null);
             backupMode.setText(null);
             icon.setImageDrawable(null);

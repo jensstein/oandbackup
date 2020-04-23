@@ -1,96 +1,80 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/itemFrame"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/cards_spacing"
+    android:paddingVertical="4dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/itemHolder"
-        style="@style/itemHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/card_rc8"
+        android:orientation="horizontal"
+        android:padding="@dimen/cards_spacing">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/app_icon_size"
+            android:layout_height="@dimen/app_icon_size"
+            android:layout_marginEnd="@dimen/med_spacing"
+            android:contentDescription="@string/app_s_icon"
+            android:src="@drawable/ic_placeholder" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/icon"
-                android:layout_width="@dimen/app_icon_size"
-                android:layout_height="@dimen/app_icon_size"
-                android:layout_marginEnd="@dimen/med_spacing"
-                android:contentDescription="@string/app_s_icon"
-                android:src="@drawable/ic_placeholder" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.4"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/label"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextApperance.Label" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/lastBackup"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="top"
-                        android:layout_weight="0.5"
-                        android:ellipsize="end"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/secondary_text" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.3"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/packageName"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.7"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/secondary_text" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/backupMode"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.3"
-                        android:ellipsize="end"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/secondary_text" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                android:layout_height="0dp"
+                android:layout_weight="0.6"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/versionCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.3"
+                    android:id="@+id/label"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.6"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.Label" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/lastBackup"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:ellipsize="end"
+                    android:gravity="end|center_vertical"
+                    android:singleLine="true"
+                    android:textSize="@dimen/secondary_text" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.4"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/packageName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textSize="@dimen/secondary_text" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/backupMode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:ellipsize="end"
+                    android:gravity="end"
+                    android:singleLine="true"
+                    android:textSize="@dimen/secondary_text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
