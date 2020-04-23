@@ -30,16 +30,6 @@
 
 
     <!-- Items & Sheets -->
-    <style name="itemFrame">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:padding">4dp</item>
-    </style>
-
-    <style name="itemHolder" parent="android:Widget.TextView">
-        <item name="android:padding">8dp</item>
-        <item name="android:background">@drawable/card_rc8</item>
-    </style>
-
     <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="chipStyle">@style/filterChip</item>
         <item name="android:background">@android:color/transparent</item>

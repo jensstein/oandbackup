@@ -40,7 +40,6 @@
     <string name="dialogCancel">Отменить</string>
     <string name="dialogYes">Да</string>
     <string name="dialogNo">Нет</string>
-    <string name="noBackupYet">Ещё нет р.к.</string>
     <string name="restoreDataWithoutApkError">Невозможно восстановить данные без восстановления apk, пакет не установлен</string>
     <string name="collectingData">Сбор информации о пакете</string>
     <string name="suCheck">проверка superuser и busybox</string>

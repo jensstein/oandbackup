@@ -40,8 +40,7 @@
   <string name="dialogCancel">avbryt</string>
   <string name="dialogYes">ja</string>
   <string name="dialogNo">nej</string>
-  <string name="noBackupYet">ingen säkerhetskopia ännu</string>
-  <string name="restoreDataWithoutApkError">det går inte att återställa data utan att återställa apk, paketet är inte installerat</string>
+    <string name="restoreDataWithoutApkError">det går inte att återställa data utan att återställa apk, paketet är inte installerat</string>
   <string name="collectingData">samlar in paketinfo</string>
   <string name="suCheck">kontrollerar superuser och busybox</string>
   <string name="noSu">kunde inte få superuser-behörighet</string>

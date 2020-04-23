@@ -20,25 +20,25 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.button.MaterialButton;
-import com.machiav3lli.backup.activities.BaseActivity;
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.BaseActivity;
+import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
-import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
-import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -63,8 +63,8 @@ public class SchedulerActivity extends BaseActivity
 
     @BindView(R.id.bottom_bar)
     BottomAppBar bottomBar;
-    @BindView(R.id.toolBar)
-    Toolbar toolBar;
+    @BindView(R.id.back)
+    AppCompatImageView back;
 
 
     SharedPreferences prefs;
@@ -85,10 +85,7 @@ public class SchedulerActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        toolBar.setNavigationIcon(R.drawable.ic_round_arrow_back_32);
-        setSupportActionBar(toolBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        back.setOnClickListener(v -> finish());
         bottomBar.replaceMenu(R.menu.scheduler_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.globalBlacklist) {

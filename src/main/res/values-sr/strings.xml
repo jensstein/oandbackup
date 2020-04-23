@@ -40,8 +40,7 @@
   <string name="dialogCancel">Откажи</string>
   <string name="dialogYes">Да</string>
   <string name="dialogNo">Не</string>
-  <string name="noBackupYet">Нема резервних копија</string>
-  <string name="restoreDataWithoutApkError">Подаци не могу бити враћени без Apk-а, пакет није инсталиран:</string>
+    <string name="restoreDataWithoutApkError">Подаци не могу бити враћени без Apk-а, пакет није инсталиран:</string>
   <string name="collectingData">Скупљање података о пакетима</string>
   <string name="suCheck">Проверавање да ли су инсталирани superuser и busybox</string>
   <string name="noSu">Није могуће прибавити superuser дозволе</string>

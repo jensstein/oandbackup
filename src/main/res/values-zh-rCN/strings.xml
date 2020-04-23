@@ -40,7 +40,6 @@
     <string name="dialogCancel">取消</string>
     <string name="dialogYes">是</string>
     <string name="dialogNo">否</string>
-    <string name="noBackupYet">还未备份</string>
     <string name="restoreDataWithoutApkError">无法在不恢复apk的情况下恢复数据。软件包未被安装</string>
     <string name="collectingData">收集包信息</string>
     <string name="suCheck">检查superuser和busybox</string>

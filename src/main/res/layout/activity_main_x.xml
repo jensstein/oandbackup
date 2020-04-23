@@ -3,15 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:elevation="2dp">
 
-    <include layout="@layout/bar_search" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout"
+        style="@style/Widget.AppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cards_spacing"
+        android:background="@drawable/card_rc8"
+        android:orientation="horizontal"
+        app:elevation="@dimen/small_spacing">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            style="@android:style/Widget.Material.SearchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="@string/searchHint"
+            android:clickable="true"
+            android:focusable="true"
+            android:foregroundGravity="center_horizontal"
+            android:imeOptions="flagNoExtractUi|actionSearch"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.SearchBar"
+            app:elevation="@dimen/small_spacing"
+            app:iconifiedByDefault="false"
+            app:queryHint="@string/searchHint"
+            app:searchIcon="@drawable/ic_app_vv" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
+        android:paddingTop="?actionBarSize"
+        android:paddingBottom="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -19,8 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="?actionBarSize"
-            android:divider="@android:color/transparent"
+            android:paddingTop="@dimen/cards_spacing"
             app:fastScrollEnabled="true"
             app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
             app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
@@ -34,6 +62,8 @@
         style="@style/mainBarView"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="end"
+        app:fabCradleMargin="0dp"
+        app:fabCradleRoundedCornerRadius="0dp"
         app:menu="@menu/main_bottom_bar">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -70,12 +100,10 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sort_filter_fab"
+        style="@style/Widget.Design.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?colorAccent"
-        android:elevation="12dp"
         android:src="@drawable/ic_round_filter_list_32"
         app:layout_anchor="@id/bottom_bar" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

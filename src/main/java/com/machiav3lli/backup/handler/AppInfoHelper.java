@@ -42,11 +42,9 @@ public class AppInfoHelper {
         }
         for (PackageInfo packageInfo : packageInfoList) {
             packageNames.add(packageInfo.packageName);
-            String lastBackup = context.getString(R.string.noBackupYet);
             boolean isSystem = false;
-            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
                 isSystem = true;
-            }
             if (backupDir != null) {
                 Bitmap icon = null;
                 Drawable apkIcon = pm.getApplicationIcon(packageInfo.applicationInfo);

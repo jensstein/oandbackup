@@ -573,6 +573,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
         }
         Log.i(TAG, "uninstall return: " + ret);
+        // TODO switch: set notInstaled true
         return ret;
     }
 

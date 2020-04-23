@@ -39,8 +39,7 @@
   <string name="dialogCancel">annuler</string>
   <string name="dialogYes">oui</string>
   <string name="dialogNo">non</string>
-  <string name="noBackupYet">aucune sauvegarde présente</string>
-  <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'apk car l\'application n\'est pas installée</string>
+    <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'apk car l\'application n\'est pas installée</string>
   <string name="collectingData">collecte des informations des paquets</string>
   <string name="suCheck">vérification de le présence de superuser et busybox</string>
   <string name="noSu">impossible d\'acquérir les droits de super-utilisateur</string>

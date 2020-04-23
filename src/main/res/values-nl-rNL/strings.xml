@@ -40,8 +40,7 @@
   <string name="dialogCancel">Annuleer</string>
   <string name="dialogYes">Ja</string>
   <string name="dialogNo">Nee</string>
-  <string name="noBackupYet">Geen back-up tot op heden</string>
-  <string name="restoreDataWithoutApkError">Kan de data niet terugzetten zonder de apk terug te zetten, pakket is niet geïnstalleerd</string>
+    <string name="restoreDataWithoutApkError">Kan de data niet terugzetten zonder de apk terug te zetten, pakket is niet geïnstalleerd</string>
   <string name="collectingData">Informatie over de pakketten aan het verzamelen</string>
   <string name="suCheck">Aanwezigheid van superuser en busybox aan het controleren</string>
   <string name="noSu">Kon geen superuser rechten krijgen</string>

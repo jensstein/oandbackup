@@ -40,8 +40,7 @@
   <string name="dialogCancel">Avbrut</string>
   <string name="dialogYes">Ja</string>
   <string name="dialogNo">Nei</string>
-  <string name="noBackupYet">Ingen sikkerhetskopi enda</string>
-  <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APKen, pakken er ikke installert</string>
+    <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APKen, pakken er ikke installert</string>
   <string name="collectingData">Samler informasjon om pakken</string>
   <string name="suCheck">Sjekker for \'superuser\' og \'busybox\'</string>
   <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>

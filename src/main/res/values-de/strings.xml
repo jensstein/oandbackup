@@ -40,8 +40,7 @@
   <string name="dialogCancel">Abbrechen</string>
   <string name="dialogYes">Ja</string>
   <string name="dialogNo">Nein</string>
-  <string name="noBackupYet">Noch keine Sicherung vorhanden</string>
-  <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
+    <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
   <string name="collectingData">Paketinformationen sammeln…</string>
   <string name="suCheck">Prüfe nach Superuser und Busybox…</string>
   <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>

@@ -3,6 +3,8 @@ package com.machiav3lli.backup.activities;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.appcompat.widget.AppCompatImageView;
+
 import com.machiav3lli.backup.R;
 
 import butterknife.BindView;
@@ -10,8 +12,8 @@ import butterknife.ButterKnife;
 
 public class PrefsActivity extends BaseActivity {
 
-    @BindView(R.id.toolBar)
-    androidx.appcompat.widget.Toolbar toolBar;
+    @BindView(R.id.back)
+    AppCompatImageView back;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,9 +23,8 @@ public class PrefsActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-        toolBar.setNavigationIcon(R.drawable.ic_round_arrow_back_32);
-        setSupportActionBar(toolBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        back.setOnClickListener(v -> finish());
+        
     }
 
     @Override

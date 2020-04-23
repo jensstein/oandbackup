@@ -40,8 +40,7 @@
   <string name="dialogCancel">anuluj</string>
   <string name="dialogYes">tak</string>
   <string name="dialogNo">nie</string>
-  <string name="noBackupYet">nie ma jeszcze kopii zapasowej</string>
-  <string name="restoreDataWithoutApkError">nie można przywrócić danych bez przywracania apk, pakiet nie jest zainstalowany</string>
+    <string name="restoreDataWithoutApkError">nie można przywrócić danych bez przywracania apk, pakiet nie jest zainstalowany</string>
   <string name="collectingData">zbieranie informacji o pakiecie</string>
   <string name="suCheck">sprawdzanie dla superuser i busybox</string>
   <string name="noSu">nie można uzyskać uprawnień superuser</string>

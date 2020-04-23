@@ -9,31 +9,32 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
+import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.tasks.Crypto;
 import com.machiav3lli.backup.handler.FileCreationHelper;
-import com.machiav3lli.backup.items.BatchItemX;
-import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.SortFilterManager;
-import com.machiav3lli.backup.items.SortFilterModel;
-import com.machiav3lli.backup.fragments.SortFilterSheet;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
-import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
+import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.BatchItemX;
+import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.tasks.Crypto;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -56,6 +57,8 @@ public class BatchActivityX extends BaseActivity
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.sort_filter_fab)
     FloatingActionButton fabSortFilter;
     @BindView(R.id.bottom_bar)
@@ -70,17 +73,17 @@ public class BatchActivityX extends BaseActivity
     MaterialButton actionButton;
     @BindView(R.id.cbAll)
     AppCompatCheckBox cbAll;
-    @BindView(R.id.toolBar)
-    Toolbar toolBar;
     @BindView(R.id.search_view)
     SearchView searchView;
+    @BindView(R.id.back)
+    AppCompatImageView back;
 
     boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
     SortFilterSheet sheetSortFilter;
     ArrayList<BatchItemX> list;
     ItemAdapter<BatchItemX> itemAdapter;
-    FastAdapter fastAdapter;
+    FastAdapter<BatchItemX> fastAdapter;
 
     File backupDir;
     PowerManager powerManager;
@@ -117,6 +120,10 @@ public class BatchActivityX extends BaseActivity
 
         ButterKnife.bind(this);
         rbBoth.setChecked(true);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refresh();
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         list = new ArrayList<>();
         if (backupBoolean) {
@@ -134,16 +141,13 @@ public class BatchActivityX extends BaseActivity
         recyclerView.setAdapter(fastAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
-            ((BatchItemX) item).getApp().setChecked(!((BatchItemX) item).getApp().isChecked());
+            item.getApp().setChecked(!item.getApp().isChecked());
             fastAdapter.notifyAdapterDataSetChanged();
             return false;
         });
         itemAdapter.add(list);
 
-        toolBar.setNavigationIcon(R.drawable.ic_round_arrow_back_32);
-        setSupportActionBar(toolBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        searchView.setQueryHint(getString(R.string.searchHint));
+        back.setOnClickListener(v -> finish());
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -269,17 +273,14 @@ public class BatchActivityX extends BaseActivity
         Thread refreshThread = new Thread(() -> {
             sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
             cbAll.setChecked(false);
-            originalList = AppInfoHelper.getPackageInfo(this,
-                    backupDir, true, android.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                            .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             list = new ArrayList<>();
             if (backupBoolean) {
                 for (AppInfo app : filteredList)
                     if (app.isInstalled()) list.add(new BatchItemX(app));
-            } else {
-                for (AppInfo app : filteredList) list.add(new BatchItemX(app));
-            }
+            } else for (AppInfo app : filteredList) list.add(new BatchItemX(app));
             runOnUiThread(() -> {
                 if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
             });

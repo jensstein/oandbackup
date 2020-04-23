@@ -40,8 +40,7 @@
   <string name="dialogCancel">Cancelar</string>
   <string name="dialogYes">Sim</string>
   <string name="dialogNo">Não</string>
-  <string name="noBackupYet">Backup inexistente</string>
-  <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado. </string>
+    <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado. </string>
   <string name="collectingData">A obter informação de pacotes</string>
   <string name="suCheck">A verificar superuser e busybox</string>
   <string name="noSu">Não foi possível obter as permissões superuser</string>

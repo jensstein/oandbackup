@@ -40,7 +40,6 @@
     <string name="dialogCancel">Cancelar</string>
     <string name="dialogYes">Sí</string>
     <string name="dialogNo">No</string>
-    <string name="noBackupYet">Sin respaldo</string>
     <string name="restoreDataWithoutApkError">No es posible restaurar los datos sin la APK, el paquete no está instalado :</string>
     <string name="collectingData">Obteniendo información de paquetes</string>
     <string name="suCheck">Verificando superusuario y busybox</string>

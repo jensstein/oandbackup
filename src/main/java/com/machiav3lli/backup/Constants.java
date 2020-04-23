@@ -1,6 +1,7 @@
 package com.machiav3lli.backup;
 
 public class Constants {
+
     private Constants() {
     }
 
@@ -27,7 +28,6 @@ public class Constants {
     public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
-    public static final String PREFS_TIMESTAMP = "timestamp";
     public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
     public static final String PREFS_PATH_BUSYBOX = "pathBusybox";
