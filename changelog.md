@@ -1,6 +1,13 @@
 changelog
 =========
 
+0.9.5 (23.04.2020)
+-------------------
+* fixed refresh issue after restore and backup from AppSheet
+* made the UI more simple
+* fixed press back on Main
+* some other small tweaks here and there
+
 0.9.4 (20.04.2020)
 -------------------
 * added support for protected data backup

@@ -11,27 +11,27 @@ repositories {
 
 ext {
     versions = [
-            openpgp: "12.0",
-            room: "2.2.5",
-            lifecycle: "2.2.0",
-            stream: "1.2.1",
-            filepicker: "4.2.1",
-            rootBeer: "0.0.7",
+            openpgp           : "12.0",
+            room              : "2.2.5",
+            lifecycle         : "2.2.0",
+            stream            : "1.2.1",
+            filepicker        : "4.2.1",
+            rootBeer          : "0.0.7",
 
-            butterknife: "10.2.1",
+            butterknife       : "10.2.1",
 
-            appcompat: "1.1.0",
-            material: "1.2.0-alpha06",
-            constraintlayout: "2.0.0-beta4",
-            preference: "1.1.1",
+            appcompat         : "1.1.0",
+            material          : "1.2.0-alpha06",
+            constraintlayout  : "2.0.0-beta4",
+            preference        : "1.1.1",
             swiperefreshlayout: "1.0.0",
-            fastadapter: "5.0.0",
+            fastadapter       : "5.0.0",
 
-            androidx_test: "1.2.0",
-            junit: "1.1.1",
-            espresso: "3.2.0",
-            uiautomator: "2.2.0",
-            mockito: "2.24.0"
+            androidx_test     : "1.2.0",
+            junit             : "1.1.1",
+            espresso          : "3.2.0",
+            uiautomator       : "2.2.0",
+            mockito           : "2.24.0"
     ]
 }
 
@@ -108,7 +108,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 4
+int versionPath = 5
 
 android {
     compileSdkVersion 29
