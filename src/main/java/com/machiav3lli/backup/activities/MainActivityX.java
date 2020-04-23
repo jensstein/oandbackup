@@ -8,27 +8,26 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.handler.AppInfoHelper;
-import com.machiav3lli.backup.fragments.AppSheet;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.FileCreationHelper;
-import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.fragments.AppSheet;
+import com.machiav3lli.backup.fragments.SortFilterSheet;
+import com.machiav3lli.backup.handler.AppInfoHelper;
+import com.machiav3lli.backup.handler.FileCreationHelper;
+import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.SortFilterManager;
-import com.machiav3lli.backup.items.SortFilterModel;
-import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.MainItemX;
+import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.schedules.SchedulerActivity;
-import com.machiav3lli.backup.handler.HandleMessages;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -53,8 +52,6 @@ public class MainActivityX extends BaseActivity
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.sort_filter_fab)
     FloatingActionButton fabSortFilter;
-    @BindView(R.id.toolBar)
-    Toolbar toolBar;
     @BindView(R.id.search_view)
     SearchView searchView;
     @BindView(R.id.bottom_bar)
@@ -65,7 +62,7 @@ public class MainActivityX extends BaseActivity
     public static ArrayList<AppInfo> originalList = IntroActivity.originalList;
     ArrayList<MainItemX> list;
     ItemAdapter<MainItemX> itemAdapter;
-    FastAdapter fastAdapter;
+    FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
     AppSheet sheetApp;
 
@@ -107,20 +104,18 @@ public class MainActivityX extends BaseActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             if (sheetApp != null) sheetApp.dismissAllowingStateLoss();
-            sheetApp = new AppSheet((MainItemX) item);
+            sheetApp = new AppSheet(item);
             sheetApp.show(getSupportFragmentManager(), "APPSHEET");
             return false;
         });
         itemAdapter.add(list);
 
-        setSupportActionBar(toolBar);
         bottomBar.replaceMenu(R.menu.main_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.preferences)
                 startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
             return true;
         });
-        searchView.setQueryHint(getString(R.string.searchHint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -150,6 +145,11 @@ public class MainActivityX extends BaseActivity
         startActivityForResult(batchIntent(BatchActivityX.class, true), BATCH_REQUEST);
     }
 
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
     @OnClick(R.id.btn_batch_restore)
     public void btnBatchRestore() {
         startActivityForResult(batchIntent(BatchActivityX.class, false), BATCH_REQUEST);
@@ -169,12 +169,11 @@ public class MainActivityX extends BaseActivity
     public void refresh() {
         Thread refreshThread = new Thread(() -> {
             sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-            originalList = AppInfoHelper.getPackageInfo(this,
-                    backupDir, true, this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE)
-                            .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-            ArrayList<AppInfo> flist = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
+            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             list = new ArrayList<>();
-            for (AppInfo app : flist) list.add(new MainItemX(app));
+            for (AppInfo app : filteredList) list.add(new MainItemX(app));
             runOnUiThread(() -> {
                 if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
             });
