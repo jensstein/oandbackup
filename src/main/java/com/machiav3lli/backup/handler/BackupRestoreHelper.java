@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.tasks.Crypto;
@@ -39,6 +40,7 @@ public class BackupRestoreHelper {
             ret = shellCommands.doBackup(context, backupSubDir, app.getLabel(), app.getDataDir(), app.getDeviceProtectedDataDir(), app.getSourceDir(), backupMode);
             app.setBackupMode(backupMode);
         }
+        if (context instanceof MainActivityX) ((MainActivityX)context).refresh();
 
         shellCommands.logReturnMessage(context, ret);
         LogFile.writeLogFile(backupSubDir, app, backupMode);
@@ -94,6 +96,8 @@ public class BackupRestoreHelper {
                 cryptoRet = 1;
         }
         int ret = apkRet + restoreRet + permRet + cryptoRet;
+        if (context instanceof MainActivityX) ((MainActivityX)context).refresh();
+
         shellCommands.logReturnMessage(context, ret);
         return ret;
     }

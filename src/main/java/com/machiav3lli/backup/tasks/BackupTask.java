@@ -41,6 +41,7 @@ public class BackupTask extends BaseTask {
         }
          */
 
+        oAndBackupX.refresh();
         return backupRestoreHelper.backup(oAndBackupReference.get(), backupDirectory,
                 app, shellCommands, mode);
     }

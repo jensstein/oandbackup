@@ -51,8 +51,6 @@ import butterknife.OnClick;
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     int notificationId = (int) System.currentTimeMillis();
 
-    AppInfo app;
-
     @BindView(R.id.label)
     AppCompatTextView label;
     @BindView(R.id.packageName)
@@ -82,6 +80,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @BindView(R.id.share)
     Chip share;
 
+    AppInfo app;
     ShellCommands shellCommands;
     String backupDirPath;
     File backupDir;
@@ -101,8 +100,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             if (bottomSheet != null)
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
-        shellCommands = new ShellCommands(PreferenceManager.getDefaultSharedPreferences(getContext()), getContext().getFilesDir());
-        backupDirPath = Utils.getPrefsString(getContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        shellCommands = new ShellCommands(PreferenceManager.getDefaultSharedPreferences(requireContext()), requireContext().getFilesDir());
+        backupDirPath = Utils.getPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
         backupDir = Utils.createBackupDir(getActivity(), backupDirPath);
         handleMessages = new HandleMessages(getContext());
         return sheet;
@@ -152,7 +151,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         } else versionCode.setText(app.getVersionName());
         if (app.getLogInfo() != null)
             lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
-        else lastBackup.setText(R.string.noBackupYet);
+        else lastBackup.setText("-");
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
                 backupMode.setText(R.string.onlyApkBackedUp);
@@ -164,7 +163,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 backupMode.setText(R.string.bothBackedUp);
                 break;
             default:
-                backupMode.setText("");
+                backupMode.setText("-");
                 break;
         }
 
@@ -196,7 +195,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         arguments.putParcelable("app", app);
         BackupDialogFragment dialog = new BackupDialogFragment(this);
         dialog.setArguments(arguments);
-        dialog.show(getActivity().getSupportFragmentManager(), "backupDialog");
+        dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
     }
 
     @OnClick(R.id.restore)
@@ -208,25 +207,25 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             arguments.putParcelable("app", app);
             RestoreDialogFragment dialog = new RestoreDialogFragment(this);
             dialog.setArguments(arguments);
-            dialog.show(getActivity().getSupportFragmentManager(), "restoreDialog");
+            dialog.show(requireActivity().getSupportFragmentManager(), "restoreDialog");
         }
     }
 
     @OnClick(R.id.delete)
     public void delete() {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle(app.getLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                     Thread deleteBackupThread = new Thread(() -> {
                         handleMessages.showMessage(app.getLabel(), getString(R.string.deleteBackup));
                         if (backupDir != null)
-                            shellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
+                            ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
                         handleMessages.endMessage();
                     });
                     deleteBackupThread.start();
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
-                    ((MainActivityX) getActivity()).refresh();
+                    ((MainActivityX) requireActivity()).refresh();
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
@@ -257,7 +256,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
         ShareDialogFragment shareDialog = new ShareDialogFragment();
         shareDialog.setArguments(arguments);
-        shareDialog.show(getActivity().getSupportFragmentManager(), "shareDialog");
+        shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
     }
 
     @OnClick(R.id.enablePackage)
@@ -272,7 +271,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     @OnClick(R.id.uninstall)
     public void uninstall() {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle(app.getLabel())
                 .setMessage(R.string.uninstallDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
@@ -285,11 +284,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallSuccess), app.getLabel(), true);
                         } else {
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallFailure), app.getLabel(), true);
-                            Utils.showErrors(getActivity());
+                            Utils.showErrors(requireActivity());
                         }
                     });
                     uninstallThread.start();
-                    ((MainActivityX) getActivity()).refresh();
+                    ((MainActivityX) requireActivity()).refresh();
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
@@ -300,7 +299,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         final ArrayList<String> selectedUsers = new ArrayList<>();
         final ArrayList<String> userList = shellCommands.getUsers();
         CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle(title)
                 .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
                     if (checked) {
@@ -309,7 +308,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
                     shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                    ((MainActivityX) getActivity()).refresh();
+                    ((MainActivityX) requireActivity()).refresh();
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
