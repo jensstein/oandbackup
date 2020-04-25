@@ -1,0 +1,4 @@
+**OAndBackupX 0.9.6**
+* Added check for Update
+* Fixed theme consistent 
+* Fixed some Strings

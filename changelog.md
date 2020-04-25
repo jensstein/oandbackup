@@ -1,6 +1,12 @@
 changelog
 =========
 
+0.9.6 (25.04.2020)
+-------------------
+* added: check for Update
+* fixed: theme consistency
+* fixed: some strings
+
 0.9.5 (23.04.2020)
 -------------------
 * fixed refresh issue after restore and backup from AppSheet
