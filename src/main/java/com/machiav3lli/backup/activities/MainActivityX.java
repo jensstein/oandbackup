@@ -80,12 +80,12 @@ public class MainActivityX extends BaseActivity
         SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         shellCommands = new ShellCommands(prefs, getFilesDir());
 
+        ButterKnife.bind(this);
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             Utils.reShowMessage(handleMessages, threadId);
         }
 
-        ButterKnife.bind(this);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             refresh();
             swipeRefreshLayout.setRefreshing(false);
@@ -131,6 +131,7 @@ public class MainActivityX extends BaseActivity
                 return true;
             }
         });
+        Utils.checkForUpdate(this);
     }
 
     @OnClick(R.id.sort_filter_fab)

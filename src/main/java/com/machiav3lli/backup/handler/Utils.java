@@ -11,11 +11,23 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.AppUpdaterUtils;
+import com.github.javiersantos.appupdater.enums.AppUpdaterError;
+import com.github.javiersantos.appupdater.enums.Display;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
+import com.github.javiersantos.appupdater.objects.Update;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.MainActivityX;
 
 import java.io.File;
 
 public class Utils {
+
+    public interface Command {
+        void execute();
+    }
+
     public static void showErrors(final Activity activity) {
         activity.runOnUiThread(new Runnable() {
             public void run() {
@@ -110,8 +122,23 @@ public class Utils {
         }
     }
 
-    public interface Command {
-        void execute();
+    public static void checkForUpdate(Activity activity) {
+        AppUpdaterUtils updater = new AppUpdaterUtils(activity).setUpdateFrom(UpdateFrom.GITHUB)
+                .setGitHubUserAndRepo("machiav3lli", "oandbackupx").withListener(new AppUpdaterUtils.UpdateListener() {
+                    AppUpdater appUpdater = new AppUpdater(activity).setDisplay(Display.DIALOG)
+                            .setUpdateFrom(UpdateFrom.GITHUB).setGitHubUserAndRepo("machiav3lli", "oandbackupx");
+
+                    @Override
+                    public void onSuccess(Update update, Boolean isUpdateAvailable) {
+                        appUpdater.start();
+                    }
+
+                    @Override
+                    public void onFailed(AppUpdaterError error) {
+                        if (!(activity instanceof MainActivityX)) appUpdater.start();
+                    }
+                });
+        updater.start();
     }
 
     public static String getPrefsString(Context context, String key) {

@@ -6,11 +6,10 @@ public class Constants {
     }
 
     public static final String TAG = "OAndBackupX";
+    public static final String PREFS_SHARED = "com.machiav3lli.backup";
 
     public static final String BLACKLIST_ARGS_ID = "blacklistId";
     public static final String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
-
-    public static final String PREFS_SHARED = "com.machiav3lli.backup";
 
     public static final String PREFS_SORT_FILTER = "sortFilter";
 
@@ -37,6 +36,7 @@ public class Constants {
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_ENABLECRYPTO = "enableCrypto";
     public static final String PREFS_HELP = "help";
+    public static final String PREFS_UPDATE = "update";
 
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_USERS = "users";

@@ -7,6 +7,7 @@ plugins {
 repositories {
     google()
     jcenter()
+    maven { url "https://jitpack.io" } // for AppUpdater
 }
 
 ext {
@@ -17,6 +18,7 @@ ext {
             stream            : "1.2.1",
             filepicker        : "4.2.1",
             rootBeer          : "0.0.7",
+            appupdater        : "2.7",
 
             butterknife       : "10.2.1",
 
@@ -45,6 +47,7 @@ dependencies {
     implementation "com.annimon:stream:${versions.stream}"
     implementation "com.nononsenseapps:filepicker:${versions.filepicker}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
+    implementation "com.github.javiersantos:AppUpdater:${versions.appupdater}"
 
     //ButterKnife
     implementation "com.jakewharton:butterknife:${versions.butterknife}"
@@ -108,16 +111,14 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 5
+int versionPath = 6
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
         // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
-        versionCode = versionMajor * 1000 +
-                versionMinor * 100 +
-                versionPath
+        versionCode = versionMajor * 1000 + versionMinor * 100 + versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
         minSdkVersion 24
         targetSdkVersion 29

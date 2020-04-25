@@ -139,6 +139,13 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        pref = findPreference(Constants.PREFS_UPDATE);
+        assert pref != null;
+        pref.setOnPreferenceClickListener(preference -> {
+            Utils.checkForUpdate(requireActivity());
+            return true;
+        });
+
         pref = findPreference(Constants.PREFS_HELP);
         assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
