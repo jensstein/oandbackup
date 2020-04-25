@@ -77,7 +77,7 @@
     <string name="filebrowser_title">文件浏览器</string>
     
     <string name="tools_title">工具</string>
-    <string name="batchDeleteTitle">是否删除备份?</string>
+    <string name="prefs_batchDelete">是否删除备份?</string>
     <string name="batchDeleteMessage">正在删除备份</string>
     <string name="batchDeleteNotificationTitle">删除备份</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -115,12 +115,6 @@
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
     <string name="prefs_backupExternalFiles">处理外部数据</string>
     <string name="prefs_summaryBackupExternalFiles">备份和恢复放置在外部存储上的数据 (例如：/sdcard/Android/data/)</string>
-    <string name="prefs_cryptoMenu">加密</string>
-    <string name="prefs_enableCrypto">启用</string>
-    <string name="prefs_summaryEnableCrypto">备份文件时启用加密，恢复文件时启用解密</string>
-    <string name="prefs_cryptoUserIds">openpgp用户id</string>
-    <string name="prefs_summaryCryptoUserIds">emails of user ids to use for encrypting files. split with \",\" </string>
-    <string name="prefs_openpgpProviderList">openpgp供应商</string>
 
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>

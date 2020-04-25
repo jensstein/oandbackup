@@ -72,7 +72,7 @@
     <string name="filebrowser_title">Explorador de archivos</string>
     
     <string name="tools_title">Herramientas</string>
-    <string name="batchDeleteTitle">¿Eliminar respaldos?</string>
+    <string name="prefs_batchDelete">¿Eliminar respaldos?</string>
     <string name="batchDeleteMessage">Eliminando respaldos...</string>
     <string name="batchDeleteNotificationTitle">Eliminar respaldos</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -110,12 +110,6 @@
     <string name="prefs_enableSpecialBackups">Habilitar respaldos especiales</string>
     <string name="prefs_backupExternalFiles">Manejar datos externos</string>
     <string name="prefs_summaryBackupExternalFiles">Respalda y restaura los datos que se colocan en el almacenamiento externo (por ejemplo, /sdcard/Android/data/)</string>
-    <string name="prefs_cryptoMenu">Criptografía</string>
-    <string name="prefs_enableCrypto">Habilitar</string>
-    <string name="prefs_summaryEnableCrypto">Habilitar el cifrado al realizar respaldos de archivos y descifrar al restaurar</string>
-    <string name="prefs_cryptoUserIds">ID de usuario openpgp</string>
-    <string name="prefs_summaryCryptoUserIds">Correos electrónicos de los ID de usuario que se utilizarán para cifrar archivos. Dividir con \",\"</string>
-    <string name="prefs_openpgpProviderList">Proveedor openpgp</string>
 
     <string name="sched_title">Programación</string>
     <string name="sched_notificationMessage">Respaldos programados</string>

@@ -118,7 +118,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             }
             if (!deleteList.isEmpty()) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.batchDeleteTitle)
+                        .setTitle(R.string.prefs_batchDelete)
                         .setMessage(message.toString().trim())
                         .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                             changesMade();

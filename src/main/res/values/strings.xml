@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">OAndBackupX</string>
-    <string name="backup">backup</string>
-    <string name="restore">restore</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
     <string name="backupConfirmation">backup?</string>
     <string name="restoreConfirmation">restore?</string>
     <string name="handleApk">apk</string>
@@ -51,9 +51,9 @@
     </string>
     <string name="noSu">couldn\'t get superuser permissions</string>
     <string name="busyboxProblem">couldn\'t find busybox. please check error log</string>
-        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">couldn\'t create</string>
-        <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
     <string name="fallbackToDefault">fall back to default</string>
     <string name="backupFolderError">please set the correct path in preferences and ensure it exists or is createable</string>
     <string name="shellReturnSuccess">success</string>
@@ -70,58 +70,55 @@
     <string name="uninstallFailure">error on uninstall</string>
     <string name="errorDialogTitle">errors occurred</string>
     <string name="customListTitle">custom list</string>
-    <string name="quickRebootTitle">quick reboot</string>
+    <string name="quickRebootTitle">Quick reboot</string>
     <string name="quickRebootMessage">do you wish to restart userspace?</string>
-    <string name="help_title">help</string>
+    <string name="help_title">Help</string>
     <string name="notInstalledModeDataWarning">app cannot be restored from a backup without apk</string>
     <string name="shareTitle">share</string>
     <string name="filebrowser_title">file browser</string>
-    
-    <string name="tools_title">tools</string>
-    <string name="batchDeleteTitle">delete backups</string>
+
+    <string name="tools_title">Tools</string>
     <string name="batchDeleteMessage">deleting backups</string>
     <string name="batchDeleteNotificationTitle">delete backups</string>
-        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">backups deleted:</string>
     <string name="batchDeleteNothingToDelete">no backups to delete</string>
 
     <string name="enablePackage">enable</string>
-        <!-- enablePackageTitle: title for a list of checkable users -->
+    <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">enable for users</string>
     <string name="disablePackage">disable</string>
     <string name="disablePackageTitle">disable for users</string>
 
-    <string name="prefs_title">preferences</string>
-    <string name="prefs_timestamp">use local date format</string>
-    <string name="prefs_acquireWakelock">prevent sleep</string>
-    <string name="prefs_summaryAcquireWakelock">acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
-    <string name="prefs_pathscategory">custom paths</string>
-    <string name="prefs_pathBackupFolder">backup folder</string>
-    <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>
-    <string name="prefs_pathBusybox">busybox</string>
-    <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
-    <string name="prefs_oldBackups">filter backups by age</string>
-        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
-    <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
-    <string name="prefs_copySelfApk">copy own apk</string>
-    <string name="prefs_summaryCopySelfApk">place a copy of oandbackup in the top level of the backup folder when backed up</string>
-    <string name="prefs_languages">language</string>
+    <string name="prefs_title">Preferences</string>
+    <string name="prefs_acquireWakelock">Prevent sleep</string>
+    <string name="prefs_pathscategory">Custom paths</string>
+    <string name="prefs_batchDelete">Delete backups</string>
+    <string name="prefs_pathBackupFolder">Backup folder</string>
+    <string name="prefs_pathBusybox">Busybox folder</string>
+    <string name="prefs_oldBackups">Filter backups by age</string>
+    <string name="prefs_copySelfApk">Copy own apk</string>
+    <string name="prefs_languages">Language</string>
     <string name="prefs_languageSystemDefault">system default</string>
-    <string name="prefs_rememberFiltering">remember sort and filter</string>
+    <string name="prefs_rememberFiltering">Remember sort and filter</string>
+    <string name="prefs_followSymlinks">Follow symbolic links</string>
+    <string name="prefs_enableSpecialBackups">Enable special backups</string>
+    <string name="prefs_backupExternalFiles">Handle external data</string>
+    <string name="prefs_disableNotifications">Disable notification</string>
+    <string name="prefs_update">Check for updates</string>
+    <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
+    <string name="prefs_summaryAcquireWakelock">acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
+    <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>
+    <string name="prefs_summaryBusybox">path to busybox executable. be sure it\'s correct. leave blank for default.</string>
+    <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
+    <string name="prefs_summaryCopySelfApk">place a copy of oandbackup in the top level of the backup folder when backed up</string>
     <string name="prefs_summaryRememberFiltering">saves the chosen sorting and filtering method. only those marked by a checkbox in the menu is considered.</string>
-    <string name="prefs_followSymlinks">follow symbolic links</string>
     <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
-    <string name="prefs_enableSpecialBackups">enable special backups</string>
-    <string name="prefs_backupExternalFiles">handle external data</string>
     <string name="prefs_summaryBackupExternalFiles">backs up and restores data that is placed on the external storage (e.g. /sdcard/Android/data/)</string>
-    <string name="prefs_cryptoMenu">cryptography</string>
-    <string name="prefs_enableCrypto">enable</string>
-    <string name="prefs_summaryEnableCrypto">enable encryption when backing up files and decryption when restoring</string>
-    <string name="prefs_cryptoUserIds">openpgp user ids</string>
-    <string name="prefs_summaryCryptoUserIds">emails of user ids to use for encrypting files. split with \",\"</string>
-    <string name="prefs_openpgpProviderList">openpgp provider</string>
+    <string name="prefs_summaryQuickReboot">kills the system_server process to force a restart of user space</string>
+    <string name="prefs_summaryBatchDelete">delete backups of all apps not currently installed</string>
 
-    <string name="sched_title">scheduling</string>
+    <string name="sched_title">Scheduling</string>
     <string name="sched_notificationMessage">scheduled backup</string>
     <string name="sched_interval">interval in days</string>
     <string name="sched_hourOfDay">hour of day (0..23)</string>
@@ -138,7 +135,7 @@
     <string name="sched_warningIntervalZero">error: interval cannot be 0</string>
     <string name="sched_globalBlacklist">set global blacklist</string>
 
-    <string name="blacklistDialogTitle">blacklist</string>
+    <string name="blacklistDialogTitle">Blacklist</string>
 
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">Application Widgets</string>
@@ -162,7 +159,6 @@
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>
     <string name="permission_not_granted">Permission to access external storage is required</string>
     <string name="restart_dialog">Application seems to need to be restarted</string>
-    
 
     <string name="filter_options">Filters:</string>
     <string name="sort_options">Sort by:</string>
@@ -172,15 +168,11 @@
     <string name="filterUser">User Apps</string>
     <string name="filterSystem">System Apps</string>
     <string name="app_s_icon">app\'s icon</string>
-    <string name="prefs_disableNotifications">Disable notification</string>
-    <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
     <string name="bothBackedUp">apk and data</string>
     <string name="all">all</string>
-    <string name="prefs_service">service preferences</string>
-    <string name="prefs_user">user preferences</string>
-    <string name="logViewerTitle">view the log</string>
-    <string name="prefs_summaryQuickReboot">kills the system_server process to force a restart of user space</string>
-    <string name="prefs_summaryBatchDelete">delete backups of all apps not currently installed</string>
+    <string name="prefs_service">Service preferences</string>
+    <string name="prefs_user">User preferences</string>
+    <string name="logViewerTitle">View the log</string>
     <string name="ask_for_permissions">ask for permissions</string>
     <string name="systemApp">System app</string>
     <string name="userApp">User app</string>
@@ -193,9 +185,8 @@
     <string name="app_s_type_title">App\'s type:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">deleted the backup</string>
-    <string name="prefs_theme">theme</string>
+    <string name="prefs_theme">Theme</string>
     <string name="theme_light">light</string>
     <string name="theme_dark">dark</string>
     <string name="theme_system">system\'s theme</string>
-
 </resources>

@@ -71,7 +71,7 @@
   <string name="shareTitle">udostępnij</string>
   <string name="filebrowser_title">przeglądarka plików</string>
   <string name="tools_title">narzędzia</string>
-  <string name="batchDeleteTitle">usunąć kopie zapasowe?</string>
+  <string name="prefs_batchDelete">usunąć kopie zapasowe?</string>
   <string name="batchDeleteMessage">usuwanie kopii zapasowych</string>
   <string name="batchDeleteNotificationTitle">usuń kopie zapasowe</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -107,12 +107,6 @@
   <string name="prefs_enableSpecialBackups">włącz specjalne kopie zapasowe</string>
   <string name="prefs_backupExternalFiles">obsługa danych zewnętrznych</string>
   <string name="prefs_summaryBackupExternalFiles">tworzy kopię zapasową i przywraca dane umieszczone na zewnętrznym nośniku danych (np./sdcard/Android/data/)</string>
-  <string name="prefs_cryptoMenu">kryptografia</string>
-  <string name="prefs_enableCrypto">włącz</string>
-  <string name="prefs_summaryEnableCrypto">włączanie szyfrowania podczas tworzenia kopii zapasowych plików i deszyfrowania podczas przywracania</string>
-  <string name="prefs_cryptoUserIds">id użytkowników openpgp</string>
-  <string name="prefs_summaryCryptoUserIds">e-maile z id użytkowników używane do szyfrowania plików. rozdzielone  \",\"</string>
-  <string name="prefs_openpgpProviderList">dostawca openpgp</string>
   <string name="sched_title">harmonogramowanie</string>
   <string name="sched_notificationMessage">planowana kopia zapasowa</string>
   <string name="sched_interval">interwał w dniach</string>

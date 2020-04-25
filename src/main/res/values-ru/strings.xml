@@ -74,7 +74,7 @@
     <string name="filebrowser_title">Файловый браузер</string>
     
     <string name="tools_title">инструменты</string>
-    <string name="batchDeleteTitle">удалить р.к.?</string>
+    <string name="prefs_batchDelete">удалить р.к.?</string>
     <string name="batchDeleteMessage">удаление р.к.</string>
     <string name="batchDeleteNotificationTitle">удалить р.к.</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -112,12 +112,6 @@
     <string name="prefs_enableSpecialBackups">Включить специальные р.к.</string>
     <string name="prefs_backupExternalFiles">Обрабатывать внешние данные</string>
     <string name="prefs_summaryBackupExternalFiles">Резервирует и восстанавливает данные с внешних хранилищ (например /sdcard/Android/data/)</string>
-    <string name="prefs_cryptoMenu">Криптография</string>
-    <string name="prefs_enableCrypto">Включить</string>
-    <string name="prefs_summaryEnableCrypto">Включить шифрование при резервировании и расшифрование при восстановлении</string>
-    <string name="prefs_cryptoUserIds">Идентификаторы Openpgp</string>
-    <string name="prefs_summaryCryptoUserIds">Эл. адреса идентификаторов для шифрования файлов. разделите с помощью \",\"</string>
-    <string name="prefs_openpgpProviderList">Провайдер openpgp</string>
 
     <string name="sched_title">планирование</string>
     <string name="sched_notificationMessage">запланированное резервирование</string>

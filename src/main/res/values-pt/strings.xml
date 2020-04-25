@@ -71,7 +71,7 @@
   <string name="shareTitle">Partilhar</string>
   <string name="filebrowser_title">Gestor de ficheiros</string>
   <string name="tools_title">Ferramentas</string>
-  <string name="batchDeleteTitle">Eliminar backups?</string>
+  <string name="prefs_batchDelete">Eliminar backups?</string>
   <string name="batchDeleteMessage">A eliminar backups...</string>
   <string name="batchDeleteNotificationTitle">Eliminar backups</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -107,12 +107,6 @@
   <string name="prefs_enableSpecialBackups">Ativar backups especiais</string>
   <string name="prefs_backupExternalFiles">Gerir dados externos</string>
   <string name="prefs_summaryBackupExternalFiles">Cria backups e restaura os dados existentes no disco externo (exemplo: /sdcard/Android/data/)</string>
-  <string name="prefs_cryptoMenu">Criptografia</string>
-  <string name="prefs_enableCrypto">Ativar</string>
-  <string name="prefs_summaryEnableCrypto">Ativar cifra ao fazer backups e decifrar ao restaurar</string>
-  <string name="prefs_cryptoUserIds">ID openpgp de utilizador</string>
-  <string name="prefs_summaryCryptoUserIds">Enederço eletrónico utilizado para cifrar os ficheiros. Separe-os com vírgula.</string>
-  <string name="prefs_openpgpProviderList">Fornecedore openpgp</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
   <string name="sched_interval">Intervalo em dias</string>

@@ -69,7 +69,7 @@
   <string name="notInstalledModeDataWarning">l\'application ne peut être restaurer sans apk</string>
   <string name="shareTitle">partager</string>
   <string name="tools_title">outils</string>
-  <string name="batchDeleteTitle">effacer les sauvegardes ?</string>
+  <string name="prefs_batchDelete">effacer les sauvegardes ?</string>
   <string name="batchDeleteMessage">effacement des sauvegardes</string>
   <string name="batchDeleteNotificationTitle">effacer les sauvegardes</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->

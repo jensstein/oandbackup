@@ -71,7 +71,7 @@
   <string name="shareTitle">Teilen</string>
   <string name="filebrowser_title">Datei-Browser</string>
   <string name="tools_title">Hilfsmittel</string>
-  <string name="batchDeleteTitle">Sicherungen löschen?</string>
+  <string name="prefs_batchDelete">Sicherungen löschen?</string>
   <string name="batchDeleteMessage">Lösche Sicherungen...</string>
   <string name="batchDeleteNotificationTitle">Sicherungen löschen</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -89,7 +89,7 @@
   <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>
   <string name="prefs_pathBackupFolder">Sicherungsverzeichnis</string>
   <string name="prefs_summaryBackupFolder">Pfad zum Sicherungsverzeichnis (Leer lassen für Standardwert)</string>
-  <string name="prefs_pathBusybox">Busybox</string>
+  <string name="prefs_pathBusybox">Busyboxverzeichnis</string>
   <string name="prefs_summaryBusybox">Pfad zur Busybox-Programmdatei. Auf Korrektheit überprüfen! (Leer lassen für Standardwert)</string>
   <string name="prefs_oldBackups">Sicherungen nach Alter filtern</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -107,12 +107,6 @@
   <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
   <string name="prefs_backupExternalFiles">Externe Daten verarbeiten</string>
   <string name="prefs_summaryBackupExternalFiles">Daten sichern auf und wiederherstellen von externem Speicher (Bsp. /sdcard/Android/data/)</string>
-  <string name="prefs_cryptoMenu">Verschlüsselung</string>
-  <string name="prefs_enableCrypto">Aktivieren</string>
-  <string name="prefs_summaryEnableCrypto">Verschlüsselung beim Sichern und Entschlüsselung bei Wiederherstellung aktivieren</string>
-  <string name="prefs_cryptoUserIds">OpenPGP-Nutzer-IDs</string>
-  <string name="prefs_summaryCryptoUserIds">Benutze E-Mails der Benutzer-IDs für Verschlüsselung. Mit \",\" trennen</string>
-  <string name="prefs_openpgpProviderList">OpenPGP-Provider</string>
   <string name="sched_title">Sicherung planen</string>
   <string name="sched_notificationMessage">Geplante Sicherung</string>
   <string name="sched_interval">Interval in Tagen:</string>
@@ -182,4 +176,5 @@
     <string name="theme_light">Hell</string>
   <string name="theme_dark">Dunkel</string>
   <string name="theme_system">Standard</string>
+    <string name="prefs_update">Auf Updates überprüfen</string>
 </resources>

@@ -71,7 +71,7 @@
   <string name="shareTitle">condividi</string>
   <string name="filebrowser_title">gestore file</string>
   <string name="tools_title">strumenti</string>
-  <string name="batchDeleteTitle">eliminare i backup?</string>
+  <string name="prefs_batchDelete">eliminare i backup?</string>
   <string name="batchDeleteMessage">eliminazione dei backup</string>
   <string name="batchDeleteNotificationTitle">cancella i backup</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->

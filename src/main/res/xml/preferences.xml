@@ -21,11 +21,6 @@
             android:title="@string/prefs_languages"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
-            android:key="timestamp"
-            android:title="@string/prefs_timestamp"
-            app:iconSpaceReserved="false" />
-        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="rememberFiltering"
             android:summary="@string/prefs_summaryRememberFiltering"
@@ -99,33 +94,17 @@
         <androidx.preference.Preference
             android:key="batchDelete"
             android:summary="@string/prefs_summaryBatchDelete"
-            android:title="@string/batchDeleteTitle"
+            android:title="@string/prefs_batchDelete"
             app:iconSpaceReserved="false" />
         <androidx.preference.Preference
             android:key="logViewer"
             android:title="@string/logViewerTitle"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
-    <androidx.preference.PreferenceScreen
-        android:key="cryptoMenu"
-        android:title="@string/prefs_cryptoMenu"
-        app:iconSpaceReserved="false"
-        app:isPreferenceVisible="false">
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="enableCrypto"
-            android:summary="@string/prefs_summaryEnableCrypto"
-            android:title="@string/prefs_enableCrypto"
-            app:iconSpaceReserved="false" />
-        <androidx.preference.EditTextPreference
-            android:key="cryptoUserIds"
-            android:summary="@string/prefs_summaryCryptoUserIds"
-            android:title="@string/prefs_cryptoUserIds"
-            app:iconSpaceReserved="false" />
-        <!--org.openintents.openpgp.util.OpenPgpAppPreference
-            android:key="openpgpProviderList"
-            android:title="@string/prefs_openpgpProviderList" /-->
-    </androidx.preference.PreferenceScreen>
+    <androidx.preference.Preference
+        android:key="update"
+        android:title="@string/prefs_update"
+        app:iconSpaceReserved="false" />
     <androidx.preference.Preference
         android:key="help"
         android:title="@string/help_title"
