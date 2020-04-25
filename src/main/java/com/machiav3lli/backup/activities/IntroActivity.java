@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -36,6 +37,8 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
+
 public class IntroActivity extends BaseActivity {
     public static ArrayList<AppInfo> originalList;
 
@@ -50,6 +53,7 @@ public class IntroActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setDayNightTheme(Utils.getPrefsString(this, Constants.PREFS_THEME));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         ButterKnife.bind(this);
@@ -67,6 +71,19 @@ public class IntroActivity extends BaseActivity {
             btn.setVisibility(View.GONE);
             checkResources();
             launchMainActivity();
+        }
+    }
+
+    private void setDayNightTheme(String theme) {
+        switch (theme) {
+            case "light":
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "dark":
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            default:
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
     }
 

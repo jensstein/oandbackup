@@ -114,14 +114,6 @@ public class Utils {
         void execute();
     }
 
-    public static Boolean getPrefsBoolean(Context context, String key) {
-        return context.getSharedPreferences("com.machiav3lli.backup", Context.MODE_PRIVATE).getBoolean(key, false);
-    }
-
-    public static void setPrefsBoolean(Context context, String key, boolean value) {
-        context.getSharedPreferences("com.machiav3lli.backup", Context.MODE_PRIVATE).edit().putBoolean(key, value).apply();
-    }
-
     public static String getPrefsString(Context context, String key) {
         return context.getSharedPreferences("com.machiav3lli.backup", Context.MODE_PRIVATE).getString(key, "");
     }

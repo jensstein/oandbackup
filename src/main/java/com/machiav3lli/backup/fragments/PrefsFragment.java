@@ -23,9 +23,9 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.LanguageHelper;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.nononsenseapps.filepicker.FilePickerActivity;
-import com.nononsenseapps.filepicker.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,12 +48,13 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         findPreference(Constants.PREFS_THEME).setOnPreferenceChangeListener((preference, newValue) -> {
-            com.machiav3lli.backup.handler.Utils.setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
+            Utils.setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
             switch (newValue.toString()) {
                 case "light":
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     break;
                 case "dark":
+
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     break;
                 default:
@@ -162,7 +163,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             Uri uri = data == null ? null : data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
                 String oldDir = FileCreationHelper.getDefaultBackupDirPath();
-                String newDir = Utils.getFileForUri(uri).getPath();
+                String newDir = com.nononsenseapps.filepicker.Utils.getFileForUri(uri).getPath();
                 if (!oldDir.equals(newDir)) {
                     setDefaultDir(newDir);
                 }
