@@ -51,7 +51,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                          File filesDir) {
         this.users = users;
         this.prefs = prefs;
-        String defaultBox = Build.VERSION.SDK_INT >= 23 ? "toybox" : "busybox";
+        String defaultBox = "toybox";
         busybox = prefs.getString(Constants.PREFS_PATH_BUSYBOX, defaultBox).trim();
         if (busybox.length() == 0) {
             String[] boxPaths = new String[]{"toybox", "busybox",
@@ -96,19 +96,17 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             return 1;
         }
         List<String> commands = new ArrayList<>();
-        // -L because fat (which will often be used to store the backup files)
-        // doesn't support symlinks
-        String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+
 
         switch (backupMode) {
             case AppInfo.MODE_APK:
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
-                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
-                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
@@ -118,7 +116,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupMode != AppInfo.MODE_APK) {
             backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
-                commands.add("cp -R" + followSymlinks + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
+                commands.add("cp -R" + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
             }
         }
 
@@ -127,7 +125,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
             backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
             if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
-                commands.add("cp -R" + followSymlinks + " " +
+                commands.add("cp -R" + " " +
                         swapBackupDirPath(externalFilesDir.getAbsolutePath()) +
                         " " + swapBackupDirPath(backupSubDir.getAbsolutePath() +
                         "/" + EXTERNAL_FILES));
@@ -146,19 +144,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                             TextUtils.join(", ", commands)), e);
                     writeErrorLog(label, e.toString());
                 }, this);
-        if (errors.size() == 1) {
-            String line = errors.get(0);
-            // ignore error if it is about /lib while followSymlinks
-            // is false or if it is about /lock in the data of firefox
-            if ((!prefs.getBoolean("followSymlinks", true) &&
-                    (line.contains("lib") && ((line.contains("not permitted")
-                            && line.contains("symlink"))) || line.contains("No such file or directory")))
-                    || (line.contains("mozilla") && line.contains("/lock")))
-                ret = 0;
-        } else {
-            for (String line : errors)
-                writeErrorLog(label, line);
-        }
+
+        for (String line : errors) writeErrorLog(label, line);
+
         if (backupSubDirPath.startsWith(context.getApplicationInfo().dataDir)) {
             /*
              * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)

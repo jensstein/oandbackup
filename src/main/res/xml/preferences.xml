@@ -52,12 +52,6 @@
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="followSymlinks"
-            android:summary="@string/prefs_summaryFollowSymlinks"
-            android:title="@string/prefs_followSymlinks"
-            app:iconSpaceReserved="false" />
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
             android:key="enableSpecialBackups"
             android:title="@string/prefs_enableSpecialBackups"
             app:iconSpaceReserved="false" />
