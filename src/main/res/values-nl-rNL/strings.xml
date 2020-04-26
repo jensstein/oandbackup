@@ -83,7 +83,6 @@
   <string name="disablePackage">Uitschakelen</string>
   <string name="disablePackageTitle">Uitschakelen voor gebuikers</string>
   <string name="prefs_title">Voorkeuren</string>
-  <string name="prefs_timestamp">Gebruik lokaal formaat voor datum</string>
   <string name="prefs_acquireWakelock">Voorkom slaapmodus</string>
   <string name="prefs_summaryAcquireWakelock">Zorg voor een wakelock tijdens bulk operaties om slaapmodus te voorkomen. Dit zal het back-uppen en terugzetten aanzienlijk versnellen maar zal meer energie verbruiken</string>
   <string name="prefs_pathscategory">Aangepaste paden</string>

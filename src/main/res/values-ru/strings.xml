@@ -88,7 +88,6 @@
     <string name="disablePackageTitle">Отключить для пользователей</string>
 
     <string name="prefs_title">Настройки</string>
-    <string name="prefs_timestamp">Использовать местный формат времени</string>
     <string name="prefs_acquireWakelock">Предотвратить сон</string>
     <string name="prefs_summaryAcquireWakelock">Использовать wakelock во время пакетных операций для предотвращения сна.  значительно ускорит резервирование и восстановление, но будет потреблять больше энергии</string>
     <string name="prefs_pathscategory">Настраиваемые пути</string>

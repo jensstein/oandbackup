@@ -63,8 +63,15 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        Preference pref;
-        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        findPreference(Constants.PREFS_LANGUAGES).setOnPreferenceChangeListener((preference, newValue) -> {
+            if (LanguageHelper.changeLanguage(getContext(),
+                    getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
+                com.machiav3lli.backup.handler.Utils.reloadWithParentStack(requireActivity());
+            }
+            return true;
+        });
+
+        Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
         pref.setSummary(FileCreationHelper.getDefaultBackupDirPath());
         pref.setOnPreferenceClickListener(preference -> {
@@ -76,23 +83,10 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        pref = findPreference(Constants.PREFS_LANGUAGES);
-        assert pref != null;
-        pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (LanguageHelper.changeLanguage(getContext(),
-                    getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
-                com.machiav3lli.backup.handler.Utils.reloadWithParentStack(requireActivity());
-            }
-            return true;
-        });
-
         ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
         shellCommands = new ShellCommands(androidx.preference.PreferenceManager
                 .getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
-
-        pref = findPreference(Constants.PREFS_QUICK_REBOOT);
-        assert pref != null;
-        pref.setOnPreferenceClickListener(preference -> {
+        findPreference(Constants.PREFS_QUICK_REBOOT).setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.quickRebootTitle)
                     .setMessage(R.string.quickRebootMessage)
@@ -104,10 +98,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         Bundle extra = requireActivity().getIntent().getExtras();
         if (extra != null) backupDir = (File) extra.get("com.machiav3lli.backup.backupDir");
-
-        pref = findPreference(Constants.PREFS_BATCH_DELETE);
-        assert pref != null;
-        pref.setOnPreferenceClickListener(preference -> {
+        findPreference(Constants.PREFS_BATCH_DELETE).setOnPreferenceClickListener(preference -> {
             final ArrayList<AppInfo> deleteList = new ArrayList<>();
             StringBuilder message = new StringBuilder();
             for (AppInfo appInfo : appInfoList) {
@@ -132,24 +123,18 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        pref = findPreference(Constants.PREFS_LOGVIEWER);
-        assert pref != null;
-        pref.setOnPreferenceClickListener(preference -> {
-            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragement, new LogsFragment()).commit();
+        findPreference(Constants.PREFS_LOGVIEWER).setOnPreferenceClickListener(preference -> {
+            requireActivity().getSupportFragmentManager().beginTransaction().add(R.id.prefs_fragement, new LogsFragment()).commit();
             return true;
         });
 
-        pref = findPreference(Constants.PREFS_UPDATE);
-        assert pref != null;
-        pref.setOnPreferenceClickListener(preference -> {
+        findPreference(Constants.PREFS_UPDATE).setOnPreferenceClickListener(preference -> {
             Utils.checkForUpdate(requireActivity());
             return true;
         });
 
-        pref = findPreference(Constants.PREFS_HELP);
-        assert pref != null;
-        pref.setOnPreferenceClickListener(preference -> {
-            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragement, new HelpFragment()).commit();
+        findPreference(Constants.PREFS_HELP).setOnPreferenceClickListener(preference -> {
+            requireActivity().getSupportFragmentManager().beginTransaction().add(R.id.prefs_fragement, new HelpFragment()).commit();
             return true;
         });
     }
@@ -165,7 +150,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == DEFAULT_DIR_CODE) {
             Uri uri = data == null ? null : data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {

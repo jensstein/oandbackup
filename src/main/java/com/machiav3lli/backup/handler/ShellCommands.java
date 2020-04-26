@@ -146,7 +146,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
         if (backupSubDirPath.startsWith(context.getApplicationInfo().dataDir)) {
             /*
-             * if backupDir is set to oab's own datadir (/data/data/dk.jens.backup)
+             * if backupDir is set to oab's own datadir (/data/data/com.machiav3lli.backup)
              * we need to ensure that the permissions are correct before trying to
              * zip. on the external storage, gid will be sdcard_r (or something similar)
              * without any changes but in the app's own datadir files will have both uid

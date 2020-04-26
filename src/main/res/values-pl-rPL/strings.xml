@@ -83,7 +83,6 @@
   <string name="disablePackage">wyłącz</string>
   <string name="disablePackageTitle">wyłącz dla użytkowników</string>
   <string name="prefs_title">preferencje</string>
-  <string name="prefs_timestamp">użyj lokalnego formatu daty</string>
   <string name="prefs_acquireWakelock">zapobiegaj przejściu w stan spoczynku</string>
   <string name="prefs_summaryAcquireWakelock">pozyskuj wakelock\'i podczas wykonywania grupowych operacji w celu uniknięcia przejścia w stan spoczynku. przyspiesza tworzenie kopii i przywracanie, ale zużywa dużo energii </string>
   <string name="prefs_pathscategory">niestandardowe ścieżki</string>

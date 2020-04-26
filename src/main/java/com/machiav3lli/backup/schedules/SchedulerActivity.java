@@ -13,6 +13,7 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -79,11 +80,10 @@ public class SchedulerActivity extends BaseActivity
         setContentView(R.layout.activity_scheduler);
         handleAlarms = new HandleAlarms(this);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ButterKnife.bind(this);
 
         viewList = new LongSparseArray<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
-
-        ButterKnife.bind(this);
 
         back.setOnClickListener(v -> finish());
         bottomBar.replaceMenu(R.menu.scheduler_bottom_bar);
@@ -118,7 +118,7 @@ public class SchedulerActivity extends BaseActivity
         super.onResume();
         for (int i = 0; i < viewList.size(); i++) {
             final View view = viewList.valueAt(i);
-            android.view.ViewGroup parent = (android.view.ViewGroup) view.getParent();
+            ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
                 parent.removeView(view);
         }
@@ -544,11 +544,6 @@ public class SchedulerActivity extends BaseActivity
             databasename = DATABASE_NAME;
         }
 
-        AddScheduleTask(SchedulerActivity scheduler, String databasename) {
-            activityReference = new WeakReference<>(scheduler);
-            this.databasename = databasename;
-        }
-
         @Override
         public ResultHolder<View> doInBackground(Void... _void) {
             final SchedulerActivity scheduler = activityReference.get();
@@ -574,16 +569,10 @@ public class SchedulerActivity extends BaseActivity
 
     static class RemoveScheduleTask extends AsyncTask<Long, Void, ResultHolder<Long>> {
         private final WeakReference<SchedulerActivity> activityReference;
-        private final String databasename;
+        private final String databaseName = DATABASE_NAME;
 
         RemoveScheduleTask(SchedulerActivity scheduler) {
             activityReference = new WeakReference<>(scheduler);
-            databasename = DATABASE_NAME;
-        }
-
-        RemoveScheduleTask(SchedulerActivity scheduler, String databasename) {
-            activityReference = new WeakReference<>(scheduler);
-            this.databasename = databasename;
         }
 
         @Override
@@ -599,7 +588,7 @@ public class SchedulerActivity extends BaseActivity
                 return new ResultHolder<>(error);
             }
             final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                    .getScheduleDatabase(scheduler, databasename);
+                    .getScheduleDatabase(scheduler, databaseName);
             final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
             scheduleDao.deleteById(ids[0]);
             return new ResultHolder<>(ids[0]);

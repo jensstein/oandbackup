@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.fragments.AppSheet;
@@ -50,8 +49,6 @@ public class MainActivityX extends BaseActivity
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.sort_filter_fab)
-    FloatingActionButton fabSortFilter;
     @BindView(R.id.search_view)
     SearchView searchView;
     @BindView(R.id.bottom_bar)
@@ -146,11 +143,6 @@ public class MainActivityX extends BaseActivity
         startActivityForResult(batchIntent(BatchActivityX.class, true), BATCH_REQUEST);
     }
 
-    @Override
-    public void onBackPressed() {
-        finishAffinity();
-    }
-
     @OnClick(R.id.btn_batch_restore)
     public void btnBatchRestore() {
         startActivityForResult(batchIntent(BatchActivityX.class, false), BATCH_REQUEST);
@@ -161,25 +153,9 @@ public class MainActivityX extends BaseActivity
         startActivity(new Intent(getApplicationContext(), SchedulerActivity.class));
     }
 
-    public Intent batchIntent(Class batchClass, boolean backup) {
-        Intent batchIntent = new Intent(getApplicationContext(), batchClass);
-        batchIntent.putExtra(classAddress(".backupBoolean"), backup);
-        return batchIntent;
-    }
-
-    public void refresh() {
-        Thread refreshThread = new Thread(() -> {
-            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            list = new ArrayList<>();
-            for (AppInfo app : filteredList) list.add(new MainItemX(app));
-            runOnUiThread(() -> {
-                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
-            });
-        });
-        refreshThread.start();
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 
     @Override
@@ -218,5 +194,26 @@ public class MainActivityX extends BaseActivity
             default:
                 refresh();
         }
+    }
+
+    public Intent batchIntent(Class batchClass, boolean backup) {
+        Intent batchIntent = new Intent(getApplicationContext(), batchClass);
+        batchIntent.putExtra(classAddress(".backupBoolean"), backup);
+        return batchIntent;
+    }
+
+    public void refresh() {
+        Thread refreshThread = new Thread(() -> {
+            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
+            list = new ArrayList<>();
+            for (AppInfo app : filteredList) list.add(new MainItemX(app));
+            runOnUiThread(() -> {
+                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+            });
+        });
+        refreshThread.start();
     }
 }

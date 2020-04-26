@@ -5,14 +5,14 @@ import android.os.AsyncTask;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
+import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

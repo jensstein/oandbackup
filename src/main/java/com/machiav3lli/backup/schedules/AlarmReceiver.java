@@ -13,7 +13,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int id = intent.getIntExtra("id", -1);
         Intent serviceIntent = new Intent(context, ScheduleService.class);
-        serviceIntent.putExtra("dk.jens.backup.schedule_id", id);
+        serviceIntent.putExtra(Constants.classAddress(".schedule_id"), id);
         context.startService(serviceIntent);
     }
 }

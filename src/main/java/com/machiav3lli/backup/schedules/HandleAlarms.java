@@ -4,11 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.machiav3lli.backup.Constants;
 
@@ -40,8 +37,7 @@ public class HandleAlarms {
         intent.putExtra("id", id); // requestCode of PendingIntent is not used yet so a separate extra is needed
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         alarmManager.cancel(pendingIntent);
-        if (deviceIdleChecker.isIdleModeSupported() &&
-                deviceIdleChecker.isIgnoringBatteryOptimizations()) {
+        if (deviceIdleChecker.isIgnoringBatteryOptimizations()) {
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, start, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, start, pendingIntent);
@@ -82,11 +78,6 @@ public class HandleAlarms {
                     Context.POWER_SERVICE);
         }
 
-        boolean isIdleModeSupported() {
-            return Build.VERSION.SDK_INT >= 23;
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.M)
         boolean isIgnoringBatteryOptimizations() {
             return powerManager.isIgnoringBatteryOptimizations(
                     context.getPackageName());

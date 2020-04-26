@@ -81,7 +81,6 @@
   <string name="disablePackage">désactiver</string>
   <string name="disablePackageTitle">désactiver pour les utilisateurs</string>
   <string name="prefs_title">paramètres</string>
-  <string name="prefs_timestamp">utiliser le format de date local</string>
   <string name="prefs_acquireWakelock">empêcher la mise en veille</string>
   <string name="prefs_summaryAcquireWakelock">prendre un wakelock pendant les opérations par lot pour empêcher la mise en veille. cela accélèrera les sauvegardes et restauration au prix d\'une plus grande consommation énergétique</string>
   <string name="prefs_pathscategory">chemins personnalisés</string>

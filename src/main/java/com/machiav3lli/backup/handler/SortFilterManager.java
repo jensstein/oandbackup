@@ -3,8 +3,8 @@ package com.machiav3lli.backup.handler;
 import android.content.Context;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.SortFilterModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class SortFilterManager {
     }
 
     public static ArrayList<AppInfo> applyFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
-        ArrayList<AppInfo> nlist = (ArrayList<AppInfo>) list.clone();
+        ArrayList<AppInfo> nlist = new ArrayList<>(list);
         switch (filter.charAt(1)) {
             case '1':
                 for (AppInfo item : list) if (!item.isSystem()) nlist.remove(item);
@@ -40,7 +40,7 @@ public class SortFilterManager {
     }
 
     private static ArrayList<AppInfo> applyOtherFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
-        ArrayList<AppInfo> nlist = (ArrayList<AppInfo>) list.clone();
+        ArrayList<AppInfo> nlist = new ArrayList<>(list);
         switch (filter.charAt(2)) {
             case '1':
                 for (AppInfo item : list) {
@@ -60,7 +60,8 @@ public class SortFilterManager {
             case '4':
                 int days;
                 if (Utils.getPrefsString(context, Constants.PREFS_OLDBACKUPS).equals("")) days = 3;
-                else days = Integer.parseInt(Utils.getPrefsString(context, Constants.PREFS_OLDBACKUPS));
+                else
+                    days = Integer.parseInt(Utils.getPrefsString(context, Constants.PREFS_OLDBACKUPS));
                 for (AppInfo item : list) {
                     if (item.getLogInfo() != null) {
                         long lastBackup = item.getLogInfo().getLastBackupMillis();

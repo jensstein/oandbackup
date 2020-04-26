@@ -83,7 +83,6 @@
   <string name="disablePackage">Deaktivieren</string>
   <string name="disablePackageTitle">Für Benutzer deaktivieren</string>
   <string name="prefs_title">Einstellungen</string>
-  <string name="prefs_timestamp">Lokales Zeitformat benützen</string>
   <string name="prefs_acquireWakelock">Standby verhindern</string>
   <string name="prefs_summaryAcquireWakelock">Wakelock anfordern und Standby verhindern, während Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie</string>
   <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>

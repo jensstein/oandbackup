@@ -83,7 +83,6 @@
   <string name="disablePackage">disabilita</string>
   <string name="disablePackageTitle">disabilita per gli utenti</string>
   <string name="prefs_title">opzioni</string>
-  <string name="prefs_timestamp">usa il formato locale per le date</string>
   <string name="prefs_acquireWakelock">impedisci la modalità sleep</string>
   <string name="prefs_summaryAcquireWakelock">ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità sleep. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
   <string name="prefs_pathscategory">percorsi personalizzati</string>

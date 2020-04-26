@@ -18,13 +18,9 @@ public class PrefsActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_prefs);
-
         ButterKnife.bind(this);
-
-        back.setOnClickListener(v -> finish());
-        
+        back.setOnClickListener(v -> onBackPressed());
     }
 
     @Override

@@ -121,50 +121,27 @@ public class AppInfoHelper {
         int versionCode = Build.VERSION.SDK_INT;
         int currentUser = ShellCommands.getCurrentUser();
         ArrayList<AppInfoSpecial> list = new ArrayList<>();
-        boolean apiCheck = versionCode >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
         AppInfoSpecial accounts = new AppInfoSpecial("accounts", context.getString(R.string.spec_accounts), versionName, versionCode);
-        if (versionCode >= Build.VERSION_CODES.N) {
-            accounts.setFilesList("/data/system_ce/" + currentUser + "/accounts_ce.db");
-        } else if (apiCheck) {
-            accounts.setFilesList("/data/system/users/" + currentUser + "/accounts.db");
-        } else {
-            accounts.setFilesList("/data/system/accounts.db");
-        }
+        accounts.setFilesList("/data/system_ce/" + currentUser + "/accounts_ce.db");
         list.add(accounts);
 
         AppInfoSpecial appWidgets = new AppInfoSpecial("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode);
-        if (apiCheck) {
-            appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
-        } else {
-            appWidgets.setFilesList("/data/system/appwidgets.xml");
-        }
+        appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
         list.add(appWidgets);
 
         AppInfoSpecial bluetooth = new AppInfoSpecial("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode);
-        if (apiCheck) {
-            bluetooth.setFilesList("/data/misc/bluedroid/");
-        } else {
-            bluetooth.setFilesList("/data/misc/bluetooth",
-                    "/data/misc/bluetoothd");
-        }
+        bluetooth.setFilesList("/data/misc/bluedroid/");
         list.add(bluetooth);
 
-        if (apiCheck) {
-            AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode);
-            data.setFilesList("/data/system/netpolicy.xml",
-                    "/data/system/netstats/");
-            list.add(data);
-        }
+        AppInfoSpecial data = new AppInfoSpecial("data.usage.policy", context.getString(R.string.spec_data), versionName, versionCode);
+        data.setFilesList("/data/system/netpolicy.xml",
+                "/data/system/netstats/");
+        list.add(data);
 
         AppInfoSpecial wallpaper = new AppInfoSpecial("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode);
-        if (apiCheck) {
-            wallpaper.setFilesList("/data/system/users/" + currentUser + "/wallpaper",
-                    "/data/system/users/" + currentUser + "/wallpaper_info.xml");
-        } else {
-            wallpaper.setFilesList("/data/system/wallpaper",
-                    "/data/system/wallpaper_info.xml");
-        }
+        wallpaper.setFilesList("/data/system/users/" + currentUser + "/wallpaper",
+                "/data/system/users/" + currentUser + "/wallpaper_info.xml");
         list.add(wallpaper);
 
         AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);

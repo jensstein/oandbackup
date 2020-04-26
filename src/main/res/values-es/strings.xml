@@ -86,7 +86,6 @@
     <string name="disablePackageTitle">Deshabilitar para usuarios</string>
 
     <string name="prefs_title">Preferencias</string>
-    <string name="prefs_timestamp">Usar formato de fecha local</string>
     <string name="prefs_acquireWakelock">Impedir suspensión</string>
     <string name="prefs_summaryAcquireWakelock">Obtiene un wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
     <string name="prefs_pathscategory">Rutas personalizadass</string>

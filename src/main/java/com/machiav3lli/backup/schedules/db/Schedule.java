@@ -10,6 +10,8 @@ import androidx.room.TypeConverters;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.schedules.SchedulingException;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Holds scheduling data
  */
@@ -283,6 +285,7 @@ public class Schedule {
         return hash;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Schedule{" +

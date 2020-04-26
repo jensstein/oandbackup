@@ -83,7 +83,6 @@
   <string name="disablePackage">無効</string>
   <string name="disablePackageTitle">ユーザーに無効</string>
   <string name="prefs_title">設定</string>
-  <string name="prefs_timestamp">地域の日付書式を使用</string>
   <string name="prefs_acquireWakelock">スリープを防止</string>
   <string name="prefs_summaryAcquireWakelock">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します</string>
   <string name="prefs_pathscategory">カスタム パス</string>

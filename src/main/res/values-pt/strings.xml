@@ -83,7 +83,6 @@
   <string name="disablePackage">Desativar</string>
   <string name="disablePackageTitle">Desativar para</string>
   <string name="prefs_title">Preferências</string>
-  <string name="prefs_timestamp">Usar formato local de data</string>
   <string name="prefs_acquireWakelock">Impedir suspensão</string>
   <string name="prefs_summaryAcquireWakelock">Obter wakelock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
   <string name="prefs_pathscategory">Caminhos personalizados</string>

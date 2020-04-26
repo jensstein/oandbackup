@@ -34,7 +34,7 @@ public class Compression {
                     while ((len = in.read(buffer)) > 0) {
                         zos.write(buffer, 0, len);
                     }
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException ignored) {
                     // some files in /data/system/ can give this error (e.g. ndebugsocket)
                 }
             }

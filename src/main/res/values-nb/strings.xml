@@ -83,7 +83,6 @@
   <string name="disablePackage">Deaktiver</string>
   <string name="disablePackageTitle">Deaktiver for brukere</string>
   <string name="prefs_title">Innstillinger</string>
-  <string name="prefs_timestamp">Vis lokal dato</string>
   <string name="prefs_acquireWakelock">Hindre dvalemodus</string>
   <string name="prefs_summaryAcquireWakelock">Få en en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Det vil gjøre gjenoppretting og lagring av sikkerhetskopier mye fortere men bruker mer energi.</string>
   <string name="prefs_pathscategory">Tilpassete filstier</string>

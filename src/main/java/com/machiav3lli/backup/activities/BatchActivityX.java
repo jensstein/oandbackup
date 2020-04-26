@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
@@ -58,10 +56,6 @@ public class BatchActivityX extends BaseActivity
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.sort_filter_fab)
-    FloatingActionButton fabSortFilter;
-    @BindView(R.id.bottom_bar)
-    BottomAppBar bottomBar;
     @BindView(R.id.radioApk)
     AppCompatRadioButton rbApk;
     @BindView(R.id.radioData)

@@ -91,7 +91,6 @@
     <string name="disablePackageTitle">为用户禁用</string>
 
     <string name="prefs_title">首选项</string>
-    <string name="prefs_timestamp">使用本地日期格式</string>
     <string name="prefs_acquireWakelock">防止睡眠</string>
     <string name="prefs_summaryAcquireWakelock">在批量操作时获取唤醒锁以防止手机睡眠。这将大大加快备份和恢复速度，但会消耗更多能量</string>
     <string name="prefs_pathscategory">自定义路径</string>

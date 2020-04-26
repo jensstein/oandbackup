@@ -83,7 +83,6 @@
   <string name="disablePackage">Онемогући</string>
   <string name="disablePackageTitle">Онемогући за кориснике</string>
   <string name="prefs_title">Подешавања</string>
-  <string name="prefs_timestamp">Користи локални формат за датум</string>
   <string name="prefs_acquireWakelock">Спречи режим мировања</string>
   <string name="prefs_summaryAcquireWakelock">Осигурава да уређај не уђе у режим мировања када се прави резервна копија за више апликација. Убрзаће сам процес прављења копија, али ће потрошити више електричне енергије</string>
   <string name="prefs_pathscategory">Произвољне путање</string>

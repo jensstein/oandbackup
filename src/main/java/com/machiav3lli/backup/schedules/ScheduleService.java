@@ -15,9 +15,9 @@ import androidx.annotation.RestrictTo;
 import androidx.core.app.NotificationCompat;
 
 import com.annimon.stream.Optional;
-import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
@@ -34,7 +34,7 @@ public class ScheduleService extends Service
     @SuppressLint("RestrictedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int id = intent.getIntExtra("dk.jens.backup.schedule_id", -1);
+        int id = intent.getIntExtra(Constants.classAddress(".schedule_id"), -1);
         if (id >= 0) {
             HandleAlarms handleAlarms = new HandleAlarms(this);
             final HandleScheduledBackups handleScheduledBackups =

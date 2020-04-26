@@ -7,12 +7,12 @@ import android.preference.PreferenceManager;
 import androidx.appcompat.app.AlertDialog;
 
 import com.annimon.stream.Optional;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
-import com.machiav3lli.backup.activities.MainActivityX;
-import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.items.AppInfo;
 
 import java.util.ArrayList;
 
