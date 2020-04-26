@@ -34,7 +34,6 @@ import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
-import com.machiav3lli.backup.tasks.Crypto;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -205,11 +204,6 @@ public class BatchActivityX extends BaseActivity
 
     public void doAction(ArrayList<BatchItemX> selectedList) {
         if (backupDir != null) {
-            Crypto crypto = null;
-            if (backupBoolean && prefs.getBoolean(
-                    Constants.PREFS_ENABLECRYPTO, false) &&
-                    Crypto.isAvailable(this))
-                crypto = getCrypto();
             @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.TAG);
             if (prefs.getBoolean("acquireWakelock", true)) {
                 wl.acquire(10 * 60 * 1000L /*10 minutes*/);
@@ -221,9 +215,6 @@ public class BatchActivityX extends BaseActivity
             int i = 1;
             boolean errorFlag = false;
             for (BatchItemX item : selectedList) {
-                // crypto may be needed for restoring even if the preference is set to false
-                if (!backupBoolean && item.getApp().getLogInfo() != null && item.getApp().getLogInfo().isEncrypted() && Crypto.isAvailable(this))
-                    crypto = getCrypto();
                 if (item.getApp().isChecked()) {
                     String message = "(" + i + "/" + total + ")";
                     String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
@@ -237,16 +228,8 @@ public class BatchActivityX extends BaseActivity
                     if (backupBoolean) {
                         if (backupRestoreHelper.backup(this, backupDir, item.getApp(), shellCommands, mode) != 0)
                             errorFlag = true;
-                        else if (crypto != null) {
-                            crypto.encryptFromAppInfo(this, backupDir, item.getApp(), mode, prefs);
-                            if (crypto.isErrorSet()) {
-                                Crypto.cleanUpEncryptedFiles(new File(backupDir, item.getApp().getPackageName()), item.getApp().getSourceDir(),
-                                        item.getApp().getDataDir(), mode, prefs.getBoolean("backupExternalFiles", false));
-                                errorFlag = true;
-                            }
-                        }
                     } else {
-                        if (backupRestoreHelper.restore(this, backupDir, item.getApp(), shellCommands, mode, crypto) != 0)
+                        if (backupRestoreHelper.restore(this, backupDir, item.getApp(), shellCommands, mode) != 0)
                             errorFlag = true;
                     }
                     if (i == total) {

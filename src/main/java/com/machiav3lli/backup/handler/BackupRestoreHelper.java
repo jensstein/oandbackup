@@ -8,7 +8,8 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
-import com.machiav3lli.backup.tasks.Crypto;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -17,7 +18,7 @@ public class BackupRestoreHelper {
 
     public enum ActionType {BACKUP, RESTORE}
 
-    public int backup(Context context, File backupDir, AppInfo app, ShellCommands shellCommands, int backupMode) {
+    public int backup(Context context, File backupDir, @NotNull AppInfo app, ShellCommands shellCommands, int backupMode) {
         int ret;
         File backupSubDir = new File(backupDir, app.getPackageName());
         if (!backupSubDir.exists()) backupSubDir.mkdirs();
@@ -40,22 +41,20 @@ public class BackupRestoreHelper {
             ret = shellCommands.doBackup(context, backupSubDir, app.getLabel(), app.getDataDir(), app.getDeviceProtectedDataDir(), app.getSourceDir(), backupMode);
             app.setBackupMode(backupMode);
         }
-        if (context instanceof MainActivityX) ((MainActivityX)context).refresh();
+        if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
 
         shellCommands.logReturnMessage(context, ret);
         LogFile.writeLogFile(backupSubDir, app, backupMode);
         return ret;
     }
 
-    public int restore(Context context, File backupDir, AppInfo app, ShellCommands shellCommands, int mode, Crypto crypto) {
+    public int restore(Context context, File backupDir, AppInfo app, ShellCommands shellCommands, int mode) {
         int apkRet, restoreRet, permRet, cryptoRet;
         apkRet = restoreRet = permRet = cryptoRet = 0;
         File backupSubDir = new File(backupDir, app.getPackageName());
         String apk = new LogFile(backupSubDir, app.getPackageName()).getApk();
         String dataDir = app.getDataDir();
         // extra check for needToDecrypt here because of BatchActivity which cannot really reset crypto to null for every package to restore
-        if (crypto != null && Crypto.needToDecrypt(backupDir, app, mode))
-            crypto.decryptFromAppInfo(context, backupDir, app, mode);
         if (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) {
             if (apk != null && apk.length() > 0) {
                 if (app.isSystem()) {
@@ -90,13 +89,8 @@ public class BackupRestoreHelper {
                 ShellCommands.writeErrorLog(app.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
             }
         }
-        if (crypto != null) {
-            Crypto.cleanUpDecryption(app, backupSubDir, mode);
-            if (crypto.isErrorSet())
-                cryptoRet = 1;
-        }
         int ret = apkRet + restoreRet + permRet + cryptoRet;
-        if (context instanceof MainActivityX) ((MainActivityX)context).refresh();
+        if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
 
         shellCommands.logReturnMessage(context, ret);
         return ret;

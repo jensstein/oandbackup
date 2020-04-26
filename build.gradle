@@ -12,7 +12,6 @@ repositories {
 
 ext {
     versions = [
-            openpgp           : "12.0",
             room              : "2.2.5",
             lifecycle         : "2.2.0",
             stream            : "1.2.1",
@@ -39,8 +38,7 @@ ext {
 
 
 dependencies {
-    // Encrypt & Libs
-    implementation "org.sufficientlysecure:openpgp-api:${versions.openpgp}"
+    // Libs
     implementation "androidx.room:room-runtime:${versions.room}"
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
@@ -63,7 +61,6 @@ dependencies {
     implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-binding:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-utils:${versions.fastadapter}"
-
 
     // Tests
     implementation "androidx.room:room-testing:${versions.room}"

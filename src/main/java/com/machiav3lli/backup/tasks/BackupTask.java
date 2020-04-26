@@ -1,10 +1,10 @@
 package com.machiav3lli.backup.tasks;
 
-import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.activities.MainActivityX;
-import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
+import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
 
@@ -21,25 +21,6 @@ public class BackupTask extends BaseTask {
         final MainActivityX oAndBackupX = oAndBackupReference.get();
         if (oAndBackupX == null || oAndBackupX.isFinishing()) return -1;
         publishProgress();
-
-        /*
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(oAndBackupX);
-        Crypto crypto = null;
-         if(prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false) &&
-            Crypto.isAvailable(oAndBackupX))
-            crypto = oAndBackupX.getCrypto();
-         if(result == 0 && crypto != null) {
-            crypto.encryptFromAppInfo(oAndBackupX, backupDirectory, appInfo, mode, prefs);
-            if(crypto.isErrorSet())
-            {
-                Crypto.cleanUpEncryptedFiles(new File(backupDirectory,
-                    appInfo.getPackageName()), appInfo.getSourceDir(),
-                    appInfo.getDataDir(), mode,
-                    prefs.getBoolean("backupExternalFiles", false));
-                result++;
-            }
-        }
-         */
 
         oAndBackupX.refresh();
         return backupRestoreHelper.backup(oAndBackupReference.get(), backupDirectory,

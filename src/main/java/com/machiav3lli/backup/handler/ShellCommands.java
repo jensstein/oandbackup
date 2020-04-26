@@ -12,8 +12,8 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.tasks.Compression;
-import com.machiav3lli.backup.tasks.Crypto;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,11 +68,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         this.users = getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
 
-        this.oabUtils = new File(filesDir, AssetsHandler.OAB_UTILS)
-                .getAbsolutePath();
-        if (!checkOabUtils()) {
-            legacyMode = true;
-        }
+        this.oabUtils = new File(filesDir, AssetsHandler.OAB_UTILS).getAbsolutePath();
+        legacyMode = !checkOabUtils();
     }
 
     public ShellCommands(SharedPreferences prefs, File filesDir) {
@@ -172,9 +169,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             if (zipret != 0)
                 ret += zipret;
         }
-        // delete old encrypted files if encryption is not enabled
-        if (!prefs.getBoolean(Constants.PREFS_ENABLECRYPTO, false))
-            Crypto.cleanUpEncryptedFiles(backupSubDir, packageApk, packageData, backupMode, prefs.getBoolean("backupExternalFiles", false));
         return ret;
     }
 
@@ -696,7 +690,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    public ArrayList getUsers() {
+    public ArrayList<String> getUsers() {
         if (users != null && users.size() > 0) {
             return users;
         } else {
@@ -849,6 +843,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         private String uidStr;
         private String gidStr;
 
+        @NotNull
         @Override
         public String toString() {
             if (legacyMode) {
