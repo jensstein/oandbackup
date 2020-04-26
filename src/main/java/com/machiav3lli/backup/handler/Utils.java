@@ -29,17 +29,15 @@ public class Utils {
     }
 
     public static void showErrors(final Activity activity) {
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                String errors = ShellCommands.getErrors();
-                if (errors.length() > 0) {
-                    new AlertDialog.Builder(activity)
-                            .setTitle(R.string.errorDialogTitle)
-                            .setMessage(errors)
-                            .setPositiveButton(R.string.dialogOK, null)
-                            .show();
-                    ShellCommands.clearErrors();
-                }
+        activity.runOnUiThread(() -> {
+            String errors = ShellCommands.getErrors();
+            if (errors.length() > 0) {
+                new AlertDialog.Builder(activity)
+                        .setTitle(R.string.errorDialogTitle)
+                        .setMessage(errors)
+                        .setPositiveButton(R.string.dialogOK, null)
+                        .show();
+                ShellCommands.clearErrors();
             }
         });
     }
@@ -123,22 +121,22 @@ public class Utils {
     }
 
     public static void checkForUpdate(Activity activity) {
-        AppUpdaterUtils updater = new AppUpdaterUtils(activity).setUpdateFrom(UpdateFrom.GITHUB)
+        new AppUpdaterUtils(activity).setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("machiav3lli", "oandbackupx").withListener(new AppUpdaterUtils.UpdateListener() {
-                    AppUpdater appUpdater = new AppUpdater(activity).setDisplay(Display.DIALOG)
-                            .setUpdateFrom(UpdateFrom.GITHUB).setGitHubUserAndRepo("machiav3lli", "oandbackupx");
+            AppUpdater appUpdater = new AppUpdater(activity).setUpdateFrom(UpdateFrom.GITHUB).setGitHubUserAndRepo("machiav3lli", "oandbackupx");
 
-                    @Override
-                    public void onSuccess(Update update, Boolean isUpdateAvailable) {
-                        appUpdater.start();
-                    }
+            @Override
+            public void onSuccess(Update update, Boolean isUpdateAvailable) {
+                if (activity instanceof MainActivityX) {
+                    if (isUpdateAvailable)
+                        appUpdater.setDisplay(Display.NOTIFICATION).showAppUpdated(true).start();
+                } else appUpdater.setDisplay(Display.DIALOG).showAppUpdated(true).start();
+            }
 
-                    @Override
-                    public void onFailed(AppUpdaterError error) {
-                        if (!(activity instanceof MainActivityX)) appUpdater.start();
-                    }
-                });
-        updater.start();
+            @Override
+            public void onFailed(AppUpdaterError error) {
+            }
+        }).start();
     }
 
     public static String getPrefsString(Context context, String key) {
