@@ -1,6 +1,12 @@
 changelog
 =========
 
+0.9.7 (27.04.2020)
+-------------------
+* fixed: update logic
+* removed: PGP encryption and follow symbolic links
+* cleaned up
+
 0.9.6 (25.04.2020)
 -------------------
 * added: check for Update

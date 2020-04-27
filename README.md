@@ -15,6 +15,7 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Adapt FastAdapter: for Main and Batch
 - [x] Rewrite Batch-(Activity, Adapter and Sorter) 
 - [x] Rewrite Main-(Activity, Adapter and Sorter)
+- [ ] Rewrite Scheduler
 - [x] Add more informative dialog when clicking an app in Main
 - [x] Rewrite Scheduler
 - [x] Modeling Sort/Filter
@@ -23,16 +24,16 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Rewrite backup folder selector
 - [x] Integrate Tools and Help in Preferences
 - [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(fix priority: med)
-- [x] Add in-app check for update
+- [x] Add in-app check for updates
 - [x] Updating UI and UX: Design improvement proposals are always welcome
 - [x] Add Dark/Light themes
 - [ ] Update dialogs' UI: partially done
 - [ ] Abstracting the structure of the app
-- [x] Fragmentize the Preferences: partially done
+- [x] Fragmenting the Preferences: partially done
 - [ ] Rewrite the logic of Backup/Restore
 - [x] Add support for protected data backup
-- [ ] Fix and Add a better encryption solution(fix priority: med)
-- [ ] Add a flashable-ZIP feature
+- [ ] Fix and Add in-app encryption solution(fix priority: med)
+- [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
 
