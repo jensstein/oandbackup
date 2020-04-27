@@ -2,6 +2,8 @@ package com.machiav3lli.backup.handler;
 
 import android.content.Context;
 
+import androidx.preference.PreferenceManager;
+
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.SortFilterModel;
@@ -22,6 +24,10 @@ public class SortFilterManager {
 
     public static void saveFilterPreferences(Context context, SortFilterModel filterModel) {
         Utils.setPrefsString(context, Constants.PREFS_SORT_FILTER, filterModel.toString());
+    }
+
+    public static boolean getRememberFiltering(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
     }
 
     public static ArrayList<AppInfo> applyFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {

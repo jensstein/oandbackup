@@ -74,7 +74,6 @@ public class MainActivityX extends BaseActivity
         setContentView(R.layout.activity_main_x);
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
-        SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         shellCommands = new ShellCommands(prefs, getFilesDir());
 
         ButterKnife.bind(this);
@@ -92,7 +91,13 @@ public class MainActivityX extends BaseActivity
                 backupDir, true, PreferenceManager.getDefaultSharedPreferences(this)
                         .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
         list = new ArrayList<>();
-        for (AppInfo appInfo : originalList) list.add(new MainItemX(appInfo));
+        if (SortFilterManager.getRememberFiltering(this)) {
+            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
+            for (AppInfo app : filteredList) list.add(new MainItemX(app));
+        } else {
+            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+            for (AppInfo app : originalList) list.add(new MainItemX(app));
+        }
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
@@ -176,7 +181,6 @@ public class MainActivityX extends BaseActivity
     public void onDestroy() {
         if (handleMessages != null) handleMessages.endMessage();
         prefs.registerOnSharedPreferenceChangeListener(this);
-        SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         super.onDestroy();
     }
 
