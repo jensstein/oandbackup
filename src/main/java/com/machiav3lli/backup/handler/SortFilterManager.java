@@ -64,10 +64,7 @@ public class SortFilterManager {
                     if (item.getLogInfo() != null) nlist.remove(item);
                 break;
             case '4':
-                int days;
-                if (Utils.getPrefsString(context, Constants.PREFS_OLDBACKUPS).equals("")) days = 3;
-                else
-                    days = Integer.parseInt(Utils.getPrefsString(context, Constants.PREFS_OLDBACKUPS));
+                int days = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
                 for (AppInfo item : list) {
                     if (item.getLogInfo() != null) {
                         long lastBackup = item.getLogInfo().getLastBackupMillis();
