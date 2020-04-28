@@ -215,7 +215,7 @@ public class MainActivityX extends BaseActivity
             list = new ArrayList<>();
             for (AppInfo app : filteredList) list.add(new MainItemX(app));
             runOnUiThread(() -> {
-                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                if (!list.isEmpty() && itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
             });
         });
         refreshThread.start();
