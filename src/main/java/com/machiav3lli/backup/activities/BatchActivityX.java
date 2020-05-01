@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -47,6 +48,7 @@ import static com.machiav3lli.backup.Constants.classAddress;
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
+    static final String TAG = Constants.TAG;
     ArrayList<AppInfo> originalList = MainActivityX.originalList;
     boolean backupBoolean;
 
@@ -260,26 +262,6 @@ public class BatchActivityX extends BaseActivity
         }
     }
 
-    public void refresh() {
-        Thread refreshThread = new Thread(() -> {
-            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-            cbAll.setChecked(false);
-            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            list = new ArrayList<>();
-            if (backupBoolean) {
-                for (AppInfo app : filteredList)
-                    if (app.isInstalled()) list.add(new BatchItemX(app));
-            } else for (AppInfo app : filteredList)
-                if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
-            runOnUiThread(() -> {
-                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
-            });
-        });
-        refreshThread.start();
-    }
-
     @Override
     public void finish() {
         setResult(RESULT_OK, new Intent().putExtra("changesMade", changesMade));
@@ -311,9 +293,41 @@ public class BatchActivityX extends BaseActivity
             case Constants.PREFS_PATH_BUSYBOX:
                 shellCommands = new ShellCommands(sharedPreferences, getFilesDir());
                 if (!shellCommands.checkBusybox())
-                    Utils.showWarning(this, "", getString(R.string.busyboxProblem));
+                    Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();
         }
+    }
+
+    public void refresh() {
+        Thread refreshThread = new Thread(() -> {
+            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+            cbAll.setChecked(false);
+            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
+            list = new ArrayList<>();
+            if (!filteredList.isEmpty()) {
+                if (backupBoolean) {
+                    for (AppInfo app : filteredList)
+                        if (app.isInstalled()) list.add(new BatchItemX(app));
+                } else for (AppInfo app : filteredList)
+                    if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
+            } else {
+                if (backupBoolean) {
+                    for (AppInfo app : originalList)
+                        if (app.isInstalled()) list.add(new BatchItemX(app));
+                } else for (AppInfo app : originalList)
+                    if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
+                SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+                this.runOnUiThread(() ->
+                        Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
+                );
+            }
+            runOnUiThread(() -> {
+                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+            });
+        });
+        refreshThread.start();
     }
 }

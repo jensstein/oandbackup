@@ -189,4 +189,5 @@
     <string name="theme_light">light</string>
     <string name="theme_dark">dark</string>
     <string name="theme_system">system\'s theme</string>
+    <string name="empty_filtered_list">the filtered List is empty, therefore setting the filters back to default</string>
 </resources>

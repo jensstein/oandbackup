@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -43,6 +44,7 @@ import static com.machiav3lli.backup.Constants.classAddress;
 
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    static final String TAG = Constants.TAG;
     static final int BATCH_REQUEST = 1;
 
     @BindView(R.id.recyclerView)
@@ -158,6 +160,12 @@ public class MainActivityX extends BaseActivity
         startActivity(new Intent(getApplicationContext(), SchedulerActivity.class));
     }
 
+    public Intent batchIntent(Class batchClass, boolean backup) {
+        Intent batchIntent = new Intent(getApplicationContext(), batchClass);
+        batchIntent.putExtra(classAddress(".backupBoolean"), backup);
+        return batchIntent;
+    }
+
     @Override
     public void onBackPressed() {
         finishAffinity();
@@ -194,28 +202,30 @@ public class MainActivityX extends BaseActivity
             case Constants.PREFS_PATH_BUSYBOX:
                 shellCommands = new ShellCommands(prefs, getFilesDir());
                 if (!shellCommands.checkBusybox())
-                    Utils.showWarning(this, "", getString(R.string.busyboxProblem));
+                    Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();
         }
     }
 
-    public Intent batchIntent(Class batchClass, boolean backup) {
-        Intent batchIntent = new Intent(getApplicationContext(), batchClass);
-        batchIntent.putExtra(classAddress(".backupBoolean"), backup);
-        return batchIntent;
-    }
-
     public void refresh() {
         Thread refreshThread = new Thread(() -> {
-            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             list = new ArrayList<>();
-            for (AppInfo app : filteredList) list.add(new MainItemX(app));
+            if (!filteredList.isEmpty())
+                for (AppInfo app : filteredList) list.add(new MainItemX(app));
+            else {
+                for (AppInfo app : originalList) list.add(new MainItemX(app));
+                SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+                this.runOnUiThread(() ->
+                        Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
+                );
+            }
+            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
             runOnUiThread(() -> {
-                if (!list.isEmpty() && itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
             });
         });
         refreshThread.start();
