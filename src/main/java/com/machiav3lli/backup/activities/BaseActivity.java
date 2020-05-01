@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.LanguageHelper;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     final static String TAG = Constants.TAG;
 
     @Override
@@ -27,6 +27,9 @@ public class BaseActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    protected void onResume() { super.onResume(); }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
