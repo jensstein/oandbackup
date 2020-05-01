@@ -27,14 +27,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/main_nav_height"
-        android:layout_marginBottom="?actionBarSize">
+        android:paddingTop="?actionBarSize"
+        android:paddingBottom="?actionBarSize">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayout"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/cards_spacing" />
     </ScrollView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
