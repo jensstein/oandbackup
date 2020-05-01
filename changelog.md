@@ -1,6 +1,14 @@
 changelog
 =========
 
+0.9.8 (01.05.2020)
+-------------------
+* fixed: remember filter
+* fixed: picking the value for old backups
+* fixed: empty filtered list causing crash
+* tweaked: Scheduler UI
+* small other tweaks
+
 0.9.7 (27.04.2020)
 -------------------
 * fixed: update logic
