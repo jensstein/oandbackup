@@ -86,10 +86,8 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
     private void setupChips() {
         sortBy.check(sortFilterModel.getSortById());
         sortBy.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSortBy(checkedId));
-
         filters.check(sortFilterModel.getFilterId());
         filters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putFilter(checkedId));
-
         otherFilters.check(sortFilterModel.getOtherFilterId());
         otherFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putOtherFilter(checkedId));
     }

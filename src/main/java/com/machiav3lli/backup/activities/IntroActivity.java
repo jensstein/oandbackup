@@ -40,6 +40,7 @@ import butterknife.ButterKnife;
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
 
 public class IntroActivity extends BaseActivity {
+    static final String TAG = Constants.TAG;
     public static ArrayList<AppInfo> originalList;
 
     SharedPreferences prefs;
@@ -135,12 +136,12 @@ public class IntroActivity extends BaseActivity {
     }
 
     private void checkResources() {
-        handleMessages.showMessage("", getString(R.string.suCheck));
+        handleMessages.showMessage(TAG, getString(R.string.suCheck));
         RootBeer rootBeer = new RootBeer(this);
-        if (!rootBeer.isRooted()) Utils.showWarning(this, "", getString(R.string.noSu));
-        if (!checkBusybox()) Utils.showWarning(this, "", getString(R.string.busyboxProblem));
-        handleMessages.changeMessage("", getString(R.string.oabUtilsCheck));
-        if (!checkOabUtils()) Utils.showWarning(this, "", getString(R.string.oabUtilsProblem));
+        if (!rootBeer.isRooted()) Utils.showWarning(this, TAG, getString(R.string.noSu));
+        if (!checkBusybox()) Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
+        handleMessages.changeMessage(TAG, getString(R.string.oabUtilsCheck));
+        if (!checkOabUtils()) Utils.showWarning(this, TAG, getString(R.string.oabUtilsProblem));
         handleMessages.endMessage();
     }
 
