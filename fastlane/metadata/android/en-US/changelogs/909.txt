@@ -1,0 +1,2 @@
+**OAndBackupX 0.9.9**
+* Removed: check for Update (preperaing for F-Droid Release)
