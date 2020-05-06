@@ -128,11 +128,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference(Constants.PREFS_UPDATE).setOnPreferenceClickListener(preference -> {
-            Utils.checkForUpdate(requireActivity());
-            return true;
-        });
-
         findPreference(Constants.PREFS_HELP).setOnPreferenceClickListener(preference -> {
             requireActivity().getSupportFragmentManager().beginTransaction().add(R.id.prefs_fragement, new HelpFragment()).commit();
             return true;

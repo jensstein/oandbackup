@@ -175,6 +175,5 @@
     <string name="theme_light">Hell</string>
   <string name="theme_dark">Dunkel</string>
   <string name="theme_system">Standard</string>
-    <string name="prefs_update">Auf Updates überprüfen</string>
     <string name="empty_filtered_list">Die gefilterte Liste ist leer, deswegen wird der Filter zurückgesetzt</string>
 </resources>

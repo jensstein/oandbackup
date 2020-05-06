@@ -96,10 +96,6 @@
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.Preference
-        android:key="update"
-        android:title="@string/prefs_update"
-        app:iconSpaceReserved="false" />
-    <androidx.preference.Preference
         android:key="help"
         android:title="@string/help_title"
         app:iconSpaceReserved="false" />

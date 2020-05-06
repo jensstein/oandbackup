@@ -135,7 +135,6 @@ public class MainActivityX extends BaseActivity
                 return true;
             }
         });
-        Utils.checkForUpdate(this);
     }
 
     @OnClick(R.id.sort_filter_fab)
