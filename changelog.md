@@ -1,6 +1,10 @@
 changelog
 =========
 
+0.9.9 (06.05.2020)
+-------------------
+* removed: check for Update (preperaing for F-Droid Release)
+
 0.9.8 (01.05.2020)
 -------------------
 * fixed: remember filter
