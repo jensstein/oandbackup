@@ -7,7 +7,8 @@
         <p><strong>abilita / disabilita</strong>: usa lo script android `pm` per abilitare o disabilitare un app. Disabilitare un app la rimuove dalla normale interfaccia utente senza disinstallarla. Questo può servire per abilitare o disabilitare un app per più utenti allo stesso tempo (se la modalità multi utente è abilitata). Gli utenti sono identificati con un id. 0 è il primo utente (owner).</p>
         <p><strong>multi utente</strong>: multi-utente è ancora in qualche modo sperimenttale ma dovrebbe funzionare. Ripristinando in una situazione multi utente, `pm install -r $apk` viene eseguito e in seguito l'app è disabilitata per ogni utente che ha l'app elencata in /data/system/user/$user/package-restrictions.xml (ad eccezione che l'app non sia elencata come: enabled="1").<br>questo può creare di problemi agli utenti che installeranno la stessa app in futuro, ma è necessario per prevenire l'installazione dell'app a tutti gli utenti contemporaneamete. Il menu contestuale contiene un'opzione per abilitare o disabilitare le app e può esser usata dagli utenti che han problemi con un app disabilitata al ripristino.<br>abilitazione disabilitazione funzionano solo dopo un' installazione iniziale (non necessariamente da oandbackup) o rirpistino dell'app.</p>
         <h2>modifiche</h2>
-<a href="https://github.com/jensstein/oandbackup/blob/master/changelog.md">modifiche</a><h2>licenza</h2>
-        <p>oandbackup è distribuito sotto la MIT license ed il download è gratis, senza restrizioni per modifiche e condivisione</p>
-<a href="https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt">licenza</a>
+        <a href="https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md">modifiche</a>
+        <h2>licenza</h2>
+        <p>OAndBackupX è distribuito sotto la MIT license ed il download è gratis, senza restrizioni per modifiche e condivisione</p>
+        <a href="https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.txt">licenza</a>
 </body></html>
