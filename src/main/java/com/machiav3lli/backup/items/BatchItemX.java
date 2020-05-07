@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.machiav3lli.backup.BaseItemX;
 import com.machiav3lli.backup.R;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -20,11 +19,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements BaseItemX, Parcelable {
+public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
     AppInfo app;
 
     public BatchItemX(AppInfo app) {
         this.app = app;
+    }
+
+    public AppInfo getApp() {
+        return app;
     }
 
     protected BatchItemX(Parcel in) {
@@ -46,11 +49,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
     @Override
     public long getIdentifier() {
         return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0);
-    }
-
-    @Override
-    public AppInfo getApp() {
-        return app;
     }
 
     @Override
@@ -89,6 +87,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements B
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
+
         @BindView(R.id.checkbox)
         AppCompatCheckBox checkbox;
         @BindView(R.id.label)

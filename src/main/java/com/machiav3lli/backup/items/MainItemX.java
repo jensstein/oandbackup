@@ -6,7 +6,6 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.machiav3lli.backup.BaseItemX;
 import com.machiav3lli.backup.R;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -19,14 +18,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainItemX extends AbstractItem<MainItemX.ViewHolder> implements BaseItemX {
+public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     AppInfo app;
 
     public MainItemX(AppInfo app) {
         this.app = app;
     }
 
-    @Override
     public AppInfo getApp() {
         return app;
     }
