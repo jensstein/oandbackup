@@ -11,6 +11,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.FileCreationHelper;
@@ -58,12 +59,12 @@ public class HandleScheduledBackups {
                             Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> listToBackUp;
             switch (mode) {
-                case 0:
+                case R.id.schedAll:
                     // all apps
                     Collections.sort(list);
                     backup(list, subMode);
                     break;
-                case 1:
+                case R.id.schedUser:
                     // user apps
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
@@ -74,7 +75,7 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case 2:
+                case R.id.schedSystem:
                     // system apps
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
@@ -85,7 +86,7 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case 3:
+                case R.id.schedNewUpdated:
                     // new and updated apps
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
@@ -96,13 +97,13 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case 4:
+                case R.id.schedCustomList:
                     // custom package list
                     listToBackUp = new ArrayList<>();
                     FileReaderWriter frw = new FileReaderWriter(
                             prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
                                     FileCreationHelper.defaultBackupDirPath),
-                            SchedulerActivity.SCHEDULECUSTOMLIST + id);
+                            SchedulerActivityX.SCHEDULECUSTOMLIST + id);
                     for (AppInfo appInfo : list) {
                         if (frw.contains(appInfo.getPackageName())) {
                             listToBackUp.add(appInfo);
@@ -131,7 +132,7 @@ public class HandleScheduledBackups {
                         new BlacklistsDBHelper(context);
                 SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
                 List<String> blacklistedPackages = blacklistsDBHelper
-                        .getBlacklistedPackages(db, SchedulerActivity.GLOBALBLACKLISTID);
+                        .getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID);
                 for (AppInfo appInfo : backupList) {
                     if (blacklistedPackages.contains(appInfo.getPackageName())) {
                         Log.i(TAG, String.format("%s ignored",

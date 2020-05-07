@@ -10,6 +10,7 @@ import com.annimon.stream.Optional;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.items.AppInfo;
@@ -22,7 +23,7 @@ public class CustomPackageList {
 
     // for use with schedules
     public static void showList(Activity activity, long number) {
-        showList(activity, SchedulerActivity.SCHEDULECUSTOMLIST + number);
+        showList(activity, SchedulerActivityX.SCHEDULECUSTOMLIST + number);
     }
 
     public static void showList(Activity activity, String filename) {

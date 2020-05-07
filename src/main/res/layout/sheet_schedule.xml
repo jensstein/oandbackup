@@ -1,0 +1,227 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/cards_spacing"
+        android:background="@drawable/card_rc8"
+        android:scrollbars="none">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="@dimen/small_spacing"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="@string/sched_interval"
+                    android:textAppearance="@style/TextAppearance.Title" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/intervalDays"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:inputType="number"
+                    android:textSize="@dimen/main_text" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="@dimen/small_spacing"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="@string/sched_hourOfDay"
+                    android:textAppearance="@style/TextAppearance.Title" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/timeOfDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:hint="@string/sched_hourOfDay_hint"
+                    android:inputType="number"
+                    android:textSize="@dimen/main_text" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/schedBackupMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="@dimen/small_spacing"
+                android:text="@string/sched_backupMode"
+                android:textAppearance="@style/TextAppearance.Title" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/schedMode"
+                    style="@style/Chip.Group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedAll"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioAll" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedUser"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioUser" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedSystem"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioSystem" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedNewUpdated"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNewAndUpdated" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedCustomList"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customListTitle" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/schedSubMode"
+                    style="@style/Chip.Group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedApk"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioApk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedData"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioData" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedBoth"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioBoth" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/customListUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sched_customListUpdateButton"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/excludeSystem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sched_excludeSystemCheckBox"
+                    android:visibility="gone" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/schedTimeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="4dp" />
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sched_checkbox" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/updateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/sched_updateButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/removeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:backgroundTint="?colorSecondary"
+                    android:text="@string/sched_removeButton" />
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activateButton"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginBottom="@dimen/cards_spacing"
+                android:text="@string/sched_activateButton"
+                android:textAlignment="center" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
+

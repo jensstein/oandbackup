@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat;
 import com.annimon.stream.Optional;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
@@ -42,7 +43,7 @@ public class ScheduleService extends Service
             handleScheduledBackups.setOnBackupListener(this);
 
             final Thread t = new Thread(() -> {
-                final ScheduleDao scheduleDao = getScheduleDao(SchedulerActivity.DATABASE_NAME);
+                final ScheduleDao scheduleDao = getScheduleDao(SchedulerActivityX.DATABASE_NAME);
                 final Schedule schedule = scheduleDao.getSchedule(id);
                 schedule.setPlaced(System.currentTimeMillis());
                 scheduleDao.update(schedule);

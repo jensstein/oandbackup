@@ -27,7 +27,6 @@ import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
-import com.machiav3lli.backup.schedules.SchedulerActivity;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -156,7 +155,7 @@ public class MainActivityX extends BaseActivity
 
     @OnClick(R.id.btn_scheduler)
     public void btnScheduler() {
-        startActivity(new Intent(getApplicationContext(), SchedulerActivity.class));
+        startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class));
     }
 
     public Intent batchIntent(Class batchClass, boolean backup) {

@@ -6,12 +6,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.schedules.BlacklistListener;
-import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.activities.MainActivityX;
-import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.schedules.SchedulerActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class BlacklistDialogFragment extends DialogFragment {
         Bundle args = getArguments();
         assert args != null;
         int blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID,
-                SchedulerActivity.GLOBALBLACKLISTID);
+                SchedulerActivityX.GLOBALBLACKLISTID);
         ArrayList<String> blacklistedPackages = args.getStringArrayList(
                 Constants.BLACKLIST_ARGS_PACKAGES);
         ArrayList<AppInfo> appInfoList = MainActivityX.originalList;

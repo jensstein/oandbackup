@@ -13,6 +13,7 @@ import com.annimon.stream.Collectors;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
@@ -32,7 +33,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final HandleAlarms handleAlarms = getHandleAlarms(context);
         final ScheduleDao scheduleDao = getScheduleDao(context,
-                SchedulerActivity.DATABASE_NAME);
+                SchedulerActivityX.DATABASE_NAME);
         final Thread t = new Thread(new DatabaseRunnable(scheduleDao,
                 handleAlarms, getCurrentTime()));
         thread = Optional.of(t);
