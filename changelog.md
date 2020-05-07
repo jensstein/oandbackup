@@ -1,6 +1,13 @@
 changelog
 =========
 
+0.9.10 (07.05.2020)
+-------------------
+* rewritten: Scheduler (need to be tested extensively)
+* fixed: links in help
+* clean up the code
+* UI tweaks here and there
+
 0.9.9 (06.05.2020)
 -------------------
 * removed: check for Update (preperaing for F-Droid Release)

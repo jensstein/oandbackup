@@ -12,27 +12,21 @@ backups can be scheduled with no limit on the number of individual schedules and
 ## Changes & TODOs
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
-- [x] Adapt FastAdapter: for Main and Batch
-- [x] Rewrite Batch-(Activity, Adapter and Sorter) 
-- [x] Rewrite Main-(Activity, Adapter and Sorter)
-- [ ] Rewrite Scheduler
-- [x] Add more informative dialog when clicking an app in Main
-- [x] Rewrite Scheduler
+- [ ] Adapt FastAdapter: for Main, Batch and Scheduler
+- [x] Rewrite Main-, Batch- & Scheduler-(Activity, Adapter and Sorter)
+- [x] Modeling the app's structure: for the most part now
 - [x] Modeling Sort/Filter
 - [ ] Add some new filters
 - [x] Rewrite Preferences
-- [x] Rewrite backup folder selector
 - [x] Integrate Tools and Help in Preferences
-- [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(fix priority: med)
-- [x] Add in-app check for updates
-- [x] Updating UI and UX: Design improvement proposals are always welcome
+- [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(first: after android 11 release)
+- [x] New UI and UX: Design improvement proposals are always welcome
 - [x] Add Dark/Light themes
 - [ ] Update dialogs' UI: partially done
-- [ ] Abstracting the structure of the app
-- [x] Fragmenting the Preferences: partially done
-- [ ] Rewrite the logic of Backup/Restore
 - [x] Add support for protected data backup
-- [ ] Fix and Add in-app encryption solution(fix priority: med)
+- [ ] Add in-app backup encryption (first: after 1.0)
+- [ ] Rewrite the logic of Backup/Restore
+- [ ] Add Split Apk Support
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
@@ -113,7 +107,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Rahul Patel](https://github.com/whyorean) whose hard work on AuroraStore inspired this work.
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [AppUpdater](https://github.com/javiersantos/AppUpdater), [NNFilePicker](https://github.com/spacecowboy/NoNonsense-FilePicker), [RootBeer](https://github.com/scottyab/rootbeer).
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [NNFilePicker](https://github.com/spacecowboy/NoNonsense-FilePicker), [RootBeer](https://github.com/scottyab/rootbeer).
 
 ## author
 

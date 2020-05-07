@@ -7,7 +7,6 @@ plugins {
 repositories {
     google()
     jcenter()
-    maven { url "https://jitpack.io" } // for AppUpdater
 }
 
 ext {
@@ -106,7 +105,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 9
+int versionPath = 10
 
 android {
     compileSdkVersion 29
