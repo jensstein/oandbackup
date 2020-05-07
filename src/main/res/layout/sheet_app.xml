@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,9 +21,9 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_margin="@dimen/cards_spacing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/cards_spacing"
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -53,7 +51,7 @@
                                 android:layout_weight="0.6"
                                 android:ellipsize="end"
                                 android:singleLine="true"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                                android:textAppearance="@style/TextAppearance.Title" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/packageName"
@@ -185,9 +183,9 @@
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/actions"
+                    style="@style/Chip.Group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/chipGroup">
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backup"

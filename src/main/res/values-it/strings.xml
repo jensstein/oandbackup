@@ -107,12 +107,12 @@
   <string name="sched_title">pianificazioni</string>
   <string name="sched_notificationMessage">backup pianificato</string>
   <string name="sched_interval">intervallo in giorni</string>
-  <string name="sched_hourOfDay">ora del giorno (0..23)</string>
+  <string name="sched_hourOfDay">ora del giorno:</string>
   <string name="sched_checkbox">abilita</string>
   <string name="sched_updateButton">aggiorna</string>
   <string name="sched_removeButton">rimuovi</string>
   <string name="sched_startingbackup">avvio del backup pianificato</string>
-  <string name="sched_backupMode">modalità di backup</string>
+  <string name="sched_backupMode">modalità di backup:</string>
   <string name="sched_timeLeft">ore mancanti al prossimo backup</string>
   <string name="sched_addSchudule">aggiungi pianificazione</string>
   <string name="sched_customListUpdateButton">aggiorna l\'elenco personalizzato</string>

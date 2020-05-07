@@ -115,13 +115,13 @@
     <string name="sched_title">планирование</string>
     <string name="sched_notificationMessage">запланированное резервирование</string>
     <string name="sched_interval">интервал в днях</string>
-    <string name="sched_hourOfDay">час дня (0..23)</string>
+    <string name="sched_hourOfDay">час дня:</string>
     <string name="sched_checkbox">Включить</string>
     <string name="sched_updateButton">обновить</string>
     <string name="sched_removeButton">удалить</string>
     <string name="sched_activateButton">Начать резервирование</string>
     <string name="sched_startingbackup">начало запланированного резервирования</string>
-    <string name="sched_backupMode">Режим резервирования</string>
+    <string name="sched_backupMode">Режим резервирования:</string>
     <string name="sched_timeLeft">часов до следующего резервирования</string>
     <string name="sched_addSchudule">Добавить план</string>
     <string name="sched_customListUpdateButton">Обновить пользовательский список</string>

@@ -118,13 +118,13 @@
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>
     <string name="sched_interval">间隔天数</string>
-    <string name="sched_hourOfDay">一天中间隔小时数 (0..23)</string>
+    <string name="sched_hourOfDay">一天中间隔小时数:</string>
     <string name="sched_checkbox">启用</string>
     <string name="sched_updateButton">更新</string>
     <string name="sched_removeButton">删除</string>
     <string name="sched_activateButton">现在开始备份</string>
     <string name="sched_startingbackup">定时备份开始</string>
-    <string name="sched_backupMode">备份模式</string>
+    <string name="sched_backupMode">备份模式:</string>
     <string name="sched_timeLeft">到下次备份的时间</string>
     <string name="sched_addSchudule">增加定时</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>

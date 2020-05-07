@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cards_spacing"
                 android:text="@string/sort_options"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.Title" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -30,20 +30,20 @@
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/sortBy"
-                    style="@style/chipGroup"
+                    style="@style/Chip.Group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByPackageName"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sortPackageName" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByLabel"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sortLabel" />
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cards_spacing"
                 android:text="@string/filter_options"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.Title" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -66,32 +66,31 @@
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/filters"
-                    style="@style/chipGroup"
+                    style="@style/Chip.Group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showAll"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filterAll" />
+                        android:text="@string/radioAll" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlySystem"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filterSystem" />
+                        android:text="@string/radioSystem" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyUser"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filterUser" />
+                        android:text="@string/radioUser" />
                 </com.google.android.material.chip.ChipGroup>
-
             </HorizontalScrollView>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -99,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cards_spacing"
                 android:text="@string/other_filters_options"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.Title" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -109,62 +108,62 @@
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/otherFilters"
-                    style="@style/chipGroup"
+                    style="@style/Chip.Group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/noSpecial"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showAll" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNewAndUpdated"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNotInstalled"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotInstalled" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showNotBackedup"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotBackedup" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOldBackups"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyApkBackedUp"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlyApkBackedUp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlyDataBackedUp"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlyDataBackedUp" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showOnlySpecialBackups"
-                        style="@style/filterChip"
+                        style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOnlySpecialBackups" />

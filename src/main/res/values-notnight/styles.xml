@@ -11,7 +11,7 @@
         <item name="android:windowBackground">@color/app_background_light</item>
         <item name="backgroundColor">@color/app_background_light</item>
         <item name="colorBackgroundFloating">@color/app_primary_light</item>
-        <item name="bottomSheetDialogTheme">@style/bottomSheet</item>
+        <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:statusBarColor">@color/app_background_light</item>
     </style>
 
@@ -30,16 +30,16 @@
 
 
     <!-- Items & Sheets -->
-    <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="chipStyle">@style/filterChip</item>
+    <style name="Sheet.Bottom.Style" parent="Widget.Design.BottomSheet.Modal">
+        <item name="chipStyle">@style/Chip.Filter</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingStart">@dimen/cards_spacing</item>
         <item name="android:paddingEnd">@dimen/cards_spacing</item>
         <item name="android:paddingBottom">?actionBarSize</item>
     </style>
 
-    <style name="bottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/bottomSheetStyle</item>
+    <style name="Sheet.Bottom" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Sheet.Bottom.Style</item>
         <item name="colorPrimary">@color/app_accent_light</item>
         <item name="colorPrimaryDark">@color/app_primary_light</item>
         <item name="colorSecondary">@color/app_secondary_light</item>
@@ -48,7 +48,7 @@
 
 
     <!-- Bars -->
-    <style name="mainBarView" parent="android:Widget.TextView">
+    <style name="BarView.Main" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">20sp</item>
@@ -74,26 +74,26 @@
 
 
     <!-- Buttons & Chips -->
-    <style name="roundedButton" parent="android:Widget.Material.Button">
+    <style name="Button.Rounded" parent="android:Widget.Material.Button">
         <item name="android:background">@drawable/card_rc8</item>
         <item name="android:backgroundTint">@color/app_accent_light</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
-    <style name="chipGroup" parent="Widget.MaterialComponents.ChipGroup">
+    <style name="Chip.Group" parent="Widget.MaterialComponents.ChipGroup">
         <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
         <item name="selectionRequired">true</item>
         <item name="singleSelection">true</item>
     </style>
 
-    <style name="filterChip" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="android:textColor">?android:strokeColor</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>
     </style>
 
-    <style name="navbarButton" parent="android:Widget.Material.Button">
+    <style name="Button.NavBar" parent="android:Widget.Material.Button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>

@@ -109,13 +109,13 @@
   <string name="sched_title">Planning</string>
   <string name="sched_notificationMessage">Geplande back-up</string>
   <string name="sched_interval">Interval in dagen</string>
-  <string name="sched_hourOfDay">Uur van de dag (0..23)</string>
+  <string name="sched_hourOfDay">Uur van de dag:</string>
   <string name="sched_checkbox">Inschakelen</string>
   <string name="sched_updateButton">Update</string>
   <string name="sched_removeButton">Verwijderen</string>
   <string name="sched_activateButton">Start back-up nu</string>
   <string name="sched_startingbackup">Start gepande back-up</string>
-  <string name="sched_backupMode">Back-up modus</string>
+  <string name="sched_backupMode">Back-up modus:</string>
   <string name="sched_timeLeft">Uur tot aan volgende back-up</string>
   <string name="sched_addSchudule">Voeg planning toe</string>
   <string name="sched_customListUpdateButton">Update aangepaste lijst</string>

@@ -109,13 +109,13 @@
   <string name="sched_title">Planlegge</string>
   <string name="sched_notificationMessage">Planlegget sikkerhetskopi</string>
   <string name="sched_interval">Intervall i dager</string>
-  <string name="sched_hourOfDay">Klokkeslett (0..23)</string>
+  <string name="sched_hourOfDay">Klokkeslett:</string>
   <string name="sched_checkbox">Aktiver</string>
   <string name="sched_updateButton">Oppdater</string>
   <string name="sched_removeButton">Fjern</string>
   <string name="sched_activateButton">Start å lage sikkerhetskopien nå</string>
   <string name="sched_startingbackup">Starter planlegget sikkerhetskopi</string>
-  <string name="sched_backupMode">Metode for sikkerhetskopi</string>
+  <string name="sched_backupMode">Metode for sikkerhetskopi:</string>
   <string name="sched_timeLeft">Timer til neste sikkerhetskopien</string>
   <string name="sched_addSchudule">Legg til timeplan</string>
   <string name="sched_customListUpdateButton">Oppdater tilpasset liste</string>

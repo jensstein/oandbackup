@@ -109,13 +109,13 @@
   <string name="sched_title">harmonogramowanie</string>
   <string name="sched_notificationMessage">planowana kopia zapasowa</string>
   <string name="sched_interval">interwał w dniach</string>
-  <string name="sched_hourOfDay">godzina dnia (0..23)</string>
+  <string name="sched_hourOfDay">godzina dnia:</string>
   <string name="sched_checkbox">włącz</string>
   <string name="sched_updateButton">aktualizacja</string>
   <string name="sched_removeButton">usunąć</string>
   <string name="sched_activateButton">rozpocznij teraz tworzenie kopii zapasowej</string>
   <string name="sched_startingbackup">uruchamianie zaplanowanej kopii zapasowej</string>
-  <string name="sched_backupMode">tryb tworzenia kopii zapasowych</string>
+  <string name="sched_backupMode">tryb tworzenia kopii zapasowych:</string>
   <string name="sched_timeLeft">godziny do następnej kopii zapasowej</string>
   <string name="sched_addSchudule">dodaj harmonogram</string>
   <string name="sched_customListUpdateButton">uaktualnij listę niestandardową</string>

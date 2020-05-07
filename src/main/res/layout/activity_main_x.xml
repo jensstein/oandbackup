@@ -59,7 +59,7 @@
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_bar"
-        style="@style/mainBarView"
+        style="@style/BarView.Main"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="end"
         app:fabCradleMargin="0dp"
@@ -74,7 +74,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_batch_backup"
-                style="@style/navbarButton"
+                style="@style/Button.NavBar"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_round_backup_32"
                 android:focusable="true"
@@ -82,7 +82,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_batch_restore"
-                style="@style/navbarButton"
+                style="@style/Button.NavBar"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_round_restore_32"
                 android:focusable="true"
@@ -90,7 +90,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_scheduler"
-                style="@style/navbarButton"
+                style="@style/Button.NavBar"
                 android:clickable="true"
                 android:drawableTop="@drawable/ic_round_scheduler_32"
                 android:focusable="true"

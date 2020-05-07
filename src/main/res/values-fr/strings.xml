@@ -100,12 +100,12 @@
   <string name="sched_title">planification</string>
   <string name="sched_notificationMessage">sauvegarde planifiée</string>
   <string name="sched_interval">intervalle en jours</string>
-  <string name="sched_hourOfDay">heure de la journée (entre 0 et 23)</string>
+  <string name="sched_hourOfDay">heure de la journée:</string>
   <string name="sched_checkbox">activer</string>
   <string name="sched_updateButton"> mise à jour</string>
   <string name="sched_removeButton">enlever</string>
   <string name="sched_startingbackup">lancement de la sauvegarde planifiée</string>
-  <string name="sched_backupMode">mode de sauvegarde</string>
+  <string name="sched_backupMode">mode de sauvegarde:</string>
   <string name="sched_timeLeft">heures restantes jusqu\'à la prochaine sauvegarde</string>
   <string name="sched_addSchudule">ajouter une planification</string>
   <string name="sched_customListUpdateButton">mettre à jour la liste personnalisée</string>
