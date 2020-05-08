@@ -22,6 +22,7 @@ public class BackupRestoreHelper {
         int ret;
         File backupSubDir = new File(backupDir, app.getPackageName());
         if (!backupSubDir.exists()) backupSubDir.mkdirs();
+
         else if (backupMode != AppInfo.MODE_DATA && app.getSourceDir().length() > 0) {
             if (app.getLogInfo() != null && app.getLogInfo().getSourceDir().length() > 0
                     && !app.getSourceDir().equals(app.getLogInfo().getSourceDir())) {
@@ -38,7 +39,7 @@ public class BackupRestoreHelper {
             ret = shellCommands.backupSpecial(backupSubDir, app.getLabel(), app.getFilesList());
             app.setBackupMode(AppInfo.MODE_DATA);
         } else {
-            ret = shellCommands.doBackup(context, backupSubDir, app.getLabel(), app.getDataDir(), app.getDeviceProtectedDataDir(), app.getSourceDir(), backupMode);
+            ret = shellCommands.doBackup(context, backupSubDir, app, backupMode);
             app.setBackupMode(backupMode);
         }
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
@@ -80,7 +81,7 @@ public class BackupRestoreHelper {
                 if (app.isSpecial()) {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, app.getLabel(), app.getFilesList());
                 } else {
-                    restoreRet = shellCommands.doRestore(context, backupSubDir, app.getLabel(), app.getPackageName(), app.getLogInfo().getDataDir(), app.getDeviceProtectedDataDir());
+                    restoreRet = shellCommands.doRestore(context, backupSubDir, app);
                     permRet = shellCommands.setPermissions(dataDir);
                 }
             } else {

@@ -84,7 +84,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         errors += t.toString();
     }
 
-    public int doBackup(Context context, File backupSubDir, String label, String packageData, String deviceProtectedPackageData, String packageApk, int backupMode) {
+    public int doBackup(Context context, File backupSubDir, AppInfo app, int backupMode) {
+        String label = app.getLabel();
+        String packageData = app.getDataDir();
+        String packageApk = app.getSourceDir();
+        String packageName = app.getPackageName();
+        String deviceProtectedPackageData = app.getDeviceProtectedDataDir();
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         Log.i(TAG, "backup: " + label);
 
@@ -92,17 +97,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             writeErrorLog(label, "packageData is null. this is unexpected, please report it.");
             return 1;
         }
+
         List<String> commands = new ArrayList<>();
-
-
         switch (backupMode) {
             case AppInfo.MODE_APK:
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
+                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
                 commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
+                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
                 commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
@@ -172,9 +178,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return ret;
     }
 
-    public int doRestore(Context context, File backupSubDir, String label, String packageName, String dataDir, String deviceProtectedDataDir) {
-        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
+    public int doRestore(Context context, File backupSubDir, AppInfo app) {
+        String label = app.getLabel();
+        String packageName = app.getPackageName();
+        String dataDir = app.getLogInfo().getDataDir();
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
+        String deviceProtectedDataDir = app.getDeviceProtectedDataDir();
+        String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
         int unzipRet = -1;
         Log.i(TAG, "restoring: " + label);
 
@@ -238,9 +248,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 return 0;
             }
         } finally {
-            if (unzipRet == 0) {
+            if (unzipRet == 0)
                 deleteBackup(new File(backupSubDir, dataDirName));
-            }
             deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
         }
     }

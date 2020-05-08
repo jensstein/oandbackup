@@ -7,9 +7,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.machiav3lli.backup.ActionListener;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
+import com.machiav3lli.backup.items.AppInfo;
 
 public class BackupDialogFragment extends DialogFragment {
     private ActionListener listener;
