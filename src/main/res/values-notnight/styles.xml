@@ -87,10 +87,25 @@
     </style>
 
     <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipSurfaceColor">@color/chip_surface</item>
         <item name="android:textColor">?android:strokeColor</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
+    <style name="Chip.Action" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipSurfaceColor">@color/chip_surface</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="checkedIconTint">?colorAccent</item>
+        <item name="chipStrokeWidth">1dp</item>
     </style>
 
     <style name="Button.NavBar" parent="android:Widget.Material.Button">
@@ -100,5 +115,4 @@
         <item name="android:background">@drawable/ripple_nav_buttons</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
-
 </resources>

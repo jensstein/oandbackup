@@ -3,7 +3,7 @@
 
     <style name="TextAppearance.Label" parent="TextAppearance.AppCompat.Medium">
         <item name="android:ellipsize">end</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/main_text</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="singleLine">true</item>
     </style>
@@ -23,9 +23,9 @@
 
     <style name="TextAppearance.Button" parent="TextAppearance.AppCompat.Medium">
         <item name="android:ellipsize">end</item>
-        <item name="singleLine">true</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">?android:strokeColor</item>
+        <item name="singleLine">true</item>
     </style>
 
     <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Medium">

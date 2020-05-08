@@ -189,49 +189,49 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backup"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/backup" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/restore"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/restore" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/delete"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/deleteBackup" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/share"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/shareTitle" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/enablePackage"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/enablePackage" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/disablePackage"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/disablePackage" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/uninstall"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/uninstall" />

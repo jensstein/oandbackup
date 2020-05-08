@@ -5,11 +5,13 @@
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/main_text</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="singleLine">true</item>
     </style>
 
     <style name="TextAppearance.Secondary" parent="TextAppearance.AppCompat.Medium">
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/secondary_text</item>
+        <item name="singleLine">true</item>
     </style>
 
     <style name="TextAppearance.SearchBar" parent="TextAppearance.AppCompat.Medium">
@@ -21,9 +23,9 @@
 
     <style name="TextAppearance.Button" parent="TextAppearance.AppCompat.Medium">
         <item name="android:ellipsize">end</item>
-        <item name="singleLine">true</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">?android:strokeColor</item>
+        <item name="singleLine">true</item>
     </style>
 
     <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Medium">
