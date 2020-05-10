@@ -49,10 +49,10 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
     static final String TAG = Constants.TAG;
+    long threadId = -1;
+    final static int RESULT_OK = 0;
     ArrayList<AppInfo> originalList = MainActivityX.originalList;
     boolean backupBoolean;
-
-    final static int RESULT_OK = 0;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -79,15 +79,13 @@ public class BatchActivityX extends BaseActivity
     ArrayList<BatchItemX> list;
     ItemAdapter<BatchItemX> itemAdapter;
     FastAdapter<BatchItemX> fastAdapter;
-
     File backupDir;
-    PowerManager powerManager;
-    SharedPreferences prefs;
 
     HandleMessages handleMessages;
+    SharedPreferences prefs;
+    PowerManager powerManager;
+    ArrayList<String> users;
     ShellCommands shellCommands;
-
-    long threadId = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +94,10 @@ public class BatchActivityX extends BaseActivity
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        shellCommands = new ShellCommands(this, prefs, getFilesDir());
+        users = new ArrayList<>();
+        if (savedInstanceState != null)
+            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
+        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
 
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);

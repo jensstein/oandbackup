@@ -51,6 +51,7 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     int notificationId = (int) System.currentTimeMillis();
+    AppInfo app;
 
     @BindView(R.id.label)
     AppCompatTextView label;
@@ -81,11 +82,12 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @BindView(R.id.share)
     Chip share;
 
-    AppInfo app;
+
+    HandleMessages handleMessages;
+    ArrayList<String> users;
     ShellCommands shellCommands;
     String backupDirPath;
     File backupDir;
-    HandleMessages handleMessages;
 
     public AppSheet(MainItemX item) {
         this.app = item.getApp();
@@ -101,10 +103,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             if (bottomSheet != null)
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
-        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), requireContext().getFilesDir());
+        handleMessages = new HandleMessages(requireContext());
+        users = new ArrayList<>();
+        if (savedInstanceState != null)
+            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
+        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
         backupDirPath = Utils.getPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
         backupDir = Utils.createBackupDir(getActivity(), backupDirPath);
-        handleMessages = new HandleMessages(getContext());
         return sheet;
     }
 
@@ -177,17 +182,14 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     @Override
     public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
-        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            new BackupTask(app, handleMessages, (MainActivityX) getActivity(),
-                    backupDir, shellCommands, mode)
+        if (actionType == BackupRestoreHelper.ActionType.BACKUP)
+            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, shellCommands, mode)
                     .execute();
-        } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            new RestoreTask(app, handleMessages, (MainActivityX) getActivity(),
-                    backupDir, shellCommands, mode)
+        else if (actionType == BackupRestoreHelper.ActionType.RESTORE)
+            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, shellCommands, mode)
                     .execute();
-        } else {
+        else
             Log.e(Constants.TAG, "unknown actionType: " + actionType);
-        }
     }
 
     @OnClick(R.id.backup)

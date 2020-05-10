@@ -45,6 +45,7 @@ public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     static final String TAG = Constants.TAG;
     static final int BATCH_REQUEST = 1;
+    long threadId = -1;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -55,18 +56,18 @@ public class MainActivityX extends BaseActivity
     @BindView(R.id.bottom_bar)
     BottomAppBar bottomBar;
 
-    SharedPreferences prefs;
-    File backupDir = IntroActivity.backupDir;
     public static ArrayList<AppInfo> originalList = IntroActivity.originalList;
+    File backupDir = IntroActivity.backupDir;
     ArrayList<MainItemX> list;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
     AppSheet sheetApp;
 
-    long threadId = -1;
 
     HandleMessages handleMessages;
+    SharedPreferences prefs;
+    ArrayList<String> users;
     ShellCommands shellCommands;
 
     @Override
@@ -75,7 +76,10 @@ public class MainActivityX extends BaseActivity
         setContentView(R.layout.activity_main_x);
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
-        shellCommands = new ShellCommands(this, prefs, getFilesDir());
+        users = new ArrayList<>();
+        if (savedInstanceState != null)
+            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
+        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
 
         ButterKnife.bind(this);
         if (savedInstanceState != null) {
@@ -191,13 +195,13 @@ public class MainActivityX extends BaseActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
                 String backupDirPath = getDefaultBackupDirPath(this);
                 backupDir = Utils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_BUSYBOX:
-                shellCommands = new ShellCommands(this, prefs, getFilesDir());
+                shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
                 if (!shellCommands.checkBusybox())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:

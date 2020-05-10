@@ -44,9 +44,9 @@ public class IntroActivity extends BaseActivity {
     public static ArrayList<AppInfo> originalList;
 
     SharedPreferences prefs;
-    HandleMessages handleMessages;
-    ShellCommands shellCommands;
     ArrayList<String> users;
+    ShellCommands shellCommands;
+    HandleMessages handleMessages;
     public static File backupDir;
 
     @BindView(R.id.action)
@@ -63,8 +63,8 @@ public class IntroActivity extends BaseActivity {
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         users = new ArrayList<>();
         checkRun(savedInstanceState);
-        handleMessages = new HandleMessages(this);
         shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
+        handleMessages = new HandleMessages(this);
 
         if (!checkPermissions())
             btn.setOnClickListener(v -> getPermissions());
