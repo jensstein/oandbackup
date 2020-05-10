@@ -19,7 +19,6 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.fragments.AppSheet;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.SortFilterManager;
@@ -39,6 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.machiav3lli.backup.Constants.classAddress;
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 
 public class MainActivityX extends BaseActivity
@@ -75,7 +75,7 @@ public class MainActivityX extends BaseActivity
         setContentView(R.layout.activity_main_x);
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
-        shellCommands = new ShellCommands(prefs, getFilesDir());
+        shellCommands = new ShellCommands(this, prefs, getFilesDir());
 
         ButterKnife.bind(this);
         if (savedInstanceState != null) {
@@ -194,11 +194,10 @@ public class MainActivityX extends BaseActivity
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                String backupDirPath = prefs.getString(key, FileCreationHelper.getDefaultBackupDirPath());
-                assert backupDirPath != null;
+                String backupDirPath = getDefaultBackupDirPath(this);
                 backupDir = Utils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_BUSYBOX:
-                shellCommands = new ShellCommands(prefs, getFilesDir());
+                shellCommands = new ShellCommands(this, prefs, getFilesDir());
                 if (!shellCommands.checkBusybox())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:

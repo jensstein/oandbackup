@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultLogFilePath;
+
 public class ShellCommands implements CommandHandler.UnexpectedExceptionListener {
     final static String TAG = Constants.TAG;
     public final static String EXTERNAL_FILES = "external_files";
@@ -42,15 +44,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     SharedPreferences prefs;
     String busybox;
     ArrayList<String> users;
+    Context context;
     private static String errors = "";
     boolean multiuserEnabled;
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
     private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
 
-    public ShellCommands(SharedPreferences prefs, ArrayList<String> users,
-                         File filesDir) {
+    public ShellCommands(Context context, SharedPreferences prefs, ArrayList<String> users, File filesDir) {
         this.users = users;
         this.prefs = prefs;
+        this.context = context;
         String defaultBox = "toybox";
         busybox = prefs.getString(Constants.PREFS_PATH_BUSYBOX, defaultBox).trim();
         if (busybox.length() == 0) {
@@ -72,19 +75,19 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         legacyMode = !checkOabUtils();
     }
 
-    public ShellCommands(SharedPreferences prefs, File filesDir) {
-        this(prefs, null, filesDir);
+    public ShellCommands(Context context, SharedPreferences prefs, File filesDir) {
+        this(context, prefs, null, filesDir);
         // initialize with userlist as null. getUsers checks if list is null and simply returns it if isn't and if its size is greater than 0.
     }
 
     @Override
     public void onUnexpectedException(Throwable t) {
         Log.e(TAG, "unexpected exception caught", t);
-        writeErrorLog("", t.toString());
+        writeErrorLog(context, "", t.toString());
         errors += t.toString();
     }
 
-    public int doBackup(Context context, File backupSubDir, AppInfo app, int backupMode) {
+    public int doBackup(File backupSubDir, AppInfo app, int backupMode) {
         String label = app.getLabel();
         String packageData = app.getDataDir();
         String packageApk = app.getSourceDir();
@@ -94,7 +97,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Log.i(TAG, "backup: " + label);
 
         if (packageData == null) {
-            writeErrorLog(label, "packageData is null. this is unexpected, please report it.");
+            writeErrorLog(context, label, "packageData is null. this is unexpected, please report it.");
             return 1;
         }
 
@@ -123,7 +126,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
         }
 
-        File externalFilesDir = getExternalFilesDirPath(context, packageData);
+        File externalFilesDir = getExternalFilesDirPath(packageData);
         File backupSubDirExternalFiles = null;
         if (backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
             backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
@@ -145,10 +148,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 errors::add, e -> {
                     Log.e(TAG, String.format("Exception caught running: %s",
                             TextUtils.join(", ", commands)), e);
-                    writeErrorLog(label, e.toString());
+                    writeErrorLog(context, label, e.toString());
                 }, this);
 
-        for (String line : errors) writeErrorLog(label, line);
+        for (String line : errors) writeErrorLog(context, label, line);
 
         if (backupSubDirPath.startsWith(context.getApplicationInfo().dataDir)) {
             /*
@@ -178,7 +181,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return ret;
     }
 
-    public int doRestore(Context context, File backupSubDir, AppInfo app) {
+    public int doRestore(File backupSubDir, AppInfo app) {
         String label = app.getLabel();
         String packageName = app.getPackageName();
         String dataDir = app.getLogInfo().getDataDir();
@@ -189,7 +192,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Log.i(TAG, "restoring: " + label);
 
         try {
-            killPackage(context, packageName);
+            killPackage(packageName);
             File zipFile = new File(backupSubDir, dataDirName + ".zip");
             if (zipFile.exists())
                 unzipRet = Compression.unzip(zipFile, backupSubDir);
@@ -237,7 +240,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
                 int ret = commandHandler.runCmd("su", commands, line -> {
                         },
-                        line -> writeErrorLog(label, line),
+                        line -> writeErrorLog(context, label, line),
                         e -> Log.e(TAG, "doRestore: " + e.toString()), this);
                 if (multiuserEnabled) {
                     disablePackage(packageName);
@@ -264,7 +267,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("cp -r " + file + " " + backupSubDirPath);
         int ret = commandHandler.runCmd("su", commands, line -> {
                 },
-                line -> writeErrorLog(label, line),
+                line -> writeErrorLog(context, label, line),
                 e -> Log.e(TAG, "backupSpecial: " + e.toString()), this);
         if (files != null) {
             for (String file : files) {
@@ -304,7 +307,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                                 toDelete.add(filename);
                             } else {
                                 unzipRet += ret;
-                                writeErrorLog(label, "error unzipping " + file);
+                                writeErrorLog(context, label, "error unzipping " + file);
                                 continue;
                             }
                         }
@@ -319,7 +322,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
             int ret = commandHandler.runCmd("su", commands, line -> {
                     },
-                    line -> writeErrorLog(label, line),
+                    line -> writeErrorLog(context, label, line),
                     e -> Log.e(TAG, "restoreSpecial: " + e.toString()), this);
             return ret + unzipRet;
         } catch (IndexOutOfBoundsException | OwnershipException e) {
@@ -351,7 +354,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         List<String> result = new ArrayList<>();
         if (!legacyMode) {
             commandHandler.runCmd(shellPrivs, String.format("%s owner %s", oabUtils, packageDir),
-                    result::add, line -> writeErrorLog("oab-utils", line),
+                    result::add, line -> writeErrorLog(context, "oab-utils", line),
                     e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
             if (result.size() != 1) {
                 if (result.size() < 1) {
@@ -386,7 +389,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             // you don't need su for stat - you do for ls -l /data/
             // and for stat on single files
             int ret = commandHandler.runCmd(shellPrivs, result, sb::append,
-                    line -> writeErrorLog("", line),
+                    line -> writeErrorLog(context, "", line),
                     e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
             Log.i(TAG, "getOwnership return: " + ret);
             ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
@@ -419,13 +422,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             // midlertidig indtil mere detaljeret som i fix_permissions l.367
             int ret = commandHandler.runCmd("su", commands, line -> {
                     },
-                    line -> writeErrorLog(packageDir, line),
+                    line -> writeErrorLog(context, packageDir, line),
                     e -> Log.e(TAG, "error while setPermissions: " + e.toString()), this);
             Log.i(TAG, "setPermissions return: " + ret);
             return ret;
         } catch (IndexOutOfBoundsException | OwnershipException e) {
             Log.e(TAG, "error while setPermissions: " + e.toString());
-            writeErrorLog("", "setPermissions error: could not find permissions for " + packageDir);
+            writeErrorLog(context, "", "setPermissions error: could not find permissions for " + packageDir);
         }
         return 1;
     }
@@ -486,7 +489,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         int limit = 1;
         if (err.size() > limit) {
             for (String line : err) {
-                writeErrorLog(label, line);
+                writeErrorLog(context, label, line);
             }
             return 1;
         } else {
@@ -514,7 +517,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         commands.add("mount -o remount,ro /system");
         return commandHandler.runCmd("su", commands, line -> {
                 },
-                line -> writeErrorLog(label, line),
+                line -> writeErrorLog(context, label, line),
                 e -> Log.e(TAG, "restoreSystemApk: ", e), this);
     }
 
@@ -559,7 +562,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     // ignore errors if it is only that the directory doesn't exist for rm to remove
                     ret = 0;
                 } else {
-                    writeErrorLog(packageName, line);
+                    writeErrorLog(context, packageName, line);
                 }
             }
         }
@@ -573,7 +576,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         commands.add(busybox + " pkill system_server");
         commandHandler.runCmd("su", commands, line -> {
                 },
-                line -> writeErrorLog("", line),
+                line -> writeErrorLog(context, "", line),
                 e -> Log.e(TAG, "quickReboot: ", e), this);
     }
 
@@ -587,7 +590,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    public void killPackage(Context context, String packageName) {
+    public void killPackage(String packageName) {
         List<ActivityManager.RunningAppProcessInfo> runningList;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         runningList = manager.getRunningAppProcesses();
@@ -597,24 +600,24 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("kill " + process.pid);
                 commandHandler.runCmd("su", commands, line -> {
                         },
-                        line -> writeErrorLog(packageName, line),
+                        line -> writeErrorLog(context, packageName, line),
                         e -> Log.e(TAG, "killPackage: ", e), this);
             }
         }
     }
 
-    public void logReturnMessage(Context context, int returnCode) {
+    public void logReturnMessage(int returnCode) {
         String returnMessage = returnCode == 0 ? context.getString(R.string.shellReturnSuccess) : context.getString(R.string.shellReturnError);
         Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
     }
 
-    public static void writeErrorLog(String packageName, String err) {
+    public static void writeErrorLog(Context context, String packageName, String err) {
         errors += packageName + ": " + err + "\n";
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
         String dateFormated = dateFormat.format(date);
         try {
-            File outFile = new FileCreationHelper().createLogFile(FileCreationHelper.getDefaultLogFilePath());
+            File outFile = new FileCreationHelper().createLogFile(context, getDefaultLogFilePath(context));
             if (outFile != null) {
                 try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
                         true);
@@ -642,7 +645,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public boolean checkBusybox(String busyboxPath) {
         int ret = commandHandler.runCmd("sh", busyboxPath,
                 line -> {
-                }, line -> writeErrorLog("busybox", line),
+                }, line -> writeErrorLog(context, "busybox", line),
                 e -> Log.e(TAG, "checkBusybox: ", e), this);
         return ret == 0;
     }
@@ -650,7 +653,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public boolean checkOabUtils() {
         int ret = commandHandler.runCmd("su", String.format("%s -h", oabUtils),
                 line -> {
-                }, line -> writeErrorLog("oab-utils", line),
+                }, line -> writeErrorLog(context, "oab-utils", line),
                 e -> Log.e(TAG, "checkOabUtils: ", e), this);
         Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
         if (ret != 0) {
@@ -659,10 +662,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(String.format("file %s", oabUtils));
             commandHandler.runCmd("su", commands, line -> {
                 Log.i(TAG, "oab-utils" + line);
-                writeErrorLog("oab-utils", line);
+                writeErrorLog(context, "oab-utils", line);
             }, line -> {
                 Log.e(TAG, "oab-utils" + line);
-                writeErrorLog("oab-utils", line);
+                writeErrorLog(context, "oab-utils", line);
             }, e -> Log.e(TAG, "checkOabUtils (ret != 0): ", e), this);
         }
         return ret == 0;
@@ -692,7 +695,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("mount -o remount,ro /system");
                 commandHandler.runCmd("su", commands, line -> {
                         },
-                        line -> writeErrorLog(packageName, line),
+                        line -> writeErrorLog(context, packageName, line),
                         e -> Log.e(TAG, "copyNativeLibraries: ", e), this);
             }
             deleteBackup(new File(outputDir, "lib"));
@@ -710,7 +713,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             int ret = commandHandler.runCmd("su", commands, line -> {
                         if (line.trim().length() != 0)
                             users.add(line.trim());
-                    }, line -> writeErrorLog("", line),
+                    }, line -> writeErrorLog(context, "", line),
                     e -> Log.e(TAG, "getUsers: ", e), this);
             return ret == 0 ? users : null;
         }
@@ -753,7 +756,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("pm " + option + " --user " + user + " " + packageName);
                 commandHandler.runCmd("su", commands, line -> {
                         },
-                        line -> writeErrorLog(packageName, line),
+                        line -> writeErrorLog(context, packageName, line),
                         e -> Log.e(TAG, "enableDisablePackage: ", e), this);
             }
         }
@@ -785,7 +788,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 disable + "; fi; done");
         commandHandler.runCmd("su", commands, line -> {
                 },
-                line -> writeErrorLog(packageName, line),
+                line -> writeErrorLog(context, packageName, line),
                 e -> Log.e(TAG, "disablePackage: ", e), this);
     }
 
@@ -811,12 +814,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             commands.add(busybox + " cp " + apkPath + " " + parent);
             commandHandler.runCmd("sh", commands, line -> {
                     },
-                    line -> writeErrorLog("", line),
+                    line -> writeErrorLog(context, "", line),
                     e -> Log.e(TAG, "copySelfApk: ", e), this);
         }
     }
 
-    public File getExternalFilesDirPath(Context context, String packageData) {
+    public File getExternalFilesDirPath(String packageData) {
         String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
         // get path of own externalfilesdir and then cutting at the packagename to get the general path
         externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));

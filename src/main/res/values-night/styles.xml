@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/app_accent_dark</item>
         <item name="colorPrimaryDark">@color/app_primary_dark</item>
@@ -14,20 +13,6 @@
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:statusBarColor">@color/app_background_dark</item>
     </style>
-
-    <style name="FilePickerTheme" parent="NNF_BaseTheme">
-        <item name="android:backgroundTint">@color/app_background_dark</item>
-        <item name="colorBackgroundFloating">@color/app_background_dark</item>
-        <item name="nnf_dir_icon_color">@color/app_accent_dark</item>
-        <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
-    </style>
-
-    <style name="FilePickerAlertDialogTheme" parent="Theme.MaterialComponents.Dialog.Alert">
-        <item name="colorPrimary">@color/app_accent_dark</item>
-        <item name="colorPrimaryDark">@color/app_primary_dark</item>
-        <item name="colorAccent">@color/app_accent_dark</item>
-    </style>
-
 
     <!-- Items & Sheets -->
     <style name="Sheet.Bottom.Style" parent="Widget.Design.BottomSheet.Modal">

@@ -39,12 +39,12 @@ public class BackupRestoreHelper {
             ret = shellCommands.backupSpecial(backupSubDir, app.getLabel(), app.getFilesList());
             app.setBackupMode(AppInfo.MODE_DATA);
         } else {
-            ret = shellCommands.doBackup(context, backupSubDir, app, backupMode);
+            ret = shellCommands.doBackup(backupSubDir, app, backupMode);
             app.setBackupMode(backupMode);
         }
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
 
-        shellCommands.logReturnMessage(context, ret);
+        shellCommands.logReturnMessage(ret);
         LogFile.writeLogFile(backupSubDir, app, backupMode);
         return ret;
     }
@@ -72,7 +72,7 @@ public class BackupRestoreHelper {
             } else if (!app.isSpecial()) {
                 String s = "no apk to install: " + app.getPackageName();
                 Log.e(TAG, s);
-                ShellCommands.writeErrorLog(app.getPackageName(), s);
+                ShellCommands.writeErrorLog(context, app.getPackageName(), s);
                 apkRet = 1;
             }
         }
@@ -81,19 +81,19 @@ public class BackupRestoreHelper {
                 if (app.isSpecial()) {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, app.getLabel(), app.getFilesList());
                 } else {
-                    restoreRet = shellCommands.doRestore(context, backupSubDir, app);
+                    restoreRet = shellCommands.doRestore(backupSubDir, app);
                     permRet = shellCommands.setPermissions(dataDir);
                 }
             } else {
                 Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + app.getPackageName());
                 apkRet = 1;
-                ShellCommands.writeErrorLog(app.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
+                ShellCommands.writeErrorLog(context, app.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
             }
         }
         int ret = apkRet + restoreRet + permRet + cryptoRet;
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
 
-        shellCommands.logReturnMessage(context, ret);
+        shellCommands.logReturnMessage(ret);
         return ret;
     }
 

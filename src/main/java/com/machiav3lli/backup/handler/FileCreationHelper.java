@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.handler;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -10,27 +11,27 @@ import java.io.IOException;
 
 public class FileCreationHelper {
     final static String TAG = Constants.TAG;
-    public static String defaultBackupDirPath = Environment.getExternalStorageDirectory() + "/oandbackupsx";
-    public final static String defaultLogFilePath = defaultBackupDirPath + "/oandbackupx.log";
-    boolean fallbackFlag;
+    final static String defaultBackupFolder = Environment.getExternalStorageDirectory() + "/oandbackupsx";
+    final static String defaultLogFileName = defaultBackupFolder + "/oandbackupx.log";
+    private boolean fallbackFlag;
 
-    public static String getDefaultBackupDirPath() {
-        return defaultBackupDirPath;
+    public static String getDefaultBackupDirPath(Context context) {
+        return Utils.getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder);
     }
 
-    public static void setDefaultBackupDirPath(String backupDirPath) {
-        defaultBackupDirPath = backupDirPath;
+    public static String getDefaultLogFilePath(Context context) {
+        return Utils.getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder) + defaultLogFileName;
     }
 
-    public static String getDefaultLogFilePath() {
-        return defaultLogFilePath;
+    public static void setDefaultBackupDirPath(Context context, String path) {
+        Utils.setPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, path);
     }
 
     public boolean isFallenBack() {
         return fallbackFlag;
     }
 
-    public File createBackupFolder(String path) {
+    public File createBackupFolder(Context context, String path) {
         fallbackFlag = false;
         File dir = new File(path);
         if (!dir.exists()) {
@@ -38,7 +39,7 @@ public class FileCreationHelper {
             if (!created) {
                 fallbackFlag = true;
                 Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
-                dir = new File(defaultBackupDirPath);
+                dir = new File(getDefaultBackupDirPath(context));
                 if (!dir.exists()) {
                     boolean defaultCreated = dir.mkdirs();
                     if (!defaultCreated) {
@@ -51,14 +52,14 @@ public class FileCreationHelper {
         return dir;
     }
 
-    public File createLogFile(String path) {
+    public File createLogFile(Context context, String path) {
         File file = new File(path);
         try {
             try {
                 file.createNewFile();
                 return file;
             } catch (IOException e) {
-                file = new File(defaultLogFilePath);
+                file = new File(getDefaultLogFilePath(context));
                 file.createNewFile();
                 return file;
             }
@@ -66,14 +67,6 @@ public class FileCreationHelper {
             Log.e(TAG, String.format(
                     "Caught exception when creating log file: %s", e));
             return null;
-        }
-    }
-
-    public void moveLogfile(String path) {
-        if (!path.equals(defaultLogFilePath)) {
-            File srcFile = new File(path);
-            File dstFile = new File(defaultLogFilePath);
-            srcFile.renameTo(dstFile);
         }
     }
 }

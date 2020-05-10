@@ -24,7 +24,6 @@ import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
@@ -45,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.machiav3lli.backup.Constants.classAddress;
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -96,7 +96,7 @@ public class BatchActivityX extends BaseActivity
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        shellCommands = new ShellCommands(prefs, getFilesDir());
+        shellCommands = new ShellCommands(this, prefs, getFilesDir());
 
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
@@ -105,9 +105,7 @@ public class BatchActivityX extends BaseActivity
         if (getIntent().getExtras() != null)
             backupBoolean = getIntent().getExtras().getBoolean(classAddress(".backupBoolean"));
 
-        String backupDirPath = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
-                FileCreationHelper.getDefaultBackupDirPath());
-        assert backupDirPath != null;
+        String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
         if (originalList == null) originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                 prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
@@ -287,11 +285,10 @@ public class BatchActivityX extends BaseActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                String backupDirPath = sharedPreferences.getString(key, FileCreationHelper.getDefaultBackupDirPath());
-                assert backupDirPath != null;
+                String backupDirPath = getDefaultBackupDirPath(this);
                 backupDir = Utils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_BUSYBOX:
-                shellCommands = new ShellCommands(sharedPreferences, getFilesDir());
+                shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
                 if (!shellCommands.checkBusybox())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:

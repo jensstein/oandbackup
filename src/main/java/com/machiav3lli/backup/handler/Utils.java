@@ -11,9 +11,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 
 import java.io.File;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class Utils {
 
@@ -39,16 +42,14 @@ public class Utils {
         FileCreationHelper fileCreator = new FileCreationHelper();
         File backupDir;
         if (path.trim().length() > 0) {
-            backupDir = fileCreator.createBackupFolder(path);
+            backupDir = fileCreator.createBackupFolder(activity, path);
             if (fileCreator.isFallenBack()) {
-                activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + FileCreationHelper.getDefaultBackupDirPath(), Toast.LENGTH_LONG).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + getDefaultBackupDirPath(activity), Toast.LENGTH_LONG).show());
             }
-        } else {
-            backupDir = fileCreator.createBackupFolder(FileCreationHelper.getDefaultBackupDirPath());
-        }
-        if (backupDir == null) {
-            showWarning(activity, activity.getString(R.string.mkfileError) + " " + FileCreationHelper.getDefaultBackupDirPath(), activity.getString(R.string.backupFolderError));
-        }
+        } else
+            backupDir = fileCreator.createBackupFolder(activity, getDefaultBackupDirPath(activity));
+        if (backupDir == null)
+            showWarning(activity, activity.getString(R.string.mkfileError) + " " + getDefaultBackupDirPath(activity), activity.getString(R.string.backupFolderError));
         return backupDir;
     }
 
@@ -113,12 +114,16 @@ public class Utils {
         }
     }
 
+    public static String getPrefsString(Context context, String key, String def) {
+        return context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getString(key, def);
+    }
+
     public static String getPrefsString(Context context, String key) {
-        return context.getSharedPreferences("com.machiav3lli.backup", Context.MODE_PRIVATE).getString(key, "");
+        return getPrefsString(context, key, "");
     }
 
     public static void setPrefsString(Context context, String key, String value) {
-        context.getSharedPreferences("com.machiav3lli.backup", Context.MODE_PRIVATE).edit().putString(key, value).apply();
+        context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).edit().putString(key, value).apply();
     }
 
 }

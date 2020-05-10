@@ -14,7 +14,6 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
@@ -24,6 +23,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class HandleScheduledBackups {
     static final String TAG = Constants.TAG;
@@ -38,7 +39,7 @@ public class HandleScheduledBackups {
     public HandleScheduledBackups(Context context) {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        shellCommands = new ShellCommands(prefs, context.getFilesDir());
+        shellCommands = new ShellCommands(context, prefs, context.getFilesDir());
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         listeners = new ArrayList<>();
     }
@@ -51,7 +52,7 @@ public class HandleScheduledBackups {
         new Thread(() -> {
             String backupDirPath = prefs.getString(
                     Constants.PREFS_PATH_BACKUP_DIRECTORY,
-                    FileCreationHelper.getDefaultBackupDirPath());
+                    getDefaultBackupDirPath(context));
             assert backupDirPath != null;
             backupDir = new File(backupDirPath);
             ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(
@@ -100,9 +101,7 @@ public class HandleScheduledBackups {
                 case R.id.schedCustomList:
                     // custom package list
                     listToBackUp = new ArrayList<>();
-                    FileReaderWriter frw = new FileReaderWriter(
-                            prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
-                                    FileCreationHelper.defaultBackupDirPath),
+                    FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
                     for (AppInfo appInfo : list) {
                         if (frw.contains(appInfo.getPackageName())) {

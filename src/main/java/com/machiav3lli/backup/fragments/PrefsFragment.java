@@ -1,10 +1,11 @@
 package com.machiav3lli.backup.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,19 +19,19 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.PrefsActivity;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.LanguageHelper;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
-import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.handler.FileCreationHelper.setDefaultBackupDirPath;
 
 
 public class PrefsFragment extends PreferenceFragmentCompat {
@@ -54,7 +55,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     break;
                 case "dark":
-
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     break;
                 default:
@@ -64,28 +64,23 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         });
 
         findPreference(Constants.PREFS_LANGUAGES).setOnPreferenceChangeListener((preference, newValue) -> {
-            if (LanguageHelper.changeLanguage(getContext(),
-                    getPreferenceManager().getSharedPreferences().getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT))) {
-                com.machiav3lli.backup.handler.Utils.reloadWithParentStack(requireActivity());
-            }
+            if (LanguageHelper.changeLanguage(requireContext(), Utils.getPrefsString(
+                    requireContext(), Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
+                Utils.reloadWithParentStack(requireActivity());
             return true;
         });
 
         Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
-        pref.setSummary(FileCreationHelper.getDefaultBackupDirPath());
+        pref.setSummary(getDefaultBackupDirPath(requireContext()));
         pref.setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent(getActivity(), FilePickerActivity.class);
-            intent.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-            intent.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_DIR);
-            intent.putExtra(FilePickerActivity.EXTRA_START_PATH, FileCreationHelper.getDefaultBackupDirPath());
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             startActivityForResult(intent, DEFAULT_DIR_CODE);
             return true;
         });
 
         ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
-        shellCommands = new ShellCommands(androidx.preference.PreferenceManager
-                .getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
+        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
         findPreference(Constants.PREFS_QUICK_REBOOT).setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.quickRebootTitle)
@@ -118,7 +113,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
                         .setNegativeButton(R.string.dialogNo, null)
                         .show();
             } else {
-                Toast.makeText(getActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show();
             }
             return true;
         });
@@ -134,24 +129,24 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         });
     }
 
-    private void setDefaultDir(String dir) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(requireContext()).edit();
-        editor.putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
-        editor.apply();
-        FileCreationHelper.setDefaultBackupDirPath(dir);
+    private void setDefaultDir(Context context, String dir) {
+        Utils.setPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
+        setDefaultBackupDirPath(context, dir);
         findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY).setSummary(dir);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == DEFAULT_DIR_CODE) {
-            Uri uri = data == null ? null : data.getData();
+        if (requestCode == DEFAULT_DIR_CODE && data != null) {
+            Uri uri = data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
-                String oldDir = FileCreationHelper.getDefaultBackupDirPath();
-                String newDir = com.nononsenseapps.filepicker.Utils.getFileForUri(uri).getPath();
+                String oldDir = getDefaultBackupDirPath(requireContext());
+                String newPath = uri.getLastPathSegment().replace("primary:", "/");
+                String newDir = Environment.getExternalStorageDirectory() + newPath;
                 if (!oldDir.equals(newDir)) {
-                    setDefaultDir(newDir);
+                    Log.i(TAG, "setting uri " + newDir);
+                    setDefaultDir(requireContext(), newDir);
                 }
             }
         }
@@ -176,6 +171,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             }
         }
         handleMessages.endMessage();
-        NotificationHelper.showNotification(getContext(), PrefsActivity.class, (int) System.currentTimeMillis(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size(), false);
+        NotificationHelper.showNotification(requireContext(), PrefsActivity.class, (int) System.currentTimeMillis(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size(), false);
     }
 }

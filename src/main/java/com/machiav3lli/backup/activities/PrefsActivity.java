@@ -22,10 +22,4 @@ public class PrefsActivity extends BaseActivity {
         ButterKnife.bind(this);
         back.setOnClickListener(v -> onBackPressed());
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
-        return true;
-    }
 }

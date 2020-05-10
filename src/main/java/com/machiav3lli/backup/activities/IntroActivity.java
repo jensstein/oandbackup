@@ -23,7 +23,6 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.AssetsHandler;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
@@ -38,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.TAG;
@@ -64,7 +64,7 @@ public class IntroActivity extends BaseActivity {
         users = new ArrayList<>();
         checkRun(savedInstanceState);
         handleMessages = new HandleMessages(this);
-        shellCommands = new ShellCommands(prefs, users, getFilesDir());
+        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
 
         if (!checkPermissions())
             btn.setOnClickListener(v -> getPermissions());
@@ -155,9 +155,8 @@ public class IntroActivity extends BaseActivity {
 
     private void launchMainActivity() {
         btn.setVisibility(View.GONE);
-        String backupDirPath = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY,
-                FileCreationHelper.getDefaultBackupDirPath());
-        assert backupDirPath != null;
+
+        String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
         originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                 PreferenceManager.getDefaultSharedPreferences(this)

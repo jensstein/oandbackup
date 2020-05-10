@@ -14,12 +14,13 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultLogFilePath;
 
 public class LogsFragment extends Fragment {
 
@@ -74,7 +75,7 @@ public class LogsFragment extends Fragment {
 
     private class TextLoadRunnable implements Runnable {
         public void run() {
-            String txt = new FileReaderWriter(FileCreationHelper.defaultLogFilePath).read();
+            String txt = new FileReaderWriter(getDefaultLogFilePath(requireContext())).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
             requireActivity().runOnUiThread(() -> appendNextLines(true));

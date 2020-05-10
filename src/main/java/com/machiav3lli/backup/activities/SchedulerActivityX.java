@@ -23,7 +23,6 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 import com.machiav3lli.backup.fragments.ScheduleSheet;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.items.SchedulerItemX;
 import com.machiav3lli.backup.schedules.BlacklistContract;
@@ -46,6 +45,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 
 public class SchedulerActivityX extends BaseActivity
@@ -213,16 +214,12 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     public void renameCustomListFile(long id, long destinationId) {
-        FileReaderWriter frw = new FileReaderWriter(prefs.getString(
-                Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
-                        .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + id);
+        FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
 
     public void removeCustomListFile(long number) {
-        FileReaderWriter frw = new FileReaderWriter(prefs.getString(
-                Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
-                        .getDefaultBackupDirPath()), SCHEDULECUSTOMLIST + number);
+        FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
 

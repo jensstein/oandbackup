@@ -1,21 +1,19 @@
 package com.machiav3lli.backup.schedules;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.annimon.stream.Optional;
-import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.items.AppInfo;
 
 import java.util.ArrayList;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class CustomPackageList {
     static Optional<ArrayList<AppInfo>> appInfoList = Optional.ofNullable(
@@ -27,10 +25,7 @@ public class CustomPackageList {
     }
 
     public static void showList(Activity activity, String filename) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        final FileReaderWriter frw = new FileReaderWriter(prefs.getString(
-                Constants.PREFS_PATH_BACKUP_DIRECTORY, FileCreationHelper
-                        .getDefaultBackupDirPath()), filename);
+        final FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(activity), filename);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<>();
         boolean[] checked = new boolean[items.length];

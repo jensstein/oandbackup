@@ -29,7 +29,6 @@ import com.machiav3lli.backup.dialogs.BackupDialogFragment;
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment;
 import com.machiav3lli.backup.dialogs.ShareDialogFragment;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.FileCreationHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
@@ -47,6 +46,8 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     int notificationId = (int) System.currentTimeMillis();
@@ -100,7 +101,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             if (bottomSheet != null)
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
-        shellCommands = new ShellCommands(PreferenceManager.getDefaultSharedPreferences(requireContext()), requireContext().getFilesDir());
+        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), requireContext().getFilesDir());
         backupDirPath = Utils.getPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
         backupDir = Utils.createBackupDir(getActivity(), backupDirPath);
         handleMessages = new HandleMessages(getContext());
@@ -233,7 +234,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     @OnClick(R.id.share)
     public void share() {
-        File backupDir = Utils.createBackupDir(getActivity(), FileCreationHelper.getDefaultBackupDirPath());
+        File backupDir = Utils.createBackupDir(getActivity(), getDefaultBackupDirPath(requireContext()));
         File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
         String dataPath = app.getLogInfo().getDataDir();
         dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
