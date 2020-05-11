@@ -96,16 +96,17 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // -L because fat (which will often be used to store the backup files)
         // doesn't support symlinks
         String followSymlinks = prefs.getBoolean("followSymlinks", true) ? "L" : "";
+        String skipCache = prefs.getBoolean("skipCache", false) ? " --exclude cache" : "";
         switch(backupMode)
         {
             case AppInfo.MODE_APK:
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
-                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                commands.add("rsync -r" + followSymlinks + skipCache + " " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
-                commands.add("cp -R" + followSymlinks + " " + packageData + " " + backupSubDirPath);
+                commands.add("rsync -r" + followSymlinks + skipCache + " " + packageData + " " + backupSubDirPath);
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
@@ -133,7 +134,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     TextUtils.join(", ", commands)), e);
                 writeErrorLog(label, e.toString());
             }, this);
-        if(errors.size() == 1 ) {
+        if(errors.size() == 2 ) { // 2, because rsync adds another line when there is an error
             String line = errors.get(0);
             // ignore error if it is about /lib while followSymlinks
             // is false or if it is about /lock in the data of firefox
