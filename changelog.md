@@ -1,6 +1,15 @@
 changelog
 =========
 
+0.9.11 (11.05.2020)
+-------------------
+* added: clear cache before backing up
+* updated: chips styling
+* added: prompt for battery optimization exclusion
+* fixed: the profiles bug (needs testing)
+* switched: from FilePicker to SAF
+* tweaked up the code
+
 0.9.10 (07.05.2020)
 -------------------
 * rewritten: Scheduler (need to be tested extensively)

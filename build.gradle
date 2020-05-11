@@ -14,7 +14,6 @@ ext {
             room              : "2.2.5",
             lifecycle         : "2.2.0",
             stream            : "1.2.1",
-            filepicker        : "4.2.1",
             rootBeer          : "0.0.7",
 
             butterknife       : "10.2.1",
@@ -41,7 +40,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
     implementation "com.annimon:stream:${versions.stream}"
-    implementation "com.nononsenseapps:filepicker:${versions.filepicker}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
 
     //ButterKnife
@@ -105,7 +103,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 10
+int versionPath = 11
 
 android {
     compileSdkVersion 29
@@ -325,7 +323,7 @@ gradle.taskGraph.whenReady { graph ->
                 Process p = r.exec("python3 --version")
                 p.waitFor()
                 pythonExists = p.exitValue() == 0
-            } catch (IOException e) {
+            } catch (IOException ignored) {
                 logger.warn("no python - not running apk integrity checks")
             }
             if (pythonExists) {

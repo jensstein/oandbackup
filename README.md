@@ -12,24 +12,27 @@ backups can be scheduled with no limit on the number of individual schedules and
 ## Changes & TODOs
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
-- [ ] Adapt FastAdapter: for Main, Batch and Scheduler
+- [x] Adapt FastAdapter: for Main, Batch and Scheduler
 - [x] Rewrite Main-, Batch- & Scheduler-(Activity, Adapter and Sorter)
 - [x] Modeling the app's structure: for the most part now
 - [x] Modeling Sort/Filter
 - [ ] Add some new filters
+- [ ] Add Info, Exodus Report to AppSheet
 - [x] Rewrite Preferences
 - [x] Integrate Tools and Help in Preferences
-- [ ] New android scope storage permissions compatibility: fixed for Android 10 with legacy mode(first: after android 11 release)
+- [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
+- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now 
 - [x] New UI and UX: Design improvement proposals are always welcome
 - [x] Add Dark/Light themes
 - [ ] Update dialogs' UI: partially done
 - [x] Add support for protected data backup
+- [x] Exclude cache from data backups
+- [x] Prompt to turn the Battery Optimization off
 - [ ] Add in-app backup encryption (first: after 1.0)
-- [ ] Rewrite the logic of Backup/Restore
+- [ ] Rewrite the logic of Backup/Restore: is a PROCESS
 - [ ] Add Split Apk Support
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
-
 
 ## Screenshots
 
@@ -107,7 +110,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Rahul Patel](https://github.com/whyorean) whose hard work on AuroraStore inspired this work.
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [NNFilePicker](https://github.com/spacecowboy/NoNonsense-FilePicker), [RootBeer](https://github.com/scottyab/rootbeer).
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer).
 
 ## author
 
