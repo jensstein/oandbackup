@@ -1,13 +1,19 @@
 package com.machiav3lli.backup.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +82,7 @@ public class MainActivityX extends BaseActivity
         setContentView(R.layout.activity_main_x);
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
+        showBatteryOptimizationDialog();
         users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
@@ -207,6 +214,29 @@ public class MainActivityX extends BaseActivity
             default:
                 refresh();
         }
+    }
+
+    private void showBatteryOptimizationDialog() {
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean dontShowAgain = prefs.getBoolean(Constants.PREFS_Ignore_Battery_Optimization, false);
+        if (dontShowAgain || powerManager.isIgnoringBatteryOptimizations(getPackageName())) return;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.ignore_battery_optimization_title)
+                .setMessage(R.string.ignore_battery_optimization_message)
+                .setPositiveButton(R.string.ignore_battery_optimization_approve, (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        Log.w(TAG, "Ignore battery optimizations not supported", e);
+                        Toast.makeText(this, R.string.ignore_battery_optimization_not_supported, Toast.LENGTH_LONG).show();
+                        prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply();
+                    }
+                })
+                .setNeutralButton(R.string.ignore_battery_optimization_refuse, (dialog, which) ->
+                        prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply())
+                .show();
     }
 
     public void refresh() {
