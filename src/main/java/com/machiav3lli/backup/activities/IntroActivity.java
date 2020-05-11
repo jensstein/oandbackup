@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.Constants;
@@ -36,11 +34,16 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.TAG;
+    static final int READ_PERMISSION = 2;
+    static final int WRITE_PERMISSION = 3;
     public static ArrayList<AppInfo> originalList;
 
     SharedPreferences prefs;
@@ -95,20 +98,29 @@ public class IntroActivity extends BaseActivity {
     }
 
     private void getPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                1337);
+        requireWriteStoragePermission();
+        requireReadStoragePermission();
     }
 
     private boolean checkPermissions() {
-        return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requireReadStoragePermission() {
+        if (checkSelfPermission(READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, READ_PERMISSION);
+    }
+
+    private void requireWriteStoragePermission() {
+        if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1337) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == WRITE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                 if (!canAccessExternalStorage()) {
                     Log.w(TAG, String.format("Permissions were granted: %s -> %s",
                             Arrays.toString(permissions), Arrays.toString(grantResults)));
@@ -155,7 +167,6 @@ public class IntroActivity extends BaseActivity {
 
     private void launchMainActivity() {
         btn.setVisibility(View.GONE);
-
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
         originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
