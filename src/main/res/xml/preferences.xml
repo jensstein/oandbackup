@@ -43,6 +43,12 @@
         android:defaultValue="true"
         />
     <CheckBoxPreference
+        android:key="skipCache"
+        android:title="@string/prefs_skipCache"
+        android:summary="@string/prefs_summaryskipCache"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
         android:key="backupExternalFiles"
         android:title="@string/prefs_backupExternalFiles"
         android:summary="@string/prefs_summaryBackupExternalFiles"

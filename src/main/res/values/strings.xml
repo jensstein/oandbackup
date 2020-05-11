@@ -111,7 +111,7 @@
     <string name="prefs_rememberFiltering">remember sort and filter</string>
     <string name="prefs_summaryRememberFiltering">saves the chosen sorting and filtering method. only those marked by a checkbox in the menu is considered.</string>
     <string name="prefs_followSymlinks">follow symbolic links</string>
-    <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (cp -L)</string>
+    <string name="prefs_summaryFollowSymlinks">always follow symbolic links when copying (rsync -L)</string>
     <string name="prefs_enableSpecialBackups">enable special backups</string>
     <string name="prefs_backupExternalFiles">handle external data</string>
     <string name="prefs_summaryBackupExternalFiles">backs up and restores data that is placed on the external storage (e.g. /sdcard/Android/data/)</string>
@@ -163,4 +163,6 @@
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>
     <string name="permission_not_granted">Permission to access external storage is required</string>
     <string name="restart_dialog">Application seems to need to be restarted</string>
+    <string name="prefs_skipCache">skip application cache</string>
+    <string name="prefs_summaryskipCache">skip backing up the cache for apps</string>
 </resources>
