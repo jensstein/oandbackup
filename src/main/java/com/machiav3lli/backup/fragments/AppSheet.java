@@ -225,10 +225,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                         if (backupDir != null)
                             ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
                         handleMessages.endMessage();
+                        ((MainActivityX) requireActivity()).refresh();
                     });
                     deleteBackupThread.start();
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
-                    ((MainActivityX) requireActivity()).refresh();
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
@@ -272,31 +272,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         displayDialogEnableDisable(app.getPackageName(), false);
     }
 
-    @OnClick(R.id.uninstall)
-    public void uninstall() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle(app.getLabel())
-                .setMessage(R.string.uninstallDialogMessage)
-                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
-                    Thread uninstallThread = new Thread(() -> {
-                        Log.i(Constants.TAG, "uninstalling " + app.getLabel());
-                        handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
-                        int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
-                        handleMessages.endMessage();
-                        if (ret == 0) {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallSuccess), app.getLabel(), true);
-                        } else {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallFailure), app.getLabel(), true);
-                            Utils.showErrors(requireActivity());
-                        }
-                    });
-                    uninstallThread.start();
-                    ((MainActivityX) requireActivity()).refresh();
-                })
-                .setNegativeButton(R.string.dialogNo, null)
-                .show();
-    }
-
     public void displayDialogEnableDisable(final String packageName, final boolean enable) {
         String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
         final ArrayList<String> selectedUsers = new ArrayList<>();
@@ -315,6 +290,31 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
+                .show();
+    }
+
+    @OnClick(R.id.uninstall)
+    public void uninstall() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(app.getLabel())
+                .setMessage(R.string.uninstallDialogMessage)
+                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                    Thread uninstallThread = new Thread(() -> {
+                        Log.i(Constants.TAG, "uninstalling " + app.getLabel());
+                        handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
+                        int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
+                        handleMessages.endMessage();
+                        if (ret == 0) {
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallSuccess), app.getLabel(), true);
+                        } else {
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallFailure), app.getLabel(), true);
+                            Utils.showErrors(requireActivity());
+                        }
+                        ((MainActivityX) requireActivity()).refresh();
+                    });
+                    uninstallThread.start();
+                })
+                .setNegativeButton(R.string.dialogNo, null)
                 .show();
     }
 }
