@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/app_accent_light</item>
         <item name="colorPrimaryDark">@color/app_primary_light</item>
@@ -76,7 +77,6 @@
         <item name="chipStrokeColor">@color/chip_stroke</item>
         <item name="chipSurfaceColor">@color/chip_surface</item>
         <item name="android:textColor">?android:strokeColor</item>
-        <item name="android:gravity">center_horizontal</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>
         <item name="chipStrokeWidth">1dp</item>
@@ -87,7 +87,6 @@
         <item name="chipStrokeColor">@color/chip_stroke</item>
         <item name="chipSurfaceColor">@color/chip_surface</item>
         <item name="android:textColor">@color/chip_text</item>
-        <item name="android:gravity">center_horizontal</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>
         <item name="chipStrokeWidth">1dp</item>
