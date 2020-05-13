@@ -104,16 +104,14 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         List<String> commands = new ArrayList<>();
         switch (backupMode) {
             case AppInfo.MODE_APK:
-                commands.add("cp " + packageApk + " " + backupSubDirPath);
+                commands.add("rsync " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
-                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
-                commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
+                commands.add("rsync -r" + " --exclude cache " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
-                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
-                commands.add("cp -R" + " " + packageData + " " + backupSubDirPath);
-                commands.add("cp " + packageApk + " " + backupSubDirPath);
+                commands.add("rsync -r" + " --exclude cache " + packageData + " " + backupSubDirPath);
+                commands.add("rsync " + packageApk + " " + backupSubDirPath);
                 break;
         }
 
@@ -122,7 +120,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupMode != AppInfo.MODE_APK) {
             backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
-                commands.add("cp -R" + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
+                commands.add("rsync -r" + " " + deviceProtectedPackageData + " " + swapBackupDirPath(backupSubDir.getAbsolutePath() + "/" + DEVICE_PROTECTED_FILES));
             }
         }
 
@@ -131,7 +129,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
             backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
             if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
-                commands.add("cp -R" + " " +
+                commands.add("rsync -r" + " " +
                         swapBackupDirPath(externalFilesDir.getAbsolutePath()) +
                         " " + swapBackupDirPath(backupSubDir.getAbsolutePath() +
                         "/" + EXTERNAL_FILES));
@@ -264,7 +262,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         List<String> commands = new ArrayList<>();
         if (files != null)
             for (String file : files)
-                commands.add("cp -r " + file + " " + backupSubDirPath);
+                commands.add("rsync -r " + file + " " + backupSubDirPath);
         int ret = commandHandler.runCmd("su", commands, line -> {
                 },
                 line -> writeErrorLog(context, label, line),
@@ -314,7 +312,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     } else {
                         ownership = getOwnership(file, "su");
                     }
-                    commands.add("cp -r " + backupSubDirPath + "/" + filename + " " + dest);
+                    commands.add("rsync -r " + backupSubDirPath + "/" + filename + " " + dest);
                     commands.add(String.format("%s -R %s %s", busybox,
                             ownership.toString(), file));
                     commands.add(busybox + " chmod -R 0771 " + file);
@@ -689,7 +687,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("mount -o remount,rw /system");
                 String src = swapBackupDirPath(outputDir.getAbsolutePath());
                 for (String lib : libs) {
-                    commands.add("cp " + src + "/" + lib + " /system/lib");
+                    commands.add("rsync " + src + "/" + lib + " /system/lib");
                     commands.add("chmod 644 /system/lib/" + Utils.getName(lib));
                 }
                 commands.add("mount -o remount,ro /system");
