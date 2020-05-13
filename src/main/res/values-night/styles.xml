@@ -32,7 +32,6 @@
         <item name="colorAccent">@color/app_accent_dark</item>
     </style>
 
-
     <!-- Bars -->
     <style name="BarView.Main" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
@@ -58,12 +57,25 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-
     <!-- Buttons & Chips -->
-    <style name="Button.Rounded" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/card_rc8</item>
-        <item name="android:backgroundTint">@color/app_accent_dark</item>
-        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    <style name="Button.Positive" parent="Widget.MaterialComponents.Button">
+        <item name="strokeWidth">3dp</item>
+        <item name="strokeColor">?colorAccent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?colorAccent</item>
+    </style>
+
+    <style name="Button.Negative" parent="Widget.MaterialComponents.Button">
+        <item name="strokeWidth">3dp</item>
+        <item name="strokeColor">?colorSecondary</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?colorSecondary</item>
+    </style>
+
+    <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">?colorAccent</item>
+        <item name="android:textColorSecondary">?colorSecondary</item>
+        <item name="borderWidth">0dp</item>
     </style>
 
     <style name="Chip.Group" parent="Widget.MaterialComponents.ChipGroup">
@@ -75,7 +87,7 @@
     <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">@color/chip_surface</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
         <item name="android:textColor">@color/chip_text</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>
@@ -85,7 +97,7 @@
     <style name="Chip.Action" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">@color/chip_surface</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
         <item name="android:textColor">@color/chip_text</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="checkedIconTint">?colorAccent</item>

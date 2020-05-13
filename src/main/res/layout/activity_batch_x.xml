@@ -121,7 +121,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/backupRestoreButton"
-                    style="@style/Widget.MaterialComponents.Button"
+                    style="@style/Button.Positive"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -133,7 +133,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sort_filter_fab"
-        style="@style/Widget.Design.FloatingActionButton"
+        style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_round_filter_list_32"

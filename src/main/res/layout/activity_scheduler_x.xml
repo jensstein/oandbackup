@@ -54,7 +54,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addSchedule"
-        style="@style/Widget.Design.FloatingActionButton"
+        style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_round_add_sched_32"

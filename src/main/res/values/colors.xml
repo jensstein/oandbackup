@@ -6,7 +6,7 @@
     <color name="app_accent_light">#F77067</color>
     <color name="app_primary_dark">#232629</color>
     <color name="app_primary_light">#ECECEC</color>
-    <color name="app_secondary_dark">#163de0</color>
-    <color name="app_secondary_light">#67eef7</color>
+    <color name="app_secondary_dark">#67eef7</color>
+    <color name="app_secondary_light">#163de0</color>
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

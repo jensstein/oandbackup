@@ -179,24 +179,22 @@
 
                 <Button
                     android:id="@+id/reset"
-                    style="@style/Widget.MaterialComponents.Button"
+                    style="@style/Button.Negative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    android:backgroundTint="?colorSecondary"
                     android:text="@string/resetFilter"
                     android:textAlignment="center" />
 
                 <Button
                     android:id="@+id/apply"
-                    style="@style/Widget.MaterialComponents.Button"
+                    style="@style/Button.Positive"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
                     android:text="@string/applyFilter" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

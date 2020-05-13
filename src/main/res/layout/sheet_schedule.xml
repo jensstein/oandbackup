@@ -163,6 +163,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/customListUpdate"
+                    style="@style/Button.Positive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sched_customListUpdateButton"
@@ -197,6 +198,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/updateButton"
+                    style="@style/Button.Positive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -204,16 +206,16 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/removeButton"
+                    style="@style/Button.Negative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:backgroundTint="?colorSecondary"
                     android:text="@string/sched_removeButton" />
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activateButton"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/Button.Positive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
