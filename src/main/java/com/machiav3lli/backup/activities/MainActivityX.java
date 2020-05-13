@@ -240,25 +240,26 @@ public class MainActivityX extends BaseActivity
     }
 
     public void refresh() {
-        Thread refreshThread = new Thread(() -> {
+        sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        new Thread(() -> {
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             list = new ArrayList<>();
-            if (!filteredList.isEmpty())
-                for (AppInfo app : filteredList) list.add(new MainItemX(app));
-            else {
+            if (filteredList.isEmpty()) {
                 for (AppInfo app : originalList) list.add(new MainItemX(app));
                 SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-                this.runOnUiThread(() ->
-                        Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                );
+            } else {
+                for (AppInfo app : filteredList) list.add(new MainItemX(app));
             }
-            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
             runOnUiThread(() -> {
-                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                if (filteredList.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
+                    itemAdapter.clear();
+                    itemAdapter.add(list);
+                } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                searchView.setQuery("", false);
             });
-        });
-        refreshThread.start();
+        }).start();
     }
 }

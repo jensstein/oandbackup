@@ -298,8 +298,8 @@ public class BatchActivityX extends BaseActivity
     }
 
     public void refresh() {
-        Thread refreshThread = new Thread(() -> {
-            sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        new Thread(() -> {
             cbAll.setChecked(false);
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
@@ -311,21 +311,24 @@ public class BatchActivityX extends BaseActivity
                         if (app.isInstalled()) list.add(new BatchItemX(app));
                 } else for (AppInfo app : filteredList)
                     if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
-            } else {
+            }
+            boolean listIsEmpty = list.isEmpty();
+            if (listIsEmpty) {
                 if (backupBoolean) {
                     for (AppInfo app : originalList)
                         if (app.isInstalled()) list.add(new BatchItemX(app));
                 } else for (AppInfo app : originalList)
                     if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
                 SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-                this.runOnUiThread(() ->
-                        Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                );
             }
             runOnUiThread(() -> {
-                if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                if (listIsEmpty) {
+                    itemAdapter.clear();
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
+                    itemAdapter.add(list);
+                } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                searchView.setQuery("", false);
             });
-        });
-        refreshThread.start();
+        }).start();
     }
 }
