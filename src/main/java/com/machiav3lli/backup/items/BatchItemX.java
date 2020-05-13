@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.items;
 
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
@@ -9,6 +8,7 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.handler.Utils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -131,12 +131,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
                     backupMode.setText("");
                     break;
             }
-
-            if (app.isInstalled()) {
-                int color = app.isSystem() ? Color.rgb(36, 128, 172) : Color.rgb(172, 36, 128);
-                if (app.isDisabled()) color = Color.rgb(7, 87, 117);
-                packageName.setTextColor(color);
-            } else packageName.setTextColor(Color.GRAY);
+            Utils.pickColor(app, packageName);
         }
 
         @Override

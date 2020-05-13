@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
 
@@ -112,6 +115,14 @@ public class Utils {
                     "unable to determine package version (%s), abi version %s",
                     e.toString(), abiVersion));
         }
+    }
+
+    public static void pickColor(AppInfo app, AppCompatTextView text) {
+        if (app.isInstalled()) {
+            int color = app.isSystem() ? Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);
+            if (app.isDisabled()) color = Color.rgb(158, 172, 64);
+            text.setTextColor(color);
+        } else text.setTextColor(Color.GRAY);
     }
 
     public static String getPrefsString(Context context, String key, String def) {

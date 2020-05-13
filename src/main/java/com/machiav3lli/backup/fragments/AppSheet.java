@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -172,12 +171,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 backupMode.setText("-");
                 break;
         }
-
-        if (app.isInstalled()) {
-            int color = app.isSystem() ? Color.rgb(36, 128, 172) : Color.rgb(172, 36, 128);
-            if (app.isDisabled()) color = Color.rgb(7, 87, 117);
-            appType.setTextColor(color);
-        } else appType.setTextColor(Color.GRAY);
+        Utils.pickColor(app, appType);
     }
 
     @Override
