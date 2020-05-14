@@ -1,6 +1,8 @@
 package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -173,6 +175,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 break;
         }
         Utils.pickColor(app, appType);
+    }
+
+    @OnClick(R.id.appInfo)
+    public void callAppInfo() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", app.getPackageName(), null));
+        startActivity(intent);
     }
 
     @Override

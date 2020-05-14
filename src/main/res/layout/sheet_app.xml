@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -167,12 +168,28 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/cards_spacing"
-                    android:text="@string/available_actions"
-                    android:textAppearance="@style/TextAppearance.Title" />
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/cards_spacing"
+                        android:text="@string/available_actions"
+                        android:textAppearance="@style/TextAppearance.Title" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_margin="@dimen/cards_spacing"
+                        app:srcCompat="@drawable/ic_outline_info_24" />
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <HorizontalScrollView
