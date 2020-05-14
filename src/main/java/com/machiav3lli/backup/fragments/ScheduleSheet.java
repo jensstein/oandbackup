@@ -48,6 +48,8 @@ import butterknife.ButterKnife;
 import static com.machiav3lli.backup.schedules.BlacklistsDBHelper.DATABASE_NAME;
 
 public class ScheduleSheet extends BottomSheetDialogFragment {
+    final static String TAG = Constants.classTag(".ScheduleSheet");
+
     @BindView(R.id.intervalDays)
     AppCompatEditText intervalDays;
     @BindView(R.id.timeOfDay)
@@ -227,7 +229,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             setTimeLeft(schedule, System.currentTimeMillis());
         } catch (SchedulingException e) {
             final String message = String.format("Unable to enable schedule %s: %s", id, e.toString());
-            Log.e(Constants.TAG, message);
+            Log.e(TAG, message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
         }
     }
@@ -240,7 +242,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             new Thread(modeChangerRunnable).start();
         } catch (SchedulingException e) {
             final String message = String.format("Unable to set mode of schedule %s to %s", id, modeInt);
-            Log.e(Constants.TAG, message);
+            Log.e(TAG, message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
         }
     }
@@ -254,7 +256,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             new Thread(modeChangerRunnable).start();
         } catch (SchedulingException e) {
             final String message = String.format("Unable to set submode of schedule %s to %s", id, submodeInt);
-            Log.e(Constants.TAG, message);
+            Log.e(TAG, message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
         }
     }
@@ -391,7 +393,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                     scheduleDao.update(schedule);
                 } else {
                     final List<Schedule> schedules = scheduleDao.getAll();
-                    Log.e(Constants.TAG, String.format("Unable to change mode for %s, couldn't get schedule " +
+                    Log.e(TAG, String.format("Unable to change mode for %s, couldn't get schedule " +
                             "from database. Persisted schedules: %s", id, schedules));
                     scheduler.runOnUiThread(() -> {
                         final String state = mode.isPresent() ? "mode" : "submode";
@@ -457,7 +459,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             if (scheduler != null && !scheduler.isFinishing()) {
                 resultHolder.getError().ifPresent(error -> {
                     final String message = String.format("Unable to remove schedule: %s", error.toString());
-                    Log.e(Constants.TAG, message);
+                    Log.e(TAG, message);
                     Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show();
                 });
                 resultHolder.getObject().ifPresent(schedule -> remove(scheduler, schedule));

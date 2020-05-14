@@ -49,7 +49,7 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".MainActivityX");
     static final int BATCH_REQUEST = 1;
     long threadId = -1;
 

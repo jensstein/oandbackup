@@ -13,11 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandHandler {
+    final static String TAG = Constants.classTag(".CommandHandler");
+
     public int runCmd(String shell, List<String> commands,
                       OutputConsumer outHandler, OutputConsumer errorHandler,
                       ExceptionConsumer exceptionHandler, UnexpectedExceptionListener exceptionListener) {
         if (commands.size() == 0) {
-            Log.w(Constants.TAG, "no commands to run");
+            Log.w(TAG, "no commands to run");
             errorHandler.accept("no commands to run");
             return 1;
         }

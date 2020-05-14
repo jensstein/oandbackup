@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 public class BackupRestoreHelper {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".BackupRestoreHelper");
 
     public enum ActionType {BACKUP, RESTORE}
 

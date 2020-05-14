@@ -12,7 +12,7 @@ import com.machiav3lli.backup.Constants;
 import java.lang.ref.WeakReference;
 
 public class HandleMessages {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".HandleMessages");
     final static int SHOW_DIALOG = 0;
     final static int DISMISS_DIALOG = 1;
 

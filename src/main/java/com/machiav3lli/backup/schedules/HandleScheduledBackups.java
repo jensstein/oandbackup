@@ -27,7 +27,7 @@ import java.util.List;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class HandleScheduledBackups {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".HandleScheduledBackups");
 
     Context context;
     PowerManager powerManager;

@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AppInfoHelper {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".AppInfoHelper");
 
     public static ArrayList<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups,
                                                     boolean includeSpecialBackups) {

@@ -51,7 +51,7 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
-    private static final String TAG = Constants.TAG;
+    private static final String TAG = Constants.classTag(".SchedulerActivityX");
     public static final String SCHEDULECUSTOMLIST = "customlist";
     public static final int GLOBALBLACKLISTID = -1;
     // just to get a string in SchedulerItemX

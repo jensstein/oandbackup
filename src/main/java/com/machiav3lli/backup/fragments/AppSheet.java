@@ -49,8 +49,8 @@ import butterknife.OnClick;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
+    final static String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
-    AppInfo app;
 
     @BindView(R.id.label)
     AppCompatTextView label;
@@ -81,7 +81,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @BindView(R.id.share)
     Chip share;
 
-
+    AppInfo app;
     HandleMessages handleMessages;
     ArrayList<String> users;
     ShellCommands shellCommands;
@@ -183,7 +183,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, shellCommands, mode)
                     .execute();
         else
-            Log.e(Constants.TAG, "unknown actionType: " + actionType);
+            Log.e(TAG, "unknown actionType: " + actionType);
     }
 
     @OnClick(R.id.backup)
@@ -294,7 +294,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 .setMessage(R.string.uninstallDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                     Thread uninstallThread = new Thread(() -> {
-                        Log.i(Constants.TAG, "uninstalling " + app.getLabel());
+                        Log.i(TAG, "uninstalling " + app.getLabel());
                         handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
                         int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
                         handleMessages.endMessage();

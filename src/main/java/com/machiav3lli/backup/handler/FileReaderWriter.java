@@ -13,7 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileReaderWriter {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".FileReaderWriter");
 
     File file;
 

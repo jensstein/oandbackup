@@ -12,7 +12,7 @@ import com.machiav3lli.backup.Constants;
 import java.util.Calendar;
 
 public class HandleAlarms {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".HandleAlarms");
     AlarmManager alarmManager;
     DeviceIdleChecker deviceIdleChecker;
 

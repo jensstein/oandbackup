@@ -41,7 +41,7 @@ import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
 public class IntroActivity extends BaseActivity {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".IntroActivity");
     static final int READ_PERMISSION = 2;
     static final int WRITE_PERMISSION = 3;
     public static ArrayList<AppInfo> originalList;
@@ -62,7 +62,7 @@ public class IntroActivity extends BaseActivity {
         setContentView(R.layout.activity_intro);
         ButterKnife.bind(this);
 
-        Utils.logDeviceInfo(this, Constants.TAG);
+        Utils.logDeviceInfo(this, TAG);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         users = new ArrayList<>();
         checkRun(savedInstanceState);

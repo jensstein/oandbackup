@@ -16,7 +16,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class Compression {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".Compression");;
 
     public static int zip(File dir) {
         ArrayList<String> fileList = new ArrayList<>();

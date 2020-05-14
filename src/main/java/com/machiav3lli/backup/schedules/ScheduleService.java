@@ -26,7 +26,7 @@ import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 
 public class ScheduleService extends Service
         implements BackupRestoreHelper.OnBackupRestoreListener {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".ScheduleService");
     static final int ID = 2;
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -79,7 +79,7 @@ public class ScheduleService extends Service
 
     @Override
     public void onCreate() {
-        final String channelId = Constants.TAG;
+        final String channelId = TAG;
         if (Build.VERSION.SDK_INT >= 26) {
             final NotificationChannel notificationChannel =
                     new NotificationChannel(channelId, channelId,

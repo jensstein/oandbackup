@@ -11,7 +11,6 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.LanguageHelper;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    final static String TAG = Constants.TAG;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

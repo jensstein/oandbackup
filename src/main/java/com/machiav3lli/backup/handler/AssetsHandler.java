@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AssetsHandler {
+    final static String TAG = Constants.classTag(".AssetHandler");
     public static final String OAB_UTILS = "oab-utils";
 
     /**
@@ -46,7 +47,7 @@ public class AssetsHandler {
         try (final FileOutputStream outputStream = context.openFileOutput(
                 outputFilename, Context.MODE_PRIVATE);
              final InputStream is = context.getAssets().open(assetPath)) {
-            Log.d(Constants.TAG, String.format("copying asset %s",
+            Log.d(TAG, String.format("copying asset %s",
                     assetPath));
 
             byte[] buffer = new byte[16384];
@@ -54,7 +55,7 @@ public class AssetsHandler {
             while ((read = is.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, read);
             }
-            Log.d(Constants.TAG, String.format("copied asset %s",
+            Log.d(TAG, String.format("copied asset %s",
                     assetPath));
         } catch (IOException e) {
             final String msg = String.format("error copying asset %s",

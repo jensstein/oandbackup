@@ -48,7 +48,7 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
-    static final String TAG = Constants.TAG;
+    static final String TAG = Constants.classTag(".BatchActivityX");
     long threadId = -1;
     final static int RESULT_OK = 0;
     ArrayList<AppInfo> originalList = MainActivityX.originalList;
@@ -213,10 +213,10 @@ public class BatchActivityX extends BaseActivity
 
     public void doAction(ArrayList<BatchItemX> selectedList) {
         if (backupDir != null) {
-            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.TAG);
+            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             if (prefs.getBoolean("acquireWakelock", true)) {
                 wl.acquire(10 * 60 * 1000L /*10 minutes*/);
-                Log.i(Constants.TAG, "wakelock acquired");
+                Log.i(TAG, "wakelock acquired");
             }
             changesMade = true;
             int id = (int) System.currentTimeMillis();
@@ -252,7 +252,7 @@ public class BatchActivityX extends BaseActivity
             }
             if (wl.isHeld()) {
                 wl.release();
-                Log.i(Constants.TAG, "wakelock released");
+                Log.i(TAG, "wakelock released");
             }
             if (errorFlag) {
                 Utils.showErrors(this);

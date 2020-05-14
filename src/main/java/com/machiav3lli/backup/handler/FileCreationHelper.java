@@ -10,9 +10,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class FileCreationHelper {
-    final static String TAG = Constants.TAG;
-    final static String defaultBackupFolder = Environment.getExternalStorageDirectory() + "/oandbackupsx";
-    final static String defaultLogFileName = defaultBackupFolder + "/oandbackupx.log";
+    final static String TAG = Constants.classTag(".FileCreationHelper");
+    final static String defaultBackupFolder = Environment.getExternalStorageDirectory() + "/OAndBackupX";
     private boolean fallbackFlag;
 
     public static String getDefaultBackupDirPath(Context context) {
@@ -20,7 +19,7 @@ public class FileCreationHelper {
     }
 
     public static String getDefaultLogFilePath(Context context) {
-        return Utils.getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder) + defaultLogFileName;
+        return Utils.getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder) + "/OAndBackupX.log";
     }
 
     public static void setDefaultBackupDirPath(Context context, String path) {

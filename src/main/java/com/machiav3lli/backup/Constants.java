@@ -45,4 +45,8 @@ public class Constants {
         return "com.machiav3lli.backup" + address;
     }
 
+    public static String classTag(String tag) {
+        return TAG + tag;
+    }
+
 }

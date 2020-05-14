@@ -16,7 +16,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 
 public class NotificationHelper {
-    private static final String TAG = Constants.TAG;
+    private static final String TAG = Constants.classTag(".NotificationHelper");
 
     public static void showNotification(Context context, Class parentActivity,
                                         int id, String title, String text, boolean autocancel) {
@@ -26,7 +26,7 @@ public class NotificationHelper {
         final PendingIntent resultPendingIntent = PendingIntent.getActivity(
                 context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final String channelId = Constants.TAG;
+        final String channelId = TAG;
         if (Build.VERSION.SDK_INT >= 26) {
             final NotificationChannel notificationChannel =
                     new NotificationChannel(channelId, channelId,

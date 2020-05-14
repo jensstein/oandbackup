@@ -18,7 +18,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class LogFile implements Parcelable {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".LogFile");
     String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
     int versionCode, backupMode;
     long lastBackupMillis;

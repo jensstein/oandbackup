@@ -23,7 +23,8 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class BootReceiver extends BroadcastReceiver {
-    private final static String TAG = Constants.TAG;
+    private final static String TAG = Constants.classTag(".BootReceiver");
+    ;
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     Optional<Thread> thread = Optional.empty();

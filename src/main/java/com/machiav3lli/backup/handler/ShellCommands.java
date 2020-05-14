@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultLogFilePath;
 
 public class ShellCommands implements CommandHandler.UnexpectedExceptionListener {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".ShellCommands");
     public final static String EXTERNAL_FILES = "external_files";
     public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
 

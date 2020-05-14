@@ -14,7 +14,7 @@ import com.machiav3lli.backup.R;
 import java.util.ArrayList;
 
 public class BatchConfirmDialog extends DialogFragment {
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".BatchConfirmDialog");
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

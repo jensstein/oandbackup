@@ -38,7 +38,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
     private static final int DEFAULT_DIR_CODE = 0;
     final static int RESULT_OK = 0;
-    final static String TAG = Constants.TAG;
+    final static String TAG = Constants.classTag(".PrefsFragment");
     ArrayList<AppInfo> appInfoList = MainActivityX.originalList;
     ShellCommands shellCommands;
     HandleMessages handleMessages;
