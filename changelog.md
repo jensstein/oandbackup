@@ -1,6 +1,10 @@
 changelog
 =========
 
+0.9.13 (14.05.2020)
+-------------------
+* reverted: back to cp (rsync isn't bundled with all ROMs)
+
 0.9.12 (14.05.2020)
 -------------------
 * added: app's info shortcut in App Sheet
