@@ -140,6 +140,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             backup.setVisibility(Chip.GONE);
         }
         if (!app.isDisabled()) enable.setVisibility(Chip.GONE);
+        if (app.isDisabled()) disable.setVisibility(Chip.GONE);
         if (app.getBackupMode() == AppInfo.MODE_UNSET) restore.setVisibility(Chip.GONE);
     }
 
