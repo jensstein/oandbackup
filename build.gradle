@@ -103,7 +103,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 13
+int versionPath = 14
 
 android {
     compileSdkVersion 29
