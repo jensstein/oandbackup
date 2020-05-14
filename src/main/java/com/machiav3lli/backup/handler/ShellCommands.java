@@ -107,10 +107,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
-                commands.add("cp -r" + " --exclude cache " + packageData + " " + backupSubDirPath);
+                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
+                commands.add("cp -r" + " " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
-                commands.add("cp -r" + " --exclude cache " + packageData + " " + backupSubDirPath);
+                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
+                commands.add("cp -r" + " " + packageData + " " + backupSubDirPath);
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
         }
