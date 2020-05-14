@@ -1,6 +1,16 @@
 changelog
 =========
 
+0.9.12 (14.05.2020)
+-------------------
+* added: app's info shortcut in App Sheet
+* updated: punch of UI elements
+* updated: new default backup directory /OAndBackupX
+* fixed: behaviour of adapter after doing actions
+* fixed: adapter's crashing
+* switched: from cleaning app's cache to excluding it from backup(Credit @icewind1991)
+* tweaked: behaviour of different UI elements
+
 0.9.11 (11.05.2020)
 -------------------
 * added: clear cache before backing up

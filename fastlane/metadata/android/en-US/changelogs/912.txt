@@ -1,0 +1,8 @@
+**OAndBackupX 0.9.12 (aka 1.0.0-rc1)**
+* Added: app's info shortcut in App Sheet
+* Updated: punch of UI elements
+* Updated: new default backup directory /OAndBackupX
+* Fixed: behaviour of adapter after doing actions
+* Fixed: adapter's crashing
+* Switched: from cleaning app's cache to excluding it from backup(Credit @icewind1991)
+* Tweaked: behaviour of different UI elements

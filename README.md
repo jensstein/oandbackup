@@ -9,6 +9,10 @@ both backup and restore of individual programs one at a time and batch backup an
 restoring system apps should be possible without requiring a reboot afterwards. OAndBackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
+## Compatibility with oandbackup backups
+
+till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
+
 ## Changes & TODOs
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
@@ -17,11 +21,9 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Modeling the app's structure: for the most part now
 - [x] Modeling Sort/Filter
 - [ ] Add some new filters
-- [ ] Add Info, Exodus Report to AppSheet
+- [ ] Add Exodus Report to AppSheet
 - [x] Rewrite Preferences
 - [x] Integrate Tools and Help in Preferences
-- [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
-- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now 
 - [x] New UI and UX: Design improvement proposals are always welcome
 - [x] Add Dark/Light themes
 - [ ] Update dialogs' UI: partially done
@@ -30,6 +32,8 @@ backups can be scheduled with no limit on the number of individual schedules and
 - [x] Prompt to turn the Battery Optimization off
 - [ ] Add in-app backup encryption (first: after 1.0)
 - [ ] Rewrite the logic of Backup/Restore: is a PROCESS
+- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now/ connected to the previous goal
+- [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
 - [ ] Add Split Apk Support
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
@@ -42,18 +46,14 @@ backups can be scheduled with no limit on the number of individual schedules and
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" />
 </p>
 
 ### Light Theme
 <p float="left">
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="170" />
+ <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" width="170" />
  <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" width="170" />
 </p>
 
 ## Building

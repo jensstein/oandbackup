@@ -1,5 +1,5 @@
 plugins {
-    id "com.android.application" version "4.0.0-beta05"
+    id "com.android.application" version "4.0.0-rc01"
     id "org.sonarqube" version "2.6"
     id "jacoco"
 }
@@ -103,7 +103,7 @@ sonarqube {
 
 int versionMajor = 0
 int versionMinor = 9
-int versionPath = 11
+int versionPath = 12
 
 android {
     compileSdkVersion 29
