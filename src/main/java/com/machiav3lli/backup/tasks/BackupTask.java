@@ -9,9 +9,8 @@ import com.machiav3lli.backup.items.AppInfo;
 import java.io.File;
 
 public class BackupTask extends BaseTask {
-    public BackupTask(AppInfo appInfo, HandleMessages handleMessages,
-                      MainActivityX oAndBackupX, File backupDirectory,
-                      ShellCommands shellCommands, int backupMode) {
+    public BackupTask(AppInfo appInfo, HandleMessages handleMessages, MainActivityX oAndBackupX,
+                      File backupDirectory, ShellCommands shellCommands, int backupMode) {
         super(BackupRestoreHelper.ActionType.BACKUP, appInfo, handleMessages,
                 oAndBackupX, backupDirectory, shellCommands, backupMode);
     }
@@ -21,8 +20,6 @@ public class BackupTask extends BaseTask {
         final MainActivityX oAndBackupX = oAndBackupReference.get();
         if (oAndBackupX == null || oAndBackupX.isFinishing()) return -1;
         publishProgress();
-
-        oAndBackupX.refresh();
         return backupRestoreHelper.backup(oAndBackupReference.get(), backupDirectory,
                 app, shellCommands, mode);
     }

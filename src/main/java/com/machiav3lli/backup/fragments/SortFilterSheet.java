@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SortFilterSheet extends BottomSheetDialogFragment {
-
     SortFilterModel sortFilterModel;
 
     @BindView(R.id.sortBy)
@@ -32,7 +31,6 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
     ChipGroup filters;
     @BindView(R.id.otherFilters)
     ChipGroup otherFilters;
-
 
     public SortFilterSheet() {
         this.sortFilterModel = new SortFilterModel();
@@ -47,7 +45,6 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
         dismissAllowingStateLoss();
     }
-
 
     @OnClick(R.id.reset)
     public void reset() {

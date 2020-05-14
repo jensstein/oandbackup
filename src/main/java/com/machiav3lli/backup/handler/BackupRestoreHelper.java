@@ -43,7 +43,6 @@ public class BackupRestoreHelper {
             app.setBackupMode(backupMode);
         }
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
-
         shellCommands.logReturnMessage(ret);
         LogFile.writeLogFile(backupSubDir, app, backupMode);
         return ret;
@@ -92,7 +91,6 @@ public class BackupRestoreHelper {
         }
         int ret = apkRet + restoreRet + permRet + cryptoRet;
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
-
         shellCommands.logReturnMessage(ret);
         return ret;
     }

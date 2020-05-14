@@ -9,7 +9,6 @@ import com.machiav3lli.backup.Constants;
 import java.util.Locale;
 
 public class LanguageHelper {
-    // no need to change anything on start if default is choosen
     public static void initLanguage(Context context, String langCode) {
         if (!langCode.equals(Constants.PREFS_LANGUAGES_DEFAULT)) {
             changeLanguage(context, langCode);

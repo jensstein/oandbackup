@@ -19,7 +19,6 @@ public class CustomPackageList {
     static Optional<ArrayList<AppInfo>> appInfoList = Optional.ofNullable(
             MainActivityX.originalList);
 
-    // for use with schedules
     public static void showList(Activity activity, long number) {
         showList(activity, SchedulerActivityX.SCHEDULECUSTOMLIST + number);
     }

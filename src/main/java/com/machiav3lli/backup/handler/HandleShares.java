@@ -13,7 +13,7 @@ import java.util.Map;
 public class HandleShares {
     private static Map<String, String> mimeTypes;
 
-    public static Intent constructIntentSingle(String title, File file,Uri uri) {
+    public static Intent constructIntentSingle(String title, File file, Uri uri) {
         String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase(Locale.ENGLISH);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
