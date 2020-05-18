@@ -58,43 +58,17 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 
 ## Building
 
-OAndBackupX is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
+OAndBackupX is built with gradle. you need the android sdk, rust (for building the oab-utils binary), and bash (or a compatible shell for executing the oab-utils build script).
 
 P.S: If you have any problem building OAB-Utils: you can find some helping notes in its Readme.md
-
-```
-./gradlew build
-# building only debug
-./gradlew assembleDebug
-# building for a specific abi target
-./gradlew assembleArm64
-```
-
-## Version Control
-
-OAndBackupX is handled on Github:   
-https://github.com/machiav3lli/oandbackupx
 
 ## Busybox / OAB-Utils
 
 a working busybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
 
-you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
-if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
-
-```
-    make defconfig # makes a config file with the default options
-    make menuconfig # brings up an ncurses-based menu for editing the options
-        # set the prefix for your toolchain under busybox settings -> build options 
-        # (remember the trailing dash, e.g. 'arm-unknown-linux-gnueabihf-')
-        # build as a static binary if needed
-    make
-```
+Busybox is available on F-Droid or you can build it yourself from [here](https://busybox.net).
 
 copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackupx. in the oandbackupx preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
-
-translations of the original OAndBackup are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
-so please come help us there or spread the link if you want the app available in your own language.
 
 ## Licenses
 

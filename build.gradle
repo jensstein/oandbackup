@@ -20,7 +20,7 @@ ext {
 
             appcompat         : "1.1.0",
             material          : "1.2.0-alpha06",
-            constraintlayout  : "2.0.0-beta4",
+            constraintlayout  : "2.0.0-beta5",
             preference        : "1.1.1",
             swiperefreshlayout: "1.0.0",
             fastadapter       : "5.0.0",
@@ -54,8 +54,6 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefreshlayout}"
     implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
-    implementation "com.mikepenz:fastadapter-extensions-binding:${versions.fastadapter}"
-    implementation "com.mikepenz:fastadapter-extensions-utils:${versions.fastadapter}"
 
     // Tests
     implementation "androidx.room:room-testing:${versions.room}"
@@ -101,9 +99,9 @@ sonarqube {
     }
 }
 
-int versionMajor = 0
-int versionMinor = 9
-int versionPath = 14
+int versionMajor = 1
+int versionMinor = 0
+int versionPath = 0
 
 android {
     compileSdkVersion 29

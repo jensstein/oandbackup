@@ -1,6 +1,10 @@
 changelog
 =========
 
+1.0.0 (18.05.2020)
+-------------------
+* added: option to clean cache before data backup
+
 0.9.14 (14.05.2020)
 -------------------
 * reverted: back to cleaning cache
