@@ -30,6 +30,7 @@ public class Constants {
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
     public static final String PREFS_REMEMBERFILTERING = "rememberFiltering";
     public static final String PREFS_OLDBACKUPS = "oldBackups";
+    public static final String PREFS_CLEARCACHE = "clearCache";
     public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
     public static final String PREFS_PATH_BUSYBOX = "pathBusybox";
     public static final String PREFS_QUICK_REBOOT = "quickReboot";

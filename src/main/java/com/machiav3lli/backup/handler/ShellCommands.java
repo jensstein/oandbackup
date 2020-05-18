@@ -102,16 +102,19 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
 
         List<String> commands = new ArrayList<>();
+        boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
         switch (backupMode) {
             case AppInfo.MODE_APK:
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
             case AppInfo.MODE_DATA:
-                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
+                if (clearCache)
+                    commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
                 commands.add("cp -r" + " " + packageData + " " + backupSubDirPath);
                 break;
             default: // defaults to MODE_BOTH
-                commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
+                if (clearCache)
+                    commands.add(busybox + " rm -r /data/data/" + packageName + "/cache/*");
                 commands.add("cp -r" + " " + packageData + " " + backupSubDirPath);
                 commands.add("cp " + packageApk + " " + backupSubDirPath);
                 break;
@@ -791,16 +794,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 line -> writeErrorLog(context, packageName, line),
                 e -> Log.e(TAG, "disablePackage: ", e), this);
     }
-
-    // manually installing can be used as workaround for issues with multiple users - have checkbox in preferences to toggle this
-    /*
-    public void installByIntent(File backupDir, String apk)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(backupDir, apk)), "application/vnd.android.package-archive");
-        context.startActivity(intent);
-    }
-    */
 
     public String swapBackupDirPath(String path) {
         return path;

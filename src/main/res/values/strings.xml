@@ -105,6 +105,8 @@
     <string name="prefs_enableSpecialBackups">Enable special backups</string>
     <string name="prefs_backupExternalFiles">Handle external data</string>
     <string name="prefs_disableNotifications">Disable notification</string>
+    <string name="prefs_clearCache">Clear app\'s cache</string>
+    <string name="prefs_summaryClearCache">clear application\'s cache before doing data backup</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
     <string name="prefs_summaryAcquireWakelock">acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
     <string name="prefs_summaryBackupFolder">path to backup folder. leave blank for default.</string>
