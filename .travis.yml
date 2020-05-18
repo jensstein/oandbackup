@@ -1,5 +1,0 @@
-language: android
-android:
-  components:
-    - android-26
-    - build-tools-26.0.2
