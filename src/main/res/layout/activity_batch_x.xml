@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout"
+        android:id="@+id/app_bar"
         style="@style/Widget.AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
