@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -118,7 +119,7 @@ public class BatchActivityX extends BaseActivity
         rbBoth.setChecked(true);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             refresh();
-            swipeRefreshLayout.setRefreshing(false);
+            new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1000);
         });
 
         list = new ArrayList<>();
