@@ -30,6 +30,7 @@
         tools:targetApi="q">
         <activity
             android:name=".activities.IntroActivity"
+            android:theme="@style/AppTheme.Splash"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

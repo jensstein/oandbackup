@@ -15,6 +15,10 @@
         <item name="android:statusBarColor">@color/app_background_dark</item>
     </style>
 
+    <style name="AppTheme.Splash" parent="AppTheme.DayNight">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
     <!-- Items & Sheets -->
     <style name="Sheet.Bottom.Style" parent="Widget.Design.BottomSheet.Modal">
         <item name="chipStyle">@style/Chip.Filter</item>
