@@ -62,6 +62,13 @@
     </style>
 
     <!-- Buttons & Chips -->
+    <style name="ItemLayout">
+        <item name="android:background">@drawable/card_rc8</item>
+        <item name="android:foreground">@drawable/ripple_click</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/cards_spacing</item>
+    </style>
+
     <style name="Button.Positive" parent="Widget.MaterialComponents.Button">
         <item name="strokeWidth">3dp</item>
         <item name="strokeColor">?colorAccent</item>
@@ -112,7 +119,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/ripple_nav_buttons</item>
+        <item name="android:background">@drawable/ripple_click</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 </resources>

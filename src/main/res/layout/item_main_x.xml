@@ -5,11 +5,9 @@
     android:paddingVertical="4dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        style="@style/ItemLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/card_rc8"
-        android:orientation="horizontal"
-        android:padding="@dimen/cards_spacing">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
