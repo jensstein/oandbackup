@@ -13,6 +13,7 @@
         <item name="colorBackgroundFloating">@color/app_primary_dark</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:statusBarColor">@color/app_background_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.DayNight">
