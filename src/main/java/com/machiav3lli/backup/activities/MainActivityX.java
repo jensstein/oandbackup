@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.fragments.AppSheet;
@@ -53,7 +54,7 @@ public class MainActivityX extends BaseActivity
     static final int BATCH_REQUEST = 1;
     long threadId = -1;
 
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -61,6 +62,8 @@ public class MainActivityX extends BaseActivity
     SearchView searchView;
     @BindView(R.id.bottom_bar)
     BottomAppBar bottomBar;
+    @BindView(R.id.sort_filter_fab)
+    FloatingActionButton fab;
 
     public static ArrayList<AppInfo> originalList = IntroActivity.originalList;
     File backupDir = IntroActivity.backupDir;
@@ -129,6 +132,15 @@ public class MainActivityX extends BaseActivity
             if (item.getItemId() == R.id.preferences)
                 startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
             return true;
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    fab.hide();
+                else if (dy < 0)
+                    fab.show();
+            }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

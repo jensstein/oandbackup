@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
@@ -65,8 +66,10 @@ public class SchedulerActivityX extends BaseActivity
     BottomAppBar bottomBar;
     @BindView(R.id.back)
     AppCompatImageView back;
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.add_schedule_fab)
+    FloatingActionButton fab;
 
     SharedPreferences prefs;
     public ArrayList<SchedulerItemX> list;
@@ -103,6 +106,15 @@ public class SchedulerActivityX extends BaseActivity
         itemAdapter.add(list);
 
         back.setOnClickListener(v -> finish());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    fab.hide();
+                else if (dy < 0)
+                    fab.show();
+            }
+        });
         bottomBar.replaceMenu(R.menu.scheduler_bottom_bar);
         bottomBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.globalBlacklist) {
@@ -125,7 +137,7 @@ public class SchedulerActivityX extends BaseActivity
     }
 
 
-    @OnClick(R.id.addSchedule)
+    @OnClick(R.id.add_schedule_fab)
     public void addSchedule() {
         new AddScheduleTask(this).execute();
         new refreshTask(this).execute();

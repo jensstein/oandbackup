@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
@@ -54,7 +55,7 @@ public class BatchActivityX extends BaseActivity
     ArrayList<AppInfo> originalList = MainActivityX.originalList;
     boolean backupBoolean;
 
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -72,6 +73,8 @@ public class BatchActivityX extends BaseActivity
     SearchView searchView;
     @BindView(R.id.back)
     AppCompatImageView back;
+    @BindView(R.id.sort_filter_fab)
+    FloatingActionButton fab;
 
     boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
@@ -156,6 +159,15 @@ public class BatchActivityX extends BaseActivity
         itemAdapter.add(list);
 
         back.setOnClickListener(v -> finish());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    fab.hide();
+                else if (dy < 0)
+                    fab.show();
+            }
+        });
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
