@@ -1,6 +1,15 @@
 changelog
 =========
 
+1.0.2 (24.05.2020)
+-------------------
+* added: Item click feedback
+* updated: scrolling eXperience
+* fixed: Splash screen
+* fixed: swipe to refresh behavior
+* fixed: Statusbar theme
+* and some other UI tweaks
+
 1.0.0 (18.05.2020)
 -------------------
 * added: option to clean cache before data backup
