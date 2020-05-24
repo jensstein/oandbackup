@@ -23,15 +23,6 @@ function init() {
 	start_test "dk.jens.backup.TestHelper"
 }
 
-function sonarqube() {
-	if test -e sonarqube-env; then
-		source sonarqube-env
-	fi
-	./gradlew create${FLAVOUR^}DebugCoverageReport sonarqube \
-		-Dsonar.host.url=$SONARQUBE_HOST \
-		-Dsonar.login=$SONARQUBE_TOKEN
-}
-
 action=
 while [ $# -gt 0 ]; do
 	case "$1" in
@@ -46,11 +37,8 @@ while [ $# -gt 0 ]; do
 	"--clean")
 		./gradlew clean
 		;;
-	"--sonarqube")
-		action="sonarqube"
-		;;
 	"-h"|"--help")
-		printf "usage: $0 [-h] [--test-class CLASS] [--flavour FLAVOUR] [--clean] [--sonarqube]"
+		printf "usage: $0 [-h] [--test-class CLASS] [--flavour FLAVOUR] [--clean]"
 		exit 0
 		;;
 	*)
@@ -63,8 +51,5 @@ done
 
 init
 
-if test ! -z $action && test $action = "sonarqube"; then
-	sonarqube
-else
-	start_test "$test_class"
-fi
+start_test "$test_class"
+

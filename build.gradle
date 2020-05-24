@@ -1,7 +1,5 @@
 plugins {
     id "com.android.application" version "4.0.0-rc01"
-    id "org.sonarqube" version "2.6"
-    id "jacoco"
 }
 
 repositories {
@@ -20,19 +18,16 @@ ext {
 
             appcompat         : "1.1.0",
             material          : "1.2.0-alpha06",
-            constraintlayout  : "2.0.0-beta5",
+            constraintlayout  : "2.0.0-beta6",
             preference        : "1.1.1",
             swiperefreshlayout: "1.0.0",
             fastadapter       : "5.0.0",
 
             androidx_test     : "1.2.0",
             junit             : "1.1.1",
-            espresso          : "3.2.0",
-            uiautomator       : "2.2.0",
-            mockito           : "2.24.0"
+            espresso          : "3.2.0"
     ]
 }
-
 
 dependencies {
     // Libs
@@ -60,9 +55,6 @@ dependencies {
     implementation "androidx.test:rules:${versions.androidx_test}"
     implementation "androidx.test.ext:junit:${versions.junit}"
     implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-    implementation "androidx.test.uiautomator:uiautomator:${versions.uiautomator}"
-    implementation "org.mockito:mockito-core:${versions.mockito}"
-    implementation "org.mockito:mockito-android:${versions.mockito}"
 }
 
 // translate from product flavour names to abi names
@@ -86,18 +78,6 @@ Map<String, Integer> abiVersionCodes = [
         "x86"        : 3,
         "x86_64"     : 4
 ]
-
-sonarqube {
-    properties {
-        def jacocoReports = []
-        fileTree("${buildDir}/outputs/code_coverage").forEach({ f ->
-            if (f.path.endsWith(".ec") || f.path.endsWith(".exec")) {
-                jacocoReports << f
-            }
-        })
-        property "sonar.jacoco.reportPaths", jacocoReports
-    }
-}
 
 int versionMajor = 1
 int versionMinor = 0
