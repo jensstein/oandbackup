@@ -4,6 +4,7 @@
 
     <solid android:color="@android:color/transparent" />
 
-    <padding
-        android:padding="@dimen/cards_spacing"/>
+    <size android:width="@dimen/med_spacing" />
+
+    <padding android:padding="@dimen/cards_spacing" />
 </shape>

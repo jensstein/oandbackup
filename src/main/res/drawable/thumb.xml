@@ -5,10 +5,12 @@
     <corners android:radius="50dp" />
 
     <padding
-        android:paddingLeft="22dp"
-        android:paddingRight="22dp" />
+        android:paddingLeft="@dimen/large_spacing"
+        android:paddingRight="@dimen/large_spacing" />
 
     <solid android:color="?backgroundColor" />
+
+    <size android:width="@dimen/med_spacing" />
 
     <stroke
         android:width="1dp"
