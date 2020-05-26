@@ -45,6 +45,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     String busybox;
     ArrayList<String> users;
     Context context;
+    private String password;
     private static String errors = "";
     boolean multiuserEnabled;
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
@@ -73,6 +74,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
         this.oabUtils = new File(filesDir, AssetsHandler.OAB_UTILS).getAbsolutePath();
         legacyMode = !checkOabUtils();
+        password = prefs.getString(Constants.PREFS_PASSWORD, "");
     }
 
     public ShellCommands(Context context, SharedPreferences prefs, File filesDir) {
@@ -188,23 +190,24 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         String label = app.getLabel();
         String packageName = app.getPackageName();
         String dataDir = app.getLogInfo().getDataDir();
+        boolean encrypted = app.getLogInfo().isEncrypted();
         String dataDirName = dataDir.substring(dataDir.lastIndexOf("/") + 1);
         String deviceProtectedDataDir = app.getDeviceProtectedDataDir();
         String backupSubDirPath = swapBackupDirPath(backupSubDir.getAbsolutePath());
-        int unzipRet = -1;
+        int unzipReturn = -1;
         Log.i(TAG, "restoring: " + label);
 
         try {
             killPackage(packageName);
             File zipFile = new File(backupSubDir, dataDirName + ".zip");
             if (zipFile.exists())
-                unzipRet = Compression.unzip(zipFile, backupSubDir);
+                unzipReturn = decompress(zipFile, backupSubDir, encrypted);
             if (prefs.getBoolean("backupExternalFiles", false)) {
                 File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
                 if (externalFiles.exists()) {
                     String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
                     externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
-                    Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath));
+                    Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath), password);
                 }
             }
 
@@ -220,7 +223,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add(restoreCommand);
                 File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
                 if (deviceProtectedDataDir != null && deviceProtectedFiles.exists()) {
-                    Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles);
+                    Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles, password);
                     restoreCommand = busybox + " cp -r " + deviceProtectedFiles + "/" + dataDirName + "/* " + deviceProtectedDataDir + "\n";
 
                     try {
@@ -242,21 +245,19 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("restorecon -R " + deviceProtectedDataDir + " || true");
 
                 int ret = commandHandler.runCmd("su", commands, line -> {
-                        },
-                        line -> writeErrorLog(context, label, line),
+                        }, line -> writeErrorLog(context, label, line),
                         e -> Log.e(TAG, "doRestore: " + e.toString()), this);
-                if (multiuserEnabled) {
-                    disablePackage(packageName);
-                }
+                if (multiuserEnabled) disablePackage(packageName);
                 return ret;
             } else {
                 Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupSubDir.getAbsolutePath() + "/" + dataDirName);
                 return 0;
             }
         } finally {
-            if (unzipRet == 0)
+            if (unzipReturn == 0) {
                 deleteBackup(new File(backupSubDir, dataDirName));
-            deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
+                deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
+            }
         }
     }
 
@@ -304,7 +305,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                         dest = file.substring(0, file.lastIndexOf("/"));
                         File zipFile = new File(backupSubDir, filename + ".zip");
                         if (zipFile.exists()) {
-                            int ret = Compression.unzip(zipFile, backupSubDir);
+                            int ret = Compression.unzip(zipFile, backupSubDir, password);
                             // delay the deletion of the unzipped directory until the copying has been done
                             if (ret == 0) {
                                 toDelete.add(filename);
@@ -525,16 +526,21 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
 
     public int compress(File directoryToCompress) {
-        int zipret = Compression.zip(directoryToCompress);
-        if (zipret == 0) {
+        int zipReturn = Compression.zip(directoryToCompress, password);
+        if (zipReturn == 0) {
             deleteBackup(directoryToCompress);
-        } else if (zipret == 2) {
+        } else if (zipReturn == 2) {
             // handling empty zip
             deleteBackup(new File(directoryToCompress.getAbsolutePath() + ".zip"));
             return 0;
-            // zipret == 2 shouldn't be treated as an error
         }
-        return zipret;
+        return zipReturn;
+    }
+
+    public int decompress(File zipFile, File backupSubDir, boolean encrypted) {
+        if (encrypted && password.equals("")) return 1;
+        else if (!encrypted) return Compression.unzip(zipFile, backupSubDir, "");
+        else return Compression.unzip(zipFile, backupSubDir, password);
     }
 
     public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem) {
@@ -672,37 +678,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }, e -> Log.e(TAG, "checkOabUtils (ret != 0): ", e), this);
         }
         return ret == 0;
-    }
-
-    public void copyNativeLibraries(File apk, File outputDir, String packageName) {
-        /*
-         * first try the primary abi and then the secondary if the
-         * first doesn't give any results.
-         * see frameworks/base/core/jni/com_android_internal_content_NativeLibraryHelper.cpp:iterateOverNativeFiles
-         * frameworks/base/core/java/com/android/internal/content/NativeLibraryHelper.java
-         * in the android source
-         */
-        String libPrefix = "lib/";
-        ArrayList<String> libs = Compression.list(apk, libPrefix + Build.SUPPORTED_ABIS[0]);
-        if (libs == null || libs.size() == 0)
-            libs = Compression.list(apk, libPrefix + Build.SUPPORTED_ABIS[0]);
-        if (libs != null && libs.size() > 0) {
-            if (Compression.unzip(apk, outputDir, libs) == 0) {
-                List<String> commands = new ArrayList<>();
-                commands.add("mount -o remount,rw /system");
-                String src = swapBackupDirPath(outputDir.getAbsolutePath());
-                for (String lib : libs) {
-                    commands.add("cp " + src + "/" + lib + " /system/lib");
-                    commands.add("chmod 644 /system/lib/" + Utils.getName(lib));
-                }
-                commands.add("mount -o remount,ro /system");
-                commandHandler.runCmd("su", commands, line -> {
-                        },
-                        line -> writeErrorLog(context, packageName, line),
-                        e -> Log.e(TAG, "copyNativeLibraries: ", e), this);
-            }
-            deleteBackup(new File(outputDir, "lib"));
-        }
     }
 
     public ArrayList<String> getUsers() {

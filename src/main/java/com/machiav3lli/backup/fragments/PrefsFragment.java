@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -47,8 +50,10 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-
-        findPreference(Constants.PREFS_THEME).setOnPreferenceChangeListener((preference, newValue) -> {
+        Preference pref;
+        pref = findPreference(Constants.PREFS_THEME);
+        assert pref != null;
+        pref.setOnPreferenceChangeListener((preference, newValue) -> {
             Utils.setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
             switch (newValue.toString()) {
                 case "light":
@@ -63,14 +68,34 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference(Constants.PREFS_LANGUAGES).setOnPreferenceChangeListener((preference, newValue) -> {
+        pref = findPreference(Constants.PREFS_LANGUAGES);
+        assert pref != null;
+        pref.setOnPreferenceChangeListener((preference, newValue) -> {
             if (LanguageHelper.changeLanguage(requireContext(), Utils.getPrefsString(
                     requireContext(), Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
                 Utils.reloadWithParentStack(requireActivity());
             return true;
         });
 
-        Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        CheckBoxPreference encryptPref = findPreference(Constants.PREFS_ENCRYPTION);
+        EditTextPreference passwordPref = findPreference(Constants.PREFS_PASSWORD);
+        assert encryptPref != null;
+        assert passwordPref != null;
+        passwordPref.setVisible(encryptPref.isChecked());
+        passwordPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+        encryptPref.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (encryptPref.isChecked()) {
+                encryptPref.setChecked(false);
+                passwordPref.setText("");
+                passwordPref.setVisible(false);
+            } else {
+                encryptPref.setChecked(true);
+                passwordPref.setVisible(true);
+            }
+            return false;
+        });
+
+        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
         pref.setSummary(getDefaultBackupDirPath(requireContext()));
         pref.setOnPreferenceClickListener(preference -> {
@@ -81,7 +106,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
         shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
-        findPreference(Constants.PREFS_QUICK_REBOOT).setOnPreferenceClickListener(preference -> {
+        pref = findPreference(Constants.PREFS_QUICK_REBOOT);
+        assert pref != null;
+        pref.setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.quickRebootTitle)
                     .setMessage(R.string.quickRebootMessage)
@@ -93,7 +120,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         Bundle extra = requireActivity().getIntent().getExtras();
         if (extra != null) backupDir = (File) extra.get("com.machiav3lli.backup.backupDir");
-        findPreference(Constants.PREFS_BATCH_DELETE).setOnPreferenceClickListener(preference -> {
+        pref = findPreference(Constants.PREFS_BATCH_DELETE);
+        assert pref != null;
+        pref.setOnPreferenceClickListener(preference -> {
             final ArrayList<AppInfo> deleteList = new ArrayList<>();
             StringBuilder message = new StringBuilder();
             for (AppInfo appInfo : appInfoList) {
@@ -118,12 +147,16 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference(Constants.PREFS_LOGVIEWER).setOnPreferenceClickListener(preference -> {
+        pref = findPreference(Constants.PREFS_LOGVIEWER);
+        assert pref != null;
+        pref.setOnPreferenceClickListener(preference -> {
             requireActivity().getSupportFragmentManager().beginTransaction().add(R.id.prefs_fragement, new LogsFragment()).commit();
             return true;
         });
 
-        findPreference(Constants.PREFS_HELP).setOnPreferenceClickListener(preference -> {
+        pref = findPreference(Constants.PREFS_HELP);
+        assert pref != null;
+        pref.setOnPreferenceClickListener(preference -> {
             requireActivity().getSupportFragmentManager().beginTransaction().add(R.id.prefs_fragement, new HelpFragment()).commit();
             return true;
         });
@@ -132,7 +165,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     private void setDefaultDir(Context context, String dir) {
         Utils.setPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
         setDefaultBackupDirPath(context, dir);
-        findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY).setSummary(dir);
+        Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        assert pref != null;
+        pref.setSummary(dir);
     }
 
     @Override

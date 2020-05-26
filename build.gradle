@@ -5,6 +5,9 @@ plugins {
 repositories {
     google()
     jcenter()
+    maven {
+        url 'http://net.lingala.zip4j/repo'
+    }
 }
 
 ext {
@@ -13,6 +16,7 @@ ext {
             lifecycle         : "2.2.0",
             stream            : "1.2.1",
             rootBeer          : "0.0.7",
+            zip4j             : "2.6.0",
 
             butterknife       : "10.2.1",
 
@@ -36,6 +40,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
     implementation "com.annimon:stream:${versions.stream}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
+    implementation "net.lingala.zip4j:zip4j:${versions.zip4j}"
 
     //ButterKnife
     implementation "com.jakewharton:butterknife:${versions.butterknife}"

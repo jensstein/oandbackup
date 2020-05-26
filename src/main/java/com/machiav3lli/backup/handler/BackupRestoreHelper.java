@@ -27,11 +27,7 @@ public class BackupRestoreHelper {
             if (app.getLogInfo() != null && app.getLogInfo().getSourceDir().length() > 0
                     && !app.getSourceDir().equals(app.getLogInfo().getSourceDir())) {
                 String apk = app.getLogInfo().getApk();
-                if (apk != null) {
-                    ShellCommands.deleteBackup(new File(backupSubDir, apk));
-                    if (app.getLogInfo().isEncrypted())
-                        ShellCommands.deleteBackup(new File(backupSubDir, apk + ".gpg"));
-                }
+                if (apk != null) ShellCommands.deleteBackup(new File(backupSubDir, apk));
             }
         }
 
@@ -63,10 +59,6 @@ public class BackupRestoreHelper {
                 } else {
                     apkRet = shellCommands.restoreUserApk(backupSubDir,
                             app.getLabel(), apk, context.getApplicationInfo().dataDir);
-                }
-                if (app.isSystem() && app.getLogInfo() != null) {
-                    File apkFile = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
-                    shellCommands.copyNativeLibraries(apkFile, backupSubDir, app.getPackageName());
                 }
             } else if (!app.isSpecial()) {
                 String s = "no apk to install: " + app.getPackageName();

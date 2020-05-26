@@ -92,7 +92,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Rahul Patel](https://github.com/whyorean) whose hard work on AuroraStore inspired this work.
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer).
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [Zip4J](https://github.com/srikanth-lingala/zip4j), [RootBeer](https://github.com/scottyab/rootbeer).
 
 ## author
 
