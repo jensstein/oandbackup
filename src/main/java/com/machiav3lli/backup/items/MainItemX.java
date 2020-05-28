@@ -42,7 +42,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
 
     @Override
     public long getIdentifier() {
-        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0) + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0);
+        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0) + (app.getLogInfo() != null ? 1 : 0) + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0);
     }
 
     @Override
