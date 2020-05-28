@@ -41,15 +41,15 @@
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="encryption"
-            android:summary="enable to encrypt data backups"
-            android:title="Encryption"
+            android:summary="@string/prefs_summary_encryption"
+            android:title="@string/prefs_encryption"
             app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:defaultValue=""
             android:inputType="textPassword"
             android:key="password"
-            android:summary="set to empty to disable encryption"
-            android:title="Encryption password"
+            android:summary="@string/prefs_summary_password"
+            android:title="@string/prefs_password"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"

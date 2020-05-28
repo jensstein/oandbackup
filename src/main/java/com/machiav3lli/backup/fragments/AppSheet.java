@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -54,20 +55,28 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     final static String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
 
+    @BindView(R.id.icon)
+    AppCompatImageView icon;
     @BindView(R.id.label)
     AppCompatTextView label;
     @BindView(R.id.packageName)
     AppCompatTextView packageName;
+    @BindView(R.id.appType)
+    AppCompatTextView appType;
     @BindView(R.id.versionName)
     AppCompatTextView versionCode;
     @BindView(R.id.lastBackup)
     AppCompatTextView lastBackup;
+    @BindView(R.id.lastBackup_line)
+    LinearLayoutCompat lastBackupLine;
     @BindView(R.id.backupMode)
     AppCompatTextView backupMode;
-    @BindView(R.id.appType)
-    AppCompatTextView appType;
-    @BindView(R.id.icon)
-    AppCompatImageView icon;
+    @BindView(R.id.backupMode_line)
+    LinearLayoutCompat backupModeLine;
+    @BindView(R.id.encrypted)
+    AppCompatTextView encrypted;
+    @BindView(R.id.encrypted_line)
+    LinearLayoutCompat encryptedLine;
     @BindView(R.id.backup)
     Chip backup;
     @BindView(R.id.restore)
@@ -159,7 +168,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         } else versionCode.setText(app.getVersionName());
         if (app.getLogInfo() != null)
             lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
-        else lastBackup.setText("-");
+        else lastBackupLine.setVisibility(View.GONE);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
                 backupMode.setText(R.string.onlyApkBackedUp);
@@ -171,9 +180,12 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 backupMode.setText(R.string.bothBackedUp);
                 break;
             default:
-                backupMode.setText("-");
+                backupModeLine.setVisibility(View.GONE);
                 break;
         }
+        if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK)
+            encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
+        else encryptedLine.setVisibility(View.GONE);
         Utils.pickColor(app, appType);
     }
 

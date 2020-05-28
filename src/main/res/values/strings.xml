@@ -106,6 +106,10 @@
     <string name="prefs_backupExternalFiles">Handle external data</string>
     <string name="prefs_disableNotifications">Disable notification</string>
     <string name="prefs_clearCache">Clear app\'s cache</string>
+    <string name="prefs_encryption">Encryption</string>
+    <string name="prefs_password">Encryption password</string>
+    <string name="prefs_summary_password">set to empty to disable encryption</string>
+    <string name="prefs_summary_encryption">enable to encrypt data backups</string>
     <string name="prefs_summaryClearCache">clear application\'s cache before doing data backup</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
     <string name="prefs_summaryAcquireWakelock">acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
@@ -185,6 +189,7 @@
     <string name="backup_mode_title">Backup mode:</string>
     <string name="last_backup_title">Last backup:</string>
     <string name="app_s_type_title">App\'s type:</string>
+    <string name="encrypted_data_title">Encrypted data:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">deleted the backup</string>
     <string name="prefs_theme">Theme</string>

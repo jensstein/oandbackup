@@ -94,78 +94,105 @@
                             android:singleLine="true"
                             android:textSize="@dimen/main_text" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginVertical="@dimen/small_spacing"
-                        android:orientation="horizontal">
+                        android:text="@string/version_name_title"
+                        android:textSize="@dimen/main_text" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/last_backup_title"
-                            android:textSize="@dimen/main_text" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/versionName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/main_text" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/lastBackup"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="end"
-                            android:singleLine="true"
-                            android:textSize="@dimen/main_text" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/lastBackup_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginVertical="@dimen/small_spacing"
-                        android:orientation="horizontal">
+                        android:text="@string/last_backup_title"
+                        android:textSize="@dimen/main_text" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/backup_mode_title"
-                            android:textSize="@dimen/main_text" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lastBackup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/main_text" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/backupMode"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="end"
-                            android:singleLine="true"
-                            android:textSize="@dimen/main_text" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/backupMode_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginVertical="@dimen/small_spacing"
-                        android:orientation="horizontal">
+                        android:text="@string/backup_mode_title"
+                        android:textSize="@dimen/main_text" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/version_name_title"
-                            android:textSize="@dimen/main_text" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/backupMode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/main_text" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/versionName"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="end"
-                            android:singleLine="true"
-                            android:textSize="@dimen/main_text" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/encrypted_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/encrypted_data_title"
+                        android:textSize="@dimen/main_text" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/encrypted"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/main_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.coordinatorlayout.widget.CoordinatorLayout
