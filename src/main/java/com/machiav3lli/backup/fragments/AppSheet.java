@@ -321,9 +321,9 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                         int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
                         handleMessages.endMessage();
                         if (ret == 0) {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallSuccess), app.getLabel(), true);
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
                         } else {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, getString(R.string.uninstallFailure), app.getLabel(), true);
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
                             Utils.showErrors(requireActivity());
                         }
                         ((MainActivityX) requireActivity()).refresh();

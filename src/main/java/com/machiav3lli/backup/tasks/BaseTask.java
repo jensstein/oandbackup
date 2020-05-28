@@ -65,14 +65,9 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
             oAndBackupX.refresh();
             final String message = getPostExecuteMessage(oAndBackupX, actionType, result);
             if (result == 0) {
-                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class,
-                        (int) System.currentTimeMillis(),
-                        message,
-                        app.getLabel(), true);
+                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             } else {
-                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class,
-                        (int) System.currentTimeMillis(), message,
-                        app.getLabel(), true);
+                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
                 Utils.showErrors(oAndBackupX);
             }
         }
