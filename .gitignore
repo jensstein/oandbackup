@@ -4,7 +4,12 @@
 .gradle
 .idea
 src/main/assets
+assets
 build
 local.properties
-sonarqube-env
 src/main/jniLibs/
+arm/
+universal/
+x86_64/
+x86/
+arm64/
