@@ -1,0 +1,6 @@
+**OAndBackupX 1.1.0**
+* Added: data backup encryption
+* Fixed: schedules
+* Updated: notifications' format
+* Tweaked some UI elements
+* and improved performance

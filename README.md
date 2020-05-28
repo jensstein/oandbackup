@@ -11,15 +11,23 @@ backups can be scheduled with no limit on the number of individual schedules and
 
 ## Community
 
-There's a new room on Riot to discuss the development of the App:
+There's a new room on Riot and a group on Telegram to discuss the development of the App and test new versions:
 
 [oandbackupx:matrix.org](https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org) 
+
+[t.me/OAndBackupX](https://t.me/OAndBackupX)
+
+## Encryption
+
+If enabled the data backup will be encrypted with AES 256 based on a password you can set in the settings, which you'll have to use when you want to restore the data. This way you can store your backups more securely, worrying less about their readability.  
 
 ## Compatibility with oandbackup backups
 
 till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
 
 ## Changes & TODOs
+
+#### [Changelog](https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md)
 
 - [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
 - [x] Adapt FastAdapter: for Main, Batch and Scheduler
@@ -36,10 +44,10 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Add support for protected data backup
 - [x] Exclude cache from data backups
 - [x] Prompt to turn the Battery Optimization off
-- [ ] Add in-app backup encryption (first: after 1.0)
-- [ ] Rewrite the logic of Backup/Restore: is a PROCESS
-- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now/ connected to the previous goal
+- [x] Add in-app backup encryption (first: after 1.0)
+- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~30% done)
 - [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
+- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now (connected to the two previous goals)
 - [ ] Add Split Apk Support
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...

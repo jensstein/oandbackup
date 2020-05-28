@@ -85,8 +85,8 @@ Map<String, Integer> abiVersionCodes = [
 ]
 
 int versionMajor = 1
-int versionMinor = 0
-int versionPath = 2
+int versionMinor = 1
+int versionPath = 0
 
 android {
     compileSdkVersion 29

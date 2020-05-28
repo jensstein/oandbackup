@@ -1,6 +1,14 @@
 changelog
 =========
 
+1.1.0 (29.05.2020)
+-------------------
+* added: data backup encryption
+* fixed: schedules
+* updated: notifications' format
+* tweaked some UI elements
+* and improved performance
+
 1.0.2 (24.05.2020)
 -------------------
 * added: Item click feedback
