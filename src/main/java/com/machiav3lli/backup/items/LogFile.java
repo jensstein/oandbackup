@@ -101,11 +101,6 @@ public class LogFile implements Parcelable {
         return backupMode;
     }
 
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode) {
-        // the boolean for encrypted backups are only written if the encrypted succeeded so false is written first by default
-        writeLogFile(backupSubDir, appInfo, backupMode, false);
-    }
-
     public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted) {
         try {
             // path to apk should only be logged if it is backed up

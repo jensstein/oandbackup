@@ -40,7 +40,6 @@ public class BackupRestoreHelper {
         }
         if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
         shellCommands.logReturnMessage(ret);
-        LogFile.writeLogFile(backupSubDir, app, backupMode);
         return ret;
     }
 

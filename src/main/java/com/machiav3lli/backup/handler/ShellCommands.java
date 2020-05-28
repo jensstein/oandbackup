@@ -11,6 +11,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.tasks.Compression;
 
 import org.jetbrains.annotations.NotNull;
@@ -176,13 +177,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // only zip if data is backed up
         if (backupMode != AppInfo.MODE_APK) {
             int zipret = compress(new File(backupSubDir, folder));
-            if (backupSubDirExternalFiles != null)
-                zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-            if (backupSubDirDeviceProtectedFiles != null)
-                zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if (zipret != 0)
                 ret += zipret;
         }
+        app.setBackupMode(backupMode);
+        LogFile.writeLogFile(backupSubDir, app, backupMode, !password.equals(""));
         return ret;
     }
 
