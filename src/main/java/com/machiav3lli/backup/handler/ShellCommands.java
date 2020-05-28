@@ -236,6 +236,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             if (unzipReturn == 0) {
                 deleteBackup(new File(backupSubDir, dataDirName));
                 deleteBackup(new File(new File(backupSubDir, DEVICE_PROTECTED_FILES), dataDirName));
+            } else {
+                Log.e(TAG, packageName + " error while unzipping, check encryption password.");
+                NotificationHelper.showNotification(context, context.getClass(), (int) System.currentTimeMillis(),
+                        app.getLabel(), context.getString(R.string.failed_unzipping), true);
             }
         }
     }
