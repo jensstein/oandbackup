@@ -20,7 +20,7 @@ public class RestoreTask extends BaseTask {
         final MainActivityX oAndBackupX = oAndBackupReference.get();
         if (oAndBackupX == null || oAndBackupX.isFinishing()) return -1;
         publishProgress();
-        return backupRestoreHelper.restore(oAndBackupReference.get(), backupDirectory,
-                app, shellCommands, mode);
+        return backupRestoreHelper.restore(oAndBackupReference.get(),
+                backupDirectory, app, shellCommands, mode);
     }
 }

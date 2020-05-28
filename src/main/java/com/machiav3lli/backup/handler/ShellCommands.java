@@ -224,8 +224,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add("restorecon -R " + deviceProtectedDataDir + " || true");
 
                 int ret = commandHandler.runCmd("su", commands, line -> {
-                        }, line -> writeErrorLog(context, label, line),
-                        e -> Log.e(TAG, "doRestore: " + e.toString()), this);
+                }, line -> writeErrorLog(context, label, line), e -> Log.e(TAG, "doRestore: " + e.toString()), this);
                 if (multiuserEnabled) disablePackage(packageName);
                 return ret;
             } else {

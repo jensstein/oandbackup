@@ -26,9 +26,7 @@ public class CommandHandler {
         try {
             Process p = Runtime.getRuntime().exec(shell);
             DataOutputStream dos = new DataOutputStream(p.getOutputStream());
-            for (String cmd : commands) {
-                dos.writeBytes(cmd + "\n");
-            }
+            for (String cmd : commands) dos.writeBytes(cmd + "\n");
             dos.writeBytes("exit\n");
             dos.flush();
             OutputHandler stdoutHandler = new OutputHandler(p.getInputStream(),

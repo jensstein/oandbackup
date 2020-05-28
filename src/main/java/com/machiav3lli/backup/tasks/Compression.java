@@ -30,8 +30,7 @@ public class Compression {
             if (e.toString().contains("No entries")) {
                 return 2;
             } else {
-                Log.e(TAG, String.format(
-                        "Caught exception when creating zip file: %s", e));
+                Log.e(TAG, String.format("Caught exception when creating zip file: %s", e));
                 return 1;
             }
         }
@@ -43,8 +42,7 @@ public class Compression {
             else new ZipFile(zipfile, password.toCharArray()).extractAll(outputDir.toString());
             return 0;
         } catch (ZipException e) {
-            Log.e(TAG, String.format(
-                    "Caught exception when unzipping: %s", e));
+            Log.e(TAG, String.format("Caught exception when unzipping: %s", e));
             return 1;
         }
     }

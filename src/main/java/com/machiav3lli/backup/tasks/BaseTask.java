@@ -33,8 +33,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     @VisibleForTesting
     BackupRestoreHelper backupRestoreHelper;
 
-    public BaseTask(BackupRestoreHelper.ActionType actionType,
-                    AppInfo app, HandleMessages handleMessages,
+    public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfo app, HandleMessages handleMessages,
                     MainActivityX oAndBackupX, File backupDirectory, ShellCommands shellCommands, int mode) {
         this.actionType = actionType;
         this.app = app;
@@ -50,10 +49,8 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     public void onProgressUpdate(Void... _void) {
         final HandleMessages handleMessages = handleMessagesReference.get();
         final MainActivityX oAndBackupX = oAndBackupReference.get();
-        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
-            handleMessages.showMessage(app.getLabel(), getProgressMessage(
-                    oAndBackupX, actionType));
-        }
+        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing())
+            handleMessages.showMessage(app.getLabel(), getProgressMessage(oAndBackupX, actionType));
     }
 
     @Override
