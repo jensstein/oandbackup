@@ -54,8 +54,7 @@ public class HandleAlarms {
         pendingIntent.cancel();
     }
 
-    public static long timeUntilNextEvent(int interval, int hour,
-                                          long placed, long now) {
+    public static long timeUntilNextEvent(int interval, int hour, long placed, long now) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(placed);
         c.add(Calendar.DAY_OF_MONTH, interval);
@@ -74,13 +73,11 @@ public class HandleAlarms {
 
         private DeviceIdleChecker(Context context) {
             this.context = context;
-            this.powerManager = (PowerManager) context.getSystemService(
-                    Context.POWER_SERVICE);
+            this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         }
 
         boolean isIgnoringBatteryOptimizations() {
-            return powerManager.isIgnoringBatteryOptimizations(
-                    context.getPackageName());
+            return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
         }
     }
 }

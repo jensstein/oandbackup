@@ -183,8 +183,7 @@ public class SchedulerActivityX extends BaseActivity
         }).start();
     }
 
-    void migrateSchedulesToDatabase(SharedPreferences preferences,
-                                    String databasename) throws SchedulingException {
+    void migrateSchedulesToDatabase(SharedPreferences preferences, String databasename) throws SchedulingException {
         final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
                 .getScheduleDatabase(this, databasename);
         final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
@@ -211,8 +210,7 @@ public class SchedulerActivityX extends BaseActivity
         }
     }
 
-    public void removePreferenceEntries(SharedPreferences preferences,
-                                        int number) {
+    public void removePreferenceEntries(SharedPreferences preferences, int number) {
         final SharedPreferences.Editor editor = preferences.edit();
         editor.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
         editor.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);

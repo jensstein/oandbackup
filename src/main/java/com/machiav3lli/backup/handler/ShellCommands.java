@@ -124,7 +124,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
 
         File backupSubDirDeviceProtectedFiles = null;
-        boolean backupExternalFiles = prefs.getBoolean("backupExternalFiles", false);
         if (backupMode != AppInfo.MODE_APK) {
             backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
@@ -132,19 +131,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
         }
 
-        File externalFilesDir = getExternalFilesDirPath(packageData);
-        File backupSubDirExternalFiles = null;
-        if (backupExternalFiles && backupMode != AppInfo.MODE_APK && externalFilesDir != null) {
-            backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
-            if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
-                commands.add("cp -r" + " " +
-                        swapBackupDirPath(externalFilesDir.getAbsolutePath()) +
-                        " " + swapBackupDirPath(backupSubDir.getAbsolutePath() +
-                        "/" + EXTERNAL_FILES));
-            } else {
-                Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
-            }
-        } else if (!backupExternalFiles && backupMode != AppInfo.MODE_APK) {
+        if (backupMode != AppInfo.MODE_APK) {
             String data = packageData.substring(packageData.lastIndexOf("/"));
             deleteBackup(new File(backupSubDir, EXTERNAL_FILES + "/" + data + ".zip.gpg"));
         }
@@ -202,14 +189,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             File zipFile = new File(backupSubDir, dataDirName + ".zip");
             if (zipFile.exists())
                 unzipReturn = decompress(zipFile, backupSubDir, encrypted);
-            if (prefs.getBoolean("backupExternalFiles", false)) {
-                File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
-                if (externalFiles.exists()) {
-                    String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
-                    externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
-                    Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath), password);
-                }
-            }
 
             // check if there is a directory to copy from - it is not necessarily an error if there isn't
             String[] list = new File(backupSubDir, dataDirName).list();
@@ -785,16 +764,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     line -> writeErrorLog(context, "", line),
                     e -> Log.e(TAG, "copySelfApk: ", e), this);
         }
-    }
-
-    public File getExternalFilesDirPath(String packageData) {
-        String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
-        // get path of own externalfilesdir and then cutting at the packagename to get the general path
-        externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
-        File externalFilesDir = new File(externalFilesPath, new File(packageData).getName());
-        if (externalFilesDir.exists())
-            return externalFilesDir;
-        return null;
     }
 
     private static class Ownership {
