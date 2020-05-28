@@ -52,11 +52,7 @@ public class ScheduleService extends Service
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
                 handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getHour());
                 Log.i(TAG, getString(R.string.sched_startingbackup));
-                // add one to submode to have it correspond to AppInfo.MODE_*
-                handleScheduledBackups.initiateBackup(id, schedule.getMode()
-                                .getValue(), schedule.getSubmode().getValue() + 1,
-                        schedule.isExcludeSystem());
-
+                handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubmode().getValue() + 1, schedule.isExcludeSystem());
             });
             thread = Optional.of(t);
             t.start();

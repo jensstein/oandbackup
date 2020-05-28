@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -378,7 +377,6 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             this.databasename = databasename;
         }
 
-        @SuppressLint("StringFormatInvalid")
         @Override
         public void run() {
             final SchedulerActivityX scheduler = activityReference.get();
@@ -397,9 +395,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                             "from database. Persisted schedules: %s", id, schedules));
                     scheduler.runOnUiThread(() -> {
                         final String state = mode.isPresent() ? "mode" : "submode";
-                        Toast.makeText(scheduler, scheduler.getString(
-                                R.string.error_updating_schedule_mode, state, id),
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(scheduler, scheduler.getString(R.string.error_updating_schedule_mode) + state + id, Toast.LENGTH_LONG).show();
                     });
                 }
             }
@@ -481,8 +477,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         private final long id;
         private final String databasename;
 
-        public StartSchedule(Context context, HandleScheduledBackups
-                handleScheduledBackups, long id, String databasename) {
+        public StartSchedule(Context context, HandleScheduledBackups handleScheduledBackups, long id, String databasename) {
             this.contextReference = new WeakReference<>(context);
             // set the handlescheduledbackups object here to facilitate testing
             this.handleScheduledBackupsReference = new WeakReference<>(handleScheduledBackups);
@@ -502,9 +497,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                     final HandleScheduledBackups handleScheduledBackups =
                             handleScheduledBackupsReference.get();
                     if (handleScheduledBackups != null) {
-                        handleScheduledBackups.initiateBackup((int) id,
-                                schedule.getMode().getValue(), schedule.getSubmode()
-                                        .getValue() + 1, schedule.isExcludeSystem());
+                        handleScheduledBackups.initiateBackup((int) id, schedule.getMode(), schedule.getSubmode().getValue() + 1, schedule.isExcludeSystem());
                     }
                 }
             });

@@ -18,6 +18,7 @@ import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.schedules.db.Schedule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,25 +49,19 @@ public class HandleScheduledBackups {
         listeners.add(listener);
     }
 
-    public void initiateBackup(final int id, final int mode, final int subMode, final boolean excludeSystem) {
+    public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem) {
         new Thread(() -> {
-            String backupDirPath = prefs.getString(
-                    Constants.PREFS_PATH_BACKUP_DIRECTORY,
-                    getDefaultBackupDirPath(context));
+            String backupDirPath = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, getDefaultBackupDirPath(context));
             assert backupDirPath != null;
             backupDir = new File(backupDirPath);
-            ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(
-                    context, backupDir, false, prefs.getBoolean(
-                            Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(context, backupDir, false, prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> listToBackUp;
             switch (mode) {
-                case R.id.schedAll:
-                    // all apps
+                case ALL:
                     Collections.sort(list);
                     backup(list, subMode);
                     break;
-                case R.id.schedUser:
-                    // user apps
+                case USER:
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if (!appInfo.isSystem()) {
@@ -76,8 +71,7 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case R.id.schedSystem:
-                    // system apps
+                case SYSTEM:
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if (appInfo.isSystem()) {
@@ -87,8 +81,7 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case R.id.schedNewUpdated:
-                    // new and updated apps
+                case NEW_UPDATED:
                     listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if ((!excludeSystem || !appInfo.isSystem()) && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))) {
@@ -98,8 +91,7 @@ public class HandleScheduledBackups {
                     Collections.sort(listToBackUp);
                     backup(listToBackUp, subMode);
                     break;
-                case R.id.schedCustomList:
-                    // custom package list
+                case CUSTOM:
                     listToBackUp = new ArrayList<>();
                     FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
