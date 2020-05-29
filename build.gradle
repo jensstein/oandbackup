@@ -6,7 +6,7 @@ repositories {
     google()
     jcenter()
     maven {
-        url 'http://net.lingala.zip4j/repo'
+        url 'https://net.lingala.zip4j/repo'
     }
 }
 
