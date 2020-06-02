@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">niestandardowe ścieżki</string>
   <string name="prefs_pathBackupFolder">folder kopii zapasowych</string>
   <string name="prefs_summaryBackupFolder">ścieżka do folderu kopii zapasowej. pozostaw puste dla domyślnej.</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">ścieżka do pliku wykonywalnego busybox. upewnij się, że jest poprawna. pozostaw puste dla domyślnej.</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">ścieżka do pliku wykonywalnego busybox. upewnij się, że jest poprawna. pozostaw puste dla domyślnej.</string>
   <string name="prefs_oldBackups">fltruj kopie zapasowe według wieku</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">filtrowanie kopii zapasowych starszych niż wartość w dniach. używany z filtrem \"pokaż stare kopie zapasowe\"</string>
@@ -104,8 +104,6 @@
   <string name="prefs_followSymlinks">podążaj za linkami symbolicznymi</string>
   <string name="prefs_summaryFollowSymlinks">zawsze podążaj za symbolicznymi linkami podczas kopiowania (cp -L)</string>
   <string name="prefs_enableSpecialBackups">włącz specjalne kopie zapasowe</string>
-  <string name="prefs_backupExternalFiles">obsługa danych zewnętrznych</string>
-  <string name="prefs_summaryBackupExternalFiles">tworzy kopię zapasową i przywraca dane umieszczone na zewnętrznym nośniku danych (np./sdcard/Android/data/)</string>
   <string name="sched_title">harmonogramowanie</string>
   <string name="sched_notificationMessage">planowana kopia zapasowa</string>
   <string name="sched_interval">interwał w dniach</string>

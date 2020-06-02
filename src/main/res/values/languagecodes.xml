@@ -5,13 +5,14 @@
         <item>@string/prefs_languageSystemDefault</item>
         <item>Deutsch (deutschland)</item>
         <item>English</item>
+        <item>Ελληνικά</item>
         <item>Español</item>
         <item>Français</item>
         <item>Italiano</item>
         <item>日本語</item>
-        <item>Nederlands (nederland)</item>
+        <item>Nederlands</item>
         <item>Norsk bokmål</item>
-        <item>Polski (polska)</item>
+        <item>Polski</item>
         <item>Português (portugal)</item>
         <item>Pусский</item>
         <item>Српски</item>
@@ -24,13 +25,14 @@
         <item>system</item>
         <item>de</item>
         <item>en</item>
+        <item>el</item>
         <item>es</item>
         <item>fr</item>
         <item>it</item>
         <item>ja</item>
-        <item>nl_NL</item>
+        <item>nl</item>
         <item>nb</item>
-        <item>pl_PL</item>
+        <item>pl</item>
         <item>pt</item>
         <item>ru</item>
         <item>sr</item>
