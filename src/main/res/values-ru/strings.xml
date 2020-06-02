@@ -93,8 +93,8 @@
     <string name="prefs_pathscategory">Настраиваемые пути</string>
     <string name="prefs_pathBackupFolder">Папка для р.к.</string>
     <string name="prefs_summaryBackupFolder">Путь к папке с р.к., оставьте пустым для стандартного</string>
-    <string name="prefs_pathBusybox">Busybox</string>
-    <string name="prefs_summaryBusybox">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
+    <string name="prefs_pathToybox">Busybox</string>
+    <string name="prefs_summaryToybox">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
     <string name="prefs_oldBackups">Отфильтровать р.к. по возрасту</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\"</string>
@@ -109,8 +109,6 @@
     <string name="prefs_followSymlinks">следовать по символическим ссылкам</string>
     <string name="prefs_summaryFollowSymlinks">Всегда следовать по символическим ссылкам при копировании (cp -L)</string>
     <string name="prefs_enableSpecialBackups">Включить специальные р.к.</string>
-    <string name="prefs_backupExternalFiles">Обрабатывать внешние данные</string>
-    <string name="prefs_summaryBackupExternalFiles">Резервирует и восстанавливает данные с внешних хранилищ (например /sdcard/Android/data/)</string>
 
     <string name="sched_title">планирование</string>
     <string name="sched_notificationMessage">запланированное резервирование</string>

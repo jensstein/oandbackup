@@ -220,9 +220,9 @@ public class MainActivityX extends BaseActivity
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
                 String backupDirPath = getDefaultBackupDirPath(this);
                 backupDir = Utils.createBackupDir(this, backupDirPath);
-            case Constants.PREFS_PATH_BUSYBOX:
+            case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
-                if (!shellCommands.checkBusybox())
+                if (!shellCommands.checkToybox())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();

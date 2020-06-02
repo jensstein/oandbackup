@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">Произвољне путање</string>
   <string name="prefs_pathBackupFolder">Фасцикла за резервне копије</string>
   <string name="prefs_summaryBackupFolder">Путања до фасцикле са резервним копијама. Оставите празно ако желите фабричку путању.</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">Путања до busybox извршне датотеке. Оставите празно ако желите фабричку путању.</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">Путања до busybox извршне датотеке. Оставите празно ако желите фабричку путању.</string>
   <string name="prefs_oldBackups">Филтрирај резервне копије по времену</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">Филтрирај резервне копије старије од вредности наведене у данима.</string>
@@ -104,8 +104,6 @@
   <string name="prefs_followSymlinks">Прати symlink-ове</string>
   <string name="prefs_summaryFollowSymlinks">Увек прати symlink-ове при копирању (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Омогући посебне копије</string>
-  <string name="prefs_backupExternalFiles">Рукуј подацима на спољашњој меморији</string>
-  <string name="prefs_summaryBackupExternalFiles">Користи податке смештене на спољашњу меморију (нпр. /sdcard/Android/data/)</string>
   <string name="sched_title">Направите распоред</string>
   <string name="sched_notificationMessage">Програмирајте прављење резервне копије</string>
   <string name="sched_interval">Интервал у данима</string>

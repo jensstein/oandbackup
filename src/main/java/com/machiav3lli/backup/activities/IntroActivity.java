@@ -158,7 +158,7 @@ public class IntroActivity extends BaseActivity {
     }
 
     private boolean checkBusybox() {
-        return (shellCommands.checkBusybox());
+        return (shellCommands.checkToybox());
     }
 
     private boolean checkOabUtils() {

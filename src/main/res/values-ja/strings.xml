@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">カスタム パス</string>
   <string name="prefs_pathBackupFolder">バックアップ フォルダー</string>
   <string name="prefs_summaryBackupFolder">バックアップ フォルダーのパス。デフォルトは空白のままにします。</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">busybox 実行ファイルのパス。正しいく入力してください。デフォルトは空白のままにします。</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">busybox 実行ファイルのパス。正しいく入力してください。デフォルトは空白のままにします。</string>
   <string name="prefs_oldBackups">世代でバックアップをフィルター</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">値の日数よりも古いバックアップでフィルター。\'古いバックアップを表示\' フィルターで使用します</string>
@@ -104,8 +104,6 @@
   <string name="prefs_followSymlinks">シンボリックリンクをたどる</string>
   <string name="prefs_summaryFollowSymlinks">コピー時に、常にシンボリックリンクをたどる (cp -L)</string>
   <string name="prefs_enableSpecialBackups">特別バックアップを有効にする</string>
-  <string name="prefs_backupExternalFiles">外部データを処理する</string>
-  <string name="prefs_summaryBackupExternalFiles">外部ストレージに作成されたデータをバックアップおよび復元します (例:  /sdcard/Android/data/)</string>
   <string name="sched_title">スケジューリング</string>
   <string name="sched_notificationMessage">バックアップがスケジュールされました</string>
   <string name="sched_interval">間隔の日数</string>

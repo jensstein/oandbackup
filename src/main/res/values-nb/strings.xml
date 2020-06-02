@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">Tilpassete filstier</string>
   <string name="prefs_pathBackupFolder">Mappe for sikkerhetskopier</string>
   <string name="prefs_summaryBackupFolder">Filsti til mappe for sikkerhetskopier. La stå tomt for standardoppsett.</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">Filsti til busybox programfil. Vær sikker at den er korrekt. La stå tomt for standardoppsett.</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">Filsti til busybox programfil. Vær sikker at den er korrekt. La stå tomt for standardoppsett.</string>
   <string name="prefs_oldBackups">Filtrer sikkerhetskopier etter alderen</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filter \'vis gamle sikkerhetskopier\'.</string>
@@ -104,8 +104,6 @@
   <string name="prefs_followSymlinks">Følg symbolske lenker</string>
   <string name="prefs_summaryFollowSymlinks">Alltid følg symbolske lenker under kopiering (cp -L)</string>
   <string name="prefs_enableSpecialBackups">Aktiver spesielle sikkerhetskopier</string>
-  <string name="prefs_backupExternalFiles">Behandle ekstern data</string>
-  <string name="prefs_summaryBackupExternalFiles">Gjenoppretter data og lager sikkerhetskopier av data som befinner seg på ekstern minne (f.eks. /sdcard/Android/data/)</string>
   <string name="sched_title">Planlegge</string>
   <string name="sched_notificationMessage">Planlegget sikkerhetskopi</string>
   <string name="sched_interval">Intervall i dager</string>

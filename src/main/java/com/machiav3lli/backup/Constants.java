@@ -34,7 +34,7 @@ public class Constants {
     public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_CLEARCACHE = "clearCache";
     public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
-    public static final String PREFS_PATH_BUSYBOX = "pathBusybox";
+    public static final String PREFS_PATH_TOYBOX = "pathToybox";
     public static final String PREFS_QUICK_REBOOT = "quickReboot";
     public static final String PREFS_BATCH_DELETE = "batchDelete";
     public static final String PREFS_LOGVIEWER = "logViewer";
@@ -51,5 +51,7 @@ public class Constants {
     public static String classTag(String tag) {
         return TAG + tag;
     }
+
+    public static String exodusUrl(String app) { return "https://reports.exodus-privacy.eu.org/reports/"+app+"/latest";}
 
 }
