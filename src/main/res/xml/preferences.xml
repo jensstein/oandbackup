@@ -58,7 +58,7 @@
             android:title="@string/prefs_clearCache"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="copySelfApk"
             android:summary="@string/prefs_summaryCopySelfApk"
             android:title="@string/prefs_copySelfApk"
