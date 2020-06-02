@@ -209,13 +209,25 @@
                         android:text="@string/available_actions"
                         android:textAppearance="@style/TextAppearance.Title" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/appInfo"
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
-                        android:layout_margin="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_info_24" />
+                        android:layout_margin="@dimen/cards_spacing">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/exodusReport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/ic_outline_exodus_24" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/appInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_outline_info_24" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
