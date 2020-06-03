@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">percorsi personalizzati</string>
   <string name="prefs_pathBackupFolder">cartella di backup</string>
   <string name="prefs_summaryBackupFolder">percorso della cartella di backup. predefinito se vuoto.</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">percorso dell\'eseguibile di busybox, assicurarsi che sia corretto, predefinito se vuoto</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">percorso dell\'eseguibile di busybox, assicurarsi che sia corretto, predefinito se vuoto</string>
   <string name="prefs_oldBackups">filtra i backup per obsolescenza</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'</string>

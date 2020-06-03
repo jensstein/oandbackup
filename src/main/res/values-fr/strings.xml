@@ -86,8 +86,8 @@
   <string name="prefs_pathscategory">chemins personnalisés</string>
   <string name="prefs_pathBackupFolder">dossier de sauvegarde</string>
   <string name="prefs_summaryBackupFolder">chemin d\'accès au dossier de sauvegarde. laisser vide pour garder le chemin par défaut</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">chemin d\'accès au binaire de busybox. assurez-vous qu\'il soit correct. laisser vide pour garder le chemin par défaut</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">chemin d\'accès au binaire de busybox. assurez-vous qu\'il soit correct. laisser vide pour garder le chemin par défaut</string>
   <string name="prefs_oldBackups">filtrer les sauvegarde par ancienneté</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté</string>

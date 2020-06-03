@@ -96,8 +96,8 @@
     <string name="prefs_pathscategory">自定义路径</string>
     <string name="prefs_pathBackupFolder">备份文件夹</string>
     <string name="prefs_summaryBackupFolder">备份文件夹路径（默认为空白）</string>
-    <string name="prefs_pathBusybox">busybox</string>
-    <string name="prefs_summaryBusybox">busybox可执行文件的路劲，请确认其是正确的（默认为空白）</string>
+    <string name="prefs_pathToybox">busybox</string>
+    <string name="prefs_summaryToybox">busybox可执行文件的路劲，请确认其是正确的（默认为空白）</string>
     <string name="prefs_oldBackups">按时间筛选备份</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">filter backups older than value in days. used with the filter \'show old backups\'</string>
@@ -112,8 +112,6 @@
     <string name="prefs_followSymlinks">跟随符号链接</string>
     <string name="prefs_summaryFollowSymlinks">当复制时总是跟随符号链接 (cp -L)</string>
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
-    <string name="prefs_backupExternalFiles">处理外部数据</string>
-    <string name="prefs_summaryBackupExternalFiles">备份和恢复放置在外部存储上的数据 (例如：/sdcard/Android/data/)</string>
 
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>

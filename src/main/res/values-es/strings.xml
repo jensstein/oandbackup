@@ -91,8 +91,8 @@
     <string name="prefs_pathscategory">Rutas personalizadass</string>
     <string name="prefs_pathBackupFolder">Carpeta de respaldos</string>
     <string name="prefs_summaryBackupFolder">Ruta a la carpeta de respaldos. Dejar en blanco para el valor predeterminado.</string>
-    <string name="prefs_pathBusybox">Busybox</string>
-    <string name="prefs_summaryBusybox">Ruta al ejecutable busybox (confirme que sea correcta). Dejar en blanco para el valor predeterminado.</string>
+    <string name="prefs_pathToybox">Busybox</string>
+    <string name="prefs_summaryToybox">Ruta al ejecutable busybox (confirme que sea correcta). Dejar en blanco para el valor predeterminado.</string>
     <string name="prefs_oldBackups">Filtrar respaldos por antigüedad</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_summaryOldBackups">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>
@@ -107,8 +107,6 @@
     <string name="prefs_followSymlinks">Seguir enlaces simbólicos</string>
     <string name="prefs_summaryFollowSymlinks">Siempre seguir enlaces simbólicos al copiar (cp -L)</string>
     <string name="prefs_enableSpecialBackups">Habilitar respaldos especiales</string>
-    <string name="prefs_backupExternalFiles">Manejar datos externos</string>
-    <string name="prefs_summaryBackupExternalFiles">Respalda y restaura los datos que se colocan en el almacenamiento externo (por ejemplo, /sdcard/Android/data/)</string>
 
     <string name="sched_title">Programación</string>
     <string name="sched_notificationMessage">Respaldos programados</string>

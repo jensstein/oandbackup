@@ -189,6 +189,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         Utils.pickColor(app, appType);
     }
 
+    @OnClick(R.id.exodusReport)
+    public void viewReport() {
+        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.exodusUrl(app.getPackageName()))));
+    }
+
     @OnClick(R.id.appInfo)
     public void callAppInfo() {
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

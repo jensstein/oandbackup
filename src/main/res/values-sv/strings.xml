@@ -88,8 +88,8 @@
   <string name="prefs_pathscategory">anpassade sökvägar</string>
   <string name="prefs_pathBackupFolder">säkerhetskopieringsmapp</string>
   <string name="prefs_summaryBackupFolder">sökväg till säkerhetskopiorna, lämna tom för standard.</string>
-  <string name="prefs_pathBusybox">busybox</string>
-  <string name="prefs_summaryBusybox">sökväg till exekverbar busybox. se till att den korrekt. lämna tom för standardsökväg.</string>
+  <string name="prefs_pathToybox">busybox</string>
+  <string name="prefs_summaryToybox">sökväg till exekverbar busybox. se till att den korrekt. lämna tom för standardsökväg.</string>
   <string name="prefs_oldBackups">filtrera säkerhetskopior efter ålder</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_summaryOldBackups">filtrera säkerhetskopior äldre än värdet i dagar. används med filtret \'visa gamla säkerhetskopior\'</string>
@@ -104,8 +104,6 @@
   <string name="prefs_followSymlinks">följ symboliska länkar</string>
   <string name="prefs_summaryFollowSymlinks">följ alltid de symboliska länkarna vid kopiering (cp -L)</string>
   <string name="prefs_enableSpecialBackups">aktivera speciella säkerhetskopior</string>
-  <string name="prefs_backupExternalFiles">hantera extern data</string>
-  <string name="prefs_summaryBackupExternalFiles">säkerhetskopierar och återställer data som finns på det externa lagringsutrymmet (t.ex /sdcard/Android/data/)</string>
   <string name="sched_title">schemaläggning</string>
   <string name="sched_notificationMessage">schemalagd säkerhetskopiering</string>
   <string name="sched_interval">intervall i dagar</string>
