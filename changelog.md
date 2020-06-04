@@ -1,6 +1,15 @@
 changelog
 =========
 
+1.1.1 (04.06.2020)
+-------------------
+* added: Exodus report shortcut to AppSheet
+* fixed: not launching if there's an app with icon dimensions <= 0
+* changed: default is set now to copy OAndBackupX to parent backup folder
+* added: Greek (Credits @tsiflimagas)
+* update: Capitalisation and English Strings (Credits: @atrate)
+* update: generalize Chinese, Dutch, Polish and Swedish
+
 1.1.0 (29.05.2020)
 -------------------
 * added: data backup encryption

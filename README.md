@@ -1,13 +1,15 @@
 # OAndBackupX  <img align="left" src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/icon.png" width="64" />
 
-OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore work with any device. Therefore all types of contribution are welcome.
-
-Usecases: a combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  keeping a copy of your apps and data on your server or "stable" device could bring a lot of benefits and save you a lot of work while changing ROMs or just cleaning your mobile device.
+OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device. Therefore all types of contribution are welcome.
 
 Now on OAndBackup: a backup program for android. requires root and allows you to backup individual apps and their data.
 both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores). 
 restoring system apps should be possible without requiring a reboot afterwards. OAndBackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
 backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
+
+## Recommendation
+
+A combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  keeping an encrypted copy of your apps and their data on your server or "stable" device could bring a lot of benefits and save you a lot of work while changing ROMs or just cleaning your mobile device.
 
 ## Community
 
@@ -35,7 +37,7 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Modeling the app's structure: for the most part now
 - [x] Modeling Sort/Filter
 - [ ] Add some new filters
-- [ ] Add Exodus Report to AppSheet
+- [x] Add Exodus Report to AppSheet
 - [x] Rewrite Preferences
 - [x] Integrate Tools and Help in Preferences
 - [x] New UI and UX: Design improvement proposals are always welcome
@@ -57,19 +59,19 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 ### Dark Theme
 
 <p float="left">
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="170" />
 </p>
 
 ### Light Theme
 
 <p float="left">
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" width="170" />
- <img src="https://raw.githubusercontent.com/machiav3lli/OAndBackupX/master/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" width="170" />
 </p>
 
 ## Building
