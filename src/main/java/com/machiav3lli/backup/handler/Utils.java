@@ -136,5 +136,4 @@ public class Utils {
     public static void setPrefsString(Context context, String key, String value) {
         context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).edit().putString(key, value).apply();
     }
-
 }

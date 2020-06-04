@@ -5,7 +5,7 @@
         android:key="userPrefs"
         android:title="@string/prefs_user"
         app:iconSpaceReserved="false">
-        <ListPreference
+        <androidx.preference.ListPreference
             app:defaultValue="system"
             app:entries="@array/themeEntries"
             app:entryValues="@array/themeEntryValues"

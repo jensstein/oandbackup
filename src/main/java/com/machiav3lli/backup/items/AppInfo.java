@@ -163,6 +163,6 @@ public class AppInfo
         system = bools[0];
         installed = bools[1];
         checked = bools[2];
-        icon = (Bitmap) in.readParcelable(getClass().getClassLoader());
+        icon = in.readParcelable(getClass().getClassLoader());
     }
 }

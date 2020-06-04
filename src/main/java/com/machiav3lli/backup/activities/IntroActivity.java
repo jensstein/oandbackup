@@ -170,8 +170,7 @@ public class IntroActivity extends BaseActivity {
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
         originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                PreferenceManager.getDefaultSharedPreferences(this)
-                        .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+                PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
         startActivity(new Intent(this, MainActivityX.class));
     }
 
