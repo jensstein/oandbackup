@@ -61,14 +61,15 @@ public class AppInfoHelper {
                                     packageInfo.packageName, src.getHeight(), src.getWidth()));
                         }
                     } else {
-                        icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        if (apkIcon.getIntrinsicHeight() > 0 && apkIcon.getIntrinsicHeight() > 0)
+                            icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        else icon = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
                         Canvas canvas = new Canvas(icon);
                         apkIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
                         apkIcon.draw(canvas);
                     }
                 } catch (ClassCastException ignored) {
                 }
-                // for now the error is ignored since logging it would fill a lot in the log
 
                 String dataDir = packageInfo.applicationInfo.dataDir;
                 String deDataDir = packageInfo.applicationInfo.deviceProtectedDataDir;
