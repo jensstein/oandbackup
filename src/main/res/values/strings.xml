@@ -91,6 +91,9 @@
     <string name="disablePackageTitle">Disable for users</string>
 
     <string name="prefs_title">Preferences</string>
+    <string name="prefs_service">Service preferences</string>
+    <string name="prefs_user">User preferences</string>
+    <string name="prefs_theme">Theme</string>
     <string name="prefs_acquireWakelock">Prevent sleep</string>
     <string name="prefs_pathscategory">Custom paths</string>
     <string name="prefs_batchDelete">Delete backups</string>
@@ -107,6 +110,10 @@
     <string name="prefs_clearCache">Clear app\'s cache</string>
     <string name="prefs_encryption">Encryption</string>
     <string name="prefs_password">Encryption password</string>
+    <string name="prefs_backupExternalData">Backup external data</string>
+    <string name="prefs_backupDeviceProtectedData">Backup device protected data</string>
+    <string name="prefs_summaryBackupDeviceProtectedData">Backs up and restores data that is placed in data/user_de</string>
+    <string name="prefs_summaryBackupExternalData">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_summary_password">Set to empty to disable encryption</string>
     <string name="prefs_summary_encryption">Enable to encrypt data backups</string>
     <string name="prefs_summaryClearCache">Clear application\'s cache before doing data backup</string>
@@ -174,8 +181,6 @@
     <string name="app_s_icon">App\'s icon</string>
     <string name="bothBackedUp">APK and data</string>
     <string name="all">All</string>
-    <string name="prefs_service">Service preferences</string>
-    <string name="prefs_user">User preferences</string>
     <string name="logViewerTitle">View the log</string>
     <string name="ask_for_permissions">ask for permissions</string>
     <string name="systemApp">System app</string>
@@ -190,7 +195,6 @@
     <string name="encrypted_data_title">Encrypted data:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">Deleted the backup</string>
-    <string name="prefs_theme">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_system">System\'s theme</string>

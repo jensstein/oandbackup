@@ -37,6 +37,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
     private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
     public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
+    public final static String EXTERNAL_FILES = "external_files";
 
     CommandHandler commandHandler = new CommandHandler();
 
@@ -121,13 +122,26 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 break;
         }
 
+        // Copying external DATA
+        boolean backupExternal = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
+        File backupSubDirExternalFiles = null;
+        File externalFilesDir = getExternalFilesDirPath(packageData);
+        if (backupMode != AppInfo.MODE_APK && backupExternal && externalFilesDir != null) {
+            backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
+            if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
+                commands.add(String.format("cp -r \"%s\" \"%s\"", externalFilesDir.getAbsolutePath(), backupSubDirExternalFiles.getAbsolutePath()));
+            } else Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
+        }
+
         // Copying device protected DATA
+        boolean backupDeviceProtected = prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true);
         File backupSubDirDeviceProtectedFiles = null;
-        if (backupMode != AppInfo.MODE_APK) {
+        if (backupMode != AppInfo.MODE_APK && backupDeviceProtected) {
             backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
                 commands.add(String.format("cp -r \"%s\" \"%s\"", deviceProtectedPackageData, backupSubDirDeviceProtectedFiles.getAbsolutePath()));
-            }
+            } else
+                Log.e(TAG, "couldn't create " + backupSubDirDeviceProtectedFiles.getAbsolutePath());
         }
 
         // Execute
@@ -164,6 +178,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupMode != AppInfo.MODE_APK) {
             int zipret = compress(new File(backupSubDir, folder));
             zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if (zipret != 0) ret += zipret;
         }
 
@@ -207,6 +222,14 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 }
                 commands.add(restoreCommand);
 
+                // Copying external DATA
+                File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
+                if (externalFiles.exists()) {
+                    String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+                    externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
+                    Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath), password);
+                }
+
                 // Copying device protected DATA
                 File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
                 if (deviceProtectedDataDir != null && deviceProtectedFiles.exists()) {
@@ -222,12 +245,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     }
 
                     restoreCommand = String.format("%s chmod -R 777 %s\n", restoreCommand, deviceProtectedDataDir);
-                    if (!(new File(deviceProtectedDataDir).exists())) {
+                    if (!(new File(deviceProtectedDataDir).exists()))
                         restoreCommand = String.format("mkdir %s\n%s", deviceProtectedDataDir, restoreCommand);
-                        // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
-                    }
                     commands.add(restoreCommand);
                 }
+
+                // Apply changes
                 commands.add(String.format("restorecon -R %s || true", dataDir));
                 commands.add(String.format("restorecon -R %s || true", deviceProtectedDataDir));
 
@@ -364,6 +387,15 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 },
                 line -> writeErrorLog(context, "", line),
                 e -> Log.e(TAG, "copySelfApk: ", e), this);
+    }
+
+    public File getExternalFilesDirPath(String packageData) {
+        String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+        externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
+        File externalFilesDir = new File(externalFilesPath, new File(packageData).getName());
+        if (externalFilesDir.exists())
+            return externalFilesDir;
+        return null;
     }
 
     public Ownership getOwnership(String packageDir) throws OwnershipException {

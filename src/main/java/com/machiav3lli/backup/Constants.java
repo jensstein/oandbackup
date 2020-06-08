@@ -28,11 +28,13 @@ public class Constants {
     public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
-    public static final String PREFS_ENCRYPTION = "encryption";
-    public static final String PREFS_PASSWORD = "password";
     public static final String PREFS_REMEMBERFILTERING = "rememberFiltering";
     public static final String PREFS_OLDBACKUPS = "oldBackups";
+    public static final String PREFS_ENCRYPTION = "encryption";
+    public static final String PREFS_PASSWORD = "password";
     public static final String PREFS_CLEARCACHE = "clearCache";
+    public static final String PREFS_EXTERNALDATA = "backupExternalData";
+    public static final String PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData";
     public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
     public static final String PREFS_PATH_TOYBOX = "pathToybox";
     public static final String PREFS_QUICK_REBOOT = "quickReboot";

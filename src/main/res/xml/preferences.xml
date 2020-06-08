@@ -59,6 +59,18 @@
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
+            android:key="backupExternalData"
+            android:summary="@string/prefs_summaryBackupExternalData"
+            android:title="@string/prefs_backupExternalData"
+            app:iconSpaceReserved="false" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="backupDeviceProtectedData"
+            android:summary="@string/prefs_summaryBackupDeviceProtectedData"
+            android:title="@string/prefs_backupDeviceProtectedData"
+            app:iconSpaceReserved="false" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
             android:key="copySelfApk"
             android:summary="@string/prefs_summaryCopySelfApk"
             android:title="@string/prefs_copySelfApk"
