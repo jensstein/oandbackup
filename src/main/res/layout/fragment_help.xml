@@ -5,51 +5,61 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/small_spacing">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/helpHtml"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/cards_spacing"
-        android:paddingBottom="@dimen/main_nav_height"
-        android:textIsSelectable="true" />
+        android:paddingHorizontal="@dimen/cards_spacing">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?backgroundColor"
-        android:elevation="@dimen/small_spacing"
-        android:padding="@dimen/cards_spacing">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/helpHtml"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/large_spacing"
+            android:textIsSelectable="true" />
+    </androidx.core.widget.NestedScrollView>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/app_icon_size"
-            android:layout_height="@dimen/app_icon_size"
-            android:layout_marginEnd="@dimen/med_spacing"
-            app:srcCompat="@drawable/ic_app_vv" />
+    <FrameLayout
+        android:id="@+id/bottom_bar"
+        style="@style/Bar.Bottom"
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/cards_spacing"
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/helpAppName"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.6"
-                android:gravity="bottom"
-                android:textAppearance="@style/TextAppearance.Label"
-                android:textIsSelectable="true"
-                android:textStyle="bold" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/app_icon_size"
+                android:layout_height="@dimen/app_icon_size"
+                android:layout_marginEnd="@dimen/med_spacing"
+                app:srcCompat="@drawable/ic_app_vv" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/helpVersionName"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:layout_weight="0.4"
-                android:textAppearance="@style/TextAppearance.Secondary"
-                android:textIsSelectable="true" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/helpAppName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.6"
+                    android:gravity="bottom"
+                    android:textAppearance="@style/TextAppearance.Label"
+                    android:textIsSelectable="true"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/helpVersionName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/small_spacing"
+                    android:layout_weight="0.4"
+                    android:textAppearance="@style/TextAppearance.Secondary"
+                    android:textIsSelectable="true" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/card_rc8"
+        android:background="@drawable/bar_rc8"
         android:orientation="horizontal"
         app:elevation="@dimen/small_spacing">
 
