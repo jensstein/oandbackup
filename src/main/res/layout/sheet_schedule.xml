@@ -190,18 +190,12 @@
                 android:layout_marginHorizontal="@dimen/cards_spacing"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sched_checkbox" />
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/updateButton"
                     style="@style/Button.Positive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="start"
                     android:text="@string/sched_updateButton" />
 
                 <com.google.android.material.button.MaterialButton
@@ -213,16 +207,29 @@
                     android:text="@string/sched_removeButton" />
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/activateButton"
-                style="@style/Button.Positive"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginBottom="@dimen/cards_spacing"
-                android:text="@string/sched_activateButton"
-                android:textAlignment="center" />
+                android:layout_marginBottom="@dimen/small_spacing"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/activateButton"
+                    style="@style/Button.Positive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/sched_activateButton"
+                    android:textAlignment="center" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/sched_checkbox" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

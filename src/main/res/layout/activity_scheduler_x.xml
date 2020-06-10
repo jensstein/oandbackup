@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/card_rc8"
+        android:background="@drawable/bar_rc8"
         android:orientation="horizontal"
         app:elevation="@dimen/small_spacing">
 
@@ -29,7 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
-        android:layout_marginBottom="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -41,23 +40,36 @@
             tools:listitem="@layout/item_scheduler_x" />
     </FrameLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <FrameLayout
         android:id="@+id/bottom_bar"
-        style="@style/BarView.Main"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="end"
-        app:fabCradleMargin="0dp"
-        app:fabCradleRoundedCornerRadius="0dp"
-        app:menu="@menu/scheduler_bottom_bar" />
+        style="@style/Bar.Bottom"
+        android:background="@drawable/bar_rc8">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="48dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_blacklist"
+                style="@style/Button.NavBar"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_round_blacklist_32" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_schedule_fab"
         style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_round_add_sched_32"
-        app:layout_anchor="@id/bottom_bar" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_round_add_sched_32" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
