@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/card_rc8"
+        android:background="@drawable/bar_rc8"
         android:orientation="horizontal"
         app:elevation="@dimen/small_spacing">
 
@@ -47,7 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
-        android:layout_marginBottom="@dimen/batch_nav_height"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -64,47 +63,50 @@
             tools:listitem="@layout/item_main_x" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <FrameLayout
         android:id="@+id/bottom_bar"
-        style="@style/BarView.Main"
-        android:layout_gravity="bottom"
-        android:paddingHorizontal="@dimen/cards_spacing"
-        android:paddingVertical="@dimen/cards_spacing"
-        app:fabAlignmentMode="end"
-        app:fabCradleMargin="0dp"
-        app:fabCradleRoundedCornerRadius="0dp">
+        style="@style/Bar.Bottom"
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RadioGroup
-                android:id="@+id/radiogroup"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:scrollbars="none">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/radioApk"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/radios"
+                    style="@style/Chip.Group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/med_spacing"
-                    android:text="@string/radioApk" />
+                    android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/radioData"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/med_spacing"
-                    android:text="@string/radioData" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/radioBoth"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioBoth" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/radioBoth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radioBoth" />
-            </RadioGroup>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/radioApk"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioApk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/radioData"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radioData" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -125,17 +127,20 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="48dp"
                     android:layout_weight="1"
                     android:text="" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </com.google.android.material.bottomappbar.BottomAppBar>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sort_filter_fab"
         style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_round_filter_list_32"
-        app:layout_anchor="@id/bottom_bar" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_round_filter_list_32" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

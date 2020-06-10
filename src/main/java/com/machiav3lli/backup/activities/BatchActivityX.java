@@ -12,13 +12,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -61,11 +61,11 @@ public class BatchActivityX extends BaseActivity
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.radioApk)
-    AppCompatRadioButton rbApk;
+    Chip rbApk;
     @BindView(R.id.radioData)
-    AppCompatRadioButton rbData;
+    Chip rbData;
     @BindView(R.id.radioBoth)
-    AppCompatRadioButton rbBoth;
+    Chip rbBoth;
     @BindView(R.id.backupRestoreButton)
     MaterialButton actionButton;
     @BindView(R.id.cbAll)
@@ -163,10 +163,8 @@ public class BatchActivityX extends BaseActivity
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0)
-                    fab.hide();
-                else if (dy < 0)
-                    fab.show();
+                if (dy > 0) fab.hide();
+                else if (dy < 0) fab.show();
             }
         });
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
