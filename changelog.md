@@ -1,6 +1,12 @@
 changelog
 =========
 
+1.2.0 (10.06.2020)
+-------------------
+* updated: UI
+* fixed: share crashing
+* added: options to backup Device Protected Data and External Data
+
 1.1.1 (04.06.2020)
 -------------------
 * added: Exodus report shortcut to AppSheet
