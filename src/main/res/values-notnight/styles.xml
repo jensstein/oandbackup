@@ -38,12 +38,13 @@
     </style>
 
     <!-- Bars -->
-    <style name="BarView.Main" parent="android:Widget.TextView">
+    <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:backgroundTint">?backgroundColor</item>
+        <item name="android:layout_margin">52dp</item>
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="layout_behavior">@string/hide_bottom_view_on_scroll_behavior</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
@@ -71,6 +72,8 @@
     <style name="Button.Positive" parent="Widget.MaterialComponents.Button">
         <item name="strokeWidth">3dp</item>
         <item name="strokeColor">?colorAccent</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:stateListAnimator">@null</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">?colorAccent</item>
     </style>
@@ -78,6 +81,8 @@
     <style name="Button.Negative" parent="Widget.MaterialComponents.Button">
         <item name="strokeWidth">3dp</item>
         <item name="strokeColor">?colorSecondary</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:stateListAnimator">@null</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">?colorSecondary</item>
     </style>
@@ -115,9 +120,6 @@
     </style>
 
     <style name="Button.NavBar" parent="android:Widget.Material.Button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/ripple_click</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
