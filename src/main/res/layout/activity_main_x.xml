@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/card_rc8"
+        android:background="@drawable/bar_rc8"
         android:orientation="horizontal"
         app:elevation="@dimen/small_spacing">
 
@@ -40,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
-        android:layout_marginBottom="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -57,54 +56,66 @@
             tools:listitem="@layout/item_main_x" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <FrameLayout
         android:id="@+id/bottom_bar"
-        style="@style/BarView.Main"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="end"
-        app:fabCradleMargin="0dp"
-        app:fabCradleRoundedCornerRadius="0dp"
-        app:menu="@menu/main_bottom_bar">
+        style="@style/Bar.Bottom"
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="@dimen/large_spacing"
+            android:layout_marginEnd="48dp"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_settings"
+                style="@style/Button.NavBar"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_round_settings_32" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_batch_backup"
                 style="@style/Button.NavBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_round_backup_32"
                 android:focusable="true"
-                android:text="@string/backup" />
+                android:src="@drawable/ic_round_backup_32" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_batch_restore"
                 style="@style/Button.NavBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_round_restore_32"
                 android:focusable="true"
-                android:text="@string/restore" />
+                android:src="@drawable/ic_round_restore_32" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_scheduler"
                 style="@style/Button.NavBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:drawableTop="@drawable/ic_round_scheduler_32"
                 android:focusable="true"
-                android:text="@string/sched_title" />
+                android:src="@drawable/ic_round_scheduler_32" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </com.google.android.material.bottomappbar.BottomAppBar>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sort_filter_fab"
         style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_round_filter_list_32"
-        app:layout_anchor="@id/bottom_bar" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_round_filter_list_32" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

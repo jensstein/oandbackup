@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -48,7 +47,6 @@ import butterknife.OnClick;
 import static com.machiav3lli.backup.Constants.classAddress;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
-
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     static final String TAG = Constants.classTag(".MainActivityX");
@@ -61,8 +59,6 @@ public class MainActivityX extends BaseActivity
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.search_view)
     SearchView searchView;
-    @BindView(R.id.bottom_bar)
-    BottomAppBar bottomBar;
     @BindView(R.id.sort_filter_fab)
     FloatingActionButton fab;
 
@@ -73,7 +69,6 @@ public class MainActivityX extends BaseActivity
     FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
     AppSheet sheetApp;
-
 
     HandleMessages handleMessages;
     SharedPreferences prefs;
@@ -128,19 +123,11 @@ public class MainActivityX extends BaseActivity
         });
         itemAdapter.add(list);
 
-        bottomBar.replaceMenu(R.menu.main_bottom_bar);
-        bottomBar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.preferences)
-                startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
-            return true;
-        });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0)
-                    fab.hide();
-                else if (dy < 0)
-                    fab.show();
+                if (dy > 0) fab.hide();
+                else if (dy < 0) fab.show();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -165,6 +152,11 @@ public class MainActivityX extends BaseActivity
         if (sheetSortFilter == null)
             sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(this).toString()));
         sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
+    }
+
+    @OnClick(R.id.btn_settings)
+    public void btnSettings() {
+        startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
     }
 
     @OnClick(R.id.btn_batch_backup)
