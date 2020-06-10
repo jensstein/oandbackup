@@ -10,7 +10,7 @@
     <string name="handleBoth">Both</string>
     <string name="radioApk">APK</string>
     <string name="radioData">Data</string>
-    <string name="radioBoth">Data + APK</string>
+    <string name="radioBoth">APK and Data</string>
     <string name="de_selectAll">De/select all</string>
     <string name="onlyApkBackedUp">Only APK</string>
     <string name="onlyDataBackedUp">Only data</string>

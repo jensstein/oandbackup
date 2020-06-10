@@ -9,7 +9,7 @@
   <string name="handleBoth">Оба</string>
   <string name="radioApk">Apk</string>
   <string name="radioData">Подаци</string>
-  <string name="radioBoth">Подаци + Apk</string>
+  <string name="radioBoth">Apk + Подаци</string>
   <string name="de_selectAll">Обележи/поништи све</string>
   <string name="onlyApkBackedUp">Само Apk</string>
   <string name="onlyDataBackedUp">Само подаци</string>

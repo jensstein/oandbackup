@@ -9,7 +9,7 @@
   <string name="handleBoth">Begge</string>
   <string name="radioApk">APK</string>
   <string name="radioData">Data</string>
-  <string name="radioBoth">Data + APK</string>
+  <string name="radioBoth">APK + Data</string>
   <string name="de_selectAll">De/marker alle</string>
   <string name="onlyApkBackedUp">Bare APK</string>
   <string name="onlyDataBackedUp">Bare data</string>

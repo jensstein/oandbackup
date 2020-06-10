@@ -9,7 +9,7 @@
     <string name="handleBoth">同时</string>
     <string name="radioApk">apk</string>
     <string name="radioData">数据</string>
-    <string name="radioBoth">data + apk</string>
+    <string name="radioBoth">Apk + Data</string>
     <string name="de_selectAll">选择/取消选择所有</string>
     <string name="onlyApkBackedUp">只是apk</string>
     <string name="onlyDataBackedUp">只是数据</string>

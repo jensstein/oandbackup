@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape
-            android:shape="oval">
+        <shape android:shape="oval">
             <solid android:color="?colorAccent" />
             <stroke
                 android:width="6dp"
                 android:color="#000000" />
-            <!-- Set the same value for both width and height to get a circular shape -->
             <size
                 android:width="48dp"
                 android:height="48dp" />
@@ -25,8 +22,7 @@
                 android:fillColor="#00000000"
                 android:pathData="M9,27L9,81"
                 android:strokeWidth="0.8"
-                android:strokeColor="#33FFFFFF"
-                />
+                android:strokeColor="#33FFFFFF" />
             <path
                 android:fillColor="#00000000"
                 android:pathData="M19,15L19,93"

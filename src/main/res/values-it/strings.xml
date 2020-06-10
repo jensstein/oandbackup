@@ -9,7 +9,7 @@
   <string name="handleBoth">entrambi</string>
   <string name="radioApk">apk</string>
   <string name="radioData">dati</string>
-  <string name="radioBoth">dati + apk</string>
+  <string name="radioBoth">apk e dati</string>
   <string name="de_selectAll">de/seleziona tutto</string>
   <string name="onlyApkBackedUp">solo apk</string>
   <string name="onlyDataBackedUp">solo dati</string>

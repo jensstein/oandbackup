@@ -779,7 +779,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 e -> Log.e(TAG, "quickReboot: ", e), this);
     }
 
-    private static class Ownership {
+    private class Ownership {
         private int uid;
         private int gid;
 
@@ -802,7 +802,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    private static class OwnershipException extends Exception {
+    private class OwnershipException extends Exception {
         public OwnershipException(String msg) {
             super(msg);
         }

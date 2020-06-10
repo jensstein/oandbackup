@@ -9,7 +9,7 @@
   <string name="handleBoth">båda</string>
   <string name="radioApk">apk</string>
   <string name="radioData">data</string>
-  <string name="radioBoth">data + apk</string>
+  <string name="radioBoth">apk + data</string>
   <string name="de_selectAll">av/markera alla</string>
   <string name="onlyApkBackedUp">endast apk</string>
   <string name="onlyDataBackedUp">endast data</string>
