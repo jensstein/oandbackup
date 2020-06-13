@@ -47,7 +47,8 @@ public class BackupRestoreHelper {
         int apkRet, restoreRet, permRet, cryptoRet;
         apkRet = restoreRet = permRet = cryptoRet = 0;
         File backupSubDir = new File(backupDir, app.getPackageName());
-        String apk = new LogFile(backupSubDir, app.getPackageName()).getApk();
+        LogFile backupLog = new LogFile(backupSubDir, app.getPackageName());
+        String apk = backupLog.getApk();
         String dataDir = app.getDataDir();
         // extra check for needToDecrypt here because of BatchActivity which cannot really reset crypto to null for every package to restore
         if (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) {
@@ -57,7 +58,16 @@ public class BackupRestoreHelper {
                             app.getLabel(), apk);
                 } else {
                     apkRet = shellCommands.restoreUserApk(backupSubDir,
-                            app.getLabel(), apk, context.getApplicationInfo().dataDir);
+                            app.getLabel(), apk, context.getApplicationInfo().dataDir, null);
+                    if(backupLog.getSplitApks() != null){
+                        Log.i(TAG, app.getPackageName() + " backup contains split apks");
+                        for(String splitApk : backupLog.getSplitApks()){
+                            if(apkRet == 0){
+                                apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
+                                        splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
+                            }
+                        }
+                    }
                 }
             } else if (!app.isSpecial()) {
                 String s = "no apk to install: " + app.getPackageName();
