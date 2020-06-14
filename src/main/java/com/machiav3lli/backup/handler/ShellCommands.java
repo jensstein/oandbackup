@@ -274,7 +274,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    public int backupSpecial(File backupSubDir, String label, String... files) {
+    public int backupSpecial(File backupSubDir, AppInfo app) {
+        String label = app.getLabel();
+        String[] files = app.getFilesList();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
         Log.i(TAG, "backup: " + label);
 
@@ -300,10 +302,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 }
             }
         }
+        LogFile.writeLogFile(backupSubDir, app, app.getBackupMode(), !password.equals(""));
         return ret;
     }
 
-    public int restoreSpecial(File backupSubDir, String label, String... files) {
+    public int restoreSpecial(File backupSubDir, AppInfo app) {
+        String label = app.getLabel();
+        String[] files = app.getFilesList();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
         int unzipRet = 0;
         ArrayList<String> toDelete = new ArrayList<>();

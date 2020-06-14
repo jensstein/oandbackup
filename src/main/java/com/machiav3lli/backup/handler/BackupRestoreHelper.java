@@ -32,8 +32,8 @@ public class BackupRestoreHelper {
         }
 
         if (app.isSpecial()) {
-            ret = shellCommands.backupSpecial(backupSubDir, app.getLabel(), app.getFilesList());
             app.setBackupMode(AppInfo.MODE_DATA);
+            ret = shellCommands.backupSpecial(backupSubDir, app);
         } else {
             ret = shellCommands.doBackup(backupSubDir, app, backupMode);
             app.setBackupMode(backupMode);
@@ -79,7 +79,7 @@ public class BackupRestoreHelper {
         if (mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH) {
             if (apkRet == 0 && (app.isInstalled() || mode == AppInfo.MODE_BOTH)) {
                 if (app.isSpecial()) {
-                    restoreRet = shellCommands.restoreSpecial(backupSubDir, app.getLabel(), app.getFilesList());
+                    restoreRet = shellCommands.restoreSpecial(backupSubDir, app);
                 } else {
                     restoreRet = shellCommands.doRestore(backupSubDir, app);
                     permRet = shellCommands.setPermissions(dataDir);
