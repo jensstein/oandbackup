@@ -35,7 +35,7 @@ public class LogFile implements Parcelable {
             this.packageName = jsonObject.getString("packageName");
             this.versionName = jsonObject.getString("versionName");
             this.sourceDir = jsonObject.getString("sourceDir");
-            this.splitSourceDirs = LogFile.toStringArray(jsonObject.getJSONArray("splitSourceDirs"));
+            this.splitSourceDirs = jsonObject.has("splitSourceDirs") ? LogFile.toStringArray(jsonObject.getJSONArray("splitSourceDirs")) : null;
             this.dataDir = jsonObject.getString("dataDir");
             if (jsonObject.has("deviceProtectedDataDir"))
                 this.deviceProtectedDataDir = jsonObject.getString("deviceProtectedDataDir");
@@ -138,6 +138,7 @@ public class LogFile implements Parcelable {
             jsonObject.put("versionCode", appInfo.getVersionCode());
             jsonObject.put("packageName", appInfo.getPackageName());
             jsonObject.put("sourceDir", sourceDir);
+            // Value won't be written to the json string if it's java's null. Fine.
             jsonObject.put("splitSourceDirs", LogFile.toJsonArray(splitSourceDirs));
             jsonObject.put("dataDir", appInfo.getDataDir());
             jsonObject.put("deviceProtectedDataDir", appInfo.getDeviceProtectedDataDir());
@@ -165,6 +166,9 @@ public class LogFile implements Parcelable {
     }
 
     public static JSONArray toJsonArray(Object[] array){
+        if(array == null){
+            return null;
+        }
         JSONArray result = new JSONArray();
         for(Object entry : array){
             result.put(entry);
@@ -189,6 +193,7 @@ public class LogFile implements Parcelable {
         out.writeString(packageName);
         out.writeString(versionName);
         out.writeString(sourceDir);
+        out.writeStringArray(splitSourceDirs);
         out.writeString(dataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
@@ -212,6 +217,7 @@ public class LogFile implements Parcelable {
         packageName = in.readString();
         versionName = in.readString();
         sourceDir = in.readString();
+        splitSourceDirs = in.createStringArray();
         dataDir = in.readString();
         versionCode = in.readInt();
         backupMode = in.readInt();
