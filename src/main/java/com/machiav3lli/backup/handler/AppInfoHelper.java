@@ -103,7 +103,7 @@ public class AppInfoHelper {
             if (files != null) {
                 Arrays.sort(files);
                 for (String folder : files) {
-                    if (!packageNames.contains(folder)) {
+                    if (!packageNames.contains(folder) && new File(backupDir.getAbsolutePath() + "/" + folder).isDirectory()) {
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                         if (logInfo.getLastBackupMillis() > 0) {
                             AppInfo appInfo = new AppInfo(logInfo.getPackageName(),
