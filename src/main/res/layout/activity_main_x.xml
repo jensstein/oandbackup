@@ -3,18 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:elevation="2dp">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/app_bar"
         style="@style/Widget.AppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/bar_rc8"
-        android:orientation="horizontal"
-        app:elevation="@dimen/small_spacing">
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"

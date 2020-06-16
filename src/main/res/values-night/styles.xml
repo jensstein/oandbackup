@@ -56,9 +56,12 @@
     </style>
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
-        <item name="android:background">?android:windowBackground</item>
-        <item name="android:orientation">vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <!-- Buttons & Chips -->
