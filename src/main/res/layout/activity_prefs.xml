@@ -18,9 +18,8 @@
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <fragment
-        android:id="@+id/prefs_fragement"
-        class="com.machiav3lli.backup.fragments.PrefsFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/prefs_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize" />

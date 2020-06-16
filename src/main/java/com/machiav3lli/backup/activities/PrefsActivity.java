@@ -1,11 +1,11 @@
 package com.machiav3lli.backup.activities;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.fragments.PrefsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +20,11 @@ public class PrefsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prefs);
         ButterKnife.bind(this);
-        back.setOnClickListener(v -> onBackPressed());
+        getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragment, new PrefsFragment()).commit();
+        back.setOnClickListener(v -> {
+            if (getFragmentManager().getBackStackEntryCount() == 0)
+                super.onBackPressed();
+            else getFragmentManager().popBackStack();
+        });
     }
 }
