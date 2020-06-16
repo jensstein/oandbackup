@@ -25,6 +25,7 @@
             android:textAppearance="@style/TextAppearance.SearchBar"
             app:elevation="@dimen/small_spacing"
             app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/searchHint"
             app:searchIcon="@drawable/ic_app_vv" />
     </androidx.appcompat.widget.LinearLayoutCompat>
