@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -189,8 +190,14 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
             dismissAllowingStateLoss();
         });
-        activateButton.setOnClickListener(v -> Utils.showConfirmDialog(requireActivity(), "", getString(R.string.sched_activateButton),
-                new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), sched.getId(), DATABASE_NAME)));
+        activateButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireActivity())
+                    .setMessage(getString(R.string.sched_activateButton))
+                    .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), sched.getId(), DATABASE_NAME).execute())
+                    .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
+                    })
+                    .show();
+        });
         customList.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), sched.getId()));
         excludeSystem.setOnClickListener(v -> updateScheduleData(sched));
 

@@ -66,16 +66,6 @@ public class Utils {
                 .show());
     }
 
-    public static void showConfirmDialog(Activity activity, String title, String message, final Command confirmCommand) {
-        new AlertDialog.Builder(activity)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(R.string.dialogOK, (dialog, id) -> confirmCommand.execute())
-                .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
-                })
-                .show();
-    }
-
     public static void reloadWithParentStack(Activity activity) {
         Intent intent = activity.getIntent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
