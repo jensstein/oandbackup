@@ -8,12 +8,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/app_bar"
         style="@style/Widget.AppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/bar_rc8"
-        android:orientation="horizontal"
-        app:elevation="@dimen/small_spacing">
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
@@ -38,6 +33,7 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.SearchBar"
             app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/searchHint"
             app:searchIcon="@null" />
     </androidx.appcompat.widget.LinearLayoutCompat>

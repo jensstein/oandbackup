@@ -7,12 +7,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout"
         style="@style/Widget.AppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cards_spacing"
-        android:background="@drawable/bar_rc8"
-        android:orientation="horizontal"
-        app:elevation="@dimen/small_spacing">
+        android:background="@drawable/bar_rc8">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
@@ -23,9 +18,8 @@
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <fragment
-        android:id="@+id/prefs_fragement"
-        class="com.machiav3lli.backup.fragments.PrefsFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/prefs_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize" />

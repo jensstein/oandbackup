@@ -106,6 +106,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
         // Copying APK & DATA
         boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
+        File cacheFile = new File(String.format("%s/%s", backupSubDir, packageName), "cache");
         if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
             commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
             if(splitApks != null){
@@ -116,9 +117,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             }
         }
         if(backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH) {
-            if (clearCache)
-                commands.add(String.format("%s rm -r /data/data/%s/cache/*", toybox, packageName));
             commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
+            if (clearCache)
+                commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
         }
         // Copying external DATA
         boolean backupExternal = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);

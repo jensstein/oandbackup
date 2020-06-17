@@ -64,7 +64,6 @@ public class MainActivityX extends BaseActivity
 
     public static ArrayList<AppInfo> originalList = IntroActivity.originalList;
     File backupDir = IntroActivity.backupDir;
-    ArrayList<MainItemX> list;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
@@ -101,14 +100,6 @@ public class MainActivityX extends BaseActivity
         originalList = AppInfoHelper.getPackageInfo(this,
                 backupDir, true, PreferenceManager.getDefaultSharedPreferences(this)
                         .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-        list = new ArrayList<>();
-        if (SortFilterManager.getRememberFiltering(this)) {
-            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            for (AppInfo app : filteredList) list.add(new MainItemX(app));
-        } else {
-            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-            for (AppInfo app : originalList) list.add(new MainItemX(app));
-        }
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
@@ -121,7 +112,7 @@ public class MainActivityX extends BaseActivity
             sheetApp.show(getSupportFragmentManager(), "APPSHEET");
             return false;
         });
-        itemAdapter.add(list);
+        //itemAdapter.add(list);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -250,19 +241,25 @@ public class MainActivityX extends BaseActivity
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            list = new ArrayList<>();
+            ArrayList<MainItemX> list = new ArrayList<>();
             if (filteredList.isEmpty()) {
-                for (AppInfo app : originalList) list.add(new MainItemX(app));
+                for (AppInfo app : originalList) {
+                    list.add(new MainItemX(app));
+                }
                 SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
             } else {
-                for (AppInfo app : filteredList) list.add(new MainItemX(app));
+                for (AppInfo app : filteredList) {
+                    list.add(new MainItemX(app));
+                }
             }
             runOnUiThread(() -> {
                 if (filteredList.isEmpty()) {
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
                     itemAdapter.clear();
                     itemAdapter.add(list);
-                } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                } else {
+                    FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                }
                 searchView.setQuery("", false);
             });
         }).start();

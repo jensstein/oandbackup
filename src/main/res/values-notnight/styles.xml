@@ -7,20 +7,22 @@
         <item name="colorAccent">@color/app_accent_light</item>
         <item name="colorSecondary">@color/app_secondary_light</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
-        <item name="android:strokeColor">@android:color/black</item>
-        <item name="android:windowBackground">@color/app_background_light</item>
-        <item name="backgroundColor">@color/app_background_light</item>
-        <item name="colorBackgroundFloating">@color/app_primary_light</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
-        <item name="android:statusBarColor">@color/app_background_light</item>
+        <item name="android:strokeColor">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="backgroundColor">@android:color/white</item>
+        <item name="colorBackgroundFloating">@color/app_primary_light</item>
+        <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="actionBarSize">@dimen/action_bar_height</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.DayNight">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <!-- Items & Sheets -->
+    <!-- Sheets & Dialogs -->
     <style name="Sheet.Bottom.Style" parent="Widget.Design.BottomSheet.Modal">
         <item name="chipStyle">@style/Chip.Filter</item>
         <item name="android:background">@android:color/transparent</item>
@@ -56,9 +58,12 @@
     </style>
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
-        <item name="android:background">?android:windowBackground</item>
-        <item name="android:orientation">vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <!-- Buttons & Chips -->
@@ -89,7 +94,7 @@
 
     <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">?colorAccent</item>
-        <item name="android:textColorSecondary">?colorSecondary</item>
+        <item name="tint">?colorControlNormal</item>
         <item name="borderWidth">0dp</item>
     </style>
 
