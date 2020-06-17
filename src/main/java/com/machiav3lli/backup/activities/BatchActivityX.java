@@ -80,7 +80,6 @@ public class BatchActivityX extends BaseActivity
     boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
     SortFilterSheet sheetSortFilter;
-    ArrayList<BatchItemX> list;
     ItemAdapter<BatchItemX> itemAdapter;
     FastAdapter<BatchItemX> fastAdapter;
     File backupDir;
@@ -122,28 +121,9 @@ public class BatchActivityX extends BaseActivity
             new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1000);
         });
 
-        list = new ArrayList<>();
-        if (backupBoolean) {
-            if (SortFilterManager.getRememberFiltering(this)) {
-                ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-                for (AppInfo app : filteredList)
-                    if (app.isInstalled()) list.add(new BatchItemX(app));
-            } else {
-                SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-                for (AppInfo app : originalList)
-                    if (app.isInstalled()) list.add(new BatchItemX(app));
-            }
+        if(backupBoolean) {
             actionButton.setText(R.string.backup);
-        } else {
-            if (SortFilterManager.getRememberFiltering(this)) {
-                ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-                for (AppInfo app : filteredList)
-                    if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
-            } else {
-                SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-                for (AppInfo app : originalList)
-                    if (app.getBackupMode() != AppInfo.MODE_UNSET) list.add(new BatchItemX(app));
-            }
+        }else{
             actionButton.setText(R.string.restore);
         }
 
@@ -157,7 +137,6 @@ public class BatchActivityX extends BaseActivity
             fastAdapter.notifyAdapterDataSetChanged();
             return false;
         });
-        itemAdapter.add(list);
 
         back.setOnClickListener(v -> finish());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -205,7 +184,11 @@ public class BatchActivityX extends BaseActivity
     @OnClick(R.id.backupRestoreButton)
     public void action() {
         ArrayList<BatchItemX> selectedList = new ArrayList<>();
-        for (BatchItemX item : list) if (item.getApp().isChecked()) selectedList.add(item);
+        for (BatchItemX item : itemAdapter.getAdapterItems()){
+            if (item.getApp().isChecked()) {
+                selectedList.add(item);
+            }
+        }
         Bundle arguments = new Bundle();
         arguments.putParcelableArrayList("selectedList", selectedList);
         arguments.putBoolean("backupBoolean", backupBoolean);
@@ -315,7 +298,7 @@ public class BatchActivityX extends BaseActivity
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            list = new ArrayList<>();
+            ArrayList<BatchItemX> list = new ArrayList<>();
             if (!filteredList.isEmpty()) {
                 if (backupBoolean) {
                     for (AppInfo app : filteredList)
