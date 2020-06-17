@@ -102,14 +102,16 @@ App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/
 
 Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
 
-## Credits
+## Contribution
 
-[Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
+[Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup. 
 
-[Rahul Patel](https://github.com/whyorean) whose hard work on AuroraStore inspired this work.
+Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate).
+
+Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
 Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [Zip4J](https://github.com/srikanth-lingala/zip4j), [RootBeer](https://github.com/scottyab/rootbeer).
 
-## author
+## Author
 
 Antonios Hazim
