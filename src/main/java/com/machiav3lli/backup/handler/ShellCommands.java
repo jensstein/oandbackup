@@ -105,19 +105,20 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
         // Copying APK & DATA
         boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
+        File cacheFile = new File(String.format("%s/%s", backupSubDir, packageName), "cache");
         switch (backupMode) {
             case AppInfo.MODE_APK:
                 commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
                 break;
             case AppInfo.MODE_DATA:
-                if (clearCache)
-                    commands.add(String.format("%s rm -r /data/data/%s/cache/*", toybox, packageName));
                 commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
+                if (clearCache)
+                    commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
                 break;
             default: // defaults to MODE_BOTH
-                if (clearCache)
-                    commands.add(String.format("%s rm -r /data/data/%s/cache/*", toybox, packageName));
                 commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
+                if (clearCache)
+                    commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
                 commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
                 break;
         }
