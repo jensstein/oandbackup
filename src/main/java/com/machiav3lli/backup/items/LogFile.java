@@ -7,6 +7,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.FileReaderWriter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +21,7 @@ import java.util.Date;
 public class LogFile implements Parcelable {
     final static String TAG = Constants.classTag(".LogFile");
     String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
+    String[] splitSourceDirs;
     int versionCode, backupMode;
     long lastBackupMillis;
     boolean encrypted, system;
@@ -33,6 +35,7 @@ public class LogFile implements Parcelable {
             this.packageName = jsonObject.getString("packageName");
             this.versionName = jsonObject.getString("versionName");
             this.sourceDir = jsonObject.getString("sourceDir");
+            this.splitSourceDirs = jsonObject.has("splitSourceDirs") ? LogFile.toStringArray(jsonObject.getJSONArray("splitSourceDirs")) : null;
             this.dataDir = jsonObject.getString("dataDir");
             if (jsonObject.has("deviceProtectedDataDir"))
                 this.deviceProtectedDataDir = jsonObject.getString("deviceProtectedDataDir");
@@ -71,6 +74,21 @@ public class LogFile implements Parcelable {
         return sourceDir;
     }
 
+    public String[] getSplitSourceDirs(){
+        return splitSourceDirs;
+    }
+
+    public String[] getSplitApks(){
+        if(splitSourceDirs != null) {
+            String[] result = new String[splitSourceDirs.length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = splitSourceDirs[i].substring(sourceDir.lastIndexOf("/") + 1);
+            }
+            return result;
+        }
+        return null;
+    }
+
     public String getApk() {
         if (sourceDir != null && sourceDir.length() > 0)
             return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
@@ -105,10 +123,14 @@ public class LogFile implements Parcelable {
         try {
             // path to apk should only be logged if it is backed up
             String sourceDir = "";
-            if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH)
+            String[] splitSourceDirs = null;
+            if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
                 sourceDir = appInfo.getSourceDir();
-            else if (appInfo.getLogInfo() != null)
+                splitSourceDirs = appInfo.getSplitSourceDirs();
+            }else if (appInfo.getLogInfo() != null) {
                 sourceDir = appInfo.getLogInfo().getSourceDir();
+                splitSourceDirs = appInfo.getLogInfo().getSplitSourceDirs();
+            }
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("label", appInfo.getLabel());
@@ -116,6 +138,8 @@ public class LogFile implements Parcelable {
             jsonObject.put("versionCode", appInfo.getVersionCode());
             jsonObject.put("packageName", appInfo.getPackageName());
             jsonObject.put("sourceDir", sourceDir);
+            // Value won't be written to the json string if it's java's null. Fine.
+            jsonObject.put("splitSourceDirs", LogFile.toJsonArray(splitSourceDirs));
             jsonObject.put("dataDir", appInfo.getDataDir());
             jsonObject.put("deviceProtectedDataDir", appInfo.getDeviceProtectedDataDir());
             jsonObject.put("lastBackupMillis", System.currentTimeMillis());
@@ -141,6 +165,25 @@ public class LogFile implements Parcelable {
         return dateFormated;
     }
 
+    public static JSONArray toJsonArray(Object[] array){
+        if(array == null){
+            return null;
+        }
+        JSONArray result = new JSONArray();
+        for(Object entry : array){
+            result.put(entry);
+        }
+        return result;
+    }
+
+    public static String[] toStringArray(JSONArray array) {
+        String[] result = new String[array.length()];
+        for(int i = 0; i < result.length; i++) {
+            result[i] = array.optString(i);
+        }
+        return result;
+    }
+
     public int describeContents() {
         return 0;
     }
@@ -150,6 +193,7 @@ public class LogFile implements Parcelable {
         out.writeString(packageName);
         out.writeString(versionName);
         out.writeString(sourceDir);
+        out.writeStringArray(splitSourceDirs);
         out.writeString(dataDir);
         out.writeInt(versionCode);
         out.writeInt(backupMode);
@@ -173,6 +217,7 @@ public class LogFile implements Parcelable {
         packageName = in.readString();
         versionName = in.readString();
         sourceDir = in.readString();
+        splitSourceDirs = in.createStringArray();
         dataDir = in.readString();
         versionCode = in.readInt();
         backupMode = in.readInt();

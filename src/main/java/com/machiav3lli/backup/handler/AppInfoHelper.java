@@ -78,7 +78,8 @@ public class AppInfoHelper {
                 AppInfo appInfo = new AppInfo(packageInfo.packageName,
                         packageInfo.applicationInfo.loadLabel(pm).toString(),
                         packageInfo.versionName, packageInfo.versionCode,
-                        packageInfo.applicationInfo.sourceDir, dataDir, deDataDir, isSystem,
+                        packageInfo.applicationInfo.sourceDir,
+                        packageInfo.applicationInfo.splitSourceDirs, dataDir, deDataDir, isSystem,
                         true);
                 File subdir = new File(backupDir, packageInfo.packageName);
                 if (subdir.exists()) {
@@ -102,10 +103,15 @@ public class AppInfoHelper {
             if (files != null) {
                 Arrays.sort(files);
                 for (String folder : files) {
-                    if (!packageNames.contains(folder)) {
+                    if (!packageNames.contains(folder) && new File(backupDir.getAbsolutePath() + "/" + folder).isDirectory()) {
                         LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
                         if (logInfo.getLastBackupMillis() > 0) {
-                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(), logInfo.getLabel(), logInfo.getVersionName(), logInfo.getVersionCode(), logInfo.getSourceDir(), logInfo.getDataDir(), logInfo.getDeviceProtectedDataDir(), logInfo.isSystem(), false);
+                            AppInfo appInfo = new AppInfo(logInfo.getPackageName(),
+                                    logInfo.getLabel(), logInfo.getVersionName(),
+                                    logInfo.getVersionCode(), logInfo.getSourceDir(),
+                                    logInfo.getSplitSourceDirs(), logInfo.getDataDir(),
+                                    logInfo.getDeviceProtectedDataDir(),
+                                    logInfo.isSystem(), false);
                             appInfo.setLogInfo(logInfo);
                             list.add(appInfo);
                         }

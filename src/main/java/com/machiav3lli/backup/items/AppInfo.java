@@ -8,6 +8,7 @@ public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
     LogFile logInfo;
     String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
+    String[] splitSourceDirs;
     int versionCode, backupMode;
     private boolean system, installed, checked, disabled;
     public Bitmap icon;
@@ -16,12 +17,13 @@ public class AppInfo
     public static final int MODE_DATA = 2;
     public static final int MODE_BOTH = 3;
 
-    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
+    public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String[] splitSourceDirs, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
         this.label = label;
         this.packageName = packageName;
         this.versionName = versionName;
         this.versionCode = versionCode;
         this.sourceDir = sourceDir;
+        this.splitSourceDirs = splitSourceDirs;
         this.dataDir = dataDir;
         this.deviceProtectedDataDir = deviceProtectedDataDir;
         this.system = system;
@@ -47,6 +49,10 @@ public class AppInfo
 
     public String getSourceDir() {
         return sourceDir;
+    }
+
+    public String[] getSplitSourceDirs(){
+        return splitSourceDirs;
     }
 
     public String getDataDir() {
@@ -102,6 +108,8 @@ public class AppInfo
         return installed;
     }
 
+    public boolean isSplit(){ return splitSourceDirs != null && splitSourceDirs.length > 0; }
+
     // list of single files used by special backups - only for compatibility now
     public String[] getFilesList() {
         return null;
@@ -130,6 +138,7 @@ public class AppInfo
         out.writeString(packageName);
         out.writeString(versionName);
         out.writeString(sourceDir);
+        out.writeStringArray(splitSourceDirs);
         out.writeString(dataDir);
         out.writeString(deviceProtectedDataDir);
         out.writeInt(versionCode);
@@ -154,6 +163,7 @@ public class AppInfo
         packageName = in.readString();
         versionName = in.readString();
         sourceDir = in.readString();
+        splitSourceDirs = in.createStringArray();
         dataDir = in.readString();
         deviceProtectedDataDir = in.readString();
         versionCode = in.readInt();

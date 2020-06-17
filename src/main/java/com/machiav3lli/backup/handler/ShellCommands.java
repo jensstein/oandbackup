@@ -91,6 +91,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         String label = app.getLabel();
         String packageData = app.getDataDir();
         String packageApk = app.getSourceDir();
+        String[] splitApks = app.getSplitSourceDirs();
         String packageName = app.getPackageName();
         String deviceProtectedPackageData = app.getDeviceProtectedDataDir();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
@@ -106,23 +107,20 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // Copying APK & DATA
         boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
         File cacheFile = new File(String.format("%s/%s", backupSubDir, packageName), "cache");
-        switch (backupMode) {
-            case AppInfo.MODE_APK:
-                commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
-                break;
-            case AppInfo.MODE_DATA:
-                commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
-                if (clearCache)
-                    commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
-                break;
-            default: // defaults to MODE_BOTH
-                commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
-                if (clearCache)
-                    commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
-                commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
-                break;
+        if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
+            commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
+            if(splitApks != null){
+                Log.i(TAG, label + " is a split apk");
+                for(String splitApk : splitApks){
+                    commands.add(String.format("cp \"%s\" \"%s\"", splitApk, backupSubDirPath));
+                }
+            }
         }
-
+        if(backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH) {
+            commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
+            if (clearCache)
+                commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
+        }
         // Copying external DATA
         boolean backupExternal = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
         File backupSubDirExternalFiles = null;
@@ -277,7 +275,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         }
     }
 
-    public int backupSpecial(File backupSubDir, String label, String... files) {
+    public int backupSpecial(File backupSubDir, AppInfo app) {
+        String label = app.getLabel();
+        String[] files = app.getFilesList();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
         Log.i(TAG, "backup: " + label);
 
@@ -303,10 +303,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 }
             }
         }
+        LogFile.writeLogFile(backupSubDir, app, app.getBackupMode(), !password.equals(""));
         return ret;
     }
 
-    public int restoreSpecial(File backupSubDir, String label, String... files) {
+    public int restoreSpecial(File backupSubDir, AppInfo app) {
+        String label = app.getLabel();
+        String[] files = app.getFilesList();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
         int unzipRet = 0;
         ArrayList<String> toDelete = new ArrayList<>();
@@ -489,14 +492,15 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return 1;
     }
 
-    public int restoreUserApk(File backupDir, String label, String apk, String ownDataDir) {
+    public int restoreUserApk(File backupDir, String label, String apk, String ownDataDir, String basePackage) {
         /* according to a comment in the android 8 source code for
          * /frameworks/base/cmds/pm/src/com/android/commands/pm/Pm.java
          * pm install is now discouraged / deprecated in favor of cmd
          * package install.
          */
-        final String installCmd = Build.VERSION.SDK_INT >= 28 ?
-                "cmd package install" : "pm install";
+        final String installCmd = String.format("%s%s",
+                Build.VERSION.SDK_INT >= 28 ? "cmd package install" : "pm install",
+                basePackage != null ? " -p " + basePackage : "");
         // swapBackupDirPath is not needed with pm install
         List<String> commands = new ArrayList<>();
         /* in newer android versions selinux rules prevent system_server
