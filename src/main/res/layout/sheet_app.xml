@@ -68,32 +68,49 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginVertical="@dimen/small_spacing"
-                        android:orientation="horizontal">
+                        android:text="@string/app_s_type_title"
+                        android:textSize="@dimen/main_text" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="@string/app_s_type_title"
-                            android:textSize="@dimen/main_text" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/main_text" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/appType"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="end"
-                            android:singleLine="true"
-                            android:textSize="@dimen/main_text" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/split_apks"
+                        android:textSize="@dimen/main_text" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appSplits"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:textSize="@dimen/main_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

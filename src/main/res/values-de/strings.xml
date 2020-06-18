@@ -192,4 +192,5 @@
     <string name="prefs_summaryBackupExternalData">Daten sichern auf und wiederherstellen von externem Speicher (i.d.R /storage/emulated/0/Android/data/)</string>
     <string name="prefs_summaryBackupDeviceProtectedData">Daten sichern auf und wiederherstellen von /data/user_de</string>
     <string name="prefs_backupDeviceProtectedData">Gerätverschlüsselte Daten sichern</string>
+    <string name="split_apks">Split-APKs:</string>
 </resources>

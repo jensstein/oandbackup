@@ -63,6 +63,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     AppCompatTextView packageName;
     @BindView(R.id.appType)
     AppCompatTextView appType;
+    @BindView(R.id.appSplits)
+    AppCompatTextView appSplits;
     @BindView(R.id.versionName)
     AppCompatTextView versionCode;
     @BindView(R.id.lastBackup)
@@ -162,6 +164,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         packageName.setText(app.getPackageName());
         if (app.isSystem()) appType.setText(R.string.systemApp);
         else appType.setText(R.string.userApp);
+        if (app.isSplit()) appSplits.setText(R.string.dialogYes);
+        else appSplits.setText(R.string.dialogNo);
         if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
             String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
             versionCode.setText(updatedVersionString);
