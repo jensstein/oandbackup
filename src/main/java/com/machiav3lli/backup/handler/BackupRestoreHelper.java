@@ -59,10 +59,10 @@ public class BackupRestoreHelper {
                 } else {
                     apkRet = shellCommands.restoreUserApk(backupSubDir,
                             app.getLabel(), apk, context.getApplicationInfo().dataDir, null);
-                    if(backupLog.getSplitApks() != null){
+                    if (backupLog.getSplitApks() != null) {
                         Log.i(TAG, app.getPackageName() + " backup contains split apks");
-                        for(String splitApk : backupLog.getSplitApks()){
-                            if(apkRet == 0){
+                        for (String splitApk : backupLog.getSplitApks()) {
+                            if (apkRet == 0) {
                                 apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
                                         splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
                             }

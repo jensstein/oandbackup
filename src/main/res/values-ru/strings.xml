@@ -21,7 +21,7 @@
     <string name="deleteBackup">Удалить р.к.</string>
     <string name="uninstall">удалить приложение</string>
     <string name="uninstallProgress">деинсталляция</string>
-    <string name="showAll">показать все приложения</string>
+    <string name="radioAll">показать все приложения</string>
     <string name="showOnlySystem">показать только системные приложения</string>
     <string name="showOnlyUser">показать только пользовательские приложения</string>
     <string name="showNotBackedup">показать приложения без р.к.</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">показать старые р.к.</string>
     <string name="showOnlyApkBackedUp">показать приложения только с р.к. apk</string>
     <string name="showOnlyDataBackedUp">показать приложения только с р.к. данных</string>
-    <string name="showOnlySpecialBackups">показать только специальные р.к.</string>
+    <string name="radioSpecial">показать только специальные р.к.</string>
     <string name="sortByLabel">сортировать по названию</string>
     <string name="sortByPackageName">сортировать по пакетам</string>
     <string name="sort">сортировка и фильтр</string>
@@ -71,8 +71,7 @@
     <string name="help_title">Помощь</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
     <string name="shareTitle">отправить</string>
-    <string name="filebrowser_title">Файловый браузер</string>
-    
+
     <string name="tools_title">инструменты</string>
     <string name="prefs_batchDelete">удалить р.к.?</string>
     <string name="batchDeleteMessage">удаление р.к.</string>

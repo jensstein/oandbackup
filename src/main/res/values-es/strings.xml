@@ -21,7 +21,7 @@
     <string name="deleteBackup">Eliminar respaldo</string>
     <string name="uninstall">Desinstalar aplicación</string>
     <string name="uninstallProgress">Desinstalando</string>
-    <string name="showAll">Mostrar todas las aplicaciones</string>
+    <string name="radioAll">Mostrar todas las aplicaciones</string>
     <string name="showOnlySystem">Mostrar aplicaciones del sistema</string>
     <string name="showOnlyUser">Mostrar aplicaciones del usuario</string>
     <string name="showNotBackedup">Mostrar aplicaciones no respaldadas</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Mostrar respaldos antiguos</string>
     <string name="showOnlyApkBackedUp">Mostrar aplicaciones con copias de APK</string>
     <string name="showOnlyDataBackedUp">Mostrar aplicaciones con copias de datos</string>
-    <string name="showOnlySpecialBackups">Mostrar respaldos especiales</string>
+    <string name="radioSpecial">Mostrar respaldos especiales</string>
     <string name="sortByLabel">Ordenar por etiqueta</string>
     <string name="sortByPackageName">Ordenar por nombre de paquete</string>
     <string name="sort">Ordenar y filtrar</string>
@@ -69,8 +69,7 @@
     <string name="help_title">Ayuda</string>
     <string name="notInstalledModeDataWarning">La aplicación no se puede restaurar desde un respaldo sin la APK</string>
     <string name="shareTitle">Compartir</string>
-    <string name="filebrowser_title">Explorador de archivos</string>
-    
+
     <string name="tools_title">Herramientas</string>
     <string name="prefs_batchDelete">¿Eliminar respaldos?</string>
     <string name="batchDeleteMessage">Eliminando respaldos...</string>

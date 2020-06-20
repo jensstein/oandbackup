@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -62,7 +60,7 @@ public class MainActivityX extends BaseActivity
     @BindView(R.id.sort_filter_fab)
     FloatingActionButton fab;
 
-    public static ArrayList<AppInfo> originalList = IntroActivity.originalList;
+    public static ArrayList<AppInfo> originalList;
     File backupDir = IntroActivity.backupDir;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
@@ -110,7 +108,6 @@ public class MainActivityX extends BaseActivity
             sheetApp.show(getSupportFragmentManager(), "APPSHEET");
             return false;
         });
-        //itemAdapter.add(list);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

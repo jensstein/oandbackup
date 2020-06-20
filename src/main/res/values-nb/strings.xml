@@ -21,7 +21,7 @@
   <string name="deleteBackup">Slett sikkerhetskopi</string>
   <string name="uninstall">Avinstaller app</string>
   <string name="uninstallProgress">Avinstallerer</string>
-  <string name="showAll">Vis alle apper</string>
+  <string name="radioAll">Vis alle apper</string>
   <string name="showOnlySystem">Vis bare system apper</string>
   <string name="showOnlyUser">Vis bare vanlige apper</string>
   <string name="showNotBackedup">Vis apper uten sikkerhetskopi</string>
@@ -30,7 +30,7 @@
   <string name="showOldBackups">Vis gamle sikkerhetskopier</string>
   <string name="showOnlyApkBackedUp">Vis apper med sikkerhetskopi bare av APK</string>
   <string name="showOnlyDataBackedUp">Vis apper med sikkerhetskopi bare av data</string>
-  <string name="showOnlySpecialBackups">Vis bare spesielle sikkerhetskopier</string>
+  <string name="radioSpecial">Vis bare spesielle sikkerhetskopier</string>
   <string name="sortByLabel">Sorter etter navn</string>
   <string name="sortByPackageName">Sorter etter pakkenavn</string>
   <string name="sort">Sorter og filtrer</string>
@@ -69,8 +69,7 @@
   <string name="help_title">Hjelp</string>
   <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
   <string name="shareTitle">Del med</string>
-  <string name="filebrowser_title">Filbehandler</string>
-  <string name="tools_title">Verktøyer</string>
+    <string name="tools_title">Verktøyer</string>
   <string name="prefs_batchDelete">Slett sikkerhetskopier?</string>
   <string name="batchDeleteMessage">Sletter sikkerhetskopier</string>
   <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>

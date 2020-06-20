@@ -21,7 +21,7 @@
   <string name="deleteBackup">Eliminar backup</string>
   <string name="uninstall">Desinstalar aplicação</string>
   <string name="uninstallProgress">A desinstalar...</string>
-  <string name="showAll">Todas as aplicações</string>
+  <string name="radioAll">Todas as aplicações</string>
   <string name="showOnlySystem">Aplicações do sistema</string>
   <string name="showOnlyUser">Aplicações do utilizador</string>
   <string name="showNotBackedup">Aplicações sem backup</string>
@@ -30,7 +30,7 @@
   <string name="showOldBackups">Backups antigos</string>
   <string name="showOnlyApkBackedUp">Aplicações só com backup de apk</string>
   <string name="showOnlyDataBackedUp">Aplicações só com backup de dados</string>
-  <string name="showOnlySpecialBackups">Apenas backups especiais</string>
+  <string name="radioSpecial">Apenas backups especiais</string>
   <string name="sortByLabel">Ordenar por nome</string>
   <string name="sortByPackageName">Ordenar por nome de pacote</string>
   <string name="sort">Filtro e ordem</string>
@@ -69,8 +69,7 @@
   <string name="help_title">Ajuda</string>
   <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
   <string name="shareTitle">Partilhar</string>
-  <string name="filebrowser_title">Gestor de ficheiros</string>
-  <string name="tools_title">Ferramentas</string>
+    <string name="tools_title">Ferramentas</string>
   <string name="prefs_batchDelete">Eliminar backups?</string>
   <string name="batchDeleteMessage">A eliminar backups...</string>
   <string name="batchDeleteNotificationTitle">Eliminar backups</string>

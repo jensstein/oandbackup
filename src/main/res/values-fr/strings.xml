@@ -21,7 +21,7 @@
   <string name="deleteBackup">effacer la sauvegarde</string>
   <string name="uninstall">désinstaller l\'application</string>
   <string name="uninstallProgress">désinstallation</string>
-  <string name="showAll">montrer toutes les applications</string>
+  <string name="radioAll">montrer toutes les applications</string>
   <string name="showOnlySystem">ne montrer que les applications système</string>
   <string name="showOnlyUser">ne montrer que les applications utilisateur</string>
   <string name="showNotBackedup">ne montrer que les applications non sauvegardées</string>

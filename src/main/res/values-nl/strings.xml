@@ -21,7 +21,7 @@
   <string name="deleteBackup">Verwijder back-up</string>
   <string name="uninstall">Deïnstalleer app</string>
   <string name="uninstallProgress">Deïnstalleren</string>
-  <string name="showAll">Toon alle apps</string>
+  <string name="radioAll">Toon alle apps</string>
   <string name="showOnlySystem">Toon alleen systeem apps</string>
   <string name="showOnlyUser">Toon alleen gebruikers apps</string>
   <string name="showNotBackedup">Toon apps die nog niet zijn geback-upt</string>
@@ -30,7 +30,7 @@
   <string name="showOldBackups">Toon oude back-ups</string>
   <string name="showOnlyApkBackedUp">Toon apps waarvan alleen de apk geback-upt is</string>
   <string name="showOnlyDataBackedUp">toon apps waarvan alleen de data geback-upt is</string>
-  <string name="showOnlySpecialBackups">Toon alleen speciale back-ups</string>
+  <string name="radioSpecial">Toon alleen speciale back-ups</string>
   <string name="sortByLabel">Sorteer op label</string>
   <string name="sortByPackageName">Sorteer op pakketnaam</string>
   <string name="sort">Sorteer en filter</string>
@@ -69,8 +69,7 @@
   <string name="help_title">Hulp</string>
   <string name="notInstalledModeDataWarning">App kan niet teruggezet worden vanuit een back-up zonder een apk</string>
   <string name="shareTitle">Delen</string>
-  <string name="filebrowser_title">Bestandsbeheerder</string>
-  <string name="tools_title">Hulpmiddelen</string>
+    <string name="tools_title">Hulpmiddelen</string>
   <string name="prefs_batchDelete">Verwijder back-ups?</string>
   <string name="batchDeleteMessage">Back-ups aan het verwijderen</string>
   <string name="batchDeleteNotificationTitle">Verwijder back-ups</string>

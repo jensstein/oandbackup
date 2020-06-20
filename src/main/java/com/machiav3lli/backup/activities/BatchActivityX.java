@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -51,9 +50,8 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
     static final String TAG = Constants.classTag(".BatchActivityX");
-    long threadId = -1;
     final static int RESULT_OK = 0;
-    ArrayList<AppInfo> originalList = MainActivityX.originalList;
+    long threadId = -1;
     boolean backupBoolean;
 
     @BindView(R.id.recycler_view)
@@ -79,10 +77,11 @@ public class BatchActivityX extends BaseActivity
 
     boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
+    File backupDir;
     SortFilterSheet sheetSortFilter;
     ItemAdapter<BatchItemX> itemAdapter;
     FastAdapter<BatchItemX> fastAdapter;
-    File backupDir;
+    ArrayList<AppInfo> originalList = MainActivityX.originalList;
 
     HandleMessages handleMessages;
     SharedPreferences prefs;
@@ -106,8 +105,6 @@ public class BatchActivityX extends BaseActivity
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             Utils.reShowMessage(handleMessages, threadId);
         }
-        if (getIntent().getExtras() != null)
-            backupBoolean = getIntent().getExtras().getBoolean(classAddress(".backupBoolean"));
 
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
@@ -187,7 +184,7 @@ public class BatchActivityX extends BaseActivity
     @OnClick(R.id.backupRestoreButton)
     public void action() {
         ArrayList<BatchItemX> selectedList = new ArrayList<>();
-        for (BatchItemX item : itemAdapter.getAdapterItems()){
+        for (BatchItemX item : itemAdapter.getAdapterItems()) {
             if (item.getApp().isChecked()) {
                 selectedList.add(item);
             }

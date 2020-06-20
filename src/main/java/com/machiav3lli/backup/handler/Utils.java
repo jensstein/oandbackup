@@ -107,6 +107,16 @@ public class Utils {
         }
     }
 
+    public static long calculateID(AppInfo app) {
+        long ID = app.getPackageName().hashCode()
+                + app.getBackupMode()
+                + (app.isDisabled() ? 0 : 1)
+                + (app.isInstalled() ? 1 : 0)
+                + (app.getLogInfo() != null ? 1 : 0)
+                + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0);
+        return ID;
+    }
+
     public static void pickColor(AppInfo app, AppCompatTextView text) {
         if (app.isInstalled()) {
             int color = app.isSystem() ? Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);

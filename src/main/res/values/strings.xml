@@ -78,7 +78,6 @@
     <string name="help_title">Help</string>
     <string name="notInstalledModeDataWarning">App cannot be restored from a backup without APK</string>
     <string name="shareTitle">Share</string>
-    <string name="filebrowser_title">File browser</string>
 
     <string name="tools_title">Tools</string>
     <string name="batchDeleteMessage">Deleting backups…</string>

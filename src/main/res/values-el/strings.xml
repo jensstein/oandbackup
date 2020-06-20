@@ -21,7 +21,7 @@
     <string name="deleteBackup">Διαγραφή αντιγράφου</string>
     <string name="uninstall">Απεγκατάσταση εφαρμογής</string>
     <string name="uninstallProgress">Απεγκατάσταση</string>
-    <string name="showAll">Όλες οι εφαρμογές</string>
+    <string name="radioAll">Όλες οι εφαρμογές</string>
     <string name="showOnlySystem">Μόνον εφαρμογές συστήματος</string>
     <string name="showOnlyUser">Μόνον εφαρμογές χρήστη</string>
     <string name="showNotBackedup">Εφαρμογές χωρίς αντίγραφο</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Παλιά αντίγραφα</string>
     <string name="showOnlyApkBackedUp">Εφαρμογές με μόνον το apk αντεγραμμένο</string>
     <string name="showOnlyDataBackedUp">Εφαρμογές με μόνον τα δεδομένα αντεγραμμένα</string>
-    <string name="showOnlySpecialBackups">Ιδιαίτερα αντίγραφα μόνο</string>
+    <string name="radioSpecial">Ιδιαίτερα αντίγραφα μόνο</string>
     <string name="sortByLabel">Ταξινόμηση κατά ετικέτα</string>
     <string name="sortByPackageName">Ταξινόμηση κατά όνομα πακέτου</string>
     <string name="sort">Ταξινόμηση και φιλτράρισμα</string>
@@ -74,7 +74,6 @@
     <string name="help_title">Βοήθεια</string>
     <string name="notInstalledModeDataWarning">Η εφαρμογή δεν μπορεί να επαναφερθεί από ένα αντίγραφο χωρίς apk</string>
     <string name="shareTitle">Κοινοποίηση</string>
-    <string name="filebrowser_title">Περιηγητής αρχείων</string>
 
     <string name="tools_title">Εργαλεία</string>
     <string name="batchDeleteMessage">Διαγραφή αντιγράφων</string>
@@ -174,7 +173,6 @@
     <string name="sort_options">Ταξινόμηση κατά:</string>
     <string name="sortLabel">Ετικέτα</string>
     <string name="sortPackageName">Όνομα Πακέτου</string>
-    <string name="radioAll">Εφαρμογές Συστήματος &amp; Χρήστη</string>
     <string name="radioUser">Εφαρμογές χρήστη</string>
     <string name="radioSystem">Εφαρμογές συστήματος</string>
     <string name="app_s_icon">Εικονίδιο εφαρμογής</string>

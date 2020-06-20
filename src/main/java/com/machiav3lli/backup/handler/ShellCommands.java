@@ -107,20 +107,21 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // Copying APK & DATA
         boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
         File cacheFile = new File(String.format("%s/%s", backupSubDir, packageName), "cache");
-        if(backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
+        if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
             commands.add(String.format("cp \"%s\" \"%s\"", packageApk, backupSubDirPath));
-            if(splitApks != null){
+            if (splitApks != null) {
                 Log.i(TAG, label + " is a split apk");
-                for(String splitApk : splitApks){
+                for (String splitApk : splitApks) {
                     commands.add(String.format("cp \"%s\" \"%s\"", splitApk, backupSubDirPath));
                 }
             }
         }
-        if(backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH) {
-            commands.add(String.format("cp -r \"%s\" \"%s\"", packageData, backupSubDirPath));
+        if (backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH) {
+            commands.add(String.format("cp -RL  \"%s\" \"%s\"", packageData, backupSubDirPath));
             if (clearCache)
                 commands.add(String.format("rm -r \"%s\"", cacheFile.getPath()));
         }
+
         // Copying external DATA
         boolean backupExternal = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
         File backupSubDirExternalFiles = null;
@@ -128,7 +129,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupMode != AppInfo.MODE_APK && backupExternal && externalFilesDir != null) {
             backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
             if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
-                commands.add(String.format("cp -r \"%s\" \"%s\"", externalFilesDir.getAbsolutePath(), backupSubDirExternalFiles.getAbsolutePath()));
+                commands.add(String.format("cp -RL \"%s\" \"%s\"", externalFilesDir.getAbsolutePath(), backupSubDirExternalFiles.getAbsolutePath()));
             } else Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
         }
 
@@ -138,21 +139,25 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (backupMode != AppInfo.MODE_APK && backupDeviceProtected) {
             backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
-                commands.add(String.format("cp -r \"%s\" \"%s\"", deviceProtectedPackageData, backupSubDirDeviceProtectedFiles.getAbsolutePath()));
+                commands.add(String.format("cp -RL \"%s\" \"%s\"", deviceProtectedPackageData, backupSubDirDeviceProtectedFiles.getAbsolutePath()));
             } else
                 Log.e(TAG, "couldn't create " + backupSubDirDeviceProtectedFiles.getAbsolutePath());
         }
 
         // Execute
         List<String> errors = new ArrayList<>();
-        int ret = commandHandler.runCmd("su", commands, line -> {
+        int executeReturn = commandHandler.runCmd("su", commands, line -> {
                 },
                 errors::add, e -> {
                     Log.e(TAG, String.format("Exception caught running: %s",
                             TextUtils.join(", ", commands)), e);
                     writeErrorLog(context, label, e.toString());
                 }, this);
-        for (String line : errors) writeErrorLog(context, label, line);
+        if (errors.size() == 1) {
+            String line = errors.get(0);
+            if (line.contains("cache") && line.contains("No such file or directory"))
+                executeReturn = 0;
+        } else for (String line : errors) writeErrorLog(context, label, line);
 
         // After backup Cleaning
         if (backupSubDirPath.startsWith(context.getApplicationInfo().dataDir)) {
@@ -163,7 +168,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
              * without any changes but in the app's own datadir files will have both uid
              * and gid as 0 / root when they are first copied with su.
              */
-            ret = ret + setPermissions(backupSubDirPath);
+            executeReturn = executeReturn + setPermissions(backupSubDirPath);
         }
         String folder = new File(packageData).getName();
         deleteBackup(new File(backupSubDir, folder + "/lib"));
@@ -175,16 +180,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
 
         // Zipping DATA
         if (backupMode != AppInfo.MODE_APK) {
-            int zipret = compress(new File(backupSubDir, folder));
-            zipret += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-            zipret += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-            if (zipret != 0) ret += zipret;
+            int zipReturn = compress(new File(backupSubDir, folder));
+            zipReturn += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            zipReturn += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            if (zipReturn != 0) executeReturn += zipReturn;
         }
 
         // Logging
         app.setBackupMode(backupMode);
         LogFile.writeLogFile(backupSubDir, app, backupMode, !password.equals(""));
-        return ret;
+        return executeReturn;
     }
 
     public int doRestore(File backupSubDir, AppInfo app) {
@@ -471,9 +476,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 commands.add(String.format("%s change-owner -r %s %s", oabUtils, ownership.toString(), packageDir));
                 commands.add(String.format("%s set-permissions -r 771 %s", oabUtils, packageDir));
             } else {
-                // android 6 has moved to toybox which doesn't include [ or [[
-                // meanwhile its implementation of test seems to be broken at least in cm 13
-                // cf. https://github.com/jensstein/oandbackup/issues/116
                 commands.add(String.format("%s chown -R %s %s", toybox, ownership.toString(), packageDir));
                 commands.add(String.format("%s chmod -R 771 %s", toybox, packageDir));
             }

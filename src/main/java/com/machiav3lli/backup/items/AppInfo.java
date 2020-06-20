@@ -51,7 +51,7 @@ public class AppInfo
         return sourceDir;
     }
 
-    public String[] getSplitSourceDirs(){
+    public String[] getSplitSourceDirs() {
         return splitSourceDirs;
     }
 
@@ -108,7 +108,9 @@ public class AppInfo
         return installed;
     }
 
-    public boolean isSplit(){ return splitSourceDirs != null && splitSourceDirs.length > 0; }
+    public boolean isSplit() {
+        return splitSourceDirs != null && splitSourceDirs.length > 0;
+    }
 
     // list of single files used by special backups - only for compatibility now
     public String[] getFilesList() {

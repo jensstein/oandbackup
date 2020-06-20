@@ -19,6 +19,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.machiav3lli.backup.handler.Utils.calculateID;
+
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
     AppInfo app;
 
@@ -48,7 +50,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
 
     @Override
     public long getIdentifier() {
-        return app.getPackageName().hashCode() + app.getBackupMode() + (app.isDisabled() ? 0 : 1) + (app.isInstalled() ? 1 : 0);
+        return calculateID(app);
     }
 
     @Override
@@ -87,7 +89,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
-
         @BindView(R.id.checkbox)
         AppCompatCheckBox checkbox;
         @BindView(R.id.label)
@@ -98,7 +99,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
         AppCompatTextView versionCode;
         @BindView(R.id.backupMode)
         AppCompatTextView backupMode;
-
 
         public ViewHolder(View view) {
             super(view);

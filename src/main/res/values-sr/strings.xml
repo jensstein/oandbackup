@@ -21,7 +21,7 @@
   <string name="deleteBackup">Обриши резервну копију</string>
   <string name="uninstall">Уклони апликацију</string>
   <string name="uninstallProgress">Уклањам</string>
-  <string name="showAll">Све апликације</string>
+  <string name="radioAll">Све апликације</string>
   <string name="showOnlySystem">Само системске апликације</string>
   <string name="showOnlyUser">Само корисникове апликације</string>
   <string name="showNotBackedup">Несачуване апликације</string>
@@ -30,7 +30,7 @@
   <string name="showOldBackups">Старе резервне копије</string>
   <string name="showOnlyApkBackedUp">Само са сачуваним Аpk-ом</string>
   <string name="showOnlyDataBackedUp">Само са сачуваним подацима</string>
-  <string name="showOnlySpecialBackups">Само посебне копије</string>
+  <string name="radioSpecial">Само посебне копије</string>
   <string name="sortByLabel">Поређај по ознаци</string>
   <string name="sortByPackageName">Поређај по имену пакета</string>
   <string name="sort">Поређај и филтрирај</string>
@@ -69,8 +69,7 @@
   <string name="help_title">Помоћ</string>
   <string name="notInstalledModeDataWarning">Апликација се не може вратити без Apk-а</string>
   <string name="shareTitle">Подели</string>
-  <string name="filebrowser_title">Менаџер датотека</string>
-  <string name="tools_title">Алати</string>
+    <string name="tools_title">Алати</string>
   <string name="prefs_batchDelete">Обрисати резервне копије?</string>
   <string name="batchDeleteMessage">Брисање резервне копије</string>
   <string name="batchDeleteNotificationTitle">Обриши резервне копије</string>

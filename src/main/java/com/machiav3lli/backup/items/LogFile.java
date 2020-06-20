@@ -74,12 +74,12 @@ public class LogFile implements Parcelable {
         return sourceDir;
     }
 
-    public String[] getSplitSourceDirs(){
+    public String[] getSplitSourceDirs() {
         return splitSourceDirs;
     }
 
-    public String[] getSplitApks(){
-        if(splitSourceDirs != null) {
+    public String[] getSplitApks() {
+        if (splitSourceDirs != null) {
             String[] result = new String[splitSourceDirs.length];
             for (int i = 0; i < result.length; i++) {
                 result[i] = splitSourceDirs[i].substring(sourceDir.lastIndexOf("/") + 1);
@@ -127,7 +127,7 @@ public class LogFile implements Parcelable {
             if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
                 sourceDir = appInfo.getSourceDir();
                 splitSourceDirs = appInfo.getSplitSourceDirs();
-            }else if (appInfo.getLogInfo() != null) {
+            } else if (appInfo.getLogInfo() != null) {
                 sourceDir = appInfo.getLogInfo().getSourceDir();
                 splitSourceDirs = appInfo.getLogInfo().getSplitSourceDirs();
             }
@@ -165,12 +165,12 @@ public class LogFile implements Parcelable {
         return dateFormated;
     }
 
-    public static JSONArray toJsonArray(Object[] array){
-        if(array == null){
+    public static JSONArray toJsonArray(Object[] array) {
+        if (array == null) {
             return null;
         }
         JSONArray result = new JSONArray();
-        for(Object entry : array){
+        for (Object entry : array) {
             result.put(entry);
         }
         return result;
@@ -178,7 +178,7 @@ public class LogFile implements Parcelable {
 
     public static String[] toStringArray(JSONArray array) {
         String[] result = new String[array.length()];
-        for(int i = 0; i < result.length; i++) {
+        for (int i = 0; i < result.length; i++) {
             result[i] = array.optString(i);
         }
         return result;

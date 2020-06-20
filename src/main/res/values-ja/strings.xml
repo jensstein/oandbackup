@@ -21,7 +21,7 @@
   <string name="deleteBackup">バックアップを削除</string>
   <string name="uninstall">アプリをアンインストール</string>
   <string name="uninstallProgress">アンインストール中</string>
-  <string name="showAll">すべてのアプリを表示</string>
+  <string name="radioAll">すべてのアプリを表示</string>
   <string name="showOnlySystem">システムアプリのみ表示</string>
   <string name="showOnlyUser">ユーザーアプリのみ表示</string>
   <string name="showNotBackedup">バックアップされていないアプリを表示</string>
@@ -30,7 +30,7 @@
   <string name="showOldBackups">古いバックアップを表示</string>
   <string name="showOnlyApkBackedUp">apkをバックアップしたアプリを表示</string>
   <string name="showOnlyDataBackedUp">データをバックアップしたアプリを表示</string>
-  <string name="showOnlySpecialBackups">特別バックアップのみ表示</string>
+  <string name="radioSpecial">特別バックアップのみ表示</string>
   <string name="sortByLabel">ラベル順</string>
   <string name="sortByPackageName">パッケージ名で並び替え</string>
   <string name="sort">並び替えとフィルター</string>
@@ -69,8 +69,7 @@
   <string name="help_title">ヘルプ</string>
   <string name="notInstalledModeDataWarning">apkがないためバックアップからアプリを復元できません</string>
   <string name="shareTitle">共有</string>
-  <string name="filebrowser_title">ファイル ブラウザー</string>
-  <string name="tools_title">ツール</string>
+    <string name="tools_title">ツール</string>
   <string name="prefs_batchDelete">バックアップを削除しますか?</string>
   <string name="batchDeleteMessage">バックアップの削除中</string>
   <string name="batchDeleteNotificationTitle">バックアップを削除</string>
