@@ -1,5 +1,11 @@
-plugins {
-    id "com.android.application" version "4.0.0"
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0-beta01'
+    }
 }
 
 repositories {
@@ -9,6 +15,8 @@ repositories {
         url 'https://net.lingala.zip4j/repo'
     }
 }
+
+apply plugin: 'com.android.application'
 
 ext {
     versions = [
