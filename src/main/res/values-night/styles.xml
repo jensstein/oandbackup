@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/app_accent_dark</item>
-        <item name="colorPrimaryDark">@color/app_primary_dark</item>
-        <item name="colorAccent">@color/app_accent_dark</item>
-        <item name="colorSecondary">@color/app_secondary_dark</item>
+        <item name="colorPrimary">@color/app_accent</item>
+        <item name="colorPrimaryDark">@color/app_primary_base</item>
+        <item name="colorAccent">@color/app_accent</item>
+        <item name="colorSecondary">@color/app_secondary</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:strokeColor">@android:color/white</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="backgroundColor">@android:color/black</item>
-        <item name="colorBackgroundFloating">@color/app_primary_dark</item>
+        <item name="colorBackgroundFloating">@color/app_primary_base</item>
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="colorControlNormal">@android:color/white</item>
@@ -33,10 +32,10 @@
 
     <style name="Sheet.Bottom" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Sheet.Bottom.Style</item>
-        <item name="colorPrimary">@color/app_accent_dark</item>
-        <item name="colorPrimaryDark">@color/app_primary_dark</item>
-        <item name="colorSecondary">@color/app_secondary_dark</item>
-        <item name="colorAccent">@color/app_accent_dark</item>
+        <item name="colorPrimary">@color/app_accent</item>
+        <item name="colorPrimaryDark">@color/app_primary_base</item>
+        <item name="colorSecondary">@color/app_secondary</item>
+        <item name="colorAccent">@color/app_accent</item>
     </style>
 
     <!-- Bars -->

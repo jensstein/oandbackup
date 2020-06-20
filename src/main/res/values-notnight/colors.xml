@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_accent">#F77067</color>
+    <color name="app_primary_base">#E9ECEF</color>
+    <color name="app_primary_inverse">#323639</color>
+    <color name="app_secondary">#163DE0</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
