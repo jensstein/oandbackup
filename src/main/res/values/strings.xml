@@ -8,9 +8,13 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Data</string>
     <string name="handleBoth">Both</string>
+    <string name="radioAll">All apps</string>
+    <string name="radioUser">User Apps</string>
+    <string name="radioSystem">System Apps</string>
+    <string name="radioBoth">APK and Data</string>
     <string name="radioApk">APK</string>
     <string name="radioData">Data</string>
-    <string name="radioBoth">APK and Data</string>
+    <string name="radioSpecial">Special backups</string>
     <string name="de_selectAll">De/select all</string>
     <string name="onlyApkBackedUp">Only APK</string>
     <string name="onlyDataBackedUp">Only data</string>
@@ -22,16 +26,15 @@
     <string name="deleteBackup">Delete backup</string>
     <string name="uninstall">Uninstall app</string>
     <string name="uninstallProgress">Uninstalling…</string>
-    <string name="showAll">All apps</string>
     <string name="showOnlySystem">Only system apps</string>
     <string name="showOnlyUser">Only user apps</string>
     <string name="showNotBackedup">Apps not yet backed up</string>
     <string name="showNotInstalled">Not installed apps</string>
     <string name="showNewAndUpdated">New and updated apps</string>
     <string name="showOldBackups">Old backups</string>
+    <string name="showSplitAPKs">Split-APK</string>
     <string name="showOnlyApkBackedUp">Apps with only APK backed up</string>
     <string name="showOnlyDataBackedUp">Apps with only data backed up</string>
-    <string name="showOnlySpecialBackups">Special backups only</string>
     <string name="sortByLabel">Sort by label</string>
     <string name="sortByPackageName">Sort by packagename</string>
     <string name="sort">Sort and filter</string>
@@ -175,9 +178,6 @@
     <string name="sort_options">Sort by:</string>
     <string name="sortLabel">Label</string>
     <string name="sortPackageName">Package Name</string>
-    <string name="radioAll">System &amp; User Apps</string>
-    <string name="radioUser">User Apps</string>
-    <string name="radioSystem">System Apps</string>
     <string name="app_s_icon">App\'s icon</string>
     <string name="bothBackedUp">APK and data</string>
     <string name="all">All</string>
@@ -206,4 +206,5 @@
     <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>
     <string name="failed_unzipping">Error while unzipping the data, check the encryption password!</string>
     <string name="split_apks">Split APKs:</string>
+    <string name="backup_filters">Backup Filters:</string>
 </resources>

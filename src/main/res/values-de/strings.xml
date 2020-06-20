@@ -21,7 +21,7 @@
     <string name="deleteBackup">Sicherung löschen</string>
     <string name="uninstall">App deinstallieren</string>
     <string name="uninstallProgress">Deinstalliere…</string>
-    <string name="showAll">Alle Apps</string>
+    <string name="radioAll">Alle Apps</string>
     <string name="showOnlySystem">Nur System-Apps</string>
     <string name="showOnlyUser">Nur Benutzer-Apps</string>
     <string name="showNotBackedup">Apps ohne Sicherung</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Alte Sicherungen</string>
     <string name="showOnlyApkBackedUp">Nur Apps, bei denen nur die APK-Datei gesichert wurde</string>
     <string name="showOnlyDataBackedUp">Nur Apps, bei denen nur die App-Daten gesichert wurde</string>
-    <string name="showOnlySpecialBackups">Nur spezielle Sicherungen</string>
+    <string name="radioSpecial">Spezielle Sicherungen</string>
     <string name="sortByLabel">Nach Bezeichnung sortieren</string>
     <string name="sortByPackageName">Nach Paketname sortieren</string>
     <string name="sort">Sortieren und Filtern</string>
@@ -193,4 +193,6 @@
     <string name="prefs_summaryBackupDeviceProtectedData">Daten sichern auf und wiederherstellen von /data/user_de</string>
     <string name="prefs_backupDeviceProtectedData">Gerätverschlüsselte Daten sichern</string>
     <string name="split_apks">Split-APKs:</string>
+    <string name="backup_filters">Sicherungsfilter:</string>
+    <string name="showSplitAPKs">Split-APK</string>
 </resources>

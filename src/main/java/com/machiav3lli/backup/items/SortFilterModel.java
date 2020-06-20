@@ -6,11 +6,12 @@ public class SortFilterModel {
     private CharSequence code;
 
     public SortFilterModel() {
-        this.code = "000";
+        this.code = "0000";
     }
 
     public SortFilterModel(String code) {
-        this.code = code;
+        if (code.length() < 4) this.code = "0000";
+        else this.code = code;
     }
 
     public int getSortById() {
@@ -28,29 +29,40 @@ public class SortFilterModel {
                 return R.id.showOnlySystem;
             case '2':
                 return R.id.showOnlyUser;
+            case '3':
+                return R.id.filter_special;
             default:
                 return R.id.showAll;
         }
     }
 
-    public int getOtherFilterId() {
+    public int getBackupFilterId() {
         switch (code.charAt(2)) {
             case '1':
-                return R.id.showNewAndUpdated;
+                return R.id.backup_both;
             case '2':
-                return R.id.showNotInstalled;
+                return R.id.backup_apk;
             case '3':
-                return R.id.showNotBackedup;
+                return R.id.backup_data;
             case '4':
-                return R.id.showOldBackups;
-            case '5':
-                return R.id.showOnlyApkBackedUp;
-            case '6':
-                return R.id.showOnlyDataBackedUp;
-            case '7':
-                return R.id.showOnlySpecialBackups;
+                return R.id.backup_none;
             default:
-                return R.id.noSpecial;
+                return R.id.backup_all;
+        }
+    }
+
+    public int getSpecialFilterId() {
+        switch (code.charAt(3)) {
+            case '1':
+                return R.id.special_new_and_updated;
+            case '2':
+                return R.id.special_not_installed;
+            case '3':
+                return R.id.special_old;
+            case '4':
+                return R.id.special_split;
+            default:
+                return R.id.special_all;
         }
     }
 
@@ -58,7 +70,7 @@ public class SortFilterModel {
         char sortBy;
         if (id == R.id.sortByLabel) sortBy = '1';
         else sortBy = '0';
-        this.code = Character.toString(sortBy) + this.code.charAt(1) + this.code.charAt(2);
+        this.code = String.valueOf(sortBy) + this.code.charAt(1) + this.code.charAt(2) + this.code.charAt(3);
     }
 
     public void putFilter(int id) {
@@ -70,42 +82,56 @@ public class SortFilterModel {
             case R.id.showOnlyUser:
                 filter = '2';
                 break;
+            case R.id.filter_special:
+                filter = '3';
+                break;
             default:
                 filter = '0';
                 break;
         }
-        this.code = Character.toString(this.code.charAt(0)) + filter + this.code.charAt(2);
+        this.code = String.valueOf(this.code.charAt(0)) + filter + this.code.charAt(2) + this.code.charAt(3);
     }
 
-    public void putOtherFilter(int id) {
-        char otherFilter;
+    public void putBackupFilter(int id) {
+        char backupFilter;
         switch (id) {
-            case R.id.showNewAndUpdated:
-                otherFilter = '1';
+            case R.id.backup_both:
+                backupFilter = '1';
                 break;
-            case R.id.showNotInstalled:
-                otherFilter = '2';
+            case R.id.backup_apk:
+                backupFilter = '2';
                 break;
-            case R.id.showNotBackedup:
-                otherFilter = '3';
+            case R.id.backup_data:
+                backupFilter = '3';
                 break;
-            case R.id.showOldBackups:
-                otherFilter = '4';
-                break;
-            case R.id.showOnlyApkBackedUp:
-                otherFilter = '5';
-                break;
-            case R.id.showOnlyDataBackedUp:
-                otherFilter = '6';
-                break;
-            case R.id.showOnlySpecialBackups:
-                otherFilter = '7';
+            case R.id.backup_none:
+                backupFilter = '4';
                 break;
             default:
-                otherFilter = '0';
+                backupFilter = '0';
                 break;
         }
-        this.code = Character.toString(this.code.charAt(0)) + this.code.charAt(1) + otherFilter;
+        this.code = String.valueOf(this.code.charAt(0)) + this.code.charAt(1) + backupFilter + this.code.charAt(3);
+    }
+
+    public void putSpecialFilter(int id) {
+        char specialFilter;
+        switch (id) {
+            case R.id.special_new_and_updated:
+                specialFilter = '1';
+                break;
+            case R.id.special_not_installed:
+                specialFilter = '2';
+                break;
+            case R.id.special_old:
+                specialFilter = '3';
+            case R.id.special_split:
+                specialFilter = '4';
+            default:
+                specialFilter = '0';
+                break;
+        }
+        this.code = String.valueOf(this.code.charAt(0)) + this.code.charAt(1) + this.code.charAt(2) + specialFilter;
     }
 
     @Override

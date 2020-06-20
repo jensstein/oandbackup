@@ -39,15 +39,43 @@ public class SortFilterManager {
             case '2':
                 for (AppInfo item : list) if (item.isSystem()) nlist.remove(item);
                 break;
+            case '3':
+                for (AppInfo item : list) if (!item.isSpecial()) nlist.remove(item);
+                break;
             default:
                 break;
         }
-        return applyOtherFilter(nlist, filter, context);
+        return applyBackupFilter(nlist, filter, context);
     }
 
-    private static ArrayList<AppInfo> applyOtherFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
+    private static ArrayList<AppInfo> applyBackupFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
         ArrayList<AppInfo> nlist = new ArrayList<>(list);
         switch (filter.charAt(2)) {
+            case '1':
+                for (AppInfo item : list)
+                    if (item.getBackupMode() != AppInfo.MODE_BOTH) nlist.remove(item);
+                break;
+            case '2':
+                for (AppInfo item : list)
+                    if (item.getBackupMode() != AppInfo.MODE_APK) nlist.remove(item);
+                break;
+            case '3':
+                for (AppInfo item : list)
+                    if (item.getBackupMode() != AppInfo.MODE_DATA) nlist.remove(item);
+                break;
+            case '4':
+                for (AppInfo item : list)
+                    if (item.getLogInfo() != null) nlist.remove(item);
+                break;
+            default:
+                break;
+        }
+        return applySpecialFilter(nlist, filter, context);
+    }
+
+    private static ArrayList<AppInfo> applySpecialFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
+        ArrayList<AppInfo> nlist = new ArrayList<>(list);
+        switch (filter.charAt(3)) {
             case '1':
                 for (AppInfo item : list) {
                     if (!(item.getLogInfo() == null ||
@@ -60,10 +88,6 @@ public class SortFilterManager {
                 for (AppInfo item : list) if (item.isInstalled()) nlist.remove(item);
                 break;
             case '3':
-                for (AppInfo item : list)
-                    if (item.getLogInfo() != null) nlist.remove(item);
-                break;
-            case '4':
                 int days = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
                 for (AppInfo item : list) {
                     if (item.getLogInfo() != null) {
@@ -74,16 +98,8 @@ public class SortFilterManager {
                     } else nlist.remove(item);
                 }
                 break;
-            case '5':
-                for (AppInfo item : list)
-                    if (item.getBackupMode() != AppInfo.MODE_APK) nlist.remove(item);
-                break;
-            case '6':
-                for (AppInfo item : list)
-                    if (item.getBackupMode() != AppInfo.MODE_DATA) nlist.remove(item);
-                break;
-            case '7':
-                for (AppInfo item : list) if (!item.isSpecial()) nlist.remove(item);
+            case '4':
+                for (AppInfo item : list) if (!item.isSplit()) nlist.remove(item);
                 break;
             default:
                 break;

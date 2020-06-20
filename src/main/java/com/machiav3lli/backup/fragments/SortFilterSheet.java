@@ -29,8 +29,10 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
     ChipGroup sortBy;
     @BindView(R.id.filters)
     ChipGroup filters;
+    @BindView(R.id.backup_filters)
+    ChipGroup backupFilters;
     @BindView(R.id.otherFilters)
-    ChipGroup otherFilters;
+    ChipGroup specialFilters;
 
     public SortFilterSheet() {
         this.sortFilterModel = new SortFilterModel();
@@ -48,7 +50,7 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
 
     @OnClick(R.id.reset)
     public void reset() {
-        SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("000"));
+        SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("0000"));
         dismissAllowingStateLoss();
     }
 
@@ -85,7 +87,9 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         sortBy.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSortBy(checkedId));
         filters.check(sortFilterModel.getFilterId());
         filters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putFilter(checkedId));
-        otherFilters.check(sortFilterModel.getOtherFilterId());
-        otherFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putOtherFilter(checkedId));
+        specialFilters.check(sortFilterModel.getSpecialFilterId());
+        specialFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSpecialFilter(checkedId));
+        backupFilters.check(sortFilterModel.getBackupFilterId());
+        backupFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putBackupFilter(checkedId));
     }
 }
