@@ -116,16 +116,15 @@ public class BatchActivityX extends BaseActivity
 
         ButterKnife.bind(this);
         rbBoth.setChecked(true);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            refresh();
-            new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1000);
-        });
 
-        if(backupBoolean) {
-            actionButton.setText(R.string.backup);
-        }else{
-            actionButton.setText(R.string.restore);
-        }
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
+
+        if (getIntent().getExtras() != null)
+            backupBoolean = getIntent().getExtras().getBoolean(classAddress(".backupBoolean"));
+        if (backupBoolean) actionButton.setText(R.string.backup);
+        else actionButton.setText(R.string.restore);
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
@@ -293,6 +292,7 @@ public class BatchActivityX extends BaseActivity
 
     public void refresh() {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
         new Thread(() -> {
             cbAll.setChecked(false);
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
@@ -322,6 +322,7 @@ public class BatchActivityX extends BaseActivity
                     itemAdapter.add(list);
                 } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 searchView.setQuery("", false);
+                swipeRefreshLayout.setRefreshing(false);
             });
         }).start();
     }

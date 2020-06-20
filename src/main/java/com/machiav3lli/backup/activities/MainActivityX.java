@@ -86,20 +86,18 @@ public class MainActivityX extends BaseActivity
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
         shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
 
+        if (!SortFilterManager.getRememberFiltering(this))
+            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+
         ButterKnife.bind(this);
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             Utils.reShowMessage(handleMessages, threadId);
         }
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            refresh();
-            new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 1000);
-        });
-
-        originalList = AppInfoHelper.getPackageInfo(this,
-                backupDir, true, PreferenceManager.getDefaultSharedPreferences(this)
-                        .getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
@@ -237,6 +235,7 @@ public class MainActivityX extends BaseActivity
 
     public void refresh() {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
         new Thread(() -> {
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
@@ -261,6 +260,7 @@ public class MainActivityX extends BaseActivity
                     FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 }
                 searchView.setQuery("", false);
+                swipeRefreshLayout.setRefreshing(false);
             });
         }).start();
     }
