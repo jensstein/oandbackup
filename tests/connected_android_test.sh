@@ -10,17 +10,17 @@ function start_test() {
 		test_c="-e class $1"
 	fi
 	./gradlew test${FLAVOUR^}DebugUnitTest assemble${FLAVOUR^}Debug assemble${FLAVOUR^}DebugAndroidTest
-	adb push build/outputs/apk/${FLAVOUR}/debug/oandbackup-${FLAVOUR}-debug.apk /data/local/tmp/dk.jens.backup
-	adb shell pm install -t -r "/data/local/tmp/dk.jens.backup"
-	adb push build/outputs/apk/androidTest/${FLAVOUR}/debug/oandbackup-${FLAVOUR}-debug-androidTest.apk /data/local/tmp/dk.jens.backup.test
-	adb shell pm install -t -r "/data/local/tmp/dk.jens.backup.test"
+	adb push build/outputs/apk/${FLAVOUR}/debug/oandbackupx-${FLAVOUR}-debug.apk /data/local/tmp/com.machiav3lli.backup
+	adb shell pm install -t -r "/data/local/tmp/com.machiav3lli.backup"
+	adb push build/outputs/apk/androidTest/${FLAVOUR}/debug/oandbackup-${FLAVOUR}-debug-androidTest.apk /data/local/tmp/com.machiav3lli.backup.test
+	adb shell pm install -t -r "/data/local/tmp/com.machiav3lli.backup.test"
 
-	adb shell am instrument -w -r -e debug false ${test_c} dk.jens.backup.test/android.support.test.runner.AndroidJUnitRunner
+	adb shell am instrument -w -r -e debug false ${test_c} com.machiav3lli.backup.test/android.support.test.runner.AndroidJUnitRunner
 }
 
 function init() {
-	adb uninstall dk.jens.backup || true
-	start_test "dk.jens.backup.TestHelper"
+	adb uninstall com.machiav3lli.backup || true
+	start_test "com.machiav3lli.backup.TestHelper"
 }
 
 action=
