@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -19,12 +18,10 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.AssetsHandler;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
-import com.machiav3lli.backup.items.AppInfo;
 import com.scottyab.rootbeer.RootBeer;
 
 import java.io.File;
@@ -44,16 +41,15 @@ public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.classTag(".IntroActivity");
     static final int READ_PERMISSION = 2;
     static final int WRITE_PERMISSION = 3;
-    public static ArrayList<AppInfo> originalList;
 
+    @BindView(R.id.action)
+    MaterialButton btn;
+
+    public static File backupDir;
     SharedPreferences prefs;
     ArrayList<String> users;
     ShellCommands shellCommands;
     HandleMessages handleMessages;
-    public static File backupDir;
-
-    @BindView(R.id.action)
-    MaterialButton btn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -169,8 +165,6 @@ public class IntroActivity extends BaseActivity {
         btn.setVisibility(View.GONE);
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
-        originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
         startActivity(new Intent(this, MainActivityX.class));
     }
 
