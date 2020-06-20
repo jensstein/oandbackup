@@ -123,14 +123,18 @@ public class MainActivityX extends BaseActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 itemAdapter.filter(newText);
-                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) -> mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
+                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
+                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
                 itemAdapter.filter(query);
-                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) -> mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
+                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
+                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
         });
