@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="backup">Yedekle</string>
+    <string name="restore">Geri Yükle</string>
+    <string name="backupConfirmation">Yedeklensin mi?</string>
+    <string name="restoreConfirmation">Geri yüklensin mi?</string>
+    <string name="handleApk">APK</string>
+    <string name="handleData">Veri</string>
+    <string name="handleBoth">İkisi de</string>
+    <string name="radioAll">Bütün uygulamalar</string>
+    <string name="radioUser">Kullanıcı Uygulamaları</string>
+    <string name="radioSystem">Sistem Uygulamaları</string>
+    <string name="radioBoth">APK ve Veri</string>
+    <string name="radioApk">APK</string>
+    <string name="radioData">Veri</string>
+    <string name="radioSpecial">Özel yedeklemeler</string>
+    <string name="de_selectAll">Hepsini/Hiçbirini seç</string>
+    <string name="onlyApkBackedUp">Yalnızca APK</string>
+    <string name="onlyDataBackedUp">Yalnızca veri</string>
+    <string name="refresh">Yenile</string>
+    <string name="batchbackup">Toplu yedekleme</string>
+    <string name="batchrestore">Toplu geri yükleme</string>
+    <string name="search">Ara</string>
+    <string name="searchHint">Uygulamaları ara</string>
+    <string name="deleteBackup">Yedeği sil</string>
+    <string name="uninstall">Uygulamayı kaldır</string>
+    <string name="uninstallProgress">Kaldırılıyor</string>
+    <string name="showOnlySystem">Yalnızca sistem uygulamaları</string>
+    <string name="showOnlyUser">Yalnızca kullanıcı uygulamaları</string>
+    <string name="showNotBackedup">Henüz yedeklenmemiş uygulamalar</string>
+    <string name="showNotInstalled">Kurulu olmayan uygulamalar</string>
+    <string name="showNewAndUpdated">Yeni ve güncellenmiş uygulamalar</string>
+    <string name="showOldBackups">Eski yedeklemeler</string>
+    <string name="showSplitAPKs">Split-APK</string>
+    <string name="showOnlyApkBackedUp">Yalnızca APKsı yedeklenmiş uyg.lar</string>
+    <string name="showOnlyDataBackedUp">Yalnızca verisi yedeklenmiş uyg.lar</string>
+    <string name="sortByLabel">İsme göre sırala</string>
+    <string name="sortByPackageName">Paket adına göre sırala</string>
+    <string name="sort">Sırala ve Filtrele</string>
+    <string name="uninstallDialogMessage">Bu uygulamayı kaldır?</string>
+    <string name="deleteBackupDialogMessage">Yedekleme dosyalarını sil?</string>
+    <string name="dialogOK">Tamam</string>
+    <string name="dialogCancel">İptal</string>
+    <string name="dialogYes">Evet</string> 
+    <string name="dialogNo">Hayır</string>
+    <string name="restoreDataWithoutApkError">APK geri yüklenmeden veri geri yüklenemiyor, paket kurulu değil</string>
+    <string name="collectingData">Paket bilgisi alınıyor</string>
+    <string name="suCheck">busybox ve superuser kontrol ediliyor</string>
+    <string name="oabUtilsCheck">oab-utils kontrol ediliyor</string>
+    <string name="oabUtilsProblem">
+        oab-utils bulunamadı - legacy mod başlatılıyor,
+        bu sorunu geliştiriciye rapor edin
+    </string>
+    <string name="noSu">superuser izinleri alınamadı</string>
+    <string name="busyboxProblem">busybox bulunamadı. hata günlüğünü kontrol edin</string>
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <string name="mkfileError">Oluşturulamadı</string>
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">Varsayılana dönüldü</string>
+    <string name="backupFolderError">Seçeneklerden doğru bir dosya yolu seçin ve mevcut olduğuna ya da oluşturulabileceğine emin olun</string>
+    <string name="shellReturnSuccess">Başarılı</string>
+    <string name="shellReturnError">Hata</string>
+    <string name="backupProgress">Yedekleniyor…</string>
+    <string name="backupSuccess">Yedekleme tamamlandı</string>
+    <string name="backupFailure">Yedeklemede hata</string>
+    <string name="restoreProgress">Geri Yükleniyor…</string>
+    <string name="restoreSuccess">Geri yükleme tamamlandı</string>
+    <string name="restoreFailure">Geri yüklemede hata</string>
+    <string name="batchSuccess">İşlem tamamlandı</string>
+    <string name="batchFailure">Hatalar ile tamamlandı</string>
+    <string name="uninstallSuccess">Kaldırma tamamlandı</string>
+    <string name="uninstallFailure">Kaldırmada hata</string>
+    <string name="errorDialogTitle">Hatalar meydana geldi</string>
+    <string name="customListTitle">Özel liste</string>
+    <string name="quickRebootTitle">Hızlı yeniden başlat</string>
+    <string name="quickRebootMessage">userspace\'i yeniden başlatmak istediğine emin misin?</string>
+    <string name="help_title">Yardım</string>
+    <string name="notInstalledModeDataWarning">APK olmadan uygulama yedekten geri yüklenemez</string>
+    <string name="shareTitle">Paylaş</string>
+
+    <string name="tools_title">Araçlar</string>
+    <string name="batchDeleteMessage">Yedeklemeler siliniyor…</string>
+    <string name="batchDeleteNotificationTitle">Yedekleri sil</string>
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="batchDeleteBackupsDeleted">Silinen yedekler:</string>
+    <string name="batchDeleteNothingToDelete">Silinecek yedek yok</string>
+
+    <string name="enablePackage">Etkinleştir</string>
+    <!-- enablePackageTitle: title for a list of checkable users -->
+    <string name="enablePackageTitle">Kullanıcı için etkinleştir</string>
+    <string name="disablePackage">Etkisizleştir</string>
+    <string name="disablePackageTitle">Kullanıcı için etkisizleştir</string>
+
+    <string name="prefs_title">Seçenekler</string>
+    <string name="prefs_service">Servis seçenekleri</string>
+    <string name="prefs_user">Kullanıcı seçenekleri</string>
+    <string name="prefs_theme">Tema</string>
+    <string name="prefs_acquireWakelock">Uykuyu önle</string>
+    <string name="prefs_pathscategory">Özel dosya yolları</string>
+    <string name="prefs_batchDelete">Yedekleri sil</string>
+    <string name="prefs_pathBackupFolder">Yedeklenecek klasör</string>
+    <string name="prefs_pathToybox">Busybox klasörü</string>
+    <string name="prefs_oldBackups">Yedekleri zamana göre filtrele</string>
+    <string name="prefs_copySelfApk">Kendi APK yedeği</string>
+    <string name="prefs_languages">Dil</string>
+    <string name="prefs_languageSystemDefault">Sistem varsayılanı</string>
+    <string name="prefs_rememberFiltering">Sıralama ve filtrelemeyi hatırla</string>
+    <string name="prefs_followSymlinks">symbolic linkleri takip et</string>
+    <string name="prefs_enableSpecialBackups">Özel yedekleri etkinleştir</string>
+    <string name="prefs_disableNotifications">Bildirimi devre dışı bırak</string>
+    <string name="prefs_clearCache">Uygulamaların önbelleğini temizle</string>
+    <string name="prefs_encryption">Şifreleme</string>
+    <string name="prefs_password">Şifreleme parolası</string>
+    <string name="prefs_backupExternalData">Harici veriyi yedekle</string>
+    <string name="prefs_backupDeviceProtectedData">Cihaz korunan verisini de yedekle</string>
+    <string name="prefs_summaryBackupDeviceProtectedData">data/user_de de bulunan veriyi yedekler ve geri yükler</string>
+    <string name="prefs_summaryBackupExternalData">Harici depolamada bulunan veriyi yedekler ve geri yükler (örn: /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_summary_password">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
+    <string name="prefs_summary_encryption">Veri yedeklerini şifrelemek için etkinleştirin</string>
+    <string name="prefs_summaryClearCache">Veri yedeklemeden önce uygulamanın önbelleğini temizle</string>
+    <string name="prefs_summaryDisableNotifications">OAndBackupX bildirim göstermeyecek</string>
+    <string name="prefs_summaryAcquireWakelock">Toplu yedekleme yaparken ukuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
+    <string name="prefs_summaryBackupFolder">Yedeklerin alınacağı dosya yolu. varsayılan için boş bırakın.</string>
+    <string name="prefs_summaryToybox">toybox/busybox dosya yolu. doğruluğuna emin olun. varsayılan için boş bırakın.</string>
+    <string name="prefs_summaryOldBackups">Bu günden daha eski olan yedekleri filtreler. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
+    <string name="prefs_summaryCopySelfApk">Yedekleme yapıldığında yedek klasörüne oandbackup'ın apksını yerleştirir.</string>
+    <string name="prefs_summaryRememberFiltering">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
+    <string name="prefs_summaryFollowSymlinks">Kopyalarken her zaman symbolic linkleri takip eder (cp -L)</string>
+    <string name="prefs_summaryQuickReboot">userspace\'i yeniden başlatmaya zorlamak için system_server prosesini öldür</string>
+    <string name="prefs_summaryBatchDelete">Kurulu olmayan uygulamarın yedeklerini sil</string>
+
+    <string name="sched_title">Zamanlama</string>
+    <string name="sched_notificationMessage">Zamanlanmış yedekleme</string>
+    <string name="sched_interval">Gün olarak sıklık:</string>
+    <string name="sched_hourOfDay">Günün saati:</string>
+    <string name="sched_hourOfDay_hint">0 ve 23 arası</string>
+    <string name="sched_checkbox">Etkinleştir</string>
+    <string name="sched_updateButton">Güncelle</string>
+    <string name="sched_removeButton">Kaldır</string>
+    <string name="sched_activateButton">Yedeklemeyi şimdi başlat</string>
+    <string name="sched_startingbackup">Zamanlanmış yedekleme başlatılıyor…</string>
+    <string name="sched_backupMode">Yedekleme modu:</string>
+    <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat</string>
+    <string name="sched_addSchudule">Zamanlama ekle</string>
+    <string name="sched_customListUpdateButton">Özel listeyi güncelle</string>
+    <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
+    <string name="sched_warningIntervalZero">Hata: sıklık 0 olamaz</string>
+    <string name="sched_globalBlacklist">Global karaliste ayarla</string>
+
+    <string name="blacklistDialogTitle">Karaliste</string>
+
+    <string name="spec_accounts">Hesaplar</string>
+    <string name="spec_appwidgets">Uygulama Widgetları</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Veri kullanımı ve poliçesi</string>
+    <string name="spec_wallpaper">Duvar kağıdı</string>
+    <string name="spec_wifiAccessPoints">Wifi Erişim Noktası</string>
+
+    <string name="filebrowser_setButton">Ayarla</string>
+    <string name="filebrowser_createDirectory">Klasör oluştur</string>
+    <string name="filebrowser_createDirectoryDlgMsg">Oluşturulacak klasörün adını girin</string>
+    <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
+    <string name="filebrowser_createDirectoryError">Klasör oluşturulamadı: </string>
+    <string name="filebrowser_refresh">Yenile</string>
+    <string name="filebrowser_contextSetBackupDirectory">Yedekleme klasörü olarak ayarla</string>
+
+    <string name="logviewer_message_loading">Günlük dosyası yükleniyor…</string>
+    <string name="logviewer_next_lines_button">Sonraki</string>
+
+    <string name="error_creating_notification_channel">Bildirim kanalı oluşturulamadı</string>
+    <string name="error_updating_schedule_mode">%2$d zamanlamasındaki %1$s güncellerken hata</string>
+    <string name="permission_not_granted">Harici depolamaya erişim izni gerekli</string>
+    <string name="restart_dialog">Uygulamanın yeniden başlatılması gerekiyor</string>
+
+    <string name="filter_options">Filtreler:</string>
+    <string name="sort_options">Göre sırala:</string>
+    <string name="sortLabel">İsim</string>
+    <string name="sortPackageName">Paket adı</string>
+    <string name="app_s_icon">Uygulamanın simgesi</string>
+    <string name="bothBackedUp">APK ve veri</string>
+    <string name="all">Hepsi</string>
+    <string name="logViewerTitle">Günlüğü görüntüle</string>
+    <string name="ask_for_permissions">izinleri al</string>
+    <string name="systemApp">Sistem uygulamaları</string>
+    <string name="userApp">Kullanıcı uygulamaları</string>
+    <string name="resetFilter">Sıfırla</string>
+    <string name="applyFilter">Uygula</string>
+    <string name="available_actions">Mevcut eylemler:</string>
+    <string name="version_name_title">Sürüm adı:</string>
+    <string name="backup_mode_title">Yedekleme modu:</string>
+    <string name="last_backup_title">Son yedekleme:</string>
+    <string name="app_s_type_title">Uygulama tipi:</string>
+    <string name="encrypted_data_title">Şifrelenmiş veri:</string>
+    <string name="other_filters_options">Özel filtreler:</string>
+    <string name="deleted_backup">Yedekleme silindi</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <string name="theme_system">Sistem teması</string>
+    <string name="empty_filtered_list">filtrelenmiş liste boş olduğundan filtreler varsayılana döndürüldü</string>
+    <string name="ignore_battery_optimization_refuse">Uğraşamam</string>
+    <string name="ignore_battery_optimization_approve">Hadi yapalım</string>
+    <string name="ignore_battery_optimization_title">Pil optimizasyonu</string>
+    <string name="ignore_battery_optimization_message">Yedeklemeler bazen durabilir. Bunu engellemek için, pil optimizasyonunu kapatmalısınız</string>
+    <string name="ignore_battery_optimization_not_supported">Ne yazık ki bu cihaz pil optimizasyonu kapatmayı desteklemiyor!</string>
+    <string name="failed_unzipping">Veri ayrıştırılırken hata, şifreleme parolasını kontrol edin!</string>
+    <string name="split_apks">Split-APKlar:</string>
+    <string name="backup_filters">Yedek filtreleri:</string>
+</resources>
