@@ -106,7 +106,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup. 
 
-Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit).
+Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit), Turkish [scrubjay55](https://github.com/scrubjay55).
 
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
