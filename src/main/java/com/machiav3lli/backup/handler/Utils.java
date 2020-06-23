@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
 
@@ -25,6 +27,30 @@ public class Utils {
 
     public interface Command {
         void execute();
+    }
+
+    public static String iterableToString(String[] array) {
+        return iterableToString(Arrays.asList(array));
+    }
+
+    public static String iterableToString(CharSequence delimiter, String[] array) {
+        return iterableToString(delimiter, Arrays.asList(array));
+    }
+
+    public static String iterableToString(Iterable<String> iterable) {
+        return iterableToString("", iterable);
+    }
+
+    public static String iterableToString(CharSequence delimiter, Iterable<String> iterable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.join("", iterable);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (String s : iterable) {
+                sb.append(s);
+            }
+            return sb.toString();
+        }
     }
 
     public static void showErrors(final Activity activity) {

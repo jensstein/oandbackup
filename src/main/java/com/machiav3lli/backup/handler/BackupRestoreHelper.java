@@ -82,7 +82,12 @@ public class BackupRestoreHelper {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, app);
                 } else {
                     restoreRet = shellCommands.doRestore(backupSubDir, app);
-                    permRet = shellCommands.setPermissions(dataDir);
+                    try {
+                        shellCommands.setPermissions(dataDir);
+                    } catch (ShellCommands.OwnershipException | ShellCommands.ShellCommandException e) {
+                        Log.e(TAG, "Could not set permissions on " + dataDir);
+                        permRet = 1;
+                    }
                 }
             } else {
                 Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + app.getPackageName());

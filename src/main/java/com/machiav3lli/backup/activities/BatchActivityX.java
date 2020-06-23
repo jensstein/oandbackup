@@ -284,7 +284,7 @@ public class BatchActivityX extends BaseActivity
                 backupDir = Utils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
-                if (!shellCommands.checkToybox())
+                if (!shellCommands.checkUtilBoxPath())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();

@@ -14,6 +14,9 @@ repositories {
     maven {
         url 'https://net.lingala.zip4j/repo'
     }
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 apply plugin: 'com.android.application'
@@ -25,6 +28,7 @@ ext {
             stream            : "1.2.1",
             rootBeer          : "0.0.7",
             zip4j             : "2.6.0",
+            libsu      : "2.5.1",
 
             butterknife       : "10.2.1",
 
@@ -48,6 +52,7 @@ dependencies {
     implementation "com.annimon:stream:${versions.stream}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
     implementation "net.lingala.zip4j:zip4j:${versions.zip4j}"
+    implementation "com.github.topjohnwu.libsu:core:${versions.libsu}"
 
     //ButterKnife
     implementation "com.jakewharton:butterknife:${versions.butterknife}"
