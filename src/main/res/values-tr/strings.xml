@@ -123,7 +123,7 @@
     <string name="prefs_summaryBackupFolder">Yedeklerin alınacağı dosya yolu. varsayılan için boş bırakın.</string>
     <string name="prefs_summaryToybox">toybox/busybox dosya yolu. doğruluğuna emin olun. varsayılan için boş bırakın.</string>
     <string name="prefs_summaryOldBackups">Bu günden daha eski olan yedekleri filtreler. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
-    <string name="prefs_summaryCopySelfApk">Yedekleme yapıldığında yedek klasörüne oandbackup'ın apksını yerleştirir.</string>
+    <string name="prefs_summaryCopySelfApk">Yedekleme yapıldığında yedek klasörüne oandbackup\'ın apksını yerleştirir.</string>
     <string name="prefs_summaryRememberFiltering">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
     <string name="prefs_summaryFollowSymlinks">Kopyalarken her zaman symbolic linkleri takip eder (cp -L)</string>
     <string name="prefs_summaryQuickReboot">userspace\'i yeniden başlatmaya zorlamak için system_server prosesini öldür</string>
