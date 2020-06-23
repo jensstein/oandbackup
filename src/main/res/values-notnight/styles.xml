@@ -67,8 +67,7 @@
 
     <!-- Buttons & Chips -->
     <style name="ItemLayout">
-        <item name="android:background">@drawable/card_rc8</item>
-        <item name="android:foreground">@drawable/ripple_click</item>
+        <item name="android:background">@drawable/card_rc8_w_ripple</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:padding">@dimen/cards_spacing</item>
     </style>
