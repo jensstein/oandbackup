@@ -42,7 +42,7 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Rewrite Main-, Batch- & Scheduler-(Activity, Adapter and Sorter)
 - [x] Modeling the app's structure: for the most part now
 - [x] Modeling Sort/Filter
-- [ ] Add some new filters
+- [x] Add some new filters
 - [x] Add Exodus Report to AppSheet
 - [x] Rewrite Preferences
 - [x] Integrate Tools and Help in Preferences
@@ -56,7 +56,7 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~30% done)
 - [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
 - [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now (connected to the two previous goals)
-- [ ] Add Split Apk Support
+- [x] Add Split Apk Support
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
@@ -106,7 +106,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup. 
 
-Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit), Turkish [scrubjay55](https://github.com/scrubjay55).
+Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek).
 
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 

@@ -1,6 +1,17 @@
 changelog
 =========
 
+1.3.0 (25.06.2020)
+-------------------
+* updated: new Filters System
+* updated: reduced Splash waiting time
+* added: Split-APK support (needs more testing, Credits @Tiefkuehlpizze)
+* updated: Search supports Package Name
+* fixed: cache not found/ Symlinks errors
+* added: OBB support(needs more testing)
+* added languages: Italian, Chinese, Turkish, Polish (Credits @Urnyx05 @tuchit @scrubjay55 @Antyradek)
+* other: UI and performance tweaks
+
 1.2.0 (10.06.2020)
 -------------------
 * updated: UI

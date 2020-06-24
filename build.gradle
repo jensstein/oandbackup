@@ -91,13 +91,14 @@ Map<String, Integer> abiVersionCodes = [
 ]
 
 int versionMajor = 1
-int versionMinor = 2
+int versionMinor = 3
 int versionPath = 0
 
 android {
     compileSdkVersion 29
 
     defaultConfig {
+        applicationId 'com.machiav3lli.backup'
         // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
         versionCode = versionMajor * 1000 + versionMinor * 100 + versionPath
         versionName = "${versionMajor}.${versionMinor}.${versionPath}"
