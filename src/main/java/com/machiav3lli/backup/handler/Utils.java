@@ -119,8 +119,8 @@ public class Utils {
 
     public static void pickColor(AppInfo app, AppCompatTextView text) {
         if (app.isInstalled()) {
-            int color = app.isSystem() ? Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);
-            if (app.isDisabled()) color = Color.rgb(158, 172, 64);
+            int color = app.isSystem() ? app.isSpecial()? Color.rgb(158, 172, 64) : Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);
+            if (app.isDisabled()) color = Color.DKGRAY;
             text.setTextColor(color);
         } else text.setTextColor(Color.GRAY);
     }
