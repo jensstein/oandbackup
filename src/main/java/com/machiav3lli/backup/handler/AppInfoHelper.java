@@ -35,8 +35,7 @@ public class AppInfoHelper {
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
         Collections.sort(packageInfoList, pInfoPackageNameComparator);
 
-        ArrayList<String> disabledPackages = ShellCommands
-                .getDisabledPackages(new CommandHandler());
+        ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
         if (includeSpecialBackups) {
             addSpecialBackups(context, backupDir, list, packageNames);
         }
