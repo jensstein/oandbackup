@@ -28,7 +28,7 @@
     <string name="uninstallProgress">Uninstalling…</string>
     <string name="showOnlySystem">Only system apps</string>
     <string name="showOnlyUser">Only user apps</string>
-    <string name="showNotBackedup">Apps not yet backed up</string>
+    <string name="showNotBackedup">Apps without backup</string>
     <string name="showNotInstalled">Not installed apps</string>
     <string name="showNewAndUpdated">New and updated apps</string>
     <string name="showOldBackups">Old backups</string>
