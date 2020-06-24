@@ -119,7 +119,7 @@
     <string name="prefs_summaryAcquireWakelock">在批量操作时获取唤醒锁以防止手机睡眠. 这将大大加快备份/还原速度, 但同时也会消耗更多电量</string>
     <string name="prefs_summaryBackupFolder">备份文件夹路径 (默认为空)</string>
     <string name="prefs_summaryToybox">toybox/busybox 可执行文件的路径. 请确保路径正确 (默认为空)</string>
-    <string name="prefs_summaryOldBackups">过滤比指定天数旧的备份, 与\"显示旧备份\"过滤器一起使用</string>
+    <string name="prefs_summaryOldBackups">过滤比指定天数旧的备份, 与\"显示旧备份\"过滤一起使用</string>
     <string name="prefs_summaryCopySelfApk">备份时将 oandbackup 的副本放在备份文件夹的顶层</string>
     <string name="prefs_summaryRememberFiltering">保存所选的排序和过滤方式, 只考虑那些在菜单中被复选项标记的应用</string>
     <string name="prefs_summaryFollowSymlinks">当复制时总是跟随符号链接 (cp -L)</string>
@@ -191,7 +191,7 @@
     <string name="last_backup_title">上次备份:</string>
     <string name="app_s_type_title">应用类型:</string>
     <string name="encrypted_data_title">加密的数据:</string>
-    <string name="other_filters_options">特殊过滤器:</string>
+    <string name="other_filters_options">特殊过滤:</string>
     <string name="deleted_backup">删除备份</string>
     <string name="theme_light">亮色</string>
     <string name="theme_dark">暗色</string>
@@ -204,4 +204,6 @@
     <string name="ignore_battery_optimization_not_supported">抱歉, 此设备不支持忽略电池优化!</string>
     <string name="failed_unzipping">解压数据时出错, 请检查加密密码!</string>
     <string name="split_apks">拆分APKs:</string>
+    <string name="showSplitAPKs">拆分-APK</string>
+    <string name="backup_filters">备份过滤:</string>
 </resources>
