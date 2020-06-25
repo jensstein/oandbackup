@@ -54,8 +54,7 @@ public class BackupRestoreHelper {
         if (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) {
             if (apk != null && apk.length() > 0) {
                 if (app.isSystem()) {
-                    apkRet = shellCommands.restoreSystemApk(backupSubDir,
-                            app.getLabel(), apk);
+                    apkRet = shellCommands.restoreSystemApk(backupSubDir, apk);
                 } else {
                     apkRet = shellCommands.restoreUserApk(backupSubDir,
                             app.getLabel(), apk, context.getApplicationInfo().dataDir, null);
@@ -65,6 +64,8 @@ public class BackupRestoreHelper {
                             if (apkRet == 0) {
                                 apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
                                         splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
+                            }else{
+                                break;
                             }
                         }
                     }

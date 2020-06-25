@@ -94,23 +94,23 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Shell.Job runCommand(String... commands);
     }
 
-    protected Shell.Result runAsRoot(String... commands) {
-        return this.runShellCommand(Shell::su, null, commands);
+    protected static Shell.Result runAsRoot(String... commands) {
+        return ShellCommands.runShellCommand(Shell::su, null, commands);
     }
 
-    protected Shell.Result runAsUser(String... commands) {
-        return this.runShellCommand(Shell::sh, null, commands);
+    protected static Shell.Result runAsUser(String... commands) {
+        return ShellCommands.runShellCommand(Shell::sh, null, commands);
     }
 
-    protected Shell.Result runAsRoot(Collection<String> errors, String... commands) {
-        return this.runShellCommand(Shell::su, errors, commands);
+    protected static Shell.Result runAsRoot(Collection<String> errors, String... commands) {
+        return ShellCommands.runShellCommand(Shell::su, errors, commands);
     }
 
-    protected Shell.Result runAsUser(Collection<String> errors, String... commands) {
-        return this.runShellCommand(Shell::sh, errors, commands);
+    protected static Shell.Result runAsUser(Collection<String> errors, String... commands) {
+        return ShellCommands.runShellCommand(Shell::sh, errors, commands);
     }
 
-    private Shell.Result runShellCommand(runnableShellCommand c, Collection<String> errors, String ... commands){
+    private static Shell.Result runShellCommand(runnableShellCommand c, Collection<String> errors, String ... commands){
         // defining stdout and stderr on our own
         // otherwise we would have to set set the flag redirect stderr to stdout:
         // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
@@ -120,9 +120,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         List<String> stderr = new ArrayList<>();
         Log.d(TAG, "Running Command: " + Utils.iterableToString("; ", commands));
         Shell.Result result = c.runCommand(commands).to(stdout, stderr).exec();
-        if(result.isSuccess() ){
-            Log.e(TAG, String.format("Command(s) '%s' ended with %d", Arrays.toString(commands), result.getCode()));
-        }else{
+        Log.d(TAG, String.format("Command(s) '%s' ended with %d", Arrays.toString(commands), result.getCode()));
+        if(!result.isSuccess() ){
             if(errors != null){
                 errors.addAll(stderr);
             }
@@ -166,11 +165,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             apks[0] = packageApk;
             Log.d(TAG, String.format("Backing up package %s (%d apks: %s)", packageName, apks.length, Arrays.stream(apks).map(s -> new File(s).getName()).collect(Collectors.joining())));
             String command = String.format(
-                    "cp %s2 \"%s\"",
+                    "cp %s \"%s\"",
                     Arrays.stream(apks).map(s -> "\"" + s + "\"").collect(Collectors.joining(" ")),
                     backupSubDirPath
             );
-            Shell.Result shellResult = this.runAsRoot(errorList, command);
+            Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
             exitCode |= shellResult.getCode();
 
         }
@@ -182,13 +181,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 String command = String.format(
                         "if ([ -d \"%s\" ] && [ -z \"$(%s)\" ]); then rm -r \"%s\"; else true; fi",
                         cacheFile.getPath(), cacheFile.getPath(), cacheFile.getPath());
-                Shell.Result shellResult = this.runAsRoot(errors, command);
+                Shell.Result shellResult = ShellCommands.runAsRoot(errors, command);
                 if (!shellResult.isSuccess()) {
                     Log.e(TAG, "Could not wipe cache for %s" + packageName);
                 }
             }
             String command = String.format("cp -RL  \"%s\" \"%s\"", packageData, backupSubDirPath);
-            Shell.Result shellResult = this.runAsRoot(errorList, command);
+            Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
             exitCode |= shellResult.getCode();
         }
 
@@ -203,7 +202,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                         externalFilesDir.getAbsolutePath(),
                         backupSubDirExternalFiles.getAbsolutePath()
                 );
-                Shell.Result shellResult = this.runAsRoot(errorList, command);
+                Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
                 exitCode |= shellResult.getCode();
             } else {
                 Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
@@ -220,7 +219,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                         deviceProtectedPackageData,
                         backupSubDirDeviceProtectedFiles.getAbsolutePath()
                 );
-                Shell.Result shellResult = this.runAsRoot(errorList, command);
+                Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
                 exitCode |= shellResult.getCode();
             } else {
                 Log.e(TAG, "couldn't create " + backupSubDirDeviceProtectedFiles.getAbsolutePath());
@@ -270,6 +269,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
 
     public int doRestore(File backupSubDir, AppInfo app) {
+        List<String> errorList = new ArrayList<>();
         String label = app.getLabel();
         String packageName = app.getPackageName();
         String dataDir = app.getLogInfo().getDataDir();
@@ -278,16 +278,18 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         String deviceProtectedDataDir = app.getDeviceProtectedDataDir();
         String backupSubDirPath = backupSubDir.getAbsolutePath();
         int unzipReturn = -1;
-        Log.i(TAG, "restoring: " + label);
+        int exitCode = 0;
+        Log.i(TAG, "restoring: " + packageName);
 
         try {
             // Kill app before restoring
-            killPackage(packageName);
+            this.killPackage(packageName);
 
             // Unzipping
             File zipFile = new File(backupSubDir, dataDirName + ".zip");
-            if (zipFile.exists())
+            if (zipFile.exists()) {
                 unzipReturn = decompress(zipFile, backupSubDir, encrypted);
+            }
 
             // check if there is a directory to copy from
             String[] list = new File(backupSubDir, dataDirName).list();
@@ -298,10 +300,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 // Copying DATA
                 String restoreCommand = String.format("%s cp -r \"%s/%s/\"* \"%s\"\n", utilboxPath, backupSubDirPath, dataDirName, dataDir);
                 if (!(new File(dataDir).exists())) {
-                    restoreCommand = String.format("mkdir \"%s\"\n%s", dataDir, restoreCommand);
+                    // prepend the command to create the directory
+                    restoreCommand = String.format("mkdir \"%s\" && %s", dataDir, restoreCommand);
                     // restored system apps will not necessarily have the data folder (which is otherwise handled by pm)
                 }
-                commands.add(restoreCommand);
+                ShellCommands.runAsRoot(errorList, restoreCommand);
 
                 // Copying external DATA
                 File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
@@ -314,32 +317,36 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 // Copying device protected DATA
                 File deviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
                 if (deviceProtectedDataDir != null && deviceProtectedFiles.exists()) {
+                    List<String> restoreCommands = new ArrayList<>();
+                    if (!(new File(deviceProtectedDataDir).exists())) {
+                        restoreCommands.add(String.format("mkdir %s", deviceProtectedDataDir));
+                    }
                     Compression.unzip(new File(deviceProtectedFiles, dataDirName + ".zip"), deviceProtectedFiles, password);
-                    restoreCommand = String.format("%s cp -r \"%s/%s/\"* \"%s\"\n", utilboxPath, deviceProtectedFiles, dataDirName, deviceProtectedDataDir);
+                    restoreCommands.add(String.format("%s cp -r \"%s/%s/\"* \"%s\"", utilboxPath, deviceProtectedFiles, dataDirName, deviceProtectedDataDir));
 
                     try {
                         PackageManager packageManager = context.getPackageManager();
                         String user = String.valueOf(packageManager.getApplicationInfo(dataDirName, PackageManager.GET_META_DATA).uid);
-                        restoreCommand = String.format("%s chown -R %s:%s %s\n", restoreCommand, user, user, deviceProtectedDataDir);
+                        // append chown command to match the user and group of the restored directory
+                        restoreCommands.add(String.format("chown -R %s:%s %s", user, user, deviceProtectedDataDir));
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
                     }
-
-                    restoreCommand = String.format("%s chmod -R 777 %s\n", restoreCommand, deviceProtectedDataDir);
-                    if (!(new File(deviceProtectedDataDir).exists()))
-                        restoreCommand = String.format("mkdir %s\n%s", deviceProtectedDataDir, restoreCommand);
-                    commands.add(restoreCommand);
+                    // append
+                    restoreCommands.add(String.format("chmod -R 777 %s",deviceProtectedDataDir));
+                    Shell.Result shellResult = ShellCommands.runAsRoot(errorList, restoreCommands.stream().collect(Collectors.joining(" ; ")));
+                    exitCode |= shellResult.getCode();
                 }
 
                 // Apply changes
-                commands.add(String.format("restorecon -R %s || true", dataDir));
-                commands.add(String.format("restorecon -R %s || true", deviceProtectedDataDir));
+                restoreCommand = String.format("restorecon -R %s; restorecon -R %s", dataDir,deviceProtectedDataDir);
+                ShellCommands.runAsRoot(errorList, restoreCommand);
 
                 // Execute
-                int ret = commandHandler.runCmd("su", commands, line -> {
-                }, line -> writeErrorLog(context, label, line), e -> Log.e(TAG, "doRestore: " + e.toString()), this);
-                if (multiuserEnabled) disablePackage(packageName);
-                return ret;
+                if (multiuserEnabled) {
+                    this.disablePackage(packageName);
+                }
+                return exitCode;
             } else {
                 Log.i(TAG, packageName + " has empty or non-existent subdirectory: " + backupSubDir.getAbsolutePath() + "/" + dataDirName);
                 return 0;
@@ -353,6 +360,10 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 Log.e(TAG, packageName + " error while unzipping, check encryption password.");
                 NotificationHelper.showNotification(context, context.getClass(), (int) System.currentTimeMillis(),
                         app.getLabel(), context.getString(R.string.failed_unzipping), true);
+            }
+
+            for (String line : errorList) {
+                ShellCommands.writeErrorLog(context, packageName, line);
             }
         }
     }
@@ -463,15 +474,19 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
 
     public int decompress(File zipFile, File backupSubDir, boolean encrypted) {
-        if (encrypted && password.equals("")) return 1;
-        else if (!encrypted) return Compression.unzip(zipFile, backupSubDir, "");
-        else return Compression.unzip(zipFile, backupSubDir, password);
+        if (encrypted && password.equals("")) {
+            return 1;
+        } else if (!encrypted) {
+            return Compression.unzip(zipFile, backupSubDir, "");
+        } else {
+            return Compression.unzip(zipFile, backupSubDir, password);
+        }
     }
 
     public void copySelfAPk(File backupSubDir, String apk) {
         String parent = backupSubDir.getParent() + "/" + TAG + ".apk";
         String apkPath = backupSubDir.getAbsolutePath() + "/" + new File(apk).getName();
-        this.runAsRoot(errors, String.format("%s cp \"%s\" \"%s\"", utilboxPath, apkPath, parent));
+        ShellCommands.runAsRoot(errors, String.format("%s cp \"%s\" \"%s\"", utilboxPath, apkPath, parent));
     }
 
     public File getExternalFilesDirPath(String packageData) {
@@ -494,7 +509,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         } catch (InterruptedException e) {
             // ignored
         }
-        Shell.Result shellResult = this.runAsRoot(String.format("stat %s", packageDir));
+        Shell.Result shellResult = ShellCommands.runAsRoot(String.format("stat %s", packageDir));
         ArrayList<String> uid_gid = ShellCommands.getIdsFromStat(Utils.iterableToString(shellResult.getOut()));
 
         if (uid_gid == null || uid_gid.isEmpty())
@@ -517,12 +532,12 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Shell.Result shellResult;
         Ownership ownership = this.getOwnership(packageDir);
         Log.d(TAG, "Changing permissions for " + packageDir);
-        shellResult = this.runAsRoot(errors, String.format("%s chown -R %s %s", this.utilboxPath, ownership.toString(), packageDir));
+        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chown -R %s %s", this.utilboxPath, ownership.toString(), packageDir));
         if (!shellResult.isSuccess()) {
             throw new ShellCommandException(shellResult.getCode(), shellResult.getErr());
         }
 
-        shellResult = this.runAsRoot(errors, String.format("%s chmod -R 771 %s", this.utilboxPath, packageDir));
+        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chmod -R 771 %s", this.utilboxPath, packageDir));
         if (!shellResult.isSuccess()) {
             throw new ShellCommandException(shellResult.getCode(), shellResult.getErr());
         }
@@ -537,8 +552,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         final String installCmd = String.format("%s%s",
                 Build.VERSION.SDK_INT >= 28 ? "cmd package install" : "pm install",
                 basePackage != null ? " -p " + basePackage : "");
-        // swapBackupDirPath is not needed with pm install
-        List<String> commands = new ArrayList<>();
+        Log.d(TAG, "APK restore command: " + installCmd);
         /* in newer android versions selinux rules prevent system_server
          * from accessing many directories. in android 9 this prevents pm
          * install from installing from other directories that the package
@@ -548,12 +562,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
          * https://issuetracker.google.com/issues/80270303#comment14 this
          * could potentially be unwise to use.
          */
+        String command;
         final File packageStagingDirectory = new File("/data/local/tmp");
         if (packageStagingDirectory.exists()) {
             final String apkDestPath = String.format("%s/%s.apk", packageStagingDirectory, System.currentTimeMillis());
-            commands.add(String.format("%s cp \"%s\" \"%s\"", utilboxPath, backupDir.getAbsolutePath() + "/" + apk, apkDestPath));
-            commands.add(String.format("%s -r %s", installCmd, apkDestPath));
-            commands.add(String.format("%s rm -r %s", utilboxPath, apkDestPath));
+            command = String.format("%s cp \"%s\" \"%s\"", this.utilboxPath, backupDir.getAbsolutePath() + "/" + apk, apkDestPath) +
+                    String.format(" && %s -r %s", installCmd, apkDestPath) +
+                    String.format(" && %s rm -r %s", this.utilboxPath, apkDestPath);
         } else if (backupDir.getAbsolutePath().startsWith(ownDataDir)) {
             /*
              * pm cannot install from a file on the data partition
@@ -563,82 +578,74 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
              * is created where the apk is then copied to.
              */
             String tempPath = android.os.Environment.getExternalStorageDirectory() + "/apkTmp" + System.currentTimeMillis();
-            commands.add(String.format("%s mkdir %s", utilboxPath, tempPath));
-            commands.add(String.format("%s cp \"%s\" \"%s\"", utilboxPath, backupDir.getAbsolutePath() + "/" + apk, tempPath));
-            commands.add(String.format("%s -r %s/%s", installCmd, tempPath, apk));
-            commands.add(String.format("%s rm -r %s", utilboxPath, tempPath));
+            command = String.format("%s mkdir %s", utilboxPath, tempPath) +
+                    String.format(" && %s cp \"%s\" \"%s\"", utilboxPath, backupDir.getAbsolutePath() + "/" + apk, tempPath) +
+                    String.format(" && %s -r %s/%s", installCmd, tempPath, apk) +
+                    String.format(" && %s rm -r %s", utilboxPath, tempPath);
         } else {
-            commands.add(String.format("%s -r \"%s/%s\"", installCmd, backupDir.getAbsolutePath(), apk));
+            command = String.format("%s -r \"%s/%s\"", installCmd, backupDir.getAbsolutePath(), apk);
         }
 
-        // Execute
-        List<String> errors = new ArrayList<>();
-        int ret = commandHandler.runCmd("su", commands, line -> {
-                },
-                errors::add, e -> Log.e(TAG, "restoreUserApk: ", e), this);
-        // pm install returns 0 even for errors and prints part of its normal output to stderr
-        if (errors.size() > 1) {
-            for (String line : errors) writeErrorLog(context, label, line);
+        Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
+        if (errorList.size() > 0) {
+            for (String line : errorList){
+                writeErrorLog(context, label, line);
+            }
             return 1;
-        } else return ret;
+        }
+        return shellResult.getCode();
     }
 
-    public int restoreSystemApk(File backupDir, String label, String apk) {
-        List<String> commands = new ArrayList<>();
-        commands.add("mount -o remount,rw /system");
+    public int restoreSystemApk(File backupDir, String apkname) {
         String basePath = "/system/app/";
-        basePath += apk.substring(0, apk.lastIndexOf(".")) + "/";
-        commands.add(String.format("mkdir -p %s", basePath));
-        commands.add(String.format("%s chmod 755 %s", utilboxPath, basePath));
+        basePath += apkname.substring(0, apkname.lastIndexOf(".")) + "/";
+        String command = "(mount -o remount,rw /system" + " && " +
+                        String.format("mkdir -p %s", basePath) + " && " +
+                        String.format("%s chmod 755 %s", utilboxPath, basePath) + " && " +
         // for some reason a permissions error is thrown if the apk path is not created first
         // with touch, a reboot is not necessary after restoring system apps
         // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
-        commands.add(String.format("%s touch %s%s", utilboxPath, basePath, apk));
-        commands.add(String.format("%s cp \"%s/%s\" %s", utilboxPath, backupDir.getAbsolutePath(), apk, basePath));
-        commands.add(String.format("%s chmod 644 %s%s", utilboxPath, basePath, apk));
-        commands.add("mount -o remount,ro /system");
-        return commandHandler.runCmd("su", commands, line -> {
-                },
-                line -> writeErrorLog(context, label, line),
-                e -> Log.e(TAG, "restoreSystemApk: ", e), this);
+                        String.format("%s touch %s%s", utilboxPath, basePath, apkname) + " && " +
+                        String.format("%s cp \"%s/%s\" %s", utilboxPath, backupDir.getAbsolutePath(), apkname, basePath) + " && " +
+                        String.format("%s chmod 644 %s%s", utilboxPath, basePath, apkname) +
+                        "); mount -o remount,ro /system";
+        Shell.Result shellResult = ShellCommands.runAsRoot(command);
+        return shellResult.getCode();
     }
 
     public int uninstall(String packageName, String sourceDir, String dataDir, boolean isSystem) {
-        List<String> commands = new ArrayList<>();
-
+        Shell.Result shellResult;
         if (!isSystem) {
             // Uninstalling while user app
-            commands.add(String.format("pm uninstall %s", packageName));
-            commands.add(String.format("%s rm -r /data/lib/%s/*", utilboxPath, packageName));
+            shellResult = ShellCommands.runAsRoot(String.format("pm uninstall %s", packageName));
+            // don't care for the result here, it likely fails due to file not found
+            ShellCommands.runAsRoot(String.format("%s rm -r /data/lib/%s/*", utilboxPath, packageName));
         } else {
             // Deleting while system app
             // it seems that busybox mount sometimes fails silently so use toolbox instead
-            commands.add("mount -o remount,rw /system");
-            commands.add(String.format("%s rm %s", utilboxPath, sourceDir));
             String apkSubDir = Utils.getName(sourceDir);
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
-            commands.add(String.format("rm -r /system/app/%s", apkSubDir));
-            commands.add("mount -o remount,ro /system");
-            commands.add(String.format("%s rm -r %s", utilboxPath, dataDir));
-            commands.add(String.format("%s rm -r /data/app-lib/%s*", utilboxPath, packageName));
+            String command = "(mount -o remount,rw /system" + " && " +
+                    String.format("%s rm %s", utilboxPath, sourceDir) + " ; " +
+                    String.format("rm -r /system/app/%s", apkSubDir) + " ; " +
+                    String.format("%s rm -r %s", utilboxPath, dataDir) + " ; " +
+                    String.format("%s rm -r /data/app-lib/%s*", utilboxPath, packageName) + "); " +
+                    "mount -o remount,ro /system";
+            shellResult = ShellCommands.runAsRoot(command);
         }
 
         // Execute
-        List<String> errors = new ArrayList<>();
-        int ret = commandHandler.runCmd("su", commands, line -> {
-                },
-                errors::add, e -> Log.e(TAG, "uninstall", e), this);
-        if (ret != 0) {
-            for (String line : errors) {
-                if (line.contains("No such file or directory") && errors.size() == 1) {
-                    ret = 0;
+        if (!shellResult.isSuccess()) {
+            for (String line : shellResult.getErr()) {
+                if (line.contains("No such file or directory") && shellResult.getErr().size() == 1) {
+                    int ret = 0;
                 } else {
                     writeErrorLog(context, packageName, line);
                 }
             }
         }
-        Log.i(TAG, "uninstall return: " + ret);
-        return ret;
+        Log.i(TAG, "uninstall return: " + shellResult.getCode());
+        return shellResult.getCode();
     }
 
     public static void deleteBackup(File file) {
@@ -657,7 +664,7 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         for (ActivityManager.RunningAppProcessInfo process : runningList) {
             if (process.processName.equals(packageName) && process.pid != android.os.Process.myPid()) {
                 Log.d(TAG, String.format("Killing pid %d of package %s", process.pid, packageName));
-                this.runAsRoot("kill " + process.pid);
+                ShellCommands.runAsRoot("kill " + process.pid);
             }
         }
     }
@@ -675,11 +682,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // though it could be listed as enabled
         String grep = String.format("%s grep %s /data/system/users/$user/package-restrictions.xml", utilboxPath, packageName);
         String enabled = String.format("%s | %s grep enabled=\"1\"", grep, utilboxPath);
-        commands.add(String.format("for user in %s; do if [ $user != %s ] && %s && %s; then %s; fi; done", userString, currentUser, grep, enabled, disable));
-        commandHandler.runCmd("su", commands, line -> {
-                },
-                line -> writeErrorLog(context, packageName, line),
-                e -> Log.e(TAG, "disablePackage: ", e), this);
+        String command = String.format("for user in %s; do if [ $user != %s ] && %s && %s; then %s; fi; done", userString, currentUser, grep, enabled, disable);
+        ShellCommands.runAsRoot(command);
     }
 
     public void enableDisablePackage(String packageName, ArrayList<String> users, boolean enable) {
@@ -758,16 +762,13 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         if (users != null && users.size() > 0) {
             return users;
         } else {
-            //            int currentUser = getCurrentUser();
-            List<String> commands = new ArrayList<>();
-            commands.add(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", utilboxPath));
+            Shell.Result shellResult = ShellCommands.runAsRoot(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", utilboxPath));
             ArrayList<String> users = new ArrayList<>();
-            int ret = commandHandler.runCmd("su", commands, line -> {
-                        if (line.trim().length() != 0)
-                            users.add(line.trim());
-                    }, line -> writeErrorLog(context, "", line),
-                    e -> Log.e(TAG, "getUsers: ", e), this);
-            return ret == 0 ? users : null;
+            for(String line : shellResult.getOut()){
+                if (line.trim().length() != 0)
+                    users.add(line.trim());
+            }
+            return shellResult.isSuccess() ? users : null;
         }
     }
 
@@ -785,17 +786,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
 
     public static ArrayList<String> getDisabledPackages(CommandHandler commandHandler) {
-        List<String> commands = new ArrayList<>();
-        commands.add("pm list packages -d");
+        Shell.Result shellResult = ShellCommands.runAsUser("pm list packages -d");
         ArrayList<String> packages = new ArrayList<>();
-        int ret = commandHandler.runCmd("sh", commands, line -> {
-            if (line.contains(":"))
+        for (String line : shellResult.getOut()) {
+            if (line.contains(":")) {
                 packages.add(line.substring(line.indexOf(":") + 1).trim());
-        }, line -> {
-        }, e -> Log.e(TAG, "getDisabledPackages: ", e), e -> {
-        });
-        if (ret == 0 && packages.size() > 0)
+            }
+        }
+        if (shellResult.isSuccess() && packages.size() > 0) {
             return packages;
+        }
         return null;
     }
 
