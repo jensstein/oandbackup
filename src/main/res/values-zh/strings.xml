@@ -43,11 +43,7 @@
     <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK</string>
     <string name="collectingData">正在收集安装包信息…</string>
     <string name="suCheck">正在检查 superuser &amp; busybox…</string>
-    <string name="oabUtilsCheck">正在检查 oab-utils…</string>
-    <string name="oabUtilsProblem">
-        找不到 oab-utils - 正在以 legacy 模式运行
-        请向开发者报告
-    </string>
+
     <string name="noSu">无法获得超级用户权限</string>
     <string name="busyboxProblem">找不到busybox. 请查看错误日志</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->

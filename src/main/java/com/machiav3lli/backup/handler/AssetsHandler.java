@@ -13,26 +13,6 @@ import java.io.InputStream;
 
 public class AssetsHandler {
     final static String TAG = Constants.classTag(".AssetHandler");
-    public static final String OAB_UTILS = "oab-utils";
-
-    /**
-     * copy oab-utils asset to private storage
-     *
-     * @param context application context
-     * @throws AssetsHandlerException on error copying asset or error
-     *                                making the resulting binary executable
-     */
-    public static void copyOabutils(Context context)
-            throws AssetsHandlerException {
-        final String assetPath = new File(getAbi(), OAB_UTILS).toString();
-        copyAsset(context, assetPath, OAB_UTILS);
-        final File file = new File(context.getFilesDir(), OAB_UTILS);
-        if (!file.setExecutable(true)) {
-            final String msg = String.format("error making %s executable",
-                    AssetsHandler.OAB_UTILS);
-            throw new AssetsHandlerException(msg);
-        }
-    }
 
     /**
      * copy bytes from assets file to an application private file

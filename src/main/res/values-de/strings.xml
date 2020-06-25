@@ -146,12 +146,10 @@
     <string name="restart_dialog">Dateien-Browser</string>
     <string name="error_updating_schedule_mode">App kann nicht wiederhergestellt werden mit einer Sicherung ohne Apk</string>
     <string name="error_creating_notification_channel">Hilfe</string>
-    <string name="oabUtilsCheck">Prüfe nach oab-utils</string>
     <string name="bothBackedUp">Apk und Daten</string>
     <string name="all">Alle</string>
     <string name="prefs_service">Betriebseinstellungen</string>
     <string name="prefs_user">Benutzerdefinierte Einstellungen</string>
-    <string name="oabUtilsProblem">Konnte oab-utils nicht finden - läuft im Legacy-Modus</string>
     <string name="logViewerTitle">OAndBackupX Log anzeigen</string>
     <string name="prefs_summaryBatchDelete">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</string>
     <string name="prefs_summaryQuickReboot">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>

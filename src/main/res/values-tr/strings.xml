@@ -46,11 +46,6 @@
     <string name="restoreDataWithoutApkError">APK geri yüklenmeden veri geri yüklenemiyor, paket kurulu değil</string>
     <string name="collectingData">Paket bilgisi alınıyor</string>
     <string name="suCheck">busybox ve superuser kontrol ediliyor</string>
-    <string name="oabUtilsCheck">oab-utils kontrol ediliyor</string>
-    <string name="oabUtilsProblem">
-        oab-utils bulunamadı - legacy mod başlatılıyor,
-        bu sorunu geliştiriciye rapor edin
-    </string>
     <string name="noSu">superuser izinleri alınamadı</string>
     <string name="busyboxProblem">busybox bulunamadı. hata günlüğünü kontrol edin</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->

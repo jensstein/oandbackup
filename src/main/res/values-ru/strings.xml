@@ -43,8 +43,6 @@
     <string name="restoreDataWithoutApkError">Невозможно восстановить данные без восстановления apk, пакет не установлен</string>
     <string name="collectingData">Сбор информации о пакете</string>
     <string name="suCheck">проверка superuser и busybox</string>
-    <string name="oabUtilsCheck">Проверка на наличие утилит</string>
-    <string name="oabUtilsProblem">Не удалось найти утилиты - работает в устаревшем режиме, пожалуйста, сообщите об этом разработчику</string>
     <string name="noSu">Невозможно получить права суперпользователя</string>
     <string name="busyboxProblem">Невозможно найти busybox. пожалуйста, проверьте журнал ошибок</string>
         <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->

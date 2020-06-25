@@ -130,7 +130,6 @@
   <string name="filebrowser_createDirectoryError">Non posso creare la cartella:</string>
   <string name="filebrowser_refresh">Aggiorna</string>
   <string name="filebrowser_contextSetBackupDirectory">Assegna come cartella di backup</string>
-  <string name="oabUtilsCheck">Controllo degli oab-utils...</string>
   <string name="prefs_service">Preferenze di servizio</string>
   <string name="prefs_user">Preferenze utente</string>
   <string name="prefs_theme">Tema</string>
@@ -187,8 +186,4 @@
   <string name="ignore_battery_optimization_message">I backup potrebbero interrompersi a volte. Per evitare questo, dovresti disattivare l\'ottimizzazione batteria</string>
   <string name="ignore_battery_optimization_not_supported">Questo dispositivo purtroppo non supporta l\'opzione per ignorare l\'ottimizzazione batteria</string>
   <string name="failed_unzipping">Errore nel decomprimere i dati, controlla la password di crittografia</string>
-  <string name="oabUtilsProblem">
-        Non sono stati trovati gli oab-utils - in modalità legacy,
-        per favore riportalo allo sviluppatore
-  </string>
 </resources>

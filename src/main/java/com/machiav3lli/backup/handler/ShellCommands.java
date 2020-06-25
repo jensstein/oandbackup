@@ -33,22 +33,23 @@ import java.util.regex.Pattern;
 import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultLogFilePath;
 
 public class ShellCommands implements CommandHandler.UnexpectedExceptionListener {
-    public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
-    public final static String EXTERNAL_FILES = "external_files";
-    public final static String OBB_FILES = "obb_files";
     final static String TAG = Constants.classTag(".ShellCommands");
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
     private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
-    private static String errors = "";
-    private final String oabUtils;
+    public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
+    public final static String EXTERNAL_FILES = "external_files";
+
     CommandHandler commandHandler = new CommandHandler();
+
+    private boolean legacyMode;
+
     SharedPreferences prefs;
     String toybox;
     ArrayList<String> users;
     Context context;
-    boolean multiuserEnabled;
-    private boolean legacyMode;
     private String password;
+    private static String errors = "";
+    boolean multiuserEnabled;
 
     public ShellCommands(Context context, SharedPreferences prefs, ArrayList<String> users, File filesDir) {
         this.users = users;
@@ -69,89 +70,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         this.users = getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
 
-        this.oabUtils = new File(filesDir, AssetsHandler.OAB_UTILS).getAbsolutePath();
-        legacyMode = !checkOabUtils();
         password = prefs.getString(Constants.PREFS_PASSWORD, "");
     }
 
     public ShellCommands(Context context, SharedPreferences prefs, File filesDir) {
         this(context, prefs, null, filesDir);
-    }
-
-    private static ArrayList<String> getIdsFromStat(String stat) {
-        Matcher uid = uidPattern.matcher(stat);
-        Matcher gid = gidPattern.matcher(stat);
-        if (!uid.find() || !gid.find())
-            return null;
-        ArrayList<String> res = new ArrayList<>();
-        res.add(uid.group(1));
-        res.add(gid.group(1));
-        return res;
-    }
-
-    public static void deleteBackup(File file) {
-        if (file.exists()) {
-            if (file.isDirectory())
-                if (file.list().length > 0 && file.listFiles() != null)
-                    for (File child : file.listFiles())
-                        deleteBackup(child);
-            file.delete();
-        }
-    }
-
-    public static void writeErrorLog(Context context, String packageName, String err) {
-        errors += String.format("%s: %s\n", packageName, err);
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
-        String dateFormated = dateFormat.format(date);
-        try {
-            File outFile = new FileCreationHelper().createLogFile(context, getDefaultLogFilePath(context));
-            if (outFile != null) {
-                try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
-                        true);
-                     BufferedWriter bw = new BufferedWriter(fw)) {
-                    bw.write(String.format("%s: %s [%s]\n", dateFormated, err, packageName));
-                }
-            }
-        } catch (IOException e) {
-            Log.e(TAG, e.toString());
-        }
-    }
-
-    public static String getErrors() {
-        return errors;
-    }
-
-    public static void clearErrors() {
-        errors = "";
-    }
-
-    public static int getCurrentUser() {
-        try {
-            // using reflection to get id of calling user since method getCallingUserId of UserHandle is hidden
-            // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/os/UserHandle.java#L123
-            Class userHandle = Class.forName("android.os.UserHandle");
-            boolean muEnabled = userHandle.getField("MU_ENABLED").getBoolean(null);
-            int range = userHandle.getField("PER_USER_RANGE").getInt(null);
-            if (muEnabled) return android.os.Binder.getCallingUid() / range;
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
-        }
-        return 0;
-    }
-
-    public static ArrayList<String> getDisabledPackages(CommandHandler commandHandler) {
-        List<String> commands = new ArrayList<>();
-        commands.add("pm list packages -d");
-        ArrayList<String> packages = new ArrayList<>();
-        int ret = commandHandler.runCmd("sh", commands, line -> {
-            if (line.contains(":"))
-                packages.add(line.substring(line.indexOf(":") + 1).trim());
-        }, line -> {
-        }, e -> Log.e(TAG, "getDisabledPackages: ", e), e -> {
-        });
-        if (ret == 0 && packages.size() > 0)
-            return packages;
-        return null;
     }
 
     @Override
@@ -207,17 +130,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
             } else Log.e(TAG, "couldn't create " + backupSubDirExternalFiles.getAbsolutePath());
         }
 
-        // Copying OBB DATA
-        boolean backupOBB = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
-        File backupSubDirOBBFiles = null;
-        File obbFilesDir = getOBBFilesDirPath(packageData);
-        if (backupMode != AppInfo.MODE_APK && backupOBB && obbFilesDir != null) {
-            backupSubDirOBBFiles = new File(backupSubDir, OBB_FILES);
-            if (backupSubDirOBBFiles.exists() || backupSubDirOBBFiles.mkdir()) {
-                commands.add(String.format("cp -RL \"%s\" \"%s\"", obbFilesDir.getAbsolutePath(), backupSubDirOBBFiles.getAbsolutePath()));
-            } else Log.e(TAG, "couldn't create " + backupSubDirOBBFiles.getAbsolutePath());
-        }
-
         // Copying device protected DATA
         boolean backupDeviceProtected = prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true);
         File backupSubDirDeviceProtectedFiles = null;
@@ -266,14 +178,8 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         // Zipping DATA
         if (backupMode != AppInfo.MODE_APK) {
             int zipReturn = compress(new File(backupSubDir, folder));
-            File deviceprotectedFilesBackup = new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
-            if (backupDeviceProtected && deviceprotectedFilesBackup.exists())
-                zipReturn += compress(deviceprotectedFilesBackup);
-            File externalFilesBackup = new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
-            if (backupExternal && externalFilesBackup.exists())
-                zipReturn += compress(externalFilesBackup);
-            File obbFilesBackup = new File(backupSubDirOBBFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
-            if (backupExternal && obbFilesBackup.exists()) zipReturn += compress(obbFilesBackup);
+            zipReturn += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            zipReturn += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
             if (zipReturn != 0) executeReturn += zipReturn;
         }
 
@@ -320,15 +226,9 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 // Copying external DATA
                 File externalFiles = new File(backupSubDir, EXTERNAL_FILES);
                 if (externalFiles.exists()) {
-                    String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
+                    String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+                    externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
                     Compression.unzip(new File(externalFiles, dataDirName + ".zip"), new File(externalFilesPath), password);
-                }
-
-                // Copying OBB DATA
-                File obbFiles = new File(backupSubDir, OBB_FILES);
-                if (obbFiles.exists()) {
-                    String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
-                    Compression.unzip(new File(obbFiles, dataDirName + ".zip"), new File(obbFilesPath), password);
                 }
 
                 // Copying device protected DATA
@@ -496,18 +396,11 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     }
 
     public File getExternalFilesDirPath(String packageData) {
-        String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
+        String externalFilesPath = context.getExternalFilesDir(null).getAbsolutePath();
+        externalFilesPath = externalFilesPath.substring(0, externalFilesPath.lastIndexOf(context.getApplicationInfo().packageName));
         File externalFilesDir = new File(externalFilesPath, new File(packageData).getName());
         if (externalFilesDir.exists())
             return externalFilesDir;
-        return null;
-    }
-
-    public File getOBBFilesDirPath(String packageData) {
-        String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
-        File obbFilesDir = new File(obbFilesPath, new File(packageData).getName());
-        if (obbFilesDir.exists())
-            return obbFilesDir;
         return null;
     }
 
@@ -518,60 +411,41 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
     public Ownership getOwnership(String packageDir, String shellPrivs)
             throws OwnershipException {
         List<String> result = new ArrayList<>();
-        if (!legacyMode) {
-            commandHandler.runCmd(shellPrivs, String.format("%s owner %s", oabUtils, packageDir),
-                    result::add, line -> writeErrorLog(context, "oab-utils", line),
-                    e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
-            if (result.size() != 1) {
-                if (result.size() < 1) {
-                    throw new OwnershipException("got empty result from oab-utils");
-                }
-                StringBuilder sb = new StringBuilder();
-                for (String line : result) {
-                    sb.append(line).append("\n");
-                }
-                throw new OwnershipException(String.format("unexpected ownership result from oab-utils: %s",
-                        sb.toString()));
-            }
-            try {
-                JSONObject ownershipJson = new JSONObject(result.get(0));
-                return new Ownership(ownershipJson.getInt("uid"),
-                        ownershipJson.getInt("gid"));
-            } catch (JSONException e) {
-                throw new OwnershipException(String.format("error parsing ownership json: %s", e.toString()));
-            }
-        } else {
-            /*
-             * some packages can have 0 / UNKNOWN as uid and gid for a short
-             * time before being switched to their proper ids so to work
-             * around the race condition we sleep a little.
-             */
-            result.add("sleep 1");
-            result.add(String.format("%s stat %s", toybox, packageDir));
-            StringBuilder sb = new StringBuilder();
-            int ret = commandHandler.runCmd(shellPrivs, result, sb::append,
-                    line -> writeErrorLog(context, "", line),
-                    e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
-            Log.i(TAG, "getOwnership return: " + ret);
-            ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
-            if (uid_gid == null || uid_gid.isEmpty())
-                throw new OwnershipException("no uid or gid found while trying to set permissions");
-            return new Ownership(uid_gid.get(0), uid_gid.get(1));
-        }
+        /*
+         * some packages can have 0 / UNKNOWN as uid and gid for a short
+         * time before being switched to their proper ids so to work
+         * around the race condition we sleep a little.
+         */
+        result.add("sleep 1");
+        result.add(String.format("%s stat %s", toybox, packageDir));
+        StringBuilder sb = new StringBuilder();
+        int ret = commandHandler.runCmd(shellPrivs, result, sb::append,
+                line -> writeErrorLog(context, "", line),
+                e -> Log.e(TAG, "getOwnership: " + e.toString()), this);
+        Log.i(TAG, "getOwnership return: " + ret);
+        ArrayList<String> uid_gid = getIdsFromStat(sb.toString());
+        if (uid_gid == null || uid_gid.isEmpty())
+            throw new OwnershipException("no uid or gid found while trying to set permissions");
+        return new Ownership(uid_gid.get(0), uid_gid.get(1));
+    }
+
+    private static ArrayList<String> getIdsFromStat(String stat) {
+        Matcher uid = uidPattern.matcher(stat);
+        Matcher gid = gidPattern.matcher(stat);
+        if (!uid.find() || !gid.find())
+            return null;
+        ArrayList<String> res = new ArrayList<>();
+        res.add(uid.group(1));
+        res.add(gid.group(1));
+        return res;
     }
 
     public int setPermissions(String packageDir) {
         try {
             Ownership ownership = getOwnership(packageDir);
             List<String> commands = new ArrayList<>();
-            // TODO using OAB-utils is not a must
-            if (!legacyMode) {
-                commands.add(String.format("%s change-owner -r %s %s", oabUtils, ownership.toString(), packageDir));
-                commands.add(String.format("%s set-permissions -r 771 %s", oabUtils, packageDir));
-            } else {
-                commands.add(String.format("%s chown -R %s %s", toybox, ownership.toString(), packageDir));
-                commands.add(String.format("%s chmod -R 771 %s", toybox, packageDir));
-            }
+            commands.add(String.format("%s chown -R %s %s", toybox, ownership.toString(), packageDir));
+            commands.add(String.format("%s chmod -R 771 %s", toybox, packageDir));
 
             // Execute
             int ret = commandHandler.runCmd("su", commands, line -> {
@@ -700,6 +574,16 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         return ret;
     }
 
+    public static void deleteBackup(File file) {
+        if (file.exists()) {
+            if (file.isDirectory())
+                if (file.list().length > 0 && file.listFiles() != null)
+                    for (File child : file.listFiles())
+                        deleteBackup(child);
+            file.delete();
+        }
+    }
+
     public void killPackage(String packageName) {
         List<ActivityManager.RunningAppProcessInfo> runningList;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -755,6 +639,33 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
         Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
     }
 
+    public static void writeErrorLog(Context context, String packageName, String err) {
+        errors += String.format("%s: %s\n", packageName, err);
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
+        String dateFormated = dateFormat.format(date);
+        try {
+            File outFile = new FileCreationHelper().createLogFile(context, getDefaultLogFilePath(context));
+            if (outFile != null) {
+                try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
+                        true);
+                     BufferedWriter bw = new BufferedWriter(fw)) {
+                    bw.write(String.format("%s: %s [%s]\n", dateFormated, err, packageName));
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    public static String getErrors() {
+        return errors;
+    }
+
+    public static void clearErrors() {
+        errors = "";
+    }
+
     public boolean checkToybox() {
         return checkToybox(toybox);
     }
@@ -764,27 +675,6 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                 line -> {
                 }, line -> writeErrorLog(context, "busybox", line),
                 e -> Log.e(TAG, "checkBusybox: ", e), this);
-        return ret == 0;
-    }
-
-    public boolean checkOabUtils() {
-        int ret = commandHandler.runCmd("su", String.format("%s -h", oabUtils),
-                line -> {
-                }, line -> writeErrorLog(context, "oab-utils", line),
-                e -> Log.e(TAG, "checkOabUtils: ", e), this);
-        Log.d(TAG, String.format("checkOabUtils returned %s", ret == 0));
-        if (ret != 0) {
-            final List<String> commands = new ArrayList<>();
-            commands.add(String.format("ls -l %s", oabUtils));
-            commands.add(String.format("file %s", oabUtils));
-            commandHandler.runCmd("su", commands, line -> {
-                Log.i(TAG, "oab-utils" + line);
-                writeErrorLog(context, "oab-utils", line);
-            }, line -> {
-                Log.e(TAG, "oab-utils" + line);
-                writeErrorLog(context, "oab-utils", line);
-            }, e -> Log.e(TAG, "checkOabUtils (ret != 0): ", e), this);
-        }
         return ret == 0;
     }
 
@@ -803,6 +693,34 @@ public class ShellCommands implements CommandHandler.UnexpectedExceptionListener
                     e -> Log.e(TAG, "getUsers: ", e), this);
             return ret == 0 ? users : null;
         }
+    }
+
+    public static int getCurrentUser() {
+        try {
+            // using reflection to get id of calling user since method getCallingUserId of UserHandle is hidden
+            // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/os/UserHandle.java#L123
+            Class userHandle = Class.forName("android.os.UserHandle");
+            boolean muEnabled = userHandle.getField("MU_ENABLED").getBoolean(null);
+            int range = userHandle.getField("PER_USER_RANGE").getInt(null);
+            if (muEnabled) return android.os.Binder.getCallingUid() / range;
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
+        }
+        return 0;
+    }
+
+    public static ArrayList<String> getDisabledPackages(CommandHandler commandHandler) {
+        List<String> commands = new ArrayList<>();
+        commands.add("pm list packages -d");
+        ArrayList<String> packages = new ArrayList<>();
+        int ret = commandHandler.runCmd("sh", commands, line -> {
+            if (line.contains(":"))
+                packages.add(line.substring(line.indexOf(":") + 1).trim());
+        }, line -> {
+        }, e -> Log.e(TAG, "getDisabledPackages: ", e), e -> {
+        });
+        if (ret == 0 && packages.size() > 0)
+            return packages;
+        return null;
     }
 
     public void quickReboot() {
