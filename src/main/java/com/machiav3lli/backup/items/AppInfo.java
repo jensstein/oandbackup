@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.items;
 
+import android.content.Context;
 import android.app.usage.StorageStats;
 import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
@@ -7,10 +8,15 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+import java.util.EnumSet;
+
 import androidx.annotation.RequiresApi;
 
 public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
+    public static final String CACHE_DIR = "cache";
+
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
@@ -31,6 +37,10 @@ public class AppInfo
     int versionCode, backupMode;
     long appSize, dataSize, cacheSize;
     private boolean system, installed, checked, disabled;
+    public enum ActionMode {
+        APK, DATA;
+        public static final EnumSet<ActionMode> BOTH = EnumSet.allOf(ActionMode.class);
+    }
 
     public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String[] splitSourceDirs, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
         this.label = label;
@@ -98,6 +108,39 @@ public class AppInfo
 
     public String getDeviceProtectedDataDir() {
         return deviceProtectedDataDir;
+    }
+
+    public String getCachePath(){
+        return new File(this.getDataDir(), AppInfo.CACHE_DIR).getAbsolutePath();
+    }
+
+    public String getExternalFilesPath(Context context){
+        // Uses the context to get own external data directory
+        // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
+        // Goes to the parent two times to the leave own directory
+        // e.g. /storage/emulated/0/Android/data
+        String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
+        // Add the package name to the path assuming that if the name of dataDir does not equal the
+        // package name and has a prefix or a suffix to use it.
+        File externalFilesDir = new File(externalFilesPath, new File(this.dataDir).getName());
+        // Check if the dir exists. Otherwise return null
+        return externalFilesDir.exists() ? externalFilesDir.getAbsolutePath() : null;
+    }
+
+    public String getObbFilesPath(Context context){
+        // Uses the context to get own obb data directory
+        // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
+        // Goes to the parent two times to the leave own directory
+        // e.g. /storage/emulated/0/Android/obb
+        String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
+        // Add the package name to the path assuming that if the name of dataDir does not equal the
+        // package name and has a prefix or a suffix to use it.
+        File obbFilesDir = new File(obbFilesPath, new File(this.dataDir).getName());
+        // Check if the dir exists. Otherwise return null
+        if (obbFilesDir.exists()) {
+            return obbFilesDir.getAbsolutePath();
+        }
+        return null;
     }
 
     public int getBackupMode() {
@@ -176,7 +219,7 @@ public class AppInfo
     }
 
     public String toString() {
-        return label + " : " + packageName;
+        return String.format("%s [%s]", this.packageName, this.label);
     }
 
     public int describeContents() {
