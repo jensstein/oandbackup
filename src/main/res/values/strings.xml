@@ -124,7 +124,7 @@
     <string name="prefs_summaryBackupFolder">Path to backup folder. leave blank for default.</string>
     <string name="prefs_summaryToybox">Path to toybox/busybox executable. be sure it\'s correct. leave blank for default.</string>
     <string name="prefs_summaryOldBackups">Filter backups older than value in days. used with the filter \'show old backups\'</string>
-    <string name="prefs_summaryCopySelfApk">Place a copy of oandbackup in the top level of the backup folder when backed up</string>
+    <string name="prefs_summaryCopySelfApk">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
     <string name="prefs_summaryRememberFiltering">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
     <string name="prefs_summaryFollowSymlinks">Always follow symbolic links when copying (cp -L)</string>
     <string name="prefs_summaryQuickReboot">Kills the system_server process to force a restart of user space</string>
