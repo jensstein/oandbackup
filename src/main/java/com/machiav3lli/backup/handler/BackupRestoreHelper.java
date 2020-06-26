@@ -54,8 +54,7 @@ public class BackupRestoreHelper {
         if (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) {
             if (apk != null && apk.length() > 0) {
                 if (app.isSystem()) {
-                    apkRet = shellCommands.restoreSystemApk(backupSubDir,
-                            app.getLabel(), apk);
+                    apkRet = shellCommands.restoreSystemApk(backupSubDir, apk);
                 } else {
                     apkRet = shellCommands.restoreUserApk(backupSubDir,
                             app.getLabel(), apk, context.getApplicationInfo().dataDir, null);
@@ -65,6 +64,8 @@ public class BackupRestoreHelper {
                             if (apkRet == 0) {
                                 apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
                                         splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
+                            }else{
+                                break;
                             }
                         }
                     }
@@ -82,7 +83,12 @@ public class BackupRestoreHelper {
                     restoreRet = shellCommands.restoreSpecial(backupSubDir, app);
                 } else {
                     restoreRet = shellCommands.doRestore(backupSubDir, app);
-                    permRet = shellCommands.setPermissions(dataDir);
+                    try {
+                        shellCommands.setPermissions(dataDir);
+                    } catch (ShellCommands.OwnershipException | ShellCommands.ShellCommandException e) {
+                        Log.e(TAG, "Could not set permissions on " + dataDir);
+                        permRet = 1;
+                    }
                 }
             } else {
                 Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + app.getPackageName());

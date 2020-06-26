@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -18,7 +17,6 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.AssetsHandler;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.Utils;
@@ -90,7 +88,6 @@ public class IntroActivity extends BaseActivity {
     private void checkRun(Bundle savedInstanceState) {
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        else new AssetHandlerTask().execute(this);
     }
 
     private void getPermissions() {
@@ -148,17 +145,11 @@ public class IntroActivity extends BaseActivity {
         RootBeer rootBeer = new RootBeer(this);
         if (!rootBeer.isRooted()) Utils.showWarning(this, TAG, getString(R.string.noSu));
         if (!checkBusybox()) Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
-        handleMessages.changeMessage(TAG, getString(R.string.oabUtilsCheck));
-        if (!checkOabUtils()) Utils.showWarning(this, TAG, getString(R.string.oabUtilsProblem));
         handleMessages.endMessage();
     }
 
     private boolean checkBusybox() {
-        return (shellCommands.checkToybox());
-    }
-
-    private boolean checkOabUtils() {
-        return (shellCommands.checkOabUtils());
+        return (shellCommands.checkUtilBoxPath());
     }
 
     private void launchMainActivity() {
@@ -166,30 +157,5 @@ public class IntroActivity extends BaseActivity {
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = Utils.createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));
-    }
-
-    private static class AssetHandlerTask extends AsyncTask<Context, Void, Context> {
-        private Throwable throwable;
-
-        @Override
-        public Context doInBackground(Context... contexts) {
-            try {
-                AssetsHandler.copyOabutils(contexts[0]);
-            } catch (AssetsHandler.AssetsHandlerException e) {
-                throwable = e;
-            }
-            return contexts[0];
-        }
-
-        @Override
-        public void onPostExecute(Context context) {
-            if (throwable != null) {
-                Log.e(TAG, String.format(
-                        "error during AssetHandlerTask.onPostExecute: %s",
-                        throwable.toString()));
-                Toast.makeText(context, throwable.toString(),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }

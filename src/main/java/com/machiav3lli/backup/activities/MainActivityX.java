@@ -34,6 +34,8 @@ import com.machiav3lli.backup.items.SortFilterModel;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
+import com.topjohnwu.superuser.BuildConfig;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +49,15 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    static {
+        /* Shell.Config methods shall be called before any shell is created
+         * This is the why in this example we call it in a static block
+         * The followings are some examples, check Javadoc for more details */
+        Shell.Config.verboseLogging(BuildConfig.DEBUG);
+        Shell.Config.setTimeout(20);
+    }
+
     static final String TAG = Constants.classTag(".MainActivityX");
     static final int BATCH_REQUEST = 1;
     long threadId = -1;
@@ -204,7 +215,7 @@ public class MainActivityX extends BaseActivity
                 backupDir = Utils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
-                if (!shellCommands.checkToybox())
+                if (!shellCommands.checkUtilBoxPath())
                     Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();

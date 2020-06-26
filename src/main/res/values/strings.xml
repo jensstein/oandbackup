@@ -47,11 +47,6 @@
     <string name="restoreDataWithoutApkError">Cannot restore data without restoring APK, package is not installed</string>
     <string name="collectingData">Collecting package info…</string>
     <string name="suCheck">Checking for superuser and busybox…</string>
-    <string name="oabUtilsCheck">Checking for oab-utils…</string>
-    <string name="oabUtilsProblem">
-        Couldn\'t find oab-utils - running in legacy mode,
-        please report this to the developer
-    </string>
     <string name="noSu">Couldn\'t get superuser permissions</string>
     <string name="busyboxProblem">Couldn\'t find busybox. please check error log</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
