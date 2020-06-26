@@ -1,0 +1,5 @@
+<p>臭名昭著的 OAndBackup 的分叉，目的在于将此应用带入 2020，添加对最新版本 Android 的支持并更新其外观。</p>
+<p>此应用使您可以备份并还原您设备上的应用。<i>OAndBackupX</i> 使您可以将应用数据保存在用户可访问的位置。支持备份/恢复单个或多个应用。</p>
+<p><i>OAndBackupX</i> 当前需要可用的 busybox 安装（通常预装载自定义 rom 中）。</p>
+<p><br><b>需要 root：</b> 因为它从 /data/data，/data/app 和 /system/app 复制文件。</p>
+<p>状态：Beta</p>
