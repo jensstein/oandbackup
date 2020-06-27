@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -13,6 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -86,6 +88,32 @@ public final class Crypto {
             cipher.init(Cipher.ENCRYPT_MODE, secret, iv);
             return new CipherOutputStream(os, cipher);
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
+            Log.e(Crypto.TAG, "Could not setup encryption: " + e.getMessage());
+            throw new CryptoSetupException("Could not setup encryption", e);
+        }
+    }
+
+    public static CipherInputStream decryptStream(InputStream in, String password, byte[] salt) throws CryptoSetupException {
+        try{
+            SecretKey secret = Crypto.generateKeyFromPassword(password, salt);
+            return Crypto.decryptStream(in, secret);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            Log.e(Crypto.TAG, "Could not setup encryption: " + e.getMessage());
+            throw new CryptoSetupException("Could not setup encryption", e);
+        }
+    }
+
+    public static CipherInputStream decryptStream(InputStream in, SecretKey secret) throws CryptoSetupException {
+        return Crypto.decryptStream(in, secret, Crypto.DEFAULT_CIPHER_ALGORITHM);
+    }
+
+    public static CipherInputStream decryptStream(InputStream in, SecretKey secret, String cipherAlgorithm) throws CryptoSetupException {
+        try {
+            Cipher cipher = Cipher.getInstance(cipherAlgorithm);
+            final IvParameterSpec iv = new IvParameterSpec(Crypto.initIv(cipherAlgorithm));
+            cipher.init(Cipher.DECRYPT_MODE, secret, iv);
+            return new CipherInputStream(in, cipher);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException e) {
             Log.e(Crypto.TAG, "Could not setup encryption: " + e.getMessage());
             throw new CryptoSetupException("Could not setup encryption", e);
         }
