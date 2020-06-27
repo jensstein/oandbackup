@@ -21,19 +21,25 @@ public class TarArchive implements Closeable {
         this.archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
     }
 
-    public void addFilepath(String inputFilepath, String parent) throws IOException {
-        File file = new File(inputFilepath);
-        String entryName = parent + file.getName();
+    /**
+     * Adds a filepath to the archive.
+     * If it's a directory, it'll be added cursively
+     * @param inputFilepath the filepath to add to the archive
+     * @param parent the parent directory in the archive, use "" to add it to the root directory
+     * @throws IOException on IO related errors such as out of disk space or missing files
+     */
+    public void addFilepath(File inputFilepath, String parent) throws IOException {
+        String entryName = parent + inputFilepath.getName();
 
-        this.archive.putArchiveEntry(new TarArchiveEntry(file, entryName));
-        if(file.isFile()){
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        this.archive.putArchiveEntry(new TarArchiveEntry(inputFilepath, entryName));
+        if(inputFilepath.isFile()){
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(inputFilepath));
             IOUtils.copy(bis, this.archive);
             this.archive.closeArchiveEntry();
             bis.close();
-        }else if(file.isDirectory()){
-            for(File nextFile : Objects.requireNonNull(file.listFiles(), "Directory listing returned null!")){
-                this.addFilepath(nextFile.getAbsolutePath(), entryName + File.separator);
+        }else if(inputFilepath.isDirectory()){
+            for(File nextFile : Objects.requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")){
+                this.addFilepath(nextFile, entryName + File.separator);
             }
         }
     }
