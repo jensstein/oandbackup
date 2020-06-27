@@ -193,6 +193,16 @@
                 android:layout_margin="@dimen/cards_spacing"
                 android:orientation="horizontal">
 
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dismiss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/cards_spacing"
+                    android:background="@drawable/card_rc8"
+                    android:elevation="2dp"
+                    android:src="@drawable/ic_round_next_32" />
+
                 <Button
                     android:id="@+id/reset"
                     style="@style/Button.Negative"

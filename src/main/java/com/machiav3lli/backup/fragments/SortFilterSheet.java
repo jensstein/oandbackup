@@ -42,6 +42,11 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         this.sortFilterModel = sortFilterModel;
     }
 
+    @OnClick(R.id.dismiss)
+    public void dismiss() {
+        dismissAllowingStateLoss();
+    }
+
     @OnClick(R.id.apply)
     public void apply() {
         SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
