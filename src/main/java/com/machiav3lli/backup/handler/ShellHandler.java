@@ -38,15 +38,15 @@ public class ShellHandler {
         }
     }
 
-    protected interface RunnableShellCommand {
+    public interface RunnableShellCommand {
         Shell.Job runCommand(String... commands);
     }
 
-    protected static Shell.Result runAsRoot(String... commands) throws ShellCommandFailedException {
+    public static Shell.Result runAsRoot(String... commands) throws ShellCommandFailedException {
         return ShellHandler.runShellCommand(Shell::su, commands);
     }
 
-    protected static Shell.Result runAsUser(String... commands) throws ShellCommandFailedException {
+    public static Shell.Result runAsUser(String... commands) throws ShellCommandFailedException {
         return ShellHandler.runShellCommand(Shell::sh, commands);
     }
 
