@@ -220,7 +220,7 @@ public class ShellCommands {
             if (splitApks != null) {
                 Log.i(TAG, String.format("%s is a split apk (%d apks)", packageName, splitApks.length));
                 apks = new String[1 + splitApks.length];
-                System.arraycopy(splitApks, 0, apks, 0, apks.length);
+                System.arraycopy(splitApks, 0, apks, 1, splitApks.length);
             } else {
                 apks = new String[1];
             }
