@@ -1,14 +1,19 @@
 package com.machiav3lli.backup.handler;
 
+import android.app.usage.StorageStats;
+import android.app.usage.StorageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Process;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -18,6 +23,9 @@ import com.machiav3lli.backup.items.AppInfoSpecial;
 import com.machiav3lli.backup.items.LogFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +34,7 @@ import java.util.List;
 
 public class AppInfoHelper {
     final static String TAG = Constants.classTag(".AppInfoHelper");
+    public static Comparator<PackageInfo> pInfoPackageNameComparator = (p1, p2) -> p1.packageName.compareToIgnoreCase(p2.packageName);
 
     public static ArrayList<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups,
                                                     boolean includeSpecialBackups) {
@@ -40,13 +49,23 @@ public class AppInfoHelper {
             addSpecialBackups(context, backupDir, list, packageNames);
         }
         for (PackageInfo packageInfo : packageInfoList) {
-            packageNames.add(packageInfo.packageName);
             boolean isSystem = false;
-            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            String packageName = packageInfo.packageName;
+            packageNames.add(packageName);
+            if ((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
                 isSystem = true;
             if (backupDir != null) {
+                String dataDir = applicationInfo.dataDir;
+                String deDataDir = applicationInfo.deviceProtectedDataDir;
+                if (packageName.equals("android") && dataDir == null)
+                    dataDir = "/data/system";
+                AppInfo appInfo = new AppInfo(packageName, applicationInfo.loadLabel(pm).toString(),
+                        packageInfo.versionName, packageInfo.versionCode, applicationInfo.sourceDir,
+                        applicationInfo.splitSourceDirs, dataDir, deDataDir, isSystem, true);
+
                 Bitmap icon = null;
-                Drawable apkIcon = pm.getApplicationIcon(packageInfo.applicationInfo);
+                Drawable apkIcon = pm.getApplicationIcon(applicationInfo);
                 try {
                     if (apkIcon instanceof BitmapDrawable) {
                         // getApplicationIcon gives a Drawable which is then cast as a BitmapDrawable
@@ -57,7 +76,7 @@ public class AppInfoHelper {
                         } else {
                             Log.d(TAG, String.format(
                                     "icon for %s had invalid height or width (h: %d w: %d)",
-                                    packageInfo.packageName, src.getHeight(), src.getWidth()));
+                                    packageName, src.getHeight(), src.getWidth()));
                         }
                     } else {
                         if (apkIcon.getIntrinsicHeight() > 0 && apkIcon.getIntrinsicHeight() > 0)
@@ -69,25 +88,38 @@ public class AppInfoHelper {
                     }
                 } catch (ClassCastException ignored) {
                 }
+                appInfo.icon = icon;
 
-                String dataDir = packageInfo.applicationInfo.dataDir;
-                String deDataDir = packageInfo.applicationInfo.deviceProtectedDataDir;
-                if (packageInfo.packageName.equals("android") && dataDir == null)
-                    dataDir = "/data/system";
-                AppInfo appInfo = new AppInfo(packageInfo.packageName,
-                        packageInfo.applicationInfo.loadLabel(pm).toString(),
-                        packageInfo.versionName, packageInfo.versionCode,
-                        packageInfo.applicationInfo.sourceDir,
-                        packageInfo.applicationInfo.splitSourceDirs, dataDir, deDataDir, isSystem,
-                        true);
-                File subdir = new File(backupDir, packageInfo.packageName);
+                File subdir = new File(backupDir, packageName);
                 if (subdir.exists()) {
-                    LogFile logInfo = new LogFile(subdir, packageInfo.packageName);
+                    LogFile logInfo = new LogFile(subdir, packageName);
                     appInfo.setLogInfo(logInfo);
                 }
-                appInfo.icon = icon;
-                if (disabledPackages != null && disabledPackages.contains(packageInfo.packageName))
+                if (disabledPackages != null && disabledPackages.contains(packageName))
                     appInfo.setDisabled(true);
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    try {
+                        Method getPackageSizeInfo = pm.getClass().getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
+                        getPackageSizeInfo.invoke(pm, packageName, new IPackageStatsObserver.Stub() {
+                            @Override
+                            public void onGetStatsCompleted(final PackageStats appStats, boolean succeeded) {
+                                appInfo.addSizes(appStats);
+                            }
+                        });
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        StorageStatsManager storageStatsManager = (StorageStatsManager) context.getSystemService(Context.STORAGE_STATS_SERVICE);
+                        StorageStats storageStats = storageStatsManager.queryStatsForPackage(applicationInfo.storageUuid, packageName, Process.myUserHandle());
+                        appInfo.addSizes(storageStats);
+                    } catch (IOException | PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 list.add(appInfo);
             }
         }
@@ -176,6 +208,4 @@ public class AppInfoHelper {
             list.add(appInfo);
         }
     }
-
-    public static Comparator<PackageInfo> pInfoPackageNameComparator = (p1, p2) -> p1.packageName.compareToIgnoreCase(p2.packageName);
 }

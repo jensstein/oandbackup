@@ -1,21 +1,36 @@
 package com.machiav3lli.backup.items;
 
+import android.app.usage.StorageStats;
+import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.RequiresApi;
+
 public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
-    LogFile logInfo;
-    String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
-    String[] splitSourceDirs;
-    int versionCode, backupMode;
-    private boolean system, installed, checked, disabled;
-    public Bitmap icon;
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
     public static final int MODE_BOTH = 3;
+    public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() {
+        public AppInfo createFromParcel(Parcel in) {
+            return new AppInfo(in);
+        }
+
+        public AppInfo[] newArray(int size) {
+            return new AppInfo[size];
+        }
+    };
+    public Bitmap icon;
+    LogFile logInfo;
+    String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
+    String[] splitSourceDirs;
+    int versionCode, backupMode;
+    long appSize, dataSize, cacheSize;
+    private boolean system, installed, checked, disabled;
 
     public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String[] splitSourceDirs, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
         this.label = label;
@@ -29,6 +44,28 @@ public class AppInfo
         this.system = system;
         this.installed = installed;
         this.backupMode = MODE_UNSET;
+    }
+
+    protected AppInfo(Parcel in) {
+        logInfo = in.readParcelable(getClass().getClassLoader());
+        label = in.readString();
+        packageName = in.readString();
+        versionName = in.readString();
+        sourceDir = in.readString();
+        splitSourceDirs = in.createStringArray();
+        dataDir = in.readString();
+        deviceProtectedDataDir = in.readString();
+        versionCode = in.readInt();
+        backupMode = in.readInt();
+        boolean[] bools = new boolean[4];
+        in.readBooleanArray(bools);
+        system = bools[0];
+        installed = bools[1];
+        checked = bools[2];
+        icon = in.readParcelable(getClass().getClassLoader());
+        appSize = in.readLong();
+        dataSize = in.readLong();
+        cacheSize = in.readLong();
     }
 
     public String getPackageName() {
@@ -67,6 +104,26 @@ public class AppInfo
         return backupMode;
     }
 
+    public void setBackupMode(int modeToAdd) {
+        // add only if both values are different and neither is MODE_BOTH
+        if (backupMode == MODE_BOTH || modeToAdd == MODE_BOTH)
+            backupMode = MODE_BOTH;
+        else if (modeToAdd != backupMode)
+            backupMode += modeToAdd;
+    }
+
+    public long getAppSize() {
+        return appSize;
+    }
+
+    public long getDataSize() {
+        return dataSize;
+    }
+
+    public long getCacheSize() {
+        return cacheSize;
+    }
+
     public LogFile getLogInfo() {
         return logInfo;
     }
@@ -74,14 +131,6 @@ public class AppInfo
     public void setLogInfo(LogFile newLogInfo) {
         logInfo = newLogInfo;
         backupMode = logInfo.getBackupMode();
-    }
-
-    public void setBackupMode(int modeToAdd) {
-        // add only if both values are different and neither is MODE_BOTH
-        if (backupMode == MODE_BOTH || modeToAdd == MODE_BOTH)
-            backupMode = MODE_BOTH;
-        else if (modeToAdd != backupMode)
-            backupMode += modeToAdd;
     }
 
     public boolean isChecked() {
@@ -92,12 +141,12 @@ public class AppInfo
         this.checked = checked;
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
-
     public boolean isDisabled() {
         return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     public boolean isSystem() {
@@ -147,34 +196,21 @@ public class AppInfo
         out.writeInt(backupMode);
         out.writeBooleanArray(new boolean[]{system, installed, checked});
         out.writeParcelable(icon, flags);
+        out.writeLong(appSize);
+        out.writeLong(dataSize);
+        out.writeLong(cacheSize);
     }
 
-    public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() {
-        public AppInfo createFromParcel(Parcel in) {
-            return new AppInfo(in);
-        }
+    public void addSizes(PackageStats appStats) {
+        this.appSize = appStats.codeSize + appStats.externalCodeSize;
+        this.dataSize = appStats.dataSize + appStats.externalDataSize;
+        this.cacheSize = appStats.cacheSize + appStats.externalCacheSize;
+    }
 
-        public AppInfo[] newArray(int size) {
-            return new AppInfo[size];
-        }
-    };
-
-    protected AppInfo(Parcel in) {
-        logInfo = in.readParcelable(getClass().getClassLoader());
-        label = in.readString();
-        packageName = in.readString();
-        versionName = in.readString();
-        sourceDir = in.readString();
-        splitSourceDirs = in.createStringArray();
-        dataDir = in.readString();
-        deviceProtectedDataDir = in.readString();
-        versionCode = in.readInt();
-        backupMode = in.readInt();
-        boolean[] bools = new boolean[4];
-        in.readBooleanArray(bools);
-        system = bools[0];
-        installed = bools[1];
-        checked = bools[2];
-        icon = in.readParcelable(getClass().getClassLoader());
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addSizes(StorageStats storageStats) {
+        appSize = storageStats.getAppBytes();
+        cacheSize = storageStats.getCacheBytes();
+        dataSize = storageStats.getDataBytes() - cacheSize;
     }
 }
