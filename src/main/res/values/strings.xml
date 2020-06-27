@@ -193,12 +193,17 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_system">System\'s theme</string>
     <string name="empty_filtered_list">The filtered List is empty, therefore setting the filters back to default</string>
-    <string name="ignore_battery_optimization_refuse">Won\'t do it</string>
-    <string name="ignore_battery_optimization_approve">Let\'s do it</string>
+    <string name="permission_refuse">Won\'t do it</string>
+    <string name="permission_approve">Let\'s do it</string>
     <string name="ignore_battery_optimization_title">Battery Optimization</string>
     <string name="ignore_battery_optimization_message">Backups could stop sometimes. To prevent this, you should turn off the battery optimization</string>
     <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>
     <string name="failed_unzipping">Error while unzipping the data, check the encryption password!</string>
     <string name="split_apks">Split APKs:</string>
     <string name="backup_filters">Backup Filters:</string>
+    <string name="grant_usage_access_title">Grant Usage Access</string>
+    <string name="grant_usage_access_message">This is essential to get the information about sizes of app\'s files</string>
+    <string name="app_size">App Size:</string>
+    <string name="data_size">Data Size:</string>
+    <string name="cache_size">Cache Size:</string>
 </resources>

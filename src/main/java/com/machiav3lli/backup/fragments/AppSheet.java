@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +64,22 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     AppCompatTextView packageName;
     @BindView(R.id.appType)
     AppCompatTextView appType;
+    @BindView(R.id.appSize)
+    AppCompatTextView appSize;
+    @BindView(R.id.appSize_line)
+    LinearLayoutCompat appSizeLine;
+    @BindView(R.id.dataSize)
+    AppCompatTextView dataSize;
+    @BindView(R.id.dataSize_line)
+    LinearLayoutCompat dataSizeLine;
+    @BindView(R.id.cacheSize)
+    AppCompatTextView cacheSize;
+    @BindView(R.id.cacheSize_line)
+    LinearLayoutCompat cacheSizeLine;
     @BindView(R.id.appSplits)
     AppCompatTextView appSplits;
+    @BindView(R.id.appSplits_line)
+    LinearLayoutCompat appSplitsLine;
     @BindView(R.id.versionName)
     AppCompatTextView versionCode;
     @BindView(R.id.lastBackup)
@@ -164,6 +179,16 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         packageName.setText(app.getPackageName());
         if (app.isSystem()) appType.setText(R.string.systemApp);
         else appType.setText(R.string.userApp);
+        if (app.isSpecial()) {
+            appSizeLine.setVisibility(View.GONE);
+            dataSizeLine.setVisibility(View.GONE);
+            cacheSizeLine.setVisibility(View.GONE);
+            appSplitsLine.setVisibility(View.GONE);
+        } else {
+            appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
+            dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
+            cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
+        }
         if (app.isSplit()) appSplits.setText(R.string.dialogYes);
         else appSplits.setText(R.string.dialogNo);
         if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
