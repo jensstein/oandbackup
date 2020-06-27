@@ -1,16 +1,19 @@
 package com.machiav3lli.backup.activities;
 
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
@@ -39,15 +42,27 @@ public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.classTag(".IntroActivity");
     static final int READ_PERMISSION = 2;
     static final int WRITE_PERMISSION = 3;
+    static final int STATS_PERMISSION = 4;
+    public static File backupDir;
 
     @BindView(R.id.action)
     MaterialButton btn;
 
-    public static File backupDir;
     SharedPreferences prefs;
     ArrayList<String> users;
     ShellCommands shellCommands;
     HandleMessages handleMessages;
+
+    public static boolean checkUsageStatsPermission(Context context) {
+        AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        assert appOps != null;
+        final int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            return (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            return (mode == AppOpsManager.MODE_ALLOWED);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,12 +78,14 @@ public class IntroActivity extends BaseActivity {
         shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
         handleMessages = new HandleMessages(this);
 
-        if (!checkPermissions())
-            btn.setOnClickListener(v -> getPermissions());
-        else {
+        if (checkStoragePermissions() && checkUsageStatsPermission(this)) {
             btn.setVisibility(View.GONE);
             checkResources();
             launchMainActivity();
+        } else if (!checkUsageStatsPermission(this)) {
+            btn.setOnClickListener(v -> getUsageStatsPermission());
+        } else {
+            btn.setOnClickListener(v -> getStoragePermission());
         }
     }
 
@@ -90,12 +107,25 @@ public class IntroActivity extends BaseActivity {
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
     }
 
-    private void getPermissions() {
+    private void getStoragePermission() {
         requireWriteStoragePermission();
         requireReadStoragePermission();
     }
 
-    private boolean checkPermissions() {
+    private void getUsageStatsPermission() {
+        if (!checkUsageStatsPermission(this)) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.grant_usage_access_title)
+                    .setMessage(R.string.grant_usage_access_message)
+                    .setPositiveButton(R.string.permission_approve,
+                            (dialog, which) -> startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), STATS_PERMISSION))
+                    .setNeutralButton(getString(R.string.permission_refuse), (dialog, which) -> finish())
+                    .setCancelable(false)
+                    .show();
+        }
+    }
+
+    private boolean checkStoragePermissions() {
         return (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -131,6 +161,23 @@ public class IntroActivity extends BaseActivity {
         } else {
             Log.w(TAG, String.format("Unknown permissions request code: %s",
                     requestCode));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == STATS_PERMISSION) {
+            if (checkUsageStatsPermission(this)) {
+                if (checkStoragePermissions()) {
+                    checkResources();
+                    launchMainActivity();
+                } else {
+                    getStoragePermission();
+                }
+            } else {
+                finishAffinity();
+            }
         }
     }
 
