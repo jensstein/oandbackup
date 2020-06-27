@@ -42,7 +42,9 @@ public class BackupAppAction extends BaseAppAction {
             }
             if (actionMode.contains(AppInfo.ActionMode.DATA)) {
                 try {
-                    this.wipeCache(app);
+                    if (this.getSharedPreferences().getBoolean(Constants.PREFS_CLEARCACHE, true)) {
+                        this.wipeCache(app);
+                    }
                 } catch (ShellHandler.ShellCommandFailedException e) {
                     // Not a critical issue
                     Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + Utils.iterableToString(e.getShellResult().getErr()));
