@@ -30,6 +30,7 @@ ext {
             zip4j             : "2.6.0",
             libsu             : "2.5.1",
             commons_compress  : "1.20",
+            commons_io        : "2.7",
 
             butterknife       : "10.2.1",
 
@@ -56,6 +57,7 @@ dependencies {
     implementation "net.lingala.zip4j:zip4j:${versions.zip4j}"
     implementation "com.github.topjohnwu.libsu:core:${versions.libsu}"
     implementation "org.apache.commons:commons-compress:${versions.commons_compress}"
+    implementation "commons-io:commons-io:${versions.commons_io}"
 
     //ButterKnife
     implementation "com.jakewharton:butterknife:${versions.butterknife}"
