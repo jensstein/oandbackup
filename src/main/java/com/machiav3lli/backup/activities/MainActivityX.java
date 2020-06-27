@@ -50,6 +50,10 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    static final String TAG = Constants.classTag(".MainActivityX");
+    static final int BATCH_REQUEST = 1;
+    public static ArrayList<AppInfo> originalList;
+
     static {
         /* Shell.Config methods shall be called before any shell is created
          * This is the why in this example we call it in a static block
@@ -58,10 +62,7 @@ public class MainActivityX extends BaseActivity
         Shell.Config.setTimeout(20);
     }
 
-    static final String TAG = Constants.classTag(".MainActivityX");
-    static final int BATCH_REQUEST = 1;
     long threadId = -1;
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
@@ -70,8 +71,6 @@ public class MainActivityX extends BaseActivity
     SearchView searchView;
     @BindView(R.id.sort_filter_fab)
     FloatingActionButton fab;
-
-    public static ArrayList<AppInfo> originalList;
     File backupDir = IntroActivity.backupDir;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
@@ -229,7 +228,7 @@ public class MainActivityX extends BaseActivity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.ignore_battery_optimization_title)
                 .setMessage(R.string.ignore_battery_optimization_message)
-                .setPositiveButton(R.string.ignore_battery_optimization_approve, (dialog, which) -> {
+                .setPositiveButton(R.string.permission_approve, (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     try {
@@ -240,7 +239,7 @@ public class MainActivityX extends BaseActivity
                         prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply();
                     }
                 })
-                .setNeutralButton(R.string.ignore_battery_optimization_refuse, (dialog, which) ->
+                .setNeutralButton(R.string.permission_refuse, (dialog, which) ->
                         prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply())
                 .show();
     }

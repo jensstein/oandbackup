@@ -36,10 +36,10 @@ public class Compression {
         }
     }
 
-    public static int unzip(File zipfile, File outputDir, String password) {
+    public static int unzip(File zipFile, File outputDir, String password) {
         try {
-            if (password.equals("")) new ZipFile(zipfile).extractAll(outputDir.toString());
-            else new ZipFile(zipfile, password.toCharArray()).extractAll(outputDir.toString());
+            if (password.equals("")) new ZipFile(zipFile).extractAll(outputDir.toString());
+            else new ZipFile(zipFile, password.toCharArray()).extractAll(outputDir.toString());
             return 0;
         } catch (ZipException e) {
             Log.e(TAG, String.format("Caught exception when unzipping: %s", e));

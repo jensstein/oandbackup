@@ -41,15 +41,14 @@ public class ShellCommands {
     final static String FALLBACK_UTILBOX_PATH = "false";
     private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
     private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
-
+    private static String errors = "";
+    protected Context context;
+    boolean multiuserEnabled;
     private SharedPreferences prefs;
     private String utilboxPath;
     private ArrayList<String> users;
-    protected Context context;
     private String password;
-    private static String errors = "";
     private List<String> errorList = new ArrayList<>();
-    boolean multiuserEnabled;
 
     public ShellCommands(Context context, SharedPreferences prefs, ArrayList<String> users, File filesDir) {
         this.users = users;
@@ -157,10 +156,6 @@ public class ShellCommands {
         return null;
     }
 
-    protected interface runnableShellCommand{
-        Shell.Job runCommand(String... commands);
-    }
-
     protected static Shell.Result runAsRoot(String... commands) {
         return ShellCommands.runShellCommand(Shell::su, null, commands);
     }
@@ -177,7 +172,7 @@ public class ShellCommands {
         return ShellCommands.runShellCommand(Shell::sh, errors, commands);
     }
 
-    private static Shell.Result runShellCommand(runnableShellCommand c, Collection<String> errors, String ... commands){
+    private static Shell.Result runShellCommand(runnableShellCommand c, Collection<String> errors, String... commands) {
         // defining stdout and stderr on our own
         // otherwise we would have to set set the flag redirect stderr to stdout:
         // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
@@ -188,8 +183,8 @@ public class ShellCommands {
         Log.d(TAG, "Running Command: " + Utils.iterableToString("; ", commands));
         Shell.Result result = c.runCommand(commands).to(stdout, stderr).exec();
         Log.d(TAG, String.format("Command(s) '%s' ended with %d", Arrays.toString(commands), result.getCode()));
-        if(!result.isSuccess() ){
-            if(errors != null){
+        if (!result.isSuccess()) {
+            if (errors != null) {
                 errors.addAll(stderr);
             }
         }
@@ -418,13 +413,13 @@ public class ShellCommands {
                         e.printStackTrace();
                     }
                     // append
-                    restoreCommands.add(String.format("chmod -R 777 %s",deviceProtectedDataDir));
+                    restoreCommands.add(String.format("chmod -R 777 %s", deviceProtectedDataDir));
                     Shell.Result shellResult = ShellCommands.runAsRoot(errorList, restoreCommands.stream().collect(Collectors.joining(" ; ")));
                     exitCode |= shellResult.getCode();
                 }
 
                 // Apply changes
-                restoreCommand = String.format("restorecon -R %s; restorecon -R %s", dataDir,deviceProtectedDataDir);
+                restoreCommand = String.format("restorecon -R %s; restorecon -R %s", dataDir, deviceProtectedDataDir);
                 ShellCommands.runAsRoot(errorList, restoreCommand);
 
                 // Execute
@@ -467,8 +462,8 @@ public class ShellCommands {
 
         // Execute
         Shell.Result shellResult = ShellCommands.runAsRoot(commands.stream().collect(Collectors.joining(" ; ")));
-        if(shellResult.getErr().size() > 0){
-            for(String line : shellResult.getErr()){
+        if (shellResult.getErr().size() > 0) {
+            for (String line : shellResult.getErr()) {
                 ShellCommands.writeErrorLog(context, app.getPackageName(), line);
             }
             exitCode = 1;
@@ -525,8 +520,8 @@ public class ShellCommands {
                             String.format("%s chown -R %s %s", utilboxPath, ownership.toString(), file) + " && " +
                             String.format("%s chmod -R 0771 %s", utilboxPath, file);
                     Shell.Result shellResult = ShellCommands.runAsRoot(command);
-                    if(!shellResult.isSuccess()){
-                        for(String line : shellResult.getErr()){
+                    if (!shellResult.isSuccess()) {
+                        for (String line : shellResult.getErr()) {
                             ShellCommands.writeErrorLog(context, app.getPackageName(), line);
                         }
                         exitCode |= shellResult.getCode();
@@ -545,7 +540,7 @@ public class ShellCommands {
     }
 
     public int compress(File directoryToCompress) {
-        if(!directoryToCompress.exists()){
+        if (!directoryToCompress.exists()) {
             Log.d(TAG, String.format("zip target %s does not exist. Skipping", directoryToCompress));
             return 0;
         }
@@ -670,7 +665,7 @@ public class ShellCommands {
 
         Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
         if (errorList.size() > 0) {
-            for (String line : errorList){
+            for (String line : errorList) {
                 writeErrorLog(context, label, line);
             }
             return 1;
@@ -682,15 +677,15 @@ public class ShellCommands {
         String basePath = "/system/app/";
         basePath += apkname.substring(0, apkname.lastIndexOf(".")) + "/";
         String command = "(mount -o remount,rw /system" + " && " +
-                        String.format("mkdir -p %s", basePath) + " && " +
-                        String.format("%s chmod 755 %s", utilboxPath, basePath) + " && " +
-        // for some reason a permissions error is thrown if the apk path is not created first
-        // with touch, a reboot is not necessary after restoring system apps
-        // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
-                        String.format("%s touch %s%s", utilboxPath, basePath, apkname) + " && " +
-                        String.format("%s cp \"%s/%s\" %s", utilboxPath, backupDir.getAbsolutePath(), apkname, basePath) + " && " +
-                        String.format("%s chmod 644 %s%s", utilboxPath, basePath, apkname) +
-                        "); mount -o remount,ro /system";
+                String.format("mkdir -p %s", basePath) + " && " +
+                String.format("%s chmod 755 %s", utilboxPath, basePath) + " && " +
+                // for some reason a permissions error is thrown if the apk path is not created first
+                // with touch, a reboot is not necessary after restoring system apps
+                // maybe use MediaScannerConnection.scanFile like CommandHelper from CyanogenMod FileManager
+                String.format("%s touch %s%s", utilboxPath, basePath, apkname) + " && " +
+                String.format("%s cp \"%s/%s\" %s", utilboxPath, backupDir.getAbsolutePath(), apkname, basePath) + " && " +
+                String.format("%s chmod 644 %s%s", utilboxPath, basePath, apkname) +
+                "); mount -o remount,ro /system";
         Shell.Result shellResult = ShellCommands.runAsRoot(command);
         return shellResult.getCode();
     }
@@ -766,8 +761,8 @@ public class ShellCommands {
                 commands.add(String.format("pm %s --user %s %s", option, user, packageName));
             }
             Shell.Result shellResult = ShellCommands.runAsRoot(commands.stream().collect(Collectors.joining(" && ")));
-            if(!shellResult.isSuccess()){
-                for(String line : shellResult.getErr()){
+            if (!shellResult.isSuccess()) {
+                for (String line : shellResult.getErr()) {
                     ShellCommands.writeErrorLog(context, packageName, line);
                 }
             }
@@ -779,27 +774,28 @@ public class ShellCommands {
         Log.i(TAG, "return: " + returnCode + " / " + returnMessage);
     }
 
-     public boolean checkUtilBoxPath() {
+    public boolean checkUtilBoxPath() {
         return checkUtilBoxPath(utilboxPath);
     }
 
     /**
      * Checks if the given path exists and is executable
+     *
      * @param utilboxPath path to execute
      * @return true, if the execution was successful, false if not
      */
     private boolean checkUtilBoxPath(String utilboxPath) {
         // Bail out, if we know, that it does not work
-        if(utilboxPath.equals(ShellCommands.FALLBACK_UTILBOX_PATH)){
+        if (utilboxPath.equals(ShellCommands.FALLBACK_UTILBOX_PATH)) {
             return false;
         }
         // Try to get the version of the tool
         final String command = String.format("%s --version", utilboxPath);
         Shell.Result shellResult = Shell.sh(command).exec();
-        if(shellResult.getCode() == 0){
+        if (shellResult.getCode() == 0) {
             Log.i(TAG, String.format("Utilbox check: Using %s", Utils.iterableToString(shellResult.getOut())));
             return true;
-        }else{
+        } else {
             Log.d(TAG, "Utilbox check: %s not available");
             return false;
         }
@@ -811,7 +807,7 @@ public class ShellCommands {
         } else {
             Shell.Result shellResult = ShellCommands.runAsRoot(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", utilboxPath));
             ArrayList<String> users = new ArrayList<>();
-            for(String line : shellResult.getOut()){
+            for (String line : shellResult.getOut()) {
                 if (line.trim().length() != 0)
                     users.add(line.trim());
             }
@@ -821,11 +817,15 @@ public class ShellCommands {
 
     public void quickReboot() {
         Shell.Result shellResult = ShellCommands.runAsRoot(String.format("%s pkill system_server", utilboxPath));
-        if(!shellResult.isSuccess()){
-            for(String line : shellResult.getErr()){
+        if (!shellResult.isSuccess()) {
+            for (String line : shellResult.getErr()) {
                 ShellCommands.writeErrorLog(this.context, "", line);
             }
         }
+    }
+
+    protected interface runnableShellCommand {
+        Shell.Job runCommand(String... commands);
     }
 
     private static class Ownership {
@@ -861,7 +861,7 @@ public class ShellCommands {
         private final int exitCode;
         private final List<String> stderr;
 
-        public ShellCommandException(int exitCode, List<String> stderr){
+        public ShellCommandException(int exitCode, List<String> stderr) {
             this.exitCode = exitCode;
             this.stderr = stderr;
         }

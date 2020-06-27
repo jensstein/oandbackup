@@ -192,8 +192,8 @@
     <string name="theme_dark">Σκούρο</string>
     <string name="theme_system">Θέμα συστήματος</string>
     <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή, επομένως τα φίλτρα επιστρέφουν στην προεπιλογή</string>
-    <string name="ignore_battery_optimization_refuse">Δε θα το κάνω</string>
-    <string name="ignore_battery_optimization_approve">Ας το κάνω</string>
+    <string name="permission_refuse">Δε θα το κάνω</string>
+    <string name="permission_approve">Ας το κάνω</string>
     <string name="ignore_battery_optimization_title">Βελτιστοποίηση Μπαταρίας</string>
     <string name="ignore_battery_optimization_message">Η δημιουργία αντιγράφων μπορεί να σταματήσει μερικές φορές. Για την αποτροπή αυτού, πρέπει να απενεργοποιήσετε τη βελτιστοποίηση μπαταρίας</string>
     <string name="ignore_battery_optimization_not_supported">Αυτή η συσκευή δεν υποστηρίζει παράβλεψη βελτιστοποίησης μπαταρίας δυστυχώς!</string>

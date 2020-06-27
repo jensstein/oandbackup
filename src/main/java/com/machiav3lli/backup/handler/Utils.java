@@ -25,10 +25,6 @@ import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackup
 
 public class Utils {
 
-    public interface Command {
-        void execute();
-    }
-
     public static String iterableToString(String[] array) {
         return iterableToString(Arrays.asList(array));
     }
@@ -145,7 +141,7 @@ public class Utils {
 
     public static void pickColor(AppInfo app, AppCompatTextView text) {
         if (app.isInstalled()) {
-            int color = app.isSystem() ? app.isSpecial()? Color.rgb(158, 172, 64) : Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);
+            int color = app.isSystem() ? app.isSpecial() ? Color.rgb(158, 172, 64) : Color.rgb(64, 158, 172) : Color.rgb(172, 64, 158);
             if (app.isDisabled()) color = Color.DKGRAY;
             text.setTextColor(color);
         } else text.setTextColor(Color.GRAY);
@@ -161,5 +157,9 @@ public class Utils {
 
     public static void setPrefsString(Context context, String key, String value) {
         context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).edit().putString(key, value).apply();
+    }
+
+    public interface Command {
+        void execute();
     }
 }

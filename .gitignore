@@ -9,8 +9,4 @@ assets
 build
 local.properties
 src/main/jniLibs/
-arm/
-universal/
-x86_64/
-x86/
-arm64/
+release/

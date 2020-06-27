@@ -121,27 +121,3 @@ android.applicationVariants.all { variant ->
 
 clean {
 }
-
-gradle.taskGraph.whenReady { graph ->
-    def lastTask = graph.allTasks.last()
-    if (lastTask.name ==~ /(assemble|build).*/) {
-        lastTask.doLast {
-            def pythonExists = false
-            try {
-                Runtime r = Runtime.getRuntime()
-                Process p = r.exec("python3 --version")
-                p.waitFor()
-                pythonExists = p.exitValue() == 0
-            } catch (IOException ignored) {
-                logger.warn("no python - not running apk integrity checks")
-            }
-            if (pythonExists) {
-                exec {
-                    environment "GRADLE_BUILD_DIR", "$buildDir"
-                    executable = "python3"
-                    args = ["-m", "unittest", "discover", "-s", "tests"]
-                }
-            }
-        }
-    }
-}
