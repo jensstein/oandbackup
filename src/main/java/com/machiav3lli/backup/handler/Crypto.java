@@ -5,6 +5,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +44,11 @@ public final class Crypto {
      */
     public static final String DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1";
     public static final String DEFAULT_CIPHER_ALGORITHM = "AES_128/CBC/PKCS5Padding";
+    /**
+     * Default salt, if no user specified salt is available to improve security.
+     * Better a constant salt for the app that using no salt.
+     */
+    public static final byte[] FALLBACK_SALT = "oandbackupx".getBytes(StandardCharsets.UTF_8);
     public static final int DEFAULT_IV_BLOCK_SIZE = 16;  // 128 bit
     public static final int ITERATION_COUNT = 1000;
     public static final int KEY_LENGTH = 128;
