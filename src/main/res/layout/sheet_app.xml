@@ -262,7 +262,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backup"
-                        style="@style/Chip.Action"
+                        style="@style/Chip.Action.Positive"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/backup" />
@@ -276,7 +276,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/delete"
-                        style="@style/Chip.Action"
+                        style="@style/Chip.Action.Negative"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/deleteBackup" />

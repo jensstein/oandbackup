@@ -122,6 +122,19 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
+
+    <style name="Chip.Action.Negative" parent="Chip.Action">
+        <item name="chipStrokeColor">@color/app_secondary</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="android:textColor">@color/app_secondary</item>
+    </style>
+
+    <style name="Chip.Action.Positive" parent="Chip.Action">
+        <item name="chipStrokeColor">@color/app_accent</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="android:textColor">@color/app_accent</item>
+    </style>
+
     <style name="Button.NavBar" parent="android:Widget.Material.Button">
         <item name="android:background">@drawable/ripple_click</item>
         <item name="android:textAppearance">@style/TextAppearance.Button</item>
