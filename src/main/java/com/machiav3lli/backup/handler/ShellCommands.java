@@ -731,6 +731,22 @@ public class ShellCommands {
         return shellResult.getCode();
     }
 
+    public String clearCacheCommand(String packageName, String dataDir, String deDataDir) {
+        StringBuilder command = new StringBuilder(String.format("rm -r %s/cache %s/code_cache", dataDir, dataDir));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (!dataDir.equals(deDataDir)) {
+                command.append(String.format(" %s/cache %s/code_cache",
+                        deDataDir, deDataDir));
+            }
+        }
+        File[] cacheDirs = context.getExternalCacheDirs();
+        for (File cacheDir : cacheDirs) {
+            String extCache = cacheDir.getAbsolutePath().replace(context.getPackageName(), packageName);
+            command.append(" ").append(extCache);
+        }
+        return command.toString();
+    }
+
     public void killPackage(String packageName) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningList = manager.getRunningAppProcesses();
