@@ -30,7 +30,8 @@ ext {
             zip4j             : "2.6.0",
             libsu             : "2.5.1",
             commons_compress  : "1.20",
-            commons_io        : "2.7",
+            // newer versions need at least sdk 26+
+            commons_io        : "2.5",
 
             butterknife       : "10.2.1",
 
