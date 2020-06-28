@@ -330,9 +330,15 @@ public class ShellCommands {
         // Zipping DATA
         if (backupMode != AppInfo.MODE_APK) {
             int zipReturn = compress(new File(backupSubDir, folder));
-            zipReturn += compress(new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-            zipReturn += compress(new File(backupSubDirOBBFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
-            zipReturn += compress(new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1)));
+            File deviceprotectedFilesBackup = new File(backupSubDirDeviceProtectedFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
+            if (backupDeviceProtected && deviceprotectedFilesBackup.exists())
+                zipReturn += compress(deviceprotectedFilesBackup);
+            File externalFilesBackup = new File(backupSubDirExternalFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
+            if (backupExternal && externalFilesBackup.exists())
+                zipReturn += compress(externalFilesBackup);
+            File obbFilesBackup = new File(backupSubDirOBBFiles, packageData.substring(packageData.lastIndexOf("/") + 1));
+            if (backupExternal && obbFilesBackup.exists())
+                zipReturn += compress(obbFilesBackup);
             exitCode |= zipReturn;
         }
 
