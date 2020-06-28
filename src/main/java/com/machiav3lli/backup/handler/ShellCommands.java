@@ -20,6 +20,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,6 +194,19 @@ public class ShellCommands {
         return result;
     }
 
+    // to check after cleaning cache if the folder is empty, so it doesn't create an empty zip
+    private static boolean isDirNotEmpty(final String aPath) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Path path = Paths.get(aPath);
+                return Files.list(path).findAny().isPresent();
+            } else return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public int doBackup(File backupSubDir, AppInfo app, int backupMode) {
         String label = app.getLabel();
         String packageData = app.getDataDir();
@@ -251,9 +267,9 @@ public class ShellCommands {
 
         // Copying external DATA
         boolean backupExternal = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
-        File externalFilesDir = this.getExternalFilesDirPath(packageData);
+        File externalFilesDir = this.getExternalFilesDirPath(packageName);
         File backupSubDirExternalFiles = new File(backupSubDir, EXTERNAL_FILES);
-        if (backupMode != AppInfo.MODE_APK && backupExternal && externalFilesDir != null) {
+        if (backupMode != AppInfo.MODE_APK && backupExternal && externalFilesDir != null && isDirNotEmpty(externalFilesDir.getAbsolutePath())) {
             if (backupSubDirExternalFiles.exists() || backupSubDirExternalFiles.mkdir()) {
                 String command = String.format(
                         "cp -RL \"%s\" \"%s\"",
@@ -269,10 +285,9 @@ public class ShellCommands {
 
         // Copying OBB DATA
         boolean backupOBB = prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true);
-        File backupSubDirOBBFiles = null;
-        File obbFilesDir = getOBBFilesDirPath(packageData);
-        if (backupMode != AppInfo.MODE_APK && backupOBB && obbFilesDir != null) {
-            backupSubDirOBBFiles = new File(backupSubDir, OBB_FILES);
+        File backupSubDirOBBFiles = new File(backupSubDir, OBB_FILES);
+        File obbFilesDir = getOBBFilesDirPath(packageName);
+        if (backupMode != AppInfo.MODE_APK && backupOBB && obbFilesDir != null && isDirNotEmpty(obbFilesDir.getAbsolutePath())) {
             if (backupSubDirOBBFiles.exists() || backupSubDirOBBFiles.mkdir()) {
                 ShellCommands.runAsRoot(String.format("cp -RL \"%s\" \"%s\"", obbFilesDir.getAbsolutePath(), backupSubDirOBBFiles.getAbsolutePath()));
             } else Log.e(TAG, "couldn't create " + backupSubDirOBBFiles.getAbsolutePath());
@@ -281,7 +296,7 @@ public class ShellCommands {
         // Copying device protected DATA
         boolean backupDeviceProtected = prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true);
         File backupSubDirDeviceProtectedFiles = new File(backupSubDir, DEVICE_PROTECTED_FILES);
-        if (backupMode != AppInfo.MODE_APK && backupDeviceProtected) {
+        if (backupMode != AppInfo.MODE_APK && backupDeviceProtected && isDirNotEmpty(deviceProtectedPackageData)) {
             if (backupSubDirDeviceProtectedFiles.exists() || backupSubDirDeviceProtectedFiles.mkdir()) {
                 String command = String.format(
                         "cp -RL \"%s\" \"%s\"",
@@ -573,17 +588,17 @@ public class ShellCommands {
         ShellCommands.runAsRoot(errors, String.format("%s cp \"%s\" \"%s\"", utilboxPath, apkPath, parent));
     }
 
-    public File getExternalFilesDirPath(String packageData) {
-        String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
-        File externalFilesDir = new File(externalFilesPath, new File(packageData).getName());
+    public File getExternalFilesDirPath(String packageName) {
+        String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getAbsolutePath().replace(context.getPackageName(), packageName);
+        File externalFilesDir = new File(externalFilesPath);
         if (externalFilesDir.exists())
             return externalFilesDir;
         return null;
     }
 
-    public File getOBBFilesDirPath(String packageData) {
-        String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
-        File obbFilesDir = new File(obbFilesPath, new File(packageData).getName());
+    public File getOBBFilesDirPath(String packageName) {
+        String obbFilesPath = context.getObbDir().getAbsolutePath().replace(context.getPackageName(), packageName);
+        File obbFilesDir = new File(obbFilesPath);
         if (obbFilesDir.exists())
             return obbFilesDir;
         return null;
