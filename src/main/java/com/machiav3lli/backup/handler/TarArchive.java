@@ -35,9 +35,10 @@ public class TarArchive implements Closeable {
         if(inputFilepath.isFile()){
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(inputFilepath));
             IOUtils.copy(bis, this.archive);
-            this.archive.closeArchiveEntry();
             bis.close();
+            this.archive.closeArchiveEntry();
         }else if(inputFilepath.isDirectory()){
+            this.archive.closeArchiveEntry();
             for(File nextFile : Objects.requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")){
                 this.addFilepath(nextFile, entryName + File.separator);
             }
