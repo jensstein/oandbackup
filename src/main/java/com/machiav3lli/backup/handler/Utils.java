@@ -135,7 +135,8 @@ public class Utils {
                 + (app.isDisabled() ? 0 : 1)
                 + (app.isInstalled() ? 1 : 0)
                 + (app.getLogInfo() != null ? 1 : 0)
-                + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0);
+                + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0)
+                + app.getCacheSize();
         return ID;
     }
 
