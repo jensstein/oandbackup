@@ -264,6 +264,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
     }
 
+    // TODO add clear cache/data buttons
+
     @OnClick(R.id.delete)
     public void delete() {
         new AlertDialog.Builder(requireContext())

@@ -16,8 +16,6 @@ import java.io.File;
 public class BackupRestoreHelper {
     final static String TAG = Constants.classTag(".BackupRestoreHelper");
 
-    public enum ActionType {BACKUP, RESTORE}
-
     public int backup(Context context, File backupDir, @NotNull AppInfo app, ShellCommands shellCommands, int backupMode) {
         int ret;
         File backupSubDir = new File(backupDir, app.getPackageName());
@@ -64,7 +62,7 @@ public class BackupRestoreHelper {
                             if (apkRet == 0) {
                                 apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
                                         splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
-                            }else{
+                            } else {
                                 break;
                             }
                         }
@@ -101,6 +99,8 @@ public class BackupRestoreHelper {
         shellCommands.logReturnMessage(ret);
         return ret;
     }
+
+    public enum ActionType {BACKUP, RESTORE}
 
     public interface OnBackupRestoreListener {
         void onBackupRestoreDone();

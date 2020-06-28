@@ -313,23 +313,7 @@ public class ShellCommands {
             ShellCommands.writeErrorLog(context, packageName, line);
         }
 
-        if (backupSubDirPath.startsWith(context.getApplicationInfo().dataDir)) {
-            // Todo: When is the data dir used? (/data/user/0/com.machiav3lli.backup)
-            /*
-             * if backupDir is set to oab's own datadir (/data/data/com.machiav3lli.backup)
-             * we need to ensure that the permissions are correct before trying to
-             * zip. on the external storage, gid will be sdcard_r (or something similar)
-             * without any changes but in the app's own datadir files will have both uid
-             * and gid as 0 / root when they are first copied with su.
-             */
-            try {
-                setPermissions(backupSubDirPath);
-            } catch (OwnershipException e) {
-                Log.e(TAG, String.format("Could not get the permissions of %s: %s", backupSubDirPath, e));
-            } catch (ShellCommandException e) {
-                Log.e(TAG, String.format("Could not set the permissions on %s: %s", backupSubDirPath, e));
-            }
-        }
+        // Clean up
         String folder = new File(packageData).getName();
         ShellCommands.deleteBackup(new File(backupSubDir, folder + "/lib"));
 
