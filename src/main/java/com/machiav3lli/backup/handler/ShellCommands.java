@@ -211,10 +211,18 @@ public class ShellCommands {
 
         List<String> errors = new ArrayList<>();
 
-        // Copying APK & DATA
+        // Clearing Cache
         boolean clearCache = prefs.getBoolean(Constants.PREFS_CLEARCACHE, true);
-        File cacheFile = new File(String.format("%s/%s", backupSubDir, packageName), "cache");
+        if (clearCache && backupMode != AppInfo.MODE_APK) {
+            Log.d(TAG, "Wiping cache for " + packageName);
+            String command = clearCacheCommand(packageName, app.getDataDir(), app.getDeviceProtectedDataDir());
+            Shell.Result shellResult = ShellCommands.runAsRoot(errors, command);
+            if (!shellResult.isSuccess()) {
+                Log.e(TAG, "Could not wipe cache for %s" + packageName);
+            }
+        }
 
+        // Copying APK & DATA
         if (backupMode == AppInfo.MODE_APK || backupMode == AppInfo.MODE_BOTH) {
             String[] apks;
             if (splitApks != null) {
@@ -236,18 +244,6 @@ public class ShellCommands {
 
         }
         if (backupMode == AppInfo.MODE_DATA || backupMode == AppInfo.MODE_BOTH) {
-            if (clearCache) {
-                Log.d(TAG, "Wiping cache for " + packageName);
-                // tries to list the directory. If it's empty, it won't run the command
-                // If it's empty, true returns a zero as exit code, because this is not a problem
-                String command = String.format(
-                        "if ([ -d \"%s\" ] && [ -z \"$(%s)\" ]); then rm -r \"%s\"; else true; fi",
-                        cacheFile.getPath(), cacheFile.getPath(), cacheFile.getPath());
-                Shell.Result shellResult = ShellCommands.runAsRoot(errors, command);
-                if (!shellResult.isSuccess()) {
-                    Log.e(TAG, "Could not wipe cache for %s" + packageName);
-                }
-            }
             String command = String.format("cp -RL  \"%s\" \"%s\"", packageData, backupSubDirPath);
             Shell.Result shellResult = ShellCommands.runAsRoot(errorList, command);
             exitCode |= shellResult.getCode();
