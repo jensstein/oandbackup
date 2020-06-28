@@ -9,6 +9,7 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.TarArchive;
 import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.LogFile;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.FileUtils;
@@ -31,16 +32,16 @@ public class BackupAppAction extends BaseAppAction {
 
     @Override
     public void run(AppInfo app) {
-        this.run(app, AppInfo.ActionMode.BOTH);
+        this.run(app, AppInfo.MODE_BOTH);
     }
 
-    public void run(AppInfo app, EnumSet<AppInfo.ActionMode> actionMode) {
+    public void run(AppInfo app, int backupMode) {
         Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getLabel()));
         try {
-            if (actionMode.contains(AppInfo.ActionMode.APK)) {
+            if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
                 this.backupPackage(app);
             }
-            if (actionMode.contains(AppInfo.ActionMode.DATA)) {
+            if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
                 try {
                     if (this.getSharedPreferences().getBoolean(Constants.PREFS_CLEARCACHE, true)) {
                         this.wipeCache(app);
@@ -60,6 +61,9 @@ public class BackupAppAction extends BaseAppAction {
                     this.backupDeviceProtectedData(app);
                 }
             }
+            boolean encrypted = !this.getSharedPreferences().getString(Constants.PREFS_PASSWORD, "").isEmpty();
+            app.setBackupMode(backupMode);
+            LogFile.writeLogFile(this.getAppBackupFolder(app), app, backupMode, encrypted);
         } catch (BackupFailedException | Crypto.CryptoSetupException e) {
             e.printStackTrace();
         }
@@ -101,7 +105,7 @@ public class BackupAppAction extends BaseAppAction {
                 "%s: Backing up package (%d apks: %s)",
                 app,
                 apksToBackup.length,
-                Arrays.stream(apksToBackup).map(s -> new File(s).getName()).collect(Collectors.joining())
+                Arrays.stream(apksToBackup).map(s -> new File(s).getName()).collect(Collectors.joining(" "))
         ));
         String command = this.prependUtilbox(
                 String.format(

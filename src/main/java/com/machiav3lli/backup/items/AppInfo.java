@@ -37,10 +37,6 @@ public class AppInfo
     int versionCode, backupMode;
     long appSize, dataSize, cacheSize;
     private boolean system, installed, checked, disabled;
-    public enum ActionMode {
-        APK, DATA;
-        public static final EnumSet<ActionMode> BOTH = EnumSet.allOf(ActionMode.class);
-    }
 
     public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String[] splitSourceDirs, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
         this.label = label;
