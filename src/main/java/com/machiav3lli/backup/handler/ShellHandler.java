@@ -8,6 +8,7 @@ import androidx.preference.PreferenceManager;
 import com.machiav3lli.backup.Constants;
 import com.topjohnwu.superuser.Shell;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,11 @@ public class ShellHandler {
             throw new ShellCommandFailedException(result);
         }
         return result;
+    }
+
+    public static String[] suGetDirectoryContents(File path) throws ShellCommandFailedException {
+        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("ls %s", path.getAbsolutePath()));
+        return shellResult.getOut().toArray(new String[0]);
     }
 
     public String getUtilboxPath() {
