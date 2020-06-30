@@ -29,7 +29,10 @@ public abstract class BaseAppAction {
         this.shell = shell;
     }
 
-    public abstract void run(AppInfo app);
+    public void run(AppInfo app){
+        this.run(app, AppInfo.MODE_BOTH);
+    }
+    public abstract void run(AppInfo app, int backupMode);
 
     protected ShellHandler getShell() {
         return this.shell;
@@ -45,6 +48,10 @@ public abstract class BaseAppAction {
 
     public File getAppBackupFolder(AppInfo app) {
         return new File(this.getBackupFolder(), app.getPackageName());
+    }
+
+    public File getDataBackupFolder(AppInfo app){
+        return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_DATA);
     }
 
     public File getExternalFilesBackupFolder(AppInfo app) {
