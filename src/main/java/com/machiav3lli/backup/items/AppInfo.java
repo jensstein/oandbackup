@@ -110,7 +110,7 @@ public class AppInfo
         return new File(this.getDataDir(), AppInfo.CACHE_DIR).getAbsolutePath();
     }
 
-    public String getExternalFilesPath(Context context){
+    public File getExternalFilesPath(Context context){
         // Uses the context to get own external data directory
         // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
         // Goes to the parent two times to the leave own directory
@@ -118,12 +118,10 @@ public class AppInfo
         String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        File externalFilesDir = new File(externalFilesPath, new File(this.dataDir).getName());
-        // Check if the dir exists. Otherwise return null
-        return externalFilesDir.exists() ? externalFilesDir.getAbsolutePath() : null;
+        return new File(externalFilesPath, new File(this.dataDir).getName());
     }
 
-    public String getObbFilesPath(Context context){
+    public File getObbFilesPath(Context context){
         // Uses the context to get own obb data directory
         // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
         // Goes to the parent two times to the leave own directory
@@ -131,12 +129,7 @@ public class AppInfo
         String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        File obbFilesDir = new File(obbFilesPath, new File(this.dataDir).getName());
-        // Check if the dir exists. Otherwise return null
-        if (obbFilesDir.exists()) {
-            return obbFilesDir.getAbsolutePath();
-        }
-        return null;
+        return new File(obbFilesPath, new File(this.dataDir).getName());
     }
 
     public int getBackupMode() {
