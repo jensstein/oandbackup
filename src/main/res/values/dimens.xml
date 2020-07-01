@@ -1,6 +1,7 @@
 <resources>
     <!-- Margins' and Padding's Spacing -->
     <dimen name="small_spacing">2dp</dimen>
+    <dimen name="buttons_spacing">4dp</dimen>
     <dimen name="cards_spacing">8dp</dimen>
     <dimen name="med_spacing">12dp</dimen>
     <dimen name="large_spacing">16dp</dimen>

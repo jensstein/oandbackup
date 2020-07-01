@@ -14,20 +14,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.SchedulerItemX;
 import com.machiav3lli.backup.schedules.CustomPackageList;
 import com.machiav3lli.backup.schedules.HandleAlarms;
@@ -37,6 +37,7 @@ import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
+import com.machiav3lli.backup.utils.CommandUtils;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 
 import java.lang.ref.WeakReference;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.machiav3lli.backup.schedules.BlacklistsDBHelper.DATABASE_NAME;
 
@@ -61,23 +63,28 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     @BindView(R.id.excludeSystem)
     AppCompatCheckBox excludeSystem;
     @BindView(R.id.customListUpdate)
-    MaterialButton customList;
+    AppCompatButton customList;
     @BindView(R.id.schedTimeLeft)
     AppCompatTextView timeLeft;
     @BindView(R.id.checkbox)
     AppCompatCheckBox checkbox;
-    @BindView(R.id.updateButton)
-    MaterialButton updateButton;
     @BindView(R.id.removeButton)
-    MaterialButton removeButton;
+    AppCompatImageButton removeButton;
     @BindView(R.id.activateButton)
-    MaterialButton activateButton;
+    AppCompatButton activateButton;
 
     Schedule sched;
     HandleAlarms handleAlarms;
+    long tag;
 
     public ScheduleSheet(SchedulerItemX item) {
         this.sched = item.getSched();
+    }
+
+    private static void remove(SchedulerActivityX scheduler, Schedule schedule) {
+        scheduler.handleAlarms.cancelAlarm((int) schedule.getId());
+        scheduler.removeCustomListFile(schedule.getId());
+        FastAdapterDiffUtil.INSTANCE.set(scheduler.itemAdapter, scheduler.list);
     }
 
     @NonNull
@@ -111,9 +118,26 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     private void setupChips() {
         schedMode.check(convertMode(sched.getMode().getValue()));
-        schedMode.setOnCheckedChangeListener((group, checkedId) -> changeScheduleMode(convertToMode(checkedId), sched.getId()));
+        schedMode.setOnCheckedChangeListener((group, checkedId) -> {
+            changeScheduleMode(convertToMode(checkedId), tag);
+            try {
+                updateScheduleData(getScheduleDataFromView((int) tag));
+            } catch (SchedulingException e) {
+                e.printStackTrace();
+            }
+            toggleSecondaryButtons(schedMode, tag);
+            new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
+        });
         schedSubMode.check(convertSubmode(sched.getSubmode().getValue()));
-        schedSubMode.setOnCheckedChangeListener((group, checkedId) -> changeScheduleSubmode(convertToSubmode(checkedId), sched.getId()));
+        schedSubMode.setOnCheckedChangeListener((group, checkedId) -> {
+            changeScheduleSubmode(convertToSubmode(checkedId), tag);
+            try {
+                updateScheduleData(getScheduleDataFromView((int) sched.getId()));
+            } catch (SchedulingException e) {
+                e.printStackTrace();
+            }
+            new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
+        });
     }
 
     private int convertMode(int mode) {
@@ -172,37 +196,24 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         intervalDays.setText(Integer.toString(sched.getInterval()));
         timeOfDay.setText(Integer.toString(sched.getHour()));
         checkbox.setChecked(sched.isEnabled());
-        checkbox.setOnClickListener(v -> checkboxOnClick());
         setTimeLeft(sched, System.currentTimeMillis());
-        final long tag = sched.getId();
+        tag = sched.getId();
 
-        updateButton.setOnClickListener(v -> {
-            try {
-                updateScheduleData(getScheduleDataFromView((int) sched.getId()));
-            } catch (SchedulingException e) {
-                e.printStackTrace();
-            }
-            toggleSecondaryButtons(schedMode, tag);
-            new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
-        });
         removeButton.setOnClickListener(v -> {
             new RemoveScheduleTask((SchedulerActivityX) requireActivity()).execute(sched);
             new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
             dismissAllowingStateLoss();
         });
-        activateButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireActivity())
-                    .setMessage(getString(R.string.sched_activateButton))
-                    .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), sched.getId(), DATABASE_NAME).execute())
-                    .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
-                    })
-                    .show();
-        });
-        customList.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), sched.getId()));
+        activateButton.setOnClickListener(v -> new AlertDialog.Builder(requireActivity())
+                .setMessage(getString(R.string.sched_activateButton))
+                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), tag, DATABASE_NAME).execute())
+                .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
+                })
+                .show());
+        customList.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), tag));
         excludeSystem.setOnClickListener(v -> updateScheduleData(sched));
 
         toggleSecondaryButtons(schedMode, tag);
-        updateButton.setTag(tag);
         removeButton.setTag(tag);
         activateButton.setTag(tag);
         checkbox.setTag(tag);
@@ -222,7 +233,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         }
     }
 
-    public void checkboxOnClick() {
+    @OnClick(R.id.checkbox)
+    public void checkboxEnable() {
         final long id = sched.getId();
         try {
             final Schedule schedule = getScheduleDataFromView((int) id);
@@ -238,6 +250,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             Log.e(TAG, message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
         }
+        new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
     }
 
     private void changeScheduleMode(int modeInt, long id) {
@@ -255,8 +268,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     private void changeScheduleSubmode(int submodeInt, long id) {
         try {
-            final Schedule.Submode submode = Schedule.Submode.intToSubmode(
-                    submodeInt);
+            final Schedule.Submode submode = Schedule.Submode.intToSubmode(submodeInt);
             final ModeChangerRunnable modeChangerRunnable =
                     new ModeChangerRunnable((SchedulerActivityX) requireActivity(), id, submode);
             new Thread(modeChangerRunnable).start();
@@ -304,7 +316,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                 hideSecondaryButton(excludeSystem);
                 break;
             case R.id.schedCustomList:
-                if (customList.getVisibility() != View.GONE) break;
+                if (customList.getVisibility() != View.INVISIBLE) break;
                 customList.setVisibility(View.VISIBLE);
                 customList.setTag(number);
                 hideSecondaryButton(customList);
@@ -317,8 +329,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     public void hideSecondaryButton(View v) {
         int id = (v != null) ? v.getId() : -1;
-        if (customList.getVisibility() != View.GONE && id != customList.getId())
-            customList.setVisibility(View.GONE);
+        if (customList.getVisibility() != View.INVISIBLE && id != customList.getId())
+            customList.setVisibility(View.INVISIBLE);
         if (excludeSystem.getVisibility() != View.GONE && id != excludeSystem.getId())
             excludeSystem.setVisibility(View.GONE);
     }
@@ -470,15 +482,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         }
     }
 
-    private static void remove(SchedulerActivityX scheduler, Schedule schedule) {
-        scheduler.handleAlarms.cancelAlarm((int) schedule.getId());
-        scheduler.removeCustomListFile(schedule.getId());
-        FastAdapterDiffUtil.INSTANCE.set(scheduler.itemAdapter, scheduler.list);
-    }
-
     // TODO: this class should ideally just implement Runnable but the
     //  confirmation dialog needs to accept those also
-    static class StartSchedule implements Utils.Command {
+    static class StartSchedule implements CommandUtils.Command {
         private final WeakReference<Context> contextReference;
         private final WeakReference<HandleScheduledBackups> handleScheduledBackupsReference;
         private final long id;

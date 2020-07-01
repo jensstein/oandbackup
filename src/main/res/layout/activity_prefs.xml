@@ -7,14 +7,15 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_rc8">
+        android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cards_spacing"
+            android:background="@drawable/ripple_click"
             android:contentDescription=""
+            android:padding="@dimen/cards_spacing"
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -22,7 +22,7 @@
     <FrameLayout
         android:id="@+id/bottom_bar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_rc8">
+        android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"

@@ -8,7 +8,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/app_bar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_rc8">
+        android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
@@ -54,7 +54,7 @@
     <FrameLayout
         android:id="@+id/bottom_bar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_rc8">
+        android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
