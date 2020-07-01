@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Singleton;
-
 public class ShellHandler {
     static final String TAG = Constants.classTag(".ShellHandler");
     public static final String[] UTILBOX_DEFAULT_PREFERENCE = {"toybox", "busybox", "/system/xbin/busybox"};
@@ -68,10 +66,33 @@ public class ShellHandler {
         return result;
     }
 
-    public static String[] suGetDirectoryContents(File path) throws ShellCommandFailedException {
-        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("ls %s", path.getAbsolutePath()));
+    public String[] suGetDirectoryContents(File path) throws ShellCommandFailedException {
+        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("%s ls %s", this.utilboxPath, path.getAbsolutePath()));
         return shellResult.getOut().toArray(new String[0]);
     }
+
+    /**
+     * Uses superuser permissions to retrieve uid and gid of any given directory.
+     *
+     * @param filepath the filepath to retrieve the information from
+     * @return an array with two fields. First ist uid, second is gid:  {uid, gid}
+     */
+    public String[] suGetOwnerAndGroup(String filepath) throws ShellCommandFailedException, UnexpectedCommandResult {
+        String command = String.format("%s stat -c '%%u %%g' \"%s\"", this.utilboxPath, filepath);
+        Shell.Result shellResult = ShellHandler.runAsRoot(command);
+        String[] result = shellResult.getOut().get(0).split(" ");
+        if (result.length != 2) {
+            throw new UnexpectedCommandResult(String.format("'%s' should have returned 2 values, but produced %d", command, result.length), shellResult);
+        }
+        if (result[0].isEmpty()) {
+            throw new UnexpectedCommandResult(String.format("'%s' returned an empty uid", command), shellResult);
+        }
+        if (result[1].isEmpty()) {
+            throw new UnexpectedCommandResult(String.format("'%s' returned an empty gid", command), shellResult);
+        }
+        return result;
+    }
+
 
     public String getUtilboxPath() {
         return this.utilboxPath;
@@ -91,10 +112,25 @@ public class ShellHandler {
         this.utilboxPath = utilboxPath;
     }
 
+
     public static class ShellCommandFailedException extends Exception {
         protected final Shell.Result shellResult;
 
         public ShellCommandFailedException(Shell.Result shellResult) {
+            super();
+            this.shellResult = shellResult;
+        }
+
+        public Shell.Result getShellResult() {
+            return this.shellResult;
+        }
+    }
+
+    public static class UnexpectedCommandResult extends Exception {
+        protected final Shell.Result shellResult;
+
+        public UnexpectedCommandResult(String message, Shell.Result shellResult) {
+            super(message);
             this.shellResult = shellResult;
         }
 

@@ -145,7 +145,7 @@ public class BackupAppAction extends BaseAppAction {
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         try {
             // Get a list of directories in the directory to backup
-            List<String> dirsInSource = new ArrayList<>(Arrays.asList(ShellHandler.suGetDirectoryContents(sourceDirectory)));
+            List<String> dirsInSource = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(sourceDirectory)));
             List<String> excludedDirs = Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS);
             // filter out, what we don't want to backup
             dirsInSource.removeAll(excludedDirs);
@@ -177,7 +177,7 @@ public class BackupAppAction extends BaseAppAction {
             // cp -Rd would be right, but the external storage is formatted as FAT where
             // symbolic links are not supported
             String command = this.prependUtilbox(String.format(
-                    "cp -RL  %s \"%s\"",
+                    "cp -RLp  %s \"%s\"",
                     Arrays.stream(dirsToBackup).collect(Collectors.joining(" ")),
                     backupDirectory
             ));
