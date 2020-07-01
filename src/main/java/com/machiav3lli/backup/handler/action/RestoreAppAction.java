@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -178,14 +179,14 @@ public class RestoreAppAction extends BaseAppAction {
         try {
             if (isCompressed) {
                 File archiveFile = this.getBackupArchive(app, type);
-                if(!archiveFile.exists()){
+                if (!archiveFile.exists()) {
                     Log.i(RestoreAppAction.TAG,
                             String.format("%s: %s archive does not exist: %s", app, type, archiveFile));
                     return;
                 }
                 // uncompress the archive to the app's base backup folder
                 this.uncompress(this.getBackupArchive(app, type), this.getAppBackupFolder(app));
-            }else if(!backupDirectory.exists()){
+            } else if (!backupDirectory.exists()) {
                 Log.i(RestoreAppAction.TAG, String.format("%s: %s uncompressed backup dir does not exist: %s", app, type, backupDirectory));
                 return;
             }
@@ -238,6 +239,34 @@ public class RestoreAppAction extends BaseAppAction {
                 true,
                 "cp -r"
         );
+        Log.i(RestoreAppAction.TAG, app + ": Restoring permissions on data");
+        try {
+            // retrieve the assigned uid and gid from the data directory Android created
+            String[] uidgid = this.getShell().suGetOwnerAndGroup(applicationInfo.dataDir);
+            // get the contents. lib for example must be owned by root
+            List<String> dataContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(new File(applicationInfo.dataDir))));
+            // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
+            dataContents.removeAll(Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS));
+            // calculate a list what must be updated
+            String[] chownTargets = dataContents.stream().map(s -> '"' + new File(applicationInfo.dataDir, s).getAbsolutePath() + '"').toArray(String[]::new);
+            if (chownTargets.length == 0) {
+                // surprise. No data?
+                Log.w(RestoreAppAction.TAG, "No chown targets. Is this an app without any data? Doing nothing.");
+                return;
+            }
+            String command = this.prependUtilbox(String.format(
+                    "chown -R %s:%s %s", uidgid[0], uidgid[1],
+                    Arrays.stream(chownTargets).collect(Collectors.joining(" "))));
+            ShellHandler.runAsRoot(command);
+        } catch (ShellHandler.ShellCommandFailedException e) {
+            String errorMessage = "Could not update permissions";
+            Log.e(RestoreAppAction.TAG, errorMessage);
+            throw new RestoreFailedException(errorMessage, e);
+        } catch (ShellHandler.UnexpectedCommandResult e) {
+            String errorMessage = "Could not extract user and group information from data directory";
+            Log.e(RestoreAppAction.TAG, errorMessage);
+            throw new RestoreFailedException(errorMessage, e);
+        }
     }
 
     public void restoreExternalData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException {
