@@ -175,7 +175,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             case 0:
                 return R.id.schedApk;
             case 1:
-                return R.id.schedUser;
+                return R.id.schedData;
             default:
                 return R.id.schedBoth;
         }
@@ -185,7 +185,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         switch (subMode) {
             case R.id.schedApk:
                 return 0;
-            case R.id.schedUser:
+            case R.id.schedData:
                 return 1;
             default:
                 return 2;
