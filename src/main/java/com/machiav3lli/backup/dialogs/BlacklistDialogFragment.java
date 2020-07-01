@@ -11,7 +11,7 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.schedules.BlacklistListener;
+import com.machiav3lli.backup.BlacklistListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
