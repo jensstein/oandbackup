@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.utils.CommandUtils;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class ShellHandler {
         // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
         // stderr is used for logging, so it's better not to call an application that does that
         // and keeps quiet
-        Log.d(ShellHandler.TAG, "Running Command: " + Utils.iterableToString("; ", commands));
+        Log.d(ShellHandler.TAG, "Running Command: " + CommandUtils.iterableToString("; ", commands));
         List<String> stdout = new ArrayList<>();
         List<String> stderr = new ArrayList<>();
         Shell.Result result = shell.runCommand(commands).to(stdout, stderr).exec();
@@ -103,7 +104,7 @@ public class ShellHandler {
             Shell.Result shellResult = ShellHandler.runAsUser(utilboxPath + " --version");
             String utilBoxVersion = "Not returned";
             if (!shellResult.getOut().isEmpty()) {
-                utilBoxVersion = Utils.iterableToString(shellResult.getOut());
+                utilBoxVersion = CommandUtils.iterableToString(shellResult.getOut());
             }
             Log.i(ShellHandler.TAG, String.format("Using Utilbox `%s`: %s", utilboxPath, utilBoxVersion));
         } catch (ShellCommandFailedException e) {

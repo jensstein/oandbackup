@@ -11,8 +11,8 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.TarUtils;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -66,13 +66,10 @@ public class RestoreAppAction extends BaseAppAction {
         String inputFilename = filepath.getAbsolutePath();
         Log.d(RestoreAppAction.TAG, "Opening file for expansion: " + inputFilename);
         String password = this.getSharedPreferences().getString(Constants.PREFS_PASSWORD, "");
-        if (!password.isEmpty()) {
-            Log.d(RestoreAppAction.TAG, "Encryption enabled");
-            inputFilename += ".enc";
-        }
         InputStream in = new BufferedInputStream(new FileInputStream(inputFilename));
         if (!password.isEmpty()) {
-            in = Crypto.decryptStream(in, password, Utils.getCryptoSalt(this.getSharedPreferences()));
+            Log.d(RestoreAppAction.TAG, "Encryption enabled");
+            in = Crypto.decryptStream(in, password, PrefUtils.getCryptoSalt(this.getSharedPreferences()));
         }
         TarUtils.uncompressTo(new TarArchiveInputStream(new GzipCompressorInputStream(in)), targetDir);
         Log.d(RestoreAppAction.TAG, "Done expansion. Closing " + inputFilename);
@@ -224,6 +221,38 @@ public class RestoreAppAction extends BaseAppAction {
 
     }
 
+    private void genericRestorePermissions(String type, AppInfo app, File targetDir) throws RestoreFailedException {
+
+        Log.i(RestoreAppAction.TAG, app + ": Restoring permissions on " + type);
+        try {
+            // retrieve the assigned uid and gid from the data directory Android created
+            String[] uidgid = this.getShell().suGetOwnerAndGroup(targetDir.getAbsolutePath());
+            // get the contents. lib for example must be owned by root
+            List<String> dataContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(targetDir)));
+            // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
+            dataContents.removeAll(Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS));
+            // calculate a list what must be updated
+            String[] chownTargets = dataContents.stream().map(s -> '"' + new File(targetDir, s).getAbsolutePath() + '"').toArray(String[]::new);
+            if (chownTargets.length == 0) {
+                // surprise. No data?
+                Log.i(RestoreAppAction.TAG, String.format("No chown targets. Is this an app without any %s ? Doing nothing.", type));
+                return;
+            }
+            String command = this.prependUtilbox(String.format(
+                    "chown -R %s:%s %s", uidgid[0], uidgid[1],
+                    Arrays.stream(chownTargets).collect(Collectors.joining(" "))));
+            ShellHandler.runAsRoot(command);
+        } catch (ShellHandler.ShellCommandFailedException e) {
+            String errorMessage = app + " Could not update permissions for " + type;
+            Log.e(RestoreAppAction.TAG, errorMessage);
+            throw new RestoreFailedException(errorMessage, e);
+        } catch (ShellHandler.UnexpectedCommandResult e) {
+            String errorMessage = String.format("%s: Could not extract user and group information from %s directory", app, type);
+            Log.e(RestoreAppAction.TAG, errorMessage);
+            throw new RestoreFailedException(errorMessage, e);
+        }
+    }
+
     public void restoreData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException, PackageManager.NameNotFoundException {
         // using fresh info from the package manager
         // AppInfo object has outdated, wrong data from the LogFile
@@ -239,34 +268,11 @@ public class RestoreAppAction extends BaseAppAction {
                 true,
                 "cp -r"
         );
-        Log.i(RestoreAppAction.TAG, app + ": Restoring permissions on data");
-        try {
-            // retrieve the assigned uid and gid from the data directory Android created
-            String[] uidgid = this.getShell().suGetOwnerAndGroup(applicationInfo.dataDir);
-            // get the contents. lib for example must be owned by root
-            List<String> dataContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(new File(applicationInfo.dataDir))));
-            // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
-            dataContents.removeAll(Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS));
-            // calculate a list what must be updated
-            String[] chownTargets = dataContents.stream().map(s -> '"' + new File(applicationInfo.dataDir, s).getAbsolutePath() + '"').toArray(String[]::new);
-            if (chownTargets.length == 0) {
-                // surprise. No data?
-                Log.w(RestoreAppAction.TAG, "No chown targets. Is this an app without any data? Doing nothing.");
-                return;
-            }
-            String command = this.prependUtilbox(String.format(
-                    "chown -R %s:%s %s", uidgid[0], uidgid[1],
-                    Arrays.stream(chownTargets).collect(Collectors.joining(" "))));
-            ShellHandler.runAsRoot(command);
-        } catch (ShellHandler.ShellCommandFailedException e) {
-            String errorMessage = "Could not update permissions";
-            Log.e(RestoreAppAction.TAG, errorMessage);
-            throw new RestoreFailedException(errorMessage, e);
-        } catch (ShellHandler.UnexpectedCommandResult e) {
-            String errorMessage = "Could not extract user and group information from data directory";
-            Log.e(RestoreAppAction.TAG, errorMessage);
-            throw new RestoreFailedException(errorMessage, e);
-        }
+        this.genericRestorePermissions(
+                BaseAppAction.BACKUP_DIR_DATA,
+                app,
+                new File(applicationInfo.dataDir)
+        );
     }
 
     public void restoreExternalData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException {
@@ -300,7 +306,12 @@ public class RestoreAppAction extends BaseAppAction {
                 this.getDeviceProtectedFolder(app),
                 new File(applicationInfo.deviceProtectedDataDir), // refreshed info used here
                 true,
-                "cp -r"
+                "mv -r"
+        );
+        this.genericRestorePermissions(
+                BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES,
+                app,
+                new File(applicationInfo.deviceProtectedDataDir)
         );
     }
 

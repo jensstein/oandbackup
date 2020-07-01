@@ -7,9 +7,10 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.TarUtils;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
+import com.machiav3lli.backup.utils.CommandUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -48,7 +49,7 @@ public class BackupAppAction extends BaseAppAction {
                     }
                 } catch (ShellHandler.ShellCommandFailedException e) {
                     // Not a critical issue
-                    Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + Utils.iterableToString(e.getShellResult().getErr()));
+                    Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
                 }
                 this.backupData(app);
                 if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
@@ -79,7 +80,7 @@ public class BackupAppAction extends BaseAppAction {
         }
         OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFilename, false));
         if (!password.isEmpty()) {
-            out = Crypto.encryptStream(out, password, Utils.getCryptoSalt(this.getSharedPreferences()));
+            out = Crypto.encryptStream(out, password, PrefUtils.getCryptoSalt(this.getSharedPreferences()));
         }
         try (TarArchiveOutputStream archive = new TarArchiveOutputStream(new GzipCompressorOutputStream(out))) {
             archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
