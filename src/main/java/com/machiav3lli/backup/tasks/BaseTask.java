@@ -11,7 +11,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.utils.UIUtils;
 import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
@@ -65,7 +65,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             } else {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
-                Utils.showErrors(oAndBackupX);
+                UIUtils.showErrors(oAndBackupX);
             }
         }
         if (signal != null) {

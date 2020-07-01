@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.FileReaderWriter;
+import com.machiav3lli.backup.utils.LogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class LogFile implements Parcelable {
     boolean encrypted, system;
 
     public LogFile(File backupSubDir, String packageName) {
-        FileReaderWriter frw = new FileReaderWriter(backupSubDir.getAbsolutePath(), packageName + ".log");
+        LogUtils frw = new LogUtils(backupSubDir.getAbsolutePath(), packageName + ".log");
         String json = frw.read();
         try {
             JSONObject jsonObject = new JSONObject(json);

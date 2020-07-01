@@ -12,6 +12,7 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.tasks.Compression;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.topjohnwu.superuser.Shell;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultLogFilePath;
+import static com.machiav3lli.backup.utils.CommandUtils.iterableToString;
+import static com.machiav3lli.backup.utils.FileUtils.getName;
+import static com.machiav3lli.backup.utils.LogUtils.getDefaultLogFilePath;
 
 public class ShellCommands {
     public final static String DEVICE_PROTECTED_FILES = "device_protected_files";
@@ -111,7 +114,7 @@ public class ShellCommands {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
         String dateFormated = dateFormat.format(date);
         try {
-            File outFile = new FileCreationHelper().createLogFile(context, getDefaultLogFilePath(context));
+            File outFile = new LogUtils().createLogFile(context, getDefaultLogFilePath(context));
             if (outFile != null) {
                 try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
                         true);
@@ -183,7 +186,7 @@ public class ShellCommands {
         // and keeps quiet
         List<String> stdout = new ArrayList<>();
         List<String> stderr = new ArrayList<>();
-        Log.d(TAG, "Running Command: " + Utils.iterableToString("; ", commands));
+        Log.d(TAG, "Running Command: " + iterableToString("; ", commands));
         Shell.Result result = c.runCommand(commands).to(stdout, stderr).exec();
         Log.d(TAG, String.format("Command(s) '%s' ended with %d", Arrays.toString(commands), result.getCode()));
         if (!result.isSuccess()) {
@@ -196,15 +199,14 @@ public class ShellCommands {
 
     // to check after cleaning cache if the folder is empty, so it doesn't create an empty zip
     private static boolean isDirNotEmpty(final String aPath) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
                 Path path = Paths.get(aPath);
                 return Files.list(path).findAny().isPresent();
-            } else return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+            } catch (IOException e) {
+                return true;
+            }
+        } else return true;
     }
 
     public int doBackup(File backupSubDir, AppInfo app, int backupMode) {
@@ -472,7 +474,7 @@ public class ShellCommands {
         // Zipping
         if (files != null) {
             for (String file : files) {
-                File f = new File(backupSubDir, Utils.getName(file));
+                File f = new File(backupSubDir, getName(file));
                 if (f.isDirectory()) {
                     exitCode |= compress(f);
                 }
@@ -495,7 +497,7 @@ public class ShellCommands {
             if (files != null) {
                 for (String file : files) {
                     Ownership ownership = getOwnership(file);
-                    String filename = Utils.getName(file);
+                    String filename = getName(file);
                     String dest = file;
                     if (file.endsWith(File.separator)) file = file.substring(0, file.length() - 1);
 
@@ -600,7 +602,7 @@ public class ShellCommands {
             // ignored
         }
         Shell.Result shellResult = ShellCommands.runAsRoot(String.format("stat %s", packageDir));
-        ArrayList<String> uid_gid = ShellCommands.getIdsFromStat(Utils.iterableToString(shellResult.getOut()));
+        ArrayList<String> uid_gid = ShellCommands.getIdsFromStat(iterableToString(shellResult.getOut()));
 
         if (uid_gid == null || uid_gid.isEmpty())
             throw new OwnershipException("no uid or gid found while trying to set permissions");
@@ -701,7 +703,7 @@ public class ShellCommands {
         } else {
             // Deleting while system app
             // it seems that busybox mount sometimes fails silently so use toolbox instead
-            String apkSubDir = Utils.getName(sourceDir);
+            String apkSubDir = getName(sourceDir);
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
             String command = "(mount -o remount,rw /system" + " && " +
                     String.format("%s rm %s", utilboxPath, sourceDir) + " ; " +
@@ -727,7 +729,7 @@ public class ShellCommands {
     }
 
     public String clearCacheCommand(String packageName, String dataDir, String deDataDir) {
-        StringBuilder command = new StringBuilder(String.format("rm -r %s/cache %s/code_cache", dataDir, dataDir));
+        StringBuilder command = new StringBuilder(String.format("rm -rf %s/cache %s/code_cache", dataDir, dataDir));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (!dataDir.equals(deDataDir)) {
                 command.append(String.format(" %s/cache %s/code_cache",
@@ -810,7 +812,7 @@ public class ShellCommands {
         final String command = String.format("%s --version", utilboxPath);
         Shell.Result shellResult = Shell.sh(command).exec();
         if (shellResult.getCode() == 0) {
-            Log.i(TAG, String.format("Utilbox check: Using %s", Utils.iterableToString(shellResult.getOut())));
+            Log.i(TAG, String.format("Utilbox check: Using %s", iterableToString(shellResult.getOut())));
             return true;
         } else {
             Log.d(TAG, "Utilbox check: %s not available");

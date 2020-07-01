@@ -19,14 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 import com.machiav3lli.backup.fragments.ScheduleSheet;
-import com.machiav3lli.backup.handler.FileReaderWriter;
 import com.machiav3lli.backup.items.SchedulerItemX;
 import com.machiav3lli.backup.schedules.BlacklistContract;
-import com.machiav3lli.backup.schedules.BlacklistListener;
 import com.machiav3lli.backup.schedules.BlacklistsDBHelper;
 import com.machiav3lli.backup.schedules.HandleAlarms;
 import com.machiav3lli.backup.schedules.SchedulingException;
@@ -34,6 +33,7 @@ import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -46,33 +46,30 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
-    private static final String TAG = Constants.classTag(".SchedulerActivityX");
     public static final String SCHEDULECUSTOMLIST = "customlist";
     public static final int GLOBALBLACKLISTID = -1;
+    private static final String TAG = Constants.classTag(".SchedulerActivityX");
     // just to get a string in SchedulerItemX
     @SuppressLint("StaticFieldLeak")
     public static Context ctx;
     public static String DATABASE_NAME = "schedules.db";
-
+    public ArrayList<SchedulerItemX> list;
+    public ItemAdapter<SchedulerItemX> itemAdapter;
+    public FastAdapter<SchedulerItemX> fastAdapter;
+    public HandleAlarms handleAlarms;
     int totalSchedules;
-
     @BindView(R.id.back)
     AppCompatImageView back;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.add_schedule_fab)
     FloatingActionButton fab;
-
     SharedPreferences prefs;
-    public ArrayList<SchedulerItemX> list;
-    public ItemAdapter<SchedulerItemX> itemAdapter;
-    public FastAdapter<SchedulerItemX> fastAdapter;
-    public HandleAlarms handleAlarms;
     ScheduleSheet sheetSchedule;
 
     private BlacklistsDBHelper blacklistsDBHelper;
@@ -216,13 +213,20 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     public void renameCustomListFile(long id, long destinationId) {
-        FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
+        LogUtils frw = new LogUtils(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
 
     public void removeCustomListFile(long number) {
-        FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
+        LogUtils frw = new LogUtils(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
         frw.delete();
+    }
+
+    private void refresh(List<Schedule> schedules) {
+        list = new ArrayList<>();
+        if (!schedules.isEmpty())
+            for (Schedule schedule : schedules) list.add(new SchedulerItemX(schedule));
+        if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
     }
 
     static class AddScheduleTask extends AsyncTask<Void, Void, ResultHolder<Schedule>> {
@@ -298,13 +302,6 @@ public class SchedulerActivityX extends BaseActivity
                 resultHolder.getObject().ifPresent(scheduler::refresh);
             }
         }
-    }
-
-    private void refresh(List<Schedule> schedules) {
-        list = new ArrayList<>();
-        if (!schedules.isEmpty())
-            for (Schedule schedule : schedules) list.add(new SchedulerItemX(schedule));
-        if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
     }
 
     static public class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,

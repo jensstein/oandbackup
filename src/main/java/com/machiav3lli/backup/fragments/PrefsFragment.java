@@ -23,25 +23,27 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.PrefsActivity;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.handler.LanguageHelper;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.PrefUtils;
+import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
-import static com.machiav3lli.backup.handler.FileCreationHelper.setDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.setDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
+import static com.machiav3lli.backup.utils.PrefUtils.setPrefsString;
 
 
 public class PrefsFragment extends PreferenceFragmentCompat {
 
-    private static final int DEFAULT_DIR_CODE = 0;
     final static int RESULT_OK = 0;
     final static String TAG = Constants.classTag(".PrefsFragment");
+    private static final int DEFAULT_DIR_CODE = 0;
     ArrayList<AppInfo> appInfoList = MainActivityX.originalList;
     ShellCommands shellCommands;
     HandleMessages handleMessages;
@@ -54,7 +56,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_THEME);
         assert pref != null;
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            Utils.setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
+            setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
             switch (newValue.toString()) {
                 case "light":
                     setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -71,9 +73,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_LANGUAGES);
         assert pref != null;
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (LanguageHelper.changeLanguage(requireContext(), Utils.getPrefsString(
+            if (PrefUtils.changeLanguage(requireContext(), getPrefsString(
                     requireContext(), Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
-                Utils.reloadWithParentStack(requireActivity());
+                UIUtils.reloadWithParentStack(requireActivity());
             return true;
         });
 
@@ -163,7 +165,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private void setDefaultDir(Context context, String dir) {
-        Utils.setPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
+        setPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
         setDefaultBackupDirPath(context, dir);
         Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;

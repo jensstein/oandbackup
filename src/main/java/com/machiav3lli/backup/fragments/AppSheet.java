@@ -35,12 +35,12 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
+import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +50,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.createBackupDir;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
+import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     final static String TAG = Constants.classTag(".AppSheet");
@@ -135,8 +138,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
         shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
-        backupDirPath = Utils.getPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
-        backupDir = Utils.createBackupDir(getActivity(), backupDirPath);
+        backupDirPath = getPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY);
+        backupDir = createBackupDir(getActivity(), backupDirPath);
         return sheet;
     }
 
@@ -215,7 +218,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK)
             encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
         else encryptedLine.setVisibility(View.GONE);
-        Utils.pickColor(app, appType);
+        pickColor(app, appType);
     }
 
     @OnClick(R.id.exodusReport)
@@ -288,7 +291,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     @OnClick(R.id.share)
     public void share() {
-        File backupDir = Utils.createBackupDir(getActivity(), getDefaultBackupDirPath(requireContext()));
+        File backupDir = createBackupDir(getActivity(), getDefaultBackupDirPath(requireContext()));
         File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
         String dataPath = app.getLogInfo().getDataDir();
         dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
@@ -360,7 +363,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
                         } else {
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
-                            Utils.showErrors(requireActivity());
+                            UIUtils.showErrors(requireActivity());
                         }
                         ((MainActivityX) requireActivity()).refresh();
                     });

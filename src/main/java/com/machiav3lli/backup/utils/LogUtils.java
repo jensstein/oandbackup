@@ -1,8 +1,12 @@
-package com.machiav3lli.backup.handler;
+package com.machiav3lli.backup.utils;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.handler.AssetsHandler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,17 +16,62 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileReaderWriter {
-    static final String TAG = Constants.classTag(".FileReaderWriter");
+import static com.machiav3lli.backup.utils.FileUtils.defaultBackupFolder;
+import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
+
+public class LogUtils {
+    static final String TAG = Constants.classTag(".LogUtils");
 
     File file;
 
-    public FileReaderWriter(String absolutePath) {
+    public LogUtils(String absolutePath) {
         this.file = new File(absolutePath);
     }
 
-    public FileReaderWriter(String rootDirectoryPath, String name) {
+    public LogUtils(String rootDirectoryPath, String name) {
         this.file = new File(rootDirectoryPath, name);
+    }
+
+    public LogUtils() {
+    }
+
+    public static String getDefaultLogFilePath(Context context) {
+        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder) + "/OAndBackupX.log";
+    }
+
+    public static void logDeviceInfo(Context context, String tag) {
+        final String abiVersion = AssetsHandler.getAbi();
+        try {
+            final String packageName = context.getPackageName();
+            final PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(packageName, 0);
+            final int versionCode = packageInfo.versionCode;
+            final String versionName = packageInfo.versionName;
+            Log.i(tag, String.format("running version %s/%s on abi %s",
+                    versionCode, versionName, abiVersion));
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.i(tag, String.format(
+                    "unable to determine package version (%s), abi version %s",
+                    e.toString(), abiVersion));
+        }
+    }
+
+    public File createLogFile(Context context, String path) {
+        File file = new File(path);
+        try {
+            try {
+                file.createNewFile();
+                return file;
+            } catch (IOException e) {
+                file = new File(getDefaultLogFilePath(context));
+                file.createNewFile();
+                return file;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, String.format(
+                    "Caught exception when creating log file: %s", e));
+            return null;
+        }
     }
 
     public void putString(String string, boolean append) {

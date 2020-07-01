@@ -8,12 +8,12 @@ import com.annimon.stream.Optional;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.handler.FileReaderWriter;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.items.AppInfo;
 
 import java.util.ArrayList;
 
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class CustomPackageList {
     static Optional<ArrayList<AppInfo>> appInfoList = Optional.ofNullable(
@@ -24,7 +24,7 @@ public class CustomPackageList {
     }
 
     public static void showList(Activity activity, String filename) {
-        final FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(activity), filename);
+        final LogUtils frw = new LogUtils(getDefaultBackupDirPath(activity), filename);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<>();
         boolean[] checked = new boolean[items.length];
@@ -60,7 +60,7 @@ public class CustomPackageList {
         return list.toArray(new CharSequence[0]);
     }
 
-    private static void handleSelectedItems(FileReaderWriter frw, CharSequence[] items, ArrayList<Integer> selected) {
+    private static void handleSelectedItems(LogUtils frw, CharSequence[] items, ArrayList<Integer> selected) {
         frw.clear();
         for (int pos : selected) {
             frw.putString(items[pos].toString(), true);

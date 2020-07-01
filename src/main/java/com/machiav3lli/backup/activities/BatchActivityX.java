@@ -9,6 +9,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SearchView;
@@ -29,10 +30,10 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.SortFilterManager;
-import com.machiav3lli.backup.handler.Utils;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
@@ -45,7 +46,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.machiav3lli.backup.Constants.classAddress;
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.createBackupDir;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -65,7 +67,7 @@ public class BatchActivityX extends BaseActivity
     @BindView(R.id.radioBoth)
     Chip rbBoth;
     @BindView(R.id.backupRestoreButton)
-    MaterialButton actionButton;
+    AppCompatButton actionButton;
     @BindView(R.id.cbAll)
     AppCompatCheckBox cbAll;
     @BindView(R.id.search_view)
@@ -103,11 +105,11 @@ public class BatchActivityX extends BaseActivity
 
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
-            Utils.reShowMessage(handleMessages, threadId);
+            UIUtils.reShowMessage(handleMessages, threadId);
         }
 
         String backupDirPath = getDefaultBackupDirPath(this);
-        backupDir = Utils.createBackupDir(this, backupDirPath);
+        backupDir = createBackupDir(this, backupDirPath);
         if (originalList == null) originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                 prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
 
@@ -249,7 +251,7 @@ public class BatchActivityX extends BaseActivity
                 Log.i(TAG, "wakelock released");
             }
             if (errorFlag) {
-                Utils.showErrors(this);
+                UIUtils.showErrors(this);
             }
             refresh();
         }
@@ -281,11 +283,11 @@ public class BatchActivityX extends BaseActivity
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
                 String backupDirPath = getDefaultBackupDirPath(this);
-                backupDir = Utils.createBackupDir(this, backupDirPath);
+                backupDir = createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
                 if (!shellCommands.checkUtilBoxPath())
-                    Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
+                    UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
             default:
                 refresh();
         }

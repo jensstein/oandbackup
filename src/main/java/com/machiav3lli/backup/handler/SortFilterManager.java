@@ -12,18 +12,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
+import static com.machiav3lli.backup.utils.PrefUtils.setPrefsString;
+
 public class SortFilterManager {
+
+    private static Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
+            m1.getLabel().compareToIgnoreCase(m2.getLabel());
+    private static Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
+            m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
-        if (!Utils.getPrefsString(context, Constants.PREFS_SORT_FILTER).equals(""))
-            sortFilterModel = new SortFilterModel(Utils.getPrefsString(context, Constants.PREFS_SORT_FILTER));
+        if (!getPrefsString(context, Constants.PREFS_SORT_FILTER).equals(""))
+            sortFilterModel = new SortFilterModel(getPrefsString(context, Constants.PREFS_SORT_FILTER));
         else sortFilterModel = new SortFilterModel();
         return sortFilterModel;
     }
 
     public static void saveFilterPreferences(Context context, SortFilterModel filterModel) {
-        Utils.setPrefsString(context, Constants.PREFS_SORT_FILTER, filterModel.toString());
+        setPrefsString(context, Constants.PREFS_SORT_FILTER, filterModel.toString());
     }
 
     public static boolean getRememberFiltering(Context context) {
@@ -112,9 +120,4 @@ public class SortFilterManager {
         else Collections.sort(list, appInfoLabelComparator);
         return list;
     }
-
-    private static Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
-            m1.getLabel().compareToIgnoreCase(m2.getLabel());
-    private static Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
-            m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
 }

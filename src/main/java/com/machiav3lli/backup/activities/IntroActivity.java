@@ -22,7 +22,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.handler.Utils;
+import com.machiav3lli.backup.utils.UIUtils;
 import com.scottyab.rootbeer.RootBeer;
 
 import java.io.File;
@@ -36,7 +36,10 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.createBackupDir;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.LogUtils.logDeviceInfo;
+import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
 
 public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.classTag(".IntroActivity");
@@ -66,12 +69,12 @@ public class IntroActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setDayNightTheme(Utils.getPrefsString(this, Constants.PREFS_THEME));
+        setDayNightTheme(getPrefsString(this, Constants.PREFS_THEME));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         ButterKnife.bind(this);
 
-        Utils.logDeviceInfo(this, TAG);
+        logDeviceInfo(this, TAG);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         users = new ArrayList<>();
         checkRun(savedInstanceState);
@@ -190,8 +193,8 @@ public class IntroActivity extends BaseActivity {
     private void checkResources() {
         handleMessages.showMessage(TAG, getString(R.string.suCheck));
         RootBeer rootBeer = new RootBeer(this);
-        if (!rootBeer.isRooted()) Utils.showWarning(this, TAG, getString(R.string.noSu));
-        if (!checkBusybox()) Utils.showWarning(this, TAG, getString(R.string.busyboxProblem));
+        if (!rootBeer.isRooted()) UIUtils.showWarning(this, TAG, getString(R.string.noSu));
+        if (!checkBusybox()) UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
         handleMessages.endMessage();
     }
 
@@ -202,7 +205,7 @@ public class IntroActivity extends BaseActivity {
     private void launchMainActivity() {
         btn.setVisibility(View.GONE);
         String backupDirPath = getDefaultBackupDirPath(this);
-        backupDir = Utils.createBackupDir(this, backupDirPath);
+        backupDir = createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));
     }
 }

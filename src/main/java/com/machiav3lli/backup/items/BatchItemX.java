@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.Utils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -19,23 +18,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.machiav3lli.backup.handler.Utils.calculateID;
+import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
+import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
 
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
-    AppInfo app;
-
-    public BatchItemX(AppInfo app) {
-        this.app = app;
-    }
-
-    public AppInfo getApp() {
-        return app;
-    }
-
-    protected BatchItemX(Parcel in) {
-        app = in.readParcelable(AppInfo.class.getClassLoader());
-    }
-
     public static final Creator<BatchItemX> CREATOR = new Creator<BatchItemX>() {
         @Override
         public BatchItemX createFromParcel(Parcel in) {
@@ -47,6 +33,19 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             return new BatchItemX[size];
         }
     };
+    AppInfo app;
+
+    public BatchItemX(AppInfo app) {
+        this.app = app;
+    }
+
+    protected BatchItemX(Parcel in) {
+        app = in.readParcelable(AppInfo.class.getClassLoader());
+    }
+
+    public AppInfo getApp() {
+        return app;
+    }
 
     @Override
     public long getIdentifier() {
@@ -131,7 +130,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
                     backupMode.setText("");
                     break;
             }
-            Utils.pickColor(app, packageName);
+            pickColor(app, packageName);
         }
 
         @Override

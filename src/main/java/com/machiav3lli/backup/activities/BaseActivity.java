@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.LanguageHelper;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -19,7 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         String langCode = prefs.getString(Constants.PREFS_LANGUAGES,
                 Constants.PREFS_LANGUAGES_DEFAULT);
         assert langCode != null;
-        LanguageHelper.initLanguage(this, langCode);
+        PrefUtils.initLanguage(this, langCode);
     }
 
     @Override

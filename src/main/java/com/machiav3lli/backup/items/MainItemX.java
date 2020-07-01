@@ -6,7 +6,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.Utils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -18,7 +17,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.machiav3lli.backup.handler.Utils.calculateID;
+import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
+import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
+
 
 public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     AppInfo app;
@@ -93,7 +94,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
                     backupMode.setText("");
                     break;
             }
-            Utils.pickColor(app, packageName);
+            pickColor(app, packageName);
         }
 
         @Override

@@ -14,7 +14,7 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.FileReaderWriter;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.AppInfo;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.machiav3lli.backup.handler.FileCreationHelper.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class HandleScheduledBackups {
     static final String TAG = Constants.classTag(".HandleScheduledBackups");
@@ -93,7 +93,7 @@ public class HandleScheduledBackups {
                     break;
                 case CUSTOM:
                     listToBackUp = new ArrayList<>();
-                    FileReaderWriter frw = new FileReaderWriter(getDefaultBackupDirPath(context),
+                    LogUtils frw = new LogUtils(getDefaultBackupDirPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
                     for (AppInfo appInfo : list) {
                         if (frw.contains(appInfo.getPackageName())) {
