@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -19,47 +20,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginVertical="@dimen/small_spacing"
-                android:orientation="horizontal">
+                android:layout_marginVertical="@dimen/small_spacing">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
-                    android:text="@string/sched_interval"
-                    android:textAppearance="@style/TextAppearance.Title" />
+                    android:layout_marginEnd="@dimen/buttons_spacing"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/intervalDays"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sched_interval"
+                        android:textAppearance="@style/TextAppearance.Title" />
+
+                    <com.shawnlin.numberpicker.NumberPicker
+                        android:id="@+id/intervalDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:np_dividerColor="@android:color/transparent"
+                        app:np_max="30"
+                        app:np_min="1"
+                        app:np_orientation="horizontal"
+                        app:np_selectedTextColor="?colorAccent"
+                        app:np_textColor="?colorControlNormal" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:inputType="number"
-                    android:textSize="@dimen/main_text" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                    android:layout_marginStart="@dimen/buttons_spacing"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginVertical="@dimen/small_spacing"
-                android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sched_hourOfDay"
+                        android:textAppearance="@style/TextAppearance.Title" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
-                    android:text="@string/sched_hourOfDay"
-                    android:textAppearance="@style/TextAppearance.Title" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/timeOfDay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:hint="@string/sched_hourOfDay_hint"
-                    android:inputType="number"
-                    android:textSize="@dimen/main_text" />
+                    <com.shawnlin.numberpicker.NumberPicker
+                        android:id="@+id/timeOfDay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:np_dividerColor="@android:color/transparent"
+                        app:np_max="23"
+                        app:np_min="0"
+                        app:np_orientation="horizontal"
+                        app:np_selectedTextColor="?colorAccent"
+                        app:np_textColor="?colorControlNormal" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.AppCompatTextView

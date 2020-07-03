@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -39,6 +38,7 @@ import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 import com.machiav3lli.backup.utils.CommandUtils;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
+import com.shawnlin.numberpicker.NumberPicker;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -53,9 +53,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     final static String TAG = Constants.classTag(".ScheduleSheet");
 
     @BindView(R.id.intervalDays)
-    AppCompatEditText intervalDays;
+    NumberPicker intervalDays;
     @BindView(R.id.timeOfDay)
-    AppCompatEditText timeOfDay;
+    NumberPicker timeOfDay;
     @BindView(R.id.schedMode)
     ChipGroup schedMode;
     @BindView(R.id.schedSubMode)
@@ -67,7 +67,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     @BindView(R.id.schedTimeLeft)
     AppCompatTextView timeLeft;
     @BindView(R.id.checkbox)
-    AppCompatCheckBox checkbox;
+    AppCompatCheckBox enableCB;
     @BindView(R.id.removeButton)
     AppCompatImageButton removeButton;
     @BindView(R.id.activateButton)
@@ -120,23 +120,13 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         schedMode.check(convertMode(sched.getMode().getValue()));
         schedMode.setOnCheckedChangeListener((group, checkedId) -> {
             changeScheduleMode(convertToMode(checkedId), tag);
-            try {
-                updateScheduleData(getScheduleDataFromView((int) tag));
-            } catch (SchedulingException e) {
-                e.printStackTrace();
-            }
+            refreshSheet();
             toggleSecondaryButtons(schedMode, tag);
-            new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
         });
         schedSubMode.check(convertSubmode(sched.getSubmode().getValue()));
         schedSubMode.setOnCheckedChangeListener((group, checkedId) -> {
             changeScheduleSubmode(convertToSubmode(checkedId), tag);
-            try {
-                updateScheduleData(getScheduleDataFromView((int) sched.getId()));
-            } catch (SchedulingException e) {
-                e.printStackTrace();
-            }
-            new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
+            refreshSheet();
         });
     }
 
@@ -193,9 +183,11 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     }
 
     private void setupSchedInfo() {
-        intervalDays.setText(Integer.toString(sched.getInterval()));
-        timeOfDay.setText(Integer.toString(sched.getHour()));
-        checkbox.setChecked(sched.isEnabled());
+        intervalDays.setValue(sched.getInterval());
+        intervalDays.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
+        timeOfDay.setValue(sched.getHour());
+        timeOfDay.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
+        enableCB.setChecked(sched.isEnabled());
         setTimeLeft(sched, System.currentTimeMillis());
         tag = sched.getId();
 
@@ -211,18 +203,25 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                 })
                 .show());
         customList.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), tag));
-        excludeSystem.setOnClickListener(v -> updateScheduleData(sched));
+        excludeSystem.setOnClickListener(v -> refreshSheet());
 
         toggleSecondaryButtons(schedMode, tag);
         removeButton.setTag(tag);
         activateButton.setTag(tag);
-        checkbox.setTag(tag);
+        enableCB.setTag(tag);
+    }
+
+    void refreshSheet() {
+        try {
+            updateScheduleData(getScheduleDataFromView((int) sched.getId()));
+        } catch (SchedulingException e) {
+            e.printStackTrace();
+        }
+        new SchedulerActivityX.refreshTask((SchedulerActivityX) requireActivity()).execute();
     }
 
     void setTimeLeft(Schedule schedule, long now) {
         if (!schedule.isEnabled()) timeLeft.setText("");
-        else if (schedule.getInterval() <= 0)
-            timeLeft.setText(getString(R.string.sched_warningIntervalZero));
         else {
             final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                     schedule.getHour(), schedule.getPlaced(), now);
@@ -289,9 +288,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     private Schedule getScheduleDataFromView(int id)
             throws SchedulingException {
         final boolean excludeSystemPackages = excludeSystem != null && excludeSystem.isChecked();
-        final boolean enabled = checkbox.isChecked();
-        final int hour = Integer.parseInt(timeOfDay.getText().toString());
-        final int interval = Integer.parseInt(intervalDays.getText().toString());
+        final boolean enabled = enableCB.isChecked();
+        final int hour = timeOfDay.getValue();
+        final int interval = intervalDays.getValue();
         if (enabled) handleAlarms.setAlarm(id, interval, hour);
 
         return new Schedule.Builder()
