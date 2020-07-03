@@ -32,6 +32,22 @@ public class RestoreAppAction extends BaseAppAction {
     public static final String TAG = Constants.classTag(".RestoreAppAction");
     public static final File PACKAGE_STAGING_DIRECTORY = new File("/data/local/tmp");
 
+    public enum RestoreCommand {
+        MOVE("mv"),
+        COPY("cp -r");
+
+        final String command;
+
+        RestoreCommand(String command) {
+            this.command = command;
+        }
+
+        @Override
+        public String toString() {
+            return this.command;
+        }
+    }
+
     public RestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
     }
@@ -170,7 +186,7 @@ public class RestoreAppAction extends BaseAppAction {
     }
 
     private void genericRestoreData(
-            String type, AppInfo app, File backupDirectory, File targetDirectory, boolean isCompressed, String restoreCommand)
+            String type, AppInfo app, File backupDirectory, File targetDirectory, boolean isCompressed, RestoreCommand restoreCommand)
             throws RestoreFailedException, Crypto.CryptoSetupException {
         Log.i(RestoreAppAction.TAG, String.format("%s: Restoring %s", app, type));
         try {
@@ -197,7 +213,19 @@ public class RestoreAppAction extends BaseAppAction {
             }
             String command = "";
             if (!(targetDirectory.exists())) {
-                command = String.format("%s mkdir \"%s\" && ", this.getShell().getUtilboxPath(), targetDirectory);
+                // this is the case on the sd card for external data or obb files
+                // package manager takes care of creating the data directories in in the internal storage
+                // we don't need to worry about permissions, since sdcardfs is mounted with a fixed uid and gid
+                Log.d(RestoreAppAction.TAG, String.format("%s: Creating %s directory because it's missing: %s", app, type, targetDirectory));
+                command = this.prependUtilbox(String.format("mkdir \"%s\" && ", targetDirectory));
+            } else if (restoreCommand.equals(RestoreCommand.MOVE)) {
+                // move does not like existing files
+                // wipe everything from the target dir besides the excluded dirs
+                List<String> targetContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(targetDirectory)));
+                targetContents.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
+                String[] removeTargets = targetContents.stream().map(s -> '"' + new File(targetDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);
+                Log.d(RestoreAppAction.TAG, String.format("%s: Removing existing %s files in %s", app, type, targetDirectory));
+                command = this.prependUtilbox(String.format("rm -rf %s && ", Arrays.stream(removeTargets).collect(Collectors.joining(" "))));
             }
             command += String.format(
                     "%s %s \"%s\"/* \"%s\"", this.getShell().getUtilboxPath(),
@@ -230,7 +258,7 @@ public class RestoreAppAction extends BaseAppAction {
             // get the contents. lib for example must be owned by root
             List<String> dataContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(targetDir)));
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
-            dataContents.removeAll(Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS));
+            dataContents.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
             // calculate a list what must be updated
             String[] chownTargets = dataContents.stream().map(s -> '"' + new File(targetDir, s).getAbsolutePath() + '"').toArray(String[]::new);
             if (chownTargets.length == 0) {
@@ -266,7 +294,7 @@ public class RestoreAppAction extends BaseAppAction {
                 this.getDataBackupFolder(app),
                 new File(applicationInfo.dataDir),  // refreshed info used here
                 true,
-                "cp -r"
+                RestoreCommand.MOVE
         );
         this.genericRestorePermissions(
                 BaseAppAction.BACKUP_DIR_DATA,
@@ -282,7 +310,7 @@ public class RestoreAppAction extends BaseAppAction {
                 this.getExternalFilesBackupFolder(app),
                 app.getExternalFilesPath(this.getContext()),
                 true,
-                "mv"
+                RestoreCommand.MOVE
         );
     }
 
@@ -293,7 +321,7 @@ public class RestoreAppAction extends BaseAppAction {
                 this.getObbBackupFolder(app),
                 app.getObbFilesPath(this.getContext()),
                 false,
-                "mv"
+                RestoreCommand.COPY
         );
     }
 
@@ -306,7 +334,7 @@ public class RestoreAppAction extends BaseAppAction {
                 this.getDeviceProtectedFolder(app),
                 new File(applicationInfo.deviceProtectedDataDir), // refreshed info used here
                 true,
-                "mv -r"
+                RestoreCommand.MOVE
         );
         this.genericRestorePermissions(
                 BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES,

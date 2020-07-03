@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 public class BackupAppAction extends BaseAppAction {
     public static final String TAG = Constants.classTag(".BackupAppAction");
 
-    public static final String[] BACKUP_DATA_EXCLUDED_DIRS = {"cache", "code_cache", "lib"};
-
     public BackupAppAction(Context context, ShellHandler shell) {
         super(context, shell);
     }
@@ -147,9 +145,8 @@ public class BackupAppAction extends BaseAppAction {
         try {
             // Get a list of directories in the directory to backup
             List<String> dirsInSource = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(sourceDirectory)));
-            List<String> excludedDirs = Arrays.asList(BackupAppAction.BACKUP_DATA_EXCLUDED_DIRS);
             // filter out, what we don't want to backup
-            dirsInSource.removeAll(excludedDirs);
+            dirsInSource.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
 
             // calculate a list what should be part of the backup
             dirsToBackup = dirsInSource.stream().map(s -> '"' + new File(sourceDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);
