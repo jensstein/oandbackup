@@ -37,6 +37,7 @@ ext {
             preference        : "1.1.1",
             swiperefreshlayout: "1.1.0",
             fastadapter       : "5.0.0",
+            numberpicker : "2.4.10",
 
             androidx_test     : "1.2.0",
             junit             : "1.1.1",
@@ -65,6 +66,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefreshlayout}"
     implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
+    implementation "com.shawnlin:number-picker:${versions.numberpicker}"
 
     // Tests
     implementation "androidx.room:room-testing:${versions.room}"
