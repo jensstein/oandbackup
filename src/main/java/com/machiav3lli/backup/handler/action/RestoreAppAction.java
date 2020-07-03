@@ -62,19 +62,23 @@ public class RestoreAppAction extends BaseAppAction {
             }
 
             if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-                this.restoreData(app);
-                if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-                    this.restoreExternalData(app);
-                }
-                if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-                    this.restoreObbData(app);
-                }
-                if (this.getSharedPreferences().getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
-                    this.restoreDeviceProtectedData(app);
-                }
+                this.restoreAllData(app);
             }
         } catch (RestoreFailedException | Crypto.CryptoSetupException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException, PackageManager.NameNotFoundException {
+        this.restoreData(app);
+        if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+            this.restoreExternalData(app);
+        }
+        if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+            this.restoreObbData(app);
+        }
+        if (this.getSharedPreferences().getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+            this.restoreDeviceProtectedData(app);
         }
     }
 
