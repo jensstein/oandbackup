@@ -137,7 +137,6 @@
     <string name="sched_addSchudule">Προσθήκη προγράμματος</string>
     <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
-    <string name="sched_warningIntervalZero">Σφάλμα: το μεσοδιάστημα δεν μπορεί να είναι 0</string>
     <string name="sched_globalBlacklist">Ορίστε γενική μαύρη λίστα</string>
 
     <string name="blacklistDialogTitle">Μαύρη λίστα</string>
@@ -149,16 +148,9 @@
     <string name="spec_wallpaper">Ταπετσαρία</string>
     <string name="spec_wifiAccessPoints">Σημεία Πρόσβασης Wifi</string>
 
-    <string name="filebrowser_setButton">Ορισμός</string>
-    <string name="filebrowser_createDirectory">Δημιουργία φακέλου</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Εισάξτε όνομα φακέλου προς δημιουργία</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">Αποτυχία δημιουργίας του φακέλου: </string>
-    <string name="filebrowser_refresh">Επαναφόρτωση</string>
-    <string name="filebrowser_contextSetBackupDirectory">Ορισμός ως φάκελος αντιγράφων</string>
 
     <string name="logviewer_message_loading">Φόρτωση αρχείου καταγραφής</string>
-    <string name="logviewer_next_lines_button">Επόμενο</string>
 
     <string name="error_creating_notification_channel">Αδυναμία δημιουργίας καναλιού ειδοποιήσεων</string>
     <string name="error_updating_schedule_mode">Σφάλμα ενημέρωσης %1$s του προγράμματος %2$d</string>

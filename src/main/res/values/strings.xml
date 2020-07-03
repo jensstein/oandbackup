@@ -140,7 +140,6 @@
     <string name="sched_addSchudule">Add schedule</string>
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
-    <string name="sched_warningIntervalZero">Error: interval cannot be 0</string>
     <string name="sched_globalBlacklist">Set global blacklist</string>
 
     <string name="blacklistDialogTitle">Blacklist</string>
@@ -152,16 +151,9 @@
     <string name="spec_wallpaper">Wallpaper</string>
     <string name="spec_wifiAccessPoints">Wifi Access Points</string>
 
-    <string name="filebrowser_setButton">Set</string>
-    <string name="filebrowser_createDirectory">Create folder</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Enter name of folder to create</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">Could not create the folder: </string>
-    <string name="filebrowser_refresh">Refresh</string>
-    <string name="filebrowser_contextSetBackupDirectory">Set as backup folder</string>
 
     <string name="logviewer_message_loading">Loading log file…</string>
-    <string name="logviewer_next_lines_button">Next</string>
 
     <string name="error_creating_notification_channel">Unable to create notification channel</string>
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>

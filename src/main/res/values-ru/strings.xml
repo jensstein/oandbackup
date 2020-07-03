@@ -121,7 +121,6 @@
     <string name="sched_addSchudule">Добавить план</string>
     <string name="sched_customListUpdateButton">Обновить пользовательский список</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
-    <string name="sched_warningIntervalZero">ошибка: интервал не может быть 0</string>
     <string name="sched_globalBlacklist">Установить глобальный черный список</string>
 
     <string name="blacklistDialogTitle">Черный список</string>
@@ -133,14 +132,7 @@
     <string name="spec_wallpaper">Обои</string>
     <string name="spec_wifiAccessPoints">Точки доступа Wifi</string>
 
-    <string name="filebrowser_setButton">Задать</string>
-    <string name="filebrowser_createDirectory">Создать папку</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Введите название создаваемой папки</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">Невозможно создать папку</string>
-    <string name="filebrowser_refresh">Обновить</string>
-    <string name="filebrowser_contextSetBackupDirectory">Выбрать как папку для р.к.</string>
 
     <string name="logviewer_message_loading">Загрузка журнала</string>
-    <string name="logviewer_next_lines_button">Далее</string>
 </resources>

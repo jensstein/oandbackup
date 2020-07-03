@@ -139,7 +139,6 @@
     <string name="sched_addSchudule">Zamanlama ekle</string>
     <string name="sched_customListUpdateButton">Özel listeyi güncelle</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
-    <string name="sched_warningIntervalZero">Hata: sıklık 0 olamaz</string>
     <string name="sched_globalBlacklist">Global karaliste ayarla</string>
 
     <string name="blacklistDialogTitle">Karaliste</string>
@@ -151,16 +150,9 @@
     <string name="spec_wallpaper">Duvar kağıdı</string>
     <string name="spec_wifiAccessPoints">Wifi Erişim Noktası</string>
 
-    <string name="filebrowser_setButton">Ayarla</string>
-    <string name="filebrowser_createDirectory">Klasör oluştur</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Oluşturulacak klasörün adını girin</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">Klasör oluşturulamadı: </string>
-    <string name="filebrowser_refresh">Yenile</string>
-    <string name="filebrowser_contextSetBackupDirectory">Yedekleme klasörü olarak ayarla</string>
 
     <string name="logviewer_message_loading">Günlük dosyası yükleniyor…</string>
-    <string name="logviewer_next_lines_button">Sonraki</string>
 
     <string name="error_creating_notification_channel">Bildirim kanalı oluşturulamadı</string>
     <string name="error_updating_schedule_mode">%2$d zamanlamasındaki %1$s güncellerken hata</string>

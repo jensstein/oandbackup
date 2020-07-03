@@ -117,22 +117,14 @@
     <string name="sched_addSchudule">Der Planung hinzufügen</string>
     <string name="sched_customListUpdateButton">Eigene Liste aktualisieren</string>
     <string name="sched_excludeSystemCheckBox">System-Apps ausschließen</string>
-    <string name="sched_warningIntervalZero">Fehler: Intervall darf nicht Null sein</string>
     <string name="spec_accounts">Konten</string>
     <string name="spec_appwidgets">App-Widgets</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Datenschutzbestimmungen</string>
     <string name="spec_wallpaper">Hintergrundbild</string>
     <string name="spec_wifiAccessPoints">WLAN Access-Point</string>
-    <string name="filebrowser_setButton">Festlegen</string>
-    <string name="filebrowser_createDirectory">Ordner erstellen</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Neuen Ordnername eingeben</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-    <string name="filebrowser_createDirectoryError">Konnte Ordner nicht erstellen: </string>
-    <string name="filebrowser_refresh">Aktualisieren</string>
-    <string name="filebrowser_contextSetBackupDirectory">Als Sicherungsordner festlegen</string>
     <string name="logviewer_message_loading">Protokolldatei laden...</string>
-    <string name="logviewer_next_lines_button">Weiter</string>
     <string name="blacklistDialogTitle">Ausschlussliste</string>
     <string name="sched_globalBlacklist">Ausschlussliste einrichten</string>
     <string name="filter_options">Filter:</string>

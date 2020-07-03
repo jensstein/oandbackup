@@ -117,20 +117,12 @@
   <string name="sched_addSchudule">スケジュールを追加</string>
   <string name="sched_customListUpdateButton">カスタムリストを更新</string>
   <string name="sched_excludeSystemCheckBox">システムアプリを除外</string>
-  <string name="sched_warningIntervalZero">エラー: 間隔を 0 にできません</string>
-  <string name="spec_accounts">アカウント</string>
+    <string name="spec_accounts">アカウント</string>
   <string name="spec_appwidgets">アプリケーショ ウィジェット</string>
   <string name="spec_bluetooth">Bluetooth</string>
   <string name="spec_data">データ使用とポリシー</string>
   <string name="spec_wallpaper">壁紙</string>
   <string name="spec_wifiAccessPoints">Wifi アクセスポイント</string>
-  <string name="filebrowser_setButton">設定</string>
-  <string name="filebrowser_createDirectory">フォルダーを作成</string>
-  <string name="filebrowser_createDirectoryDlgMsg">作成するフォルダーの名前を入力してください</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">ファるだーを作成できませんでした:</string>
-  <string name="filebrowser_refresh">リフレッシュ</string>
-  <string name="filebrowser_contextSetBackupDirectory">バックアップ フォルダーとして設定</string>
   <string name="logviewer_message_loading">ログファイルを読み込んでいます</string>
-  <string name="logviewer_next_lines_button">次へ</string>
 </resources>

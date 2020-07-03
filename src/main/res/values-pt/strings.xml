@@ -117,20 +117,12 @@
   <string name="sched_addSchudule">Agendar</string>
   <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
   <string name="sched_excludeSystemCheckBox">Excluir aplicações do sistema</string>
-  <string name="sched_warningIntervalZero">Erro: intervalo não pode ser 0</string>
-  <string name="spec_accounts">Contas</string>
+    <string name="spec_accounts">Contas</string>
   <string name="spec_appwidgets">Widgets da aplicação</string>
   <string name="spec_bluetooth">Bluetooth</string>
   <string name="spec_data">Utilização de dados e políticas</string>
   <string name="spec_wallpaper">Papel de parede</string>
   <string name="spec_wifiAccessPoints">Pontos de acesso WiFi</string>
-  <string name="filebrowser_setButton">Definir</string>
-  <string name="filebrowser_createDirectory">Criar pasta</string>
-  <string name="filebrowser_createDirectoryDlgMsg">Escreva o nome da pasta</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">Não foi possível criar a pasta:</string>
-  <string name="filebrowser_refresh">Atualizar</string>
-  <string name="filebrowser_contextSetBackupDirectory">Definir como pasta de backup</string>
   <string name="logviewer_message_loading">A carregar ficheiro de registo</string>
-  <string name="logviewer_next_lines_button">Seguinte</string>
 </resources>

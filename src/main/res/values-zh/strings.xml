@@ -139,7 +139,6 @@
     <string name="sched_addSchudule">添加定时</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
-    <string name="sched_warningIntervalZero">错误：间隔不能为 0</string>
     <string name="sched_globalBlacklist">设置全局黑名单</string>
 
     <string name="blacklistDialogTitle">黑名单</string>
@@ -151,16 +150,9 @@
     <string name="spec_wallpaper">壁纸</string>
     <string name="spec_wifiAccessPoints">Wifi 接入点</string>
 
-    <string name="filebrowser_setButton">设置</string>
-    <string name="filebrowser_createDirectory">创建文件夹</string>
-    <string name="filebrowser_createDirectoryDlgMsg">输入要创建的文件夹的名称</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">无法创建文件夹：</string>
-    <string name="filebrowser_refresh">刷新</string>
-    <string name="filebrowser_contextSetBackupDirectory">设为备份文件夹</string>
 
     <string name="logviewer_message_loading">加载日志文件</string>
-    <string name="logviewer_next_lines_button">下一个</string>
 
     <string name="error_creating_notification_channel">无法创建通知通道</string>
     <string name="error_updating_schedule_mode">更新定时任务 %2$d 的 %1$s 出错</string>

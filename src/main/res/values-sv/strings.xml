@@ -117,20 +117,12 @@
   <string name="sched_addSchudule">lägg till schemaläggning</string>
   <string name="sched_customListUpdateButton">uppdatera anpassad lista</string>
   <string name="sched_excludeSystemCheckBox">uteslut system-appar</string>
-  <string name="sched_warningIntervalZero">fel: intervallen kan inte vara 0</string>
-  <string name="spec_accounts">Konton</string>
+    <string name="spec_accounts">Konton</string>
   <string name="spec_appwidgets">Applikations-widgeter</string>
   <string name="spec_bluetooth">Bluetooth</string>
   <string name="spec_data">Datanvändning och policy</string>
   <string name="spec_wallpaper">Bakgrund</string>
   <string name="spec_wifiAccessPoints">Åtkomstpunkter för Wifi</string>
-  <string name="filebrowser_setButton">ange</string>
-  <string name="filebrowser_createDirectory">skapa mapp</string>
-  <string name="filebrowser_createDirectoryDlgMsg">ange mappnamn</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">det gick inte att skapa mappen:</string>
-  <string name="filebrowser_refresh">uppdatera</string>
-  <string name="filebrowser_contextSetBackupDirectory">ange som säkerhetskopieringsmapp</string>
   <string name="logviewer_message_loading">laddar loggfil</string>
-  <string name="logviewer_next_lines_button">nästa</string>
 </resources>

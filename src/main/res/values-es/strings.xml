@@ -121,7 +121,6 @@
     <string name="sched_addSchudule">Añadir programación</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
-    <string name="sched_warningIntervalZero">Error: el intervalo no puede ser 0</string>
     <string name="sched_globalBlacklist">Establecer lista negra global</string>
 
     <string name="blacklistDialogTitle">Lista negra</string>
@@ -133,14 +132,7 @@
     <string name="spec_wallpaper">Fondos de pantalla</string>
     <string name="spec_wifiAccessPoints">Puntos de Acceso WiFi</string>
 
-    <string name="filebrowser_setButton">Establecer</string>
-    <string name="filebrowser_createDirectory">Crear carpeta</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Ingrese el nombre de la carpeta a crear</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">No se pudo crear la carpeta: </string>
-    <string name="filebrowser_refresh">Actualizar</string>
-    <string name="filebrowser_contextSetBackupDirectory">Establecer como carpeta de respaldos</string>
 
     <string name="logviewer_message_loading">Cargando archivo de registro...</string>
-    <string name="logviewer_next_lines_button">Siguiente</string>
 </resources>

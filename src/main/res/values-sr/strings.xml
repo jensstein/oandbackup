@@ -117,20 +117,12 @@
   <string name="sched_addSchudule">Додај распоред</string>
   <string name="sched_customListUpdateButton">Освежи произвољни списак</string>
   <string name="sched_excludeSystemCheckBox">Изузимање системских апликација</string>
-  <string name="sched_warningIntervalZero">Грешка, интервал не може бити 0</string>
-  <string name="spec_accounts">Налози</string>
+    <string name="spec_accounts">Налози</string>
   <string name="spec_appwidgets">Виџети</string>
   <string name="spec_bluetooth">Блутут</string>
   <string name="spec_data">Политика о коришћењу података</string>
   <string name="spec_wallpaper">Позадина</string>
   <string name="spec_wifiAccessPoints">Wifi приступне тачке</string>
-  <string name="filebrowser_setButton">Подеси</string>
-  <string name="filebrowser_createDirectory">Прављење фасцикле</string>
-  <string name="filebrowser_createDirectoryDlgMsg">Унеси назив фасцикле</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">Није могуће направити фасциклу:</string>
-  <string name="filebrowser_refresh">Освежи</string>
-  <string name="filebrowser_contextSetBackupDirectory">Подеси као фасциклу за рез. копију</string>
   <string name="logviewer_message_loading">Учитавам датотеку записника</string>
-  <string name="logviewer_next_lines_button">Следећи</string>
 </resources>

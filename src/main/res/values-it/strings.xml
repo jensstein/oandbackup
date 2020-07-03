@@ -116,20 +116,13 @@
   <string name="sched_addSchudule">Aggiungi pianificazione</string>
   <string name="sched_customListUpdateButton">Aggiorna l\'elenco personalizzato</string>
   <string name="sched_excludeSystemCheckBox">Escludi le applicazioni di sistema</string>
-  <string name="sched_warningIntervalZero">Errore: l\'intervallo non può essere 0</string>
-  <string name="spec_accounts">Accounts</string>
+    <string name="spec_accounts">Accounts</string>
   <string name="spec_appwidgets">Widget dell\'applicazione</string>
   <string name="spec_bluetooth">Bluetooth</string>
   <string name="spec_data">Utilizzo e policy dei dati</string>
   <string name="spec_wallpaper">Immagine di sfondo</string>
   <string name="spec_wifiAccessPoints">Punti di accesso Wifi</string>
-  <string name="filebrowser_setButton">Assegna</string>
-  <string name="filebrowser_createDirectory">Crea una cartella</string>
-  <string name="filebrowser_createDirectoryDlgMsg">Inserisci il nome della cartella da creare</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">Non posso creare la cartella:</string>
-  <string name="filebrowser_refresh">Aggiorna</string>
-  <string name="filebrowser_contextSetBackupDirectory">Assegna come cartella di backup</string>
   <string name="prefs_service">Preferenze di servizio</string>
   <string name="prefs_user">Preferenze utente</string>
   <string name="prefs_theme">Tema</string>
@@ -150,7 +143,6 @@
   <string name="sched_globalBlacklist">Setta lista nera globale</string>
   <string name="blacklistDialogTitle">Lista nera</string>
   <string name="logviewer_message_loading">Caricamento file di log...</string>
-  <string name="logviewer_next_lines_button">Prossimo</string>
   <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
   <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
   <string name="restart_dialog">Sembra che sia necessario riavviare l\\\'applicazione</string>

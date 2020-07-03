@@ -117,18 +117,11 @@
   <string name="sched_addSchudule">Voeg planning toe</string>
   <string name="sched_customListUpdateButton">Update aangepaste lijst</string>
   <string name="sched_excludeSystemCheckBox">Systeem apps uitsluiten</string>
-  <string name="sched_warningIntervalZero">Fout voorgevallen: interval kan niet 0 zijn</string>
-  <string name="spec_accounts">Accounts</string>
+    <string name="spec_accounts">Accounts</string>
   <string name="spec_appwidgets">Applicatie Widgets</string>
   <string name="spec_bluetooth">Bluetooth</string>
   <string name="spec_data">Data gebruik en beleid</string>
   <string name="spec_wallpaper">Wallpaper</string>
   <string name="spec_wifiAccessPoints">Wifi Access Points</string>
-  <string name="filebrowser_setButton">Stel in</string>
-  <string name="filebrowser_createDirectory">Maak folder aan</string>
-  <string name="filebrowser_createDirectoryDlgMsg">Voer de naam van de aan te maken folder in</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="filebrowser_createDirectoryError">Kon de folder niet aanmaken</string>
-  <string name="filebrowser_refresh">Verversen</string>
-  <string name="filebrowser_contextSetBackupDirectory">Stel in als back-up folder</string>
 </resources>

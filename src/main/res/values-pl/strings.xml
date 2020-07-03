@@ -139,7 +139,6 @@
     <string name="sched_addSchudule">Dodaj harmonogram</string>
     <string name="sched_customListUpdateButton">Uaktualnij listę niestandardową</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
-    <string name="sched_warningIntervalZero">Błąd: Przedział czasu nie może wynosić 0</string>
     <string name="sched_globalBlacklist">Ustaw wspólną czarną listę</string>
 
     <string name="blacklistDialogTitle">Czarna lista</string>
@@ -151,16 +150,9 @@
     <string name="spec_wallpaper">Tapeta</string>
     <string name="spec_wifiAccessPoints">Punkty dostępowe Wifi</string>
 
-    <string name="filebrowser_setButton">Ustaw</string>
-    <string name="filebrowser_createDirectory">Utwórz katalog</string>
-    <string name="filebrowser_createDirectoryDlgMsg">Wprowadź nazwę katalogu do utworzenia</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-    <string name="filebrowser_createDirectoryError">Nie można utworzyć katalogu:</string>
-    <string name="filebrowser_refresh">Odśwież</string>
-    <string name="filebrowser_contextSetBackupDirectory">Ustaw jako katalog kopii zapasowej</string>
 
     <string name="logviewer_message_loading">Ładowanie pliku dziennika</string>
-    <string name="logviewer_next_lines_button">Dalej</string>
 
     <string name="error_creating_notification_channel">Nie można stworzyć kanału powiadomień</string>
     <string name="error_updating_schedule_mode">Błąd aktualizowania %1$s planowania %2$d</string>
