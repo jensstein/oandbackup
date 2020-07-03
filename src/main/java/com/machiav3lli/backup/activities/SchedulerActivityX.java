@@ -204,7 +204,7 @@ public class SchedulerActivityX extends BaseActivity
         editor.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
         editor.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
         editor.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
-        editor.remove(Constants.PREFS_SCHEDULES_REPEATTIME + number);
+        editor.remove(Constants.PREFS_SCHEDULES_INTERVAL + number);
         editor.remove(Constants.PREFS_SCHEDULES_MODE + number);
         editor.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
         editor.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);

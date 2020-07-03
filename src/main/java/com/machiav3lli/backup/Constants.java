@@ -18,7 +18,7 @@ public class Constants {
     public static final String PREFS_SCHEDULES_TOTAL = "total";
     public static final String PREFS_SCHEDULES_ENABLED = "enabled";
     public static final String PREFS_SCHEDULES_HOUROFDAY = "hourOfDay";
-    public static final String PREFS_SCHEDULES_REPEATTIME = "repeatTime";
+    public static final String PREFS_SCHEDULES_INTERVAL = "repeatTime";
     public static final String PREFS_SCHEDULES_TIMEPLACED = "timePlaced";
     public static final String PREFS_SCHEDULES_MODE = "scheduleMode";
     public static final String PREFS_SCHEDULES_SUBMODE = "scheduleSubMode";

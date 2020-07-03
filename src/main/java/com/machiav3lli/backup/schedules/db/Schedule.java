@@ -17,96 +17,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Entity
 public class Schedule {
-    /**
-     * Scheduling mode, which packages to include in the scheduled backup
-     */
-    public enum Mode {
-        ALL(0),
-        USER(1),
-        SYSTEM(2),
-        NEW_UPDATED(3),
-        CUSTOM(4);
-        /* TODO: this is a temporary accommodation of the integer which is
-         *  stored at the moment. It should be converted to a string
-         *  representation of the enum.
-         */
-        private final int value;
-
-        Mode(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        /**
-         * Convert from int to mode. This method exists to handle the
-         * transition from storing having mode stored as integers to
-         * representing it as an enum.
-         *
-         * @param mode number written to disk
-         * @return corresponding mode
-         */
-        public static Mode intToMode(int mode) throws SchedulingException {
-            switch (mode) {
-                case 0:
-                    return ALL;
-                case 1:
-                    return USER;
-                case 2:
-                    return SYSTEM;
-                case 3:
-                    return NEW_UPDATED;
-                case 4:
-                    return CUSTOM;
-                default:
-                    throw new SchedulingException(String.format(
-                            "Unknown mode %s", mode));
-            }
-        }
-    }
-
-    /**
-     * Scheduling submode, whether to include apk, data or both in the backup
-     */
-    public enum Submode {
-        APK(0),
-        DATA(1),
-        BOTH(2);
-        private final int value;
-
-        Submode(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        /**
-         * Convert from int to submode. This method exists to handle the
-         * transition from storing having submode stored as integers to
-         * representing it as an enum.
-         *
-         * @param submode number written to disk
-         * @return corresponding submode
-         */
-        public static Submode intToSubmode(int submode) throws SchedulingException {
-            switch (submode) {
-                case 0:
-                    return APK;
-                case 1:
-                    return DATA;
-                case 2:
-                    return BOTH;
-                default:
-                    throw new SchedulingException(String.format(
-                            "Unknown submode %s", submode));
-            }
-        }
-    }
-
     @PrimaryKey(autoGenerate = true)
     private long id;
     private boolean enabled;
@@ -119,6 +29,35 @@ public class Schedule {
     private Submode submode;
     private long timeUntilNextEvent;
     private boolean excludeSystem;
+
+    public Schedule() {
+        mode = Mode.ALL;
+        submode = Submode.BOTH;
+    }
+
+    // TODO: the shared preferences files should be replaced by a single
+    //  database table
+
+    /**
+     * Get scheduling data from a preferences file.
+     *
+     * @param preferences preferences object
+     * @param number      number of schedule to fetch
+     * @return scheduling data object
+     */
+    public static Schedule fromPreferences(SharedPreferences preferences,
+                                           long number) throws SchedulingException {
+        final Schedule schedule = new Schedule();
+        schedule.id = number;
+        schedule.enabled = preferences.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false);
+        schedule.hour = preferences.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0);
+        schedule.interval = preferences.getInt(Constants.PREFS_SCHEDULES_INTERVAL + number, 1);
+        schedule.placed = preferences.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
+        schedule.mode = Mode.intToMode(preferences.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0));
+        schedule.submode = Submode.intToSubmode(preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
+        schedule.excludeSystem = preferences.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
+        return schedule;
+    }
 
     public long getId() {
         return id;
@@ -200,42 +139,6 @@ public class Schedule {
         this.excludeSystem = excludeSystem;
     }
 
-    public Schedule() {
-        mode = Mode.ALL;
-        submode = Submode.BOTH;
-    }
-
-    // TODO: the shared preferences files should be replaced by a single
-    //  database table
-
-    /**
-     * Get scheduling data from a preferences file.
-     *
-     * @param preferences preferences object
-     * @param number      number of schedule to fetch
-     * @return scheduling data object
-     */
-    public static Schedule fromPreferences(SharedPreferences preferences,
-                                           long number) throws SchedulingException {
-        final Schedule schedule = new Schedule();
-        schedule.id = number;
-        schedule.enabled = preferences.getBoolean(
-                Constants.PREFS_SCHEDULES_ENABLED + number, false);
-        schedule.hour = preferences.getInt(
-                Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0);
-        schedule.interval = preferences.getInt(
-                Constants.PREFS_SCHEDULES_REPEATTIME + number, 0);
-        schedule.placed = preferences.getLong(
-                Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
-        schedule.mode = Mode.intToMode(preferences.getInt(
-                Constants.PREFS_SCHEDULES_MODE + number, 0));
-        schedule.submode = Submode.intToSubmode(preferences.getInt(
-                Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
-        schedule.excludeSystem = preferences.getBoolean(
-                Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
-        return schedule;
-    }
-
     /**
      * Persist the scheduling data.
      *
@@ -246,7 +149,7 @@ public class Schedule {
 
         edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + id, enabled);
         edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, hour);
-        edit.putInt(Constants.PREFS_SCHEDULES_REPEATTIME + id, interval);
+        edit.putInt(Constants.PREFS_SCHEDULES_INTERVAL + id, interval);
         edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, placed);
         edit.putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value);
         edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value);
@@ -255,6 +158,7 @@ public class Schedule {
 
         edit.apply();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -298,6 +202,93 @@ public class Schedule {
                 ", submode=" + submode +
                 ", excludeSystem=" + excludeSystem +
                 '}';
+    }
+
+    /**
+     * Scheduling mode, which packages to include in the scheduled backup
+     */
+    public enum Mode {
+        ALL(0),
+        USER(1),
+        SYSTEM(2),
+        NEW_UPDATED(3),
+        CUSTOM(4);
+
+        private final int value;
+
+        Mode(int value) {
+            this.value = value;
+        }
+
+        /**
+         * Convert from int to mode. This method exists to handle the
+         * transition from storing having mode stored as integers to
+         * representing it as an enum.
+         *
+         * @param mode number written to disk
+         * @return corresponding mode
+         */
+        public static Mode intToMode(int mode) throws SchedulingException {
+            switch (mode) {
+                case 0:
+                    return ALL;
+                case 1:
+                    return USER;
+                case 2:
+                    return SYSTEM;
+                case 3:
+                    return NEW_UPDATED;
+                case 4:
+                    return CUSTOM;
+                default:
+                    throw new SchedulingException(String.format(
+                            "Unknown mode %s", mode));
+            }
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * Scheduling submode, whether to include apk, data or both in the backup
+     */
+    public enum Submode {
+        APK(0),
+        DATA(1),
+        BOTH(2);
+        private final int value;
+
+        Submode(int value) {
+            this.value = value;
+        }
+
+        /**
+         * Convert from int to submode. This method exists to handle the
+         * transition from storing having submode stored as integers to
+         * representing it as an enum.
+         *
+         * @param submode number written to disk
+         * @return corresponding submode
+         */
+        public static Submode intToSubmode(int submode) throws SchedulingException {
+            switch (submode) {
+                case 0:
+                    return APK;
+                case 1:
+                    return DATA;
+                case 2:
+                    return BOTH;
+                default:
+                    throw new SchedulingException(String.format(
+                            "Unknown submode %s", submode));
+            }
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     public static class Builder {

@@ -116,8 +116,6 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
 
         void setTimeLeft(Schedule schedule, long now) {
             if (!schedule.isEnabled()) timeLeft.setText("");
-            else if (schedule.getInterval() <= 0)
-                timeLeft.setText(ctx.getResources().getString(R.string.sched_warningIntervalZero));
             else {
                 final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                         schedule.getHour(), schedule.getPlaced(), now);
