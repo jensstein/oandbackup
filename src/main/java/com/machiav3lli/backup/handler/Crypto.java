@@ -45,7 +45,7 @@ public final class Crypto {
      * https://www.raywenderlich.com/778533-encryption-tutorial-for-android-getting-started
      */
     public static final String DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1";
-    public static final String DEFAULT_CIPHER_ALGORITHM = "AES_128/CBC/PKCS5Padding";
+    public static final String DEFAULT_CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
     /**
      * Default salt, if no user specified salt is available to improve security.
      * Better a constant salt for the app that using no salt.
