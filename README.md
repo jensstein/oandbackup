@@ -37,26 +37,18 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 
 #### [Changelog](https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md)
 
-- [x] Fixing OAB-Utils build problem which was caused by a deprecated method in Rust
-- [x] Adapt FastAdapter: for Main, Batch and Scheduler
-- [x] Rewrite Main-, Batch- & Scheduler-(Activity, Adapter and Sorter)
-- [x] Modeling the app's structure: for the most part now
-- [x] Modeling Sort/Filter
-- [x] Add some new filters
-- [x] Add Exodus Report to AppSheet
-- [x] Rewrite Preferences
-- [x] Integrate Tools and Help in Preferences
-- [x] New UI and UX: Design improvement proposals are always welcome
-- [x] Add Dark/Light themes
-- [ ] Update dialogs' UI: partially done
-- [x] Add support for protected data backup
-- [x] Exclude cache from data backups
-- [x] Prompt to turn the Battery Optimization off
-- [x] Add in-app backup encryption (first: after 1.0)
-- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~30% done)
-- [ ] New android Scope Storage permissions compatibility: fixed for Android 10 with legacy mode for now(first: after android 11 release)
-- [ ] Switch to Storage Access Framework: moved to SAF but still supports only local storage for now (connected to the two previous goals)
+- [x] Whole new UI and UX (Design improvement proposals are always welcome)
+- [x] Support for latest android versions
 - [x] Add Split Apk Support
+- [x] Modeling Sort/Filter and added some new filters
+- [x] Add App Info and Exodus Report shortcuts to AppSheet
+- [x] Extend Preferences
+- [x] Add support for protected data, external data and obb backups
+- [x] Clear cache before data backups
+- [x] Add in-app backup encryption
+- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~30% done)
+- [ ] Switch to Storage Access Framework (after achieving the previous one)
+- [ ] New android Scope Storage permissions compatibility (first: after android 11 release - if forced to)
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
@@ -82,17 +74,7 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 
 ## Building
 
-OAndBackupX is built with gradle. you need the android sdk, rust (for building the oab-utils binary), and bash (or a compatible shell for executing the oab-utils build script).
-
-P.S: If you have any problem building OAB-Utils: you can find some helping notes in its Readme.md
-
-## Busybox / OAB-Utils
-
-a working busybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
-
-Busybox is available on F-Droid or you can build it yourself from [here](https://busybox.net).
-
-copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackupx. in the oandbackupx preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
+OAndBackupX is built with gradle, for that you need the android sdk.
 
 ## Licenses
 
@@ -106,11 +88,11 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup. 
 
-Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek).
+Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek).
 
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [Zip4J](https://github.com/srikanth-lingala/zip4j), [RootBeer](https://github.com/scottyab/rootbeer).
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [Zip4J](https://github.com/srikanth-lingala/zip4j), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker).
 
 ## Author
 

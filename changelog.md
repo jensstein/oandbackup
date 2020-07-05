@@ -1,6 +1,17 @@
 changelog
 =========
 
+2.0.0 (06.07.2020)
+-------------------
+* updated: switched to sulib (Credits @Tiefkuehlpizze)
+* removed oab-utils for good (Credits @Tiefkuehlpizze)
+* update: new UI elments for App-, Filter- & ScheduleSheet
+* fixed scheduled backups for data(alone)
+* fixed zipping external/deData/obb according to Prefs
+* fixed: zipping empty external/deData/obb folders
+* updated: clean cache function
+* some other UI and Performance tweaks
+
 1.3.0 (25.06.2020)
 -------------------
 * updated: new Filters System

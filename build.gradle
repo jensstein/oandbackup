@@ -75,8 +75,8 @@ dependencies {
     implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
 }
 
-int versionMajor = 1
-int versionMinor = 3
+int versionMajor = 2
+int versionMinor = 0
 int versionPath = 0
 
 android {
