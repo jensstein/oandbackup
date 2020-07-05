@@ -106,14 +106,11 @@
   <string name="sched_title">Pianificazioni</string>
   <string name="sched_notificationMessage">Backup pianificato</string>
   <string name="sched_interval">Intervallo in giorni</string>
-  <string name="sched_hourOfDay">Ora del giorno:</string>
+  <string name="sched_hourOfDay">Ora del giorno</string>
   <string name="sched_checkbox">Abilita</string>
-  <string name="sched_updateButton">Aggiorna</string>
-  <string name="sched_removeButton">Rimuovi</string>
   <string name="sched_startingbackup">Avvio del backup pianificato</string>
-  <string name="sched_backupMode">Modalità di backup:</string>
-  <string name="sched_timeLeft">Ore mancanti al prossimo backup</string>
-  <string name="sched_addSchudule">Aggiungi pianificazione</string>
+  <string name="sched_backupMode">Modalità di backup</string>
+  <string name="sched_timeLeft">Ore mancanti al prossimo backup:</string>
   <string name="sched_customListUpdateButton">Aggiorna l\'elenco personalizzato</string>
   <string name="sched_excludeSystemCheckBox">Escludi le applicazioni di sistema</string>
     <string name="spec_accounts">Accounts</string>
@@ -138,9 +135,7 @@
   <string name="prefs_summaryClearCache">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
   <string name="prefs_summaryQuickReboot">Chiude il processo system_server per forzare un riavvio dello spazio utente</string>
   <string name="prefs_summaryBatchDelete">Cancella i backup di tutte le app non installate in questo moment</string>
-  <string name="sched_hourOfDay_hint">Tra 0 e 23</string>
   <string name="sched_activateButton">Inizia backup ora</string>
-  <string name="sched_globalBlacklist">Setta lista nera globale</string>
   <string name="blacklistDialogTitle">Lista nera</string>
   <string name="logviewer_message_loading">Caricamento file di log...</string>
   <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>

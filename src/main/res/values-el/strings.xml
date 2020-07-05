@@ -124,20 +124,15 @@
 
     <string name="sched_title">Προγραμματισμός</string>
     <string name="sched_notificationMessage">Προγραμματισμένο αντίγραφο</string>
-    <string name="sched_interval">Μεσοδιάστημα σε ημέρες:</string>
-    <string name="sched_hourOfDay">Ώρα της ημέρας:</string>
-    <string name="sched_hourOfDay_hint">Μεταξύ 0 και 23</string>
+    <string name="sched_interval">Μεσοδιάστημα σε ημέρες</string>
+    <string name="sched_hourOfDay">Ώρα της ημέρας</string>
     <string name="sched_checkbox">Ενεργοποίηση</string>
-    <string name="sched_updateButton">Ενημέρωση</string>
-    <string name="sched_removeButton">Αφαίρεση</string>
     <string name="sched_activateButton">Εκκίνηση δημιουργίας αντιγράφου τώρα</string>
     <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου</string>
-    <string name="sched_backupMode">Λειτουργία δημιουργίας αντιγράφου:</string>
-    <string name="sched_timeLeft">Ώρες μέχρι το επόμενο αντίγραφο</string>
-    <string name="sched_addSchudule">Προσθήκη προγράμματος</string>
+    <string name="sched_backupMode">Λειτουργία δημιουργίας αντιγράφου</string>
+    <string name="sched_timeLeft">Ώρες μέχρι το επόμενο αντίγραφο:</string>
     <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
-    <string name="sched_globalBlacklist">Ορίστε γενική μαύρη λίστα</string>
 
     <string name="blacklistDialogTitle">Μαύρη λίστα</string>
 

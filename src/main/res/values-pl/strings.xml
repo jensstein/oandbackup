@@ -127,19 +127,14 @@
     <string name="sched_title">Harmonogram</string>
     <string name="sched_notificationMessage">Planowana kopia zapasowa</string>
     <string name="sched_interval">Przedział czasu w dniach</string>
-    <string name="sched_hourOfDay">Godzina dnia:</string>
-    <string name="sched_hourOfDay_hint">Pomiędzy 0 a 23</string>
+    <string name="sched_hourOfDay">Godzina dnia</string>
     <string name="sched_checkbox">Włącz</string>
-    <string name="sched_updateButton">Aktualizacja</string>
-    <string name="sched_removeButton">Usuń</string>
     <string name="sched_activateButton">Rozpocznij teraz tworzenie kopii zapasowej</string>
     <string name="sched_startingbackup">Uruchamianie zaplanowanej kopii zapasowej</string>
-    <string name="sched_backupMode">Tryb tworzenia kopii zapasowych:</string>
-    <string name="sched_timeLeft">Godziny do następnej kopii zapasowej</string>
-    <string name="sched_addSchudule">Dodaj harmonogram</string>
+    <string name="sched_backupMode">Tryb tworzenia kopii zapasowych</string>
+    <string name="sched_timeLeft">Godziny do następnej kopii zapasowej:</string>
     <string name="sched_customListUpdateButton">Uaktualnij listę niestandardową</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
-    <string name="sched_globalBlacklist">Ustaw wspólną czarną listę</string>
 
     <string name="blacklistDialogTitle">Czarna lista</string>
 

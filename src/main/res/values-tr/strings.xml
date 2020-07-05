@@ -126,20 +126,15 @@
 
     <string name="sched_title">Zamanlama</string>
     <string name="sched_notificationMessage">Zamanlanmış yedekleme</string>
-    <string name="sched_interval">Gün olarak sıklık:</string>
-    <string name="sched_hourOfDay">Günün saati:</string>
-    <string name="sched_hourOfDay_hint">0 ve 23 arası</string>
+    <string name="sched_interval">Gün olarak sıklık</string>
+    <string name="sched_hourOfDay">Günün saati</string>
     <string name="sched_checkbox">Etkinleştir</string>
-    <string name="sched_updateButton">Güncelle</string>
-    <string name="sched_removeButton">Kaldır</string>
     <string name="sched_activateButton">Yedeklemeyi şimdi başlat</string>
     <string name="sched_startingbackup">Zamanlanmış yedekleme başlatılıyor…</string>
-    <string name="sched_backupMode">Yedekleme modu:</string>
-    <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat</string>
-    <string name="sched_addSchudule">Zamanlama ekle</string>
+    <string name="sched_backupMode">Yedekleme modu</string>
+    <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat:</string>
     <string name="sched_customListUpdateButton">Özel listeyi güncelle</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
-    <string name="sched_globalBlacklist">Global karaliste ayarla</string>
 
     <string name="blacklistDialogTitle">Karaliste</string>
 

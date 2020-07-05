@@ -110,18 +110,14 @@
     <string name="sched_title">Programación</string>
     <string name="sched_notificationMessage">Respaldos programados</string>
     <string name="sched_interval">Intervalo en días</string>
-    <string name="sched_hourOfDay">Hora del día:</string>
+    <string name="sched_hourOfDay">Hora del día</string>
     <string name="sched_checkbox">Habilitar</string>
-    <string name="sched_updateButton">Actualizar</string>
-    <string name="sched_removeButton">Remover</string>
     <string name="sched_activateButton">Iniciar respaldo ahora</string>
     <string name="sched_startingbackup">Iniciar respaldos programados</string>
-    <string name="sched_backupMode">Modo de respaldo:</string>
-    <string name="sched_timeLeft">Horas hasta el próximo respaldo</string>
-    <string name="sched_addSchudule">Añadir programación</string>
+    <string name="sched_backupMode">Modo de respaldo</string>
+    <string name="sched_timeLeft">Horas hasta el próximo respaldo:</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
-    <string name="sched_globalBlacklist">Establecer lista negra global</string>
 
     <string name="blacklistDialogTitle">Lista negra</string>
 

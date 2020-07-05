@@ -127,20 +127,15 @@
 
     <string name="sched_title">Scheduling</string>
     <string name="sched_notificationMessage">Scheduled backup</string>
-    <string name="sched_interval">Interval in days:</string>
-    <string name="sched_hourOfDay">Hour of day:</string>
-    <string name="sched_hourOfDay_hint">Between 0 and 23</string>
+    <string name="sched_interval">Interval in days</string>
+    <string name="sched_hourOfDay">Hour of day</string>
     <string name="sched_checkbox">Enable</string>
-    <string name="sched_updateButton">Update</string>
-    <string name="sched_removeButton">Remove</string>
     <string name="sched_activateButton">Start backup now</string>
     <string name="sched_startingbackup">Starting scheduled backup…</string>
-    <string name="sched_backupMode">Backup mode:</string>
-    <string name="sched_timeLeft">hours until next backup</string>
-    <string name="sched_addSchudule">Add schedule</string>
+    <string name="sched_backupMode">Backup mode</string>
+    <string name="sched_timeLeft">Time until next backup:</string>
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
-    <string name="sched_globalBlacklist">Set global blacklist</string>
 
     <string name="blacklistDialogTitle">Blacklist</string>
 
