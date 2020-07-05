@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.schedules.HandleAlarms;
@@ -17,8 +18,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.machiav3lli.backup.activities.SchedulerActivityX.ctx;
 
 public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
     Schedule sched;
@@ -55,8 +54,10 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
     protected static class ViewHolder extends FastAdapter.ViewHolder<SchedulerItemX> {
         @BindView(R.id.checkbox)
         AppCompatCheckBox checkbox;
-        @BindView(R.id.schedTimeLeft)
+        @BindView(R.id.timeLeft)
         AppCompatTextView timeLeft;
+        @BindView(R.id.timeLeft_line)
+        LinearLayoutCompat timeLeftLine;
         @BindView(R.id.schedMode)
         AppCompatTextView schedMode;
         @BindView(R.id.schedSubMode)
@@ -115,14 +116,17 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
         }
 
         void setTimeLeft(Schedule schedule, long now) {
-            if (!schedule.isEnabled()) timeLeft.setText("");
-            else {
+            if (!schedule.isEnabled()) {
+                timeLeft.setText("");
+                timeLeftLine.setVisibility(View.INVISIBLE);
+            } else {
                 final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                         schedule.getHour(), schedule.getPlaced(), now);
                 int sum = (int) (timeDiff / 1000f / 60f);
                 int hours = sum / 60;
                 int minutes = sum % 60;
-                timeLeft.setText(String.format("%s: %s:%s", ctx.getResources().getString(R.string.sched_timeLeft), hours, minutes));
+                timeLeft.setText(String.format(" %s:%s", hours, minutes));
+                timeLeftLine.setVisibility(View.VISIBLE);
             }
         }
 

@@ -18,6 +18,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.annimon.stream.Optional;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -64,8 +65,10 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     AppCompatCheckBox excludeSystem;
     @BindView(R.id.customListUpdate)
     AppCompatButton customList;
-    @BindView(R.id.schedTimeLeft)
+    @BindView(R.id.timeLeft)
     AppCompatTextView timeLeft;
+    @BindView(R.id.timeLeft_line)
+    LinearLayoutCompat timeLeftLine;
     @BindView(R.id.checkbox)
     AppCompatCheckBox enableCB;
     @BindView(R.id.removeButton)
@@ -221,14 +224,17 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     }
 
     void setTimeLeft(Schedule schedule, long now) {
-        if (!schedule.isEnabled()) timeLeft.setText("");
-        else {
+        if (!schedule.isEnabled()) {
+            timeLeft.setText("");
+            timeLeftLine.setVisibility(View.INVISIBLE);
+        } else {
             final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                     schedule.getHour(), schedule.getPlaced(), now);
             int sum = (int) (timeDiff / 1000f / 60f);
             int hours = sum / 60;
             int minutes = sum % 60;
-            timeLeft.setText(String.format("%s: %s:%s", getString(R.string.sched_timeLeft), hours, minutes));
+            timeLeft.setText(String.format(" %s:%s", hours, minutes));
+            timeLeftLine.setVisibility(View.VISIBLE);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.machiav3lli.backup.activities;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -54,9 +52,6 @@ public class SchedulerActivityX extends BaseActivity
     public static final String SCHEDULECUSTOMLIST = "customlist";
     public static final int GLOBALBLACKLISTID = -1;
     private static final String TAG = Constants.classTag(".SchedulerActivityX");
-    // just to get a string in SchedulerItemX
-    @SuppressLint("StaticFieldLeak")
-    public static Context ctx;
     public static String DATABASE_NAME = "schedules.db";
     public ArrayList<SchedulerItemX> list;
     public ItemAdapter<SchedulerItemX> itemAdapter;
@@ -80,7 +75,6 @@ public class SchedulerActivityX extends BaseActivity
         setContentView(R.layout.activity_scheduler_x);
         handleAlarms = new HandleAlarms(this);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        ctx = this;
         ButterKnife.bind(this);
 
         list = new ArrayList<>();

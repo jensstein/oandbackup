@@ -46,13 +46,25 @@
                     android:textAppearance="@style/TextAppearance.Label" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedTimeLeft"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/timeLeft_line"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.4"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.Secondary" />
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sched_timeLeft"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/timeLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>
