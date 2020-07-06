@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">OAndBackupX</string>
+    <string name="backup">Varunda</string>
+    <string name="restore">Taasta</string>
+    <string name="backupConfirmation">Varundad?</string>
+    <string name="restoreConfirmation">Taastad?</string>
+    <string name="handleApk">APK</string>
+    <string name="handleData">Andmed</string>
+    <string name="handleBoth">Mõlemad</string>
+    <string name="radioAll">Kõik rakendused</string>
+    <string name="radioUser">Kasutajarakendused</string>
+    <string name="radioSystem">Süsteemirakendused</string>
+    <string name="radioBoth">APK ja andmed</string>
+    <string name="radioApk">APK</string>
+    <string name="radioData">Andmed</string>
+    <string name="radioSpecial">Erilised varundused</string>
+    <string name="de_selectAll">(Ära) vali kõik</string>
+    <string name="onlyApkBackedUp">Ainult APK</string>
+    <string name="onlyDataBackedUp">Ainult andmed</string>
+    <string name="refresh">Värskenda</string>
+    <string name="batchbackup">Massvarundus</string>
+    <string name="batchrestore">Masstaaste</string>
+    <string name="search">Otsi</string>
+    <string name="searchHint">Otsi rakendusi</string>
+    <string name="deleteBackup">Kustuta varundus</string>
+    <string name="uninstall">Eemalda rakendus</string>
+    <string name="uninstallProgress">Eemaldamine…</string>
+    <string name="showOnlySystem">Ainult süsteemirakendused</string>
+    <string name="showOnlyUser">Ainult kasutajarakendused</string>
+    <string name="showNotBackedup">Varunduseta rakendused</string>
+    <string name="showNotInstalled">Mittepaigaldatud rakendused</string>
+    <string name="showNewAndUpdated">Uued ja uuendatud rakendused</string>
+    <string name="showOldBackups">Vanad varundused</string>
+    <string name="showSplitAPKs">Poolitatud APK</string>
+    <string name="showOnlyApkBackedUp">Ainult APK-varundusega rakendused</string>
+    <string name="showOnlyDataBackedUp">Ainult andmevarundusega rakendused</string>
+    <string name="sortByLabel">Sorteeri nime järgi</string>
+    <string name="sortByPackageName">Sorteeri paketinime järgi</string>
+    <string name="sort">Sorteeri ja filtreeri</string>
+    <string name="uninstallDialogMessage">Eemaldad selle rakenduse?</string>
+    <string name="deleteBackupDialogMessage">Kustutad varundusfailid?</string>
+    <string name="dialogOK">OK</string>
+    <string name="dialogCancel">Tühista</string>
+    <string name="dialogYes">Jah</string>
+    <string name="dialogNo">Ei</string>
+    <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud</string>
+    <string name="collectingData">Paketi info kogumine…</string>
+    <string name="suCheck">Superuseri ja Busyboxi kontrollimine…</string>
+    <string name="noSu">Superuseri õiguste saamine ebaõnnestus</string>
+    <string name="busyboxProblem">Busyboxi ei leitud, palun kontrolli vealogi</string>
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <string name="mkfileError">Ei saanud luua faili</string>
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">Vaikeväärtusele taandumine</string>
+    <string name="backupFolderError">Palun määra eelistustes korrektne failitee ning veendu, et see on olemas või loodav</string>
+    <string name="shellReturnSuccess">Õnnestus</string>
+    <string name="shellReturnError">Viga</string>
+    <string name="backupProgress">Varundamine…</string>
+    <string name="backupSuccess">Varundamine valmis</string>
+    <string name="backupFailure">Varundamisel esines viga</string>
+    <string name="restoreProgress">Taastamine…</string>
+    <string name="restoreSuccess">Taastamine õnnestus</string>
+    <string name="restoreFailure">Taastamisel esines viga</string>
+    <string name="batchSuccess">Operatsioon valmis</string>
+    <string name="batchFailure">Valmis, kuid esines vigu</string>
+    <string name="uninstallSuccess">Eemaldamine valmis</string>
+    <string name="uninstallFailure">Eemaldamisel esines viga</string>
+    <string name="errorDialogTitle">Esines vigu</string>
+    <string name="customListTitle">Kohandatud nimekiri</string>
+    <string name="quickRebootTitle">Kiire taaskäivitus</string>
+    <string name="quickRebootMessage">Kas soovid kasutajakeskkonna taaskäivitada?</string>
+    <string name="help_title">Abi</string>
+    <string name="notInstalledModeDataWarning">Rakendust ei saa varundusest taastada ilma APKita</string>
+    <string name="shareTitle">Jaga</string>
+
+    <string name="tools_title">Tööriistad</string>
+    <string name="batchDeleteMessage">Varunduste kustutamine…</string>
+    <string name="batchDeleteNotificationTitle">Kustuta varundused</string>
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="batchDeleteBackupsDeleted">Varundusi kustutatud:</string>
+    <string name="batchDeleteNothingToDelete">Pole varundusi, mida kustutada</string>
+
+    <string name="enablePackage">Luba</string>
+    <!-- enablePackageTitle: title for a list of checkable users -->
+    <string name="enablePackageTitle">Luba kasutajatele</string>
+    <string name="disablePackage">Keela</string>
+    <string name="disablePackageTitle">Keela kasutajatele</string>
+
+    <string name="prefs_title">Eelistused</string>
+    <string name="prefs_service">Teenuse eelistused</string>
+    <string name="prefs_user">Kasutaja eelistused</string>
+    <string name="prefs_theme">Teema</string>
+    <string name="prefs_acquireWakelock">Väldi unerežiimi</string>
+    <string name="prefs_pathscategory">Kohandatud failiteed</string>
+    <string name="prefs_batchDelete">Kustuta varundused</string>
+    <string name="prefs_pathBackupFolder">Varunduste kaust</string>
+    <string name="prefs_pathToybox">Busyboxi kaust</string>
+    <string name="prefs_oldBackups">Filtreeri varundusi vanuse järgi</string>
+    <string name="prefs_copySelfApk">Kopeeri oma APK</string>
+    <string name="prefs_languages">Keel</string>
+    <string name="prefs_languageSystemDefault">Süsteemi vaikeväärtus</string>
+    <string name="prefs_rememberFiltering">Jäta järjestus ja filter meelde</string>
+    <string name="prefs_followSymlinks">Järgi sümboolseid linke</string>
+    <string name="prefs_enableSpecialBackups">Luba erilised varundused</string>
+    <string name="prefs_disableNotifications">Keela teavitus</string>
+    <string name="prefs_clearCache">Tühjenda rakenduse vahemälu</string>
+    <string name="prefs_encryption">Krüpteerimine</string>
+    <string name="prefs_password">Krüpteeringu parool</string>
+    <string name="prefs_backupExternalData">Varunda väliseid andmeid</string>
+    <string name="prefs_backupDeviceProtectedData">Varunda seadme kaitstud andmeid</string>
+    <string name="prefs_summaryBackupDeviceProtectedData">Varundab ja taastab andmed, mis asuvad kohas data/user_de</string>
+    <string name="prefs_summaryBackupExternalData">Varundab ja taastab andmed, mis asuvad välismälus (nt /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_summary_password">Krüpteeringu keelamiseks jäta tühjaks</string>
+    <string name="prefs_summary_encryption">Luba, et krüpteerida andmevarundusi</string>
+    <string name="prefs_summaryClearCache">Tühjenda rakenduste vahemälu enne andmevarunduse tegemist</string>
+    <string name="prefs_summaryDisableNotifications">OAndBackupX ei näita ühtegi teatist</string>
+    <string name="prefs_summaryAcquireWakelock">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt</string>
+    <string name="prefs_summaryBackupFolder">Failitee varunduste kausta. Vaikeväärtuse jaoks jäta tühjaks.</string>
+    <string name="prefs_summaryToybox">Failitee Toybox/Busybox käivitatava juurde. Veendu et see on korrektne, vaikeväärtuse jaoks jäta tühjaks.</string>
+    <string name="prefs_summaryOldBackups">Filtreeri varundusi, mis on vanemad kui määratud väärtus (päevades). Kasutatakse filtri \"Kuva vanu varundusi\" puhul</string>
+    <string name="prefs_summaryCopySelfApk">Aseta varundamisel OAndBackupX-i koopia varunduskausta juurtasemele</string>
+    <string name="prefs_summaryRememberFiltering">Salvestab valitud sorteerimise ja filtreerimise meetodi. Arvestatakse vaid neid, mida märgid menüüs linnukesega.</string>
+    <string name="prefs_summaryFollowSymlinks">Järgi kopeerimisel alati sümboolseid linke (cp -L)</string>
+    <string name="prefs_summaryQuickReboot">Tapab system_server protsessi, sundimaks kasutajakeskkonna taaskäivitamist</string>
+    <string name="prefs_summaryBatchDelete">Kustuta kõikide hetkel mittepaigaldatud rakenduste varundused</string>
+
+    <string name="sched_title">Ajastamine</string>
+    <string name="sched_notificationMessage">Ajastatud varundus</string>
+    <string name="sched_interval">Intervall päevades</string>
+    <string name="sched_hourOfDay">Päeva tund</string>
+    <string name="sched_checkbox">Luba</string>
+    <string name="sched_activateButton">Alusta varundamist kohe</string>
+    <string name="sched_startingbackup">Käivitan ajastatud varunduse…</string>
+    <string name="sched_backupMode">Varundusrežiim</string>
+    <string name="sched_timeLeft">Aega järgmise varunduseni:</string>
+    <string name="sched_customListUpdateButton">Uuenda kohandatud nimekirja</string>
+    <string name="sched_excludeSystemCheckBox">Välista süsteemirakendused</string>
+
+    <string name="blacklistDialogTitle">Must nimekiri</string>
+
+    <string name="spec_accounts">Kontod</string>
+    <string name="spec_appwidgets">Rakenduste vidinad</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Andmekasutus ja -poliitika</string>
+    <string name="spec_wallpaper">Taustapilt</string>
+    <string name="spec_wifiAccessPoints">WiFi juurdepääsupunktid</string>
+
+    <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
+
+    <string name="logviewer_message_loading">Logifaili laadimine…</string>
+
+    <string name="error_creating_notification_channel">Teatekanali loomine ebaõnnestus</string>
+    <string name="error_updating_schedule_mode">Ajakava %2$d %1$s uuendamine ebaõnnestus</string>
+    <string name="permission_not_granted">Välismälule ligipääsemiseks on vajalik luba</string>
+    <string name="restart_dialog">Tundub, et rakendus vajab taaskäivitust</string>
+
+    <string name="filter_options">Filtrid:</string>
+    <string name="sort_options">Sorteeri:</string>
+    <string name="sortLabel">Nimi</string>
+    <string name="sortPackageName">Paketinimi</string>
+    <string name="app_s_icon">Rakenduse ikoon</string>
+    <string name="bothBackedUp">APK ja andmed</string>
+    <string name="all">Kõik</string>
+    <string name="logViewerTitle">Vaata logi</string>
+    <string name="ask_for_permissions">küsi luba</string>
+    <string name="systemApp">Süsteemirakendus</string>
+    <string name="userApp">Kasutajarakendus</string>
+    <string name="resetFilter">Lähtesta</string>
+    <string name="applyFilter">Rakenda</string>
+    <string name="available_actions">Saadaolevad tegevused:</string>
+    <string name="version_name_title">Versiooninimi:</string>
+    <string name="backup_mode_title">Varundusrežiim:</string>
+    <string name="last_backup_title">Viimane varundus:</string>
+    <string name="app_s_type_title">Rakenduse liik:</string>
+    <string name="encrypted_data_title">Krüpteeritud andmed:</string>
+    <string name="other_filters_options">Spetsiaalsed filtrid:</string>
+    <string name="deleted_backup">Varundus kustutatud</string>
+    <string name="theme_light">Hele</string>
+    <string name="theme_dark">Tume</string>
+    <string name="theme_system">Süsteemi teema</string>
+    <string name="empty_filtered_list">Filtreeritud nimekiri on tühi, seega lähtestame filtrid vaikeväärtusele</string>
+    <string name="permission_refuse">Ära tee nii</string>
+    <string name="permission_approve">Teeme ära</string>
+    <string name="ignore_battery_optimization_title">Aku optimeerimine</string>
+    <string name="ignore_battery_optimization_message">Varundused võivad vahest peatuda, selle vältimiseks peaksid keelama aku optimeerimise</string>
+    <string name="ignore_battery_optimization_not_supported">See seade ei toeta kahjuks aku optimeerimise keelamist!</string>
+    <string name="failed_unzipping">Andmete lahti pakkimisel esines viga, kontrolli krüpteeringu parooli!</string>
+    <string name="split_apks">Poolitatud APKid:</string>
+    <string name="backup_filters">Varunduse filtrid:</string>
+    <string name="grant_usage_access_title">Anna kasutuse juurdepääsuluba</string>
+    <string name="grant_usage_access_message">See on vajalik rakenduste failide suuruste info saamiseks</string>
+    <string name="app_size">Rakenduse suurus:</string>
+    <string name="data_size">Andmete suurus:</string>
+    <string name="cache_size">Vahemälu suurus:</string>
+</resources>
