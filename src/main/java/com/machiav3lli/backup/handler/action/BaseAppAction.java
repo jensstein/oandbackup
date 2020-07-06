@@ -8,6 +8,7 @@ import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.topjohnwu.superuser.Shell;
 
@@ -31,11 +32,11 @@ public abstract class BaseAppAction {
         this.shell = shell;
     }
 
-    public void run(AppInfo app) {
-        this.run(app, AppInfo.MODE_BOTH);
+    public ActionResult run(AppInfo app) {
+        return this.run(app, AppInfo.MODE_BOTH);
     }
 
-    public abstract void run(AppInfo app, int backupMode);
+    public abstract ActionResult run(AppInfo app, int backupMode);
 
     protected ShellHandler getShell() {
         return this.shell;
@@ -95,15 +96,4 @@ public abstract class BaseAppAction {
         }
     }
 
-    public static class BackupFailedException extends AppActionFailedException {
-        public BackupFailedException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    public static class RestoreFailedException extends AppActionFailedException {
-        public RestoreFailedException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
 }

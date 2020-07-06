@@ -10,7 +10,8 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
-import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.machiav3lli.backup.items.AppInfo;
 
@@ -24,8 +25,9 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     final WeakReference<HandleMessages> handleMessagesReference;
     final WeakReference<MainActivityX> oAndBackupReference;
     final File backupDirectory;
-    final ShellCommands shellCommands;
+    final ShellHandler shellHandler;
     final int mode;
+    protected ActionResult result;
 
     @VisibleForTesting
     CountDownLatch signal;
@@ -34,13 +36,13 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     BackupRestoreHelper backupRestoreHelper;
 
     public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfo app, HandleMessages handleMessages,
-                    MainActivityX oAndBackupX, File backupDirectory, ShellCommands shellCommands, int mode) {
+                    MainActivityX oAndBackupX, File backupDirectory, ShellHandler shellHandler, int mode) {
         this.actionType = actionType;
         this.app = app;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
         this.oAndBackupReference = new WeakReference<>(oAndBackupX);
         this.backupDirectory = backupDirectory;
-        this.shellCommands = shellCommands;
+        this.shellHandler = shellHandler;
         this.mode = mode;
         backupRestoreHelper = new BackupRestoreHelper();
     }
@@ -65,8 +67,9 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             } else {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
-                UIUtils.showErrors(oAndBackupX);
+                //UIUtils.showErrors(oAndBackupX);
             }
+            UIUtils.showActionResult(oAndBackupX, this.result);
         }
         if (signal != null) {
             signal.countDown();

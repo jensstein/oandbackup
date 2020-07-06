@@ -7,6 +7,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.TarUtils;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.utils.CommandUtils;
@@ -34,7 +35,7 @@ public class BackupAppAction extends BaseAppAction {
     }
 
     @Override
-    public void run(AppInfo app, int backupMode) {
+    public ActionResult run(AppInfo app, int backupMode) {
         Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getLabel()));
         try {
             if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
@@ -52,8 +53,6 @@ public class BackupAppAction extends BaseAppAction {
                 this.backupData(app);
                 if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
                     this.backupExternalData(app);
-                }
-                if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
                     this.backupObbData(app);
                 }
                 if (this.getSharedPreferences().getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
@@ -64,18 +63,52 @@ public class BackupAppAction extends BaseAppAction {
             app.setBackupMode(backupMode);
             LogFile.writeLogFile(this.getAppBackupFolder(app), app, backupMode, encrypted);
         } catch (BackupFailedException | Crypto.CryptoSetupException e) {
-            e.printStackTrace();
+            return new ActionResult(
+                    app,
+                    String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
+                    false
+            );
         }
+        return new ActionResult(app, "", true);
     }
 
-    protected void compress(File filepath) throws IOException, Crypto.CryptoSetupException {
-        String outputFilename = filepath.getAbsolutePath() + ".tar.gz";
+    public boolean cleanBackup(AppInfo app, int backupMode) {
+        boolean successFlag = true;
+        if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+            successFlag = this.removePackageBackup(app);
+            Log.d(BackupAppAction.TAG, String.format("%s: Removed backup apks: %s", app, successFlag));
+        }
+        if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
+            boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getSharedPreferences());
+
+            String type = BaseAppAction.BACKUP_DIR_DATA;
+            boolean lastResult = this.getBackupArchive(app, type, isEncrypted).delete();
+            Log.d(BackupAppAction.TAG, String.format("%s: Removed backup data: %s", app, lastResult));
+            successFlag &= lastResult;
+
+            if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+                lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, isEncrypted).delete();
+                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup external data: %s", app, lastResult));
+                successFlag &= lastResult;
+
+                lastResult = FileUtils.deleteQuietly(this.getObbBackupFolder(app));
+                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup obb data: %s", app, lastResult));
+                successFlag &= lastResult;
+            }
+
+            if (this.getSharedPreferences().getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+                lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted).delete();
+                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup obb data: %s", app, lastResult));
+                successFlag &= lastResult;
+            }
+        }
+        return successFlag;
+    }
+
+    protected void compress(File filepath, File outputFilename) throws IOException, Crypto.CryptoSetupException {
         Log.d(BackupAppAction.TAG, "Opening output file for compression: " + outputFilename);
         String password = this.getSharedPreferences().getString(Constants.PREFS_PASSWORD, "");
-        if (!password.isEmpty()) {
-            Log.d(BackupAppAction.TAG, "Encryption enabled");
-            outputFilename += ".enc";
-        }
+
         OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFilename, false));
         if (!password.isEmpty()) {
             out = Crypto.encryptStream(out, password, PrefUtils.getCryptoSalt(this.getSharedPreferences()));
@@ -240,5 +273,31 @@ public class BackupAppAction extends BaseAppAction {
                 new File(app.getDeviceProtectedDataDir()),
                 true
         );
+    }
+
+    protected boolean removePackageBackup(AppInfo app) {
+        Log.i(BackupAppAction.TAG, String.format("%s: Removing existing package apks", app));
+        List<String> apksToDelete = new ArrayList<>();
+        if(app.getLogInfo().getSplitApks() != null){
+            apksToDelete.addAll(Arrays.asList(app.getLogInfo().getSplitApks()));
+        }
+        apksToDelete.add(app.getLogInfo().getApk());
+        boolean successFlag = true;
+        for (String originalPath : apksToDelete) {
+            File backupApkPath = new File(this.getAppBackupFolder(app), new File(originalPath).getName());
+            Log.i(BackupAppAction.TAG, String.format("%s: Removing apk from backup: %s", app, backupApkPath));
+            successFlag = backupApkPath.delete();
+            if (!successFlag) {
+                Log.e(BackupAppAction.TAG, String.format("%s: Could not delete path: %s", app, backupApkPath));
+                break;
+            }
+        }
+        return successFlag;
+    }
+
+    public static class BackupFailedException extends AppActionFailedException {
+        public BackupFailedException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

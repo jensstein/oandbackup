@@ -30,6 +30,7 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
@@ -230,13 +231,13 @@ public class BatchActivityX extends BaseActivity
                     if (rbApk.isChecked()) mode = AppInfo.MODE_APK;
                     else if (rbData.isChecked()) mode = AppInfo.MODE_DATA;
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+                    ActionResult result;
                     if (backupBoolean) {
-                        if (backupRestoreHelper.backup(this, backupDir, item.getApp(), shellCommands, mode) != 0)
-                            errorFlag = true;
+                        result = backupRestoreHelper.backup(this, IntroActivity.getShellHandlerInstance(), item.getApp(), mode);
                     } else {
-                        if (backupRestoreHelper.restore(this, backupDir, item.getApp(), shellCommands, mode) != 0)
-                            errorFlag = true;
+                        result = backupRestoreHelper.restore(this, item.getApp(), IntroActivity.getShellHandlerInstance(), mode);
                     }
+                    errorFlag = !result.succeeded;
                     if (i == total) {
                         String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
                         String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);

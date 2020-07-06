@@ -6,6 +6,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.utils.PrefUtils;
 
@@ -24,13 +25,14 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
-    public void run(AppInfo app, int backupMode) {
+    public ActionResult run(AppInfo app, int backupMode) {
         if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
             Log.e(BackupSpecialAction.TAG, String.format("%s", "Special contents don't have APKs to backup. Ignoring"));
         }
         if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-            super.run(app, AppInfo.MODE_DATA);
+            return super.run(app, AppInfo.MODE_DATA);
         }
+        return new ActionResult(app, "Special backup only backups data, but data was not selected for backup", false);
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.TarUtils;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.utils.PrefUtils;
 
@@ -53,7 +54,7 @@ public class RestoreAppAction extends BaseAppAction {
     }
 
     @Override
-    public void run(AppInfo app, int backupMode) {
+    public ActionResult run(AppInfo app, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getLabel()));
         try {
             this.killPackage(app.getPackageName());
@@ -65,8 +66,13 @@ public class RestoreAppAction extends BaseAppAction {
                 this.restoreAllData(app);
             }
         } catch (RestoreFailedException | Crypto.CryptoSetupException | PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            return new ActionResult(
+                    app,
+                    String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
+                    false
+            );
         }
+        return new ActionResult(app, "", true);
     }
 
     protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException, PackageManager.NameNotFoundException {
@@ -382,6 +388,12 @@ public class RestoreAppAction extends BaseAppAction {
                     Log.e(RestoreAppAction.TAG, BaseAppAction.extractErrorMessage(e.getShellResult()));
                 }
             }
+        }
+    }
+
+    public static class RestoreFailedException extends AppActionFailedException {
+        public RestoreFailedException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
 }
