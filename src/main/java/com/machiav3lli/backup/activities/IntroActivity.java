@@ -213,7 +213,7 @@ public class IntroActivity extends BaseActivity {
         boolean goodToGo = true;
 
         // Initialize the ShellHandler for further root checks
-        if (!this.initShellHandler()) {
+        if (!this.initShellHandler(this)) {
             this.showFatalUiWarning(this.getString(R.string.busyboxProblem));
             goodToGo = false;
         }
@@ -235,9 +235,9 @@ public class IntroActivity extends BaseActivity {
         return goodToGo;
     }
 
-    private boolean initShellHandler() {
+    public boolean initShellHandler(Context context) {
         try {
-            IntroActivity.shellHandler = new ShellHandler(this.getApplicationContext());
+            IntroActivity.shellHandler = new ShellHandler(context);
         } catch (ShellHandler.UtilboxNotAvailableException e) {
             Log.e(IntroActivity.TAG, "Could initialize ShellHandler: " + e.getMessage());
             return false;

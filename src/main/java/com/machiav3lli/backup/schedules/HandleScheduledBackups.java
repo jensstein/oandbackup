@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
@@ -34,7 +35,6 @@ public class HandleScheduledBackups {
 
     Context context;
     PowerManager powerManager;
-    ShellCommands shellCommands;
     SharedPreferences prefs;
     File backupDir;
     List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
@@ -42,7 +42,6 @@ public class HandleScheduledBackups {
     public HandleScheduledBackups(Context context) {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        shellCommands = new ShellCommands(context, prefs, context.getFilesDir());
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         listeners = new ArrayList<>();
     }
@@ -136,7 +135,7 @@ public class HandleScheduledBackups {
                     String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-                    ActionResult result = backupRestoreHelper.backup(context, null, appInfo, subMode);
+                    ActionResult result = backupRestoreHelper.backup(context, IntroActivity.getShellHandlerInstance(), appInfo, subMode);
 
                     if (i == total) {
                         String notificationTitle = !result.succeeded ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
