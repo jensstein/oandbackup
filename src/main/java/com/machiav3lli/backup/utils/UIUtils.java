@@ -16,10 +16,13 @@ import com.machiav3lli.backup.items.ActionResult;
 public class UIUtils {
     final static String TAG = Constants.classTag(".UIUtils");
 
-    public static void showActionResult(final Activity activity, final ActionResult result) {
+    public static void showActionResult(final Activity activity, final ActionResult result, DialogInterface.OnClickListener saveMethod) {
         activity.runOnUiThread(() -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                     .setPositiveButton(R.string.dialogOK, null);
+            if(saveMethod != null){
+                builder.setNegativeButton(R.string.dialogSave, saveMethod);
+            }
             if (!result.succeeded) {
                 builder.setTitle(R.string.errorDialogTitle)
                         .setMessage(result.message);

@@ -14,7 +14,7 @@ public class ActionResult {
     public final String message;
     public final boolean succeeded;
 
-    public ActionResult(@NotNull AppInfo app, @NotNull String message, boolean succeeded) {
+    public ActionResult(AppInfo app, @NotNull String message, boolean succeeded) {
         this.occurrence = Calendar.getInstance().getTime();
         this.app = app;
         this.succeeded = succeeded;
@@ -26,7 +26,7 @@ public class ActionResult {
         return String.format(
                 "%s: %s%s",
                 ActionResult.timeFormat.format(this.occurrence),
-                this.app,
+                this.app != null ? this.app : "NoApp",
                 this.message.isEmpty() ? "" : ' ' + this.message
         );
     }

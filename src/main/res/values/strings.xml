@@ -44,6 +44,7 @@
     <string name="dialogCancel">Cancel</string>
     <string name="dialogYes">Yes</string>
     <string name="dialogNo">No</string>
+    <string name="dialogSave">Save</string>
     <string name="restoreDataWithoutApkError">Cannot restore data without restoring APK, package is not installed</string>
     <string name="collectingData">Collecting package info…</string>
     <string name="suCheck">Checking for superuser and busybox…</string>
@@ -193,4 +194,5 @@
     <string name="app_size">App Size:</string>
     <string name="data_size">Data Size:</string>
     <string name="cache_size">Cache Size:</string>
+    <string name="logfileSavedAt">Logfile saved at %s</string>
 </resources>

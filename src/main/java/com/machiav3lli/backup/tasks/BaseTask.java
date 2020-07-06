@@ -67,9 +67,8 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             } else {
                 NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
-                //UIUtils.showErrors(oAndBackupX);
             }
-            UIUtils.showActionResult(oAndBackupX, this.result);
+            UIUtils.showActionResult(oAndBackupX, this.result, null);
         }
         if (signal != null) {
             signal.countDown();
