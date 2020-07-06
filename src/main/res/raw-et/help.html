@@ -1,0 +1,18 @@
+<html>
+        <body>
+                <h2>Kasutusmärkmed</h2>
+                <p><strong>Varundusrežiimid</strong>: Rakendust saab varundada vaid selle APKiga, ainult selle andmed või mõlemad. Rakendust, mida ei ole hetkel paigaldatud saab taastada vaid siis kui APK on varundatud.</p>
+                <p><strong>Kontekstmenüü</strong>: Vajuta pikalt rakenduste nimekirja üksusel, et kuvada kontekstmenüü.</p>
+                <p><strong>Kustuta varundus</strong>: Kustutab valitud rakenduse varundusfailid.</p>
+                <p><strong>Eemalda</strong>: Tavalisest eemaldamisest mõnevõrra agressiivsem. Peale selle, et see teeb tavalise eemalduse Androidi käskude abil, kustutab OAndBackupX ka failid, mida rakendus on alles jätnud kausta /data/app-lib/. See töötab ka süsteemirakendustega.</p>
+                <p><strong>Luba/keela</strong>: Kasutab rakenduse lubamiseks või keelamiseks Androidi käsku `pm`. Rakenduse keelamine eemaldab selle nähtavast kasutajaliidesest ilma eemaldamiseta. Seda saab kasutada ka rakenduse lubamiseks või keelamiseks mitme kasutaja puhul (kui seadmes on mitu kasutajat lisatud). Kasutajaid identifitseeritakse ID-ga, 0 on esimene kasutaja (omanik).</p>
+                <p><strong>Mitu kasutajat</strong>: Mitmikkasutajarežiim on veel mõnevõrra katsetusjärgus, kuid peaks töötama. Mitmikkasutajarežiimis taastamisel kutsutakse käsku `pm install -r $apk` ning rakendus keelatakse iga kasutaja jaoks, kellel on see rakendus failis /data/system/user/$user/package-restrictions.xml loetletud (väljaarvatud siis, kui see on loetletud tähisega enabled="1").<br/>
+                        See võib põhjustada kasutajatele probleeme sama rakenduse hilisemal paigaldusel, kuid on vajalik, et rakendus ei oleks iga kasutaja jaoks samal ajal paigaldatud. Kontekstmenüüs on valik rakenduste lubamiseks või keelamiseks, mida saab kasutada kui teised kasutajad ei saa kindlat rakendust kasutada, kuna taastamisel see keelati.<br/>
+                        Lubamine ja keelamine toimivad ainult peale esialgset paigaldust (mitte tingimata OAndBackupX-i poolt) või taastust.</p>
+                <h2>Muudatuste logi</h2>
+                <a href="https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md">muudatuste logi</a>
+                <h2>Litsents</h2>
+                <p>OAndBackupX on litsenseeritud MIT-litsensi alusel ning on vabalt, ilma piiranguteta allalaaditav, muudetav ja jagatav</p>
+                <a href="https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.txt">litsents</a>
+        </body>
+</html>
