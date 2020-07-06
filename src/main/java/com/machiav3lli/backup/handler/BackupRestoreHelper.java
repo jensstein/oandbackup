@@ -24,6 +24,12 @@ public class BackupRestoreHelper {
         BackupAppAction action;
         // Select and prepare the action to use
         if (app.isSpecial()) {
+            if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+                Log.e(BackupRestoreHelper.TAG,
+                        String.format("%s: Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.", app));
+                backupMode &= AppInfo.MODE_DATA;
+                Log.d(BackupRestoreHelper.TAG, String.format("%s: New backup mode: %d", app, backupMode));
+            }
             action = new BackupSpecialAction(context, shell);
         } else {
             action = new BackupAppAction(context, shell);

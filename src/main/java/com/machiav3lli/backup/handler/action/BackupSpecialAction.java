@@ -72,6 +72,17 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
+    public boolean cleanBackup(AppInfo app, int backupMode) {
+        if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+            Log.w(BackupSpecialAction.TAG, String.format("%s: Refusing to clean package data of a special app with mode MODE_APK.", app));
+        } else if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
+            return super.cleanBackup(app, AppInfo.MODE_DATA);
+        }
+        return false;
+    }
+
+    // Stubbing some functions, to avoid executing them with potentially dangerous results
+    @Override
     protected void backupPackage(AppInfo app) {
         // stub
     }
