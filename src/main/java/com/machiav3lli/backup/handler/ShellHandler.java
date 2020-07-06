@@ -28,7 +28,7 @@ public class ShellHandler {
                     this.setUtilboxPath(utilboxPath);
                     break;
                 } catch (UtilboxNotAvailableException e) {
-                    Log.d(ShellHandler.TAG, "Tried utilbox path `%s`. Not available.");
+                    Log.d(ShellHandler.TAG, String.format("Tried utilbox path `%s`. Not available.", utilboxPath));
                 }
             }
             if (this.utilboxPath == null) {

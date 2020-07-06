@@ -2,6 +2,7 @@ package com.machiav3lli.backup.utils;
 
 import android.app.Activity;
 import android.app.TaskStackBuilder;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
@@ -29,11 +30,14 @@ public class UIUtils {
     }
 
     public static void showWarning(final Activity activity, final String title, final String message) {
+        UIUtils.showWarning(activity, title, message, (dialog, id) -> {});
+    }
+
+    public static void showWarning(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener callback) {
         activity.runOnUiThread(() -> new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)
-                .setNeutralButton(R.string.dialogOK, (dialog, id) -> {
-                })
+                .setNeutralButton(R.string.dialogOK, callback)
                 .setCancelable(false)
                 .show());
     }
