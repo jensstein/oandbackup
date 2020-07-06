@@ -90,4 +90,9 @@ public class BackupSpecialAction extends BackupAppAction {
     protected void backupObbData(AppInfo app) {
         // stub
     }
+
+    @Override
+    protected void wipeCache(AppInfo app) {
+        // stub
+    }
 }
