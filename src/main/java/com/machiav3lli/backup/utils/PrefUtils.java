@@ -40,12 +40,18 @@ public class PrefUtils {
             return changeLanguage(context, Locale.getDefault().getLanguage());
         }
 
-    }    public static byte[] getCryptoSalt(SharedPreferences prefs){
+    }
+
+    public static byte[] getCryptoSalt(SharedPreferences prefs) {
         String userSalt = prefs.getString(Constants.PREFS_SALT, "");
-        if(!userSalt.isEmpty()){
+        if (!userSalt.isEmpty()) {
             return userSalt.getBytes(StandardCharsets.UTF_8);
         }
         return Crypto.FALLBACK_SALT;
+    }
+
+    public static boolean isEncryptionEnabled(SharedPreferences prefs){
+        return !prefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
     }
 
     public static String getPrefsString(Context context, String key, String def) {

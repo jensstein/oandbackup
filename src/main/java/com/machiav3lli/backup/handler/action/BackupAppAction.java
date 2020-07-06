@@ -181,7 +181,10 @@ public class BackupAppAction extends BaseAppAction {
             ));
             ShellHandler.runAsRoot(command);
             if (compress) {
-                this.compress(backupDirectory);
+                this.compress(
+                        backupDirectory,
+                        this.getBackupArchive(app, type, PrefUtils.isEncryptionEnabled(this.getSharedPreferences()))
+                );
             }
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());

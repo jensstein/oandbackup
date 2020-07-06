@@ -7,6 +7,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.io.FileUtils;
 
@@ -50,7 +51,10 @@ public class BackupSpecialAction extends BackupAppAction {
         ));
         try {
             ShellHandler.runAsRoot(command);
-            this.compress(backupDirectory);
+            this.compress(
+                    backupDirectory,
+                    this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, PrefUtils.isEncryptionEnabled(this.getSharedPreferences()))
+            );
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
             Log.e(BackupSpecialAction.TAG, String.format("%s: Backup Special Data failed: %s", app, error));

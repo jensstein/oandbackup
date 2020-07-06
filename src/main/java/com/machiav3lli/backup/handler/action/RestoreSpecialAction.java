@@ -8,6 +8,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.io.FileUtils;
 
@@ -36,7 +37,8 @@ public class RestoreSpecialAction extends RestoreAppAction {
     public void restoreData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException {
         Log.i(RestoreSpecialAction.TAG, String.format("%s: Restore special data", app));
         File backupDirectory = this.getDataBackupFolder(app);
-        File archiveFile = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA);
+        boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getSharedPreferences());
+        File archiveFile = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted);
         try {
             if (!archiveFile.exists()) {
                 Log.i(RestoreAppAction.TAG,
@@ -44,7 +46,7 @@ public class RestoreSpecialAction extends RestoreAppAction {
                 return;
             }
             // uncompress the archive to the app's base backup folder
-            this.uncompress(this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA), this.getAppBackupFolder(app));
+            this.uncompress(this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted), this.getAppBackupFolder(app));
 
             // check if all expected files are there
             File[] filesInBackup = backupDirectory.listFiles();

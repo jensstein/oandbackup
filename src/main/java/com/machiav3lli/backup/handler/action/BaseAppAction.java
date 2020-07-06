@@ -69,6 +69,10 @@ public abstract class BaseAppAction {
         return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES);
     }
 
+    public File getBackupArchive(AppInfo app, String what, boolean isEncrypted) {
+        return new File(String.format("%s/%s.tar.gz%s", this.getAppBackupFolder(app), what, (isEncrypted ? ".enc" : "")));
+    }
+
     public String prependUtilbox(String command) {
         return String.format("%s %s", this.shell.getUtilboxPath(), command);
     }

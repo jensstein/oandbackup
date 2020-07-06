@@ -96,9 +96,6 @@ public class RestoreAppAction extends BaseAppAction {
         in.close();
     }
 
-    public File getBackupArchive(AppInfo app, String what) {
-        return new File(String.format("%s/%s.tar.gz%s", this.getAppBackupFolder(app), what, (app.getLogInfo().isEncrypted() ? ".enc" : "")));
-    }
 
     public void restorePackage(AppInfo app) throws RestoreFailedException {
         Log.i(RestoreAppAction.TAG, String.format("%s: Restoring package", app));
@@ -195,14 +192,14 @@ public class RestoreAppAction extends BaseAppAction {
         Log.i(RestoreAppAction.TAG, String.format("%s: Restoring %s", app, type));
         try {
             if (isCompressed) {
-                File archiveFile = this.getBackupArchive(app, type);
+                File archiveFile = this.getBackupArchive(app, type, app.getLogInfo().isEncrypted());
                 if (!archiveFile.exists()) {
                     Log.i(RestoreAppAction.TAG,
                             String.format("%s: %s archive does not exist: %s", app, type, archiveFile));
                     return;
                 }
                 // uncompress the archive to the app's base backup folder
-                this.uncompress(this.getBackupArchive(app, type), this.getAppBackupFolder(app));
+                this.uncompress(this.getBackupArchive(app, type, app.getLogInfo().isEncrypted()), this.getAppBackupFolder(app));
             } else if (!backupDirectory.exists()) {
                 Log.i(RestoreAppAction.TAG, String.format("%s: %s uncompressed backup dir does not exist: %s", app, type, backupDirectory));
                 return;
