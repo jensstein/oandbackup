@@ -246,6 +246,8 @@ public class BatchActivityX extends BaseActivity
                 }
                 results.add(result);
                 i++;
+            }
+            if(this.handleMessages.isShowing()) {
                 this.handleMessages.endMessage();
             }
             if (wl.isHeld()) {
