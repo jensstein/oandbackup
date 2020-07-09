@@ -83,7 +83,8 @@ public abstract class BaseAppAction {
     }
 
     protected static String extractErrorMessage(Shell.Result shellResult) {
-        List<String> err = shellResult.getErr();
+        // if stderr does not say anything, try stdout
+        List<String> err = shellResult.getErr().isEmpty() ? shellResult.getOut() : shellResult.getErr();
         if (err.isEmpty()) {
             return "Unknown Error";
         }
