@@ -158,7 +158,7 @@ public class RestoreAppAction extends BaseAppAction {
             if (app.getSplitSourceDirs() != null) {
                 for (String splitApk : app.getSplitSourceDirs()) {
                     sb.append(String.format(" && %s ",
-                            this.getPackageInstallCommand(new File(this.getAppBackupFolder(app).getAbsolutePath(), new File(splitApk).getName()), app.getPackageName())
+                            this.getPackageInstallCommand(new File(stagingApkPath, new File(splitApk).getName()), app.getPackageName())
                     ));
                 }
             }
