@@ -10,10 +10,13 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
+import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
@@ -32,7 +35,6 @@ public class HandleScheduledBackups {
 
     Context context;
     PowerManager powerManager;
-    ShellCommands shellCommands;
     SharedPreferences prefs;
     File backupDir;
     List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
@@ -40,7 +42,6 @@ public class HandleScheduledBackups {
     public HandleScheduledBackups(Context context) {
         this.context = context;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        shellCommands = new ShellCommands(context, prefs, context.getFilesDir());
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         listeners = new ArrayList<>();
     }
@@ -134,11 +135,10 @@ public class HandleScheduledBackups {
                     String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-                    int ret = backupRestoreHelper.backup(context, backupDir, appInfo, shellCommands, subMode);
-                    if (ret != 0)
-                        errorFlag = true;
+                    ActionResult result = backupRestoreHelper.backup(context, IntroActivity.getShellHandlerInstance(), appInfo, subMode);
+
                     if (i == total) {
-                        String notificationTitle = errorFlag ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
+                        String notificationTitle = !result.succeeded ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
                         String notificationMessage = context.getString(R.string.sched_notificationMessage);
                         NotificationHelper.showNotification(context, MainActivityX.class, id, notificationTitle, notificationMessage, true);
                     }

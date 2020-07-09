@@ -183,4 +183,5 @@
     <string name="app_size">App-Größe:</string>
     <string name="data_size">Daten-Größe:</string>
     <string name="cache_size">Cache-Größe:</string>
+    <string name="dialogSave">Speichern</string>
 </resources>

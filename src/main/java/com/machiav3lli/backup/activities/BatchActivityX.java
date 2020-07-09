@@ -9,6 +9,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
@@ -30,16 +30,22 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -208,52 +214,76 @@ public class BatchActivityX extends BaseActivity
     }
 
     public void doAction(ArrayList<BatchItemX> selectedList) {
-        if (backupDir != null) {
-            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-            if (prefs.getBoolean("acquireWakelock", true)) {
+        if (this.backupDir != null) {
+            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, BatchActivityX.TAG);
+            if (this.prefs.getBoolean("acquireWakelock", true)) {
                 wl.acquire(10 * 60 * 1000L /*10 minutes*/);
-                Log.i(TAG, "wakelock acquired");
+                Log.i(BatchActivityX.TAG, "wakelock acquired");
             }
-            changesMade = true;
-            int id = (int) System.currentTimeMillis();
+            this.changesMade = true;
+            int notificationId = (int) System.currentTimeMillis();
             int total = selectedList.size();
             int i = 1;
-            boolean errorFlag = false;
+            List<ActionResult> results = new ArrayList<>(total);
             for (BatchItemX item : selectedList) {
-                if (item.getApp().isChecked()) {
-                    String message = "(" + i + "/" + total + ")";
-                    String title = backupBoolean ? getString(R.string.backupProgress) : getString(R.string.restoreProgress);
-                    title = title + " (" + i + "/" + total + ")";
-                    NotificationHelper.showNotification(this, BatchActivityX.class, id, title, item.getApp().getLabel(), false);
-                    handleMessages.setMessage(item.getApp().getLabel(), message);
-                    int mode = AppInfo.MODE_BOTH;
-                    if (rbApk.isChecked()) mode = AppInfo.MODE_APK;
-                    else if (rbData.isChecked()) mode = AppInfo.MODE_DATA;
-                    final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-                    if (backupBoolean) {
-                        if (backupRestoreHelper.backup(this, backupDir, item.getApp(), shellCommands, mode) != 0)
-                            errorFlag = true;
-                    } else {
-                        if (backupRestoreHelper.restore(this, backupDir, item.getApp(), shellCommands, mode) != 0)
-                            errorFlag = true;
-                    }
-                    if (i == total) {
-                        String msg = backupBoolean ? getString(R.string.batchbackup) : getString(R.string.batchrestore);
-                        String notificationTitle = errorFlag ? getString(R.string.batchFailure) : getString(R.string.batchSuccess);
-                        NotificationHelper.showNotification(this, BatchActivityX.class, id, notificationTitle, msg, true);
-                        handleMessages.endMessage();
-                    }
-                    i++;
+                String message = "(" + i + '/' + total + ')';
+                String title = (this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress))
+                        + " (" + i + '/' + total + ')';
+                NotificationHelper.showNotification(this, BatchActivityX.class, notificationId, title, item.getApp().getLabel(), false);
+                this.handleMessages.setMessage(item.getApp().getLabel(), message);
+                int mode = AppInfo.MODE_BOTH;
+                if (this.rbApk.isChecked()) {
+                    mode = AppInfo.MODE_APK;
+                } else if (this.rbData.isChecked()) {
+                    mode = AppInfo.MODE_DATA;
                 }
+                final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+                ActionResult result;
+                if (this.backupBoolean) {
+                    result = backupRestoreHelper.backup(this, IntroActivity.getShellHandlerInstance(), item.getApp(), mode);
+                } else {
+                    result = backupRestoreHelper.restore(this, item.getApp(), IntroActivity.getShellHandlerInstance(), mode);
+                }
+                results.add(result);
+                i++;
+            }
+            if(this.handleMessages.isShowing()) {
+                this.handleMessages.endMessage();
             }
             if (wl.isHeld()) {
                 wl.release();
-                Log.i(TAG, "wakelock released");
+                Log.i(BatchActivityX.TAG, "wakelock released");
             }
-            if (errorFlag) {
-                UIUtils.showErrors(this);
-            }
-            refresh();
+            // Calculate the overall result
+            String errors = results.parallelStream()
+                    .map(ar -> ar.message)
+                    .filter(msg -> !msg.isEmpty())
+                    .collect(Collectors.joining("\n"));
+            ActionResult overAllResult = new ActionResult(null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
+
+            // Update the notification
+            String msg = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
+            String notificationTitle = overAllResult.succeeded ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
+            NotificationHelper.showNotification(this, BatchActivityX.class, notificationId, notificationTitle, msg, true);
+
+            // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
+            UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
+                try (FileWriter fw = new FileWriter(LogUtils.getDefaultLogFilePath(this.getApplicationContext()), true)) {
+                    fw.write(errors);
+                    Toast.makeText(
+                            BatchActivityX.this,
+                            String.format(this.getString(R.string.logfileSavedAt),
+                                    LogUtils.getDefaultLogFilePath(this.getApplicationContext())),
+                            Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    new AlertDialog.Builder(BatchActivityX.this)
+                            .setTitle(R.string.errorDialogTitle)
+                            .setMessage(e.getLocalizedMessage())
+                            .setPositiveButton(R.string.dialogOK, null)
+                            .show();
+                }
+            });
+            this.refresh();
         }
     }
 

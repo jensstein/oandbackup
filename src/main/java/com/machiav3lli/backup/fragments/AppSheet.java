@@ -27,6 +27,7 @@ import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.dialogs.BackupDialogFragment;
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment;
@@ -236,10 +237,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @Override
     public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP)
-            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, shellCommands, mode)
+            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
                     .execute();
         else if (actionType == BackupRestoreHelper.ActionType.RESTORE)
-            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, shellCommands, mode)
+            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
                     .execute();
         else
             Log.e(TAG, "unknown actionType: " + actionType);

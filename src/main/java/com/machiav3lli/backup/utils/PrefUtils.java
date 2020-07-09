@@ -1,11 +1,14 @@
 package com.machiav3lli.backup.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.handler.Crypto;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class PrefUtils {
@@ -36,6 +39,19 @@ public class PrefUtils {
         } else {
             return changeLanguage(context, Locale.getDefault().getLanguage());
         }
+
+    }
+
+    public static byte[] getCryptoSalt(SharedPreferences prefs) {
+        String userSalt = prefs.getString(Constants.PREFS_SALT, "");
+        if (!userSalt.isEmpty()) {
+            return userSalt.getBytes(StandardCharsets.UTF_8);
+        }
+        return Crypto.FALLBACK_SALT;
+    }
+
+    public static boolean isEncryptionEnabled(SharedPreferences prefs){
+        return !prefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
     }
 
     public static String getPrefsString(Context context, String key, String def) {

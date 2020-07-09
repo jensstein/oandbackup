@@ -22,6 +22,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.scottyab.rootbeer.RootBeer;
 
@@ -47,6 +48,7 @@ public class IntroActivity extends BaseActivity {
     static final int WRITE_PERMISSION = 3;
     static final int STATS_PERMISSION = 4;
     public static File backupDir;
+    private static ShellHandler shellHandler;
 
     @BindView(R.id.action)
     MaterialButton btn;
@@ -83,8 +85,9 @@ public class IntroActivity extends BaseActivity {
 
         if (checkStoragePermissions() && checkUsageStatsPermission(this)) {
             btn.setVisibility(View.GONE);
-            checkResources();
-            launchMainActivity();
+            if (this.checkResources()) {
+                this.launchMainActivity();
+            }
         } else if (!checkUsageStatsPermission(this)) {
             btn.setOnClickListener(v -> getUsageStatsPermission());
         } else {
@@ -153,8 +156,11 @@ public class IntroActivity extends BaseActivity {
                     Toast.makeText(this, "Permissions were granted but because of an android bug you have to restart your phone",
                             Toast.LENGTH_LONG).show();
                 }
-                checkResources();
-                launchMainActivity();
+                if (this.checkResources()) {
+                    this.launchMainActivity();
+                } else {
+                    this.finishAffinity();
+                }
             } else {
                 Log.w(TAG, String.format("Permissions were not granted: %s -> %s",
                         Arrays.toString(permissions), Arrays.toString(grantResults)));
@@ -173,8 +179,14 @@ public class IntroActivity extends BaseActivity {
         if (requestCode == STATS_PERMISSION) {
             if (checkUsageStatsPermission(this)) {
                 if (checkStoragePermissions()) {
-                    checkResources();
-                    launchMainActivity();
+                    if (this.checkResources()) {
+                        this.launchMainActivity();
+                    } else {
+                        // idea: Lead user to PrefsActivity to adjust the settings
+                        // but it's rather unlikely that a user deviates from the standard and
+                        // knows what to change
+                        this.finishAffinity();
+                    }
                 } else {
                     getStoragePermission();
                 }
@@ -184,22 +196,53 @@ public class IntroActivity extends BaseActivity {
         }
     }
 
+    private void showFatalUiWarning(String message){
+        UIUtils.showWarning(this, IntroActivity.TAG, message, (dialog, id) -> {
+            this.finishAffinity();
+        });
+    }
+
     private boolean canAccessExternalStorage() {
         final File externalStorage = Environment.getExternalStorageDirectory();
         return externalStorage != null && externalStorage.canRead() &&
                 externalStorage.canWrite();
     }
 
-    private void checkResources() {
-        handleMessages.showMessage(TAG, getString(R.string.suCheck));
+    private boolean checkResources() {
+        this.handleMessages.showMessage(IntroActivity.TAG, getString(R.string.suCheck));
+        boolean goodToGo = true;
+
+        // Initialize the ShellHandler for further root checks
+        if (!this.initShellHandler(this)) {
+            this.showFatalUiWarning(this.getString(R.string.busyboxProblem));
+            goodToGo = false;
+        }
+
         RootBeer rootBeer = new RootBeer(this);
-        if (!rootBeer.isRooted()) UIUtils.showWarning(this, TAG, getString(R.string.noSu));
-        if (!checkBusybox()) UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
-        handleMessages.endMessage();
+        if (!rootBeer.isRooted()) {
+            this.showFatalUiWarning(this.getString(R.string.noSu));
+            goodToGo = false;
+        }
+        if(goodToGo){
+            try {
+                ShellHandler.runAsRoot("id");
+            } catch (ShellHandler.ShellCommandFailedException e) {
+                this.showFatalUiWarning(this.getString(R.string.noSu));
+                goodToGo = false;
+            }
+        }
+        this.handleMessages.endMessage();
+        return goodToGo;
     }
 
-    private boolean checkBusybox() {
-        return (shellCommands.checkUtilBoxPath());
+    public boolean initShellHandler(Context context) {
+        try {
+            IntroActivity.shellHandler = new ShellHandler(context);
+        } catch (ShellHandler.UtilboxNotAvailableException e) {
+            Log.e(IntroActivity.TAG, "Could initialize ShellHandler: " + e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     private void launchMainActivity() {
@@ -207,5 +250,9 @@ public class IntroActivity extends BaseActivity {
         String backupDirPath = getDefaultBackupDirPath(this);
         backupDir = createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));
+    }
+
+    public static ShellHandler getShellHandlerInstance() {
+        return IntroActivity.shellHandler;
     }
 }

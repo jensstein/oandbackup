@@ -119,7 +119,7 @@ public class LogFile implements Parcelable {
         return backupMode;
     }
 
-    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted) {
+    public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted) throws IOException, JSONException {
         try {
             // path to apk should only be logged if it is backed up
             String sourceDir = "";
@@ -155,6 +155,7 @@ public class LogFile implements Parcelable {
             }
         } catch (JSONException | IOException e) {
             Log.e(TAG, "LogFile.writeLogFile: " + e.toString());
+            throw e;
         }
     }
 

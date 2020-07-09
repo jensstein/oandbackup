@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat;
 import com.annimon.stream.Optional;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.schedules.db.Schedule;
@@ -76,6 +77,10 @@ public class ScheduleService extends Service
     @Override
     public void onCreate() {
         final String channelId = TAG;
+        // Do some initialization
+        IntroActivity startupActivity = new IntroActivity();
+        startupActivity.initShellHandler(this);
+
         if (Build.VERSION.SDK_INT >= 26) {
             final NotificationChannel notificationChannel =
                     new NotificationChannel(channelId, channelId,

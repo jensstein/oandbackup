@@ -4,100 +4,69 @@ import android.content.Context;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.handler.action.BackupAppAction;
+import com.machiav3lli.backup.handler.action.BackupSpecialAction;
+import com.machiav3lli.backup.handler.action.RestoreAppAction;
+import com.machiav3lli.backup.handler.action.RestoreSpecialAction;
+import com.machiav3lli.backup.handler.action.SystemRestoreAppAction;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.items.LogFile;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 public class BackupRestoreHelper {
-    final static String TAG = Constants.classTag(".BackupRestoreHelper");
+    static final String TAG = Constants.classTag(".BackupRestoreHelper");
 
-    public int backup(Context context, File backupDir, @NotNull AppInfo app, ShellCommands shellCommands, int backupMode) {
-        int ret;
-        File backupSubDir = new File(backupDir, app.getPackageName());
-        if (!backupSubDir.exists()) backupSubDir.mkdirs();
-
-        else if (backupMode != AppInfo.MODE_DATA && app.getSourceDir().length() > 0) {
-            if (app.getLogInfo() != null && app.getLogInfo().getSourceDir().length() > 0
-                    && !app.getSourceDir().equals(app.getLogInfo().getSourceDir())) {
-                String apk = app.getLogInfo().getApk();
-                if (apk != null) ShellCommands.deleteBackup(new File(backupSubDir, apk));
-            }
-        }
-
+    public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfo app, int backupMode) {
+        BackupAppAction action;
+        // Select and prepare the action to use
         if (app.isSpecial()) {
-            app.setBackupMode(AppInfo.MODE_DATA);
-            ret = shellCommands.backupSpecial(backupSubDir, app);
+            if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+                Log.e(BackupRestoreHelper.TAG,
+                        String.format("%s: Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.", app));
+                backupMode &= AppInfo.MODE_DATA;
+                Log.d(BackupRestoreHelper.TAG, String.format("%s: New backup mode: %d", app, backupMode));
+            }
+            action = new BackupSpecialAction(context, shell);
         } else {
-            ret = shellCommands.doBackup(backupSubDir, app, backupMode);
-            app.setBackupMode(backupMode);
+            action = new BackupAppAction(context, shell);
         }
-        if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
-        shellCommands.logReturnMessage(ret);
-        return ret;
+        Log.d(BackupRestoreHelper.TAG, String.format("%s: Using %s class", app, action.getClass().getSimpleName()));
+        File appBackupDir = action.getAppBackupFolder(app);
+
+        // delete an existing backup data, if it exists
+        if (appBackupDir.exists() && !action.cleanBackup(app, backupMode)) {
+            Log.w(BackupRestoreHelper.TAG, "Not all expected files of the existing backup could be deleted");
+        }
+        // create backup directory if it's missing
+        boolean backupDirCreated = appBackupDir.mkdirs();
+        Log.d(BackupRestoreHelper.TAG, String.format("%s: Backup dir created: %s", app, backupDirCreated));
+
+        // create the new backup
+        ActionResult result = action.run(app, backupMode);
+        app.setBackupMode(backupMode);
+        if (context instanceof MainActivityX) {
+            ((MainActivityX) context).refresh();
+        }
+        Log.i(BackupRestoreHelper.TAG, String.format("%s: Backup succeeded: %s", app, result.succeeded));
+        return result;
     }
 
-    public int restore(Context context, File backupDir, AppInfo app, ShellCommands shellCommands, int mode) {
-        int apkRet, restoreRet, permRet, cryptoRet;
-        apkRet = restoreRet = permRet = cryptoRet = 0;
-        File backupSubDir = new File(backupDir, app.getPackageName());
-        LogFile backupLog = new LogFile(backupSubDir, app.getPackageName());
-        String apk = backupLog.getApk();
-        String dataDir = app.getDataDir();
-        // extra check for needToDecrypt here because of BatchActivity which cannot really reset crypto to null for every package to restore
-        if (mode == AppInfo.MODE_APK || mode == AppInfo.MODE_BOTH) {
-            if (apk != null && apk.length() > 0) {
-                if (app.isSystem()) {
-                    apkRet = shellCommands.restoreSystemApk(backupSubDir, apk);
-                } else {
-                    apkRet = shellCommands.restoreUserApk(backupSubDir,
-                            app.getLabel(), apk, context.getApplicationInfo().dataDir, null);
-                    if (backupLog.getSplitApks() != null) {
-                        Log.i(TAG, app.getPackageName() + " backup contains split apks");
-                        for (String splitApk : backupLog.getSplitApks()) {
-                            if (apkRet == 0) {
-                                apkRet = shellCommands.restoreUserApk(backupSubDir, app.getLabel(),
-                                        splitApk, context.getApplicationInfo().dataDir, app.getPackageName());
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else if (!app.isSpecial()) {
-                String s = "no apk to install: " + app.getPackageName();
-                Log.e(TAG, s);
-                ShellCommands.writeErrorLog(context, app.getPackageName(), s);
-                apkRet = 1;
-            }
+    public ActionResult restore(Context context, AppInfo app, ShellHandler shell, int mode) {
+        RestoreAppAction restoreAction = null;
+        if (app.isSpecial()) {
+            restoreAction = new RestoreSpecialAction(context, shell);
+        } else if (app.isSystem()) {
+            restoreAction = new SystemRestoreAppAction(context, shell);
+        } else {
+            restoreAction = new RestoreAppAction(context, shell);
         }
-        if (mode == AppInfo.MODE_DATA || mode == AppInfo.MODE_BOTH) {
-            if (apkRet == 0 && (app.isInstalled() || mode == AppInfo.MODE_BOTH)) {
-                if (app.isSpecial()) {
-                    restoreRet = shellCommands.restoreSpecial(backupSubDir, app);
-                } else {
-                    restoreRet = shellCommands.doRestore(backupSubDir, app);
-                    try {
-                        shellCommands.setPermissions(dataDir);
-                    } catch (ShellCommands.OwnershipException | ShellCommands.ShellCommandException e) {
-                        Log.e(TAG, "Could not set permissions on " + dataDir);
-                        permRet = 1;
-                    }
-                }
-            } else {
-                Log.e(TAG, "cannot restore data without restoring apk, package is not installed: " + app.getPackageName());
-                apkRet = 1;
-                ShellCommands.writeErrorLog(context, app.getPackageName(), context.getString(R.string.restoreDataWithoutApkError));
-            }
-        }
-        int ret = apkRet + restoreRet + permRet + cryptoRet;
-        if (context instanceof MainActivityX) ((MainActivityX) context).refresh();
-        shellCommands.logReturnMessage(ret);
-        return ret;
+        ActionResult result = restoreAction.run(app, mode);
+        Log.i(BackupRestoreHelper.TAG, String.format("%s: Restore succeeded: %s", app, result.succeeded));
+        return result;
     }
 
     public enum ActionType {BACKUP, RESTORE}

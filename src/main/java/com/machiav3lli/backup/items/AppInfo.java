@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.items;
 
+import android.content.Context;
 import android.app.usage.StorageStats;
 import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
@@ -7,10 +8,15 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+import java.util.EnumSet;
+
 import androidx.annotation.RequiresApi;
 
 public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
+    public static final String CACHE_DIR = "cache";
+
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
@@ -100,6 +106,32 @@ public class AppInfo
         return deviceProtectedDataDir;
     }
 
+    public String getCachePath(){
+        return new File(this.getDataDir(), AppInfo.CACHE_DIR).getAbsolutePath();
+    }
+
+    public File getExternalFilesPath(Context context){
+        // Uses the context to get own external data directory
+        // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
+        // Goes to the parent two times to the leave own directory
+        // e.g. /storage/emulated/0/Android/data
+        String externalFilesPath = context.getExternalFilesDir(null).getParentFile().getParentFile().getAbsolutePath();
+        // Add the package name to the path assuming that if the name of dataDir does not equal the
+        // package name and has a prefix or a suffix to use it.
+        return new File(externalFilesPath, new File(this.dataDir).getName());
+    }
+
+    public File getObbFilesPath(Context context){
+        // Uses the context to get own obb data directory
+        // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
+        // Goes to the parent two times to the leave own directory
+        // e.g. /storage/emulated/0/Android/obb
+        String obbFilesPath = context.getObbDir().getParentFile().getAbsolutePath();
+        // Add the package name to the path assuming that if the name of dataDir does not equal the
+        // package name and has a prefix or a suffix to use it.
+        return new File(obbFilesPath, new File(this.dataDir).getName());
+    }
+
     public int getBackupMode() {
         return backupMode;
     }
@@ -176,7 +208,7 @@ public class AppInfo
     }
 
     public String toString() {
-        return label + " : " + packageName;
+        return String.format("%s [%s]", this.packageName, this.label);
     }
 
     public int describeContents() {
