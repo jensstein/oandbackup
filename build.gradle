@@ -36,7 +36,7 @@ ext {
             preference        : "1.1.1",
             swiperefreshlayout: "1.1.0",
             fastadapter       : "5.0.0",
-            numberpicker : "2.4.10",
+            numberpicker      : "2.4.10",
 
             androidx_test     : "1.2.0",
             junit             : "1.1.1",

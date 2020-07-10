@@ -29,6 +29,15 @@ public abstract class BaseAppAction {
         this.shell = shell;
     }
 
+    protected static String extractErrorMessage(Shell.Result shellResult) {
+        // if stderr does not say anything, try stdout
+        List<String> err = shellResult.getErr().isEmpty() ? shellResult.getOut() : shellResult.getErr();
+        if (err.isEmpty()) {
+            return "Unknown Error";
+        }
+        return err.get(err.size() - 1);
+    }
+
     public ActionResult run(AppInfo app) {
         return this.run(app, AppInfo.MODE_BOTH);
     }
@@ -73,15 +82,6 @@ public abstract class BaseAppAction {
 
     protected Context getContext() {
         return this.context;
-    }
-
-    protected static String extractErrorMessage(Shell.Result shellResult) {
-        // if stderr does not say anything, try stdout
-        List<String> err = shellResult.getErr().isEmpty() ? shellResult.getOut() : shellResult.getErr();
-        if (err.isEmpty()) {
-            return "Unknown Error";
-        }
-        return err.get(err.size() - 1);
     }
 
     public abstract static class AppActionFailedException extends Exception {

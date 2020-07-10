@@ -46,7 +46,8 @@ public class UIUtils {
     }
 
     public static void showWarning(final Activity activity, final String title, final String message) {
-        UIUtils.showWarning(activity, title, message, (dialog, id) -> {});
+        UIUtils.showWarning(activity, title, message, (dialog, id) -> {
+        });
     }
 
     public static void showWarning(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener callback) {

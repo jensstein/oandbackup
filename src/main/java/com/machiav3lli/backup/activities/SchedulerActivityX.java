@@ -88,7 +88,7 @@ public class SchedulerActivityX extends BaseActivity
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
             sheetSchedule = new ScheduleSheet(item);
-            sheetSchedule.show(getSupportFragmentManager(), "SCHEDULESHEET");
+            sheetSchedule.showNow(getSupportFragmentManager(), "SCHEDULESHEET");
             return false;
         });
         itemAdapter.add(list);

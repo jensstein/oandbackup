@@ -10,8 +10,9 @@ import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
 
-public class SystemRestoreAppAction extends RestoreAppAction{
+public class SystemRestoreAppAction extends RestoreAppAction {
     public static final String TAG = Constants.classTag(".SystemRestoreAppAction");
+
     public SystemRestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
     }
@@ -22,7 +23,7 @@ public class SystemRestoreAppAction extends RestoreAppAction{
         File appDir = apkTargetPath.getParentFile().getAbsoluteFile();
         File apkInBackup = new File(this.getAppBackupFolder(app), apkTargetPath.getName());
         String mountPoint = "/";
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             // Android versions prior Android 10 use /system
             mountPoint = "/system";
         }

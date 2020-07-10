@@ -34,22 +34,6 @@ public class RestoreAppAction extends BaseAppAction {
     public static final String TAG = Constants.classTag(".RestoreAppAction");
     public static final File PACKAGE_STAGING_DIRECTORY = new File("/data/local/tmp");
 
-    public enum RestoreCommand {
-        MOVE("mv"),
-        COPY("cp -r");
-
-        final String command;
-
-        RestoreCommand(String command) {
-            this.command = command;
-        }
-
-        @Override
-        public String toString() {
-            return this.command;
-        }
-    }
-
     public RestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
     }
@@ -389,6 +373,22 @@ public class RestoreAppAction extends BaseAppAction {
                     Log.e(RestoreAppAction.TAG, BaseAppAction.extractErrorMessage(e.getShellResult()));
                 }
             }
+        }
+    }
+
+    public enum RestoreCommand {
+        MOVE("mv"),
+        COPY("cp -r");
+
+        final String command;
+
+        RestoreCommand(String command) {
+            this.command = command;
+        }
+
+        @Override
+        public String toString() {
+            return this.command;
         }
     }
 

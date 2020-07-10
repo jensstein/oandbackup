@@ -28,6 +28,12 @@ public class RestoreSpecialAction extends RestoreAppAction {
         super(context, shell);
     }
 
+    private static boolean areBasefilesSubsetOf(File[] set, File[] subsetList) {
+        Collection<String> baseCollection = Arrays.stream(set).map(File::getName).collect(Collectors.toCollection(HashSet::new));
+        Collection<String> subsetCollection = Arrays.stream(subsetList).map(File::getName).collect(Collectors.toCollection(HashSet::new));
+        return baseCollection.containsAll(subsetCollection);
+    }
+
     @Override
     protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException, PackageManager.NameNotFoundException {
         this.restoreData(app);
@@ -84,13 +90,6 @@ public class RestoreSpecialAction extends RestoreAppAction {
                     "%s: Uncompressed %s was deleted: %s", app, BaseAppAction.BACKUP_DIR_DATA, backupDeleted));
         }
     }
-
-    private static boolean areBasefilesSubsetOf(File[] set, File[] subsetList) {
-        Collection<String> baseCollection = Arrays.stream(set).map(File::getName).collect(Collectors.toCollection(HashSet::new));
-        Collection<String> subsetCollection = Arrays.stream(subsetList).map(File::getName).collect(Collectors.toCollection(HashSet::new));
-        return baseCollection.containsAll(subsetCollection);
-    }
-
 
     @Override
     public void restorePackage(AppInfo app) {

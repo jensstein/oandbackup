@@ -279,7 +279,7 @@ public class BackupAppAction extends BaseAppAction {
     protected boolean removePackageBackup(AppInfo app) {
         Log.i(BackupAppAction.TAG, String.format("%s: Removing existing package apks", app));
         List<String> apksToDelete = new ArrayList<>();
-        if(app.getLogInfo().getSplitApks() != null){
+        if (app.getLogInfo().getSplitApks() != null) {
             apksToDelete.addAll(Arrays.asList(app.getLogInfo().getSplitApks()));
         }
         apksToDelete.add(app.getLogInfo().getApk());
