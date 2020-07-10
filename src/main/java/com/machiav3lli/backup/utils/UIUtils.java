@@ -20,21 +20,14 @@ public class UIUtils {
         activity.runOnUiThread(() -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                     .setPositiveButton(R.string.dialogOK, null);
-            if(saveMethod != null){
+            if (saveMethod != null) {
                 builder.setNegativeButton(R.string.dialogSave, saveMethod);
             }
             if (!result.succeeded) {
                 builder.setTitle(R.string.errorDialogTitle)
                         .setMessage(result.message);
-            } else {
-                // Success path is probably subject to be removed:
-                // It's probably a little annoying to tap a dialog away after every action.
-                // When the AppSheet updates after the action, it would be a better indicator of
-                // the succeeded action.
-                builder.setTitle(R.string.batchSuccess)
-                        .setMessage(result.message);
+                builder.show();
             }
-            builder.show();
         });
     }
 
