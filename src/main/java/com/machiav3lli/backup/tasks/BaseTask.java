@@ -12,8 +12,8 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.utils.UIUtils;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -58,17 +58,16 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     @Override
     public void onPostExecute(Integer result) {
         final HandleMessages handleMessages = handleMessagesReference.get();
-        final MainActivityX oAndBackupX = oAndBackupReference.get();
-        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing()) {
+        final MainActivityX mainActivityX = oAndBackupReference.get();
+        if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
-            oAndBackupX.refresh();
-            final String message = getPostExecuteMessage(oAndBackupX, actionType, result);
+            final String message = getPostExecuteMessage(mainActivityX, actionType, result);
             if (result == 0) {
-                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
+                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             } else {
-                NotificationHelper.showNotification(oAndBackupX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
+                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
             }
-            UIUtils.showActionResult(oAndBackupX, this.result, null);
+            UIUtils.showActionResult(mainActivityX, this.result, null);
         }
         if (signal != null) {
             signal.countDown();

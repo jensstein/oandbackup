@@ -113,10 +113,10 @@ public class MainActivityX extends BaseActivity
         fastAdapter.setHasStableIds(true);
         recyclerView.setAdapter(fastAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
+        fastAdapter.setOnClickListener((view, itemIAdapter, item, position) -> {
             if (sheetApp != null) sheetApp.dismissAllowingStateLoss();
-            sheetApp = new AppSheet(item);
-            sheetApp.show(getSupportFragmentManager(), "APPSHEET");
+            sheetApp = new AppSheet(item, position);
+            sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
             return false;
         });
 
@@ -245,7 +245,7 @@ public class MainActivityX extends BaseActivity
                 .show();
     }
 
-    public void refresh() {
+    public void refresh(boolean withAppSheet) {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
         runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
         new Thread(() -> {
@@ -271,9 +271,21 @@ public class MainActivityX extends BaseActivity
                 } else {
                     FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 }
+                if (withAppSheet && sheetApp != null) {
+                    int position = sheetApp.getPosition();
+                    sheetApp.dismissAllowingStateLoss();
+                    if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
+                        sheetApp = new AppSheet(fastAdapter.getItem(position), position);
+                        sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
+                    }
+                }
                 searchView.setQuery("", false);
                 swipeRefreshLayout.setRefreshing(false);
             });
         }).start();
+    }
+
+    public void refresh() {
+        refresh(false);
     }
 }

@@ -49,7 +49,7 @@ public class BackupRestoreHelper {
         ActionResult result = action.run(app, backupMode);
         app.setBackupMode(backupMode);
         if (context instanceof MainActivityX) {
-            ((MainActivityX) context).refresh();
+            ((MainActivityX) context).refresh(true);
         }
         Log.i(BackupRestoreHelper.TAG, String.format("%s: Backup succeeded: %s", app, result.succeeded));
         return result;

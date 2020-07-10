@@ -119,9 +119,19 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     ShellCommands shellCommands;
     String backupDirPath;
     File backupDir;
+    int position;
 
-    public AppSheet(MainItemX item) {
+    public AppSheet(MainItemX item, Integer position) {
         this.app = item.getApp();
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public String getPackageName() {
+        return app.getPackageName();
     }
 
     @NonNull
@@ -281,7 +291,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                         if (backupDir != null)
                             ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
                         handleMessages.endMessage();
-                        ((MainActivityX) requireActivity()).refresh();
+                        ((MainActivityX) requireActivity()).refresh(true);
                     });
                     deleteBackupThread.start();
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
@@ -342,7 +352,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
                     shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                    ((MainActivityX) requireActivity()).refresh();
+                    ((MainActivityX) requireActivity()).refresh(true);
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
@@ -366,7 +376,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
                             UIUtils.showErrors(requireActivity());
                         }
-                        ((MainActivityX) requireActivity()).refresh();
+                        ((MainActivityX) requireActivity()).refresh(true);
                     });
                     uninstallThread.start();
                 })
