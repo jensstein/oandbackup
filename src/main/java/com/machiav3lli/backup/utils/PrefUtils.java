@@ -42,16 +42,20 @@ public class PrefUtils {
 
     }
 
-    public static byte[] getCryptoSalt(SharedPreferences prefs) {
-        String userSalt = prefs.getString(Constants.PREFS_SALT, "");
+    public static byte[] getCryptoSalt(Context context) {
+        String userSalt = context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getString(Constants.PREFS_SALT, "");
         if (!userSalt.isEmpty()) {
             return userSalt.getBytes(StandardCharsets.UTF_8);
         }
         return Crypto.FALLBACK_SALT;
     }
 
-    public static boolean isEncryptionEnabled(SharedPreferences prefs){
-        return !prefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
+    public static boolean isEncryptionEnabled(Context context) {
+        return !context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getString(Constants.PREFS_PASSWORD, "").isEmpty();
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
     }
 
     public static String getPrefsString(Context context, String key, String def) {

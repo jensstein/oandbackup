@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.machiav3lli.backup.utils.FileUtils.defaultBackupFolder;
 import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
 
 public class LogUtils {
@@ -36,7 +35,7 @@ public class LogUtils {
     }
 
     public static String getDefaultLogFilePath(Context context) {
-        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder) + "/OAndBackupX.log";
+        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, FileUtils.DEFAULT_BACKUP_FOLDER) + "/OAndBackupX.log";
     }
 
     public static void logDeviceInfo(Context context, String tag) {

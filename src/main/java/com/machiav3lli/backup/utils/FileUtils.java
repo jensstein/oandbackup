@@ -17,11 +17,11 @@ import static com.machiav3lli.backup.utils.UIUtils.showWarning;
 
 public class FileUtils {
     final static String TAG = Constants.classTag(".FileCreationHelper");
-    final static String defaultBackupFolder = Environment.getExternalStorageDirectory() + "/OAndBackupX";
+    public final static String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
     private boolean fallbackFlag;
 
     public static String getDefaultBackupDirPath(Context context) {
-        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, defaultBackupFolder);
+        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, DEFAULT_BACKUP_FOLDER);
     }
 
     public static void setDefaultBackupDirPath(Context context, String path) {

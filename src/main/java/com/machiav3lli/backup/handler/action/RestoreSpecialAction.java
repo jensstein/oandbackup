@@ -37,7 +37,7 @@ public class RestoreSpecialAction extends RestoreAppAction {
     public void restoreData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException {
         Log.i(RestoreSpecialAction.TAG, String.format("%s: Restore special data", app));
         File backupDirectory = this.getDataBackupFolder(app);
-        boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getSharedPreferences());
+        boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getContext());
         File archiveFile = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted);
         try {
             if (!archiveFile.exists()) {

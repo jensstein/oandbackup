@@ -2,6 +2,7 @@ package com.machiav3lli.backup.handler.action;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -77,13 +78,14 @@ public class RestoreAppAction extends BaseAppAction {
 
     protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException, PackageManager.NameNotFoundException {
         this.restoreData(app);
-        if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+        SharedPreferences prefs = PrefUtils.getSharedPreferences(this.getContext());
+        if (prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             this.restoreExternalData(app);
         }
-        if (this.getSharedPreferences().getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+        if (prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             this.restoreObbData(app);
         }
-        if (this.getSharedPreferences().getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+        if (prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
             this.restoreDeviceProtectedData(app);
         }
     }
@@ -91,17 +93,16 @@ public class RestoreAppAction extends BaseAppAction {
     protected void uncompress(File filepath, File targetDir) throws IOException, Crypto.CryptoSetupException {
         String inputFilename = filepath.getAbsolutePath();
         Log.d(RestoreAppAction.TAG, "Opening file for expansion: " + inputFilename);
-        String password = this.getSharedPreferences().getString(Constants.PREFS_PASSWORD, "");
+        String password = PrefUtils.getSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
         InputStream in = new BufferedInputStream(new FileInputStream(inputFilename));
         if (!password.isEmpty()) {
             Log.d(RestoreAppAction.TAG, "Encryption enabled");
-            in = Crypto.decryptStream(in, password, PrefUtils.getCryptoSalt(this.getSharedPreferences()));
+            in = Crypto.decryptStream(in, password, PrefUtils.getCryptoSalt(this.getContext()));
         }
         TarUtils.uncompressTo(new TarArchiveInputStream(new GzipCompressorInputStream(in)), targetDir);
         Log.d(RestoreAppAction.TAG, "Done expansion. Closing " + inputFilename);
         in.close();
     }
-
 
     public void restorePackage(AppInfo app) throws RestoreFailedException {
         Log.i(RestoreAppAction.TAG, String.format("%s: Restoring package", app));

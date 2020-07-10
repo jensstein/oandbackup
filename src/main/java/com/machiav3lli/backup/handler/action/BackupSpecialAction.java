@@ -55,7 +55,7 @@ public class BackupSpecialAction extends BackupAppAction {
             ShellHandler.runAsRoot(command);
             this.compress(
                     backupDirectory,
-                    this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, PrefUtils.isEncryptionEnabled(this.getSharedPreferences()))
+                    this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, PrefUtils.isEncryptionEnabled(this.getContext()))
             );
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
