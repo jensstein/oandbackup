@@ -71,7 +71,7 @@
     <string name="shareTitle">Teilen</string>
     <string name="tools_title">Hilfsmittel</string>
     <string name="prefs_batchDelete">Sicherungen löschen?</string>
-    <string name="batchDeleteMessage">Lösche Sicherungen...</string>
+    <string name="batchDeleteMessage">Lösche Sicherungen…</string>
     <string name="batchDeleteNotificationTitle">Sicherungen löschen</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Gelöschte Sicherungen:</string>
@@ -121,7 +121,7 @@
     <string name="spec_wallpaper">Hintergrundbild</string>
     <string name="spec_wifiAccessPoints">WLAN Access-Point</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-    <string name="logviewer_message_loading">Protokolldatei laden...</string>
+    <string name="logviewer_message_loading">Protokolldatei laden…</string>
     <string name="blacklistDialogTitle">Ausschlussliste</string>
     <string name="filter_options">Filter:</string>
     <string name="sort_options">Sortieren nach:</string>
@@ -161,8 +161,8 @@
     <string name="permission_refuse">Ich will es nicht</string>
     <string name="permission_approve">Los!</string>
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
-    <string name="ignore_battery_optimization_message">Es kann manchmal passieren, dass der Sicherungsprozess im Hintegrund plötzlich stoppt. In solchen Fällen hilft das Ausschalten der Akku-Optimierung.</string>
-    <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstüzt das Ausschalten der Akku-Optimierung leider nicht!</string>
+    <string name="ignore_battery_optimization_message">Es kann manchmal passieren, dass der Sicherungsprozess im Hintergrund plötzlich stoppt. In solchen Fällen hilft das Ausschalten der Akku-Optimierung.</string>
+    <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstützt das Ausschalten der Akku-Optimierung leider nicht!</string>
     <string name="prefs_clearCache">Apps Cache leeren</string>
     <string name="prefs_summaryClearCache">Den Cache der App vor der Datensicherung leeren</string>
     <string name="prefs_encryption">Verschlüsselung</string>
