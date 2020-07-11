@@ -46,7 +46,7 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Add support for protected data, external data and obb backups
 - [x] Clear cache before data backups
 - [x] Add in-app backup encryption
-- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~30% done)
+- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~70% done,)
 - [ ] Switch to Storage Access Framework (after achieving the previous one)
 - [ ] New android Scope Storage permissions compatibility (first: after android 11 release - if forced to)
 - [ ] Add a Flashable-ZIP feature
@@ -86,13 +86,15 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 ## Contribution
 
-[Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup. 
+[Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek).
+[Tiefkuehlpizze](https://github.com/Tiefkuehlpizze) for his active contribution to the project.
 
-Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
+Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek), Indonesian [Ninja1998](https://github.com/NiNjA1998).
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [Zip4J](https://github.com/srikanth-lingala/zip4j), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker).
+Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrite Shellcommands [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
+
+Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
 ## Author
 
