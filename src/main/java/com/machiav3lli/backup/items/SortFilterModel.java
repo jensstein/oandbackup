@@ -125,8 +125,10 @@ public class SortFilterModel {
                 break;
             case R.id.special_old:
                 specialFilter = '3';
+                break;
             case R.id.special_split:
                 specialFilter = '4';
+                break;
             default:
                 specialFilter = '0';
                 break;
