@@ -352,6 +352,7 @@ public class BatchActivityX extends BaseActivity
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
                     itemAdapter.add(list);
                 } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+                fastAdapter.notifyAdapterDataSetChanged();
                 searchView.setQuery("", false);
                 swipeRefreshLayout.setRefreshing(false);
             });
