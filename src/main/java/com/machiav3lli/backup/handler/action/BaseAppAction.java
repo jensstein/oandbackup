@@ -7,7 +7,6 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.utils.PrefUtils;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
@@ -49,7 +48,7 @@ public abstract class BaseAppAction {
     }
 
     public File getBackupFolder() {
-        return new File(PrefUtils.getPrefsString(this.context, Constants.PREFS_PATH_BACKUP_DIRECTORY, FileUtils.DEFAULT_BACKUP_FOLDER));
+        return new File(FileUtils.getDefaultBackupDirPath(this.context));
     }
 
     public File getAppBackupFolder(AppInfo app) {
@@ -89,5 +88,4 @@ public abstract class BaseAppAction {
             super(message, cause);
         }
     }
-
 }

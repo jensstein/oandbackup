@@ -26,18 +26,12 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
-import static com.machiav3lli.backup.utils.FileUtils.setDefaultBackupDirPath;
-import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
-import static com.machiav3lli.backup.utils.PrefUtils.setPrefsString;
-
 
 public class PrefsFragment extends PreferenceFragmentCompat {
 
@@ -56,16 +50,16 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_THEME);
         assert pref != null;
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            setPrefsString(requireContext(), Constants.PREFS_THEME, newValue.toString());
+            PrefUtils.getPrivateSharedPrefs(requireContext()).edit().putString(Constants.PREFS_THEME, newValue.toString()).apply();
             switch (newValue.toString()) {
                 case "light":
-                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     break;
                 case "dark":
-                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     break;
                 default:
-                    setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             }
             return true;
         });
@@ -73,8 +67,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_LANGUAGES);
         assert pref != null;
         pref.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (PrefUtils.changeLanguage(requireContext(), getPrefsString(
-                    requireContext(), Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
+            if (PrefUtils.changeLanguage(requireContext(), PrefUtils.getPrivateSharedPrefs(requireContext()).getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)))
                 UIUtils.reloadWithParentStack(requireActivity());
             return true;
         });
@@ -99,7 +92,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
-        pref.setSummary(getDefaultBackupDirPath(requireContext()));
+        pref.setSummary(FileUtils.getDefaultBackupDirPath(requireContext()));
         pref.setOnPreferenceClickListener(preference -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             startActivityForResult(intent, DEFAULT_DIR_CODE);
@@ -165,8 +158,8 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private void setDefaultDir(Context context, String dir) {
-        setPrefsString(requireContext(), Constants.PREFS_PATH_BACKUP_DIRECTORY, dir);
-        setDefaultBackupDirPath(context, dir);
+        PrefUtils.getPrivateSharedPrefs(requireContext()).edit().putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, dir).apply();
+        FileUtils.setDefaultBackupDirPath(context, dir);
         Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
         pref.setSummary(dir);
@@ -178,7 +171,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         if (requestCode == DEFAULT_DIR_CODE && data != null) {
             Uri uri = data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
-                String oldDir = getDefaultBackupDirPath(requireContext());
+                String oldDir = FileUtils.getDefaultBackupDirPath(requireContext());
                 String newPath = uri.getLastPathSegment().replace("primary:", "/");
                 String newDir = Environment.getExternalStorageDirectory() + newPath;
                 if (!oldDir.equals(newDir)) {

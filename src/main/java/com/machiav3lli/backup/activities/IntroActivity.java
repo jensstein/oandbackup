@@ -23,6 +23,9 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.LogUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.scottyab.rootbeer.RootBeer;
 
@@ -69,14 +72,18 @@ public class IntroActivity extends BaseActivity {
         }
     }
 
+    public static ShellHandler getShellHandlerInstance() {
+        return IntroActivity.shellHandler;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setDayNightTheme(getPrefsString(this, Constants.PREFS_THEME));
+        setDayNightTheme(PrefUtils.getPrivateSharedPrefs(this).getString(Constants.PREFS_THEME, "system"));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         ButterKnife.bind(this);
 
-        logDeviceInfo(this, TAG);
+        LogUtils.logDeviceInfo(this, TAG);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
         users = new ArrayList<>();
         checkRun(savedInstanceState);
@@ -247,12 +254,8 @@ public class IntroActivity extends BaseActivity {
 
     private void launchMainActivity() {
         btn.setVisibility(View.GONE);
-        String backupDirPath = getDefaultBackupDirPath(this);
-        backupDir = createBackupDir(this, backupDirPath);
+        String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
+        backupDir = FileUtils.createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));
-    }
-
-    public static ShellHandler getShellHandlerInstance() {
-        return IntroActivity.shellHandler;
     }
 }

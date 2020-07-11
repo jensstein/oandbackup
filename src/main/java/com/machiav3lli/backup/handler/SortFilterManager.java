@@ -2,40 +2,36 @@ package com.machiav3lli.backup.handler;
 
 import android.content.Context;
 
-import androidx.preference.PreferenceManager;
-
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-
-import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
-import static com.machiav3lli.backup.utils.PrefUtils.setPrefsString;
 
 public class SortFilterManager {
 
-    private static Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
+    private static final Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
             m1.getLabel().compareToIgnoreCase(m2.getLabel());
-    private static Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
+    private static final Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
-        if (!getPrefsString(context, Constants.PREFS_SORT_FILTER).equals(""))
-            sortFilterModel = new SortFilterModel(getPrefsString(context, Constants.PREFS_SORT_FILTER));
+        String sortFilterPref = PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_SORT_FILTER, "");
+        if (!sortFilterPref.equals(""))
+            sortFilterModel = new SortFilterModel(sortFilterPref);
         else sortFilterModel = new SortFilterModel();
         return sortFilterModel;
     }
 
     public static void saveFilterPreferences(Context context, SortFilterModel filterModel) {
-        setPrefsString(context, Constants.PREFS_SORT_FILTER, filterModel.toString());
+        PrefUtils.getPrivateSharedPrefs(context).edit().putString(Constants.PREFS_SORT_FILTER, filterModel.toString()).apply();
     }
 
     public static boolean getRememberFiltering(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
+        return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
     }
 
     public static ArrayList<AppInfo> applyFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
@@ -96,11 +92,13 @@ public class SortFilterManager {
                 for (AppInfo item : list) if (item.isInstalled()) nlist.remove(item);
                 break;
             case '3':
-                int days = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
+                int days = Integer.parseInt(PrefUtils.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
+                long lastBackup;
+                long diff;
                 for (AppInfo item : list) {
                     if (item.getLogInfo() != null) {
-                        long lastBackup = item.getLogInfo().getLastBackupMillis();
-                        long diff = System.currentTimeMillis() - lastBackup;
+                        lastBackup = item.getLogInfo().getLastBackupMillis();
+                        diff = System.currentTimeMillis() - lastBackup;
                         if (!(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f)))
                             nlist.remove(item);
                     } else nlist.remove(item);
@@ -116,8 +114,8 @@ public class SortFilterManager {
     }
 
     private static ArrayList<AppInfo> applySort(ArrayList<AppInfo> list, CharSequence filter) {
-        if (filter.charAt(0) == '0') Collections.sort(list, appInfoPackageNameComparator);
-        else Collections.sort(list, appInfoLabelComparator);
+        if (filter.charAt(0) == '0') list.sort(appInfoPackageNameComparator);
+        else list.sort(appInfoLabelComparator);
         return list;
     }
 }

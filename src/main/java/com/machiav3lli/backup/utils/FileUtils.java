@@ -11,21 +11,17 @@ import com.machiav3lli.backup.R;
 
 import java.io.File;
 
-import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
-import static com.machiav3lli.backup.utils.PrefUtils.setPrefsString;
-import static com.machiav3lli.backup.utils.UIUtils.showWarning;
-
 public class FileUtils {
-    final static String TAG = Constants.classTag(".FileCreationHelper");
     public final static String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
+    final static String TAG = Constants.classTag(".FileCreationHelper");
     private boolean fallbackFlag;
 
     public static String getDefaultBackupDirPath(Context context) {
-        return getPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, DEFAULT_BACKUP_FOLDER);
+        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, DEFAULT_BACKUP_FOLDER);
     }
 
     public static void setDefaultBackupDirPath(Context context, String path) {
-        setPrefsString(context, Constants.PREFS_PATH_BACKUP_DIRECTORY, path);
+        PrefUtils.getPrivateSharedPrefs(context).edit().putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, path).apply();
     }
 
     public static File createBackupDir(final Activity activity, final String path) {
@@ -39,7 +35,7 @@ public class FileUtils {
         } else
             backupDir = fileCreator.createBackupFolder(activity, getDefaultBackupDirPath(activity));
         if (backupDir == null)
-            showWarning(activity, activity.getString(R.string.mkfileError) + " " + getDefaultBackupDirPath(activity), activity.getString(R.string.backupFolderError));
+            UIUtils.showWarning(activity, activity.getString(R.string.mkfileError) + " " + getDefaultBackupDirPath(activity), activity.getString(R.string.backupFolderError));
         return backupDir;
     }
 

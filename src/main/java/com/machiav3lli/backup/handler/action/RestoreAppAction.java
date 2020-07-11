@@ -62,7 +62,7 @@ public class RestoreAppAction extends BaseAppAction {
 
     protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException, PackageManager.NameNotFoundException {
         this.restoreData(app);
-        SharedPreferences prefs = PrefUtils.getSharedPreferences(this.getContext());
+        SharedPreferences prefs = PrefUtils.getDefaultSharedPreferences(this.getContext());
         if (prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             this.restoreExternalData(app);
         }
@@ -77,7 +77,7 @@ public class RestoreAppAction extends BaseAppAction {
     protected void uncompress(File filepath, File targetDir) throws IOException, Crypto.CryptoSetupException {
         String inputFilename = filepath.getAbsolutePath();
         Log.d(RestoreAppAction.TAG, "Opening file for expansion: " + inputFilename);
-        String password = PrefUtils.getSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
+        String password = PrefUtils.getDefaultSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
         InputStream in = new BufferedInputStream(new FileInputStream(inputFilename));
         if (!password.isEmpty()) {
             Log.d(RestoreAppAction.TAG, "Encryption enabled");

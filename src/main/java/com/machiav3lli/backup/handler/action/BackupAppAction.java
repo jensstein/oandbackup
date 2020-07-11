@@ -44,7 +44,7 @@ public class BackupAppAction extends BaseAppAction {
             }
             if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
                 try {
-                    if (PrefUtils.getSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_CLEARCACHE, true)) {
+                    if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_CLEARCACHE, true)) {
                         this.wipeCache(app);
                     }
                 } catch (ShellHandler.ShellCommandFailedException e) {
@@ -52,15 +52,15 @@ public class BackupAppAction extends BaseAppAction {
                     Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
                 }
                 this.backupData(app);
-                if (PrefUtils.getSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+                if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
                     this.backupExternalData(app);
                     this.backupObbData(app);
                 }
-                if (PrefUtils.getSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+                if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
                     this.backupDeviceProtectedData(app);
                 }
             }
-            boolean encrypted = !PrefUtils.getSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "").isEmpty();
+            boolean encrypted = !PrefUtils.getDefaultSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "").isEmpty();
             app.setBackupMode(backupMode);
             LogFile.writeLogFile(this.getAppBackupFolder(app), app, backupMode, encrypted);
         } catch (BackupFailedException | Crypto.CryptoSetupException | JSONException | IOException e) {
@@ -82,12 +82,11 @@ public class BackupAppAction extends BaseAppAction {
         if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
             boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getContext());
 
-            String type = BaseAppAction.BACKUP_DIR_DATA;
-            boolean lastResult = this.getBackupArchive(app, type, isEncrypted).delete();
+            boolean lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted).delete();
             Log.d(BackupAppAction.TAG, String.format("%s: Removed backup data: %s", app, lastResult));
             successFlag &= lastResult;
 
-            if (PrefUtils.getSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
                 lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, isEncrypted).delete();
                 Log.d(BackupAppAction.TAG, String.format("%s: Removed backup external data: %s", app, lastResult));
                 successFlag &= lastResult;
@@ -97,7 +96,7 @@ public class BackupAppAction extends BaseAppAction {
                 successFlag &= lastResult;
             }
 
-            if (PrefUtils.getSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
                 lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted).delete();
                 Log.d(BackupAppAction.TAG, String.format("%s: Removed backup obb data: %s", app, lastResult));
                 successFlag &= lastResult;
@@ -108,7 +107,7 @@ public class BackupAppAction extends BaseAppAction {
 
     protected void compress(File filepath, File outputFilename) throws IOException, Crypto.CryptoSetupException {
         Log.d(BackupAppAction.TAG, "Opening output file for compression: " + outputFilename);
-        String password = PrefUtils.getSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
+        String password = PrefUtils.getDefaultSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
 
         OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFilename, false));
         if (!password.isEmpty()) {
