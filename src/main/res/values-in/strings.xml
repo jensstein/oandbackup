@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="backup">Cadangkan</string>
+    <string name="restore">Mengembalikan</string>
+    <string name="backupConfirmation">Cadangkan?</string>
+    <string name="restoreConfirmation">Mengembalikan?</string>
+    <string name="handleApk">APK</string>
+    <string name="handleData">Data</string>
+    <string name="handleBoth">Kedua</string>
+    <string name="radioAll">Semua aplikasi</string>
+    <string name="radioUser">Aplikasi Pengguna</string>
+    <string name="radioSystem">Aplikasi Sistem</string>
+    <string name="radioBoth">APK dan Data</string>
+    <string name="radioApk">APK</string>
+    <string name="radioData">Data</string>
+    <string name="radioSpecial">Backup khusus</string>
+    <string name="de_selectAll">De/pilih semua</string>
+    <string name="onlyApkBackedUp">Hanya APK</string>
+    <string name="onlyDataBackedUp">Hanya data</string>
+    <string name="refresh">Menyegarkan</string>
+    <string name="batchbackup">Batch cadangan</string>
+    <string name="batchrestore">Pemulihan batch</string>
+    <string name="search">Cari</string>
+    <string name="searchHint">Cari aplikasi</string>
+    <string name="deleteBackup">Hapus cadangan</string>
+    <string name="uninstall">Copot pemasangan aplikasi</string>
+    <string name="uninstallProgress">Menghapus instalasi...</string>
+    <string name="showOnlySystem">Hanya aplikasi sistem</string>
+    <string name="showOnlyUser">Hanya aplikasi pengguna</string>
+    <string name="showNotBackedup">Aplikasi tanpa cadangan</string>
+    <string name="showNotInstalled">Tidak menginstal aplikasi</string>
+    <string name="showNewAndUpdated">Aplikasi baru dan yang diperbarui</string>
+    <string name="showOldBackups">Backup lama</string>
+    <string name="showSplitAPKs">Split-APK</string>
+    <string name="showOnlyApkBackedUp">Aplikasi dengan hanya yang dicadangkan APK</string>
+    <string name="showOnlyDataBackedUp">Aplikasi dengan hanya data yang dicadangkan</string>
+    <string name="sortByLabel">Sortir menurut label</string>
+    <string name="sortByPackageName">Sortir menurut nama paket</string>
+    <string name="sort">Sortir dan saring</string>
+    <string name="uninstallDialogMessage">Copot pemasangan aplikasi ini?</string>
+    <string name="deleteBackupDialogMessage">Hapus file cadangan?</string>
+    <string name="dialogOK">Baik</string>
+    <string name="dialogCancel">Membatalkan</string>
+    <string name="dialogYes">Iya</string>
+    <string name="dialogNo">Tidak</string>
+    <string name="restoreDataWithoutApkError">Tidak dapat mengembalikan data tanpa mengembalikan APK, paket tidak diinstal</string>
+    <string name="collectingData">Mengumpulkan info paket...</string>
+    <string name="suCheck">Memeriksa superuser dan busybox...</string>
+    <string name="noSu">Tidak bisa mendapatkan izin pengguna super</string>
+    <string name="busyboxProblem">Tidak dapat menemukan busybox. silakan periksa log kesalahan</string>
+    <!-- mkfileError: kesalahan terjadi saat membuat file. format: string + " " + nama file -->
+    <string name="mkfileError">Tidak dapat membuat</string>
+    <!-- fallbackToDefault: menunjukkan fallback ke default untuk pembuatan file tertentu. digunakan dengan cara yang sama seperti mkfileError -->
+    <string name="fallbackToDefault">Kembali ke default</string>
+    <string name="backupFolderError">Harap tetapkan jalur yang benar dalam preferensi dan pastikan ada atau dapat dibuat</string>
+    <string name="shellReturnSuccess">Keberhasilan</string>
+    <string name="shellReturnError">Kesalahan</string>
+    <string name="backupProgress">Mencadangkan...</string>
+    <string name="backupSuccess">Cadangan selesai</string>
+    <string name="backupFailure">Kesalahan pada cadangan</string>
+    <string name="restoreProgress">Memulihkan...</string>
+    <string name="restoreSuccess">Pulihkan lengkap</string>
+    <string name="restoreFailure">Kesalahan saat memulihkan</string>
+    <string name="batchSuccess">Operasi selesai</string>
+    <string name="batchFailure">Lengkap dengan kesalahan</string>
+    <string name="uninstallSuccess">Copot pemasangan selesai</string>
+    <string name="uninstallFailure">Kesalahan saat mencopot pemasangan</string>
+    <string name="errorDialogTitle">Terjadi kesalahan</string>
+    <string name="customListTitle">Daftar kustom</string>
+    <string name="quickRebootTitle">Reboot cepat</string>
+    <string name="quickRebootMessage">Apakah Anda ingin memulai kembali userspace?</string>
+    <string name="help_title">Tolong</string>
+    <string name="notInstalledModeDataWarning">Aplikasi tidak dapat dipulihkan dari cadangan tanpa APK</string>
+    <string name="shareTitle">Bagikan</string>
+
+    <string name="tools_title">Alat</string>
+    <string name="batchDeleteMessage">Menghapus cadangan...</string>
+    <string name="batchDeleteNotificationTitle">Hapus cadangan</string>
+    <!-- tools_backupsDeleted: ditampilkan dalam pemberitahuan diikuti oleh jumlah cadangan yang dihapus -->
+    <string name="batchDeleteBackupsDeleted">Cadangan dihapus:</string>
+    <string name="batchDeleteNothingToDelete">Tidak ada cadangan untuk dihapus</string>
+
+    <string name="enablePackage">Memungkinkan</string>
+    <!-- enablePackageTitle: judul untuk daftar pengguna yang dapat diperiksa -->
+    <string name="enablePackageTitle">Aktifkan untuk pengguna</string>
+    <string name="disablePackage">Nonaktifkan</string>
+    <string name="disablePackageTitle">Nonaktifkan untuk pengguna</string>
+
+    <string name="prefs_title">Preferensi</string>
+    <string name="prefs_service">Preferensi layanan</string>
+    <string name="prefs_user">Preferensi pengguna</string>
+    <string name="prefs_theme">Tema</string>
+    <string name="prefs_acquireWakelock">Cegah tidur</string>
+    <string name="prefs_pathscategory">Jalur khusus</string>
+    <string name="prefs_batchDelete">Hapus cadangan</string>
+    <string name="prefs_pathBackupFolder">Folder cadangan</string>
+    <string name="prefs_pathToybox">Folder busybox</string>
+    <string name="prefs_oldBackups">Saring cadangan berdasarkan usia</string>
+    <string name="prefs_copySelfApk">Salin sendiri APK</string>
+    <string name="prefs_languages">Bahasa</string>
+    <string name="prefs_languageSystemDefault">Sistem standar</string>
+    <string name="prefs_rememberFiltering">Ingat mengurutkan dan memfilter</string>
+    <string name="prefs_followSymlinks">Ikuti tautan simbolis</string>
+    <string name="prefs_enableSpecialBackups">Aktifkan cadangan khusus</string>
+    <string name="prefs_disableNotifications">Nonaktifkan notifikasi</string>
+    <string name="prefs_clearCache">Bersihkan cache aplikasi</string>
+    <string name="prefs_encryption">Enkripsi</string>
+    <string name="prefs_password">Kata sandi enkripsi</string>
+    <string name="prefs_backupExternalData">Cadangkan data eksternal</string>
+    <string name="prefs_backupDeviceProtectedData">Cadangan data yang dilindungi perangkat</string>
+    <string name="prefs_summaryBackupDeviceProtectedData">Mencadangkan dan mengembalikan data yang ditempatkan di data/user_de</string>
+    <string name="prefs_summaryBackupExternalData">Mencadangkan dan mengembalikan data yang ditempatkan pada penyimpanan eksternal (mis. /Storage/emulated/0/Android/data/)</string>
+    <string name="prefs_summary_password">Setel ke kosong untuk menonaktifkan enkripsi</string>
+    <string name="prefs_summary_encryption">Aktifkan untuk mengenkripsi cadangan data</string>
+    <string name="prefs_summaryClearCache">Bersihkan cache aplikasi sebelum melakukan backup data</string>
+    <string name="prefs_summaryDisableNotifications">OAndBackupX tidak akan menampilkan pemberitahuan</string>
+    <string name="prefs_summaryAcquireWakelock">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi</string>
+    <string name="prefs_summaryBackupFolder">Path ke folder cadangan. biarkan kosong untuk default.</string>
+    <string name="prefs_summaryToybox">Jalur ke toybox/busybox dapat dieksekusi. pastikan itu benar. biarkan kosong untuk default.</string>
+    <string name="prefs_summaryOldBackups">Saring cadangan yang lebih lama dari nilai dalam beberapa hari.  digunakan dengan filter \'tampilkan backup lama\'</string>
+    <string name="prefs_summaryCopySelfApk">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan saat dicadangkan</string>
+    <string name="prefs_summaryRememberFiltering">Menyimpan metode penyortiran dan penyaringan yang dipilih. Hanya yang ditandai oleh kotak centang di menu yang dipertimbangkan.</string>
+    <string name="prefs_summaryFollowSymlinks">Selalu ikuti tautan simbolik saat menyalin (cp -L)</string>
+    <string name="prefs_summaryQuickReboot">Membunuh proses system_server untuk memaksa restart ruang pengguna</string>
+    <string name="prefs_summaryBatchDelete">Hapus cadangan semua aplikasi yang saat ini tidak diinstal</string>
+
+    <string name="sched_title">Penjadwalan</string>
+    <string name="sched_notificationMessage">Pencadangan terjadwal</string>
+    <string name="sched_interval">Interval dalam beberapa hari</string>
+    <string name="sched_hourOfDay">Jam hari</string>
+    <string name="sched_checkbox">Memungkinkan</string>
+    <string name="sched_activateButton">Mulai cadangan sekarang</string>
+    <string name="sched_startingbackup">Mulai cadangan terjadwal...</string>
+    <string name="sched_backupMode">Mode cadangan</string>
+    <string name="sched_timeLeft">Waktu hingga cadangan berikutnya:</string>
+    <string name="sched_customListUpdateButton">Perbarui daftar khusus</string>
+    <string name="sched_excludeSystemCheckBox">Kecualikan aplikasi sistem</string>
+
+    <string name="blacklistDialogTitle">Daftar hitam</string>
+
+    <string name="spec_accounts">Akun</string>
+    <string name="spec_appwidgets">Widget Aplikasi</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Penggunaan dan Kebijakan Data</string>
+    <string name="spec_wallpaper">Wallpaper</string>
+    <string name="spec_wifiAccessPoints">Poin Akses Wifi</string>
+
+    <!-- filebrowser_createDirectoryError: kesalahan terjadi saat mencoba membuat direktori. format: string + " " + nama direktori -->
+
+    <string name="logviewer_message_loading">Memuat file log...</string>
+
+    <string name="error_creating_notification_channel">Tidak dapat membuat saluran pemberitahuan</string>
+    <string name="error_updating_schedule_mode">Kesalahan memperbarui %1$s dari jadwal %2$d</string>
+    <string name="permission_not_granted">Diperlukan izin untuk mengakses penyimpanan eksternal</string>
+    <string name="restart_dialog">Aplikasi sepertinya perlu direstart</string>
+
+    <string name="filter_options">Filter:</string>
+    <string name="sort_options">Sortir dengan:</string>
+    <string name="sortLabel">Label</string>
+    <string name="sortPackageName">Nama paket</string>
+    <string name="app_s_icon">Ikon aplikasi</string>
+    <string name="bothBackedUp">APK dan data</string>
+    <string name="all">Semua</string>
+    <string name="logViewerTitle">Lihat log</string>
+    <string name="ask_for_permissions">minta izin</string>
+    <string name="systemApp">Aplikasi sistem</string>
+    <string name="userApp">Aplikasi pengguna</string>
+    <string name="resetFilter">Setel ulang</string>
+    <string name="applyFilter">Menerapkan</string>
+    <string name="available_actions">Tindakan yang tersedia:</string>
+    <string name="version_name_title">Nama versi:</string>
+    <string name="backup_mode_title">Mode cadangan:</string>
+    <string name="last_backup_title">Cadangan terakhir:</string>
+    <string name="app_s_type_title">Jenis aplikasi:</string>
+    <string name="encrypted_data_title">Data terenkripsi:</string>
+    <string name="other_filters_options">Filter khusus:</string>
+    <string name="deleted_backup">Menghapus cadangan</string>
+    <string name="theme_light">Cahaya</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="theme_system">Tema sistem</string>
+    <string name="empty_filtered_list">Daftar yang difilter kosong, oleh karena itu mengatur filter kembali ke default</string>
+    <string name="permission_refuse">Tidak akan melakukannya</string>
+    <string name="permission_approve">Ayo lakukan</string>
+    <string name="ignore_battery_optimization_title">Optimalisasi Baterai</string>
+    <string name="ignore_battery_optimization_message">Backup kadang-kadang bisa berhenti. Untuk mencegah hal ini, Anda harus mematikan optimisasi baterai</string>
+    <string name="ignore_battery_optimization_not_supported">Sayangnya, perangkat ini tidak mendukung pengabaian baterai!</string>
+    <string name="failed_unzipping">Kesalahan saat membuka ritsleting data, periksa kata sandi enkripsi!</string>
+    <string name="split_apks">APKs Split:</string>
+    <string name="backup_filters">Filter Cadangan:</string>
+    <string name="grant_usage_access_title">Berikan Akses Penggunaan</string>
+    <string name="grant_usage_access_message">Ini penting untuk mendapatkan informasi tentang ukuran file aplikasi</string>
+    <string name="app_size">Ukuran Aplikasi:</string>
+    <string name="data_size">Ukuran data:</string>
+    <string name="cache_size">Ukuran Tembolok:</string>
+</resources>
