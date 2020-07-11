@@ -34,6 +34,7 @@ import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -50,10 +51,6 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.machiav3lli.backup.Constants.classAddress;
-import static com.machiav3lli.backup.utils.FileUtils.createBackupDir;
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -114,8 +111,8 @@ public class BatchActivityX extends BaseActivity
             UIUtils.reShowMessage(handleMessages, threadId);
         }
 
-        String backupDirPath = getDefaultBackupDirPath(this);
-        backupDir = createBackupDir(this, backupDirPath);
+        String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
+        backupDir = FileUtils.createBackupDir(this, backupDirPath);
         if (originalList == null) originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                 prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
 
@@ -127,7 +124,7 @@ public class BatchActivityX extends BaseActivity
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         if (getIntent().getExtras() != null)
-            backupBoolean = getIntent().getExtras().getBoolean(classAddress(".backupBoolean"));
+            backupBoolean = getIntent().getExtras().getBoolean(Constants.classAddress(".backupBoolean"));
         if (backupBoolean) actionButton.setText(R.string.backup);
         else actionButton.setText(R.string.restore);
 
@@ -248,7 +245,7 @@ public class BatchActivityX extends BaseActivity
                 results.add(result);
                 i++;
             }
-            if(this.handleMessages.isShowing()) {
+            if (this.handleMessages.isShowing()) {
                 this.handleMessages.endMessage();
             }
             if (wl.isHeld()) {
@@ -313,8 +310,8 @@ public class BatchActivityX extends BaseActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                String backupDirPath = getDefaultBackupDirPath(this);
-                backupDir = createBackupDir(this, backupDirPath);
+                String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
+                backupDir = FileUtils.createBackupDir(this, backupDirPath);
             case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
                 if (!shellCommands.checkUtilBoxPath())

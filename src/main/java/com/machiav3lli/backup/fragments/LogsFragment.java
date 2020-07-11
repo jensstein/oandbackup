@@ -20,8 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.machiav3lli.backup.utils.LogUtils.getDefaultLogFilePath;
-
 public class LogsFragment extends Fragment {
 
     @BindView(R.id.scrollview)
@@ -71,7 +69,7 @@ public class LogsFragment extends Fragment {
 
     private class TextLoadRunnable implements Runnable {
         public void run() {
-            String txt = new LogUtils(getDefaultLogFilePath(requireContext())).read();
+            String txt = new LogUtils(LogUtils.getDefaultLogFilePath(requireContext())).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
             requireActivity().runOnUiThread(() -> appendNextLines(true));

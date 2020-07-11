@@ -29,6 +29,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.items.SchedulerItemX;
+import com.machiav3lli.backup.schedules.BlacklistsDBHelper;
 import com.machiav3lli.backup.schedules.CustomPackageList;
 import com.machiav3lli.backup.schedules.HandleAlarms;
 import com.machiav3lli.backup.schedules.HandleScheduledBackups;
@@ -47,8 +48,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.machiav3lli.backup.schedules.BlacklistsDBHelper.DATABASE_NAME;
 
 public class ScheduleSheet extends BottomSheetDialogFragment {
     final static String TAG = Constants.classTag(".ScheduleSheet");
@@ -201,7 +200,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         });
         activateButton.setOnClickListener(v -> new AlertDialog.Builder(requireActivity())
                 .setMessage(getString(R.string.sched_activateButton))
-                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), tag, DATABASE_NAME).execute())
+                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), tag, BlacklistsDBHelper.DATABASE_NAME).execute())
                 .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
                 })
                 .show());
@@ -244,7 +243,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         try {
             final Schedule schedule = getScheduleDataFromView((int) id);
             final UpdateScheduleRunnable updateScheduleRunnable =
-                    new UpdateScheduleRunnable((SchedulerActivityX) requireActivity(), DATABASE_NAME, schedule);
+                    new UpdateScheduleRunnable((SchedulerActivityX) requireActivity(), BlacklistsDBHelper.DATABASE_NAME, schedule);
             new Thread(updateScheduleRunnable).start();
             if (!schedule.isEnabled()) {
                 handleAlarms.cancelAlarm((int) id);
@@ -286,7 +285,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     private void updateScheduleData(Schedule schedule) {
         UpdateScheduleRunnable updateScheduleRunnable =
-                new UpdateScheduleRunnable((SchedulerActivityX) requireActivity(), DATABASE_NAME, schedule);
+                new UpdateScheduleRunnable((SchedulerActivityX) requireActivity(), BlacklistsDBHelper.DATABASE_NAME, schedule);
         new Thread(updateScheduleRunnable).start();
         setTimeLeft(schedule, System.currentTimeMillis());
     }
@@ -376,11 +375,11 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         private final String databasename;
 
         ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Mode mode) {
-            this(scheduler, id, mode, DATABASE_NAME);
+            this(scheduler, id, mode, BlacklistsDBHelper.DATABASE_NAME);
         }
 
         ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Submode submode) {
-            this(scheduler, id, submode, DATABASE_NAME);
+            this(scheduler, id, submode, BlacklistsDBHelper.DATABASE_NAME);
         }
 
         ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Mode mode,
@@ -467,7 +466,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                 return new ResultHolder<>(error);
             }
             final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                    .getScheduleDatabase(scheduler, DATABASE_NAME);
+                    .getScheduleDatabase(scheduler, BlacklistsDBHelper.DATABASE_NAME);
             final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
             scheduleDao.delete(schedules[0]);
             return new ResultHolder<>(schedules[0]);

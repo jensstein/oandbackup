@@ -28,7 +28,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() { super.onResume(); }
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

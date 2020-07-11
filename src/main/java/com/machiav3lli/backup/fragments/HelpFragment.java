@@ -31,6 +31,11 @@ public class HelpFragment extends Fragment {
     @BindView(R.id.helpHtml)
     AppCompatTextView helpHTML;
 
+    static String convertStreamToString(InputStream is) {
+        Scanner s = new Scanner(is, "utf-8").useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,10 +64,5 @@ public class HelpFragment extends Fragment {
             helpHTML.setText(e.toString());
         } catch (PackageManager.NameNotFoundException ignored) {
         }
-    }
-
-    static String convertStreamToString(InputStream is) {
-        Scanner s = new Scanner(is, "utf-8").useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
     }
 }

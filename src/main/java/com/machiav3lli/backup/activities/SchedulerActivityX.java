@@ -31,6 +31,7 @@ import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -43,9 +44,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
-
 
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
@@ -207,12 +205,12 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     public void renameCustomListFile(long id, long destinationId) {
-        LogUtils frw = new LogUtils(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
+        LogUtils frw = new LogUtils(FileUtils.getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
 
     public void removeCustomListFile(long number) {
-        LogUtils frw = new LogUtils(getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
+        LogUtils frw = new LogUtils(FileUtils.getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
 

@@ -39,11 +39,6 @@ import butterknife.ButterKnife;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode;
-import static com.machiav3lli.backup.utils.FileUtils.createBackupDir;
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
-import static com.machiav3lli.backup.utils.LogUtils.logDeviceInfo;
-import static com.machiav3lli.backup.utils.PrefUtils.getPrefsString;
 
 public class IntroActivity extends BaseActivity {
     static final String TAG = Constants.classTag(".IntroActivity");
@@ -105,13 +100,13 @@ public class IntroActivity extends BaseActivity {
     private void setDayNightTheme(String theme) {
         switch (theme) {
             case "light":
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
             case "dark":
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
             default:
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
     }
 
@@ -203,10 +198,8 @@ public class IntroActivity extends BaseActivity {
         }
     }
 
-    private void showFatalUiWarning(String message){
-        UIUtils.showWarning(this, IntroActivity.TAG, message, (dialog, id) -> {
-            this.finishAffinity();
-        });
+    private void showFatalUiWarning(String message) {
+        UIUtils.showWarning(this, IntroActivity.TAG, message, (dialog, id) -> this.finishAffinity());
     }
 
     private boolean canAccessExternalStorage() {
@@ -230,7 +223,7 @@ public class IntroActivity extends BaseActivity {
             this.showFatalUiWarning(this.getString(R.string.noSu));
             goodToGo = false;
         }
-        if(goodToGo){
+        if (goodToGo) {
             try {
                 ShellHandler.runAsRoot("id");
             } catch (ShellHandler.ShellCommandFailedException e) {
