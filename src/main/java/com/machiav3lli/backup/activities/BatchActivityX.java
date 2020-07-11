@@ -136,6 +136,7 @@ public class BatchActivityX extends BaseActivity
         fastAdapter.setHasStableIds(true);
         recyclerView.setAdapter(fastAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        fastAdapter.setOnPreClickListener((view, batchItemXIAdapter, batchItemX, integer) -> false);
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             item.getApp().setChecked(!item.getApp().isChecked());
             fastAdapter.notifyAdapterDataSetChanged();
