@@ -103,7 +103,7 @@
     <string name="prefs_followSymlinks">跟随符号链接</string>
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
     <string name="prefs_disableNotifications">禁用通知</string>
-    <string name="prefs_clearCache">清除应用缓存</string>
+    <string name="prefs_excludeCache">清除应用缓存</string>
     <string name="prefs_encryption">加密</string>
     <string name="prefs_password">加密密码</string>
     <string name="prefs_backupExternalData">备份外部数据</string>
@@ -112,7 +112,7 @@
     <string name="prefs_summaryBackupExternalData">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
     <string name="prefs_summary_password">设为空表示不加密</string>
     <string name="prefs_summary_encryption">启用以加密数据备份</string>
-    <string name="prefs_summaryClearCache">进行数据备份之前清除应用缓存</string>
+    <string name="prefs_summaryExcludeCache">进行数据备份之前清除应用缓存</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX 将不会显示任何通知</string>
     <string name="prefs_summaryAcquireWakelock">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量</string>
     <string name="prefs_summaryBackupFolder">备份文件夹路径（默认为空）</string>

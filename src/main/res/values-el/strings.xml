@@ -101,7 +101,7 @@
     <string name="prefs_followSymlinks">Να ακολουθούνται συμβολικοί δεσμοί</string>
     <string name="prefs_enableSpecialBackups">Ενεργοποίηση ειδικών αντιγράφων</string>
     <string name="prefs_disableNotifications">Απενεργοποίηση ειδοποιήσεων</string>
-    <string name="prefs_clearCache">Καθαρισμός μνήμης cache της εφαρμογής</string>
+    <string name="prefs_excludeCache">Καθαρισμός μνήμης cache της εφαρμογής</string>
     <string name="prefs_encryption">Κρυπτογράφηση</string>
     <string name="prefs_password">Κωδικός κρυπτογράφησης</string>
     <string name="prefs_backupExternalData">Δημιουργία αντιγράφου εξωτερικών δεδομένων</string>
@@ -110,7 +110,7 @@
     <string name="prefs_summaryBackupExternalData">Δημιουργεί αντίγραφο και επαναφέρει δεδομένα που βρίσκονται στον εξωτερικό χώρο αποθήκευσης (e.g. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_summary_password">Αφήστε κενό για απενεργοποίηση κρυπτογράφησης</string>
     <string name="prefs_summary_encryption">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
-    <string name="prefs_summaryClearCache">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
+    <string name="prefs_summaryExcludeCache">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
     <string name="prefs_summaryDisableNotifications">Το OAndBackupX δε θα εμφανίζει ειδοποιήσεις</string>
     <string name="prefs_summaryAcquireWakelock">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια</string>
     <string name="prefs_summaryBackupFolder">Διαδρομή φακέλου αντιγράφων. Αφήστε κενό για προεπιλογή.</string>

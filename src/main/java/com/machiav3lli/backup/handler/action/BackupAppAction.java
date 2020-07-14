@@ -10,7 +10,6 @@ import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
-import com.machiav3lli.backup.utils.CommandUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -43,14 +42,6 @@ public class BackupAppAction extends BaseAppAction {
                 this.backupPackage(app);
             }
             if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-                try {
-                    if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_CLEARCACHE, true)) {
-                        this.wipeCache(app);
-                    }
-                } catch (ShellHandler.ShellCommandFailedException e) {
-                    // Not a critical issue
-                    Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
-                }
                 this.backupData(app);
                 if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
                     this.backupExternalData(app);
@@ -155,19 +146,6 @@ public class BackupAppAction extends BaseAppAction {
         }
     }
 
-    protected void wipeCache(AppInfo app) throws ShellHandler.ShellCommandFailedException {
-        Log.i(BackupAppAction.TAG, String.format("%s: Wiping cache", app));
-        // tries to list the directory. If it's empty, it won't run the command
-        // This is a bit tricky because root is needed access the directory, but it shifts the
-        // logic to a line of shell code instead of multiple lines of Java.
-        // If it's empty, true returns a zero as exit code, because this is not a problem
-        String cachePath = app.getCachePath();
-        String command = String.format(
-                "if ([ -d \"%s\" ] && [ -z \"$(%s)\" ]); then %s rm -r \"%s\"; else true; fi",
-                cachePath, cachePath, this.getShell().getUtilboxPath(), cachePath);
-        ShellHandler.runAsRoot(command);
-    }
-
     private void genericBackupData(
             String type, AppInfo app, File backupDirectory, File sourceDirectory, boolean compress)
             throws BackupFailedException, Crypto.CryptoSetupException {
@@ -178,8 +156,9 @@ public class BackupAppAction extends BaseAppAction {
         try {
             // Get a list of directories in the directory to backup
             List<String> dirsInSource = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(sourceDirectory)));
-            // filter out, what we don't want to backup
-            dirsInSource.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
+            // Excludes cache and libs, when we don't want to backup'em
+            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXCLUDECACHE, true))
+                dirsInSource.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
 
             // calculate a list what should be part of the backup
             dirsToBackup = dirsInSource.stream().map(s -> '"' + new File(sourceDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);

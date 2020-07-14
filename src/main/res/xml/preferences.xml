@@ -53,9 +53,9 @@
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="clearCache"
-            android:summary="@string/prefs_summaryClearCache"
-            android:title="@string/prefs_clearCache"
+            android:key="excludeCache"
+            android:summary="@string/prefs_summaryExcludeCache"
+            android:title="@string/prefs_excludeCache"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"

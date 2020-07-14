@@ -163,8 +163,8 @@
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
     <string name="ignore_battery_optimization_message">Es kann manchmal passieren, dass der Sicherungsprozess im Hintergrund plötzlich stoppt. In solchen Fällen hilft das Ausschalten der Akku-Optimierung.</string>
     <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstützt das Ausschalten der Akku-Optimierung leider nicht!</string>
-    <string name="prefs_clearCache">Apps Cache leeren</string>
-    <string name="prefs_summaryClearCache">Den Cache der App vor der Datensicherung leeren</string>
+    <string name="prefs_excludeCache">Apps Cache ausschließen</string>
+    <string name="prefs_summaryExcludeCache">Den Cache der App von der Datensicherung ausschließen</string>
     <string name="prefs_encryption">Verschlüsselung</string>
     <string name="prefs_password">Verschlüsselungspasswort</string>
     <string name="prefs_summary_password">Auf leer setzen, um die Verschlüsselung zu deaktivieren</string>

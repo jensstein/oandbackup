@@ -123,7 +123,7 @@
   <string name="prefs_service">Preferenze di servizio</string>
   <string name="prefs_user">Preferenze utente</string>
   <string name="prefs_theme">Tema</string>
-  <string name="prefs_clearCache">Cancella la cache dell\'app</string>
+  <string name="prefs_excludeCache">Cancella la cache dell\'app</string>
   <string name="prefs_encryption">Crittografia</string>
   <string name="prefs_password">Password di crittografia</string>
   <string name="prefs_backupExternalData">Backup dati esterni</string>
@@ -132,7 +132,7 @@
   <string name="prefs_summaryBackupExternalData">Esegue il backup e ripristina i dati situati nella memoria esterna (es. /storage/emulated/0/Android/data/)</string>
   <string name="prefs_summary_password">Lascia vuoto per disattivare la crittografia</string>
   <string name="prefs_summary_encryption">Attiva per criptare i dati dei backup</string>
-  <string name="prefs_summaryClearCache">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
+  <string name="prefs_summaryExcludeCache">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
   <string name="prefs_summaryQuickReboot">Chiude il processo system_server per forzare un riavvio dello spazio utente</string>
   <string name="prefs_summaryBatchDelete">Cancella i backup di tutte le app non installate in questo moment</string>
   <string name="sched_activateButton">Inizia backup ora</string>

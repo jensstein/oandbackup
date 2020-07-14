@@ -103,7 +103,7 @@
     <string name="prefs_followSymlinks">Ikuti tautan simbolis</string>
     <string name="prefs_enableSpecialBackups">Aktifkan cadangan khusus</string>
     <string name="prefs_disableNotifications">Nonaktifkan notifikasi</string>
-    <string name="prefs_clearCache">Bersihkan cache aplikasi</string>
+    <string name="prefs_excludeCache">Bersihkan cache aplikasi</string>
     <string name="prefs_encryption">Enkripsi</string>
     <string name="prefs_password">Kata sandi enkripsi</string>
     <string name="prefs_backupExternalData">Cadangkan data eksternal</string>
@@ -112,7 +112,7 @@
     <string name="prefs_summaryBackupExternalData">Mencadangkan dan mengembalikan data yang ditempatkan pada penyimpanan eksternal (mis. /Storage/emulated/0/Android/data/)</string>
     <string name="prefs_summary_password">Setel ke kosong untuk menonaktifkan enkripsi</string>
     <string name="prefs_summary_encryption">Aktifkan untuk mengenkripsi cadangan data</string>
-    <string name="prefs_summaryClearCache">Bersihkan cache aplikasi sebelum melakukan backup data</string>
+    <string name="prefs_summaryExcludeCache">Bersihkan cache aplikasi sebelum melakukan backup data</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX tidak akan menampilkan pemberitahuan</string>
     <string name="prefs_summaryAcquireWakelock">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi</string>
     <string name="prefs_summaryBackupFolder">Path ke folder cadangan. biarkan kosong untuk default.</string>

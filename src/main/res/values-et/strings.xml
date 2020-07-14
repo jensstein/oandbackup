@@ -103,7 +103,7 @@
     <string name="prefs_followSymlinks">Järgi sümboolseid linke</string>
     <string name="prefs_enableSpecialBackups">Luba erilised varundused</string>
     <string name="prefs_disableNotifications">Keela teavitus</string>
-    <string name="prefs_clearCache">Tühjenda rakenduse vahemälu</string>
+    <string name="prefs_excludeCache">Tühjenda rakenduse vahemälu</string>
     <string name="prefs_encryption">Krüpteerimine</string>
     <string name="prefs_password">Krüpteeringu parool</string>
     <string name="prefs_backupExternalData">Varunda väliseid andmeid</string>
@@ -112,7 +112,7 @@
     <string name="prefs_summaryBackupExternalData">Varundab ja taastab andmed, mis asuvad välismälus (nt /storage/emulated/0/Android/data/)</string>
     <string name="prefs_summary_password">Krüpteeringu keelamiseks jäta tühjaks</string>
     <string name="prefs_summary_encryption">Luba, et krüpteerida andmevarundusi</string>
-    <string name="prefs_summaryClearCache">Tühjenda rakenduste vahemälu enne andmevarunduse tegemist</string>
+    <string name="prefs_summaryExcludeCache">Tühjenda rakenduste vahemälu enne andmevarunduse tegemist</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX ei näita ühtegi teatist</string>
     <string name="prefs_summaryAcquireWakelock">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt</string>
     <string name="prefs_summaryBackupFolder">Failitee varunduste kausta. Vaikeväärtuse jaoks jäta tühjaks.</string>

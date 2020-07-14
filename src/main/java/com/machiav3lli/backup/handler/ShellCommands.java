@@ -2,9 +2,11 @@ package com.machiav3lli.backup.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.topjohnwu.superuser.Shell;
 
@@ -181,6 +183,24 @@ public class ShellCommands {
             }
         }
         return result;
+    }
+
+    public static String wipeCacheCommand(Context ctx, AppInfo app) {
+        String dataDir = app.getDataDir();
+        String deDataDir = app.getDeviceProtectedDataDir();
+        StringBuilder command = new StringBuilder(String.format("rm -rf %s/cache %s/code_cache", dataDir, dataDir));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (!dataDir.equals(deDataDir)) {
+                command.append(String.format(" %s/cache %s/code_cache",
+                        deDataDir, deDataDir));
+            }
+        }
+        File[] cacheDirs = ctx.getExternalCacheDirs();
+        for (File cacheDir : cacheDirs) {
+            String extCache = cacheDir.getAbsolutePath().replace(ctx.getPackageName(), app.getPackageName());
+            command.append(" ").append(extCache);
+        }
+        return command.toString();
     }
 
     public Ownership getOwnership(String packageDir) throws OwnershipException {

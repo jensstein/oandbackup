@@ -103,7 +103,7 @@
     <string name="prefs_followSymlinks">symbolic linkleri takip et</string>
     <string name="prefs_enableSpecialBackups">Özel yedekleri etkinleştir</string>
     <string name="prefs_disableNotifications">Bildirimi devre dışı bırak</string>
-    <string name="prefs_clearCache">Uygulamaların önbelleğini temizle</string>
+    <string name="prefs_excludeCache">Uygulamaların önbelleğini temizle</string>
     <string name="prefs_encryption">Şifreleme</string>
     <string name="prefs_password">Şifreleme parolası</string>
     <string name="prefs_backupExternalData">Harici veriyi yedekle</string>
@@ -112,7 +112,7 @@
     <string name="prefs_summaryBackupExternalData">Harici depolamada bulunan veriyi yedekler ve geri yükler (örn: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_summary_password">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_summary_encryption">Veri yedeklerini şifrelemek için etkinleştirin</string>
-    <string name="prefs_summaryClearCache">Veri yedeklemeden önce uygulamanın önbelleğini temizle</string>
+    <string name="prefs_summaryExcludeCache">Veri yedeklemeden önce uygulamanın önbelleğini temizle</string>
     <string name="prefs_summaryDisableNotifications">OAndBackupX bildirim göstermeyecek</string>
     <string name="prefs_summaryAcquireWakelock">Toplu yedekleme yaparken ukuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
     <string name="prefs_summaryBackupFolder">Yedeklerin alınacağı dosya yolu. varsayılan için boş bırakın.</string>
