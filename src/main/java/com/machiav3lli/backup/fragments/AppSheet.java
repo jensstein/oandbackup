@@ -36,11 +36,14 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.handler.action.BackupAppAction;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
+import com.machiav3lli.backup.utils.CommandUtils;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.ItemUtils;
 import com.machiav3lli.backup.utils.UIUtils;
@@ -77,6 +80,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     AppCompatTextView cacheSize;
     @BindView(R.id.cacheSize_line)
     LinearLayoutCompat cacheSizeLine;
+    @BindView(R.id.wipeCache)
+    AppCompatImageView wipeCache;
     @BindView(R.id.appSplits)
     AppCompatTextView appSplits;
     @BindView(R.id.appSplits_line)
@@ -199,6 +204,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
             dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
             cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
+            if (app.getCacheSize() == 0) wipeCache.setVisibility(View.GONE);
         }
         if (app.isSplit()) appSplits.setText(R.string.dialogYes);
         else appSplits.setText(R.string.dialogNo);
@@ -239,6 +245,19 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", app.getPackageName(), null));
         startActivity(intent);
+    }
+
+    @OnClick(R.id.wipeCache)
+    public void wipeCache() {
+        try {
+            Log.i(BackupAppAction.TAG, String.format("%s: Wiping cache", app));
+            String command = ShellCommands.wipeCacheCommand(requireContext(), app);
+            ShellHandler.runAsRoot(command);
+            ((MainActivityX) requireActivity()).refresh(true);
+        } catch (ShellHandler.ShellCommandFailedException e) {
+            // Not a critical issue
+            Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
+        }
     }
 
     @Override

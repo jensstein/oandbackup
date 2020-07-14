@@ -163,6 +163,12 @@
                         android:gravity="end"
                         android:singleLine="true"
                         android:textSize="@dimen/main_text" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/wipeCache"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_outline_wipe_24" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
