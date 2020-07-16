@@ -99,7 +99,7 @@ public class BatchActivityX extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_batch_x);
         handleMessages = new HandleMessages(this);
-        prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         users = new ArrayList<>();
         if (savedInstanceState != null)
@@ -327,7 +327,7 @@ public class BatchActivityX extends BaseActivity
         new Thread(() -> {
             cbAll.setChecked(false);
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+                    this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             ArrayList<BatchItemX> list = new ArrayList<>();
             if (!filteredList.isEmpty()) {

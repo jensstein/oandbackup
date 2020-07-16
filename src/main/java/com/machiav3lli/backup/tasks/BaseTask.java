@@ -3,8 +3,6 @@ package com.machiav3lli.backup.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
@@ -23,16 +21,13 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     final BackupRestoreHelper.ActionType actionType;
     final AppInfo app;
     final WeakReference<HandleMessages> handleMessagesReference;
-    final WeakReference<MainActivityX> oAndBackupReference;
+    final WeakReference<MainActivityX> mainActivityXReference;
     final File backupDirectory;
     final ShellHandler shellHandler;
     final int mode;
     protected ActionResult result;
 
-    @VisibleForTesting
     CountDownLatch signal;
-
-    @VisibleForTesting
     BackupRestoreHelper backupRestoreHelper;
 
     public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfo app, HandleMessages handleMessages,
@@ -40,7 +35,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         this.actionType = actionType;
         this.app = app;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
-        this.oAndBackupReference = new WeakReference<>(oAndBackupX);
+        this.mainActivityXReference = new WeakReference<>(oAndBackupX);
         this.backupDirectory = backupDirectory;
         this.shellHandler = shellHandler;
         this.mode = mode;
@@ -50,7 +45,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     @Override
     public void onProgressUpdate(Void... _void) {
         final HandleMessages handleMessages = handleMessagesReference.get();
-        final MainActivityX oAndBackupX = oAndBackupReference.get();
+        final MainActivityX oAndBackupX = mainActivityXReference.get();
         if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing())
             handleMessages.showMessage(app.getLabel(), getProgressMessage(oAndBackupX, actionType));
     }
@@ -58,7 +53,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     @Override
     public void onPostExecute(Integer result) {
         final HandleMessages handleMessages = handleMessagesReference.get();
-        final MainActivityX mainActivityX = oAndBackupReference.get();
+        final MainActivityX mainActivityX = mainActivityXReference.get();
         if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);

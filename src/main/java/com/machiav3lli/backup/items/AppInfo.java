@@ -1,17 +1,16 @@
 package com.machiav3lli.backup.items;
 
-import android.content.Context;
 import android.app.usage.StorageStats;
+import android.content.Context;
 import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.File;
-import java.util.EnumSet;
-
 import androidx.annotation.RequiresApi;
+
+import java.io.File;
 
 public class AppInfo
         implements Comparable<AppInfo>, Parcelable {
@@ -106,11 +105,7 @@ public class AppInfo
         return deviceProtectedDataDir;
     }
 
-    public String getCachePath(){
-        return new File(this.getDataDir(), AppInfo.CACHE_DIR).getAbsolutePath();
-    }
-
-    public File getExternalFilesPath(Context context){
+    public File getExternalFilesPath(Context context) {
         // Uses the context to get own external data directory
         // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
         // Goes to the parent two times to the leave own directory
@@ -121,7 +116,7 @@ public class AppInfo
         return new File(externalFilesPath, new File(this.dataDir).getName());
     }
 
-    public File getObbFilesPath(Context context){
+    public File getObbFilesPath(Context context) {
         // Uses the context to get own obb data directory
         // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
         // Goes to the parent two times to the leave own directory

@@ -61,6 +61,6 @@ public class PrefUtils {
     }
 
     public static SharedPreferences getPrivateSharedPrefs(Context context) {
-        return context.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
     }
 }

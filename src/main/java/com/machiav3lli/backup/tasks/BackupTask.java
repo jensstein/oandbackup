@@ -17,10 +17,10 @@ public class BackupTask extends BaseTask {
 
     @Override
     public Integer doInBackground(Void... _void) {
-        final MainActivityX oAndBackupX = oAndBackupReference.get();
-        if (oAndBackupX == null || oAndBackupX.isFinishing()) return -1;
+        final MainActivityX mainActivityX = mainActivityXReference.get();
+        if (mainActivityX == null || mainActivityX.isFinishing()) return -1;
         publishProgress();
-        this.result = this.backupRestoreHelper.backup(this.oAndBackupReference.get(), this.shellHandler, this.app, this.mode);
+        this.result = this.backupRestoreHelper.backup(mainActivityX, this.shellHandler, this.app, this.mode);
         return this.result.succeeded ? 0 : 1;
     }
 }

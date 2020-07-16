@@ -87,7 +87,7 @@ public class MainActivityX extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_x);
         handleMessages = new HandleMessages(this);
-        prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         showBatteryOptimizationDialog();
         users = new ArrayList<>();
         if (savedInstanceState != null)
@@ -249,7 +249,7 @@ public class MainActivityX extends BaseActivity
         runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
         new Thread(() -> {
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                    this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+                    this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
             ArrayList<MainItemX> list = new ArrayList<>();
             if (filteredList.isEmpty()) {

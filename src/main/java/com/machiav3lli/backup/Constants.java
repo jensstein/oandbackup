@@ -2,18 +2,15 @@ package com.machiav3lli.backup;
 
 public class Constants {
 
-    private Constants() {
-    }
-
     public static final String TAG = "OAndBackupX";
-    public static final String PREFS_SHARED = "com.machiav3lli.backup";
+    public static final String PREFS_SHARED_PRIVATE = "com.machiav3lli.backup";
 
     public static final String BLACKLIST_ARGS_ID = "blacklistId";
     public static final String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
 
     public static final String PREFS_SORT_FILTER = "sortFilter";
-
     public static final String PREFS_Ignore_Battery_Optimization = "ignoreBatteryOptimization";
+
     public static final String PREFS_SCHEDULES = "schedules";
     public static final String PREFS_SCHEDULES_TOTAL = "total";
     public static final String PREFS_SCHEDULES_ENABLED = "enabled";
@@ -62,6 +59,8 @@ public class Constants {
         return TAG + tag;
     }
 
-    public static String exodusUrl(String app) { return "https://reports.exodus-privacy.eu.org/reports/"+app+"/latest";}
+    public static String exodusUrl(String app) {
+        return "https://reports.exodus-privacy.eu.org/reports/" + app + "/latest";
+    }
 
 }

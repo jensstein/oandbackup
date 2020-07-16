@@ -79,7 +79,7 @@ public class IntroActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         LogUtils.logDeviceInfo(this, TAG);
-        prefs = this.getSharedPreferences(Constants.PREFS_SHARED, Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         users = new ArrayList<>();
         checkRun(savedInstanceState);
         shellCommands = new ShellCommands(this, prefs, users, getFilesDir());

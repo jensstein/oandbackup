@@ -34,9 +34,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PrefsFragment extends PreferenceFragmentCompat {
-
+    public final static String TAG = Constants.classTag(".PrefsFragment");
     final static int RESULT_OK = 0;
-    final static String TAG = Constants.classTag(".PrefsFragment");
     private static final int DEFAULT_DIR_CODE = 0;
     ArrayList<AppInfo> appInfoList = MainActivityX.originalList;
     ShellCommands shellCommands;
@@ -160,7 +159,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private void setDefaultDir(Context context, String dir) {
-        PrefUtils.getPrivateSharedPrefs(requireContext()).edit().putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, dir).apply();
         FileUtils.setDefaultBackupDirPath(context, dir);
         Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
