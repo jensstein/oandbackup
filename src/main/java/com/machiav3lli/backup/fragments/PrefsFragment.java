@@ -120,10 +120,12 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref.setOnPreferenceClickListener(preference -> {
             final ArrayList<AppInfo> deleteList = new ArrayList<>();
             StringBuilder message = new StringBuilder();
-            for (AppInfo appInfo : appInfoList) {
-                if (!appInfo.isInstalled()) {
-                    deleteList.add(appInfo);
-                    message.append(appInfo.getLabel()).append("\n");
+            if (appInfoList != null) {
+                for (AppInfo appInfo : appInfoList) {
+                    if (!appInfo.isInstalled()) {
+                        deleteList.add(appInfo);
+                        message.append(appInfo.getLabel()).append("\n");
+                    }
                 }
             }
             if (!deleteList.isEmpty()) {
