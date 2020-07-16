@@ -185,4 +185,5 @@
     <string name="ignore_battery_optimization_message">Η δημιουργία αντιγράφων μπορεί να σταματήσει μερικές φορές. Για την αποτροπή αυτού, πρέπει να απενεργοποιήσετε τη βελτιστοποίηση μπαταρίας</string>
     <string name="ignore_battery_optimization_not_supported">Αυτή η συσκευή δεν υποστηρίζει παράβλεψη βελτιστοποίησης μπαταρίας δυστυχώς!</string>
     <string name="failed_unzipping">Σφάλμα κατά την αποσυμπίεση των δεδομένων, ελέγξτε τον κωδικό κρυπτογράφησης!</string>
+    <string name="help_license">Άδεια</string>
 </resources>

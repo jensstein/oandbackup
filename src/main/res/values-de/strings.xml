@@ -184,4 +184,6 @@
     <string name="data_size">Daten-Größe:</string>
     <string name="cache_size">Cache-Größe:</string>
     <string name="dialogSave">Speichern</string>
+    <string name="help_license">Lizenz</string>
+    <string name="help_telegram">Unsere Gruppe</string>
 </resources>

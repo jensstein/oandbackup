@@ -131,4 +131,5 @@
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
 
     <string name="logviewer_message_loading">Загрузка журнала</string>
+    <string name="help_license">лицензия</string>
 </resources>

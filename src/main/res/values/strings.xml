@@ -195,4 +195,6 @@
     <string name="data_size">Data Size:</string>
     <string name="cache_size">Cache Size:</string>
     <string name="logfileSavedAt">Logfile saved at %s</string>
+    <string name="help_license">License</string>
+    <string name="help_telegram">Our Group</string>
 </resources>

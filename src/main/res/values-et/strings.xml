@@ -192,4 +192,5 @@
     <string name="app_size">Rakenduse suurus:</string>
     <string name="data_size">Andmete suurus:</string>
     <string name="cache_size">Vahemälu suurus:</string>
+    <string name="help_license">Litsents</string>
 </resources>

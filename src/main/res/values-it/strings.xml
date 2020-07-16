@@ -173,4 +173,5 @@
   <string name="ignore_battery_optimization_message">I backup potrebbero interrompersi a volte. Per evitare questo, dovresti disattivare l\'ottimizzazione batteria</string>
   <string name="ignore_battery_optimization_not_supported">Questo dispositivo purtroppo non supporta l\'opzione per ignorare l\'ottimizzazione batteria</string>
   <string name="failed_unzipping">Errore nel decomprimere i dati, controlla la password di crittografia</string>
+  <string name="help_license">Licenza</string>
 </resources>

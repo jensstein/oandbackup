@@ -122,4 +122,5 @@
   <string name="spec_wifiAccessPoints">Åtkomstpunkter för Wifi</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
   <string name="logviewer_message_loading">laddar loggfil</string>
+    <string name="help_license">Licens</string>
 </resources>

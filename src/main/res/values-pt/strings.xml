@@ -122,4 +122,5 @@
   <string name="spec_wifiAccessPoints">Pontos de acesso WiFi</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
   <string name="logviewer_message_loading">A carregar ficheiro de registo</string>
+    <string name="help_license">Licença</string>
 </resources>

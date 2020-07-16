@@ -122,4 +122,5 @@
   <string name="spec_wifiAccessPoints">Wifi アクセスポイント</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
   <string name="logviewer_message_loading">ログファイルを読み込んでいます</string>
+    <string name="help_license">ライセンス</string>
 </resources>

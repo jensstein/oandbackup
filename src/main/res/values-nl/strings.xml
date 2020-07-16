@@ -120,5 +120,6 @@
   <string name="spec_data">Data gebruik en beleid</string>
   <string name="spec_wallpaper">Wallpaper</string>
   <string name="spec_wifiAccessPoints">Wifi Access Points</string>
-  <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
+    <string name="help_license">Licentie</string>
+    <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
 </resources>

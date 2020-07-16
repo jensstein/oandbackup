@@ -192,4 +192,5 @@
     <string name="app_size">应用大小：</string>
     <string name="data_size">用户数据：</string>
     <string name="cache_size">缓存：</string>
+    <string name="help_license">许可正</string>
 </resources>

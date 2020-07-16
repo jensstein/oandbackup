@@ -122,4 +122,5 @@
   <string name="spec_wifiAccessPoints">Wifi приступне тачке</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
   <string name="logviewer_message_loading">Учитавам датотеку записника</string>
+    <string name="help_license">Лиценца</string>
 </resources>
