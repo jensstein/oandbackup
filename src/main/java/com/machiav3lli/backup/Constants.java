@@ -47,6 +47,13 @@ public class Constants {
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_USERS = "users";
 
+    public static final String HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md";
+    public static final String HELP_TELEGRAM = "https://t.me/OAndBackupX";
+    public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.txt";
+
+    private Constants() {
+    }
+
     public static String classAddress(String address) {
         return "com.machiav3lli.backup" + address;
     }

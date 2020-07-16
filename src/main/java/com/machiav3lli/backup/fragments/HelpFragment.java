@@ -1,6 +1,8 @@
 package com.machiav3lli.backup.fragments;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 
 import java.io.IOException;
@@ -21,13 +24,12 @@ import java.util.Scanner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HelpFragment extends Fragment {
 
     @BindView(R.id.helpVersionName)
     AppCompatTextView versionName;
-    @BindView(R.id.helpAppName)
-    AppCompatTextView appName;
     @BindView(R.id.helpHtml)
     AppCompatTextView helpHTML;
 
@@ -51,9 +53,23 @@ public class HelpFragment extends Fragment {
         drawContent();
     }
 
+    @OnClick(R.id.changelog)
+    public void callChangelog() {
+        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG)));
+    }
+
+    @OnClick(R.id.telegram)
+    public void callTelegram() {
+        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM)));
+    }
+
+    @OnClick(R.id.license)
+    public void callLicense() {
+        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE)));
+    }
+
     private void drawContent() {
         try {
-            appName.setText(String.format("%s", requireActivity().getApplicationInfo().loadLabel(requireActivity().getPackageManager()).toString()));
             versionName.setText(String.format("%s", requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName));
             InputStream is = getResources().openRawResource(R.raw.help);
             String htmlString = convertStreamToString(is);
