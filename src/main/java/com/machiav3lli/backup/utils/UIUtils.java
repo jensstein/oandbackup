@@ -1,9 +1,11 @@
 package com.machiav3lli.backup.utils;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -75,5 +77,30 @@ public class UIUtils {
             for (Thread t : Thread.getAllStackTraces().keySet())
                 if (t.getId() == tid && t.isAlive())
                     handleMessages.reShowMessage();
+    }
+
+    public static void setVisibility(View view, int visibility, boolean withAnimation) {
+        if (visibility == View.VISIBLE && view.getVisibility() == View.GONE)
+            view.setVisibility(View.VISIBLE);
+        view.animate().alpha(visibility == View.VISIBLE ? 1.0f : 0.0f)
+                .setDuration(withAnimation ? 600 : 1)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(visibility);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                    }
+                });
     }
 }

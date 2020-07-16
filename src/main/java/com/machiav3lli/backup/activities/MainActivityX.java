@@ -272,10 +272,14 @@ public class MainActivityX extends BaseActivity
                 }
                 if (withAppSheet && sheetApp != null) {
                     int position = sheetApp.getPosition();
-                    sheetApp.dismissAllowingStateLoss();
-                    if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
-                        sheetApp = new AppSheet(fastAdapter.getItem(position), position);
-                        sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
+                    if (itemAdapter.getItemList().size() > position) {
+                        if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
+                            sheetApp.updateApp(fastAdapter.getItem(position));
+                        } else {
+                            sheetApp.dismissAllowingStateLoss();
+                        }
+                    } else {
+                        sheetApp.dismissAllowingStateLoss();
                     }
                 }
                 searchView.setQuery("", false);

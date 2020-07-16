@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.action.BackupAppAction;
 import com.machiav3lli.backup.handler.action.BackupSpecialAction;
 import com.machiav3lli.backup.handler.action.RestoreAppAction;
@@ -47,16 +46,12 @@ public class BackupRestoreHelper {
 
         // create the new backup
         ActionResult result = action.run(app, backupMode);
-        app.setBackupMode(backupMode);
-        if (context instanceof MainActivityX) {
-            ((MainActivityX) context).refresh(true);
-        }
         Log.i(BackupRestoreHelper.TAG, String.format("%s: Backup succeeded: %s", app, result.succeeded));
         return result;
     }
 
     public ActionResult restore(Context context, AppInfo app, ShellHandler shell, int mode) {
-        RestoreAppAction restoreAction = null;
+        RestoreAppAction restoreAction;
         if (app.isSpecial()) {
             restoreAction = new RestoreSpecialAction(context, shell);
         } else if (app.isSystem()) {

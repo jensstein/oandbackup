@@ -161,8 +161,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sheet_app, container, false);
         ButterKnife.bind(this, view);
-        setupChips();
-        setupAppInfo();
+        setupChips(false);
+        setupAppInfo(false);
         return view;
     }
 
@@ -171,24 +171,36 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void setupChips() {
-        if (app.getLogInfo() == null) {
-            delete.setVisibility(Chip.GONE);
-            share.setVisibility(Chip.GONE);
-            restore.setVisibility(Chip.GONE);
-        }
-        if (!app.isInstalled()) {
-            uninstall.setVisibility(Chip.GONE);
-            enable.setVisibility(Chip.GONE);
-            disable.setVisibility(Chip.GONE);
-            backup.setVisibility(Chip.GONE);
-        }
-        if (!app.isDisabled()) enable.setVisibility(Chip.GONE);
-        if (app.isDisabled()) disable.setVisibility(Chip.GONE);
-        if (app.getBackupMode() == AppInfo.MODE_UNSET) restore.setVisibility(Chip.GONE);
+    public void updateApp(MainItemX item) {
+        this.app = item.getApp();
+        setupChips(true);
+        setupAppInfo(true);
     }
 
-    private void setupAppInfo() {
+    private void setupChips(boolean update) {
+        if (app.getLogInfo() == null) {
+            UIUtils.setVisibility(delete, View.GONE, update);
+            UIUtils.setVisibility(share, View.GONE, update);
+            UIUtils.setVisibility(restore, View.GONE, update);
+        } else {
+            UIUtils.setVisibility(delete, View.VISIBLE, update);
+            UIUtils.setVisibility(share, View.VISIBLE, update);
+            UIUtils.setVisibility(restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
+        }
+        if (app.isInstalled()) {
+            UIUtils.setVisibility(enable, app.isDisabled() ? View.VISIBLE : View.GONE, update);
+            UIUtils.setVisibility(disable, app.isDisabled() ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(uninstall, View.VISIBLE, update);
+            UIUtils.setVisibility(backup, View.VISIBLE, update);
+        } else {
+            UIUtils.setVisibility(uninstall, View.GONE, update);
+            UIUtils.setVisibility(backup, View.GONE, update);
+            UIUtils.setVisibility(enable, View.GONE, update);
+            UIUtils.setVisibility(disable, View.GONE, update);
+        }
+    }
+
+    private void setupAppInfo(boolean update) {
         if (app.icon != null) icon.setImageBitmap(app.icon);
         else icon.setImageResource(R.drawable.ic_placeholder);
         label.setText(app.getLabel());
@@ -196,15 +208,15 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         if (app.isSystem()) appType.setText(R.string.systemApp);
         else appType.setText(R.string.userApp);
         if (app.isSpecial()) {
-            appSizeLine.setVisibility(View.GONE);
-            dataSizeLine.setVisibility(View.GONE);
-            cacheSizeLine.setVisibility(View.GONE);
-            appSplitsLine.setVisibility(View.GONE);
+            UIUtils.setVisibility(appSizeLine, View.GONE, update);
+            UIUtils.setVisibility(dataSizeLine, View.GONE, update);
+            UIUtils.setVisibility(cacheSizeLine, View.GONE, update);
+            UIUtils.setVisibility(appSplitsLine, View.GONE, update);
         } else {
             appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
             dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
             cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
-            if (app.getCacheSize() == 0) wipeCache.setVisibility(View.GONE);
+            if (app.getCacheSize() == 0) UIUtils.setVisibility(wipeCache, View.GONE, update);
         }
         if (app.isSplit()) appSplits.setText(R.string.dialogYes);
         else appSplits.setText(R.string.dialogNo);
@@ -212,26 +224,31 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
             versionCode.setText(updatedVersionString);
         } else versionCode.setText(app.getVersionName());
-        if (app.getLogInfo() != null)
+        if (app.getLogInfo() != null) {
+            UIUtils.setVisibility(lastBackupLine, View.VISIBLE, update);
             lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
-        else lastBackupLine.setVisibility(View.GONE);
+        } else UIUtils.setVisibility(lastBackupLine, View.GONE, update);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backupMode.setText(R.string.onlyApkBackedUp);
                 break;
             case AppInfo.MODE_DATA:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backupMode.setText(R.string.onlyDataBackedUp);
                 break;
             case AppInfo.MODE_BOTH:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backupMode.setText(R.string.bothBackedUp);
                 break;
             default:
-                backupModeLine.setVisibility(View.GONE);
+                UIUtils.setVisibility(backupModeLine, View.GONE, update);
                 break;
         }
-        if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK)
+        if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK) {
+            UIUtils.setVisibility(encryptedLine, View.VISIBLE, update);
             encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
-        else encryptedLine.setVisibility(View.GONE);
+        } else UIUtils.setVisibility(encryptedLine, View.GONE, update);
         ItemUtils.pickColor(app, appType);
     }
 
@@ -262,13 +279,15 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     @Override
     public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
-        if (actionType == BackupRestoreHelper.ActionType.BACKUP)
+        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
             new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
                     .execute();
-        else if (actionType == BackupRestoreHelper.ActionType.RESTORE)
+            ((MainActivityX) requireActivity()).refresh(true);
+        } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
             new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
                     .execute();
-        else
+            ((MainActivityX) requireActivity()).refresh(true);
+        } else
             Log.e(TAG, "unknown actionType: " + actionType);
     }
 
@@ -293,8 +312,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             dialog.show(requireActivity().getSupportFragmentManager(), "restoreDialog");
         }
     }
-
-    // TODO add clear cache/data buttons
 
     @OnClick(R.id.delete)
     public void delete() {
