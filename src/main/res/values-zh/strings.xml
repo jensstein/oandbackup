@@ -15,7 +15,7 @@
     <string name="radioData">数据</string>
     <string name="radioSpecial">特殊备份</string>
     <string name="de_selectAll">取消/全选</string>
-    <string name="onlyApkBackedUp">仅APK</string>
+    <string name="onlyApkBackedUp">仅 APK</string>
     <string name="onlyDataBackedUp">仅数据</string>
     <string name="refresh">刷新</string>
     <string name="batchbackup">批量备份</string>
@@ -185,12 +185,12 @@
     <string name="ignore_battery_optimization_message">备份有时会停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
     <string name="failed_unzipping">解压数据时出错，请检查加密密码！</string>
-    <string name="split_apks">拆分APKs：</string>
+    <string name="split_apks">拆分 APK：</string>
     <string name="backup_filters">备份筛选：</string>
     <string name="grant_usage_access_title">允许查看使用情况</string>
     <string name="grant_usage_access_message">这用于获取有关应用程序文件大小的相关信息</string>
     <string name="app_size">应用大小：</string>
     <string name="data_size">用户数据：</string>
     <string name="cache_size">缓存：</string>
-    <string name="help_license">许可正</string>
+    <string name="help_license">许可证</string>
 </resources>
