@@ -168,6 +168,7 @@
                         android:id="@+id/wipeCache"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:background="@drawable/ripple_click"
                         app:srcCompat="@drawable/ic_outline_wipe_24" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
