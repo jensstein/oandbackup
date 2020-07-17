@@ -75,18 +75,14 @@ dependencies {
     implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
 }
 
-int versionMajor = 2
-int versionMinor = 0
-int versionPath = 0
-
 android {
     compileSdkVersion 29
 
     defaultConfig {
         applicationId 'com.machiav3lli.backup'
         // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
-        versionCode = versionMajor * 1000 + versionMinor * 100 + versionPath
-        versionName = "${versionMajor}.${versionMinor}.${versionPath}"
+        versionCode = 2000
+        versionName = "2.0.0"
         minSdkVersion 24
         targetSdkVersion 29
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
