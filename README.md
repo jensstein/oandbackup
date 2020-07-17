@@ -90,11 +90,26 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze) for his active contribution to the project.
 
-Languages: Greek: [Kostas Giapis](https://github.com/tsiflimagas), Italian: [Urnyx05](https://github.com/Urnyx05), English: [Atrate](https://github.com/Atrate), Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui), Turkish [scrubjay55](https://github.com/scrubjay55), Polish [Antyradek](https://github.com/Antyradek), Indonesian [Ninja1998](https://github.com/NiNjA1998).
-
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrite Shellcommands [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
 Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
+
+### Languages:
+Greek: [Kostas Giapis](https://github.com/tsiflimagas)
+
+Italian: [Urnyx05](https://github.com/Urnyx05)
+
+English: [Atrate](https://github.com/Atrate)
+
+Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui)
+
+Turkish: [scrubjay55](https://github.com/scrubjay55)
+
+Polish: [Antyradek](https://github.com/Antyradek)
+
+Indonesian: [Ninja1998](https://github.com/NiNjA1998)
+
+German: [elea11](https://github.com/elea11)
 
 ## Author
 
