@@ -2,18 +2,26 @@ package com.machiav3lli.backup.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 
 public class FileUtils {
     public final static String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
-    final static String TAG = Constants.classTag(".FileCreationHelper");
+    private final static String TAG = Constants.classTag(".FileCreationHelper");
+
     private boolean fallbackFlag;
 
     public static String getDefaultBackupDirPath(Context context) {
@@ -43,6 +51,76 @@ public class FileUtils {
         if (path.endsWith(File.separator))
             path = path.substring(0, path.length() - 1);
         return path.substring(path.lastIndexOf(File.separator) + 1);
+    }
+
+    /*
+    Optimized a little bit to our usage
+    https://stackoverflow.com/questions/34927748/android-5-0-documentfile-from-tree-uri
+     */
+    public static String getAbsolutPath(Context con, @Nullable final Uri treeUri) {
+        if (treeUri == null) return null;
+        String volumeId = getVolumeIdFromTreeUri(treeUri);
+        if (volumeId == null) return DEFAULT_BACKUP_FOLDER;
+        String volumePath = getVolumePath(volumeId, con);
+        if (volumePath == null) return DEFAULT_BACKUP_FOLDER;
+        if (volumePath.endsWith(File.separator))
+            volumePath = volumePath.substring(0, volumePath.length() - 1);
+        String documentPath = getDocumentPathFromTreeUri(treeUri);
+        if (documentPath.endsWith(File.separator))
+            documentPath = documentPath.substring(0, documentPath.length() - 1);
+        if (documentPath.length() > 0) {
+            if (documentPath.startsWith(File.separator))
+                return volumePath + documentPath;
+            else
+                return volumePath + File.separator + documentPath;
+        } else return volumePath;
+    }
+
+    private static String getVolumePath(final String volumeId, Context context) {
+        try {
+            if (volumeId.equals("home"))
+                return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+            if (volumeId.equals("downloads"))
+                return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            StorageManager mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
+            Object result = getVolumeList.invoke(mStorageManager);
+            Class<?> mStorageVolume = Class.forName("android.os.storage.StorageVolume");
+            Method getUuid = mStorageVolume.getMethod("getUuid");
+            Method getPath = mStorageVolume.getMethod("getPath");
+            Method isPrimary = mStorageVolume.getMethod("isPrimary");
+
+            assert result != null;
+            final int length = Array.getLength(result);
+            for (int i = 0; i < length; i++) {
+                Object storageVolumeElement = Array.get(result, i);
+                String uuid = (String) getUuid.invoke(storageVolumeElement);
+                Boolean primary = (Boolean) isPrimary.invoke(storageVolumeElement);
+                // For Primary and existing external Volumes
+                Boolean isPrimaryVolume = primary && volumeId.equals("primary");
+                Boolean isSecondaryVolume = uuid != null && volumeId.equals(uuid);
+                if (isPrimaryVolume || isSecondaryVolume)
+                    return (String) getPath.invoke(storageVolumeElement);
+            }
+        } catch (Exception ex) {
+            Log.w(TAG, "getVolumePath exception:", ex);
+        }
+        Log.w(FileUtils.TAG, "Getting Volume Path failed. Volume ID:");
+        return null;
+    }
+
+    private static String getVolumeIdFromTreeUri(final Uri treeUri) {
+        final String docId = DocumentsContract.getTreeDocumentId(treeUri);
+        final String[] split = docId.split(":");
+        if (split.length > 0) return split[0];
+        else return null;
+    }
+
+    private static String getDocumentPathFromTreeUri(final Uri treeUri) {
+        final String docId = DocumentsContract.getTreeDocumentId(treeUri);
+        final String[] split = docId.split(":");
+        if ((split.length >= 2) && (split[1] != null)) return split[1];
+        else return File.separator;
     }
 
     public boolean isFallback() {

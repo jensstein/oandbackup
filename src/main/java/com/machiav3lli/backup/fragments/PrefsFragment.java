@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.Toast;
@@ -172,11 +172,11 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             Uri uri = data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
                 String oldDir = FileUtils.getDefaultBackupDirPath(requireContext());
-                String newPath = uri.getLastPathSegment().replace("primary:", "/");
-                String newDir = Environment.getExternalStorageDirectory() + newPath;
-                if (!oldDir.equals(newDir)) {
-                    Log.i(TAG, "setting uri " + newDir);
-                    setDefaultDir(requireContext(), newDir);
+                String newPath = FileUtils.getAbsolutPath(requireContext(), DocumentsContract.buildDocumentUriUsingTree(uri,
+                        DocumentsContract.getTreeDocumentId(uri)));
+                if (!oldDir.equals(newPath)) {
+                    Log.i(TAG, "setting uri " + newPath);
+                    setDefaultDir(requireContext(), newPath);
                 }
             }
         }
