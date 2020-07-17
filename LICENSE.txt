@@ -1,4 +1,6 @@
-Author: jens stein - no rights reserved, 2013
+MIT
+
+Authors: jens stein - no rights reserved, 2013 / Antonios Hazim - no rights reserved, 2020
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
