@@ -8,114 +8,16 @@ buildscript {
     }
 }
 
-repositories {
-    google()
-    jcenter()
-    maven {
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
         url 'https://jitpack.io'
-    }
-}
-
-apply plugin: 'com.android.application'
-
-ext {
-    versions = [
-            room              : "2.2.5",
-            lifecycle         : "2.2.0",
-            stream            : "1.2.1",
-            rootBeer          : "0.0.7",
-            libsu             : "2.5.1",
-            commons_compress  : "1.20",
-            // newer versions need at least sdk 26+
-            commons_io        : "2.5",
-
-            butterknife       : "10.2.1",
-
-            appcompat         : "1.1.0",
-            material          : "1.3.0-alpha01",
-            preference        : "1.1.1",
-            swiperefreshlayout: "1.1.0",
-            fastadapter       : "5.0.0",
-            numberpicker      : "2.4.10",
-
-            androidx_test     : "1.2.0",
-            junit             : "1.1.1",
-            espresso          : "3.2.0"
-    ]
-}
-
-dependencies {
-    // Libs
-    implementation "androidx.room:room-runtime:${versions.room}"
-    annotationProcessor "androidx.room:room-compiler:${versions.room}"
-    implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
-    implementation "com.annimon:stream:${versions.stream}"
-    implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
-    implementation "com.github.topjohnwu.libsu:core:${versions.libsu}"
-    implementation "org.apache.commons:commons-compress:${versions.commons_compress}"
-    implementation "commons-io:commons-io:${versions.commons_io}"
-
-    //ButterKnife
-    implementation "com.jakewharton:butterknife:${versions.butterknife}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
-
-    // UI
-    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "com.google.android.material:material:${versions.material}"
-    implementation "androidx.preference:preference:${versions.preference}"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefreshlayout}"
-    implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
-    implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
-    implementation "com.shawnlin:number-picker:${versions.numberpicker}"
-
-    // Tests
-    implementation "androidx.room:room-testing:${versions.room}"
-    implementation "androidx.test:rules:${versions.androidx_test}"
-    implementation "androidx.test.ext:junit:${versions.junit}"
-    implementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-}
-
-android {
-    compileSdkVersion 29
-
-    defaultConfig {
-        applicationId 'com.machiav3lli.backup'
-        // https://medium.com/@manas/manage-your-android-app-s-versioncode-versionname-with-gradle-7f9c5dcf09bf
-        versionCode = 2000
-        versionName = "2.0.0"
-        minSdkVersion 24
-        targetSdkVersion 29
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas"
-                        .toString()]
-            }
         }
     }
-    buildTypes {
-        debug {
-            testCoverageEnabled = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    lintOptions {
-        abortOnError false
-    }
 }
 
-android.applicationVariants.all { variant ->
-    variant.outputs.each { output ->
-        // apks requiring higher api levels should have higher version codes:
-        // https://developer.android.com/google/play/publishing/multiple-apks#VersionCodes
-        output.versionNameOverride = variant.versionName
-    }
-}
-
-clean {
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
