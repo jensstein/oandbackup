@@ -21,6 +21,11 @@ android {
         release {
             minifyEnabled true
         }
+        neo {
+            applicationIdSuffix '.neo'
+            versionNameSuffix '-neo'
+            minifyEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
