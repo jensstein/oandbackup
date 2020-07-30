@@ -18,6 +18,8 @@ public class SortFilterModel {
         switch (code.charAt(0)) {
             case '1':
                 return R.id.sortByLabel;
+            case '2':
+                return R.id.sortByDataSize;
             default:
                 return R.id.sortByPackageName;
         }
@@ -68,8 +70,16 @@ public class SortFilterModel {
 
     public void putSortBy(int id) {
         char sortBy;
-        if (id == R.id.sortByLabel) sortBy = '1';
-        else sortBy = '0';
+        switch (id) {
+            case R.id.sortByLabel:
+                sortBy = '1';
+                break;
+            case R.id.sortByDataSize:
+                sortBy = '2';
+                break;
+            default:
+                sortBy = '0';
+        }
         this.code = String.valueOf(sortBy) + this.code.charAt(1) + this.code.charAt(2) + this.code.charAt(3);
     }
 
@@ -87,7 +97,6 @@ public class SortFilterModel {
                 break;
             default:
                 filter = '0';
-                break;
         }
         this.code = String.valueOf(this.code.charAt(0)) + filter + this.code.charAt(2) + this.code.charAt(3);
     }
@@ -109,7 +118,6 @@ public class SortFilterModel {
                 break;
             default:
                 backupFilter = '0';
-                break;
         }
         this.code = String.valueOf(this.code.charAt(0)) + this.code.charAt(1) + backupFilter + this.code.charAt(3);
     }
@@ -131,7 +139,6 @@ public class SortFilterModel {
                 break;
             default:
                 specialFilter = '0';
-                break;
         }
         this.code = String.valueOf(this.code.charAt(0)) + this.code.charAt(1) + this.code.charAt(2) + specialFilter;
     }

@@ -160,6 +160,7 @@
     <string name="sort_options">Sort by:</string>
     <string name="sortLabel">Label</string>
     <string name="sortPackageName">Package Name</string>
+    <string name="sortDataSize">Data size</string>
     <string name="app_s_icon">App\'s icon</string>
     <string name="bothBackedUp">APK and data</string>
     <string name="all">All</string>

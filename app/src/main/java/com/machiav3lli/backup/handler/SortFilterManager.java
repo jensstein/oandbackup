@@ -16,6 +16,8 @@ public class SortFilterManager {
             m1.getLabel().compareToIgnoreCase(m2.getLabel());
     private static final Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
+    private static final Comparator<AppInfo> appDataSizeComparator = (m1, m2) ->
+            Long.compare(m1.getDataSize(), m2.getDataSize());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
@@ -114,8 +116,16 @@ public class SortFilterManager {
     }
 
     private static ArrayList<AppInfo> applySort(ArrayList<AppInfo> list, CharSequence filter) {
-        if (filter.charAt(0) == '0') list.sort(appInfoPackageNameComparator);
-        else list.sort(appInfoLabelComparator);
+        switch (filter.charAt(0)) {
+            case '1':
+                list.sort(appInfoLabelComparator);
+                break;
+            case '2':
+                list.sort(appDataSizeComparator);
+                break;
+            default:
+                list.sort(appInfoPackageNameComparator);
+        }
         return list;
     }
 }
