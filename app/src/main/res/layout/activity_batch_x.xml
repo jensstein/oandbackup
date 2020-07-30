@@ -143,5 +143,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="38dp"
         android:layout_marginBottom="50dp"
+        android:contentDescription="@string/sort_and_filter"
         android:src="@drawable/ic_round_filter_list_32" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
