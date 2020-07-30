@@ -179,8 +179,8 @@
     <string name="theme_dark">Koyu</string>
     <string name="theme_system">Sistem teması</string>
     <string name="empty_filtered_list">filtrelenmiş liste boş olduğundan filtreler varsayılana döndürüldü</string>
-    <string name="permission_refuse">Uğraşamam</string>
-    <string name="permission_approve">Hadi yapalım</string>
+    <string name="dialog_refuse">Uğraşamam</string>
+    <string name="dialog_approve">Hadi yapalım</string>
     <string name="ignore_battery_optimization_title">Pil optimizasyonu</string>
     <string name="ignore_battery_optimization_message">Yedeklemeler bazen durabilir. Bunu engellemek için, pil optimizasyonunu kapatmalısınız</string>
     <string name="ignore_battery_optimization_not_supported">Ne yazık ki bu cihaz pil optimizasyonu kapatmayı desteklemiyor!</string>

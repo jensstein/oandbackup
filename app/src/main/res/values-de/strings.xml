@@ -158,8 +158,8 @@
     <string name="theme_dark">Dunkel</string>
     <string name="theme_system">Systemvorgabe</string>
     <string name="empty_filtered_list">Die gefilterte Liste ist leer, deswegen wird der Filter zurückgesetzt</string>
-    <string name="permission_refuse">Ich will es nicht</string>
-    <string name="permission_approve">Los!</string>
+    <string name="dialog_refuse">Ich will es nicht</string>
+    <string name="dialog_approve">Los!</string>
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
     <string name="ignore_battery_optimization_message">Es kann passieren, dass der Sicherungsprozess im Hintergrund plötzlich abbricht. In solchen Fällen hilft das Ausschalten der Akku-Optimierung.</string>
     <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstützt das Ausschalten der Akku-Optimierung leider nicht!</string>

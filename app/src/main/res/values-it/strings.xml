@@ -167,8 +167,8 @@
   <string name="theme_dark">Scuro</string>
   <string name="theme_system">Tema di sistema</string>
   <string name="empty_filtered_list">La lista filtrata è vuota, perciò i filtri ritornano ai valori predefiniti</string>
-  <string name="permission_refuse">Non lo farò</string>
-  <string name="permission_approve">Facciamolo</string>
+  <string name="dialog_refuse">Non lo farò</string>
+  <string name="dialog_approve">Facciamolo</string>
   <string name="ignore_battery_optimization_title">Ottimizzazione batteria</string>
   <string name="ignore_battery_optimization_message">I backup potrebbero interrompersi a volte. Per evitare questo, dovresti disattivare l\'ottimizzazione batteria</string>
   <string name="ignore_battery_optimization_not_supported">Questo dispositivo purtroppo non supporta l\'opzione per ignorare l\'ottimizzazione batteria</string>

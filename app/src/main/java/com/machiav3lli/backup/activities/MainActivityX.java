@@ -31,6 +31,7 @@ import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -89,6 +90,7 @@ public class MainActivityX extends BaseActivity
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         showBatteryOptimizationDialog();
+        showEncryptionDialog();
         users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
@@ -228,7 +230,7 @@ public class MainActivityX extends BaseActivity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.ignore_battery_optimization_title)
                 .setMessage(R.string.ignore_battery_optimization_message)
-                .setPositiveButton(R.string.permission_approve, (dialog, which) -> {
+                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     try {
@@ -239,8 +241,21 @@ public class MainActivityX extends BaseActivity
                         prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply();
                     }
                 })
-                .setNeutralButton(R.string.permission_refuse, (dialog, which) ->
+                .setNeutralButton(R.string.dialog_refuse, (dialog, which) ->
                         prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply())
+                .show();
+    }
+
+    private void showEncryptionDialog() {
+        SharedPreferences defPrefs = PrefUtils.getDefaultSharedPreferences(this);
+        boolean dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && !defPrefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
+        if (dontShowAgain) return;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.enable_encryption_title)
+                .setMessage(R.string.enable_encryption_message)
+                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> {
+                    startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
+                })
                 .show();
     }
 

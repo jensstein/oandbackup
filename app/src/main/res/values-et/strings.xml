@@ -179,8 +179,8 @@
     <string name="theme_dark">Tume</string>
     <string name="theme_system">Süsteemi teema</string>
     <string name="empty_filtered_list">Filtreeritud nimekiri on tühi, seega lähtestame filtrid vaikeväärtusele</string>
-    <string name="permission_refuse">Ära tee nii</string>
-    <string name="permission_approve">Teeme ära</string>
+    <string name="dialog_refuse">Ära tee nii</string>
+    <string name="dialog_approve">Teeme ära</string>
     <string name="ignore_battery_optimization_title">Aku optimeerimine</string>
     <string name="ignore_battery_optimization_message">Varundused võivad vahest peatuda, selle vältimiseks peaksid keelama aku optimeerimise</string>
     <string name="ignore_battery_optimization_not_supported">See seade ei toeta kahjuks aku optimeerimise keelamist!</string>

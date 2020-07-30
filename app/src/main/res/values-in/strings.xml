@@ -179,8 +179,8 @@
     <string name="theme_dark">Gelap</string>
     <string name="theme_system">Tema sistem</string>
     <string name="empty_filtered_list">Daftar yang difilter kosong, oleh karena itu mengatur filter kembali ke default</string>
-    <string name="permission_refuse">Tidak akan melakukannya</string>
-    <string name="permission_approve">Ayo lakukan</string>
+    <string name="dialog_refuse">Tidak akan melakukannya</string>
+    <string name="dialog_approve">Ayo lakukan</string>
     <string name="ignore_battery_optimization_title">Optimalisasi Baterai</string>
     <string name="ignore_battery_optimization_message">Backup kadang-kadang bisa berhenti. Untuk mencegah hal ini, Anda harus mematikan optimisasi baterai</string>
     <string name="ignore_battery_optimization_not_supported">Sayangnya, perangkat ini tidak mendukung pengabaian baterai!</string>

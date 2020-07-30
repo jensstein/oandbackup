@@ -179,8 +179,8 @@
     <string name="theme_dark">Ciemny</string>
     <string name="theme_system">Systemowy</string>
     <string name="empty_filtered_list">Przefiltrowana lista jest pusta, ustawianie filtrów z powrotem na domyślne</string>
-    <string name="permission_refuse">Nie zrobię tego</string>
-    <string name="permission_approve">Zróbmy to</string>
+    <string name="dialog_refuse">Nie zrobię tego</string>
+    <string name="dialog_approve">Zróbmy to</string>
     <string name="ignore_battery_optimization_title">Optymalizacja baterii</string>
     <string name="ignore_battery_optimization_message">Tworzenie kopii może się czasami zatrzymać, aby tego uniknąć wyłącz optymalizację baterii</string>
     <string name="ignore_battery_optimization_not_supported">To urządzenie niestety nie wspiera ignorowania optymalizacji baterii!</string>

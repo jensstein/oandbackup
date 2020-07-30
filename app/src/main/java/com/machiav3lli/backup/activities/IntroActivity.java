@@ -125,9 +125,9 @@ public class IntroActivity extends BaseActivity {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.grant_usage_access_title)
                     .setMessage(R.string.grant_usage_access_message)
-                    .setPositiveButton(R.string.permission_approve,
+                    .setPositiveButton(R.string.dialog_approve,
                             (dialog, which) -> startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), STATS_PERMISSION))
-                    .setNeutralButton(getString(R.string.permission_refuse), (dialog, which) -> finish())
+                    .setNeutralButton(getString(R.string.dialog_refuse), (dialog, which) -> finish())
                     .setCancelable(false)
                     .show();
         }

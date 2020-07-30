@@ -179,8 +179,8 @@
     <string name="theme_dark">暗色</string>
     <string name="theme_system">系统主题</string>
     <string name="empty_filtered_list">筛选后的列表为空，故将筛选器设置回默认值</string>
-    <string name="permission_refuse">忽略</string>
-    <string name="permission_approve">开始设置</string>
+    <string name="dialog_refuse">忽略</string>
+    <string name="dialog_approve">开始设置</string>
     <string name="ignore_battery_optimization_title">电池优化</string>
     <string name="ignore_battery_optimization_message">备份有时会停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
