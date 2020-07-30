@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/cards_spacing"
-                android:layout_weight="0.33"
+                android:layout_weight="0.25"
                 android:background="@drawable/card_ripple"
                 android:orientation="horizontal"
                 android:padding="@dimen/cards_spacing">
@@ -78,7 +78,8 @@
                 android:id="@+id/telegram"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.33"
+                android:layout_marginBottom="@dimen/cards_spacing"
+                android:layout_weight="0.25"
                 android:background="@drawable/card_ripple"
                 android:orientation="horizontal"
                 android:padding="@dimen/cards_spacing">
@@ -98,11 +99,34 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/element"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/cards_spacing"
+                android:layout_weight="0.25"
+                android:background="@drawable/card_ripple"
+                android:orientation="horizontal"
+                android:padding="@dimen/cards_spacing">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/cards_spacing"
+                    app:srcCompat="@drawable/ic_element_32" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_telegram"
+                    android:textAppearance="@style/TextAppearance.Label"
+                    android:textStyle="bold" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/license"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/cards_spacing"
-                android:layout_weight="0.33"
+                android:layout_weight="0.25"
                 android:background="@drawable/card_ripple"
                 android:orientation="horizontal"
                 android:padding="@dimen/cards_spacing">

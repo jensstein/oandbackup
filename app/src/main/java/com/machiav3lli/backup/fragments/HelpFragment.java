@@ -63,6 +63,11 @@ public class HelpFragment extends Fragment {
         requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM)));
     }
 
+    @OnClick(R.id.element)
+    public void callElement() {
+        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT)));
+    }
+
     @OnClick(R.id.license)
     public void callLicense() {
         requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE)));

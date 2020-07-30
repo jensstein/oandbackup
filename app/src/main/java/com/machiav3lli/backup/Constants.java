@@ -46,6 +46,7 @@ public class Constants {
 
     public static final String HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md";
     public static final String HELP_TELEGRAM = "https://t.me/OAndBackupX";
+    public static final String HELP_ELEMENT = "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net";
     public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.txt";
 
     private Constants() {
