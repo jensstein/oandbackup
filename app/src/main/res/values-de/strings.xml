@@ -186,4 +186,9 @@
     <string name="dialogSave">Speichern</string>
     <string name="help_license">Lizenz</string>
     <string name="help_telegram">Unsere Gruppe</string>
+    <string name="enable_encryption_title">Datenverschlüsselung</string>
+    <string name="enable_encryption_message">Es ist nicht sicher, deine Daten unverschlüsselt auf deinem Gerät zu speichern. Für die Sicherheit deiner Daten aktiviere die Verschlüsselung und setze ein Passwort.</string>
+    <string name="sched_add">Geplante Sicherung hinzufügen</string>
+    <string name="sort_and_filter"><![CDATA[Sortieren & Filtern]]></string>
+    <string name="sortDataSize">Daten-Größe</string>
 </resources>
