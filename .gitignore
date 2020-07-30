@@ -6,7 +6,9 @@
 .idea
 app/src/main/assets
 assets
+build/
 app/build
 local.properties
 app/src/main/jniLibs/
 release/
+neo/
