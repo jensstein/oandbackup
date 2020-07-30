@@ -69,7 +69,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_settings_32" />
+                android:src="@drawable/ic_round_settings_32"
+                android:tooltipText="@string/prefs_title" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_batch_backup"
@@ -79,7 +80,8 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_backup_32" />
+                android:src="@drawable/ic_round_backup_32"
+                android:tooltipText="@string/batchbackup" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_batch_restore"
@@ -89,7 +91,8 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_restore_32" />
+                android:src="@drawable/ic_round_restore_32"
+                android:tooltipText="@string/batchrestore" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_scheduler"
@@ -99,7 +102,8 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_scheduler_32" />
+                android:src="@drawable/ic_round_scheduler_32"
+                android:tooltipText="@string/sched_title" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>
 

@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_blacklist_32" />
+                android:src="@drawable/ic_round_blacklist_32"
+                android:tooltipText="@string/blacklistDialogTitle" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>
 
