@@ -88,7 +88,9 @@ App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/
 
 Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
 
-## Contribution
+## Credits
+
+#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/CONTRIBUTION.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
@@ -99,6 +101,7 @@ Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrit
 Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
 ### Languages:
+
 Greek: [Kostas Giapis](https://github.com/tsiflimagas)
 
 Italian: [Urnyx05](https://github.com/Urnyx05)
