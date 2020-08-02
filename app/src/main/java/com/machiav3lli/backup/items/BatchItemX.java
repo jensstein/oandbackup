@@ -15,9 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
 import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
 
@@ -88,20 +85,14 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
-        @BindView(R.id.checkbox)
-        AppCompatCheckBox checkbox;
-        @BindView(R.id.label)
-        AppCompatTextView label;
-        @BindView(R.id.packageName)
-        AppCompatTextView packageName;
-        @BindView(R.id.versionCode)
-        AppCompatTextView versionCode;
-        @BindView(R.id.backupMode)
-        AppCompatTextView backupMode;
+        AppCompatCheckBox checkbox = itemView.findViewById(R.id.enableCheckbox);
+        AppCompatTextView label = itemView.findViewById(R.id.label);
+        AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
+        AppCompatTextView versionCode = itemView.findViewById(R.id.versionCode);
+        AppCompatTextView backupMode = itemView.findViewById(R.id.backupMode);
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
         }
 
         @Override

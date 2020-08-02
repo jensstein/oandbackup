@@ -17,9 +17,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
-import com.google.android.material.button.MaterialButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.ActivityIntroBinding;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
@@ -33,9 +33,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -47,14 +44,11 @@ public class IntroActivity extends BaseActivity {
     static final int STATS_PERMISSION = 4;
     public static File backupDir;
     private static ShellHandler shellHandler;
-
-    @BindView(R.id.action)
-    MaterialButton btn;
-
     SharedPreferences prefs;
     ArrayList<String> users;
     ShellCommands shellCommands;
     HandleMessages handleMessages;
+    private ActivityIntroBinding binding;
 
     public static boolean checkUsageStatsPermission(Context context) {
         AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
@@ -75,8 +69,8 @@ public class IntroActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         setDayNightTheme(PrefUtils.getPrivateSharedPrefs(this).getString(Constants.PREFS_THEME, "system"));
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
-        ButterKnife.bind(this);
+        binding = ActivityIntroBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         LogUtils.logDeviceInfo(this, TAG);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
@@ -86,14 +80,14 @@ public class IntroActivity extends BaseActivity {
         handleMessages = new HandleMessages(this);
 
         if (checkStoragePermissions() && checkUsageStatsPermission(this)) {
-            btn.setVisibility(View.GONE);
+            binding.permissionsButton.setVisibility(View.GONE);
             if (this.checkResources()) {
                 this.launchMainActivity();
             }
         } else if (!checkUsageStatsPermission(this)) {
-            btn.setOnClickListener(v -> getUsageStatsPermission());
+            binding.permissionsButton.setOnClickListener(v -> getUsageStatsPermission());
         } else {
-            btn.setOnClickListener(v -> getStoragePermission());
+            binding.permissionsButton.setOnClickListener(v -> getStoragePermission());
         }
     }
 
@@ -246,7 +240,7 @@ public class IntroActivity extends BaseActivity {
     }
 
     private void launchMainActivity() {
-        btn.setVisibility(View.GONE);
+        binding.permissionsButton.setVisibility(View.GONE);
         String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
         backupDir = FileUtils.createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));

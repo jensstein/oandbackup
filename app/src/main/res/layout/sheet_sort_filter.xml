@@ -87,7 +87,7 @@
                     android:text="@string/radioUser" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_special"
+                    android:id="@+id/showOnlySpecial"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -102,42 +102,42 @@
                 android:textAppearance="@style/TextAppearance.Title" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/backup_filters"
+                android:id="@+id/backupFilters"
                 style="@style/Chip.Group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/backup_all"
+                    android:id="@+id/backupAll"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radioAll" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/backup_both"
+                    android:id="@+id/backupBoth"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bothBackedUp" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/backup_apk"
+                    android:id="@+id/backupApk"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/onlyApkBackedUp" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/backup_data"
+                    android:id="@+id/backupData"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/onlyDataBackedUp" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/backup_none"
+                    android:id="@+id/backupNone"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -152,42 +152,42 @@
                 android:textAppearance="@style/TextAppearance.Title" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/otherFilters"
+                android:id="@+id/specialFilters"
                 style="@style/Chip.Group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/special_all"
+                    android:id="@+id/specialAll"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radioAll" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/special_new_and_updated"
+                    android:id="@+id/specialNewAndUpdated"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/showNewAndUpdated" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/special_not_installed"
+                    android:id="@+id/specialNotInstalled"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/showNotInstalled" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/special_old"
+                    android:id="@+id/specialOld"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/showOldBackups" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/special_split"
+                    android:id="@+id/specialSplit"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

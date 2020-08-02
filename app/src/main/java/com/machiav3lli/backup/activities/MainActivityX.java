@@ -16,11 +16,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.ActivityMainXBinding;
 import com.machiav3lli.backup.fragments.AppSheet;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
@@ -44,10 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -64,29 +59,24 @@ public class MainActivityX extends BaseActivity
     }
 
     long threadId = -1;
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.swipe_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.search_view)
-    SearchView searchView;
-    @BindView(R.id.sort_filter_fab)
-    FloatingActionButton fab;
     File backupDir = IntroActivity.backupDir;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
     AppSheet sheetApp;
-
     HandleMessages handleMessages;
     SharedPreferences prefs;
     ArrayList<String> users;
     ShellCommands shellCommands;
+    private ActivityMainXBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_x);
+        binding = ActivityMainXBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupOnClicks(this);
+
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         showBatteryOptimizationDialog();
@@ -99,21 +89,20 @@ public class MainActivityX extends BaseActivity
         if (!SortFilterManager.getRememberFiltering(this))
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
 
-        ButterKnife.bind(this);
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             UIUtils.reShowMessage(handleMessages, threadId);
         }
 
-        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
-        swipeRefreshLayout.setOnRefreshListener(this::refresh);
+        binding.refreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
+        binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
+        binding.refreshLayout.setOnRefreshListener(this::refresh);
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
         fastAdapter.setHasStableIds(true);
-        recyclerView.setAdapter(fastAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(fastAdapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fastAdapter.setOnClickListener((view, itemIAdapter, item, position) -> {
             if (sheetApp != null) sheetApp.dismissAllowingStateLoss();
             sheetApp = new AppSheet(item, position);
@@ -121,14 +110,14 @@ public class MainActivityX extends BaseActivity
             return false;
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) fab.hide();
-                else if (dy < 0) fab.show();
+                if (dy > 0) binding.fabSortFilter.hide();
+                else if (dy < 0) binding.fabSortFilter.show();
             }
         });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
                 itemAdapter.filter(newText);
@@ -149,31 +138,16 @@ public class MainActivityX extends BaseActivity
         });
     }
 
-    @OnClick(R.id.sort_filter_fab)
-    public void showSortFilterDialog() {
-        if (sheetSortFilter == null)
-            sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(this).toString()));
-        sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
-    }
-
-    @OnClick(R.id.btn_settings)
-    public void btnSettings() {
-        startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
-    }
-
-    @OnClick(R.id.btn_batch_backup)
-    public void btnBatchBackup() {
-        startActivityForResult(batchIntent(BatchActivityX.class, true), BATCH_REQUEST);
-    }
-
-    @OnClick(R.id.btn_batch_restore)
-    public void btnBatchRestore() {
-        startActivityForResult(batchIntent(BatchActivityX.class, false), BATCH_REQUEST);
-    }
-
-    @OnClick(R.id.btn_scheduler)
-    public void btnScheduler() {
-        startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class));
+    private void setupOnClicks(Context context) {
+        binding.fabSortFilter.setOnClickListener(v -> {
+            if (sheetSortFilter == null)
+                sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(context).toString()));
+            sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
+        });
+        binding.settingsButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)));
+        binding.batchBackupButton.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivityX.class, true), BATCH_REQUEST));
+        binding.batchRestoreButton.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivityX.class, false), BATCH_REQUEST));
+        binding.schedulerButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class)));
     }
 
     public Intent batchIntent(Class batchClass, boolean backup) {
@@ -261,7 +235,7 @@ public class MainActivityX extends BaseActivity
 
     public void refresh(boolean withAppSheet) {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
+        runOnUiThread(() -> binding.refreshLayout.setRefreshing(true));
         new Thread(() -> {
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
@@ -297,8 +271,8 @@ public class MainActivityX extends BaseActivity
                         sheetApp.dismissAllowingStateLoss();
                     }
                 }
-                searchView.setQuery("", false);
-                swipeRefreshLayout.setRefreshing(false);
+                binding.searchView.setQuery("", false);
+                binding.refreshLayout.setRefreshing(false);
             });
         }).start();
     }

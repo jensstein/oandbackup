@@ -10,7 +10,7 @@
         android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/back"
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_click"
@@ -20,7 +20,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/prefs_fragment"
+        android:id="@+id/prefsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize" />

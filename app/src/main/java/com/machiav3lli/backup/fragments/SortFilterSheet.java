@@ -13,26 +13,13 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.chip.ChipGroup;
-import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.SheetSortFilterBinding;
 import com.machiav3lli.backup.handler.SortFilterManager;
 import com.machiav3lli.backup.items.SortFilterModel;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class SortFilterSheet extends BottomSheetDialogFragment {
     SortFilterModel sortFilterModel;
-
-    @BindView(R.id.sortBy)
-    ChipGroup sortBy;
-    @BindView(R.id.filters)
-    ChipGroup filters;
-    @BindView(R.id.backup_filters)
-    ChipGroup backupFilters;
-    @BindView(R.id.otherFilters)
-    ChipGroup specialFilters;
+    private SheetSortFilterBinding binding;
 
     public SortFilterSheet() {
         this.sortFilterModel = new SortFilterModel();
@@ -42,21 +29,10 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         this.sortFilterModel = sortFilterModel;
     }
 
-    @OnClick(R.id.dismiss)
-    public void dismiss() {
-        dismissAllowingStateLoss();
-    }
-
-    @OnClick(R.id.apply)
-    public void apply() {
-        SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
-        dismissAllowingStateLoss();
-    }
-
-    @OnClick(R.id.reset)
-    public void reset() {
-        SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("0000"));
-        dismissAllowingStateLoss();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @NonNull
@@ -75,8 +51,9 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sheet_sort_filter, container, false);
-        ButterKnife.bind(this, view);
+        binding = SheetSortFilterBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        setupOnClicks();
         setupChips();
         return view;
     }
@@ -87,14 +64,26 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         sortFilterModel = SortFilterManager.getFilterPreferences(requireContext());
     }
 
+    private void setupOnClicks() {
+        binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
+        binding.reset.setOnClickListener(v -> {
+            SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("0000"));
+            dismissAllowingStateLoss();
+        });
+        binding.apply.setOnClickListener(v -> {
+            SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
+            dismissAllowingStateLoss();
+        });
+    }
+
     private void setupChips() {
-        sortBy.check(sortFilterModel.getSortById());
-        sortBy.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSortBy(checkedId));
-        filters.check(sortFilterModel.getFilterId());
-        filters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putFilter(checkedId));
-        specialFilters.check(sortFilterModel.getSpecialFilterId());
-        specialFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSpecialFilter(checkedId));
-        backupFilters.check(sortFilterModel.getBackupFilterId());
-        backupFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putBackupFilter(checkedId));
+        binding.sortBy.check(sortFilterModel.getSortById());
+        binding.sortBy.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSortBy(checkedId));
+        binding.filters.check(sortFilterModel.getFilterId());
+        binding.filters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putFilter(checkedId));
+        binding.backupFilters.check(sortFilterModel.getBackupFilterId());
+        binding.backupFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putBackupFilter(checkedId));
+        binding.specialFilters.check(sortFilterModel.getSpecialFilterId());
+        binding.specialFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSpecialFilter(checkedId));
     }
 }

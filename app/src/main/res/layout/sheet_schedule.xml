@@ -171,7 +171,7 @@
             </HorizontalScrollView>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/timeLeft_line"
+                android:id="@+id/timeLeftLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
@@ -239,7 +239,7 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/checkbox"
+                        android:id="@+id/enableCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/cards_spacing"

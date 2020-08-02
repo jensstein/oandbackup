@@ -4,44 +4,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.FragmentLogsBinding;
 import com.machiav3lli.backup.utils.LogUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class LogsFragment extends Fragment {
-
-    @BindView(R.id.scrollview)
-    NestedScrollView sv;
-    @BindView(R.id.log_text)
-    AppCompatTextView tv;
-    @BindView(R.id.logviewer_progressbar)
-    ProgressBar pb;
-    @BindView(R.id.logviewer_loading_textview)
-    AppCompatTextView loading;
-    @BindView(R.id.next_fab)
-    FloatingActionButton fab;
-
     String[] textParts;
     int index;
+    private FragmentLogsBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_logs, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentLogsBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        setupOnClicks();
         return view;
     }
 
@@ -51,20 +33,25 @@ public class LogsFragment extends Fragment {
         new Thread(new TextLoadRunnable()).start();
     }
 
-    @OnClick(R.id.next_fab)
-    public void moreLog() {
-        appendNextLines(false);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private void setupOnClicks() {
+        binding.fabShowMore.setOnClickListener(v -> appendNextLines(false));
     }
 
     private void appendNextLines(boolean clear) {
         if (clear) {
-            pb.setVisibility(View.GONE);
-            loading.setVisibility(View.GONE);
+            binding.logsProgressBar.setVisibility(View.GONE);
+            binding.logsLoading.setVisibility(View.GONE);
         }
         for (int i = index; i > index - 20 && i >= 0; i--)
-            tv.append(textParts[i] + "\n\n");
+            binding.logsText.append(textParts[i] + "\n\n");
         index -= 20;
-        if (index <= 0) fab.setClickable(false);
+        if (index <= 0) binding.fabShowMore.setClickable(false);
     }
 
     private class TextLoadRunnable implements Runnable {

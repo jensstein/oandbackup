@@ -15,20 +15,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.MainActivityX;
+import com.machiav3lli.backup.databinding.SheetAppBinding;
 import com.machiav3lli.backup.dialogs.BackupDialogFragment;
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment;
 import com.machiav3lli.backup.dialogs.ShareDialogFragment;
@@ -52,69 +49,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     final static String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
-
-    @BindView(R.id.icon)
-    AppCompatImageView icon;
-    @BindView(R.id.label)
-    AppCompatTextView label;
-    @BindView(R.id.packageName)
-    AppCompatTextView packageName;
-    @BindView(R.id.appType)
-    AppCompatTextView appType;
-    @BindView(R.id.appSize)
-    AppCompatTextView appSize;
-    @BindView(R.id.appSize_line)
-    LinearLayoutCompat appSizeLine;
-    @BindView(R.id.dataSize)
-    AppCompatTextView dataSize;
-    @BindView(R.id.dataSize_line)
-    LinearLayoutCompat dataSizeLine;
-    @BindView(R.id.cacheSize)
-    AppCompatTextView cacheSize;
-    @BindView(R.id.cacheSize_line)
-    LinearLayoutCompat cacheSizeLine;
-    @BindView(R.id.wipeCache)
-    AppCompatImageView wipeCache;
-    @BindView(R.id.appSplits)
-    AppCompatTextView appSplits;
-    @BindView(R.id.appSplits_line)
-    LinearLayoutCompat appSplitsLine;
-    @BindView(R.id.versionName)
-    AppCompatTextView versionCode;
-    @BindView(R.id.lastBackup)
-    AppCompatTextView lastBackup;
-    @BindView(R.id.lastBackup_line)
-    LinearLayoutCompat lastBackupLine;
-    @BindView(R.id.backupMode)
-    AppCompatTextView backupMode;
-    @BindView(R.id.backupMode_line)
-    LinearLayoutCompat backupModeLine;
-    @BindView(R.id.encrypted)
-    AppCompatTextView encrypted;
-    @BindView(R.id.encrypted_line)
-    LinearLayoutCompat encryptedLine;
-    @BindView(R.id.backup)
-    Chip backup;
-    @BindView(R.id.restore)
-    Chip restore;
-    @BindView(R.id.delete)
-    Chip delete;
-    @BindView(R.id.enablePackage)
-    Chip enable;
-    @BindView(R.id.disablePackage)
-    Chip disable;
-    @BindView(R.id.uninstall)
-    Chip uninstall;
-    @BindView(R.id.share)
-    Chip share;
-
     AppInfo app;
     HandleMessages handleMessages;
     ArrayList<String> users;
@@ -122,6 +59,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     String backupDirPath;
     File backupDir;
     int position;
+    private SheetAppBinding binding;
 
     public AppSheet(MainItemX item, Integer position) {
         this.app = item.getApp();
@@ -156,19 +94,21 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         return sheet;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sheet_app, container, false);
-        ButterKnife.bind(this, view);
+        binding = SheetAppBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        setupOnClicks(this);
         setupChips(false);
         setupAppInfo(false);
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     public void updateApp(MainItemX item) {
@@ -179,143 +119,117 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     private void setupChips(boolean update) {
         if (app.getLogInfo() == null) {
-            UIUtils.setVisibility(delete, View.GONE, update);
-            UIUtils.setVisibility(share, View.GONE, update);
-            UIUtils.setVisibility(restore, View.GONE, update);
+            UIUtils.setVisibility(binding.delete, View.GONE, update);
+            UIUtils.setVisibility(binding.share, View.GONE, update);
+            UIUtils.setVisibility(binding.restore, View.GONE, update);
         } else {
-            UIUtils.setVisibility(delete, View.VISIBLE, update);
-            UIUtils.setVisibility(share, View.VISIBLE, update);
-            UIUtils.setVisibility(restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(binding.delete, View.VISIBLE, update);
+            UIUtils.setVisibility(binding.share, View.VISIBLE, update);
+            UIUtils.setVisibility(binding.restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
         }
         if (app.isInstalled()) {
-            UIUtils.setVisibility(enable, app.isDisabled() ? View.VISIBLE : View.GONE, update);
-            UIUtils.setVisibility(disable, app.isDisabled() ? View.GONE : View.VISIBLE, update);
-            UIUtils.setVisibility(uninstall, View.VISIBLE, update);
-            UIUtils.setVisibility(backup, View.VISIBLE, update);
+            UIUtils.setVisibility(binding.enablePackage, app.isDisabled() ? View.VISIBLE : View.GONE, update);
+            UIUtils.setVisibility(binding.disablePackage, app.isDisabled() ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(binding.uninstall, View.VISIBLE, update);
+            UIUtils.setVisibility(binding.backup, View.VISIBLE, update);
         } else {
-            UIUtils.setVisibility(uninstall, View.GONE, update);
-            UIUtils.setVisibility(backup, View.GONE, update);
-            UIUtils.setVisibility(enable, View.GONE, update);
-            UIUtils.setVisibility(disable, View.GONE, update);
+            UIUtils.setVisibility(binding.uninstall, View.GONE, update);
+            UIUtils.setVisibility(binding.backup, View.GONE, update);
+            UIUtils.setVisibility(binding.enablePackage, View.GONE, update);
+            UIUtils.setVisibility(binding.disablePackage, View.GONE, update);
         }
     }
 
     private void setupAppInfo(boolean update) {
-        if (app.icon != null) icon.setImageBitmap(app.icon);
-        else icon.setImageResource(R.drawable.ic_placeholder);
-        label.setText(app.getLabel());
-        packageName.setText(app.getPackageName());
-        if (app.isSystem()) appType.setText(R.string.systemApp);
-        else appType.setText(R.string.userApp);
+        if (app.icon != null) binding.icon.setImageBitmap(app.icon);
+        else binding.icon.setImageResource(R.drawable.ic_placeholder);
+        binding.label.setText(app.getLabel());
+        binding.packageName.setText(app.getPackageName());
+        if (app.isSystem()) binding.appType.setText(R.string.systemApp);
+        else binding.appType.setText(R.string.userApp);
         if (app.isSpecial()) {
-            UIUtils.setVisibility(appSizeLine, View.GONE, update);
-            UIUtils.setVisibility(dataSizeLine, View.GONE, update);
-            UIUtils.setVisibility(cacheSizeLine, View.GONE, update);
-            UIUtils.setVisibility(appSplitsLine, View.GONE, update);
+            UIUtils.setVisibility(binding.appSizeLine, View.GONE, update);
+            UIUtils.setVisibility(binding.dataSizeLine, View.GONE, update);
+            UIUtils.setVisibility(binding.cacheSizeLine, View.GONE, update);
+            UIUtils.setVisibility(binding.appSplitsLine, View.GONE, update);
         } else {
-            appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
-            dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
-            cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
-            if (app.getCacheSize() == 0) UIUtils.setVisibility(wipeCache, View.GONE, update);
+            binding.appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
+            binding.dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
+            binding.cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
+            if (app.getCacheSize() == 0)
+                UIUtils.setVisibility(binding.wipeCache, View.GONE, update);
         }
-        if (app.isSplit()) appSplits.setText(R.string.dialogYes);
-        else appSplits.setText(R.string.dialogNo);
+        if (app.isSplit()) binding.appSplits.setText(R.string.dialogYes);
+        else binding.appSplits.setText(R.string.dialogNo);
         if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
             String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
-            versionCode.setText(updatedVersionString);
-        } else versionCode.setText(app.getVersionName());
+            binding.versionName.setText(updatedVersionString);
+        } else binding.versionName.setText(app.getVersionName());
         if (app.getLogInfo() != null) {
-            UIUtils.setVisibility(lastBackupLine, View.VISIBLE, update);
-            lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
-        } else UIUtils.setVisibility(lastBackupLine, View.GONE, update);
+            UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
+            binding.lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
+        } else UIUtils.setVisibility(binding.lastBackupLine, View.GONE, update);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
-                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
-                backupMode.setText(R.string.onlyApkBackedUp);
+                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
+                binding.backupMode.setText(R.string.onlyApkBackedUp);
                 break;
             case AppInfo.MODE_DATA:
-                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
-                backupMode.setText(R.string.onlyDataBackedUp);
+                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
+                binding.backupMode.setText(R.string.onlyDataBackedUp);
                 break;
             case AppInfo.MODE_BOTH:
-                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
-                backupMode.setText(R.string.bothBackedUp);
+                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
+                binding.backupMode.setText(R.string.bothBackedUp);
                 break;
             default:
-                UIUtils.setVisibility(backupModeLine, View.GONE, update);
+                UIUtils.setVisibility(binding.backupModeLine, View.GONE, update);
                 break;
         }
         if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK) {
-            UIUtils.setVisibility(encryptedLine, View.VISIBLE, update);
-            encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
-        } else UIUtils.setVisibility(encryptedLine, View.GONE, update);
-        ItemUtils.pickColor(app, appType);
+            UIUtils.setVisibility(binding.encryptedLine, View.VISIBLE, update);
+            binding.encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
+        } else UIUtils.setVisibility(binding.encryptedLine, View.GONE, update);
+        ItemUtils.pickColor(app, binding.appType);
     }
 
-    @OnClick(R.id.exodusReport)
-    public void viewReport() {
-        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.exodusUrl(app.getPackageName()))));
-    }
-
-    @OnClick(R.id.appInfo)
-    public void callAppInfo() {
-        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.fromParts("package", app.getPackageName(), null));
-        startActivity(intent);
-    }
-
-    @OnClick(R.id.wipeCache)
-    public void wipeCache() {
-        try {
-            Log.i(BackupAppAction.TAG, String.format("%s: Wiping cache", app));
-            String command = ShellCommands.wipeCacheCommand(requireContext(), app);
-            ShellHandler.runAsRoot(command);
-            ((MainActivityX) requireActivity()).refresh(true);
-        } catch (ShellHandler.ShellCommandFailedException e) {
-            // Not a critical issue
-            Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
-        }
-    }
-
-    @Override
-    public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
-        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
-                    .execute();
-            ((MainActivityX) requireActivity()).refresh(true);
-        } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
-                    .execute();
-            ((MainActivityX) requireActivity()).refresh(true);
-        } else
-            Log.e(TAG, "unknown actionType: " + actionType);
-    }
-
-    @OnClick(R.id.backup)
-    public void backup() {
-        Bundle arguments = new Bundle();
-        arguments.putParcelable("app", app);
-        BackupDialogFragment dialog = new BackupDialogFragment(this);
-        dialog.setArguments(arguments);
-        dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
-    }
-
-    @OnClick(R.id.restore)
-    public void restore() {
-        if (!app.isInstalled() && app.getBackupMode() == AppInfo.MODE_DATA) {
-            Toast.makeText(getContext(), getString(R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show();
-        } else {
+    private void setupOnClicks(AppSheet fragment) {
+        binding.exodusReport.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.exodusUrl(app.getPackageName())))));
+        binding.appInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", app.getPackageName(), null));
+            startActivity(intent);
+        });
+        binding.wipeCache.setOnClickListener(v -> {
+            try {
+                Log.i(BackupAppAction.TAG, String.format("%s: Wiping cache", app));
+                String command = ShellCommands.wipeCacheCommand(requireContext(), app);
+                ShellHandler.runAsRoot(command);
+                ((MainActivityX) requireActivity()).refresh(true);
+            } catch (ShellHandler.ShellCommandFailedException e) {
+                // Not a critical issue
+                Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
+            }
+        });
+        binding.backup.setOnClickListener(v -> {
             Bundle arguments = new Bundle();
             arguments.putParcelable("app", app);
-            RestoreDialogFragment dialog = new RestoreDialogFragment(this);
+            BackupDialogFragment dialog = new BackupDialogFragment(fragment);
             dialog.setArguments(arguments);
-            dialog.show(requireActivity().getSupportFragmentManager(), "restoreDialog");
-        }
-    }
-
-    @OnClick(R.id.delete)
-    public void delete() {
-        new AlertDialog.Builder(requireContext())
+            dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
+        });
+        binding.restore.setOnClickListener(v -> {
+            if (!app.isInstalled() && app.getBackupMode() == AppInfo.MODE_DATA) {
+                Toast.makeText(getContext(), getString(R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show();
+            } else {
+                Bundle arguments = new Bundle();
+                arguments.putParcelable("app", app);
+                RestoreDialogFragment dialog = new RestoreDialogFragment(fragment);
+                dialog.setArguments(arguments);
+                dialog.show(requireActivity().getSupportFragmentManager(), "restoreDialog");
+            }
+        });
+        binding.delete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
                 .setTitle(app.getLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
@@ -330,45 +244,76 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
                 })
                 .setNegativeButton(R.string.dialogNo, null)
-                .show();
+                .show());
+        binding.share.setOnClickListener(v -> {
+            File backupDir = FileUtils.createBackupDir(getActivity(), FileUtils.getDefaultBackupDirPath(requireContext()));
+            File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
+            String dataPath = app.getLogInfo().getDataDir();
+            dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
+            File data = new File(backupDir, app.getPackageName() + "/" + dataPath + ".zip");
+            Bundle arguments = new Bundle();
+            arguments.putString("label", app.getLabel());
+            switch (app.getBackupMode()) {
+                case AppInfo.MODE_APK:
+                    arguments.putSerializable("apk", apk);
+                    break;
+                case AppInfo.MODE_DATA:
+                    arguments.putSerializable("data", data);
+                    break;
+                case AppInfo.MODE_BOTH:
+                    arguments.putSerializable("apk", data);
+                    arguments.putSerializable("data", data);
+                    break;
+                default:
+                    break;
+            }
+            ShareDialogFragment shareDialog = new ShareDialogFragment();
+            shareDialog.setArguments(arguments);
+            shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
+        });
+        binding.enablePackage.setOnClickListener(v -> {
+            displayDialogEnableDisable(app.getPackageName(), true);
+        });
+        binding.disablePackage.setOnClickListener(v -> {
+            displayDialogEnableDisable(app.getPackageName(), false);
+        });
+        binding.uninstall.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(app.getLabel())
+                    .setMessage(R.string.uninstallDialogMessage)
+                    .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                        Thread uninstallThread = new Thread(() -> {
+                            Log.i(TAG, "uninstalling " + app.getLabel());
+                            handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
+                            int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
+                            handleMessages.endMessage();
+                            if (ret == 0) {
+                                NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
+                            } else {
+                                NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
+                                UIUtils.showErrors(requireActivity());
+                            }
+                            ((MainActivityX) requireActivity()).refresh(true);
+                        });
+                        uninstallThread.start();
+                    })
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show();
+        });
     }
 
-    @OnClick(R.id.share)
-    public void share() {
-        File backupDir = FileUtils.createBackupDir(getActivity(), FileUtils.getDefaultBackupDirPath(requireContext()));
-        File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
-        String dataPath = app.getLogInfo().getDataDir();
-        dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
-        File data = new File(backupDir, app.getPackageName() + "/" + dataPath + ".zip");
-        Bundle arguments = new Bundle();
-        arguments.putString("label", app.getLabel());
-        switch (app.getBackupMode()) {
-            case AppInfo.MODE_APK:
-                arguments.putSerializable("apk", apk);
-                break;
-            case AppInfo.MODE_DATA:
-                arguments.putSerializable("data", data);
-                break;
-            case AppInfo.MODE_BOTH:
-                arguments.putSerializable("apk", data);
-                arguments.putSerializable("data", data);
-                break;
-            default:
-                break;
-        }
-        ShareDialogFragment shareDialog = new ShareDialogFragment();
-        shareDialog.setArguments(arguments);
-        shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
-    }
-
-    @OnClick(R.id.enablePackage)
-    public void enable() {
-        displayDialogEnableDisable(app.getPackageName(), true);
-    }
-
-    @OnClick(R.id.disablePackage)
-    public void disable() {
-        displayDialogEnableDisable(app.getPackageName(), false);
+    @Override
+    public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
+        if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
+            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
+                    .execute();
+            ((MainActivityX) requireActivity()).refresh(true);
+        } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
+            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
+                    .execute();
+            ((MainActivityX) requireActivity()).refresh(true);
+        } else
+            Log.e(TAG, "unknown actionType: " + actionType);
     }
 
     public void displayDialogEnableDisable(final String packageName, final boolean enable) {
@@ -389,31 +334,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
-                .show();
-    }
-
-    @OnClick(R.id.uninstall)
-    public void uninstall() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle(app.getLabel())
-                .setMessage(R.string.uninstallDialogMessage)
-                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
-                    Thread uninstallThread = new Thread(() -> {
-                        Log.i(TAG, "uninstalling " + app.getLabel());
-                        handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
-                        int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
-                        handleMessages.endMessage();
-                        if (ret == 0) {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
-                        } else {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
-                            UIUtils.showErrors(requireActivity());
-                        }
-                        ((MainActivityX) requireActivity()).refresh(true);
-                    });
-                    uninstallThread.start();
-                })
-                .setNegativeButton(R.string.dialogNo, null)
                 .show();
     }
 }

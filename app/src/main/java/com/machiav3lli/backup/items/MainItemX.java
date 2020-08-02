@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.ItemMainXBinding;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -14,15 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
 import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
 
 
 public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     AppInfo app;
+    private ItemMainXBinding binding;
 
     public MainItemX(AppInfo app) {
         this.app = app;
@@ -54,26 +53,20 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<MainItemX> {
-        @BindView(R.id.label)
-        AppCompatTextView label;
-        @BindView(R.id.packageName)
-        AppCompatTextView packageName;
-        @BindView(R.id.lastBackup)
-        AppCompatTextView lastBackup;
-        @BindView(R.id.backupMode)
-        AppCompatTextView backupMode;
-        @BindView(R.id.icon)
-        AppCompatImageView icon;
+
+        AppCompatTextView label = itemView.findViewById(R.id.label);
+        AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
+        AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
+        AppCompatTextView backupMode = itemView.findViewById(R.id.backupMode);
+        AppCompatImageView icon = itemView.findViewById(R.id.icon);
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
         }
 
         @Override
         public void bindView(@NotNull MainItemX item, @NotNull List<?> list) {
             final AppInfo app = item.getApp();
-
             if (app.icon != null) icon.setImageBitmap(app.icon);
             else icon.setImageResource(R.drawable.ic_placeholder);
             label.setText(app.getLabel());

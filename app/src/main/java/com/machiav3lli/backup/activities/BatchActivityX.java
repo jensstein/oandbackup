@@ -10,18 +10,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.ActivityBatchXBinding;
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
@@ -48,37 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
     static final String TAG = Constants.classTag(".BatchActivityX");
     final static int RESULT_OK = 0;
     long threadId = -1;
     boolean backupBoolean;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.swipe_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.radioApk)
-    Chip rbApk;
-    @BindView(R.id.radioData)
-    Chip rbData;
-    @BindView(R.id.radioBoth)
-    Chip rbBoth;
-    @BindView(R.id.backupRestoreButton)
-    AppCompatButton actionButton;
-    @BindView(R.id.cbAll)
-    AppCompatCheckBox cbAll;
-    @BindView(R.id.search_view)
-    SearchView searchView;
-    @BindView(R.id.back)
-    AppCompatImageView back;
-    @BindView(R.id.sort_filter_fab)
-    FloatingActionButton fab;
 
     boolean checkboxSelectAllBoolean = false;
     boolean changesMade;
@@ -87,17 +56,20 @@ public class BatchActivityX extends BaseActivity
     ItemAdapter<BatchItemX> itemAdapter;
     FastAdapter<BatchItemX> fastAdapter;
     ArrayList<AppInfo> originalList = MainActivityX.originalList;
-
     HandleMessages handleMessages;
     SharedPreferences prefs;
     PowerManager powerManager;
     ArrayList<String> users;
     ShellCommands shellCommands;
+    private ActivityBatchXBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_batch_x);
+        binding = ActivityBatchXBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupOnClicks(this);
+
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -116,23 +88,22 @@ public class BatchActivityX extends BaseActivity
         if (originalList == null) originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                 prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
 
-        ButterKnife.bind(this);
-        rbBoth.setChecked(true);
+        binding.radioBoth.setChecked(true);
 
-        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
-        swipeRefreshLayout.setOnRefreshListener(this::refresh);
+        binding.refreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
+        binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
+        binding.refreshLayout.setOnRefreshListener(this::refresh);
 
         if (getIntent().getExtras() != null)
             backupBoolean = getIntent().getExtras().getBoolean(Constants.classAddress(".backupBoolean"));
-        if (backupBoolean) actionButton.setText(R.string.backup);
-        else actionButton.setText(R.string.restore);
+        if (backupBoolean) binding.actionButton.setText(R.string.backup);
+        else binding.actionButton.setText(R.string.restore);
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
         fastAdapter.setHasStableIds(true);
-        recyclerView.setAdapter(fastAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(fastAdapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fastAdapter.setOnPreClickListener((view, batchItemXIAdapter, batchItemX, integer) -> false);
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             item.getApp().setChecked(!item.getApp().isChecked());
@@ -140,15 +111,15 @@ public class BatchActivityX extends BaseActivity
             return false;
         });
 
-        back.setOnClickListener(v -> finish());
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.backButton.setOnClickListener(v -> finish());
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) fab.hide();
-                else if (dy < 0) fab.show();
+                if (dy > 0) binding.fabSortFilter.hide();
+                else if (dy < 0) binding.fabSortFilter.show();
             }
         });
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
                 itemAdapter.filter(newText);
@@ -167,7 +138,7 @@ public class BatchActivityX extends BaseActivity
                 return true;
             }
         });
-        cbAll.setOnClickListener(v -> {
+        binding.cbAll.setOnClickListener(v -> {
             if (checkboxSelectAllBoolean) {
                 for (BatchItemX item : itemAdapter.getAdapterItems())
                     item.getApp().setChecked(false);
@@ -180,27 +151,24 @@ public class BatchActivityX extends BaseActivity
         });
     }
 
-    @OnClick(R.id.sort_filter_fab)
-    public void showSortFilterDialog() {
-        if (sheetSortFilter == null)
-            sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(this).toString()));
-        sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
-    }
-
-    @OnClick(R.id.backupRestoreButton)
-    public void action() {
-        ArrayList<BatchItemX> selectedList = new ArrayList<>();
-        for (BatchItemX item : itemAdapter.getAdapterItems()) {
-            if (item.getApp().isChecked()) {
-                selectedList.add(item);
+    private void setupOnClicks(Context context) {
+        binding.fabSortFilter.setOnClickListener(v -> {
+            if (sheetSortFilter == null)
+                sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(context).toString()));
+            sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
+        });
+        binding.actionButton.setOnClickListener(v -> {
+            ArrayList<BatchItemX> selectedList = new ArrayList<>();
+            for (BatchItemX item : itemAdapter.getAdapterItems()) {
+                if (item.getApp().isChecked()) selectedList.add(item);
             }
-        }
-        Bundle arguments = new Bundle();
-        arguments.putParcelableArrayList("selectedList", selectedList);
-        arguments.putBoolean("backupBoolean", backupBoolean);
-        BatchConfirmDialog dialog = new BatchConfirmDialog();
-        dialog.setArguments(arguments);
-        dialog.show(getSupportFragmentManager(), "DialogFragment");
+            Bundle arguments = new Bundle();
+            arguments.putParcelableArrayList("selectedList", selectedList);
+            arguments.putBoolean("backupBoolean", backupBoolean);
+            BatchConfirmDialog dialog = new BatchConfirmDialog();
+            dialog.setArguments(arguments);
+            dialog.show(getSupportFragmentManager(), "DialogFragment");
+        });
     }
 
     @Override
@@ -230,9 +198,9 @@ public class BatchActivityX extends BaseActivity
                 NotificationHelper.showNotification(this, BatchActivityX.class, notificationId, title, item.getApp().getLabel(), false);
                 this.handleMessages.setMessage(item.getApp().getLabel(), message);
                 int mode = AppInfo.MODE_BOTH;
-                if (this.rbApk.isChecked()) {
+                if (binding.radioApk.isChecked()) {
                     mode = AppInfo.MODE_APK;
-                } else if (this.rbData.isChecked()) {
+                } else if (binding.radioData.isChecked()) {
                     mode = AppInfo.MODE_DATA;
                 }
                 final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
@@ -312,10 +280,12 @@ public class BatchActivityX extends BaseActivity
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
                 String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
                 backupDir = FileUtils.createBackupDir(this, backupDirPath);
+                break;
             case Constants.PREFS_PATH_TOYBOX:
                 shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
                 if (!shellCommands.checkUtilBoxPath())
                     UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
+                break;
             default:
                 refresh();
         }
@@ -323,9 +293,9 @@ public class BatchActivityX extends BaseActivity
 
     public void refresh() {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
+        runOnUiThread(() -> binding.refreshLayout.setRefreshing(true));
         new Thread(() -> {
-            cbAll.setChecked(false);
+            binding.cbAll.setChecked(false);
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
@@ -353,8 +323,8 @@ public class BatchActivityX extends BaseActivity
                     itemAdapter.add(list);
                 } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 fastAdapter.notifyAdapterDataSetChanged();
-                searchView.setQuery("", false);
-                swipeRefreshLayout.setRefreshing(false);
+                binding.searchView.setQuery("", false);
+                binding.refreshLayout.setRefreshing(false);
             });
         }).start();
     }

@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/app_bar"
+        android:id="@+id/appBar"
         style="@style/Widget.AppBar"
         android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
+            android:id="@+id/searchView"
             style="@android:style/Widget.Material.SearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,14 +31,14 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_layout"
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -52,7 +52,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <FrameLayout
-        android:id="@+id/bottom_bar"
+        android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
         android:background="@drawable/bar_static">
 
@@ -63,7 +63,7 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_settings"
+                android:id="@+id/settingsButton"
                 style="@style/Button.NavBar"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:tooltipText="@string/prefs_title" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_batch_backup"
+                android:id="@+id/batchBackupButton"
                 style="@style/Button.NavBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:tooltipText="@string/batchbackup" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_batch_restore"
+                android:id="@+id/batchRestoreButton"
                 style="@style/Button.NavBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                 android:tooltipText="@string/batchrestore" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_scheduler"
+                android:id="@+id/schedulerButton"
                 style="@style/Button.NavBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sort_filter_fab"
+        android:id="@+id/fabSortFilter"
         style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

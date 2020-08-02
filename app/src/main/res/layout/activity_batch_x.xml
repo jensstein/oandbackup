@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/app_bar"
+        android:id="@+id/appBar"
         style="@style/Widget.AppBar"
         android:background="@drawable/bar_static">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/back"
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_click"
@@ -20,7 +20,7 @@
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
+            android:id="@+id/searchView"
             style="@android:style/Widget.Material.SearchView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -40,14 +40,14 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_layout"
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -61,7 +61,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <FrameLayout
-        android:id="@+id/bottom_bar"
+        android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
         android:background="@drawable/bar_static">
 
@@ -120,7 +120,7 @@
                     android:text="@string/all" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/backupRestoreButton"
+                    android:id="@+id/actionButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginVertical="@dimen/buttons_spacing"
@@ -136,7 +136,7 @@
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sort_filter_fab"
+        android:id="@+id/fabSortFilter"
         style="@style/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -32,7 +32,7 @@ public class SortFilterModel {
             case '2':
                 return R.id.showOnlyUser;
             case '3':
-                return R.id.filter_special;
+                return R.id.showOnlySpecial;
             default:
                 return R.id.showAll;
         }
@@ -41,30 +41,30 @@ public class SortFilterModel {
     public int getBackupFilterId() {
         switch (code.charAt(2)) {
             case '1':
-                return R.id.backup_both;
+                return R.id.backupBoth;
             case '2':
-                return R.id.backup_apk;
+                return R.id.backupApk;
             case '3':
-                return R.id.backup_data;
+                return R.id.backupData;
             case '4':
-                return R.id.backup_none;
+                return R.id.backupNone;
             default:
-                return R.id.backup_all;
+                return R.id.backupAll;
         }
     }
 
     public int getSpecialFilterId() {
         switch (code.charAt(3)) {
             case '1':
-                return R.id.special_new_and_updated;
+                return R.id.specialNewAndUpdated;
             case '2':
-                return R.id.special_not_installed;
+                return R.id.specialNotInstalled;
             case '3':
-                return R.id.special_old;
+                return R.id.specialOld;
             case '4':
-                return R.id.special_split;
+                return R.id.specialSplit;
             default:
-                return R.id.special_all;
+                return R.id.specialAll;
         }
     }
 
@@ -92,7 +92,7 @@ public class SortFilterModel {
             case R.id.showOnlyUser:
                 filter = '2';
                 break;
-            case R.id.filter_special:
+            case R.id.showOnlySpecial:
                 filter = '3';
                 break;
             default:
@@ -104,16 +104,16 @@ public class SortFilterModel {
     public void putBackupFilter(int id) {
         char backupFilter;
         switch (id) {
-            case R.id.backup_both:
+            case R.id.backupBoth:
                 backupFilter = '1';
                 break;
-            case R.id.backup_apk:
+            case R.id.backupApk:
                 backupFilter = '2';
                 break;
-            case R.id.backup_data:
+            case R.id.backupData:
                 backupFilter = '3';
                 break;
-            case R.id.backup_none:
+            case R.id.backupNone:
                 backupFilter = '4';
                 break;
             default:
@@ -125,16 +125,16 @@ public class SortFilterModel {
     public void putSpecialFilter(int id) {
         char specialFilter;
         switch (id) {
-            case R.id.special_new_and_updated:
+            case R.id.specialNewAndUpdated:
                 specialFilter = '1';
                 break;
-            case R.id.special_not_installed:
+            case R.id.specialNotInstalled:
                 specialFilter = '2';
                 break;
-            case R.id.special_old:
+            case R.id.specialOld:
                 specialFilter = '3';
                 break;
-            case R.id.special_split:
+            case R.id.specialSplit:
                 specialFilter = '4';
                 break;
             default:

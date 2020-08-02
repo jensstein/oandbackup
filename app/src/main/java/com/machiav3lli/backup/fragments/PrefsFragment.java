@@ -146,14 +146,14 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         pref = findPreference(Constants.PREFS_LOGVIEWER);
         assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
-            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragment, new LogsFragment()).addToBackStack(null).commit();
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new LogsFragment()).addToBackStack(null).commit();
             return true;
         });
 
         pref = findPreference(Constants.PREFS_HELP);
         assert pref != null;
         pref.setOnPreferenceClickListener(preference -> {
-            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefs_fragment, new HelpFragment()).addToBackStack(null).commit();
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new HelpFragment()).addToBackStack(null).commit();
             return true;
         });
     }

@@ -11,27 +11,20 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.FragmentHelpBinding;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class HelpFragment extends Fragment {
 
-    @BindView(R.id.helpVersionName)
-    AppCompatTextView versionName;
-    @BindView(R.id.helpHtml)
-    AppCompatTextView helpHTML;
+    private FragmentHelpBinding binding;
 
     static String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is, "utf-8").useDelimiter("\\A");
@@ -42,8 +35,9 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_help, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentHelpBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        setupOnClicks();
         return view;
     }
 
@@ -53,36 +47,29 @@ public class HelpFragment extends Fragment {
         drawContent();
     }
 
-    @OnClick(R.id.changelog)
-    public void callChangelog() {
-        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG)));
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
-    @OnClick(R.id.telegram)
-    public void callTelegram() {
-        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM)));
-    }
-
-    @OnClick(R.id.element)
-    public void callElement() {
-        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT)));
-    }
-
-    @OnClick(R.id.license)
-    public void callLicense() {
-        requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE)));
+    private void setupOnClicks() {
+        binding.changelog.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))));
+        binding.telegram.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))));
+        binding.element.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))));
+        binding.license.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))));
     }
 
     private void drawContent() {
         try {
-            versionName.setText(String.format("%s", requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName));
+            binding.helpVersionName.setText(String.format("%s", requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName));
             InputStream is = getResources().openRawResource(R.raw.help);
             String htmlString = convertStreamToString(is);
             is.close();
-            helpHTML.setText(HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY));
-            helpHTML.setMovementMethod(LinkMovementMethod.getInstance());
+            binding.helpHtml.setText(HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY));
+            binding.helpHtml.setMovementMethod(LinkMovementMethod.getInstance());
         } catch (IOException e) {
-            helpHTML.setText(e.toString());
+            binding.helpHtml.setText(e.toString());
         } catch (PackageManager.NameNotFoundException ignored) {
         }
     }

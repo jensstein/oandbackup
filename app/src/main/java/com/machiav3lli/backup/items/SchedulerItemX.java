@@ -16,9 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
     Schedule sched;
 
@@ -52,20 +49,14 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<SchedulerItemX> {
-        @BindView(R.id.checkbox)
-        AppCompatCheckBox checkbox;
-        @BindView(R.id.timeLeft)
-        AppCompatTextView timeLeft;
-        @BindView(R.id.timeLeft_line)
-        LinearLayoutCompat timeLeftLine;
-        @BindView(R.id.schedMode)
-        AppCompatTextView schedMode;
-        @BindView(R.id.schedSubMode)
-        AppCompatTextView schedSubMode;
+        AppCompatCheckBox checkbox = itemView.findViewById(R.id.enableCheckbox);
+        AppCompatTextView timeLeft = itemView.findViewById(R.id.timeLeft);
+        LinearLayoutCompat timeLeftLine = itemView.findViewById(R.id.timeLeftLine);
+        AppCompatTextView schedMode = itemView.findViewById(R.id.schedMode);
+        AppCompatTextView schedSubMode = itemView.findViewById(R.id.schedSubMode);
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
         }
 
         @Override

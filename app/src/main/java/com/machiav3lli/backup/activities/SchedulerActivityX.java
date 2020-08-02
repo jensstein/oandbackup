@@ -8,18 +8,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.annimon.stream.Optional;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 import com.machiav3lli.backup.fragments.ScheduleSheet;
 import com.machiav3lli.backup.items.SchedulerItemX;
@@ -41,10 +40,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
     public static final String SCHEDULECUSTOMLIST = "customlist";
@@ -56,33 +51,28 @@ public class SchedulerActivityX extends BaseActivity
     public FastAdapter<SchedulerItemX> fastAdapter;
     public HandleAlarms handleAlarms;
     int totalSchedules;
-    @BindView(R.id.back)
-    AppCompatImageView back;
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.add_schedule_fab)
-    FloatingActionButton fab;
     SharedPreferences prefs;
     ScheduleSheet sheetSchedule;
-
+    private ActivitySchedulerXBinding binding;
     private BlacklistsDBHelper blacklistsDBHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scheduler_x);
+        binding = ActivitySchedulerXBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupOnClicks(this);
+
         handleAlarms = new HandleAlarms(this);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        ButterKnife.bind(this);
-
         list = new ArrayList<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
 
         itemAdapter = new ItemAdapter<>();
         fastAdapter = FastAdapter.with(itemAdapter);
         fastAdapter.setHasStableIds(true);
-        recyclerView.setAdapter(fastAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(fastAdapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
             sheetSchedule = new ScheduleSheet(item);
@@ -91,37 +81,42 @@ public class SchedulerActivityX extends BaseActivity
         });
         itemAdapter.add(list);
 
-        back.setOnClickListener(v -> finish());
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.backButton.setOnClickListener(v -> finish());
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) fab.hide();
-                else if (dy < 0) fab.show();
+                if (dy > 0) binding.fabAddSchedule.hide();
+                else if (dy < 0) binding.fabAddSchedule.show();
             }
         });
     }
 
-    @OnClick(R.id.btn_blacklist)
-    public void blackList() {
-        new Thread(() -> {
-            Bundle args = new Bundle();
-            args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
-            SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
-            ArrayList<String> blacklistedPackages = blacklistsDBHelper
-                    .getBlacklistedPackages(db, GLOBALBLACKLISTID);
-            args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
-                    blacklistedPackages);
-            BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
-            blacklistDialogFragment.setArguments(args);
-            blacklistDialogFragment.addBlacklistListener(this);
-            blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
-        }).start();
-    }
-
-    @OnClick(R.id.add_schedule_fab)
-    public void addSchedule() {
-        new AddScheduleTask(this).execute();
-        new refreshTask(this).execute();
+    private void setupOnClicks(SchedulerActivityX activity) {
+        binding.blacklistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(() -> {
+                    Bundle args = new Bundle();
+                    args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
+                    SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
+                    ArrayList<String> blacklistedPackages = blacklistsDBHelper
+                            .getBlacklistedPackages(db, GLOBALBLACKLISTID);
+                    args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
+                            blacklistedPackages);
+                    BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
+                    blacklistDialogFragment.setArguments(args);
+                    blacklistDialogFragment.addBlacklistListener(activity);
+                    blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
+                }).start();
+            }
+        });
+        binding.fabAddSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AddScheduleTask(activity).execute();
+                new refreshTask(activity).execute();
+            }
+        });
     }
 
     @Override
