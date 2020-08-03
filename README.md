@@ -98,7 +98,7 @@ Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashico
 
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrite Shellcommands [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
-Open-Source libs: [ButterKnife](https://github.com/JakeWharton/butterknife), [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
+Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
 ### Languages:
 
