@@ -138,6 +138,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(binding.enablePackage, View.GONE, update);
             UIUtils.setVisibility(binding.disablePackage, View.GONE, update);
         }
+        if (app.isSystem()) UIUtils.setVisibility(binding.uninstall,View.GONE, update);
     }
 
     private void setupAppInfo(boolean update) {
