@@ -4,10 +4,11 @@
 
 OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device. Therefore all types of contribution are welcome.
 
-Now on OAndBackup: a backup program for android. requires root and allows you to backup individual apps and their data.
-both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores). 
-restoring system apps should be possible without requiring a reboot afterwards. OAndBackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
-backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
+Now on functionality of our App:
+* It requires root and allows you to backup individual apps and their data.
+* Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+* Restoring system apps should be possible without requiring a reboot afterwards.
+* Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
 ## Installation
 
@@ -35,7 +36,9 @@ If enabled the data backup will be encrypted with AES 256 based on a password yo
 
 ## Compatibility with oandbackup backups
 
-till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
+Till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
+
+Version 3.0.0 marks an overhaul of the backup proces and thus a break in compatibility with the older versions.
 
 ## Changes & TODOs
 
@@ -51,10 +54,13 @@ till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Clear cache before data backups
 - [x] Add in-app backup encryption
 - [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~70% done,)
-- [ ] Switch to Storage Access Framework (after achieving the previous one)
+- [ ] Switch to Storage Access Framework (connected to the previous one)
+    - till it's finished there'll be no support for external storage (e.g. SD-Cards, USB-OTG)
 - [ ] New android Scope Storage permissions compatibility (first: after android 11 release - if forced to)
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
+
+#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/CONTRIBUTION.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
 
 ## Screenshots
 
@@ -82,15 +88,13 @@ OAndBackupX is built with gradle, for that you need the android sdk.
 
 ## Licenses
 
-as a fork of OAndBackup, OAndBackupX is licensed under the MIT license (see LICENSE.txt)
+OAndBackupX is licensed under the MIT license (see LICENSE.txt)
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
 Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
 
 ## Credits
-
-#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/CONTRIBUTION.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
