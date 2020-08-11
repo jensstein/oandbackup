@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.dialogs;
 
 import android.app.Dialog;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -29,13 +30,11 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.items.AppInfo;
 
 import org.jetbrains.annotations.NotNull;
+import com.machiav3lli.backup.items.AppMetaInfo;
+import com.machiav3lli.backup.items.BackupProperties;
 
 public class RestoreDialogFragment extends DialogFragment {
     private final ActionListener listener;
-
-    public RestoreDialogFragment() {
-        listener = null;
-    }
 
     public RestoreDialogFragment(ActionListener listener) {
         this.listener = listener;
@@ -44,29 +43,37 @@ public class RestoreDialogFragment extends DialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
+        Bundle arguments = this.getArguments();
         assert arguments != null;
-        final AppInfo app = arguments.getParcelable("app");
+        final AppMetaInfo app = arguments.getParcelable("appinfo");
+        final boolean isInstalled = arguments.getBoolean("isInstalled", false);
+        final BackupProperties properties = arguments.getParcelable("backup");
 
-        BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.RESTORE;
         assert app != null;
+        boolean showApkBtn = properties.hasApk();
+        boolean showDataBtn = (isInstalled || app.isSpecial()) && properties.hasAppData();
+        boolean showBothBtn = showApkBtn && properties.hasAppData();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(app.getLabel());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+        builder.setTitle(app.getPackageLabel());
         builder.setMessage(R.string.restore);
 
-        boolean showApkBtn = app.getBackupMode() != AppInfo.MODE_DATA;
+        BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.RESTORE;
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_APK));
+            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
+                this.listener.onActionCalled(actionType, AppInfo.MODE_APK);
+            });
         }
-        boolean showDataBtn = app.isInstalled() && app.getBackupMode() != AppInfo.MODE_APK;
         if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_DATA));
+            builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
+                this.listener.onActionCalled(actionType, AppInfo.MODE_DATA);
+            });
         }
-        boolean showBothBtn = app.getBackupMode() != AppInfo.MODE_APK && app.getBackupMode() != AppInfo.MODE_DATA;
         if (showBothBtn) {
-            int textId = app.isInstalled() ? R.string.handleBoth : R.string.radioBoth;
-            builder.setPositiveButton(textId, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_BOTH));
+            int textId = R.string.radioBoth;
+            builder.setPositiveButton(textId, (dialog, id) -> {
+                this.listener.onActionCalled(actionType, AppInfo.MODE_BOTH);
+            });
         }
         return builder.create();
     }

@@ -21,26 +21,29 @@ import android.content.Context;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.PrefUtils;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class SortFilterManager {
 
-    public static final Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
-            m1.getLabel().compareToIgnoreCase(m2.getLabel());
-    public static final Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
+    public static final Comparator<AppInfoV2> appInfoLabelComparator = (m1, m2) ->
+            m1.getAppInfo().getPackageLabel().compareToIgnoreCase(m2.getAppInfo().getPackageLabel());
+    public static final Comparator<AppInfoV2> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
-    public static final Comparator<AppInfo> appDataSizeComparator = (m1, m2) ->
-            Long.compare(m1.getDataSize(), m2.getDataSize());
+    public static final Comparator<AppInfoV2> appDataSizeComparator = (m1, m2) ->
+            Long.compare(m1.getStorageStats().getDataBytes(), m2.getStorageStats().getDataBytes());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
         String sortFilterPref = PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_SORT_FILTER, "");
-        if (!sortFilterPref.equals(""))
+        if (!sortFilterPref.isEmpty())
             sortFilterModel = new SortFilterModel(sortFilterPref);
         else sortFilterModel = new SortFilterModel();
         return sortFilterModel;
@@ -54,17 +57,17 @@ public class SortFilterManager {
         return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
     }
 
-    public static ArrayList<AppInfo> applyFilter(List<AppInfo> list, CharSequence filter, Context context) {
-        ArrayList<AppInfo> nlist = new ArrayList<>(list);
+    public static ArrayList<AppInfoV2> applyFilter(List<AppInfoV2> list, CharSequence filter, Context context) {
+        ArrayList<AppInfoV2> nlist = new ArrayList<>(list);
         switch (filter.charAt(1)) {
             case '1':
-                for (AppInfo item : list) if (!item.isSystem()) nlist.remove(item);
+                for (AppInfoV2 item : list) if (!item.getAppInfo().isSystem()) nlist.remove(item);
                 break;
             case '2':
-                for (AppInfo item : list) if (item.isSystem()) nlist.remove(item);
+                for (AppInfoV2 item : list) if (item.getAppInfo().isSystem()) nlist.remove(item);
                 break;
             case '3':
-                for (AppInfo item : list) if (!item.isSpecial()) nlist.remove(item);
+                for (AppInfoV2 item : list) if (!item.getAppInfo().isSpecial()) nlist.remove(item);
                 break;
             default:
                 break;
@@ -72,24 +75,24 @@ public class SortFilterManager {
         return applyBackupFilter(nlist, filter, context);
     }
 
-    private static ArrayList<AppInfo> applyBackupFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
-        ArrayList<AppInfo> nlist = new ArrayList<>(list);
+    private static ArrayList<AppInfoV2> applyBackupFilter(ArrayList<AppInfoV2> list, CharSequence filter, Context context) {
+        ArrayList<AppInfoV2> nlist = new ArrayList<>(list);
         switch (filter.charAt(2)) {
             case '1':
-                for (AppInfo item : list)
+                for (AppInfoV2 item : list)
                     if (item.getBackupMode() != AppInfo.MODE_BOTH) nlist.remove(item);
                 break;
             case '2':
-                for (AppInfo item : list)
+                for (AppInfoV2 item : list)
                     if (item.getBackupMode() != AppInfo.MODE_APK) nlist.remove(item);
                 break;
             case '3':
-                for (AppInfo item : list)
+                for (AppInfoV2 item : list)
                     if (item.getBackupMode() != AppInfo.MODE_DATA) nlist.remove(item);
                 break;
             case '4':
-                for (AppInfo item : list)
-                    if (item.getLogInfo() != null) nlist.remove(item);
+                for (AppInfoV2 item : list)
+                    if (item.hasBackups()) nlist.remove(item);
                 break;
             default:
                 break;
@@ -97,35 +100,52 @@ public class SortFilterManager {
         return applySpecialFilter(nlist, filter, context);
     }
 
-    private static ArrayList<AppInfo> applySpecialFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
-        ArrayList<AppInfo> nlist = new ArrayList<>(list);
+    private static ArrayList<AppInfoV2> applySpecialFilter(ArrayList<AppInfoV2> list, CharSequence filter, Context context) {
+        ArrayList<AppInfoV2> nlist = new ArrayList<>(list);
         switch (filter.charAt(3)) {
             case '1':
-                for (AppInfo item : list) {
-                    if (!(item.getLogInfo() == null ||
-                            (item.getLogInfo().getVersionCode() != 0 &&
-                                    item.getVersionCode() > item.getLogInfo().getVersionCode())))
+                for (AppInfoV2 item : list) {
+                    if (!(!item.hasBackups() ||
+                            (item.getLatestBackup().getBackupProperties().getVersionCode() != 0
+                                    && item.getAppInfo().getVersionCode() > item.getLatestBackup().getBackupProperties().getVersionCode()))
+                    ) {
                         nlist.remove(item);
+                    }
                 }
                 break;
             case '2':
-                for (AppInfo item : list) if (item.isInstalled()) nlist.remove(item);
+                for (AppInfoV2 item : list) {
+                    if (item.isInstalled()) {
+                        nlist.remove(item);
+                    }
+                }
                 break;
             case '3':
                 int days = Integer.parseInt(PrefUtils.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
-                long lastBackup;
+                LocalDateTime lastBackup;
                 long diff;
-                for (AppInfo item : list) {
-                    if (item.getLogInfo() != null) {
-                        lastBackup = item.getLogInfo().getLastBackupMillis();
-                        diff = System.currentTimeMillis() - lastBackup;
+                for (AppInfoV2 item : list) {
+                    if (item.hasBackups()) {
+                        lastBackup = item.getLatestBackup().getBackupProperties().getBackupDate();
+                        diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now());
+                        if (diff > 0) {
+                            nlist.remove(item);
+                        }
+                        /*diff = System.currentTimeMillis() - lastBackup;
                         if (!(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f)))
                             nlist.remove(item);
-                    } else nlist.remove(item);
+                         */
+                    } else {
+                        nlist.remove(item);
+                    }
                 }
                 break;
             case '4':
-                for (AppInfo item : list) if (!item.isSplit()) nlist.remove(item);
+                for (AppInfoV2 item : list) {
+                    if (item.getApkSplits() == null || item.getApkSplits().length == 0) {
+                        nlist.remove(item);
+                    }
+                }
                 break;
             default:
                 break;
@@ -133,7 +153,7 @@ public class SortFilterManager {
         return applySort(nlist, filter);
     }
 
-    private static ArrayList<AppInfo> applySort(ArrayList<AppInfo> list, CharSequence filter) {
+    private static ArrayList<AppInfoV2> applySort(ArrayList<AppInfoV2> list, CharSequence filter) {
         switch (filter.charAt(0)) {
             case '1':
                 list.sort(appInfoLabelComparator);

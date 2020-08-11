@@ -18,17 +18,24 @@
 package com.machiav3lli.backup.handler.action;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.handler.StorageFile;
+import com.machiav3lli.backup.handler.TarUtils;
+import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.BackupProperties;
+import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 import com.machiav3lli.backup.utils.PrefUtils;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,41 +58,44 @@ public class RestoreSpecialAction extends RestoreAppAction {
     }
 
     @Override
-    protected void restoreAllData(AppInfo app) throws Crypto.CryptoSetupException, RestoreFailedException {
-        this.restoreData(app);
+    protected void restoreAllData(AppInfoV2 app, BackupProperties backupProperties, Uri backupLocation) throws Crypto.CryptoSetupException, RestoreFailedException {
+        this.restoreData(app, backupProperties, StorageFile.fromUri(this.getContext(), backupLocation));
     }
 
     @Override
-    public void restoreData(AppInfo app) throws RestoreFailedException, Crypto.CryptoSetupException {
-        Log.i(TAG, String.format("%s: Restore special data", app));
-        File backupDirectory = this.getDataBackupFolder(app);
+    public void restoreData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+        Log.i(RestoreSpecialAction.TAG, String.format("%s: Restore special data", app));
+        SpecialAppMetaInfo metaInfo = (SpecialAppMetaInfo) app.getAppInfo();
+        File tempPath = new File(this.getContext().getCacheDir(), backupProperties.getPackageName());
+
         boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getContext());
-        File archiveFile = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted);
-        try {
-            if (!archiveFile.exists()) {
-                Log.i(TAG,
-                        String.format("%s: %s archive does not exist: %s", app, BaseAppAction.BACKUP_DIR_DATA, archiveFile));
-                return;
-            }
-            // uncompress the archive to the app's base backup folder
-            this.uncompress(this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted), this.getAppBackupFolder(app));
+        String backupArchiveFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DATA, isEncrypted);
+        StorageFile backupArchiveFile = backupLocation.findFile(backupArchiveFilename);
+        if (backupArchiveFile == null) {
+            throw new RestoreFailedException("Backup archive at " + backupArchiveFilename + " is missing");
+        }
+
+        try (TarArchiveInputStream archive = this.openArchiveFile(backupArchiveFile.getUri(), isEncrypted)) {
+            tempPath.mkdir();
+            // Extract the contents to a temporary directory
+            TarUtils.suUncompressTo(archive, tempPath.getAbsolutePath());
 
             // check if all expected files are there
-            File[] filesInBackup = backupDirectory.listFiles();
-            File[] expectedFiles = Arrays.stream(app.getFilesList()).map(File::new).toArray(File[]::new);
+            File[] filesInBackup = tempPath.listFiles();
+            File[] expectedFiles = Arrays.stream(metaInfo.getFileList()).map(File::new).toArray(File[]::new);
             if (filesInBackup != null && (filesInBackup.length != expectedFiles.length || !RestoreSpecialAction.areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
                 String errorMessage = String.format(
                         "%s: Backup is missing files. Found %s; needed: %s",
                         app, Arrays.toString(filesInBackup), Arrays.toString(expectedFiles));
-                Log.e(TAG, errorMessage);
+                Log.e(RestoreSpecialAction.TAG, errorMessage);
                 throw new RestoreFailedException(errorMessage, null);
             }
 
             List<String> commands = new ArrayList<>(expectedFiles.length);
             for (File restoreFile : expectedFiles) {
                 commands.add(this.prependUtilbox(String.format(
-                        "cp -RLp \"%s\" \"%s\"",
-                        new File(this.getDataBackupFolder(app), restoreFile.getName()),
+                        "mv -f \"%s\" \"%s\"",
+                        new File(tempPath, restoreFile.getName()),
                         restoreFile)));
             }
             String command = String.join(" && ", commands);
@@ -93,37 +103,39 @@ public class RestoreSpecialAction extends RestoreAppAction {
 
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
-            Log.e(TAG, String.format(
+            Log.e(RestoreSpecialAction.TAG, String.format(
                     "%s: Restore %s failed. System might be inconsistent: %s", app, BaseAppAction.BACKUP_DIR_DATA, error));
             throw new RestoreFailedException(error, e);
+        } catch (FileNotFoundException e) {
+            throw new RestoreFailedException("Could not find backup archive", e);
         } catch (IOException e) {
-            Log.e(TAG, String.format(
+            Log.e(RestoreSpecialAction.TAG, String.format(
                     "%s: Restore %s failed with IOException. System might be inconsistent: %s", app, BaseAppAction.BACKUP_DIR_DATA, e));
             throw new RestoreFailedException("IOException", e);
         } finally {
-            boolean backupDeleted = FileUtils.deleteQuietly(backupDirectory);
-            Log.d(TAG, String.format(
+            boolean backupDeleted = FileUtils.deleteQuietly(tempPath);
+            Log.d(RestoreSpecialAction.TAG, String.format(
                     "%s: Uncompressed %s was deleted: %s", app, BaseAppAction.BACKUP_DIR_DATA, backupDeleted));
         }
     }
 
     @Override
-    public void restorePackage(AppInfo app) {
+    public void restorePackage(Uri backupLocation, BackupProperties backupProperties) {
         // stub
     }
 
     @Override
-    public void restoreDeviceProtectedData(AppInfo app) {
+    public void restoreDeviceProtectedData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 
     @Override
-    public void restoreExternalData(AppInfo app) {
+    public void restoreExternalData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 
     @Override
-    public void restoreObbData(AppInfo app) {
+    public void restoreObbData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 }

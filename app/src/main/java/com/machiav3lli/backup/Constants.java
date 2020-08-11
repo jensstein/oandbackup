@@ -17,6 +17,8 @@
  */
 package com.machiav3lli.backup;
 
+import java.time.format.DateTimeFormatter;
+
 public class Constants {
 
     public static final String TAG_BASE = "OAndBackupX";
@@ -69,6 +71,8 @@ public class Constants {
     public static final String HELP_TELEGRAM = "https://t.me/OAndBackupX";
     public static final String HELP_ELEMENT = "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net";
     public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md";
+
+    public static final DateTimeFormatter BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
     private Constants() {
     }

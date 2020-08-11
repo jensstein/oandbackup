@@ -31,15 +31,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
-    AppInfo app;
 
-    public MainItemX(AppInfo app) {
+public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
+    AppInfoV2 app;
+
+    public MainItemX(AppInfoV2 app) {
         this.app = app;
     }
 
-    public AppInfo getApp() {
-        return app;
+    public AppInfoV2 getApp() {
+        return this.app;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
 
     @Override
     public long getIdentifier() {
-        return ItemUtils.calculateID(app);
+        return ItemUtils.calculateID(this.app);
     }
 
     @Override
@@ -64,14 +65,14 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<MainItemX> {
-        AppCompatTextView label = itemView.findViewById(R.id.label);
-        AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
-        AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
-        AppCompatImageView apk = itemView.findViewById(R.id.apkMode);
+        AppCompatTextView label = this.itemView.findViewById(R.id.label);
+        AppCompatTextView packageName = this.itemView.findViewById(R.id.packageName);
+        AppCompatTextView lastBackup = this.itemView.findViewById(R.id.lastBackup);
+        AppCompatImageView apk = this.itemView.findViewById(R.id.apkMode);
         AppCompatImageView data = itemView.findViewById(R.id.dataMode);
         AppCompatImageView appType = itemView.findViewById(R.id.appType);
         AppCompatImageView update = itemView.findViewById(R.id.update);
-        AppCompatImageView icon = itemView.findViewById(R.id.icon);
+        AppCompatImageView icon = this.itemView.findViewById(R.id.icon);
 
         public ViewHolder(View view) {
             super(view);
@@ -79,16 +80,36 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
 
         @Override
         public void bindView(@NotNull MainItemX item, @NotNull List<?> list) {
-            final AppInfo app = item.getApp();
-            if (app.getIcon() != null) icon.setImageBitmap(app.getIcon());
-            else icon.setImageResource(R.drawable.ic_placeholder);
-            label.setText(app.getLabel());
-            packageName.setText(app.getPackageName());
-            if (app.getLogInfo() != null) {
-                lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), false));
+            final AppInfoV2 app = item.getApp();
+            final AppMetaInfo meta = app.getAppInfo();
+            if (meta.getApplicationIcon() != null) {
+                this.icon.setImageDrawable(meta.getApplicationIcon());
             } else {
-                lastBackup.setVisibility(View.GONE);
+                this.icon.setImageResource(R.drawable.ic_placeholder);
+            }
+            this.label.setText(meta.getPackageLabel());
+            this.packageName.setText(app.getPackageName());
+            if(app.hasBackups()) {
+                List<BackupItem> backupHistory = app.getBackupHistory();
+                // Todo: Find a proper way to display multiple backups. Just showing the latest for now
+                BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
+                BackupProperties backupProperties = backupInfo.getBackupProperties();
+                this.lastBackup.setText(backupProperties.getBackupDate().toString());
+                // Todo: Be more precise
+                if(backupProperties.hasApk() && backupProperties.hasAppData()) {
+                    this.backupMode.setText(R.string.bothBackedUp);
+                }else if(backupProperties.hasApk()){
+                    this.backupMode.setText(R.string.onlyApkBackedUp);
+                }else if(backupProperties.hasAppData()){
+                    this.backupMode.setText(R.string.onlyDataBackedUp);
+                }else{
+                    this.backupMode.setText("");
+                }
+
+                // --- Handle Update Chip
+                if(app.isInstalled() && backupProperties.getVersionCode() > app.getPackageInfo().versionCode){
+                    this.update.setVisibility(View.VISIBLE);
+                }
             }
             ItemUtils.pickItemAppType(app, appType);
             ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
@@ -99,10 +120,10 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
 
         @Override
         public void unbindView(@NotNull MainItemX item) {
-            label.setText(null);
-            packageName.setText(null);
-            lastBackup.setText(null);
-            icon.setImageDrawable(null);
+            this.label.setText(null);
+            this.packageName.setText(null);
+            this.lastBackup.setText(null);
+            this.icon.setImageDrawable(null);
         }
     }
 }

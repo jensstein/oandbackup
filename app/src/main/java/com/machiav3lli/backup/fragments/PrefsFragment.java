@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.Toast;
@@ -43,9 +42,9 @@ import com.machiav3lli.backup.activities.PrefsActivity;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.utils.PrefUtils;
+import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         Preference pref;
         ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
-        ShellCommands shellCommands = new ShellCommands(requireContext(), users);
+        ShellCommands shellCommands = new ShellCommands(users);
         handleMessages = new HandleMessages(requireContext());
 
         pref = findPreference(Constants.PREFS_THEME);
@@ -97,7 +96,11 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
-        pref.setSummary(FileUtils.getBackupDirectoryPath(requireContext()));
+        try {
+            pref.setSummary(PrefUtils.getStorageRootDir(requireContext()));
+        } catch (PrefUtils.StorageLocationNotConfiguredException e) {
+            pref.setSummary("Unset"); // Todo: Move to language file!
+        }
         pref.setOnPreferenceClickListener(preference -> this.onClickBackupDirectory());
 
         pref = findPreference(Constants.PREFS_QUICK_REBOOT);
@@ -169,21 +172,27 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.prefs_quickreboot)
                 .setMessage(R.string.quickRebootMessage)
-                .setPositiveButton(R.string.dialogYes, (dialog, which) -> shellCommands.quickReboot())
+                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                    try {
+                        shellCommands.quickReboot();
+                    } catch (ShellCommands.ShellActionFailedException e) {
+                        UIUtils.showError(this.requireActivity(), e.getMessage());
+                    }
+                })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show();
         return true;
     }
 
     private boolean onClickBatchDelete() {
-        final ArrayList<AppInfo> deleteList = new ArrayList<>();
+        final ArrayList<AppInfoV2> deleteList = new ArrayList<>();
         StringBuilder message = new StringBuilder();
-        final ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
+        final ArrayList<AppInfoV2> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
         if (!appInfoList.isEmpty()) {
-            for (AppInfo appInfo : appInfoList) {
+            for (AppInfoV2 appInfo : appInfoList) {
                 if (!appInfo.isInstalled()) {
                     deleteList.add(appInfo);
-                    message.append(appInfo.getLabel()).append("\n");
+                    message.append(appInfo.getAppInfo().getPackageLabel()).append("\n");
                 }
             }
         }
@@ -204,29 +213,37 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean launchFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, fragment).addToBackStack(null).commit();
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.prefsFragment, fragment)
+                .addToBackStack(null)
+                .commit();
         return true;
     }
 
-    private void setDefaultDir(Context context, String dir) {
-        FileUtils.setBackupDirectoryPath(context, dir);
-        Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
+    private void setDefaultDir(Context context, Uri dir) {
+        PrefUtils.setStorageRootDir(context, dir);
+        Preference pref = this.findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
-        pref.setSummary(dir);
+        pref.setSummary(dir.toString());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == DEFAULT_DIR_CODE && data != null) {
-            Uri uri = data.getData();
-            if (resultCode == Activity.RESULT_OK && uri != null) {
-                String oldDir = FileUtils.getBackupDirectoryPath(requireContext());
-                String newPath = FileUtils.getAbsolutPath(requireContext(), DocumentsContract.buildDocumentUriUsingTree(uri,
-                        DocumentsContract.getTreeDocumentId(uri)));
-                if (!oldDir.equals(newPath)) {
-                    Log.i(TAG, "setting uri " + newPath);
-                    setDefaultDir(requireContext(), newPath);
+        if (requestCode == PrefsFragment.DEFAULT_DIR_CODE && data != null) {
+            Uri newPath = data.getData();
+            if (resultCode == Activity.RESULT_OK && newPath != null) {
+                String oldDir;
+                try {
+                    oldDir = PrefUtils.getStorageRootDir(this.requireContext());
+                } catch (PrefUtils.StorageLocationNotConfiguredException e) {
+                    // Can be ignored, this is about to set the path
+                    oldDir = "";
+                }
+                if (!oldDir.equals(newPath.toString())) {
+                    Log.i(PrefsFragment.TAG, "setting uri " + newPath);
+                    this.setDefaultDir(this.requireContext(), newPath);
                 }
             }
         }
@@ -238,17 +255,13 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         requireActivity().setResult(RESULT_OK, result);
     }
 
-    public void deleteBackups(List<AppInfo> deleteList) {
+    public void deleteBackups(List<AppInfoV2> deleteList) {
         handleMessages.showMessage(getString(R.string.batchDeleteMessage), "");
-        for (AppInfo appInfo : deleteList) {
-            if (backupDir != null) {
-                handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getLabel());
-                Log.i(TAG, "deleting backup of " + appInfo.getLabel());
-                File backupSubDir = new File(backupDir, appInfo.getPackageName());
-                ShellCommands.deleteBackup(backupSubDir);
-            } else {
-                Log.e(TAG, "PrefsActivity.deleteBackups: backupDir null");
-            }
+        for (AppInfoV2 appInfo : deleteList) {
+            handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getAppInfo().getPackageLabel());
+            Log.i(TAG, "deleting backups of " + appInfo.getAppInfo().getPackageLabel());
+            appInfo.deleteAllBackups();
+            appInfo.refreshBackupHistory();
         }
         handleMessages.endMessage();
         NotificationHelper.showNotification(requireContext(), PrefsActivity.class, (int) System.currentTimeMillis(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size(), false);

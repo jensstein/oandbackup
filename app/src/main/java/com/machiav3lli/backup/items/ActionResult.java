@@ -20,25 +20,31 @@ package com.machiav3lli.backup.items;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class ActionResult {
+    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH);
+    public final AppInfoV2 app;
+    public final LocalDateTime occurrence;
+    public final String message;
+    /**
+     * Backup item for either a newly created backup or the original item of the restored backup.
+     * Can be null, if succeeded is set to false
+     */
+    public final BackupProperties backupProperties;
     public final boolean succeeded;
-    private final AppInfo app;
-    private final Date occurrence;
-    private final String message;
 
-    public ActionResult(AppInfo app, @NotNull String message, boolean succeeded) {
-        this.occurrence = Calendar.getInstance().getTime();
+    public ActionResult(AppInfoV2 app, BackupProperties backupProperties, @NotNull String message, boolean succeeded) {
+        this.occurrence = LocalDateTime.now();
         this.app = app;
         this.succeeded = succeeded;
         this.message = message;
+        this.backupProperties = backupProperties;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     @NotNull

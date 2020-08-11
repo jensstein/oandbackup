@@ -71,7 +71,7 @@ public class LogUtils {
             try {
                 logFile.createNewFile();
             } catch (IOException e) {
-                logFile = new File(FileUtils.getDefaultLogFilePath(context));
+                logFile = new File(FileUtils.getDefaultLogFilePath(context).toString());
                 logFile.createNewFile();
             }
             return logFile;

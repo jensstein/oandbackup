@@ -20,18 +20,25 @@ package com.machiav3lli.backup.handler.action;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.documentfile.provider.DocumentFile;
+
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BackupSpecialAction extends BackupAppAction {
@@ -42,80 +49,74 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
-    public ActionResult run(AppInfo app, int backupMode) {
+    public ActionResult run(AppInfoV2 app, int backupMode) {
         if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
             Log.e(BackupSpecialAction.TAG, String.format("%s", "Special contents don't have APKs to backup. Ignoring"));
         }
         if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
             return super.run(app, AppInfo.MODE_DATA);
         }
-        return new ActionResult(app, "Special backup only backups data, but data was not selected for backup", false);
+        return new ActionResult(app, null, "Special backup only backups data, but data was not selected for backup", false);
     }
 
     @Override
-    protected void backupData(AppInfo app) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         Log.i(BackupSpecialAction.TAG, String.format("%s: Backup special data", app));
-        File backupDirectory = this.getDataBackupFolder(app);
-        // Create the (temporary) directory for the backup data
-        if (!(backupDirectory.exists() || backupDirectory.mkdir())) {
-            String errorMessage = String.format("%s: Could not create temporary backup directory: %s", app, backupDirectory);
-            Log.e(BackupSpecialAction.TAG, String.format("%s: %s", app, errorMessage));
-            throw new BackupFailedException(errorMessage, null);
+        if (!(app.getAppInfo() instanceof SpecialAppMetaInfo)) {
+            throw new IllegalArgumentException("Provided app is not an instance of SpecialAppMetaInfo");
         }
-
-        String command = this.prependUtilbox(String.format(
-                "cp -RLp %s %s",
-                Arrays.stream(app.getFilesList()).map(s -> '"' + s + '"').collect(Collectors.joining(" ")),
-                backupDirectory
-        ));
+        SpecialAppMetaInfo appInfo = (SpecialAppMetaInfo) app.getAppInfo();
+        // Get file list
+        // This can be optimized, because it's known, that special backups won't meet any symlinks
+        // since the list of files is fixed
+        // It would make sense to implement something like TarUtils.addFilepath with SuFileInputStream and
+        List<ShellHandler.FileInfo> filesToBackup = new ArrayList<>(appInfo.getFileList().length);
         try {
-            ShellHandler.runAsRoot(command);
-            this.compress(
-                    backupDirectory,
-                    this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, PrefUtils.isEncryptionEnabled(this.getContext()))
-            );
+            for (String filepath : appInfo.getFileList()) {
+                boolean isDirSource = filepath.endsWith("/");
+                String parent = isDirSource ? new File(filepath).getName() : null;
+                List<ShellHandler.FileInfo> fileInfos = this.getShell().suGetDetailedDirectoryContents(filepath, false, parent);
+                if(isDirSource){
+                    filesToBackup.add(new ShellHandler.FileInfo(parent, ShellHandler.FileInfo.FileType.DIRECTORY, new File(filepath).getParent(), "system", "system", (short) 0770, 0));
+                }
+                filesToBackup.addAll(fileInfos);
+            }
+            this.genericBackupData(BaseAppAction.BACKUP_DIR_DATA, backupInstanceDir.getUri(), filesToBackup, true);
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
             Log.e(BackupSpecialAction.TAG, String.format("%s: Backup Special Data failed: %s", app, error));
             throw new BackupFailedException(error, e);
-        } catch (IOException e) {
-            Log.e(BackupSpecialAction.TAG, String.format("%s: Backup Special Data failed with IOException: %s", app, e));
-            throw new BackupFailedException("IOException", e);
-        } finally {
-            // if the backup is compressed, clean up in any case
-            boolean backupDeleted = FileUtils.deleteQuietly(backupDirectory);
-            Log.d(BackupSpecialAction.TAG, String.format("%s: Uncompressed Backup was deleted: %s", app, backupDeleted));
         }
-    }
-
-    @Override
-    public boolean cleanBackup(AppInfo app, int backupMode) {
-        if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
-            Log.w(BackupSpecialAction.TAG, String.format("%s: Refusing to clean package data of a special app with mode MODE_APK.", app));
-        } else if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-            return super.cleanBackup(app, AppInfo.MODE_DATA);
-        }
-        return false;
+        return true;
     }
 
     // Stubbing some functions, to avoid executing them with potentially dangerous results
     @Override
-    protected void backupPackage(AppInfo app) {
+    protected void backupPackage(AppInfoV2 app, StorageFile backupInstanceDir) {
         // stub
     }
 
     @Override
-    protected void backupDeviceProtectedData(AppInfo app) {
+    protected boolean backupDeviceProtectedData(AppInfoV2 app, StorageFile backupInstanceDir) {
         // stub
+        return false;
     }
 
     @Override
-    protected void backupExternalData(AppInfo app) {
+    protected boolean backupExternalData(AppInfoV2 app, StorageFile backupInstanceDir) {
         // stub
+        return false;
     }
 
     @Override
-    protected void backupObbData(AppInfo app) {
+    protected boolean backupObbData(AppInfoV2 app, StorageFile backupInstanceDir) {
         // stub
+        return false;
+    }
+
+    @Override
+    public void killPackage(String packageName) {
+        // stub
+        // Do not kill system apps
     }
 }

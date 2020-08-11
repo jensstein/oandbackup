@@ -44,7 +44,6 @@ public class MainFragment extends Fragment implements SearchViewController {
     private static final String TAG = Constants.classTag(".MainFragment");
 
     long threadId = -1;
-    File backupDir;
     HandleMessages handleMessages;
     SharedPreferences prefs;
     private FragmentMainBinding binding;
@@ -58,8 +57,6 @@ public class MainFragment extends Fragment implements SearchViewController {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             UIUtils.reShowMessage(handleMessages, threadId);
         }
-        String backupDirPath = FileUtils.getBackupDirectoryPath(requireContext());
-        backupDir = FileUtils.createBackupDir(requireActivity(), backupDirPath);
     }
 
     @Nullable
@@ -77,8 +74,8 @@ public class MainFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextChange(String newText) {
                 requireMainActivity().getMainItemAdapter().filter(newText);
                 requireMainActivity().getMainItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
-                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
+                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                                || mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
 
@@ -86,7 +83,7 @@ public class MainFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextSubmit(String query) {
                 requireMainActivity().getMainItemAdapter().filter(query);
                 requireMainActivity().getMainItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
                                 || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }

@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.dialogs;
 
 import android.app.Dialog;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -33,10 +34,6 @@ import org.jetbrains.annotations.NotNull;
 public class BackupDialogFragment extends DialogFragment {
     private final ActionListener listener;
 
-    public BackupDialogFragment() {
-        this.listener = null;
-    }
-
     public BackupDialogFragment(ActionListener listener) {
         this.listener = listener;
     }
@@ -44,28 +41,34 @@ public class BackupDialogFragment extends DialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
-        final AppInfo app = arguments.getParcelable("app");
+        Bundle arguments = this.getArguments();
+        assert arguments != null;
+        final PackageInfo pi = arguments.getParcelable("package");
+        // Using packageLabel to display something for special backups. pi is null for them!
+        final String packageLabel = arguments.getString("packageLabel");
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity())
+            .setTitle(packageLabel)
+            .setMessage(R.string.backup);
+
+        boolean showApkBtn = pi != null && !pi.applicationInfo.sourceDir.isEmpty();
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.BACKUP;
-        assert app != null;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle(app.getLabel())
-                .setMessage(R.string.backup);
-
-        boolean showApkBtn = app.getSourceDir().length() > 0;
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_APK));
+            // App Button
+            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
+                this.listener.onActionCalled(actionType, AppInfo.MODE_APK);
+            });
+
+            // Both Button
+            int textId = R.string.handleBoth;
+            builder.setPositiveButton(textId, (dialog, id) -> {
+                this.listener.onActionCalled(actionType, AppInfo.MODE_BOTH);
+            });
         }
-        boolean showDataBtn = app.getDataSize() != 0;
-        if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_DATA));
-        }
-        if (showApkBtn && showDataBtn) {
-            int textId = app.isInstalled() ? R.string.handleBoth : R.string.radioBoth;
-            builder.setPositiveButton(textId, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_BOTH));
-        }
+        // Data button (always visible)
+        builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
+            this.listener.onActionCalled(actionType, AppInfo.MODE_DATA);
+        });
         return builder.create();
     }
 }

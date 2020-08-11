@@ -20,17 +20,22 @@ package com.machiav3lli.backup.utils;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.net.Uri;
 import android.os.PowerManager;
+import android.provider.DocumentsContract;
 
 import androidx.biometric.BiometricManager;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
+import com.machiav3lli.backup.handler.StorageFile;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -41,8 +46,11 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class PrefUtils {
     private static final String TAG = Constants.classTag(".PrefUtils");
+    public static final String BACKUP_SUBDIR_NAME = "OABXNG";
     public static final int READ_PERMISSION = 2;
     public static final int WRITE_PERMISSION = 3;
+    public static final int STATS_PERMISSION = 4;
+    public static final int BACKUP_DIR = 5;
 
     public static byte[] getCryptoSalt(Context context) {
         String userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "");
@@ -64,12 +72,56 @@ public class PrefUtils {
         return BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
     }
 
+    /**
+     * Returns the user selected location. Go for `FileUtil.getBackupDir` to get the actual
+     * backup dir's path
+     *
+     * @param context application context
+     * @return user configured location
+     * @throws StorageLocationNotConfiguredException if the value is not set
+     */
+    public static String getStorageRootDir(Context context) throws StorageLocationNotConfiguredException {
+        String location = PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, "");
+        if (location.isEmpty()) {
+            throw new StorageLocationNotConfiguredException();
+        }
+        return location;
+    }
+
+    public static void setStorageRootDir(Context context, Uri value) {
+        Uri fullUri = DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value));
+        PrefUtils.getPrivateSharedPrefs(context)
+                .edit()
+                .putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString())
+                .apply();
+        FileUtils.invalidateBackupLocation();
+    }
+
+
+    public static boolean isStorageDirSetAndOk(Context context) {
+        try {
+            String storageDirPath = PrefUtils.getStorageRootDir(context);
+            if (storageDirPath.isEmpty()) {
+                return false;
+            }
+            StorageFile storageDir = StorageFile.fromUri(context, Uri.parse(storageDirPath));
+            return storageDir.exists();
+        } catch (StorageLocationNotConfiguredException e) {
+            return false;
+        }
+    }
+
     public static SharedPreferences getDefaultSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static SharedPreferences getPrivateSharedPrefs(Context context) {
         return context.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
+    }
+
+    public static void requireStorageLocation(Fragment fragment){
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        fragment.startActivityForResult(intent, PrefUtils.BACKUP_DIR);
     }
 
     public static boolean checkStoragePermissions(Context context) {
@@ -111,5 +163,13 @@ public class PrefUtils {
 
     public static boolean checkBatteryOptimization(Context context, SharedPreferences prefs, PowerManager powerManager) {
         return prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false) || powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
+    }
+
+    public static class StorageLocationNotConfiguredException extends Exception {
+
+        public StorageLocationNotConfiguredException() {
+            super("Storage Location has not been configured");
+        }
+
     }
 }

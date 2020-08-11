@@ -44,6 +44,7 @@ public class SplashActivity extends BaseActivity {
         if (prefs.getBoolean(Constants.PREFS_FIRST_LAUNCH, true)) {
             startActivity(introIntent);
         } else if (PrefUtils.checkStoragePermissions(this) &&
+                PrefUtils.isStorageDirSetAndOk(this) &&
                 PrefUtils.checkUsageStatsPermission(this) &&
                 (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(getPackageName()))) {

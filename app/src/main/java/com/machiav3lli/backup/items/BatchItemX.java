@@ -37,6 +37,9 @@ import java.util.List;
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
 
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
+
+    private boolean isChecked;
+
     public static final Creator<BatchItemX> CREATOR = new Creator<BatchItemX>() {
         @Override
         public BatchItemX createFromParcel(Parcel in) {
@@ -48,23 +51,31 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             return new BatchItemX[size];
         }
     };
-    AppInfo app;
+    AppInfoV2 app;
 
-    public BatchItemX(AppInfo app) {
+    public BatchItemX(AppInfoV2 app) {
         this.app = app;
     }
 
     protected BatchItemX(Parcel in) {
-        app = in.readParcelable(AppInfo.class.getClassLoader());
+        this.app = in.readParcelable(AppInfo.class.getClassLoader());
     }
 
-    public AppInfo getApp() {
+    public AppInfoV2 getApp() {
         return app;
+    }
+
+    public void setChecked(boolean checked) {
+        this.isChecked = checked;
+    }
+
+    public boolean isChecked() {
+        return this.isChecked;
     }
 
     @Override
     public long getIdentifier() {
-        return calculateID(app);
+        return calculateID(this.app);
     }
 
     @Override
@@ -90,7 +101,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(app.getLogInfo(), flags);
+        /*dest.writeParcelable(app.getLogInfo(), flags);
         dest.writeString(app.getLabel());
         dest.writeString(app.getPackageName());
         dest.writeString(app.getVersionName());
@@ -99,15 +110,15 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
         dest.writeInt(app.getVersionCode());
         dest.writeInt(app.getBackupMode());
         dest.writeBooleanArray(new boolean[]{app.isSystem(), app.isInstalled(), app.isChecked()});
-        dest.writeParcelable(app.getIcon(), flags);
+        dest.writeParcelable(app.getIcon(), flags);*/
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
-        AppCompatCheckBox checkbox = itemView.findViewById(R.id.enableCheckbox);
-        AppCompatTextView label = itemView.findViewById(R.id.label);
-        AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
-        AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
-        AppCompatImageView apk = itemView.findViewById(R.id.apkMode);
+        AppCompatCheckBox checkbox = this.itemView.findViewById(R.id.enableCheckbox);
+        AppCompatTextView label = this.itemView.findViewById(R.id.label);
+        AppCompatTextView packageName = this.itemView.findViewById(R.id.packageName);
+        AppCompatTextView lastBackup = this.itemView.findViewById(R.id.lastBackup);
+        AppCompatImageView apk = this.itemView.findViewById(R.id.apkMode);
         AppCompatImageView data = itemView.findViewById(R.id.dataMode);
         AppCompatImageView appType = itemView.findViewById(R.id.appType);
         AppCompatImageView update = itemView.findViewById(R.id.update);
@@ -118,28 +129,46 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
 
         @Override
         public void bindView(@NotNull BatchItemX item, @NotNull List<?> list) {
-            final AppInfo app = item.getApp();
+            final AppInfoV2 app = item.getApp();
 
-            checkbox.setChecked(app.isChecked());
-            label.setText(app.getLabel());
-            packageName.setText(app.getPackageName());
-            if (app.getLogInfo() != null) {
+            this.checkbox.setChecked(item.isChecked());
+            this.label.setText(app.getAppInfo().getPackageLabel());
+            this.packageName.setText(app.getPackageName());
+            if(app.hasBackups()) {
+                List<BackupItem> backupHistory = app.getBackupHistory();
+                // Todo: Find a proper way to display multiple backups. Just showing the latest for now
+                BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
+                BackupProperties backupProperties = backupInfo.getBackupProperties();
+                // Todo: Be more precise
+                if(backupProperties.hasApk() && backupProperties.hasAppData()) {
+                    this.backupMode.setText(R.string.bothBackedUp);
+                }else if(backupProperties.hasApk()){
+                    this.backupMode.setText(R.string.onlyApkBackedUp);
+                }else if(backupProperties.hasAppData()){
+                    this.backupMode.setText(R.string.onlyDataBackedUp);
+                }else{
+                    this.backupMode.setText("");
+                }
+                if (app.isUpdated()) {
+                    update.setVisibility(View.VISIBLE);
+                } else {
+                    update.setVisibility(View.GONE);
+                }
                 lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), false));
-            } else lastBackup.setVisibility(View.GONE);
-            if (app.isUpdated()) {
-                update.setVisibility(View.VISIBLE);
-            } else update.setVisibility(View.GONE);
+                lastBackup.setText(app.getLatestBackup().getBackupProperties().getBackupDate().toString());
+            }else{
+                lastBackup.setVisibility(View.GONE);
+            }
             ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
             ItemUtils.pickItemAppType(app, appType);
         }
 
         @Override
         public void unbindView(@NotNull BatchItemX item) {
-            checkbox.setText(null);
-            label.setText(null);
-            packageName.setText(null);
-            lastBackup.setText(null);
+            this.checkbox.setText(null);
+            this.label.setText(null);
+            this.packageName.setText(null);
+            this.lastBackup.setText(null);
         }
     }
 }

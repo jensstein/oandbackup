@@ -43,6 +43,11 @@ android {
             versionNameSuffix '-neo'
             minifyEnabled true
         }
+        neotkp {
+            applicationIdSuffix '.neotkp'
+            versionNameSuffix '-neo-tkp'
+            minifyEnabled true
+        }
         debug {
             applicationIdSuffix '.debug'
         }
@@ -93,10 +98,13 @@ dependencies {
     // Libs
     implementation "androidx.room:room-runtime:${versions.room}"
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
+    annotationProcessor "org.projectlombok:lombok:1.18.12"
+    implementation "com.google.code.gson:gson:2.8.6"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
     implementation "com.annimon:stream:${versions.stream}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
     implementation "com.github.topjohnwu.libsu:core:${versions.libsu}"
+    implementation "com.github.topjohnwu.libsu:io:${versions.libsu}"
     implementation "org.apache.commons:commons-compress:${versions.commons_compress}"
     implementation "commons-io:commons-io:${versions.commons_io}"
     implementation "androidx.biometric:biometric:${versions.biometric}"

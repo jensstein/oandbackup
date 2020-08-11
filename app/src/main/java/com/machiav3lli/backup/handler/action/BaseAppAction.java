@@ -17,16 +17,16 @@
  */
 package com.machiav3lli.backup.handler.action;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,38 +54,12 @@ public abstract class BaseAppAction {
         return err.get(err.size() - 1);
     }
 
-    public abstract ActionResult run(AppInfo app, int backupMode);
-
     protected ShellHandler getShell() {
         return this.shell;
     }
 
-    public File getBackupFolder() {
-        return new File(FileUtils.getBackupDirectoryPath(this.context));
-    }
-
-    public File getAppBackupFolder(AppInfo app) {
-        return new File(this.getBackupFolder(), app.getPackageName());
-    }
-
-    public File getDataBackupFolder(AppInfo app) {
-        return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_DATA);
-    }
-
-    public File getExternalFilesBackupFolder(AppInfo app) {
-        return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_EXTERNAL_FILES);
-    }
-
-    public File getObbBackupFolder(AppInfo app) {
-        return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_OBB_FILES);
-    }
-
-    public File getDeviceProtectedFolder(AppInfo app) {
-        return new File(this.getAppBackupFolder(app), BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES);
-    }
-
-    public File getBackupArchive(AppInfo app, String what, boolean isEncrypted) {
-        return new File(String.format("%s/%s.tar.gz%s", this.getAppBackupFolder(app), what, (isEncrypted ? ".enc" : "")));
+    public String getBackupArchiveFilename(String what, boolean isEncrypted) {
+        return what + ".tar.gz" + (isEncrypted ? ".enc" : "");
     }
 
     public String prependUtilbox(String command) {
@@ -97,8 +71,27 @@ public abstract class BaseAppAction {
     }
 
     public abstract static class AppActionFailedException extends Exception {
+        protected AppActionFailedException(String message){
+            super(message);
+        }
         protected AppActionFailedException(String message, Throwable cause) {
             super(message, cause);
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    public void killPackage(String packageName) {
+        try {
+            ApplicationInfo applicationInfo = this.context.getPackageManager().getApplicationInfo(packageName, 0);
+            if (applicationInfo.uid == 1000) {
+                Log.w(BaseAppAction.TAG, "Requested to kill processes of UID 1000. Refusing to kill system's processes!");
+                return;
+            }
+            ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill", applicationInfo.uid));
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(BaseAppAction.TAG, packageName + " does not exist. Cannot kill any processes!");
+        } catch (ShellHandler.ShellCommandFailedException e) {
+            e.printStackTrace();
         }
     }
 }

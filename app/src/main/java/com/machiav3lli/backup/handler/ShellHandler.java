@@ -19,14 +19,27 @@ package com.machiav3lli.backup.handler;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.utils.CommandUtils;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.topjohnwu.superuser.Shell;
+import com.topjohnwu.superuser.io.SuRandomAccessFile;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ShellHandler {
     private static final String TAG = Constants.classTag(".ShellHandler");
@@ -70,8 +83,40 @@ public class ShellHandler {
     }
 
     public String[] suGetDirectoryContents(File path) throws ShellCommandFailedException {
-        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("%s ls %s", this.utilboxPath, path.getAbsolutePath()));
+        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("%s ls \"%s\"", this.utilboxPath, path.getAbsolutePath()));
         return shellResult.getOut().toArray(new String[0]);
+    }
+
+    public List<FileInfo> suGetDetailedDirectoryContents(String path, boolean recursive) throws ShellCommandFailedException {
+        return this.suGetDetailedDirectoryContents(path, recursive, null);
+    }
+
+    public List<FileInfo> suGetDetailedDirectoryContents(String path, boolean recursive, @Nullable String parent) throws ShellCommandFailedException {
+        // Expecting something like this (with whitespace)
+        // "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
+        // Special case:
+        // "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
+        Shell.Result shellResult = ShellHandler.runAsRoot(String.format("%s ls -Al \"%s\"", this.utilboxPath, path));
+        final String relativeParent = parent != null ? parent : "";
+        ArrayList<FileInfo> result = shellResult.getOut().stream()
+                .filter(line -> !line.isEmpty())
+                .filter(line -> !line.startsWith("total"))
+                .filter(line -> ShellHandler.splitWithoutEmptyValues(line, " ", 0).length > 7)
+                .map(line -> FileInfo.fromLsOOutput(line, relativeParent, path))
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (recursive) {
+            FileInfo[] directories = result.stream()
+                    .filter(fileInfo -> fileInfo.filetype.equals(FileInfo.FileType.DIRECTORY))
+                    .toArray(FileInfo[]::new);
+            for (FileInfo dir : directories) {
+                result.addAll(this.suGetDetailedDirectoryContents(
+                        dir.getAbsolutePath(),
+                        true,
+                        parent != null ? parent + '/' + dir.getFilename() : dir.getFilename()
+                ));
+            }
+        }
+        return result;
     }
 
     /**
@@ -114,6 +159,71 @@ public class ShellHandler {
         this.utilboxPath = utilboxPath;
     }
 
+    static String[] splitWithoutEmptyValues(String str, String regex, int limit) {
+        String[] split = Arrays.stream(str.split(regex)).filter(s -> !s.isEmpty()).toArray(String[]::new);
+        // add one to the limit because limit is not meant to count from zero
+        int targetSize = limit > 0 ? Math.min(split.length, limit + 1) : split.length;
+        String[] result = new String[targetSize];
+        System.arraycopy(split, 0, result, 0, targetSize);
+        for (int i = targetSize; i < split.length; i++) {
+            result[result.length - 1] += String.format("%s%s", regex, split[i]);
+        }
+        return result;
+    }
+
+    public static boolean isFileNotFoundException(@NotNull ShellCommandFailedException ex) {
+        List<String> err = ex.getShellResult().getErr();
+        return (!err.isEmpty() && err.get(0).toLowerCase().contains("no such file or directory"));
+    }
+
+    @SuppressWarnings("resource")
+    public static void quirkLibsuReadFileWorkaround(FileInfo inputFile, OutputStream output) throws IOException {
+        final short maxRetries = 10;
+        SuRandomAccessFile in = SuRandomAccessFile.open(inputFile.getAbsolutePath(), "r");
+        byte[] buf = new byte[TarUtils.BUFFERSIZE];
+        long readOverall = 0;
+        int retriesLeft = maxRetries;
+        while (true) {
+            int read = in.read(buf);
+            if (0 > read && inputFile.getFilesize() > readOverall) {
+                // For some reason, SuFileInputStream throws eof much to early on slightly bigger files
+                // This workaround detects the unfinished file like the tar archive does (it tracks
+                // the written amount of bytes, too because it needs to match the header)
+                // As side effect the archives slightly differ in size because of the flushing mechanism.
+                if (0 >= retriesLeft) {
+                    Log.e(ShellHandler.TAG, String.format(
+                            "Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?", maxRetries));
+                    throw new IOException(String.format(
+                            "Could not read expected amount of input bytes %d; stopped after %d tries at %d",
+                            inputFile.getFilesize(), maxRetries, readOverall
+                    ));
+                }
+                Log.w(ShellHandler.TAG, String.format(
+                        "SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
+                        readOverall, inputFile.getFilesize() - readOverall, retriesLeft
+                ));
+                // Reopen the file to reset eof flag
+                in.close();
+                in = SuRandomAccessFile.open(inputFile.getAbsolutePath(), "r");
+                in.seek(readOverall);
+                // Reduce the retries
+                retriesLeft--;
+                continue;
+            }
+            if (0 > read) {
+                break;
+            }
+            output.write(buf, 0, read);
+            readOverall += read;
+            // successful write, resetting retries
+            retriesLeft = maxRetries;
+        }
+    }
+
+    public static void quirkLibsuWriteFileWorkaround() {
+    }
+
+
     public interface RunnableShellCommand {
         Shell.Job runCommand(String... commands);
     }
@@ -154,6 +264,184 @@ public class ShellHandler {
 
         public String getTriedBinaries() {
             return this.triedBinaries;
+        }
+    }
+
+    public static class FileInfo {
+        private static final Pattern PATTERN_LINKSPLIT = Pattern.compile(" -> ");
+
+        public enum FileType {
+            REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
+        }
+
+        private final String filepath;
+        private final FileType filetype;
+        private final String absolutePath;
+        private final String owner;
+        private final String group;
+        private final short filemode;
+        private final long filesize;
+        private String linkName;
+
+        public FileInfo(
+                @NotNull final String filepath,
+                @NotNull final FileType filetype,
+                @NotNull final String absoluteParent,
+                @NotNull final String owner,
+                @NotNull final String group,
+                final short filemode,
+                final long filesize) {
+            this.filepath = filepath;
+            this.filetype = filetype;
+            this.absolutePath = absoluteParent + '/' + new File(filepath).getName();
+            this.owner = owner;
+            this.group = group;
+            this.filemode = filemode;
+            this.filesize = filesize;
+        }
+
+        /**
+         * Create an instance of FileInfo from a line of the output from
+         * `ls -AofF`
+         *
+         * @param lsLine single output line of `ls -Al`
+         * @return an instance of FileInfo
+         */
+        public static FileInfo fromLsOOutput(String lsLine, String parentPath, String absoluteParent) {
+            // Format
+            // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
+            // [5] mdate, [6] mtime, [7] filename
+            String[] tokens = ShellHandler.splitWithoutEmptyValues(lsLine, " ", 7);
+            String filepath;
+            final String owner = tokens[2];
+            final String group = tokens[3];
+            // If ls was executed with a file as parameter, the full path is echoed. This is not
+            // good for processing. Removing the absolute parent and setting the parent to be the parent
+            // and not the file itself
+            if (tokens[7].startsWith(absoluteParent)) {
+                absoluteParent = new File(absoluteParent).getParent();
+                tokens[7] = tokens[7].substring(absoluteParent.length() + 1);
+            }
+            if (parentPath == null || parentPath.isEmpty()) {
+                filepath = tokens[7];
+            } else {
+                filepath = parentPath + '/' + tokens[7];
+            }
+            short filemode;
+            try {
+                Set<PosixFilePermission> posixFilePermissions = PosixFilePermissions.fromString(tokens[0].substring(1));
+                filemode = FileUtils.translatePosixPermissionToMode(posixFilePermissions);
+            } catch (IllegalArgumentException e) {
+                // Happens on cache and code_cache dir because of sticky bits
+                // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
+                // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 code_cache
+                // These will be filtered out later, so don't print a warning here
+                // Downside: For all other directories with these names, the warning is also hidden
+                // This can be problematic for system packages, but for apps these bits do not
+                // make any sense.
+                if (filepath.equals("cache") || filepath.equals("code_cache")) {
+                    // Fall back to the known value of these directories
+                    filemode = 0771;
+                } else {
+                    // For all other directories use 0600 and for files 0700
+                    if (tokens[0].charAt(0) == 'd') {
+                        filemode = 0660;
+                    } else {
+                        filemode = 0700;
+                    }
+                    Log.w(ShellHandler.TAG, String.format(
+                            "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
+                            tokens[0], filemode, filepath, absoluteParent)
+                    );
+                }
+            }
+            String linkName = null;
+            long fileSize = 0;
+            FileType type;
+            switch (tokens[0].charAt(0)) {
+                case 'd':
+                    type = FileType.DIRECTORY; break;
+                case 'l':
+                    type = FileType.SYMBOLIC_LINK;
+                    String[] nameAndLink = FileInfo.PATTERN_LINKSPLIT.split(filepath);
+                    filepath = nameAndLink[0];
+                    linkName = nameAndLink[1];
+                    break;
+                case 'p':
+                    type = FileType.NAMED_PIPE; break;
+                case 's':
+                    type = FileType.SOCKET; break;
+                case 'b':
+                    type = FileType.BLOCK_DEVICE; break;
+                case 'c':
+                    type = FileType.CHAR_DEVICE; break;
+                case '-':
+                default:
+                    type = FileType.REGULAR_FILE;
+                    fileSize = Long.parseLong(tokens[4]);
+                    break;
+            }
+            FileInfo result = new FileInfo(filepath, type, absoluteParent, owner, group, filemode, fileSize);
+            result.linkName = linkName;
+            return result;
+        }
+
+        public static FileInfo fromLsOOutput(String lsLine, String absoluteParent) {
+            return FileInfo.fromLsOOutput(lsLine, "", absoluteParent);
+        }
+
+        public FileType getFiletype() {
+            return this.filetype;
+        }
+
+        /**
+         * Returns the filepath, relative to the original location
+         *
+         * @return relative filepath
+         */
+        public String getFilepath() {
+            return this.filepath;
+        }
+
+        public String getFilename() {
+            return new File(this.filepath).getName();
+        }
+
+        public String getAbsolutePath() {
+            return this.absolutePath;
+        }
+
+        public String getLinkName() {
+            return this.linkName;
+        }
+
+        public String getOwner() {
+            return this.owner;
+        }
+
+        public String getGroup() {
+            return this.group;
+        }
+
+        public short getFilemode() {
+            return this.filemode;
+        }
+
+        public long getFilesize() {
+            return this.filesize;
+        }
+
+        @NotNull
+        @Override
+        public String toString() {
+            return "FileInfo{" +
+                    "filepath='" + this.filepath + '\'' +
+                    ", filetype=" + this.filetype +
+                    ", filemode=" + Integer.toOctalString(this.filemode) +
+                    ", filesize=" + this.filesize +
+                    ", absolutePath='" + this.absolutePath + '\'' +
+                    ", linkName='" + this.linkName + '\'' +
+                    '}';
         }
     }
 }

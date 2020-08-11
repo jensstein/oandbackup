@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
+import android.app.usage.StorageStats;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -44,13 +46,16 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.SheetAppBinding;
 import com.machiav3lli.backup.dialogs.BackupDialogFragment;
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment;
-import com.machiav3lli.backup.dialogs.ShareDialogFragment;
+import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppMetaInfo;
+import com.machiav3lli.backup.items.BackupItem;
+import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
@@ -61,15 +66,16 @@ import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     private static final String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
+    AppInfoV2 app;
+    HandleMessages handleMessages;
+    ShellCommands shellCommands;
+    File backupDir;
     int position;
-    private AppInfo app;
-    private HandleMessages handleMessages;
-    private ShellCommands shellCommands;
-    private File backupDir;
     private SheetAppBinding binding;
 
     public AppSheet(MainItemX item, Integer position) {
@@ -78,11 +84,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     public int getPosition() {
-        return position;
+        return this.position;
     }
 
     public String getPackageName() {
-        return app.getPackageName();
+        return this.app.getPackageName();
     }
 
     @NonNull
@@ -97,9 +103,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         });
         handleMessages = new HandleMessages(requireContext());
         ArrayList<String> users = savedInstanceState != null ? savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) : new ArrayList<>();
-        shellCommands = new ShellCommands(requireContext(), users);
-        String backupDirPath = FileUtils.getBackupDirectoryPath(requireContext());
-        backupDir = FileUtils.createBackupDir(getActivity(), backupDirPath);
+        shellCommands = new ShellCommands(users);
         return sheet;
     }
 
@@ -109,7 +113,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding = null;
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = SheetAppBinding.inflate(inflater, container, false);
@@ -133,73 +136,128 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     private void setupChips(boolean update) {
-        if (app.getLogInfo() == null) {
-            UIUtils.setVisibility(binding.delete, View.GONE, update);
-            UIUtils.setVisibility(binding.share, View.GONE, update);
-            UIUtils.setVisibility(binding.restore, View.GONE, update);
+        if (this.app.hasBackups()) {
+            UIUtils.setVisibility(this.binding.delete, View.VISIBLE, update);
+            // Sharing is not possible at the moment
+            UIUtils.setVisibility(this.binding.share, View.GONE, update);
+            // Todo: Verify the effect
+            // UIUtils.setVisibility(this.binding.restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.restore, View.VISIBLE, update);
         } else {
-            UIUtils.setVisibility(binding.delete, View.VISIBLE, update);
-            UIUtils.setVisibility(binding.share, View.VISIBLE, update);
-            UIUtils.setVisibility(binding.restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.delete, View.GONE, update);
+            UIUtils.setVisibility(this.binding.share, View.GONE, update);
+            UIUtils.setVisibility(this.binding.restore, View.GONE, update);
         }
-        if (app.isInstalled()) {
-            UIUtils.setVisibility(binding.enablePackage, app.isDisabled() ? View.VISIBLE : View.GONE, update);
-            UIUtils.setVisibility(binding.disablePackage, app.isDisabled() ? View.GONE : View.VISIBLE, update);
-            UIUtils.setVisibility(binding.uninstall, View.VISIBLE, update);
-            UIUtils.setVisibility(binding.backup, View.VISIBLE, update);
+        if (this.app.isInstalled()) {
+            UIUtils.setVisibility(this.binding.enablePackage, this.app.isDisabled() ? View.VISIBLE : View.GONE, update);
+            UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.uninstall, View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.backup, View.VISIBLE, update);
         } else {
-            UIUtils.setVisibility(binding.uninstall, View.GONE, update);
-            UIUtils.setVisibility(binding.backup, View.GONE, update);
-            UIUtils.setVisibility(binding.enablePackage, View.GONE, update);
-            UIUtils.setVisibility(binding.disablePackage, View.GONE, update);
+            // Special app is not installed but backup should be possible... maybe a check of the backup is really
+            // possible on the device could be an indicator for `isInstalled()` of special packages
+            if (!this.app.getAppInfo().isSpecial()) {
+                UIUtils.setVisibility(this.binding.backup, View.GONE, update);
+            }
+            UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
+            UIUtils.setVisibility(this.binding.enablePackage, View.GONE, update);
+            UIUtils.setVisibility(this.binding.disablePackage, View.GONE, update);
         }
-        if (app.isSystem()) UIUtils.setVisibility(binding.uninstall, View.GONE, update);
+        if (this.app.getAppInfo().isSystem()) {
+            UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
+        }
     }
 
     private void setupAppInfo(boolean update) {
-        if (app.getIcon() != null) binding.icon.setImageBitmap(app.getIcon());
-        else binding.icon.setImageResource(R.drawable.ic_placeholder);
-        binding.label.setText(app.getLabel());
-        binding.packageName.setText(app.getPackageName());
-        if (app.isSpecial()) {
-            binding.appType.setText(R.string.apptype_special);
-        } else if (app.isSystem()) {
-            binding.appType.setText(R.string.apptype_system);
+        AppMetaInfo appInfo = this.app.getAppInfo();
+        if (appInfo.getApplicationIcon() != null) {
+            this.binding.icon.setImageDrawable(appInfo.getApplicationIcon());
         } else {
-            binding.appType.setText(R.string.apptype_user);
+            this.binding.icon.setImageResource(R.drawable.ic_placeholder);
         }
-        if (app.isSpecial()) {
-            UIUtils.setVisibility(binding.appSizeLine, View.GONE, update);
-            UIUtils.setVisibility(binding.dataSizeLine, View.GONE, update);
-            UIUtils.setVisibility(binding.cacheSizeLine, View.GONE, update);
-            UIUtils.setVisibility(binding.appSplitsLine, View.GONE, update);
+        this.binding.label.setText(appInfo.getPackageLabel());
+        this.binding.packageName.setText(this.app.getPackageName());
+        if (appInfo.isSystem()) {
+            this.binding.appType.setText(R.string.apptype_system);
         } else {
-            binding.appSize.setText(Formatter.formatFileSize(requireContext(), app.getAppSize()));
-            binding.dataSize.setText(Formatter.formatFileSize(requireContext(), app.getDataSize()));
-            binding.cacheSize.setText(Formatter.formatFileSize(requireContext(), app.getCacheSize()));
-            if (app.getCacheSize() == 0)
-                UIUtils.setVisibility(binding.wipeCache, View.GONE, update);
+            this.binding.appType.setText(R.string.apptype_user);
         }
-        if (app.isSplit()) binding.appSplits.setText(R.string.dialogYes);
-        else binding.appSplits.setText(R.string.dialogNo);
-        if (app.isUpdated()) {
-            String updatedVersionString = app.getLogInfo().getVersionName() + " (" + app.getVersionName() + ")";
-            binding.versionName.setText(updatedVersionString);
-            binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_accent));
+        if (appInfo.isSpecial()) {
+            UIUtils.setVisibility(this.binding.appSizeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.dataSizeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.cacheSizeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.appSplitsLine, View.GONE, update);
         } else {
-            binding.versionName.setText(app.getVersionName());
-            binding.versionName.setTextColor(binding.packageName.getTextColors());
+            try {
+                StorageStats storageStats = BackendController.getPackageStorageStats(this.requireContext(), appInfo.getPackageName());
+                this.binding.appSize.setText(Formatter.formatFileSize(this.requireContext(), storageStats.getAppBytes()));
+                this.binding.dataSize.setText(Formatter.formatFileSize(this.requireContext(), storageStats.getDataBytes()));
+                this.binding.cacheSize.setText(Formatter.formatFileSize(this.requireContext(), storageStats.getCacheBytes()));
+                if (storageStats.getCacheBytes() == 0) {
+                    UIUtils.setVisibility(this.binding.wipeCache, View.GONE, update);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e(AppSheet.TAG, String.format("Package %s is not installed? Exception: %s", appInfo.getPackageName(), e));
+            }
         }
-        if (app.getLogInfo() != null) {
-            UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
-            binding.lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), true));
-        } else UIUtils.setVisibility(binding.lastBackupLine, View.GONE, update);
-        ItemUtils.pickSheetBackupMode(app.getBackupMode(), binding.backupMode, binding.backupModeLine, update);
-        if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK) {
-            UIUtils.setVisibility(binding.encryptedLine, View.VISIBLE, update);
-            binding.encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
-        } else UIUtils.setVisibility(binding.encryptedLine, View.GONE, update);
-        ItemUtils.pickSheetAppType(app, binding.appType);
+        if (this.app.getApkSplits() != null) {
+            this.binding.appSplits.setText(R.string.dialogYes);
+        } else {
+            this.binding.appSplits.setText(R.string.dialogNo);
+        }
+
+        // Set some values which might be overwritten
+        this.binding.versionName.setText(appInfo.getVersionName());
+
+        // Todo: Support more versions
+        if (this.app.hasBackups()) {
+            List<BackupItem> backupHistory = this.app.getBackupHistory();
+            BackupItem backup = backupHistory.get(backupHistory.size() - 1);
+            BackupProperties backupProperties = backup.getBackupProperties();
+
+            if (this.app.isUpdated()) {
+                String updatedVersionString = backupProperties.getVersionName() + " (" + this.app.getAppInfo().getVersionName() + ")";
+                binding.versionName.setText(updatedVersionString);
+                binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_accent));
+            } else {
+                binding.versionName.setText(this.app.getAppInfo().getVersionName());
+                binding.versionName.setTextColor(binding.packageName.getTextColors());
+            }
+
+            if (backupProperties.getVersionCode() != 0
+                    && appInfo.getVersionCode() > backupProperties.getVersionCode()) {
+                this.binding.versionName.setText(String.format("%s -> %s", appInfo.getVersionName(), backupProperties.getVersionName()));
+            }
+            UIUtils.setVisibility(this.binding.lastBackupLine, View.VISIBLE, update);
+            this.binding.lastBackup.setText(backupProperties.getBackupDate().toString());
+
+            // Todo: Be more precise
+            if (backupProperties.hasApk() && backupProperties.hasAppData()) {
+                UIUtils.setVisibility(this.binding.backupModeLine, View.VISIBLE, update);
+                this.binding.backupMode.setText(R.string.bothBackedUp);
+            } else if (backupProperties.hasApk()) {
+                UIUtils.setVisibility(this.binding.backupModeLine, View.VISIBLE, update);
+                this.binding.backupMode.setText(R.string.onlyApkBackedUp);
+            } else if (backupProperties.hasAppData()) {
+                UIUtils.setVisibility(this.binding.backupModeLine, View.VISIBLE, update);
+                this.binding.backupMode.setText(R.string.onlyDataBackedUp);
+            } else {
+                this.binding.backupMode.setText("");
+            }
+
+            UIUtils.setVisibility(this.binding.encryptedLine, View.VISIBLE, update);
+            if (backupProperties.getCipherType() == null || backupProperties.getCipherType().isEmpty()) {
+                this.binding.encrypted.setText(R.string.dialogNo);
+            } else {
+                this.binding.encrypted.setText(backupProperties.getCipherType());
+            }
+
+        } else {
+            UIUtils.setVisibility(this.binding.lastBackupLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.backupModeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.encryptedLine, View.GONE, update);
+        }
+        ItemUtils.pickSheetAppType(this.app, this.binding.appType);
     }
 
     private void setupOnClicks(AppSheet fragment) {
@@ -207,61 +265,80 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.exodusReport.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.exodusUrl(app.getPackageName())))));
         binding.appInfo.setOnClickListener(v -> {
             Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.fromParts("package", app.getPackageName(), null));
-            startActivity(intent);
+            intent.setData(Uri.fromParts("package", this.app.getPackageName(), null));
+            this.startActivity(intent);
         });
-        binding.wipeCache.setOnClickListener(v -> {
+        this.binding.wipeCache.setOnClickListener(v -> {
             try {
-                Log.i(AppSheet.TAG, String.format("%s: Wiping cache", app));
-                String command = ShellCommands.wipeCacheCommand(requireContext(), app);
-                ShellHandler.runAsRoot(command);
-                requireMainActivity().refreshWithAppSheet();
-            } catch (ShellHandler.ShellCommandFailedException e) {
+                Log.i(AppSheet.TAG, String.format("%s: Wiping cache", this.app));
+                ShellCommands.wipeCache(this.requireContext(), this.app);
+                this.requireMainActivity().refreshWithAppSheet();
+            } catch (ShellCommands.ShellActionFailedException e) {
                 // Not a critical issue
-                Log.w(AppSheet.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
+                String errorMessage;
+                if (e.getCause() instanceof ShellHandler.ShellCommandFailedException) {
+                    errorMessage = String.join(" ", ((ShellHandler.ShellCommandFailedException) e.getCause()).getShellResult().getErr());
+                } else {
+                    errorMessage = e.getCause().getMessage();
+                }
+                Log.w(AppSheet.TAG, "Cache couldn't be deleted: " + errorMessage);
             }
         });
         binding.backup.setOnClickListener(v -> {
             Bundle arguments = new Bundle();
-            arguments.putParcelable("app", app);
+            arguments.putParcelable("package", this.app.getPackageInfo());
             BackupDialogFragment dialog = new BackupDialogFragment(fragment);
             dialog.setArguments(arguments);
             dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
         });
         binding.restore.setOnClickListener(v -> {
-            if (!app.isInstalled() && app.getBackupMode() == AppInfo.MODE_DATA) {
+            BackupItem backup = this.app.getLatestBackup();
+            BackupProperties properties = backup.getBackupProperties();
+            if (!this.app.getAppInfo().isSpecial()
+                    && !this.app.isInstalled()
+                    && !properties.hasApk()
+                    && properties.hasAppData()) {
                 Toast.makeText(getContext(), getString(R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show();
             } else {
                 Bundle arguments = new Bundle();
-                arguments.putParcelable("app", app);
+                arguments.putParcelable("appinfo", this.app.getAppInfo());
+                arguments.putParcelable("backup", properties);
+                arguments.putBoolean("isInstalled", this.app.isInstalled());
                 RestoreDialogFragment dialog = new RestoreDialogFragment(fragment);
                 dialog.setArguments(arguments);
                 dialog.show(requireActivity().getSupportFragmentManager(), "restoreDialog");
             }
         });
-        binding.delete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
-                .setTitle(app.getLabel())
+        binding.delete.setOnClickListener(v -> new AlertDialog.Builder(this.requireContext())
+                .setTitle(this.app.getAppInfo().getPackageLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
-                    Thread deleteBackupThread = new Thread(() -> {
-                        handleMessages.showMessage(app.getLabel(), getString(R.string.deleteBackup));
-                        if (backupDir != null)
-                            ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
-                        handleMessages.endMessage();
-                        requireMainActivity().refreshWithAppSheet();
-                    });
-                    deleteBackupThread.start();
-                    Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
+                    new Thread(() -> {
+                        this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.deleteBackup));
+                        if (!this.app.hasBackups()) {
+                            Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
+                            return;
+                        }
+                        // Latest backup only currently
+                        this.app.delete(this.requireContext(), this.app.getLatestBackup());
+                        this.handleMessages.endMessage();
+                        this.requireMainActivity().refreshWithAppSheet();
+                    }).start();
                 })
                 .setNegativeButton(R.string.dialogNo, null)
                 .show());
+        binding.share.setVisibility(View.GONE);
         binding.share.setOnClickListener(v -> {
+            // Todo: How to share multiple files? Tar them? Zip them? Why sharing?
+            /*
+            File backupDir = FileUtils.createBackupDir(getActivity(), FileUtils.getDefaultBackupDirPath(requireContext()));
+            File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
             String dataPath = app.getLogInfo().getDataDir();
             dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
             File apk = new File(backupDir, app.getPackageName() + File.separator + app.getLogInfo().getApk());
             File data = new File(backupDir, app.getPackageName() + File.separator + dataPath + ".zip");
             Bundle arguments = new Bundle();
-            arguments.putString("label", app.getLabel());
+            arguments.putString("label", app.getAppInfo().getPackageLabel());
             switch (app.getBackupMode()) {
                 case AppInfo.MODE_APK:
                     arguments.putSerializable("apk", apk);
@@ -279,23 +356,31 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             ShareDialogFragment shareDialog = new ShareDialogFragment();
             shareDialog.setArguments(arguments);
             shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
+            */
         });
         binding.enablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), true));
         binding.disablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), false));
         binding.uninstall.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
-                .setTitle(app.getLabel())
+                .setTitle(this.app.getAppInfo().getPackageLabel())
                 .setMessage(R.string.uninstallDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                     Thread uninstallThread = new Thread(() -> {
-                        Log.i(TAG, "uninstalling " + app.getLabel());
-                        handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
-                        int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
-                        handleMessages.endMessage();
-                        if (ret == 0) {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
-                        } else {
-                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
-                            UIUtils.showErrors(requireActivity());
+                        Log.i(TAG, "uninstalling " + this.app.getAppInfo().getPackageLabel());
+                        this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.uninstallProgress));
+                        try {
+                            this.shellCommands.uninstall(this.app.getPackageName(), this.app.getApkPath(), this.app.getDataDir(), this.app.getAppInfo().isSystem());
+                            NotificationHelper.showNotification(
+                                    this.getContext(), MainActivityX.class, this.notificationId++,
+                                    this.app.getAppInfo().getPackageLabel(),
+                                    this.getString(R.string.uninstallSuccess), true
+                            );
+                        } catch (ShellCommands.ShellActionFailedException e) {
+                            NotificationHelper.showNotification(
+                                    this.getContext(), MainActivityX.class, this.notificationId++,
+                                    this.app.getAppInfo().getPackageLabel(),
+                                    this.getString(R.string.uninstallFailure), true
+                            );
+                            UIUtils.showError(this.requireActivity(), e.getMessage());
                         }
                         requireMainActivity().refreshWithAppSheet();
                     });
@@ -306,36 +391,49 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     @Override
-    public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
+    public void onActionCalled(BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            new BackupTask(app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
+            new BackupTask(this.app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
             requireMainActivity().refreshWithAppSheet();
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            new RestoreTask(app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
-            requireMainActivity().refreshWithAppSheet();
-        } else
+            // Latest Backup for now
+            BackupItem selectedBackup = this.app.getLatestBackup();
+            new RestoreTask(this.app, this.handleMessages, this.requireMainActivity(), this.backupDir,
+                    selectedBackup.getBackupProperties(), selectedBackup.getBackupLocation(),
+                    MainActivityX.getShellHandlerInstance(), mode).execute();
+            this.requireMainActivity().refreshWithAppSheet();
+        } else {
             Log.e(TAG, "unknown actionType: " + actionType);
+        }
     }
 
     public void displayDialogEnableDisable(final String packageName, final boolean enable) {
         String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
-        final ArrayList<String> selectedUsers = new ArrayList<>();
-        final ArrayList<String> userList = (ArrayList<String>) shellCommands.getUsers();
-        CharSequence[] users = userList.toArray(new CharSequence[0]);
-        new AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
-                    if (checked) {
-                        selectedUsers.add(userList.get(chosen));
-                    } else selectedUsers.remove(userList.get(chosen));
-                })
-                .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
-                    shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                    requireMainActivity().refreshWithAppSheet();
-                })
-                .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
-                })
-                .show();
+        try {
+            final ArrayList<String> userList = (ArrayList<String>) this.shellCommands.getUsers();
+            CharSequence[] users = userList.toArray(new CharSequence[0]);
+            final ArrayList<String> selectedUsers = new ArrayList<>();
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(title)
+                    .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
+                        if (checked) {
+                            selectedUsers.add(userList.get(chosen));
+                        } else selectedUsers.remove(userList.get(chosen));
+                    })
+                    .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
+                        try {
+                            this.shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
+                            this.requireMainActivity().refreshWithAppSheet();
+                        } catch (ShellCommands.ShellActionFailedException e) {
+                            UIUtils.showError(this.requireActivity(), e.getMessage());
+                        }
+                    })
+                    .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
+                    })
+                    .show();
+        } catch (ShellCommands.ShellActionFailedException e) {
+            UIUtils.showError(this.requireActivity(), e.getMessage());
+        }
     }
 
     private MainActivityX requireMainActivity() {

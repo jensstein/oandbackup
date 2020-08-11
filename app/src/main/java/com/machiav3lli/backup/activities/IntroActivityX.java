@@ -74,13 +74,7 @@ public class IntroActivityX extends BaseActivity {
                     break;
                 }
                 case R.id.permissionsFragment: {
-                    binding.positiveButton.setVisibility(View.GONE);
-                    PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    if (PrefUtils.checkStoragePermissions(this) &&
-                            PrefUtils.checkUsageStatsPermission(this) &&
-                            (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
-                                    || powerManager.isIgnoringBatteryOptimizations(getPackageName())))
-                        moveTo(3);
+                    //this.handlePermissionsFragment();
                     break;
                 }
             }

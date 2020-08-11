@@ -27,17 +27,17 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.schedules.db.Schedule;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import com.machiav3lli.backup.items.AppInfoV2;
 
-public class ItemUtils {
+public final class ItemUtils {
     private static final String TAG = Constants.classTag(".ItemUtils");
 
-    public static long calculateID(AppInfo app) {
+    public static long calculateID(AppInfoV2 app) {
         return app.getPackageName().hashCode()
                 + app.getBackupMode()
                 + (app.isDisabled() ? 0 : 1)
@@ -63,12 +63,16 @@ public class ItemUtils {
         return dateFormat.format(date);
     }
 
-    public static void pickSheetAppType(AppInfo app, AppCompatTextView text) {
+    public static long calculateID(AppInfoV2 app) {
+        return app.getPackageName().hashCode();
+    }
+
+    public static void pickSheetAppType(AppInfoV2 app, AppCompatTextView text) {
         int color;
         if (app.isInstalled()) {
-            if (app.isSpecial()) {
+            if (app.getAppInfo().isSpecial()) {
                 color = Color.rgb(144, 69, 254);
-            } else if (app.isSystem()) {
+            } else if (app.getAppInfo().isSystem()) {
                 color = Color.rgb(69, 144, 254);
             } else {
                 color = Color.rgb(254, 144, 69);
@@ -76,23 +80,25 @@ public class ItemUtils {
             if (app.isDisabled()) {
                 color = Color.DKGRAY;
             }
-        } else color = Color.GRAY;
+        } else {
+            color = Color.GRAY;
+        }
         text.setTextColor(color);
     }
 
     public static void pickSheetBackupMode(int backupMode, AppCompatTextView backup, LinearLayoutCompat backupModeLine, boolean update) {
         switch (backupMode) {
-            case AppInfo.MODE_APK:
+            case AppInfoV2.MODE_APK:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyApkBackedUp);
                 backup.setTextColor(Color.rgb(69, 244, 144));
                 break;
-            case AppInfo.MODE_DATA:
+            case AppInfoV2.MODE_DATA:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyDataBackedUp);
                 backup.setTextColor(Color.rgb(244, 69, 144));
                 break;
-            case AppInfo.MODE_BOTH:
+            case AppInfoV2.MODE_BOTH:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.bothBackedUp);
                 backup.setTextColor(Color.rgb(155, 155, 244));
@@ -103,13 +109,13 @@ public class ItemUtils {
         }
     }
 
-    public static void pickItemAppType(AppInfo app, AppCompatImageView icon) {
+    public static void pickItemAppType(AppInfoV2 app, AppCompatImageView icon) {
         ColorStateList color;
-        if (app.isSpecial()) {
+        if (app.getAppInfo().isSpecial()) {
             color = ColorStateList.valueOf(Color.rgb(144, 69, 254));
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_round_special_24);
-        } else if (app.isSystem()) {
+        } else if (app.getAppInfo().isSystem()) {
             color = ColorStateList.valueOf(Color.rgb(69, 144, 254));
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_outline_system_24);
@@ -129,15 +135,15 @@ public class ItemUtils {
 
     public static void pickItemBackupMode(int backupMode, AppCompatImageView apk, AppCompatImageView data) {
         switch (backupMode) {
-            case AppInfo.MODE_APK:
+            case AppInfoV2.MODE_APK:
                 apk.setVisibility(View.VISIBLE);
                 data.setVisibility(View.GONE);
                 break;
-            case AppInfo.MODE_DATA:
+            case AppInfoV2.MODE_DATA:
                 apk.setVisibility(View.GONE);
                 data.setVisibility(View.VISIBLE);
                 break;
-            case AppInfo.MODE_BOTH:
+            case AppInfoV2.MODE_BOTH:
                 apk.setVisibility(View.VISIBLE);
                 data.setVisibility(View.VISIBLE);
                 break;

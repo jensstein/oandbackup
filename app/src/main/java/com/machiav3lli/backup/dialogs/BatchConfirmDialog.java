@@ -27,6 +27,7 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppMetaInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,13 +41,13 @@ public class BatchConfirmDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
         assert arguments != null;
-        final List<AppInfo> selectedList = arguments.getParcelableArrayList("selectedList");
+        final List<AppMetaInfo> selectedList = arguments.getParcelableArrayList("selectedList");
         boolean backupBoolean = arguments.getBoolean("backupBoolean");
         String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
         StringBuilder message = new StringBuilder();
         assert selectedList != null;
-        for (AppInfo app : selectedList)
-            message.append(app.getLabel()).append("\n");
+        for (AppMetaInfo item : selectedList)
+            message.append(item.getPackageLabel()).append("\n");
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(title);
         builder.setMessage(message.toString().trim());
@@ -63,6 +64,6 @@ public class BatchConfirmDialog extends DialogFragment {
     }
 
     public interface ConfirmListener {
-        void onConfirmed(List<AppInfo> selectedList);
+        void onConfirmed(List<AppMetaInfo> selectedList);
     }
 }

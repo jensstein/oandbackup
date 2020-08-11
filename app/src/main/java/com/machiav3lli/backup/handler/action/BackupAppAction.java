@@ -18,27 +18,34 @@
 package com.machiav3lli.backup.handler.action;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.items.LogFile;
+import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.BackupProperties;
+import com.machiav3lli.backup.utils.BackupBuilder;
+import com.machiav3lli.backup.utils.DocumentHelper;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,95 +58,108 @@ public class BackupAppAction extends BaseAppAction {
         super(context, shell);
     }
 
-    @Override
-    public ActionResult run(AppInfo app, int backupMode) {
-        Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getLabel()));
+    public ActionResult run(AppInfoV2 app, int backupMode) {
+        Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
+        Uri appBackupRootUri = null;
+        try {
+            appBackupRootUri = app.getBackupDir(true);
+        } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+            // Usually, this should never happen, but just in case...
+            Exception realException = new BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e);
+            return new ActionResult(app,
+                    null,
+                    String.format("%s: %s", realException.getClass().getSimpleName(), e.getMessage()),
+                    false
+            );
+        }
+        BackupBuilder backupBuilder = new BackupBuilder(this.getContext(), app.getAppInfo(), appBackupRootUri);
+        StorageFile backupDir = backupBuilder.getBackupPath();
+
+        Log.d(BackupAppAction.TAG, "Killing package to avoid file changes during backup");
+        this.killPackage(app.getPackageName());
+        BackupProperties backupProperties;
         try {
             if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
-                this.backupPackage(app);
+                Log.i(BackupAppAction.TAG, String.format("%s: Backing up package", app));
+                this.backupPackage(app, backupDir);
+                backupBuilder.setHasApk(true);
             }
             if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-                this.backupData(app);
+                Log.i(BackupAppAction.TAG, String.format("%s: Backing up data", app));
+                boolean backupCreated = this.backupData(app, backupDir);
+                backupBuilder.setHasAppData(backupCreated);
                 if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-                    this.backupExternalData(app);
-                    this.backupObbData(app);
+                    backupCreated = this.backupExternalData(app, backupDir);
+                    backupBuilder.setHasExternalData(backupCreated);
+                    backupCreated = this.backupObbData(app, backupDir);
+                    backupBuilder.setHasObbData(backupCreated);
                 }
                 if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
-                    this.backupDeviceProtectedData(app);
+                    backupCreated = this.backupDeviceProtectedData(app, backupDir);
+                    backupBuilder.setHasDevicesProtectedData(backupCreated);
                 }
             }
-            boolean encrypted = !PrefUtils.getDefaultSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "").isEmpty();
-            app.setBackupMode(backupMode);
-            LogFile.writeLogFile(this.getAppBackupFolder(app), app, backupMode, encrypted);
-        } catch (BackupFailedException | Crypto.CryptoSetupException | JSONException | IOException e) {
-            return new ActionResult(
-                    app,
+            if (PrefUtils.isEncryptionEnabled(this.getContext())) {
+                backupBuilder.setCipherType(Crypto.getCipherAlgorithm(this.getContext()));
+            }
+            backupProperties = backupBuilder.createBackupProperties();
+            this.saveBackupProperties(backupDir, backupProperties);
+        } catch (BackupFailedException | Crypto.CryptoSetupException | IOException e) {
+            Log.e(BackupAppAction.TAG, String.format("Backup failed due to %s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            Log.d(BackupAppAction.TAG, "Backup deleted: " + backupBuilder.getBackupPath().delete());
+            return new ActionResult(app,
+                    null,
                     String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
                     false
             );
         }
-        return new ActionResult(app, "", true);
+        Log.i(BackupAppAction.TAG, String.format("%s: Backup done: %s", app, backupProperties));
+        return new ActionResult(app, backupProperties, "", true);
     }
 
-    public boolean cleanBackup(AppInfo app, int backupMode) {
-        boolean successFlag = true;
-        if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
-            successFlag = this.removePackageBackup(app);
-            Log.d(BackupAppAction.TAG, String.format("%s: Removed backup apks: %s", app, successFlag));
+    protected void saveBackupProperties(@NonNull StorageFile backupInstanceDir, @NotNull BackupProperties properties) throws IOException {
+        StorageFile propertiesFile = backupInstanceDir.createFile("application/octet-stream", BackupProperties.PROPERTIES_FILENAME);
+        try (BufferedOutputStream propertiesOut = new BufferedOutputStream(this.getContext().getContentResolver().openOutputStream(propertiesFile.getUri(), "w"))) {
+            propertiesOut.write(properties.toGson().getBytes(StandardCharsets.UTF_8));
         }
-        if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-            boolean isEncrypted = PrefUtils.isEncryptionEnabled(this.getContext());
-
-            boolean lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted).delete();
-            Log.d(BackupAppAction.TAG, String.format("%s: Removed backup data: %s", app, lastResult));
-            successFlag &= lastResult;
-
-            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-                lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, isEncrypted).delete();
-                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup external data: %s", app, lastResult));
-                successFlag &= lastResult;
-
-                lastResult = FileUtils.deleteQuietly(this.getObbBackupFolder(app));
-                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup obb data: %s", app, lastResult));
-                successFlag &= lastResult;
-            }
-
-            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
-                lastResult = this.getBackupArchive(app, BaseAppAction.BACKUP_DIR_DATA, isEncrypted).delete();
-                Log.d(BackupAppAction.TAG, String.format("%s: Removed backup obb data: %s", app, lastResult));
-                successFlag &= lastResult;
-            }
-        }
-        return successFlag;
+        Log.i(BackupAppAction.TAG, String.format("Wrote %s file for backup: %s", BackupProperties.PROPERTIES_FILENAME, properties));
     }
 
-    protected void compress(File filepath, File outputFilename) throws IOException, Crypto.CryptoSetupException {
-        Log.d(BackupAppAction.TAG, "Opening output file for compression: " + outputFilename);
+    protected void createBackupArchive(Uri backupInstanceDir, String what, List<ShellHandler.FileInfo> allFilesToBackup) throws IOException, Crypto.CryptoSetupException {
+        Log.i(BackupAppAction.TAG, String.format("Creating %s backup", what));
+        StorageFile backupDir = StorageFile.fromUri(this.getContext(), backupInstanceDir);
+        String backupFilename = this.getBackupArchiveFilename(what, PrefUtils.isEncryptionEnabled(this.getContext()));
+        StorageFile backupFile = backupDir.createFile("application/gzip", backupFilename);
         String password = PrefUtils.getDefaultSharedPreferences(this.getContext()).getString(Constants.PREFS_PASSWORD, "");
-
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFilename, false));
+        OutputStream outStream = new BufferedOutputStream(this.getContext().getContentResolver().openOutputStream(backupFile.getUri(), "w"));
         if (!password.isEmpty()) {
-            out = Crypto.encryptStream(out, password, PrefUtils.getCryptoSalt(this.getContext()));
+            outStream = Crypto.encryptStream(outStream, password, PrefUtils.getCryptoSalt(this.getContext()));
         }
-        try (TarArchiveOutputStream archive = new TarArchiveOutputStream(new GzipCompressorOutputStream(out))) {
+        try (TarArchiveOutputStream archive = new TarArchiveOutputStream(new GzipCompressorOutputStream(outStream))) {
             archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
-            TarUtils.addFilepath(archive, filepath, "");
+            TarUtils.suAddFiles(archive, allFilesToBackup);
         } finally {
-            Log.d(BackupAppAction.TAG, "Done compressing. Closing " + outputFilename);
-            out.close();
+            Log.d(BackupAppAction.TAG, "Done compressing. Closing " + backupFilename);
+            outStream.close();
         }
     }
 
-    protected void backupPackage(AppInfo app) throws BackupFailedException {
-        Log.i(BackupAppAction.TAG, String.format("%s: Backup package apks", app));
+    protected void copyToBackupArchive(Uri backupInstanceDir, String what, List<ShellHandler.FileInfo> allFilesToBackup) throws IOException {
+        StorageFile backupInstance = StorageFile.fromUri(this.getContext(), backupInstanceDir);
+        StorageFile backupDir = backupInstance.createDirectory(what);
+        DocumentHelper.suRecursiveCopyFileToDocument(this.getContext(), allFilesToBackup, backupDir.getUri());
+    }
+
+    protected void backupPackage(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupAppAction.BackupFailedException {
+        Log.i(BackupAppAction.TAG, String.format("[%s] Backup package apks", app.getPackageName()));
         String[] apksToBackup;
-        if (app.getSplitSourceDirs() == null) {
-            apksToBackup = new String[]{app.getSourceDir()};
+        if (app.getApkSplits() == null) {
+            apksToBackup = new String[]{app.getApkPath()};
         } else {
-            apksToBackup = new String[1 + app.getSplitSourceDirs().length];
-            apksToBackup[0] = app.getSourceDir();
-            System.arraycopy(app.getSplitSourceDirs(), 0, apksToBackup, 1, app.getSplitSourceDirs().length);
-            Log.i(BackupAppAction.TAG, String.format("Package is splitted into %d apks", apksToBackup.length));
+            apksToBackup = new String[1 + app.getApkSplits().length];
+            apksToBackup[0] = app.getApkPath();
+            System.arraycopy(app.getApkSplits(), 0, apksToBackup, 1, app.getApkSplits().length);
+            Log.d(BackupAppAction.TAG, String.format("Package is splitted into %d apks", apksToBackup.length));
         }
 
         Log.d(BackupAppAction.TAG, String.format(
@@ -148,147 +168,132 @@ public class BackupAppAction extends BaseAppAction {
                 apksToBackup.length,
                 Arrays.stream(apksToBackup).map(s -> new File(s).getName()).collect(Collectors.joining(" "))
         ));
-        String command = this.prependUtilbox(
-                String.format(
-                        "cp %s \"%s\"",
-                        Arrays.stream(apksToBackup).map(s -> '"' + s + '"').collect(Collectors.joining(" ")),
-                        this.getAppBackupFolder(app)
-                ));
+
         try {
-            ShellHandler.runAsRoot(command);
-        } catch (ShellHandler.ShellCommandFailedException e) {
-            String error = BaseAppAction.extractErrorMessage(e.getShellResult());
-            Log.e(BackupAppAction.TAG, String.format("%s: Backup APKs failed: %s", app, error));
-            throw new BackupFailedException(error, e);
+            for (String apk : apksToBackup) {
+                DocumentHelper.suCopyFileToDocument(this.getContext().getContentResolver(), apk, backupInstanceDir);
+            }
+        } catch (IOException e) {
+            Log.e(BackupAppAction.TAG, String.format("%s: Backup APKs failed: %s", app, e));
+            throw new BackupFailedException("Could not backup apk", e);
         }
     }
 
-    private void genericBackupData(
-            String type, AppInfo app, File backupDirectory, File sourceDirectory, boolean compress)
-            throws BackupFailedException, Crypto.CryptoSetupException {
-        Log.i(BackupAppAction.TAG, String.format("%s: Backup up %s", app, type));
+    protected boolean genericBackupData(final String backupType, final Uri backupInstanceDir, List<ShellHandler.FileInfo> filesToBackup, boolean compress) throws BackupFailedException, Crypto.CryptoSetupException {
+        Log.i(BackupAppAction.TAG, String.format("Backing up %s got %d files to backup", backupType, filesToBackup.size()));
 
-        String[] dirsToBackup;
+        if (filesToBackup.isEmpty()) {
+            Log.i(BackupAppAction.TAG, String.format("Nothing to backup for %s. Skipping", backupType));
+            return false;
+        }
+        try {
+            if (compress) {
+                this.createBackupArchive(backupInstanceDir, backupType, filesToBackup);
+            } else {
+                this.copyToBackupArchive(backupInstanceDir, backupType, filesToBackup);
+            }
+        } catch (IOException e) {
+            final String message = String.format("%s occurred on %s backup: %s", e.getClass().getCanonicalName(), backupType, e);
+            Log.e(BackupAppAction.TAG, message);
+            throw new BackupFailedException(message, e);
+        }
+        return true;
+    }
+
+    private List<ShellHandler.FileInfo> assembleFileList(String sourceDirectory)
+            throws BackupFailedException {
+
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         try {
             // Get a list of directories in the directory to backup
-            List<String> dirsInSource = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(sourceDirectory)));
+            List<ShellHandler.FileInfo> dirsInSource = this.getShell().suGetDetailedDirectoryContents(
+                    sourceDirectory,
+                    false,
+                    null
+            );
             // Excludes cache and libs, when we don't want to backup'em
-            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXCLUDECACHE, true))
-                dirsInSource.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
+            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXCLUDECACHE, true)) {
+                dirsInSource = dirsInSource.stream()
+                        .filter(dir -> !BaseAppAction.DATA_EXCLUDED_DIRS.contains(dir.getFilename()))
+                        .collect(Collectors.toList());
+            }
 
-            // calculate a list what should be part of the backup
-            dirsToBackup = dirsInSource.stream().map(s -> '"' + new File(sourceDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);
             // if the list is empty, there is nothing to do
-            if (dirsToBackup.length == 0) {
-                Log.i(BackupAppAction.TAG, String.format("%s: Nothing to backup for %s. Skipping", app, type));
-                return;
+            List<ShellHandler.FileInfo> allFilesToBackup = new ArrayList<>();
+            if (dirsInSource.isEmpty()) {
+                return allFilesToBackup;
             }
+            for (ShellHandler.FileInfo dir : dirsInSource) {
+                allFilesToBackup.add(dir);
+                try {
+                    allFilesToBackup.addAll(
+                            this.getShell().suGetDetailedDirectoryContents(dir.getAbsolutePath(), true, dir.getFilename())
+                    );
+                } catch (ShellHandler.ShellCommandFailedException e) {
+                    if (ShellHandler.isFileNotFoundException(e)) {
+                        Log.w(BackupAppAction.TAG, "Directory has been deleted during processing: " + dir);
+                    }
+                }
+            }
+            return allFilesToBackup;
         } catch (ShellHandler.ShellCommandFailedException e) {
-            String errorMessage = e.getShellResult().getErr().toString();
-            // It's okay, if the directory does not exist.
-            if (errorMessage.contains("No such file or directory")) {
-                Log.i(BackupAppAction.TAG, String.format("%s: '%s'. Fine. Skipping", app, errorMessage));
-                return;
-            }
             throw new BackupFailedException("Could not list contents of " + sourceDirectory, e);
         }
-        // Create the (temporary) directory for the backup data
-        if (!(backupDirectory.exists() || backupDirectory.mkdir())) {
-            String errorMessage = String.format("Could not create %s backup directory: %s", type, backupDirectory);
-            Log.e(BackupAppAction.TAG, String.format("%s: %s", app, errorMessage));
-            throw new BackupFailedException(errorMessage, null);
-        }
+    }
+
+    protected boolean backupData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+        final String backupType = BaseAppAction.BACKUP_DIR_DATA;
+        Log.i(BackupAppAction.TAG, String.format("[%s] Starting %s backup", app.getPackageName(), backupType));
+        List<ShellHandler.FileInfo> filesToBackup = this.assembleFileList(app.getDataDir());
+        return this.genericBackupData(backupType, backupInstanceDir.getUri(), filesToBackup, true);
+    }
+
+    protected boolean backupExternalData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+        final String backupType = BaseAppAction.BACKUP_DIR_EXTERNAL_FILES;
+        Log.i(BackupAppAction.TAG, String.format("[%s] Starting %s backup", app.getPackageName(), backupType));
         try {
-            // cp -RL follows links and copies their contents
-            // cp -Rd would be right, but the external storage is formatted as FAT where
-            // symbolic links are not supported
-            String command = this.prependUtilbox(String.format(
-                    "cp -RLp  %s \"%s\"",
-                    String.join(" ", dirsToBackup),
-                    backupDirectory
-            ));
-            ShellHandler.runAsRoot(command);
-            if (compress) {
-                this.compress(
-                        backupDirectory,
-                        this.getBackupArchive(app, type, PrefUtils.isEncryptionEnabled(this.getContext()))
-                );
+            List<ShellHandler.FileInfo> filesToBackup = this.assembleFileList(app.getExternalDataDir());
+            return this.genericBackupData(backupType, backupInstanceDir.getUri(), filesToBackup, true);
+        } catch (BackupFailedException ex) {
+            if (ex.getCause() instanceof ShellHandler.ShellCommandFailedException
+                    && ShellHandler.isFileNotFoundException((ShellHandler.ShellCommandFailedException) ex.getCause())) {
+                Log.i(BackupAppAction.TAG, String.format("[%s] No %s to backup available", backupType, app.getPackageName()));
+                return false;
             }
-        } catch (ShellHandler.ShellCommandFailedException e) {
-            String error = BaseAppAction.extractErrorMessage(e.getShellResult());
-            Log.e(BackupAppAction.TAG, String.format("%s: Backup App Data failed: %s", app, error));
-            throw new BackupFailedException(error, e);
-        } catch (IOException e) {
-            Log.e(BackupAppAction.TAG, String.format("%s: Backup App Data failed with IOException: %s", app, e));
-            throw new BackupFailedException("IOException", e);
-        } finally {
-            // if the backup is compressed, clean up in any case
-            if (compress) {
-                boolean backupDeleted = FileUtils.deleteQuietly(backupDirectory);
-                Log.d(BackupAppAction.TAG, "Uncompressed Data Backup was deleted: " + backupDeleted);
-            }
+            throw ex;
         }
     }
 
-    protected void backupData(AppInfo app) throws BackupFailedException, Crypto.CryptoSetupException {
-        this.genericBackupData(
-                BaseAppAction.BACKUP_DIR_DATA,
-                app,
-                this.getDataBackupFolder(app),
-                new File(app.getDataDir()),
-                true
-        );
-    }
-
-    protected void backupExternalData(AppInfo app) throws BackupFailedException, Crypto.CryptoSetupException {
-        this.genericBackupData(
-                BaseAppAction.BACKUP_DIR_EXTERNAL_FILES,
-                app,
-                this.getExternalFilesBackupFolder(app),
-                app.getExternalFilesPath(this.getContext()),
-                true   // to be discussed. Sometimes it makes sense, sometimes huge amounts of compressed data is stored here
-        );
-    }
-
-    protected void backupObbData(AppInfo app) throws BackupFailedException, Crypto.CryptoSetupException {
-        this.genericBackupData(
-                BaseAppAction.BACKUP_DIR_OBB_FILES,
-                app,
-                this.getObbBackupFolder(app),
-                app.getObbFilesPath(this.getContext()),
-                false   // no compression, obb is already compressed
-        );
-    }
-
-    protected void backupDeviceProtectedData(AppInfo app) throws BackupFailedException, Crypto.CryptoSetupException {
-        this.genericBackupData(
-                BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES,
-                app,
-                this.getDeviceProtectedFolder(app),
-                new File(app.getDeviceProtectedDataDir()),
-                true
-        );
-    }
-
-    protected boolean removePackageBackup(AppInfo app) {
-        Log.i(BackupAppAction.TAG, String.format("%s: Removing existing package apks", app));
-        List<String> apksToDelete = new ArrayList<>();
-        if (app.getLogInfo().getSplitApks() != null) {
-            apksToDelete.addAll(Arrays.asList(app.getLogInfo().getSplitApks()));
-        }
-        apksToDelete.add(app.getLogInfo().getApk());
-        boolean successFlag = true;
-        for (String originalPath : apksToDelete) {
-            File backupApkPath = new File(this.getAppBackupFolder(app), new File(originalPath).getName());
-            Log.i(BackupAppAction.TAG, String.format("%s: Removing apk from backup: %s", app, backupApkPath));
-            successFlag = backupApkPath.delete();
-            if (!successFlag) {
-                Log.e(BackupAppAction.TAG, String.format("%s: Could not delete path: %s", app, backupApkPath));
-                break;
+    protected boolean backupObbData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+        final String backupType = BaseAppAction.BACKUP_DIR_OBB_FILES;
+        Log.i(BackupAppAction.TAG, String.format("[%s] Starting %s backup", app.getPackageName(), backupType));
+        try {
+            List<ShellHandler.FileInfo> filesToBackup = this.assembleFileList(app.getObbFilesDir());
+            return this.genericBackupData(backupType, backupInstanceDir.getUri(), filesToBackup, false);
+        } catch (BackupFailedException ex) {
+            if (ex.getCause() instanceof ShellHandler.ShellCommandFailedException
+                    && ShellHandler.isFileNotFoundException((ShellHandler.ShellCommandFailedException) ex.getCause())) {
+                Log.i(BackupAppAction.TAG, String.format("[%s] No %s to backup available", backupType, app.getPackageName()));
+                return false;
             }
+            throw ex;
         }
-        return successFlag;
+    }
+
+    protected boolean backupDeviceProtectedData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+        final String backupType = BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES;
+        Log.i(BackupAppAction.TAG, String.format("[%s] Starting %s backup", app.getPackageName(), backupType));
+        try {
+            List<ShellHandler.FileInfo> filesToBackup = this.assembleFileList(app.getDeviceProtectedDataDir());
+            return this.genericBackupData(backupType, backupInstanceDir.getUri(), filesToBackup, true);
+        } catch (BackupFailedException ex) {
+            if (ex.getCause() instanceof ShellHandler.ShellCommandFailedException
+                    && ShellHandler.isFileNotFoundException((ShellHandler.ShellCommandFailedException) ex.getCause())) {
+                Log.i(BackupAppAction.TAG, String.format("[%s] No %s to backup available", backupType, app.getPackageName()));
+                return false;
+            }
+            throw ex;
+        }
     }
 
     public static class BackupFailedException extends AppActionFailedException {

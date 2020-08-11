@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.fragments;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -88,18 +89,21 @@ public class PermissionsFragment extends Fragment {
 
     private void setupViews() {
         binding.cardStoragePermission.setVisibility(PrefUtils.checkStoragePermissions(requireContext()) ? View.GONE : View.VISIBLE);
+        binding.cardStorageLocation.setVisibility(PrefUtils.isStorageDirSetAndOk(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardUsageAccess.setVisibility(PrefUtils.checkUsageStatsPermission(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardBatteryOptimization.setVisibility(PrefUtils.checkBatteryOptimization(requireContext(), prefs, powerManager) ? View.GONE : View.VISIBLE);
     }
 
     private void setupOnClicks() {
         binding.cardStoragePermission.setOnClickListener(view -> PrefUtils.getStoragePermission(requireActivity()));
+        binding.cardStorageLocation.setOnClickListener(view -> PrefUtils.requireStorageLocation(this));
         binding.cardUsageAccess.setOnClickListener(view -> getUsageStatsPermission());
         binding.cardBatteryOptimization.setOnClickListener(view -> showBatteryOptimizationDialog(powerManager));
     }
 
     private void updateState() {
         if (PrefUtils.checkStoragePermissions(requireContext()) &&
+                PrefUtils.isStorageDirSetAndOk(requireContext()) &&
                 PrefUtils.checkUsageStatsPermission(requireContext()) &&
                 (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(requireContext().getPackageName()))) {
@@ -163,6 +167,19 @@ public class PermissionsFragment extends Fragment {
             }
         } else {
             Log.w(PermissionsFragment.TAG, String.format("Unknown permissions request code: %s", requestCode));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PrefUtils.BACKUP_DIR:
+                Uri uri = data.getData();
+                if (resultCode == Activity.RESULT_OK) {
+                    PrefUtils.setStorageRootDir(this.getContext(), uri);
+                }
+                break;
         }
     }
 }
