@@ -4,20 +4,19 @@ import android.app.Activity;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.annimon.stream.Optional;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class CustomPackageList {
-    static Optional<ArrayList<AppInfo>> appInfoList = Optional.ofNullable(
-            MainActivityX.originalList);
+    private static final List<AppInfo> appInfoList = MainActivityX.getOriginalList();
 
     public static void showList(Activity activity, long number) {
         showList(activity, SchedulerActivityX.SCHEDULECUSTOMLIST + number);
@@ -52,11 +51,10 @@ public class CustomPackageList {
     // TODO: this method (and the others) should probably not be static
     static CharSequence[] collectItems() {
         ArrayList<String> list = new ArrayList<>();
-        appInfoList.ifPresent(appInfos -> {
-            for (AppInfo appInfo : appInfos) {
+        if (!appInfoList.isEmpty()) {
+            for (AppInfo appInfo : appInfoList)
                 list.add(appInfo.getPackageName());
-            }
-        });
+        }
         return list.toArray(new CharSequence[0]);
     }
 

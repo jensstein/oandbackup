@@ -42,13 +42,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivityX extends BaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    static final String TAG = Constants.classTag(".MainActivityX");
-    static final int BATCH_REQUEST = 1;
-    public static ArrayList<AppInfo> originalList;
+    private static final String TAG = Constants.classTag(".MainActivityX");
+    private static final int BATCH_REQUEST = 1;
+    private static List<AppInfo> originalList;
 
     static {
         /* Shell.Config methods shall be called before any shell is created
@@ -69,6 +70,10 @@ public class MainActivityX extends BaseActivity
     ArrayList<String> users;
     ShellCommands shellCommands;
     private ActivityMainXBinding binding;
+
+    public static List<AppInfo> getOriginalList() {
+        return originalList;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

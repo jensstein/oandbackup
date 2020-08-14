@@ -44,23 +44,21 @@ import java.util.stream.Collectors;
 
 public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
-    static final String TAG = Constants.classTag(".BatchActivityX");
-    final static int RESULT_OK = 0;
-    long threadId = -1;
-    boolean backupBoolean;
-
-    boolean checkboxSelectAllBoolean = false;
-    boolean changesMade;
+    private static final String TAG = Constants.classTag(".BatchActivityX");
+    private static final int RESULT_OK = 0;
     File backupDir;
-    SortFilterSheet sheetSortFilter;
-    ItemAdapter<BatchItemX> itemAdapter;
-    FastAdapter<BatchItemX> fastAdapter;
-    ArrayList<AppInfo> originalList = MainActivityX.originalList;
-    HandleMessages handleMessages;
-    SharedPreferences prefs;
-    PowerManager powerManager;
-    ArrayList<String> users;
-    ShellCommands shellCommands;
+    private boolean checkboxSelectAllBoolean = false;
+    private boolean changesMade;
+    private SortFilterSheet sheetSortFilter;
+    private ItemAdapter<BatchItemX> itemAdapter;
+    private FastAdapter<BatchItemX> fastAdapter;
+    private List<AppInfo> originalList = MainActivityX.getOriginalList();
+    private HandleMessages handleMessages;
+    private SharedPreferences prefs;
+    private PowerManager powerManager;
+    private ShellCommands shellCommands;
+    private long threadId = -1;
+    private boolean backupBoolean;
     private ActivityBatchXBinding binding;
 
     @Override
@@ -85,8 +83,9 @@ public class BatchActivityX extends BaseActivity
 
         String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
         backupDir = FileUtils.createBackupDir(this, backupDirPath);
-        if (originalList == null) originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+        if (originalList.isEmpty())
+            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
 
         binding.radioBoth.setChecked(true);
 
