@@ -2,9 +2,7 @@ package com.machiav3lli.backup.utils;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,7 +14,7 @@ import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.ActionResult;
 
 public class UIUtils {
-    final static String TAG = Constants.classTag(".UIUtils");
+    private static final String TAG = Constants.classTag(".UIUtils");
 
     public static void showActionResult(final Activity activity, final ActionResult result, DialogInterface.OnClickListener saveMethod) {
         activity.runOnUiThread(() -> {
@@ -61,16 +59,6 @@ public class UIUtils {
                 .show());
     }
 
-    public static void reloadWithParentStack(Activity activity) {
-        Intent intent = activity.getIntent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        activity.finish();
-        activity.overridePendingTransition(0, 0);
-        TaskStackBuilder.create(activity)
-                .addNextIntentWithParentStack(intent)
-                .startActivities();
-    }
-
     public static void reShowMessage(HandleMessages handleMessages, long tid) {
         // since messages are progressdialogs and not dialogfragments they need to be set again manually
         if (tid != -1)
@@ -80,13 +68,13 @@ public class UIUtils {
     }
 
     public static void setVisibility(View view, int visibility, boolean withAnimation) {
-        if (visibility == View.VISIBLE && view.getVisibility() == View.GONE)
-            view.setVisibility(View.VISIBLE);
         view.animate().alpha(visibility == View.VISIBLE ? 1.0f : 0.0f)
                 .setDuration(withAnimation ? 600 : 1)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        if (visibility == View.VISIBLE && view.getVisibility() == View.GONE)
+                            view.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -96,10 +84,12 @@ public class UIUtils {
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
+                        // not relevant
                     }
 
                     @Override
                     public void onAnimationRepeat(Animator animation) {
+                        // not relevant
                     }
                 });
     }

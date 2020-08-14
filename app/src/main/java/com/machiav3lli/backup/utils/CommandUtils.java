@@ -7,7 +7,7 @@ import com.machiav3lli.backup.Constants;
 import java.util.Arrays;
 
 public class CommandUtils {
-    final static String TAG = Constants.classTag(".CommandUtils");
+    private static final String TAG = Constants.classTag(".CommandUtils");
 
     public static String iterableToString(String[] array) {
         return iterableToString(Arrays.asList(array));
@@ -23,7 +23,7 @@ public class CommandUtils {
 
     public static String iterableToString(CharSequence delimiter, Iterable<String> iterable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return String.join("", iterable);
+            return String.join(delimiter, iterable);
         } else {
             StringBuilder sb = new StringBuilder();
             for (String s : iterable) {

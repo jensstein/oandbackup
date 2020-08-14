@@ -100,10 +100,10 @@ public class FileUtils {
             for (int i = 0; i < length; i++) {
                 Object storageVolumeElement = Array.get(result, i);
                 String uuid = (String) getUuid.invoke(storageVolumeElement);
-                Boolean primary = (Boolean) isPrimary.invoke(storageVolumeElement);
+                boolean primary = (boolean) isPrimary.invoke(storageVolumeElement);
                 // For Primary and existing external Volumes
                 Boolean isPrimaryVolume = primary && volumeId.equals("primary");
-                Boolean isSecondaryVolume = uuid != null && volumeId.equals(uuid);
+                Boolean isSecondaryVolume = volumeId.equals(uuid);
                 if (isPrimaryVolume || isSecondaryVolume)
                     return (String) getPath.invoke(storageVolumeElement);
             }

@@ -3,10 +3,10 @@ package com.machiav3lli.backup.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.AssetsHandler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,8 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class LogUtils {
-    static final String TAG = Constants.classTag(".LogUtils");
-
+    private static final String TAG = Constants.classTag(".LogUtils");
     File file;
 
     public LogUtils(String absolutePath) {
@@ -54,16 +53,15 @@ public class LogUtils {
     }
 
     public File createLogFile(Context context, String path) {
-        File file = new File(path);
+        File logFile = new File(path);
         try {
             try {
-                file.createNewFile();
-                return file;
+                logFile.createNewFile();
             } catch (IOException e) {
-                file = new File(getDefaultLogFilePath(context));
-                file.createNewFile();
-                return file;
+                logFile = new File(getDefaultLogFilePath(context));
+                logFile.createNewFile();
             }
+            return logFile;
         } catch (IOException e) {
             Log.e(TAG, String.format(
                     "Caught exception when creating log file: %s", e));
@@ -132,7 +130,7 @@ public class LogUtils {
         }
     }
 
-    public boolean delete() {
-        return file.delete();
+    public void delete() {
+        file.delete();
     }
 }
