@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -15,33 +14,32 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.handler.NotificationHelper;
-import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.schedules.db.Schedule;
+import com.machiav3lli.backup.utils.LogUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class HandleScheduledBackups {
-    static final String TAG = Constants.classTag(".HandleScheduledBackups");
+    private static final String TAG = Constants.classTag(".HandleScheduledBackups");
 
-    Context context;
-    PowerManager powerManager;
-    SharedPreferences prefs;
-    File backupDir;
-    List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
+    private final Context context;
+    private final PowerManager powerManager;
+    private final SharedPreferences prefs;
+    private final List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
+    private File backupDir;
 
     public HandleScheduledBackups(Context context) {
         this.context = context;
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs = PrefUtils.getDefaultSharedPreferences(context);
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         listeners = new ArrayList<>();
     }
@@ -52,48 +50,38 @@ public class HandleScheduledBackups {
 
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem) {
         new Thread(() -> {
-            String backupDirPath = prefs.getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, getDefaultBackupDirPath(context));
-            assert backupDirPath != null;
+            String backupDirPath = getDefaultBackupDirPath(context);
+            boolean specialBackups = prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
             backupDir = new File(backupDirPath);
-            ArrayList<AppInfo> list = AppInfoHelper.getPackageInfo(context, backupDir, false, prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-            ArrayList<AppInfo> listToBackUp;
+            ArrayList<AppInfo> list = (ArrayList<AppInfo>) AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
+            list.sort(SortFilterManager.appInfoLabelComparator);
+            ArrayList<AppInfo> listToBackUp = new ArrayList<>();
             switch (mode) {
                 case ALL:
-                    Collections.sort(list);
-                    backup(list, subMode);
+                    listToBackUp.addAll(list);
                     break;
                 case USER:
-                    listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if (!appInfo.isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
-                    Collections.sort(listToBackUp);
-                    backup(listToBackUp, subMode);
                     break;
                 case SYSTEM:
-                    listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if (appInfo.isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
-                    Collections.sort(listToBackUp);
-                    backup(listToBackUp, subMode);
                     break;
                 case NEW_UPDATED:
-                    listToBackUp = new ArrayList<>();
                     for (AppInfo appInfo : list) {
                         if ((!excludeSystem || !appInfo.isSystem()) && (appInfo.getLogInfo() == null || (appInfo.getVersionCode() > appInfo.getLogInfo().getVersionCode()))) {
                             listToBackUp.add(appInfo);
                         }
                     }
-                    Collections.sort(listToBackUp);
-                    backup(listToBackUp, subMode);
                     break;
                 case CUSTOM:
-                    listToBackUp = new ArrayList<>();
                     LogUtils frw = new LogUtils(getDefaultBackupDirPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
                     for (AppInfo appInfo : list) {
@@ -101,14 +89,13 @@ public class HandleScheduledBackups {
                             listToBackUp.add(appInfo);
                         }
                     }
-                    Collections.sort(listToBackUp);
-                    backup(listToBackUp, subMode);
                     break;
             }
+            backup(listToBackUp, subMode);
         }).start();
     }
 
-    public void backup(final ArrayList<AppInfo> backupList, final int subMode) {
+    public void backup(final List<AppInfo> backupList, final int subMode) {
         if (backupDir != null) {
             new Thread(() -> {
                 @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -119,7 +106,6 @@ public class HandleScheduledBackups {
                 int id = (int) System.currentTimeMillis();
                 int total = backupList.size();
                 int i = 1;
-                boolean errorFlag = false;
                 BlacklistsDBHelper blacklistsDBHelper =
                         new BlacklistsDBHelper(context);
                 SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
