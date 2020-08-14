@@ -41,20 +41,14 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class ScheduleSheet extends BottomSheetDialogFragment {
-    final static String TAG = Constants.classTag(".ScheduleSheet");
-    Schedule sched;
-    HandleAlarms handleAlarms;
-    long tag;
+    private static final String TAG = Constants.classTag(".ScheduleSheet");
+    private final Schedule sched;
+    private HandleAlarms handleAlarms;
+    private long idNumber;
     private SheetScheduleBinding binding;
 
     public ScheduleSheet(SchedulerItemX item) {
         this.sched = item.getSched();
-    }
-
-    private static void remove(SchedulerActivityX scheduler, Schedule schedule) {
-        scheduler.handleAlarms.cancelAlarm((int) schedule.getId());
-        scheduler.removeCustomListFile(schedule.getId());
-        FastAdapterDiffUtil.INSTANCE.set(scheduler.itemAdapter, scheduler.list);
     }
 
     @NonNull
@@ -88,21 +82,16 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     private void setupChips() {
         binding.schedMode.check(convertMode(sched.getMode().getValue()));
         binding.schedMode.setOnCheckedChangeListener((group, checkedId) -> {
-            changeScheduleMode(convertToMode(checkedId), tag);
+            changeScheduleMode(convertToMode(checkedId), idNumber);
             refreshSheet();
-            toggleSecondaryButtons(binding.schedMode, tag);
+            toggleSecondaryButtons(binding.schedMode, idNumber);
         });
         binding.schedSubMode.check(convertSubmode(sched.getSubmode().getValue()));
         binding.schedSubMode.setOnCheckedChangeListener((group, checkedId) -> {
-            changeScheduleSubmode(convertToSubmode(checkedId), tag);
+            changeScheduleSubmode(convertToSubmode(checkedId), idNumber);
             refreshSheet();
         });
     }
@@ -166,7 +155,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         binding.timeOfDay.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
         binding.enableCheckbox.setChecked(sched.isEnabled());
         setTimeLeft(sched, System.currentTimeMillis());
-        tag = sched.getId();
+        idNumber = sched.getId();
 
         binding.removeButton.setOnClickListener(v -> {
             new RemoveScheduleTask((SchedulerActivityX) requireActivity()).execute(sched);
@@ -175,17 +164,17 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         });
         binding.activateButton.setOnClickListener(v -> new AlertDialog.Builder(requireActivity())
                 .setMessage(getString(R.string.sched_activateButton))
-                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), tag, BlacklistsDBHelper.DATABASE_NAME).execute())
+                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), idNumber, BlacklistsDBHelper.DATABASE_NAME).execute())
                 .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
                 })
                 .show());
-        binding.customListUpdate.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), tag));
+        binding.customListUpdate.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), idNumber));
         binding.excludeSystem.setOnClickListener(v -> refreshSheet());
 
-        toggleSecondaryButtons(binding.schedMode, tag);
-        binding.removeButton.setTag(tag);
-        binding.activateButton.setTag(tag);
-        binding.enableCheckbox.setTag(tag);
+        toggleSecondaryButtons(binding.schedMode, idNumber);
+        binding.removeButton.setTag(idNumber);
+        binding.activateButton.setTag(idNumber);
+        binding.enableCheckbox.setTag(idNumber);
     }
 
     void refreshSheet() {
@@ -268,7 +257,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     private Schedule getScheduleDataFromView(int id)
             throws SchedulingException {
-        final boolean excludeSystemPackages = binding.excludeSystem != null && binding.excludeSystem.isChecked();
+        final boolean excludeSystemPackages = binding.excludeSystem.isChecked();
         final boolean enabled = binding.enableCheckbox.isChecked();
         final int hour = binding.timeOfDay.getValue();
         final int interval = binding.intervalDays.getValue();
@@ -425,11 +414,18 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         }
     }
 
+    // TODO rebase those Tasks, as AsyncTask is deprecated
     static class RemoveScheduleTask extends AsyncTask<Schedule, Void, ResultHolder<Schedule>> {
         private final WeakReference<SchedulerActivityX> activityReference;
 
         RemoveScheduleTask(SchedulerActivityX scheduler) {
             activityReference = new WeakReference<>(scheduler);
+        }
+
+        private static void remove(SchedulerActivityX scheduler, Schedule schedule) {
+            scheduler.getHandleAlarms().cancelAlarm((int) schedule.getId());
+            scheduler.removeCustomListFile(schedule.getId());
+            FastAdapterDiffUtil.INSTANCE.set(scheduler.getItemAdapter(), scheduler.getList());
         }
 
         @Override

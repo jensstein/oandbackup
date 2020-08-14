@@ -44,9 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityX extends BaseActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+public class MainActivityX extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Constants.classTag(".MainActivityX");
     private static final int BATCH_REQUEST = 1;
     private static List<AppInfo> originalList;
@@ -60,7 +58,7 @@ public class MainActivityX extends BaseActivity
     }
 
     long threadId = -1;
-    File backupDir = IntroActivity.backupDir;
+    File backupDir;
     ItemAdapter<MainItemX> itemAdapter;
     FastAdapter<MainItemX> fastAdapter;
     SortFilterSheet sheetSortFilter;
@@ -155,7 +153,7 @@ public class MainActivityX extends BaseActivity
         binding.schedulerButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class)));
     }
 
-    public Intent batchIntent(Class batchClass, boolean backup) {
+    public Intent batchIntent(Class<BatchActivityX> batchClass, boolean backup) {
         Intent batchIntent = new Intent(getApplicationContext(), batchClass);
         batchIntent.putExtra(Constants.classAddress(".backupBoolean"), backup);
         return batchIntent;

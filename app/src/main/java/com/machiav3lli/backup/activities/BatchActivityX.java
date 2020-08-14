@@ -35,6 +35,8 @@ import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,6 +55,7 @@ public class BatchActivityX extends BaseActivity
     private ItemAdapter<BatchItemX> itemAdapter;
     private FastAdapter<BatchItemX> fastAdapter;
     private List<AppInfo> originalList = MainActivityX.getOriginalList();
+    private ArrayList<String> checkedList = new ArrayList<>();
     private HandleMessages handleMessages;
     private SharedPreferences prefs;
     private PowerManager powerManager;
@@ -109,11 +112,9 @@ public class BatchActivityX extends BaseActivity
             fastAdapter.notifyAdapterDataSetChanged();
             return false;
         });
-
-        binding.backButton.setOnClickListener(v -> finish());
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) binding.fabSortFilter.hide();
                 else if (dy < 0) binding.fabSortFilter.show();
             }
@@ -137,20 +138,10 @@ public class BatchActivityX extends BaseActivity
                 return true;
             }
         });
-        binding.cbAll.setOnClickListener(v -> {
-            if (checkboxSelectAllBoolean) {
-                for (BatchItemX item : itemAdapter.getAdapterItems())
-                    item.getApp().setChecked(false);
-            } else {
-                for (BatchItemX item : itemAdapter.getAdapterItems())
-                    item.getApp().setChecked(true);
-            }
-            fastAdapter.notifyAdapterDataSetChanged();
-            checkboxSelectAllBoolean = !checkboxSelectAllBoolean;
-        });
     }
 
     private void setupOnClicks(Context context) {
+        binding.backButton.setOnClickListener(v -> finish());
         binding.fabSortFilter.setOnClickListener(v -> {
             if (sheetSortFilter == null)
                 sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(context).toString()));
@@ -168,17 +159,27 @@ public class BatchActivityX extends BaseActivity
             dialog.setArguments(arguments);
             dialog.show(getSupportFragmentManager(), "DialogFragment");
         });
+        binding.cbAll.setOnClickListener(v -> {
+            if (checkboxSelectAllBoolean) {
+                for (BatchItemX item : itemAdapter.getAdapterItems())
+                    item.getApp().setChecked(false);
+            } else {
+                for (BatchItemX item : itemAdapter.getAdapterItems())
+                    item.getApp().setChecked(true);
+            }
+            fastAdapter.notifyAdapterDataSetChanged();
+            checkboxSelectAllBoolean = !checkboxSelectAllBoolean;
+        });
     }
 
     @Override
-    public void onConfirmed(ArrayList<BatchItemX> selectedList) {
-        final ArrayList<BatchItemX> list = new ArrayList<>(selectedList);
-        Thread thread = new Thread(() -> doAction(list));
+    public void onConfirmed(List<BatchItemX> selectedList) {
+        Thread thread = new Thread(() -> doAction(selectedList));
         thread.start();
         threadId = thread.getId();
     }
 
-    public void doAction(ArrayList<BatchItemX> selectedList) {
+    public void doAction(List<BatchItemX> selectedList) {
         if (this.backupDir != null) {
             @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, BatchActivityX.TAG);
             if (this.prefs.getBoolean("acquireWakelock", true)) {
@@ -314,6 +315,8 @@ public class BatchActivityX extends BaseActivity
                     itemAdapter.clear();
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
                     itemAdapter.add(list);
+
+
                 } else FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 fastAdapter.notifyAdapterDataSetChanged();
                 binding.searchView.setQuery("", false);

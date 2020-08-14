@@ -242,11 +242,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 .setNegativeButton(R.string.dialogNo, null)
                 .show());
         binding.share.setOnClickListener(v -> {
-            File backupDir = FileUtils.createBackupDir(getActivity(), FileUtils.getDefaultBackupDirPath(requireContext()));
-            File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
             String dataPath = app.getLogInfo().getDataDir();
             dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
-            File data = new File(backupDir, app.getPackageName() + "/" + dataPath + ".zip");
+            File apk = new File(backupDir, app.getPackageName() + File.separator + app.getLogInfo().getApk());
+            File data = new File(backupDir, app.getPackageName() + File.separator + dataPath + ".zip");
             Bundle arguments = new Bundle();
             arguments.putString("label", app.getLabel());
             switch (app.getBackupMode()) {
@@ -307,8 +306,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     public void displayDialogEnableDisable(final String packageName, final boolean enable) {
         String title = enable ? getString(R.string.enablePackageTitle) : getString(R.string.disablePackageTitle);
         final ArrayList<String> selectedUsers = new ArrayList<>();
-        final ArrayList<String> userList = shellCommands.getUsers();
-        CharSequence[] users = userList.toArray(new CharSequence[userList.size()]);
+        final ArrayList<String> userList = (ArrayList<String>) shellCommands.getUsers();
+        CharSequence[] users = userList.toArray(new CharSequence[0]);
         new AlertDialog.Builder(requireContext())
                 .setTitle(title)
                 .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {

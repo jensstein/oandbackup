@@ -1,14 +1,13 @@
 package com.machiav3lli.backup.activities;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -36,6 +35,8 @@ import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +45,14 @@ public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
     public static final String SCHEDULECUSTOMLIST = "customlist";
     public static final int GLOBALBLACKLISTID = -1;
+    public static final String DATABASE_NAME = "schedules.db";
     private static final String TAG = Constants.classTag(".SchedulerActivityX");
-    public static String DATABASE_NAME = "schedules.db";
-    public ArrayList<SchedulerItemX> list;
-    public ItemAdapter<SchedulerItemX> itemAdapter;
-    public FastAdapter<SchedulerItemX> fastAdapter;
-    public HandleAlarms handleAlarms;
-    int totalSchedules;
-    SharedPreferences prefs;
-    ScheduleSheet sheetSchedule;
+    private ArrayList<SchedulerItemX> list;
+    private ItemAdapter<SchedulerItemX> itemAdapter;
+    private int totalSchedules;
+    private HandleAlarms handleAlarms;
+    private ScheduleSheet sheetSchedule;
+    private FastAdapter<SchedulerItemX> fastAdapter;
     private ActivitySchedulerXBinding binding;
     private BlacklistsDBHelper blacklistsDBHelper;
 
@@ -64,7 +64,6 @@ public class SchedulerActivityX extends BaseActivity
         setupOnClicks(this);
 
         handleAlarms = new HandleAlarms(this);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         list = new ArrayList<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
 
@@ -84,7 +83,7 @@ public class SchedulerActivityX extends BaseActivity
         binding.backButton.setOnClickListener(v -> finish());
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) binding.fabAddSchedule.hide();
                 else if (dy < 0) binding.fabAddSchedule.show();
             }
@@ -92,30 +91,22 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     private void setupOnClicks(SchedulerActivityX activity) {
-        binding.blacklistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(() -> {
-                    Bundle args = new Bundle();
-                    args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
-                    SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
-                    ArrayList<String> blacklistedPackages = blacklistsDBHelper
-                            .getBlacklistedPackages(db, GLOBALBLACKLISTID);
-                    args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
-                            blacklistedPackages);
-                    BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
-                    blacklistDialogFragment.setArguments(args);
-                    blacklistDialogFragment.addBlacklistListener(activity);
-                    blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
-                }).start();
-            }
-        });
-        binding.fabAddSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AddScheduleTask(activity).execute();
-                new refreshTask(activity).execute();
-            }
+        binding.blacklistButton.setOnClickListener(v -> new Thread(() -> {
+            Bundle args = new Bundle();
+            args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
+            SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
+            ArrayList<String> blacklistedPackages = (ArrayList<String>) blacklistsDBHelper
+                    .getBlacklistedPackages(db, GLOBALBLACKLISTID);
+            args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
+                    blacklistedPackages);
+            BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
+            blacklistDialogFragment.setArguments(args);
+            blacklistDialogFragment.addBlacklistListener(activity);
+            blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
+        }).start());
+        binding.fabAddSchedule.setOnClickListener(v -> {
+            new AddScheduleTask(activity).execute();
+            new refreshTask(activity).execute();
         });
     }
 
@@ -129,20 +120,6 @@ public class SchedulerActivityX extends BaseActivity
     public void onDestroy() {
         blacklistsDBHelper.close();
         super.onDestroy();
-    }
-
-    private Schedule insertNewSchedule(String databasename) {
-        final Schedule schedule = new Schedule.Builder()
-                // Set id to 0 to make the database generate a new id
-                .withId(0)
-                .build();
-        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                .getScheduleDatabase(this, databasename);
-        final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
-        final long[] ids = scheduleDao.insert(schedule);
-        // update schedule id with one generated by the database
-        schedule.setId(ids[0]);
-        return schedule;
     }
 
     @Override
@@ -159,9 +136,21 @@ public class SchedulerActivityX extends BaseActivity
         }).start();
     }
 
-    void migrateSchedulesToDatabase(SharedPreferences preferences, String databasename) throws SchedulingException {
+    public HandleAlarms getHandleAlarms() {
+        return handleAlarms;
+    }
+
+    public List<SchedulerItemX> getList() {
+        return list;
+    }
+
+    public ItemAdapter<SchedulerItemX> getItemAdapter() {
+        return itemAdapter;
+    }
+
+    void migrateSchedulesToDatabase(SharedPreferences preferences) throws SchedulingException {
         final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                .getScheduleDatabase(this, databasename);
+                .getScheduleDatabase(this, SchedulerActivityX.DATABASE_NAME);
         final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
         for (int i = 0; i < totalSchedules; i++) {
             final Schedule schedule = Schedule.fromPreferences(preferences, i);
@@ -216,6 +205,7 @@ public class SchedulerActivityX extends BaseActivity
         if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
     }
 
+    // TODO rebase those Tasks, as AsyncTask is deprecated
     static class AddScheduleTask extends AsyncTask<Void, Void, ResultHolder<Schedule>> {
         private final WeakReference<SchedulerActivityX> activityReference;
         private final String databasename;
@@ -229,7 +219,7 @@ public class SchedulerActivityX extends BaseActivity
         public ResultHolder<Schedule> doInBackground(Void... _void) {
             final SchedulerActivityX scheduler = activityReference.get();
             if (scheduler == null || scheduler.isFinishing()) return new ResultHolder<>();
-            return new ResultHolder<>(scheduler.insertNewSchedule(databasename));
+            return new ResultHolder<>(insertNewSchedule(databasename, scheduler));
         }
 
         @Override
@@ -239,8 +229,23 @@ public class SchedulerActivityX extends BaseActivity
                 resultHolder.getObject().ifPresent(schedule -> scheduler.list.add(new SchedulerItemX(schedule)));
             }
         }
+
+        private Schedule insertNewSchedule(String databasename, Context context) {
+            final Schedule schedule = new Schedule.Builder()
+                    // Set id to 0 to make the database generate a new id
+                    .withId(0)
+                    .build();
+            final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
+                    .getScheduleDatabase(context, databasename);
+            final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+            final long[] ids = scheduleDao.insert(schedule);
+            // update schedule id with one generated by the database
+            schedule.setId(ids[0]);
+            return schedule;
+        }
     }
 
+    // TODO rebase those Tasks, as AsyncTask is deprecated
     public static class refreshTask extends AsyncTask<Void, Void, ResultHolder<ArrayList<Schedule>>> {
         private final WeakReference<SchedulerActivityX> activityReference;
 
@@ -263,7 +268,7 @@ public class SchedulerActivityX extends BaseActivity
                 // set to zero so there is always at least one schedule on activity start
                 scheduler.totalSchedules = Math.max(scheduler.totalSchedules, 0);
                 try {
-                    scheduler.migrateSchedulesToDatabase(preferences, DATABASE_NAME);
+                    scheduler.migrateSchedulesToDatabase(preferences);
                     preferences.edit().remove(Constants.PREFS_SCHEDULES_TOTAL).apply();
                 } catch (SchedulingException e) {
                     return new ResultHolder<>(e);

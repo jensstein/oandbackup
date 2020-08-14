@@ -200,7 +200,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         requireActivity().setResult(RESULT_OK, result);
     }
 
-    public void deleteBackups(ArrayList<AppInfo> deleteList) {
+    public void deleteBackups(List<AppInfo> deleteList) {
         handleMessages.showMessage(getString(R.string.batchDeleteMessage), "");
         for (AppInfo appInfo : deleteList) {
             if (backupDir != null) {
