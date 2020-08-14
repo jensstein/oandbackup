@@ -17,6 +17,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
+// TODO rebase those Tasks, as AsyncTask is deprecated
 public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     final BackupRestoreHelper.ActionType actionType;
     final AppInfo app;

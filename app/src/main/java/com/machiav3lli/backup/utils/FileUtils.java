@@ -19,8 +19,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 public class FileUtils {
-    public final static String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
-    private final static String TAG = Constants.classTag(".FileCreationHelper");
+    // TODO replace the usage of Environment.getExternalStorageDirectory()
+    public static final String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
+    private static final String TAG = Constants.classTag(".FileCreationHelper");
 
     private boolean fallbackFlag;
 
@@ -83,8 +84,10 @@ public class FileUtils {
 
     private static String getVolumePath(final String volumeId, Context context) {
         try {
+            // TODO replace the usage of Environment.getExternalStoragePublicDirectory()
             if (volumeId.equals("home"))
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+            // TODO replace the usage of Environment.getExternalStoragePublicDirectory()
             if (volumeId.equals("downloads"))
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
             StorageManager mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);

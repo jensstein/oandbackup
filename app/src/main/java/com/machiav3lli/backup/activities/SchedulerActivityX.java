@@ -296,8 +296,8 @@ public class SchedulerActivityX extends BaseActivity
         }
     }
 
-    static public class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void,
-            ResultHolder<Boolean>> {
+    // TODO rebase those Tasks, as AsyncTask is deprecated
+    public static class SystemExcludeCheckboxSetTask extends AsyncTask<Void, Void, ResultHolder<Boolean>> {
         private final WeakReference<SchedulerActivityX> activityReference;
         private final WeakReference<AppCompatCheckBox> checkBoxReference;
         private final long id;

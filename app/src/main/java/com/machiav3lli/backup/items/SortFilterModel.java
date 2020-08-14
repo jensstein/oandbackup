@@ -2,6 +2,10 @@ package com.machiav3lli.backup.items;
 
 import com.machiav3lli.backup.R;
 
+import org.jetbrains.annotations.NotNull;
+
+
+// TODO take care of: "Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements"
 public class SortFilterModel {
     private CharSequence code;
 

@@ -22,16 +22,20 @@
 
 ## Needed Fixes
 
-* [ ] SymLinks and "special" Files backup: fixing errors on some "unique" apps.
+- [ ] SymLinks and "special" Files backup: fixing errors on some "unique" apps.
+
 - [ ] Fully support for Special Backups: Accounts, SMS, Bluetooth, Wifi (for now...).
 
 - [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensetive.
 
 - [ ] Add AlertDialog about disabling "verify apps over USB" when needed.
 
+- [ ] Replace deprecated Classes/Methods: Environment.getExternalStorage(Public)Directory(), AsyncTask, ProgressDialog.
+
 ## Planned Restructure
 
-* [ ] Fragmentize Batch: to clean up the need for double use of Batch Activity and seperate Backup and Restore logic more clearly.  
+- [ ] Fragmentize Batch: to clean up the need for double use of Batch Activity and seperate Backup and Restore logic more clearly.
+
 - [ ] Main-Batch Direct Navigation: with the aim to remove the need to recreate the app list anew each time navigating between Main and Batch.
 
 - [ ] More clear visual hints on Items: Sys/User/Special, App/Data/Both.

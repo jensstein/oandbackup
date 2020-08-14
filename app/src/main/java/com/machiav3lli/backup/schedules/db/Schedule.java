@@ -35,8 +35,7 @@ public class Schedule {
         submode = Submode.BOTH;
     }
 
-    // TODO: the shared preferences files should be replaced by a single
-    //  database table
+    // TODO: the shared preferences files should be replaced by a single database table
 
     /**
      * Get scheduling data from a preferences file.

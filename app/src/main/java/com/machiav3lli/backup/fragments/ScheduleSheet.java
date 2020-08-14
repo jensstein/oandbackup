@@ -40,6 +40,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+// TODO take care of: "Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements"
 public class ScheduleSheet extends BottomSheetDialogFragment {
     private static final String TAG = Constants.classTag(".ScheduleSheet");
     private final Schedule sched;

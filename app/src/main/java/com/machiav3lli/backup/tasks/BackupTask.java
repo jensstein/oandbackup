@@ -8,6 +8,7 @@ import com.machiav3lli.backup.items.AppInfo;
 
 import java.io.File;
 
+// TODO rebase those Tasks, as AsyncTask is deprecated
 public class BackupTask extends BaseTask {
     public BackupTask(AppInfo appInfo, HandleMessages handleMessages, MainActivityX oAndBackupX,
                       File backupDirectory, ShellHandler shellHandler, int backupMode) {

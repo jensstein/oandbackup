@@ -11,6 +11,7 @@ import com.machiav3lli.backup.Constants;
 
 import java.lang.ref.WeakReference;
 
+// TODO rebase messages handling on AlertDialog as Handler(s) all seem to be (being) deprecated
 public class HandleMessages {
     private static final String TAG = Constants.classTag(".HandleMessages");
     private static final int SHOW_DIALOG = 0;
