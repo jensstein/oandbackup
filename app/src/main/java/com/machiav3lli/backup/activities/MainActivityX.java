@@ -224,30 +224,19 @@ public class MainActivityX extends BaseActivity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
                 .setMessage(R.string.enable_encryption_message)
-                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> {
-                    startActivity(new Intent(getApplicationContext(), PrefsActivity.class));
-                })
+                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)))
                 .show();
     }
 
     public void refresh(boolean withAppSheet) {
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
+        backupDir = FileUtils.getDefaultBackupDir(this, this);
         runOnUiThread(() -> binding.refreshLayout.setRefreshing(true));
         new Thread(() -> {
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
             ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            ArrayList<MainItemX> list = new ArrayList<>();
-            if (filteredList.isEmpty()) {
-                for (AppInfo app : originalList) {
-                    list.add(new MainItemX(app));
-                }
-                SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-            } else {
-                for (AppInfo app : filteredList) {
-                    list.add(new MainItemX(app));
-                }
-            }
+            ArrayList<MainItemX> list = createItemsList(filteredList);
             runOnUiThread(() -> {
                 if (filteredList.isEmpty()) {
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
@@ -257,21 +246,40 @@ public class MainActivityX extends BaseActivity
                     FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
                 }
                 if (withAppSheet && sheetApp != null) {
-                    int position = sheetApp.getPosition();
-                    if (itemAdapter.getItemList().size() > position) {
-                        if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
-                            sheetApp.updateApp(fastAdapter.getItem(position));
-                        } else {
-                            sheetApp.dismissAllowingStateLoss();
-                        }
-                    } else {
-                        sheetApp.dismissAllowingStateLoss();
-                    }
+                    refreshAppSheet();
                 }
                 binding.searchView.setQuery("", false);
                 binding.refreshLayout.setRefreshing(false);
             });
         }).start();
+    }
+
+    private void refreshAppSheet() {
+        int position = sheetApp.getPosition();
+        if (itemAdapter.getItemList().size() > position) {
+            if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
+                sheetApp.updateApp(fastAdapter.getItem(position));
+            } else {
+                sheetApp.dismissAllowingStateLoss();
+            }
+        } else {
+            sheetApp.dismissAllowingStateLoss();
+        }
+    }
+
+    private ArrayList<MainItemX> createItemsList(ArrayList<AppInfo> filteredList) {
+        ArrayList<MainItemX> list = new ArrayList<>();
+        if (filteredList.isEmpty()) {
+            for (AppInfo app : originalList) {
+                list.add(new MainItemX(app));
+            }
+            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+        } else {
+            for (AppInfo app : filteredList) {
+                list.add(new MainItemX(app));
+            }
+        }
+        return list;
     }
 
     public void refresh() {
