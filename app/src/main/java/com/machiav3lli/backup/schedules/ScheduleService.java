@@ -44,7 +44,7 @@ public class ScheduleService extends Service
             handleScheduledBackups.setOnBackupListener(this);
 
             final Thread t = new Thread(() -> {
-                final ScheduleDao scheduleDao = getScheduleDao(SchedulerActivityX.DATABASE_NAME);
+                final ScheduleDao scheduleDao = getScheduleDao();
                 final Schedule schedule = scheduleDao.getSchedule(id);
                 schedule.setPlaced(System.currentTimeMillis());
                 scheduleDao.update(schedule);
@@ -68,9 +68,8 @@ public class ScheduleService extends Service
         return new HandleScheduledBackups(this);
     }
 
-    ScheduleDao getScheduleDao(String databasename) {
-        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                .getScheduleDatabase(this, databasename);
+    ScheduleDao getScheduleDao() {
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper.getScheduleDatabase(this, SchedulerActivityX.DATABASE_NAME);
         return scheduleDatabase.scheduleDao();
     }
 
