@@ -15,12 +15,11 @@ public class PrefsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPrefsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new PrefsFragment()).commit();
         binding.backButton.setOnClickListener(v -> {
-            if (getFragmentManager().getBackStackEntryCount() == 0)
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0)
                 super.onBackPressed();
-            else getFragmentManager().popBackStack();
+            else getSupportFragmentManager().popBackStack();
         });
     }
 }
