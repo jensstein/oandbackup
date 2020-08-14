@@ -198,13 +198,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         });
         binding.wipeCache.setOnClickListener(v -> {
             try {
-                Log.i(BackupAppAction.TAG, String.format("%s: Wiping cache", app));
+                Log.i(AppSheet.TAG, String.format("%s: Wiping cache", app));
                 String command = ShellCommands.wipeCacheCommand(requireContext(), app);
                 ShellHandler.runAsRoot(command);
-                ((MainActivityX) requireActivity()).refresh(true);
+                requireMainActivityX().refresh(true);
             } catch (ShellHandler.ShellCommandFailedException e) {
                 // Not a critical issue
-                Log.w(BackupAppAction.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
+                Log.w(AppSheet.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
             }
         });
         binding.backup.setOnClickListener(v -> {
@@ -234,7 +234,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                         if (backupDir != null)
                             ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
                         handleMessages.endMessage();
-                        ((MainActivityX) requireActivity()).refresh(true);
+                        requireMainActivityX().refresh(true);
                     });
                     deleteBackupThread.start();
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
@@ -267,47 +267,39 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             shareDialog.setArguments(arguments);
             shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
         });
-        binding.enablePackage.setOnClickListener(v -> {
-            displayDialogEnableDisable(app.getPackageName(), true);
-        });
-        binding.disablePackage.setOnClickListener(v -> {
-            displayDialogEnableDisable(app.getPackageName(), false);
-        });
-        binding.uninstall.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle(app.getLabel())
-                    .setMessage(R.string.uninstallDialogMessage)
-                    .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
-                        Thread uninstallThread = new Thread(() -> {
-                            Log.i(TAG, "uninstalling " + app.getLabel());
-                            handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
-                            int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
-                            handleMessages.endMessage();
-                            if (ret == 0) {
-                                NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
-                            } else {
-                                NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
-                                UIUtils.showErrors(requireActivity());
-                            }
-                            ((MainActivityX) requireActivity()).refresh(true);
-                        });
-                        uninstallThread.start();
-                    })
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show();
-        });
+        binding.enablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), true));
+        binding.disablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), false));
+        binding.uninstall.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
+                .setTitle(app.getLabel())
+                .setMessage(R.string.uninstallDialogMessage)
+                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
+                    Thread uninstallThread = new Thread(() -> {
+                        Log.i(TAG, "uninstalling " + app.getLabel());
+                        handleMessages.showMessage(app.getLabel(), getString(R.string.uninstallProgress));
+                        int ret = shellCommands.uninstall(app.getPackageName(), app.getSourceDir(), app.getDataDir(), app.isSystem());
+                        handleMessages.endMessage();
+                        if (ret == 0) {
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallSuccess), true);
+                        } else {
+                            NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
+                            UIUtils.showErrors(requireActivity());
+                        }
+                        requireMainActivityX().refresh(true);
+                    });
+                    uninstallThread.start();
+                })
+                .setNegativeButton(R.string.dialogNo, null)
+                .show());
     }
 
     @Override
     public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            new BackupTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
-                    .execute();
-            ((MainActivityX) requireActivity()).refresh(true);
+            new BackupTask(app, handleMessages, requireMainActivityX(), backupDir, IntroActivity.getShellHandlerInstance(), mode).execute();
+            requireMainActivityX().refresh(true);
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            new RestoreTask(app, handleMessages, (MainActivityX) requireActivity(), backupDir, IntroActivity.getShellHandlerInstance(), mode)
-                    .execute();
-            ((MainActivityX) requireActivity()).refresh(true);
+            new RestoreTask(app, handleMessages, requireMainActivityX(), backupDir, IntroActivity.getShellHandlerInstance(), mode).execute();
+            requireMainActivityX().refresh(true);
         } else
             Log.e(TAG, "unknown actionType: " + actionType);
     }
@@ -326,10 +318,14 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
                     shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                    ((MainActivityX) requireActivity()).refresh(true);
+                    requireMainActivityX().refresh(true);
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
                 .show();
+    }
+
+    private MainActivityX requireMainActivityX() {
+        return (MainActivityX) requireActivity();
     }
 }
