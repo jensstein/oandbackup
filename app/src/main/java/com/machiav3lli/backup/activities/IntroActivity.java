@@ -3,10 +3,9 @@ package com.machiav3lli.backup.activities;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -183,9 +182,8 @@ public class IntroActivity extends BaseActivity {
     }
 
     private boolean canAccessExternalStorage() {
-        final File externalStorage = Environment.getExternalStorageDirectory();
-        return externalStorage != null && externalStorage.canRead() &&
-                externalStorage.canWrite();
+        final File externalStorage = this.getExternalFilesDir(null).getParentFile();
+        return externalStorage != null && externalStorage.canRead() && externalStorage.canWrite();
     }
 
     private boolean checkResources() {
