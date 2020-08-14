@@ -8,11 +8,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ActionResult {
-    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH);
-    public final AppInfo app;
-    public final Date occurrence;
-    public final String message;
     public final boolean succeeded;
+    private final AppInfo app;
+    private final Date occurrence;
+    private final String message;
 
     public ActionResult(AppInfo app, @NotNull String message, boolean succeeded) {
         this.occurrence = Calendar.getInstance().getTime();
@@ -21,11 +20,16 @@ public class ActionResult {
         this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    @NotNull
     @Override
     public String toString() {
         return String.format(
                 "%s: %s%s",
-                ActionResult.timeFormat.format(this.occurrence),
+                new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH).format(this.occurrence),
                 this.app != null ? this.app : "NoApp",
                 this.message.isEmpty() ? "" : ' ' + this.message
         );

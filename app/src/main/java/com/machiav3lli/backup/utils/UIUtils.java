@@ -27,7 +27,7 @@ public class UIUtils {
             }
             if (!result.succeeded) {
                 builder.setTitle(R.string.errorDialogTitle)
-                        .setMessage(result.message);
+                        .setMessage(result.getMessage());
                 builder.show();
             }
         });

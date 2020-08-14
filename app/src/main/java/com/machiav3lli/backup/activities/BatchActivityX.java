@@ -222,7 +222,7 @@ public class BatchActivityX extends BaseActivity
             }
             // Calculate the overall result
             String errors = results.parallelStream()
-                    .map(ar -> ar.message)
+                    .map(ActionResult::getMessage)
                     .filter(msg -> !msg.isEmpty())
                     .collect(Collectors.joining("\n"));
             ActionResult overAllResult = new ActionResult(null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
