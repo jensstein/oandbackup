@@ -106,8 +106,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
 
     public void updateApp(MainItemX item) {
         this.app = item.getApp();
-        setupChips(true);
-        setupAppInfo(true);
+        if (binding != null) {
+            setupChips(true);
+            setupAppInfo(true);
+        }
     }
 
     private void setupChips(boolean update) {
