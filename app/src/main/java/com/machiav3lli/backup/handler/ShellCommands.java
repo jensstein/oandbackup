@@ -82,16 +82,15 @@ public class ShellCommands {
 
     public static void deleteBackup(File file) {
         if (file.exists()) {
-            if (file.isDirectory())
-                if (file.list().length > 0 && file.listFiles() != null)
-                    for (File child : file.listFiles())
-                        deleteBackup(child);
+            if (file.isDirectory() && Objects.requireNonNull(file.list()).length > 0)
+                for (File child : Objects.requireNonNull(file.listFiles()))
+                    deleteBackup(child);
             file.delete();
         }
     }
 
     public static void writeErrorLog(Context context, String packageName, String err) {
-        errors += String.format("%s: %s\n", packageName, err);
+        errors += String.format("%s: %s%n", packageName, err);
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
         String dateFormated = dateFormat.format(date);
@@ -101,7 +100,7 @@ public class ShellCommands {
                 try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
                         true);
                      BufferedWriter bw = new BufferedWriter(fw)) {
-                    bw.write(String.format("%s: %s [%s]\n", dateFormated, err, packageName));
+                    bw.write(String.format("%s: %s [%s]%n", dateFormated, err, packageName));
                 }
             }
         } catch (IOException e) {
@@ -130,7 +129,7 @@ public class ShellCommands {
         return 0;
     }
 
-    public static ArrayList<String> getDisabledPackages() {
+    public static List<String> getDisabledPackages() {
         Shell.Result shellResult = ShellCommands.runAsUser("pm list packages -d");
         ArrayList<String> packages = new ArrayList<>();
         for (String line : shellResult.getOut()) {
@@ -138,10 +137,10 @@ public class ShellCommands {
                 packages.add(line.substring(line.indexOf(":") + 1).trim());
             }
         }
-        if (shellResult.isSuccess() && packages.size() > 0) {
+        if (shellResult.isSuccess() && !packages.isEmpty()) {
             return packages;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     protected static Shell.Result runAsRoot(String... commands) {
@@ -171,10 +170,8 @@ public class ShellCommands {
         Log.d(TAG, "Running Command: " + iterableToString("; ", commands));
         Shell.Result result = c.runCommand(commands).to(stdout, stderr).exec();
         Log.d(TAG, String.format("Command(s) '%s' ended with %d", Arrays.toString(commands), result.getCode()));
-        if (!result.isSuccess()) {
-            if (errors != null) {
-                errors.addAll(stderr);
-            }
+        if (!result.isSuccess() && errors != null) {
+            errors.addAll(stderr);
         }
         return result;
     }
@@ -183,11 +180,9 @@ public class ShellCommands {
         String dataDir = app.getDataDir();
         String deDataDir = app.getDeviceProtectedDataDir();
         StringBuilder command = new StringBuilder(String.format("rm -rf %s/cache %s/code_cache", dataDir, dataDir));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (!dataDir.equals(deDataDir)) {
-                command.append(String.format(" %s/cache %s/code_cache",
-                        deDataDir, deDataDir));
-            }
+        if (!dataDir.equals(deDataDir)) {
+            command.append(String.format(" %s/cache %s/code_cache",
+                    deDataDir, deDataDir));
         }
         File[] cacheDirs = ctx.getExternalCacheDirs();
         for (File cacheDir : cacheDirs) {
@@ -197,26 +192,22 @@ public class ShellCommands {
         return command.toString();
     }
 
-    public Ownership getOwnership(String packageDir) throws OwnershipException {
+    public Ownership getOwnership(String packageDir) throws OwnershipException, InterruptedException {
         /*
          * some packages can have 0 / UNKNOWN as uid and gid for a short
          * time before being switched to their proper ids so to work
          * around the race condition we sleep a little.
          */
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // ignored
-        }
+        Thread.sleep(1000);
         Shell.Result shellResult = ShellCommands.runAsRoot(String.format("stat %s", packageDir));
         ArrayList<String> uid_gid = ShellCommands.getIdsFromStat(iterableToString(shellResult.getOut()));
 
-        if (uid_gid == null || uid_gid.isEmpty())
+        if (uid_gid.isEmpty())
             throw new OwnershipException("no uid or gid found while trying to set permissions");
         return new Ownership(uid_gid.get(0), uid_gid.get(1));
     }
 
-    public void setPermissions(String packageDir) throws OwnershipException, ShellCommandException {
+    public void setPermissions(String packageDir) throws OwnershipException, ShellCommandException, InterruptedException {
         Shell.Result shellResult;
         Ownership ownership = this.getOwnership(packageDir);
         Log.d(TAG, "Changing permissions for " + packageDir);
@@ -254,9 +245,7 @@ public class ShellCommands {
         // Execute
         if (!shellResult.isSuccess()) {
             for (String line : shellResult.getErr()) {
-                if (line.contains("No such file or directory") && shellResult.getErr().size() == 1) {
-                    int ret = 0;
-                } else {
+                if (!line.contains("No such file or directory") || shellResult.getErr().size() != 1) {
                     writeErrorLog(context, packageName, line);
                 }
             }
@@ -265,14 +254,14 @@ public class ShellCommands {
         return shellResult.getCode();
     }
 
-    public void enableDisablePackage(String packageName, ArrayList<String> users, boolean enable) {
+    public void enableDisablePackage(String packageName, List<String> users, boolean enable) {
         String option = enable ? "enable" : "disable";
-        if (users != null && users.size() > 0) {
+        if (users != null && !users.isEmpty()) {
             List<String> commands = new ArrayList<>();
             for (String user : users) {
                 commands.add(String.format("pm %s --user %s %s", option, user, packageName));
             }
-            Shell.Result shellResult = ShellCommands.runAsRoot(commands.stream().collect(Collectors.joining(" && ")));
+            Shell.Result shellResult = ShellCommands.runAsRoot(String.join(" && ", commands));
             if (!shellResult.isSuccess()) {
                 for (String line : shellResult.getErr()) {
                     ShellCommands.writeErrorLog(context, packageName, line);
@@ -308,17 +297,17 @@ public class ShellCommands {
         }
     }
 
-    public ArrayList<String> getUsers() {
-        if (users != null && users.size() > 0) {
+    public List<String> getUsers() {
+        if (users != null && !users.isEmpty()) {
             return users;
         } else {
             Shell.Result shellResult = ShellCommands.runAsRoot(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", utilboxPath));
-            ArrayList<String> users = new ArrayList<>();
+            ArrayList<String> usersNew = new ArrayList<>();
             for (String line : shellResult.getOut()) {
                 if (line.trim().length() != 0)
-                    users.add(line.trim());
+                    usersNew.add(line.trim());
             }
-            return shellResult.isSuccess() ? users : null;
+            return shellResult.isSuccess() ? usersNew : new ArrayList<>();
         }
     }
 
@@ -338,11 +327,6 @@ public class ShellCommands {
     private static class Ownership {
         private final int uid;
         private final int gid;
-
-        public Ownership(int uid, int gid) {
-            this.uid = uid;
-            this.gid = gid;
-        }
 
         public Ownership(String uidStr, String gidStr) throws OwnershipException {
             if ((uidStr == null || uidStr.isEmpty()) || (gidStr == null || gidStr.isEmpty()))
@@ -371,14 +355,6 @@ public class ShellCommands {
         public ShellCommandException(int exitCode, List<String> stderr) {
             this.exitCode = exitCode;
             this.stderr = stderr;
-        }
-
-        public int getExitCode() {
-            return exitCode;
-        }
-
-        public List<String> getStderr() {
-            return stderr;
         }
     }
 }

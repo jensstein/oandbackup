@@ -12,12 +12,11 @@ import com.machiav3lli.backup.Constants;
 import java.lang.ref.WeakReference;
 
 public class HandleMessages {
-    final static String TAG = Constants.classTag(".HandleMessages");
-    final static int SHOW_DIALOG = 0;
-    final static int DISMISS_DIALOG = 1;
-
-    private final ProgressHandler handler;
+    private static final String TAG = Constants.classTag(".HandleMessages");
+    private static final int SHOW_DIALOG = 0;
+    private static final int DISMISS_DIALOG = 1;
     private static WeakReference<Context> mContext;
+    private final ProgressHandler handler;
 
     public HandleMessages(Context context) {
         /*
@@ -68,44 +67,34 @@ public class HandleMessages {
      * https://groups.google.com/forum/#!msg/android-developers/1aPZXZG6kWk/lIYDavGYn5UJ
      */
     private static class ProgressHandler extends Handler {
-        private static ProgressDialog progress = null;
-        private static String title, msg;
+        private ProgressDialog progress = null;
+        private String title, msg;
 
         @Override
         public void handleMessage(Message message) {
             title = message.getData().getString("title");
             msg = message.getData().getString("message");
-            switch (message.what) {
-                case SHOW_DIALOG:
-                    Context context;
-                    /*
-                     * change the current running progressdialog if it exists
-                     * to avoid losing the reference
-                     * TODO: allow more than one progressdialog at a time
-                     * this could be handled with asynctask but that is discouraged for long operations
-                     */
-                    if (progress != null && progress.isShowing()) {
-                        progress.setTitle(title);
-                        progress.setMessage(msg);
-                    } else if ((context = mContext.get()) != null) {
-                        // TODO: notice if a BadTokenException might seldomly occur here
-                        progress = ProgressDialog.show(context, title, msg, true, false);
-                    } else {
-                        Log.e(TAG, "context from weakreference is null");
-                    }
-                    break;
-                case DISMISS_DIALOG:
-                    if (progress != null) {
-                        try {
-                            progress.dismiss();
-                        } catch (IllegalArgumentException e) {
-                            Log.e(TAG, String.format(
-                                    "Could not dismiss dialog: %s", e));
-                        } finally {
-                            progress = null;
-                        }
-                    }
-                    break;
+            if (message.what == SHOW_DIALOG) {
+                Context context;
+                if (progress != null && progress.isShowing()) {
+                    progress.setCanceledOnTouchOutside(false);
+                    progress.setTitle(title);
+                    progress.setMessage(msg);
+                } else if ((context = mContext.get()) != null) {
+                    // TODO: notice if a BadTokenException might seldomly occur here
+                    progress = ProgressDialog.show(context, title, msg, true, false);
+                    progress.setCanceledOnTouchOutside(false);
+                } else {
+                    Log.e(TAG, "context from weakreference is null");
+                }
+            } else if (message.what == DISMISS_DIALOG && progress != null) {
+                try {
+                    progress.dismiss();
+                } catch (IllegalArgumentException e) {
+                    Log.e(TAG, String.format("Could not dismiss dialog: %s", e));
+                } finally {
+                    progress = null;
+                }
             }
         }
 

@@ -4,10 +4,8 @@ import android.app.usage.StorageStats;
 import android.app.usage.StorageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,27 +22,23 @@ import com.machiav3lli.backup.items.LogFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class AppInfoHelper {
-    final static String TAG = Constants.classTag(".AppInfoHelper");
-    public static Comparator<PackageInfo> pInfoPackageNameComparator = (p1, p2) -> p1.packageName.compareToIgnoreCase(p2.packageName);
+    private static final Comparator<PackageInfo> pInfoPackageNameComparator = (p1, p2) -> p1.packageName.compareToIgnoreCase(p2.packageName);
+    private static final String TAG = Constants.classTag(".AppInfoHelper");
 
-    public static ArrayList<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups,
-                                                    boolean includeSpecialBackups) {
+    public static List<AppInfo> getPackageInfo(Context context, File backupDir, boolean includeUnistalledBackups, boolean includeSpecialBackups) {
         ArrayList<AppInfo> list = new ArrayList<>();
         ArrayList<String> packageNames = new ArrayList<>();
         PackageManager pm = context.getPackageManager();
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
-        Collections.sort(packageInfoList, pInfoPackageNameComparator);
+        packageInfoList.sort(pInfoPackageNameComparator);
 
-        ArrayList<String> disabledPackages = ShellCommands.getDisabledPackages();
+        ArrayList<String> disabledPackages = (ArrayList<String>) ShellCommands.getDisabledPackages();
         if (includeSpecialBackups) {
             addSpecialBackups(context, backupDir, list, packageNames);
         }
@@ -60,8 +54,9 @@ public class AppInfoHelper {
                 String deDataDir = applicationInfo.deviceProtectedDataDir;
                 if (packageName.equals("android") && dataDir == null)
                     dataDir = "/data/system";
+                int versionCode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? (int) packageInfo.getLongVersionCode() : packageInfo.versionCode;
                 AppInfo appInfo = new AppInfo(packageName, applicationInfo.loadLabel(pm).toString(),
-                        packageInfo.versionName, packageInfo.versionCode, applicationInfo.sourceDir,
+                        packageInfo.versionName, versionCode, applicationInfo.sourceDir,
                         applicationInfo.splitSourceDirs, dataDir, deDataDir, isSystem, true);
 
                 Bitmap icon = null;
@@ -79,7 +74,7 @@ public class AppInfoHelper {
                                     packageName, src.getHeight(), src.getWidth()));
                         }
                     } else {
-                        if (apkIcon.getIntrinsicHeight() > 0 && apkIcon.getIntrinsicHeight() > 0)
+                        if (apkIcon.getIntrinsicHeight() > 0 && apkIcon.getIntrinsicWidth() > 0)
                             icon = Bitmap.createBitmap(apkIcon.getIntrinsicWidth(), apkIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
                         else icon = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
                         Canvas canvas = new Canvas(icon);
@@ -88,36 +83,22 @@ public class AppInfoHelper {
                     }
                 } catch (ClassCastException ignored) {
                 }
-                appInfo.icon = icon;
+                appInfo.setIcon(icon);
 
                 File subdir = new File(backupDir, packageName);
                 if (subdir.exists()) {
                     LogFile logInfo = new LogFile(subdir, packageName);
                     appInfo.setLogInfo(logInfo);
                 }
-                if (disabledPackages != null && disabledPackages.contains(packageName))
+                if (disabledPackages.contains(packageName))
                     appInfo.setDisabled(true);
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    try {
-                        Method getPackageSizeInfo = pm.getClass().getMethod("getPackageSizeInfo", String.class, IPackageStatsObserver.class);
-                        getPackageSizeInfo.invoke(pm, packageName, new IPackageStatsObserver.Stub() {
-                            @Override
-                            public void onGetStatsCompleted(final PackageStats appStats, boolean succeeded) {
-                                appInfo.addSizes(appStats);
-                            }
-                        });
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        StorageStatsManager storageStatsManager = (StorageStatsManager) context.getSystemService(Context.STORAGE_STATS_SERVICE);
-                        StorageStats storageStats = storageStatsManager.queryStatsForPackage(applicationInfo.storageUuid, packageName, Process.myUserHandle());
-                        appInfo.addSizes(storageStats);
-                    } catch (IOException | PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    StorageStatsManager storageStatsManager = (StorageStatsManager) context.getSystemService(Context.STORAGE_STATS_SERVICE);
+                    StorageStats storageStats = storageStatsManager.queryStatsForPackage(applicationInfo.storageUuid, packageName, Process.myUserHandle());
+                    appInfo.addSizes(storageStats);
+                } catch (IOException | PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
                 }
 
                 list.add(appInfo);
@@ -125,17 +106,17 @@ public class AppInfoHelper {
         }
         if (includeUnistalledBackups)
             addUninstalledBackups(backupDir, list, packageNames);
-        return list;
+        return list.isEmpty() ? new ArrayList<>() : list;
     }
 
-    public static void addUninstalledBackups(File backupDir, ArrayList<AppInfo> list, ArrayList<String> packageNames) {
+    public static void addUninstalledBackups(File backupDir, List<AppInfo> list, List<String> packageNames) {
         if (backupDir != null && backupDir.exists()) {
             String[] files = backupDir.list();
             if (files != null) {
                 Arrays.sort(files);
                 for (String folder : files) {
-                    if (!packageNames.contains(folder) && new File(backupDir.getAbsolutePath() + "/" + folder).isDirectory()) {
-                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + "/" + folder), folder);
+                    if (!packageNames.contains(folder) && new File(backupDir.getAbsolutePath() + File.separator + folder).isDirectory()) {
+                        LogFile logInfo = new LogFile(new File(backupDir.getAbsolutePath() + File.separator + folder), folder);
                         if (logInfo.getLastBackupMillis() > 0) {
                             AppInfo appInfo = new AppInfo(logInfo.getPackageName(),
                                     logInfo.getLabel(), logInfo.getVersionName(),
@@ -154,10 +135,11 @@ public class AppInfoHelper {
         }
     }
 
-    public static ArrayList<AppInfoSpecial> getSpecialBackups(Context context) {
+    public static List<AppInfoSpecial> getSpecialBackups(Context context) {
         String versionName = Build.VERSION.RELEASE;
         int versionCode = Build.VERSION.SDK_INT;
         int currentUser = ShellCommands.getCurrentUser();
+        String usersDir = "/data/system/users/";
         ArrayList<AppInfoSpecial> list = new ArrayList<>();
 
         AppInfoSpecial accounts = new AppInfoSpecial("accounts", context.getString(R.string.spec_accounts), versionName, versionCode);
@@ -165,7 +147,7 @@ public class AppInfoHelper {
         list.add(accounts);
 
         AppInfoSpecial appWidgets = new AppInfoSpecial("appwidgets", context.getString(R.string.spec_appwidgets), versionName, versionCode);
-        appWidgets.setFilesList("/data/system/users/" + currentUser + "/appwidgets.xml");
+        appWidgets.setFilesList(usersDir + currentUser + "/appwidgets.xml");
         list.add(appWidgets);
 
         AppInfoSpecial bluetooth = new AppInfoSpecial("bluetooth", context.getString(R.string.spec_bluetooth), versionName, versionCode);
@@ -178,8 +160,8 @@ public class AppInfoHelper {
         list.add(data);
 
         AppInfoSpecial wallpaper = new AppInfoSpecial("wallpaper", context.getString(R.string.spec_wallpaper), versionName, versionCode);
-        wallpaper.setFilesList("/data/system/users/" + currentUser + "/wallpaper",
-                "/data/system/users/" + currentUser + "/wallpaper_info.xml");
+        wallpaper.setFilesList(usersDir + currentUser + "/wallpaper",
+                usersDir + currentUser + "/wallpaper_info.xml");
         list.add(wallpaper);
 
         AppInfoSpecial wap = new AppInfoSpecial("wifi.access.points", context.getString(R.string.spec_wifiAccessPoints), versionName, versionCode);
@@ -194,8 +176,8 @@ public class AppInfoHelper {
         return list;
     }
 
-    public static void addSpecialBackups(Context context, File backupDir, ArrayList<AppInfo> list, ArrayList<String> packageNames) {
-        ArrayList<AppInfoSpecial> specialList = getSpecialBackups(context);
+    public static void addSpecialBackups(Context context, File backupDir, List<AppInfo> list, List<String> packageNames) {
+        ArrayList<AppInfoSpecial> specialList = (ArrayList<AppInfoSpecial>) getSpecialBackups(context);
         for (AppInfoSpecial appInfo : specialList) {
             String packageName = appInfo.getPackageName();
             packageNames.add(packageName);

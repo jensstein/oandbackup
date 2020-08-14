@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 public class BackupRestoreHelper {
-    static final String TAG = Constants.classTag(".BackupRestoreHelper");
+    private static final String TAG = Constants.classTag(".BackupRestoreHelper");
 
     public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfo app, int backupMode) {
         BackupAppAction action;

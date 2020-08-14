@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -34,8 +35,12 @@ import javax.crypto.spec.SecretKeySpec;
  * The IV is static as it may be public.
  */
 public final class Crypto {
-    public static final String TAG = Constants.classTag(".Crypto");
-
+    /**
+     * Default salt, if no user specified salt is available to improve security.
+     * Better a constant salt for the app that using no salt.
+     */
+    public static final byte[] FALLBACK_SALT = "oandbackupx".getBytes(StandardCharsets.UTF_8);
+    private static final String TAG = Constants.classTag(".Crypto");
     /**
      * Taken from here. Chosen because of API Level 24+ compatibility. Newer algorithms are available
      * with API Level 26+.
@@ -44,16 +49,11 @@ public final class Crypto {
      * The actual choice was inspired by this blog post:
      * https://www.raywenderlich.com/778533-encryption-tutorial-for-android-getting-started
      */
-    public static final String DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1";
-    public static final String DEFAULT_CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-    /**
-     * Default salt, if no user specified salt is available to improve security.
-     * Better a constant salt for the app that using no salt.
-     */
-    public static final byte[] FALLBACK_SALT = "oandbackupx".getBytes(StandardCharsets.UTF_8);
-    public static final int DEFAULT_IV_BLOCK_SIZE = 16;  // 128 bit
-    public static final int ITERATION_COUNT = 1000;
-    public static final int KEY_LENGTH = 128;
+    private static final String DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1";
+    private static final String DEFAULT_CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
+    private static final int DEFAULT_IV_BLOCK_SIZE = 16;  // 128 bit
+    private static final int ITERATION_COUNT = 1000;
+    private static final int KEY_LENGTH = 128;
 
     public static SecretKey generateKeyFromPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return Crypto.generateKeyFromPassword(password, salt, Crypto.DEFAULT_SECRET_KEY_FACTORY_ALGORITHM, Crypto.DEFAULT_CIPHER_ALGORITHM);
@@ -63,8 +63,7 @@ public final class Crypto {
         SecretKeyFactory factory = SecretKeyFactory.getInstance(keyFactoryAlgorithm);
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, Crypto.ITERATION_COUNT, Crypto.KEY_LENGTH);
         byte[] keyBytes = factory.generateSecret(spec).getEncoded();
-        SecretKey secret = new SecretKeySpec(keyBytes, cipherAlgorithm.split("/")[0]);
-        return secret;
+        return new SecretKeySpec(keyBytes, cipherAlgorithm.split(File.separator)[0]);
     }
 
     public static CipherOutputStream encryptStream(OutputStream os, String password, byte[] salt) throws CryptoSetupException {
@@ -94,7 +93,7 @@ public final class Crypto {
     }
 
     public static CipherInputStream decryptStream(InputStream in, String password, byte[] salt) throws CryptoSetupException {
-        try{
+        try {
             SecretKey secret = Crypto.generateKeyFromPassword(password, salt);
             return Crypto.decryptStream(in, secret);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

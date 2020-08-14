@@ -9,14 +9,15 @@ import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class SortFilterManager {
 
-    private static final Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
+    public static final Comparator<AppInfo> appInfoLabelComparator = (m1, m2) ->
             m1.getLabel().compareToIgnoreCase(m2.getLabel());
-    private static final Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
+    public static final Comparator<AppInfo> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
-    private static final Comparator<AppInfo> appDataSizeComparator = (m1, m2) ->
+    public static final Comparator<AppInfo> appDataSizeComparator = (m1, m2) ->
             Long.compare(m1.getDataSize(), m2.getDataSize());
 
     public static SortFilterModel getFilterPreferences(Context context) {
@@ -36,7 +37,7 @@ public class SortFilterManager {
         return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
     }
 
-    public static ArrayList<AppInfo> applyFilter(ArrayList<AppInfo> list, CharSequence filter, Context context) {
+    public static ArrayList<AppInfo> applyFilter(List<AppInfo> list, CharSequence filter, Context context) {
         ArrayList<AppInfo> nlist = new ArrayList<>(list);
         switch (filter.charAt(1)) {
             case '1':

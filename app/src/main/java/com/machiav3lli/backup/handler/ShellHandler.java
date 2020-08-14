@@ -15,20 +15,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ShellHandler {
-    static final String TAG = Constants.classTag(".ShellHandler");
-    public static final String[] UTILBOX_DEFAULT_PREFERENCE = {"toybox", "busybox", "/system/xbin/busybox"};
+    private static final String TAG = Constants.classTag(".ShellHandler");
+    private static final String[] UTILBOX_DEFAULT_PREFERENCE = {"toybox", "busybox", "/system/xbin/busybox"};
 
     private String utilboxPath;
 
     public ShellHandler(Context context) throws UtilboxNotAvailableException {
         String userUtilboxPath = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.PREFS_PATH_TOYBOX, "");
         if (userUtilboxPath.isEmpty()) {
-            for (String utilboxPath : ShellHandler.UTILBOX_DEFAULT_PREFERENCE) {
+            for (String utilboxDefaultPath : ShellHandler.UTILBOX_DEFAULT_PREFERENCE) {
                 try {
-                    this.setUtilboxPath(utilboxPath);
+                    this.setUtilboxPath(utilboxDefaultPath);
                     break;
                 } catch (UtilboxNotAvailableException e) {
-                    Log.d(ShellHandler.TAG, String.format("Tried utilbox path `%s`. Not available.", utilboxPath));
+                    Log.d(ShellHandler.TAG, String.format("Tried utilbox path `%s`. Not available.", utilboxDefaultPath));
                 }
             }
             if (this.utilboxPath == null) {
@@ -36,10 +36,6 @@ public class ShellHandler {
                 throw new UtilboxNotAvailableException(ShellHandler.UTILBOX_DEFAULT_PREFERENCE, null);
             }
         }
-    }
-
-    public interface RunnableShellCommand {
-        Shell.Job runCommand(String... commands);
     }
 
     public static Shell.Result runAsRoot(String... commands) throws ShellCommandFailedException {
@@ -94,7 +90,6 @@ public class ShellHandler {
         return result;
     }
 
-
     public String getUtilboxPath() {
         return this.utilboxPath;
     }
@@ -113,9 +108,12 @@ public class ShellHandler {
         this.utilboxPath = utilboxPath;
     }
 
+    public interface RunnableShellCommand {
+        Shell.Job runCommand(String... commands);
+    }
 
     public static class ShellCommandFailedException extends Exception {
-        protected final Shell.Result shellResult;
+        private final transient Shell.Result shellResult;
 
         public ShellCommandFailedException(Shell.Result shellResult) {
             super();
