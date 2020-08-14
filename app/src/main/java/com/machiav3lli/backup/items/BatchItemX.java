@@ -72,16 +72,16 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(app.logInfo, flags);
-        dest.writeString(app.label);
-        dest.writeString(app.packageName);
-        dest.writeString(app.versionName);
-        dest.writeString(app.sourceDir);
-        dest.writeString(app.dataDir);
-        dest.writeInt(app.versionCode);
-        dest.writeInt(app.backupMode);
+        dest.writeParcelable(app.getLogInfo(), flags);
+        dest.writeString(app.getLabel());
+        dest.writeString(app.getPackageName());
+        dest.writeString(app.getVersionName());
+        dest.writeString(app.getSourceDir());
+        dest.writeString(app.getDataDir());
+        dest.writeInt(app.getVersionCode());
+        dest.writeInt(app.getBackupMode());
         dest.writeBooleanArray(new boolean[]{app.isSystem(), app.isInstalled(), app.isChecked()});
-        dest.writeParcelable(app.icon, flags);
+        dest.writeParcelable(app.getIcon(), flags);
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {

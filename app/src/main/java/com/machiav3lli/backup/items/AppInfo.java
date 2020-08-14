@@ -29,12 +29,13 @@ public class AppInfo
             return new AppInfo[size];
         }
     };
-    public Bitmap icon;
-    LogFile logInfo;
-    String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
-    String[] splitSourceDirs;
-    int versionCode, backupMode;
-    long appSize, dataSize, cacheSize;
+
+    private Bitmap icon;
+    private LogFile logInfo;
+    private String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
+    private String[] splitSourceDirs;
+    private int versionCode, backupMode;
+    private long appSize, dataSize, cacheSize;
     private boolean system, installed, checked, disabled;
 
     public AppInfo(String packageName, String label, String versionName, int versionCode, String sourceDir, String[] splitSourceDirs, String dataDir, String deviceProtectedDataDir, boolean system, boolean installed) {
@@ -71,6 +72,14 @@ public class AppInfo
         appSize = in.readLong();
         dataSize = in.readLong();
         cacheSize = in.readLong();
+    }
+
+    public Bitmap getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Bitmap icon) {
+        this.icon = icon;
     }
 
     public String getPackageName() {

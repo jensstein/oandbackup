@@ -64,7 +64,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
         @Override
         public void bindView(@NotNull MainItemX item, @NotNull List<?> list) {
             final AppInfo app = item.getApp();
-            if (app.icon != null) icon.setImageBitmap(app.icon);
+            if (app.getIcon() != null) icon.setImageBitmap(app.getIcon());
             else icon.setImageResource(R.drawable.ic_placeholder);
             label.setText(app.getLabel());
             packageName.setText(app.getPackageName());

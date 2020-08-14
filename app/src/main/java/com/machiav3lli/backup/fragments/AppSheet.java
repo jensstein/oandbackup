@@ -131,11 +131,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(binding.enablePackage, View.GONE, update);
             UIUtils.setVisibility(binding.disablePackage, View.GONE, update);
         }
-        if (app.isSystem()) UIUtils.setVisibility(binding.uninstall,View.GONE, update);
+        if (app.isSystem()) UIUtils.setVisibility(binding.uninstall, View.GONE, update);
     }
 
     private void setupAppInfo(boolean update) {
-        if (app.icon != null) binding.icon.setImageBitmap(app.icon);
+        if (app.getIcon() != null) binding.icon.setImageBitmap(app.getIcon());
         else binding.icon.setImageResource(R.drawable.ic_placeholder);
         binding.label.setText(app.getLabel());
         binding.packageName.setText(app.getPackageName());
