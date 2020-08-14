@@ -2,7 +2,7 @@ package com.machiav3lli.backup;
 
 public class Constants {
 
-    public static final String TAG = "OAndBackupX";
+    public static final String TAG_BASE = "OAndBackupX";
     public static final String PREFS_SHARED_PRIVATE = "com.machiav3lli.backup";
 
     public static final String BLACKLIST_ARGS_ID = "blacklistId";
@@ -53,11 +53,11 @@ public class Constants {
     }
 
     public static String classAddress(String address) {
-        return "com.machiav3lli.backup" + address;
+        return PREFS_SHARED_PRIVATE + address;
     }
 
     public static String classTag(String tag) {
-        return TAG + tag;
+        return TAG_BASE + tag;
     }
 
     public static String exodusUrl(String app) {
