@@ -6,22 +6,19 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.databinding.ItemMainXBinding;
+import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
 import java.util.List;
 
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
 import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
 
-
 public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     AppInfo app;
-    private ItemMainXBinding binding;
 
     public MainItemX(AppInfo app) {
         this.app = app;
@@ -72,7 +69,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             label.setText(app.getLabel());
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null)
-                lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
+                lastBackup.setText(ItemUtils.getFormattedDate(false));
             switch (app.getBackupMode()) {
                 case AppInfo.MODE_APK:
                     backupMode.setText(R.string.onlyApkBackedUp);

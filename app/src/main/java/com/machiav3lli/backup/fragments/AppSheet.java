@@ -34,9 +34,7 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.handler.action.BackupAppAction;
 import com.machiav3lli.backup.items.AppInfo;
-import com.machiav3lli.backup.items.LogFile;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
@@ -168,7 +166,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         } else binding.versionName.setText(app.getVersionName());
         if (app.getLogInfo() != null) {
             UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
-            binding.lastBackup.setText(LogFile.formatDate(new Date(app.getLogInfo().getLastBackupMillis())));
+            binding.lastBackup.setText(ItemUtils.getFormattedDate(true));
         } else UIUtils.setVisibility(binding.lastBackupLine, View.GONE, update);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:
