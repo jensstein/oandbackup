@@ -6,26 +6,6 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/small_spacing">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ProgressBar
-            android:id="@+id/logsProgressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/logsLoading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/logviewer_message_loading"
-            android:textSize="@dimen/main_text" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -47,6 +27,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="38dp"
         android:layout_marginBottom="50dp"
+        android:contentDescription="@string/logViewerTitle"
         android:src="@drawable/ic_round_next_32"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

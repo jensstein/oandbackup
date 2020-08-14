@@ -40,14 +40,10 @@ public class LogsFragment extends Fragment {
     }
 
     private void setupOnClicks() {
-        binding.fabShowMore.setOnClickListener(v -> appendNextLines(false));
+        binding.fabShowMore.setOnClickListener(v -> appendNextLines());
     }
 
-    private void appendNextLines(boolean clear) {
-        if (clear) {
-            binding.logsProgressBar.setVisibility(View.GONE);
-            binding.logsLoading.setVisibility(View.GONE);
-        }
+    private void appendNextLines() {
         for (int i = index; i > index - 20 && i >= 0; i--)
             binding.logsText.append(textParts[i] + "\n\n");
         index -= 20;
@@ -59,7 +55,7 @@ public class LogsFragment extends Fragment {
             String txt = new LogUtils(LogUtils.getDefaultLogFilePath(requireContext())).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
-            requireActivity().runOnUiThread(() -> appendNextLines(true));
+            requireActivity().runOnUiThread(LogsFragment.this::appendNextLines);
         }
     }
 }
