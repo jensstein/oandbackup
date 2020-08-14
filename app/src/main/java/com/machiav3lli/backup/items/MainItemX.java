@@ -50,7 +50,6 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<MainItemX> {
-
         AppCompatTextView label = itemView.findViewById(R.id.label);
         AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);

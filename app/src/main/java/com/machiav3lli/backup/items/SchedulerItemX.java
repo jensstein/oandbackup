@@ -9,6 +9,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.schedules.HandleAlarms;
 import com.machiav3lli.backup.schedules.db.Schedule;
+import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -40,7 +41,7 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
 
     @Override
     public long getIdentifier() {
-        return sched.getId() + sched.getInterval() * 24 + sched.getHour() + sched.getMode().getValue() + sched.getSubmode().getValue() + (sched.isEnabled() ? 1 : 0);
+        return ItemUtils.calculateScheduleID(sched);
     }
 
     @Override
@@ -62,8 +63,6 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
         @Override
         public void bindView(@NotNull SchedulerItemX item, @NotNull List<?> list) {
             final Schedule sched = item.getSched();
-
-            // TODO change/fix the strings
             setSchedMode(sched);
             setSchedSubMode(sched);
             checkbox.setChecked(sched.isEnabled());

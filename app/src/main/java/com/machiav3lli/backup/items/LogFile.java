@@ -16,10 +16,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class LogFile implements Parcelable {
-    final static String TAG = Constants.classTag(".LogFile");
+    public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>() {
+        public LogFile createFromParcel(Parcel in) {
+            return new LogFile(in);
+        }
+
+        public LogFile[] newArray(int size) {
+            return new LogFile[size];
+        }
+    };
+    private static final String TAG = Constants.classTag(".LogFile");
     String label, packageName, versionName, sourceDir, dataDir, deviceProtectedDataDir;
     String[] splitSourceDirs;
     int versionCode, backupMode;
@@ -37,9 +47,7 @@ public class LogFile implements Parcelable {
             this.sourceDir = jsonObject.getString("sourceDir");
             this.splitSourceDirs = jsonObject.has("splitSourceDirs") ? LogFile.toStringArray(jsonObject.getJSONArray("splitSourceDirs")) : null;
             this.dataDir = jsonObject.getString("dataDir");
-            if (jsonObject.has("deviceProtectedDataDir"))
-                this.deviceProtectedDataDir = jsonObject.getString("deviceProtectedDataDir");
-            else this.deviceProtectedDataDir = null;
+            this.deviceProtectedDataDir = jsonObject.has("deviceProtectedDataDir") ? jsonObject.getString("deviceProtectedDataDir") : null;
             this.lastBackupMillis = jsonObject.getLong("lastBackupMillis");
             this.versionCode = jsonObject.getInt("versionCode");
             this.encrypted = jsonObject.optBoolean("isEncrypted");
@@ -54,69 +62,21 @@ public class LogFile implements Parcelable {
         }
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public int getVersionCode() {
-        return versionCode;
-    }
-
-    public String getSourceDir() {
-        return sourceDir;
-    }
-
-    public String[] getSplitSourceDirs() {
-        return splitSourceDirs;
-    }
-
-    public String[] getSplitApks() {
-        if (splitSourceDirs != null) {
-            String[] result = new String[splitSourceDirs.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = splitSourceDirs[i].substring(sourceDir.lastIndexOf("/") + 1);
-            }
-            return result;
-        }
-        return null;
-    }
-
-    public String getApk() {
-        if (sourceDir != null && sourceDir.length() > 0)
-            return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
-        return null;
-    }
-
-    public String getDataDir() {
-        return dataDir;
-    }
-
-    public String getDeviceProtectedDataDir() {
-        return deviceProtectedDataDir;
-    }
-
-    public long getLastBackupMillis() {
-        return lastBackupMillis;
-    }
-
-    public boolean isEncrypted() {
-        return encrypted;
-    }
-
-    public boolean isSystem() {
-        return system;
-    }
-
-    public int getBackupMode() {
-        return backupMode;
+    private LogFile(Parcel in) {
+        // data is read in the order it was written
+        label = in.readString();
+        packageName = in.readString();
+        versionName = in.readString();
+        sourceDir = in.readString();
+        splitSourceDirs = in.createStringArray();
+        dataDir = in.readString();
+        versionCode = in.readInt();
+        backupMode = in.readInt();
+        lastBackupMillis = in.readLong();
+        boolean[] bools = new boolean[2];
+        in.readBooleanArray(bools);
+        encrypted = bools[0];
+        system = bools[1];
     }
 
     public static void writeLogFile(File backupSubDir, AppInfo appInfo, int backupMode, boolean encrypted) throws IOException, JSONException {
@@ -159,13 +119,6 @@ public class LogFile implements Parcelable {
         }
     }
 
-    public static String formatDate(Date date) {
-        String dateFormated;
-        DateFormat dateFormat = DateFormat.getDateTimeInstance();
-        dateFormated = dateFormat.format(date);
-        return dateFormated;
-    }
-
     public static JSONArray toJsonArray(Object[] array) {
         if (array == null) {
             return null;
@@ -185,6 +138,71 @@ public class LogFile implements Parcelable {
         return result;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public String getSourceDir() {
+        return sourceDir;
+    }
+
+    public String[] getSplitSourceDirs() {
+        return splitSourceDirs;
+    }
+
+    public String[] getSplitApks() {
+        if (splitSourceDirs != null) {
+            String[] result = new String[splitSourceDirs.length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = splitSourceDirs[i].substring(sourceDir.lastIndexOf("/") + 1);
+            }
+            return result;
+        }
+        return new String[0];
+    }
+
+    public String getApk() {
+        if (sourceDir != null && sourceDir.length() > 0)
+            return sourceDir.substring(sourceDir.lastIndexOf("/") + 1);
+        return null;
+    }
+
+    public String getDataDir() {
+        return dataDir;
+    }
+
+    public String getDeviceProtectedDataDir() {
+        return deviceProtectedDataDir;
+    }
+
+    public long getLastBackupMillis() {
+        return lastBackupMillis;
+    }
+
+    public boolean isEncrypted() {
+        return encrypted;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public int getBackupMode() {
+        return backupMode;
+    }
+
     public int describeContents() {
         return 0;
     }
@@ -200,32 +218,5 @@ public class LogFile implements Parcelable {
         out.writeInt(backupMode);
         out.writeLong(lastBackupMillis);
         out.writeBooleanArray(new boolean[]{encrypted, system});
-    }
-
-    public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>() {
-        public LogFile createFromParcel(Parcel in) {
-            return new LogFile(in);
-        }
-
-        public LogFile[] newArray(int size) {
-            return new LogFile[size];
-        }
-    };
-
-    private LogFile(Parcel in) {
-        // data is read in the order it was written
-        label = in.readString();
-        packageName = in.readString();
-        versionName = in.readString();
-        sourceDir = in.readString();
-        splitSourceDirs = in.createStringArray();
-        dataDir = in.readString();
-        versionCode = in.readInt();
-        backupMode = in.readInt();
-        lastBackupMillis = in.readLong();
-        boolean[] bools = new boolean[2];
-        in.readBooleanArray(bools);
-        encrypted = bools[0];
-        system = bools[1];
     }
 }

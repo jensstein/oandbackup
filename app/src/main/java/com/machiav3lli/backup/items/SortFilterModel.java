@@ -143,6 +143,7 @@ public class SortFilterModel {
         this.code = String.valueOf(this.code.charAt(0)) + this.code.charAt(1) + this.code.charAt(2) + specialFilter;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return String.valueOf(code);

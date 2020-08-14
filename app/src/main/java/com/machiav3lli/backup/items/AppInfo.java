@@ -2,20 +2,15 @@ package com.machiav3lli.backup.items;
 
 import android.app.usage.StorageStats;
 import android.content.Context;
-import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.RequiresApi;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class AppInfo
-        implements Comparable<AppInfo>, Parcelable {
-    public static final String CACHE_DIR = "cache";
-
+public class AppInfo implements Parcelable {
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
@@ -199,7 +194,7 @@ public class AppInfo
 
     // list of single files used by special backups - only for compatibility now
     public String[] getFilesList() {
-        return null;
+        return new String[0];
     }
 
     // should ideally be removed once proper polymorphism is implemented
@@ -207,10 +202,7 @@ public class AppInfo
         return false;
     }
 
-    public int compareTo(AppInfo appInfo) {
-        return label.compareToIgnoreCase(appInfo.getLabel());
-    }
-
+    @NotNull
     public String toString() {
         return String.format("%s [%s]", this.packageName, this.label);
     }
@@ -237,13 +229,6 @@ public class AppInfo
         out.writeLong(cacheSize);
     }
 
-    public void addSizes(PackageStats appStats) {
-        this.appSize = appStats.codeSize + appStats.externalCodeSize;
-        this.dataSize = appStats.dataSize + appStats.externalDataSize;
-        this.cacheSize = appStats.cacheSize + appStats.externalCacheSize;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void addSizes(StorageStats storageStats) {
         appSize = storageStats.getAppBytes();
         cacheSize = storageStats.getCacheBytes();

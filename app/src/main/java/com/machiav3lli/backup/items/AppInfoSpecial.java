@@ -3,21 +3,30 @@ package com.machiav3lli.backup.items;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AppInfoSpecial extends AppInfo
-        implements Parcelable {
+public class AppInfoSpecial extends AppInfo implements Parcelable {
+    public static final Parcelable.Creator<AppInfoSpecial> CREATOR = new Parcelable.Creator<AppInfoSpecial>() {
+        public AppInfoSpecial createFromParcel(Parcel in) {
+            return new AppInfoSpecial(in);
+        }
+
+        public AppInfoSpecial[] newArray(int size) {
+            return new AppInfoSpecial[size];
+        }
+    };
     String[] files;
 
     public AppInfoSpecial(String packageName, String label, String versionName, int versionCode) {
         super(packageName, label, versionName, versionCode, "", null, "", "", true, true);
     }
 
-    public String[] getFilesList() {
-        return files;
+    protected AppInfoSpecial(Parcel in) {
+        super(in);
+        files = in.createStringArray();
     }
 
     @Override
-    public boolean isSpecial() {
-        return true;
+    public String[] getFilesList() {
+        return files;
     }
 
     public void setFilesList(String file) {
@@ -28,6 +37,11 @@ public class AppInfoSpecial extends AppInfo
         this.files = files;
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
     public int describeContents() {
         return 0;
     }
@@ -35,20 +49,5 @@ public class AppInfoSpecial extends AppInfo
     public void writeToParcel(Parcel out, int flags) {
         super.writeToParcel(out, flags);
         out.writeStringArray(files);
-    }
-
-    public static final Parcelable.Creator<AppInfoSpecial> CREATOR = new Parcelable.Creator<AppInfoSpecial>() {
-        public AppInfoSpecial createFromParcel(Parcel in) {
-            return new AppInfoSpecial(in);
-        }
-
-        public AppInfoSpecial[] newArray(int size) {
-            return new AppInfoSpecial[size];
-        }
-    };
-
-    protected AppInfoSpecial(Parcel in) {
-        super(in);
-        files = in.createStringArray();
     }
 }
