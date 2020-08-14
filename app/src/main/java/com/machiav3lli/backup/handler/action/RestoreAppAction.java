@@ -19,6 +19,7 @@ import com.machiav3lli.backup.utils.PrefUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -31,8 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RestoreAppAction extends BaseAppAction {
-    public static final String TAG = Constants.classTag(".RestoreAppAction");
-    public static final File PACKAGE_STAGING_DIRECTORY = new File("/data/local/tmp");
+    private static final String TAG = Constants.classTag(".RestoreAppAction");
+    private static final File PACKAGE_STAGING_DIRECTORY = new File("/data/local/tmp");
 
     public RestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
@@ -122,10 +123,12 @@ public class RestoreAppAction extends BaseAppAction {
              *
              * @Tiefkuehlpizze 2020-06-28: When does this occur? Checked it with emulator image with SDK 24. This is
              *                             a very old piece of code. Maybe it's obsolete.
+             * @machiav3lli 2020-08-09: In some oem ROMs the access to data/local/tmp is not allowed, I don't know how
+             *                              this has changed in the last couple of years.
              */
-            stagingApkPath = new File(android.os.Environment.getExternalStorageDirectory(), "apkTmp");
+            stagingApkPath = new File(getContext().getExternalFilesDir(null), "apkTmp");
             Log.w(RestoreAppAction.TAG, "Weird configuration. Expecting that the system does not allow " +
-                    "installing from oabs own data directory. Copying the apk to " + stagingApkPath);
+                    "installing from oabxs own data directory. Copying the apk to " + stagingApkPath);
         }
 
         String command;
@@ -217,7 +220,7 @@ public class RestoreAppAction extends BaseAppAction {
                 targetContents.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
                 String[] removeTargets = targetContents.stream().map(s -> '"' + new File(targetDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);
                 Log.d(RestoreAppAction.TAG, String.format("%s: Removing existing %s files in %s", app, type, targetDirectory));
-                command = this.prependUtilbox(String.format("rm -rf %s && ", Arrays.stream(removeTargets).collect(Collectors.joining(" "))));
+                command = this.prependUtilbox(String.format("rm -rf %s && ", String.join(" ", removeTargets)));
             }
             command += String.format(
                     "%s %s \"%s\"/* \"%s\"", this.getShell().getUtilboxPath(),
@@ -238,7 +241,6 @@ public class RestoreAppAction extends BaseAppAction {
                 Log.d(RestoreAppAction.TAG, String.format("%s: Uncompressed %s was deleted: %s", app, type, backupDeleted));
             }
         }
-
     }
 
     private void genericRestorePermissions(String type, AppInfo app, File targetDir) throws RestoreFailedException {
@@ -260,7 +262,7 @@ public class RestoreAppAction extends BaseAppAction {
             }
             String command = this.prependUtilbox(String.format(
                     "chown -R %s:%s %s", uidgid[0], uidgid[1],
-                    Arrays.stream(chownTargets).collect(Collectors.joining(" "))));
+                    String.join(" ", chownTargets)));
             ShellHandler.runAsRoot(command);
         } catch (ShellHandler.ShellCommandFailedException e) {
             String errorMessage = app + " Could not update permissions for " + type;
@@ -386,6 +388,7 @@ public class RestoreAppAction extends BaseAppAction {
             this.command = command;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return this.command;

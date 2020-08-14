@@ -11,7 +11,7 @@ import com.machiav3lli.backup.items.AppInfo;
 import java.io.File;
 
 public class SystemRestoreAppAction extends RestoreAppAction {
-    public static final String TAG = Constants.classTag(".SystemRestoreAppAction");
+    private static final String TAG = Constants.classTag(".SystemRestoreAppAction");
 
     public SystemRestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
@@ -44,7 +44,7 @@ public class SystemRestoreAppAction extends RestoreAppAction {
             ShellHandler.runAsRoot(command);
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
-            Log.e(RestoreAppAction.TAG, String.format("%s: Restore System apk failed: %s", app, error));
+            Log.e(TAG, String.format("%s: Restore System apk failed: %s", app, error));
             throw new RestoreFailedException(error, e);
         }
     }

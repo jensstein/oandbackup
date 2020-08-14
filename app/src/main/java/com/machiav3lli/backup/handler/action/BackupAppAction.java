@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BackupAppAction extends BaseAppAction {
-    public static final String TAG = Constants.classTag(".BackupAppAction");
+    private static final String TAG = Constants.classTag(".BackupAppAction");
 
     public BackupAppAction(Context context, ShellHandler shell) {
         super(context, shell);
@@ -188,7 +188,7 @@ public class BackupAppAction extends BaseAppAction {
             // symbolic links are not supported
             String command = this.prependUtilbox(String.format(
                     "cp -RLp  %s \"%s\"",
-                    Arrays.stream(dirsToBackup).collect(Collectors.joining(" ")),
+                    String.join(" ", dirsToBackup),
                     backupDirectory
             ));
             ShellHandler.runAsRoot(command);

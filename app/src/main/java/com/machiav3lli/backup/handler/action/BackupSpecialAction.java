@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class BackupSpecialAction extends BackupAppAction {
-    public static final String TAG = Constants.classTag(".BackupSpecialAction");
+    private static final String TAG = Constants.classTag(".BackupSpecialAction");
 
     public BackupSpecialAction(Context context, ShellHandler shell) {
         super(context, shell);

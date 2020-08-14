@@ -14,12 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseAppAction {
-    public static final String TAG = Constants.classTag(".BaseAppAction");
-    public static final String BACKUP_DIR_DATA = "data";
-    public static final String BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files";
-    public static final String BACKUP_DIR_EXTERNAL_FILES = "external_files";
-    public static final String BACKUP_DIR_OBB_FILES = "obb_files";
+    protected static final String BACKUP_DIR_DATA = "data";
+    protected static final String BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files";
+    protected static final String BACKUP_DIR_EXTERNAL_FILES = "external_files";
+    protected static final String BACKUP_DIR_OBB_FILES = "obb_files";
     protected static final List<String> DATA_EXCLUDED_DIRS = Arrays.asList("cache", "code_cache", "lib");
+    private static final String TAG = Constants.classTag(".BaseAppAction");
     private final ShellHandler shell;
     private final Context context;
 
@@ -35,10 +35,6 @@ public abstract class BaseAppAction {
             return "Unknown Error";
         }
         return err.get(err.size() - 1);
-    }
-
-    public ActionResult run(AppInfo app) {
-        return this.run(app, AppInfo.MODE_BOTH);
     }
 
     public abstract ActionResult run(AppInfo app, int backupMode);
