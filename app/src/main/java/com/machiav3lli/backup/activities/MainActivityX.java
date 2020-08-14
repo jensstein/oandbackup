@@ -84,7 +84,7 @@ public class MainActivityX extends BaseActivity
         users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
+        shellCommands = new ShellCommands(this, prefs, users);
 
         if (!SortFilterManager.getRememberFiltering(this))
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
@@ -184,17 +184,14 @@ public class MainActivityX extends BaseActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        switch (key) {
-            case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
-                backupDir = FileUtils.createBackupDir(this, backupDirPath);
-            case Constants.PREFS_PATH_TOYBOX:
-                shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
-                if (!shellCommands.checkUtilBoxPath())
-                    UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
-            default:
-                refresh();
+        if (Constants.PREFS_PATH_BACKUP_DIRECTORY.equals(key)) {
+            backupDir = FileUtils.getDefaultBackupDir(this, this);
+        } else if (Constants.PREFS_PATH_TOYBOX.equals(key)) {
+            shellCommands = new ShellCommands(this, sharedPreferences);
+            if (!shellCommands.checkUtilBoxPath())
+                UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
         }
+        refresh();
     }
 
     private void showBatteryOptimizationDialog() {

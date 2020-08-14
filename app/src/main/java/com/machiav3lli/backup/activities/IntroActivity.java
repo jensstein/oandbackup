@@ -21,16 +21,13 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.databinding.ActivityIntroBinding;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.scottyab.rootbeer.RootBeer;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -38,22 +35,20 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class IntroActivity extends BaseActivity {
-    static final String TAG = Constants.classTag(".IntroActivity");
-    static final int READ_PERMISSION = 2;
-    static final int WRITE_PERMISSION = 3;
-    static final int STATS_PERMISSION = 4;
-    public static File backupDir;
+    private static final String TAG = Constants.classTag(".IntroActivity");
+    private static final int READ_PERMISSION = 2;
+    private static final int WRITE_PERMISSION = 3;
+    private static final int STATS_PERMISSION = 4;
     private static ShellHandler shellHandler;
-    SharedPreferences prefs;
-    ArrayList<String> users;
-    ShellCommands shellCommands;
-    HandleMessages handleMessages;
+    private HandleMessages handleMessages;
     private ActivityIntroBinding binding;
 
     public static boolean checkUsageStatsPermission(Context context) {
         AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         assert appOps != null;
-        final int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+        final int mode = Build.VERSION.SDK_INT >= 29 ?
+                appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName())
+                : appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
         if (mode == AppOpsManager.MODE_DEFAULT) {
             return (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
         } else {
@@ -73,10 +68,6 @@ public class IntroActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         LogUtils.logDeviceInfo(this, TAG);
-        prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
-        users = new ArrayList<>();
-        checkRun(savedInstanceState);
-        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
         handleMessages = new HandleMessages(this);
 
         if (checkStoragePermissions() && checkUsageStatsPermission(this)) {
@@ -102,11 +93,6 @@ public class IntroActivity extends BaseActivity {
             default:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
-    }
-
-    private void checkRun(Bundle savedInstanceState) {
-        if (savedInstanceState != null)
-            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
     }
 
     private void getStoragePermission() {
@@ -241,8 +227,6 @@ public class IntroActivity extends BaseActivity {
 
     private void launchMainActivity() {
         binding.permissionsButton.setVisibility(View.GONE);
-        String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
-        backupDir = FileUtils.createBackupDir(this, backupDirPath);
         startActivity(new Intent(this, MainActivityX.class));
     }
 }

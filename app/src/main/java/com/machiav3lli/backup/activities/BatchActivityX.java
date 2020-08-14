@@ -73,10 +73,10 @@ public class BatchActivityX extends BaseActivity
         handleMessages = new HandleMessages(this);
         prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        users = new ArrayList<>();
+        ArrayList<String> users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(this, prefs, users, getFilesDir());
+        shellCommands = new ShellCommands(this, prefs, users);
 
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
@@ -278,11 +278,10 @@ public class BatchActivityX extends BaseActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
-                backupDir = FileUtils.createBackupDir(this, backupDirPath);
+                backupDir = FileUtils.getDefaultBackupDir(this, this);
                 break;
             case Constants.PREFS_PATH_TOYBOX:
-                shellCommands = new ShellCommands(this, sharedPreferences, getFilesDir());
+                shellCommands = new ShellCommands(this, sharedPreferences);
                 if (!shellCommands.checkUtilBoxPath())
                     UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
                 break;

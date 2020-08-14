@@ -45,18 +45,15 @@ import com.machiav3lli.backup.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
-    final static String TAG = Constants.classTag(".AppSheet");
+    private static final String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
-    AppInfo app;
-    HandleMessages handleMessages;
-    ArrayList<String> users;
-    ShellCommands shellCommands;
-    String backupDirPath;
-    File backupDir;
     int position;
+    private AppInfo app;
+    private HandleMessages handleMessages;
+    private ShellCommands shellCommands;
+    private File backupDir;
     private SheetAppBinding binding;
 
     public AppSheet(MainItemX item, Integer position) {
@@ -83,11 +80,9 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
         handleMessages = new HandleMessages(requireContext());
-        users = new ArrayList<>();
-        if (savedInstanceState != null)
-            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users, requireContext().getFilesDir());
-        backupDirPath = FileUtils.getDefaultBackupDirPath(requireContext());
+        ArrayList<String> users = savedInstanceState != null ? savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) : new ArrayList<>();
+        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users);
+        String backupDirPath = FileUtils.getDefaultBackupDirPath(requireContext());
         backupDir = FileUtils.createBackupDir(getActivity(), backupDirPath);
         return sheet;
     }

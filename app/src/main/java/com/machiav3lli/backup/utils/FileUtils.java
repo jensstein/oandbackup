@@ -47,6 +47,11 @@ public class FileUtils {
         return backupDir;
     }
 
+    public static File getDefaultBackupDir(Context context, Activity activity) {
+        String backupDirPath = FileUtils.getDefaultBackupDirPath(context);
+        return FileUtils.createBackupDir(activity, backupDirPath);
+    }
+
     public static String getName(String path) {
         if (path.endsWith(File.separator))
             path = path.substring(0, path.length() - 1);

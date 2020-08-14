@@ -2,7 +2,6 @@ package com.machiav3lli.backup.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -23,30 +22,27 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.machiav3lli.backup.utils.CommandUtils.iterableToString;
 import static com.machiav3lli.backup.utils.FileUtils.getName;
 import static com.machiav3lli.backup.utils.LogUtils.getDefaultLogFilePath;
 
 public class ShellCommands {
-    final static String TAG = Constants.classTag(".ShellCommands");
-    final static String FALLBACK_UTILBOX_PATH = "false";
-    private static Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
-    private static Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
+    static final String FALLBACK_UTILBOX_PATH = "false";
+    private static final String TAG = Constants.classTag(".ShellCommands");
+    private static final Pattern gidPattern = Pattern.compile("Gid:\\s*\\(\\s*(\\d+)");
+    private static final Pattern uidPattern = Pattern.compile("Uid:\\s*\\(\\s*(\\d+)");
     private static String errors = "";
-    protected Context context;
+    private final Context context;
     boolean multiuserEnabled;
-    private SharedPreferences prefs;
     private String utilboxPath;
     private ArrayList<String> users;
-    private String password;
 
-    public ShellCommands(Context context, SharedPreferences prefs, ArrayList<String> users, File filesDir) {
-        this.users = users;
-        this.prefs = prefs;
+    public ShellCommands(Context context, SharedPreferences prefs, List<String> users) {
+        this.users = (ArrayList<String>) users;
         this.context = context;
         this.utilboxPath = prefs.getString(Constants.PREFS_PATH_TOYBOX, "toybox").trim();
         if (this.utilboxPath.isEmpty()) {
@@ -65,21 +61,19 @@ public class ShellCommands {
                 this.utilboxPath = ShellCommands.FALLBACK_UTILBOX_PATH;
             }
         }
-        this.users = getUsers();
+        this.users = (ArrayList<String>) getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
-
-        password = prefs.getString(Constants.PREFS_PASSWORD, "");
     }
 
-    public ShellCommands(Context context, SharedPreferences prefs, File filesDir) {
-        this(context, prefs, null, filesDir);
+    public ShellCommands(Context context, SharedPreferences prefs) {
+        this(context, prefs, new ArrayList<>());
     }
 
     private static ArrayList<String> getIdsFromStat(String stat) {
         Matcher uid = uidPattern.matcher(stat);
         Matcher gid = gidPattern.matcher(stat);
         if (!uid.find() || !gid.find())
-            return null;
+            return new ArrayList<>();
         ArrayList<String> res = new ArrayList<>();
         res.add(uid.group(1));
         res.add(gid.group(1));
