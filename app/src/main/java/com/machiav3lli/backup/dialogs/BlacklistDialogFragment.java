@@ -65,7 +65,7 @@ public class BlacklistDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.dialogOK, (dialogInterface, id) -> {
                     for (BlacklistListener listener : blacklistListeners) {
                         listener.onBlacklistChanged(
-                                selections.toArray(new CharSequence[selections.size()]),
+                                selections.toArray(new CharSequence[0]),
                                 blacklistId);
                     }
                 });
