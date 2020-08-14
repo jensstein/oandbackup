@@ -26,6 +26,9 @@ android {
             versionNameSuffix '-neo'
             minifyEnabled true
         }
+        debug {
+            applicationIdSuffix '.debug'
+        }
     }
     buildFeatures {
         viewBinding true
