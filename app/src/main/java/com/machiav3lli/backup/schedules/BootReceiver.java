@@ -7,10 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.annotation.RestrictTo;
-
 import com.annimon.stream.Collectors;
-import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
@@ -23,21 +20,14 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class BootReceiver extends BroadcastReceiver {
-    private final static String TAG = Constants.classTag(".BootReceiver");
-    ;
+    private static final String TAG = Constants.classTag(".BootReceiver");
 
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    Optional<Thread> thread = Optional.empty();
-
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "UnsafeProtectedBroadcastReceiver"})
     @Override
     public void onReceive(Context context, Intent intent) {
         final HandleAlarms handleAlarms = getHandleAlarms(context);
-        final ScheduleDao scheduleDao = getScheduleDao(context,
-                SchedulerActivityX.DATABASE_NAME);
-        final Thread t = new Thread(new DatabaseRunnable(scheduleDao,
-                handleAlarms, getCurrentTime()));
-        thread = Optional.of(t);
+        final ScheduleDao scheduleDao = getScheduleDao(context);
+        final Thread t = new Thread(new DatabaseRunnable(scheduleDao, handleAlarms, getCurrentTime()));
         t.start();
     }
 
@@ -49,9 +39,9 @@ public class BootReceiver extends BroadcastReceiver {
         return new HandleAlarms(context);
     }
 
-    ScheduleDao getScheduleDao(Context context, String databasename) {
+    ScheduleDao getScheduleDao(Context context) {
         final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                .getScheduleDatabase(context, databasename);
+                .getScheduleDatabase(context, SchedulerActivityX.DATABASE_NAME);
         return scheduleDatabase.scheduleDao();
     }
 
@@ -75,15 +65,13 @@ public class BootReceiver extends BroadcastReceiver {
                 return;
             }
             final List<Schedule> schedules = Stream.of(scheduleDao.getAll())
-                    .filter(schedule -> schedule.isEnabled() &&
-                            schedule.getInterval() > 0).collect(Collectors.toList());
+                    .filter(schedule -> schedule.isEnabled() && schedule.getInterval() > 0)
+                    .collect(Collectors.toList());
             for (Schedule schedule : schedules) {
-                final long timeLeft = HandleAlarms.timeUntilNextEvent(
-                        schedule.getInterval(), schedule.getHour(),
-                        schedule.getPlaced(), currentTime);
+                final long timeLeft = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
+                        schedule.getHour(), schedule.getPlaced(), currentTime);
                 if (timeLeft < (5 * 60000)) {
-                    handleAlarms.setAlarm((int) schedule.getId(),
-                            AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+                    handleAlarms.setAlarm((int) schedule.getId(), AlarmManager.INTERVAL_FIFTEEN_MINUTES);
                 } else {
                     handleAlarms.setAlarm((int) schedule.getId(), schedule.getInterval(), schedule.getHour());
                 }

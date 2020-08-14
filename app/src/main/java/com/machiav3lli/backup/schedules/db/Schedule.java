@@ -115,10 +115,6 @@ public class Schedule {
         return submode;
     }
 
-    public void setSubmode(int submode) throws SchedulingException {
-        this.submode = Submode.intToSubmode(submode);
-    }
-
     public void setSubmode(Submode submode) {
         this.submode = submode;
     }
@@ -323,18 +319,8 @@ public class Schedule {
             return this;
         }
 
-        public Builder withMode(Mode mode) {
-            schedule.mode = mode;
-            return this;
-        }
-
         public Builder withMode(int mode) throws SchedulingException {
             schedule.mode = Mode.intToMode(mode);
-            return this;
-        }
-
-        public Builder withSubmode(Submode submode) {
-            schedule.submode = submode;
             return this;
         }
 

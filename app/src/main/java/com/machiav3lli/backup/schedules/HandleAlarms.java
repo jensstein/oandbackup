@@ -12,9 +12,9 @@ import com.machiav3lli.backup.Constants;
 import java.util.Calendar;
 
 public class HandleAlarms {
-    static final String TAG = Constants.classTag(".HandleAlarms");
-    AlarmManager alarmManager;
-    DeviceIdleChecker deviceIdleChecker;
+    private static final String TAG = Constants.classTag(".HandleAlarms");
+    private final AlarmManager alarmManager;
+    private final DeviceIdleChecker deviceIdleChecker;
 
     Context context;
 
@@ -22,6 +22,15 @@ public class HandleAlarms {
         this.context = context;
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.deviceIdleChecker = new DeviceIdleChecker(context);
+    }
+
+    public static long timeUntilNextEvent(int interval, int hour, long placed, long now) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(placed);
+        c.add(Calendar.DAY_OF_MONTH, interval);
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, 0);
+        return c.getTimeInMillis() - now;
     }
 
     public void setAlarm(int id, int interval, int hour) {
@@ -52,15 +61,6 @@ public class HandleAlarms {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         am.cancel(pendingIntent);
         pendingIntent.cancel();
-    }
-
-    public static long timeUntilNextEvent(int interval, int hour, long placed, long now) {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(placed);
-        c.add(Calendar.DAY_OF_MONTH, interval);
-        c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, 0);
-        return c.getTimeInMillis() - now;
     }
 
     // Adapted from the DozeChecker class from k9-mail:

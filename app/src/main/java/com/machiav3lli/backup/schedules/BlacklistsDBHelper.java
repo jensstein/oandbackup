@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlacklistsDBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 2;
@@ -23,7 +24,7 @@ public class BlacklistsDBHelper extends SQLiteOpenHelper {
                 selectionArgs);
     }
 
-    public ArrayList<String> getBlacklistedPackages(SQLiteDatabase db, int id) {
+    public List<String> getBlacklistedPackages(SQLiteDatabase db, int id) {
         String[] projection = {BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME};
         String selection = String.format("%s = ?",
                 BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID);
