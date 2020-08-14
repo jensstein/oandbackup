@@ -37,12 +37,12 @@ public class LogUtils {
     }
 
     public static void logDeviceInfo(Context context, String tag) {
-        final String abiVersion = AssetsHandler.getAbi();
+        final String abiVersion = Build.SUPPORTED_ABIS[0];
         try {
             final String packageName = context.getPackageName();
             final PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(packageName, 0);
-            final int versionCode = packageInfo.versionCode;
+            final int versionCode = Build.VERSION.SDK_INT >= 28 ? (int) packageInfo.getLongVersionCode() : packageInfo.versionCode;
             final String versionName = packageInfo.versionName;
             Log.i(tag, String.format("running version %s/%s on abi %s",
                     versionCode, versionName, abiVersion));
