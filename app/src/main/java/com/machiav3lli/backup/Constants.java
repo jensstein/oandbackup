@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String PREFS_SORT_FILTER = "sortFilter";
     public static final String PREFS_Ignore_Battery_Optimization = "ignoreBatteryOptimization";
+    public static final String PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter";
 
     public static final String PREFS_SCHEDULES = "schedules";
     public static final String PREFS_SCHEDULES_TOTAL = "total";

@@ -224,11 +224,16 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         SharedPreferences defPrefs = PrefUtils.getDefaultSharedPreferences(this);
         boolean dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && !defPrefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
         if (dontShowAgain) return;
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.enable_encryption_title)
-                .setMessage(R.string.enable_encryption_message)
-                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)))
-                .show();
+        int dontShowCounter = prefs.getInt(Constants.PREFS_SKIPPEDENCRYPTION, 0);
+        prefs.edit().putInt(Constants.PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply();
+        if (dontShowCounter % 10 == 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.enable_encryption_title)
+                    .setMessage(R.string.enable_encryption_message)
+                    .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)))
+                    .show();
+        }
+
     }
 
     public void refresh(boolean withAppSheet) {
