@@ -19,18 +19,31 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 public class FileUtils {
-    // TODO replace the usage of Environment.getExternalStorageDirectory()
-    public static final String DEFAULT_BACKUP_FOLDER = Environment.getExternalStorageDirectory() + "/OABX";
-    private static final String TAG = Constants.classTag(".FileCreationHelper");
-
+    private static final String TAG = Constants.classTag(".FileUtils");
     private boolean fallbackFlag;
 
-    public static String getDefaultBackupDirPath(Context context) {
-        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, DEFAULT_BACKUP_FOLDER);
+    public static String getDefaultBackupFolderPath(Context context) {
+        return FileUtils.getExternalStorageDirectory(context) + File.separator + "OABX";
     }
 
-    public static void setDefaultBackupDirPath(Context context, String path) {
+    public static File getExternalStorageDirectory(Context context) {
+        return context.getExternalFilesDir(null).getParentFile().getParentFile().getParentFile().getParentFile();
+    }
+
+    public static File getExternalStoragePublicDirectory(Context context, String directory) {
+        return new File(getExternalStorageDirectory(context), directory);
+    }
+
+    public static String getBackupDirectoryPath(Context context) {
+        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, getDefaultBackupFolderPath(context));
+    }
+
+    public static void setBackupDirectoryPath(Context context, String path) {
         PrefUtils.getPrivateSharedPrefs(context).edit().putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, path).apply();
+    }
+
+    public static String getDefaultLogFilePath(Context context) {
+        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, FileUtils.getDefaultBackupFolderPath(context)) + "/OAndBackupX.log";
     }
 
     public static File createBackupDir(final Activity activity, final String path) {
@@ -39,17 +52,17 @@ public class FileUtils {
         if (path.trim().length() > 0) {
             backupDir = fileCreator.createBackupFolder(activity, path);
             if (fileCreator.isFallback()) {
-                activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + getDefaultBackupDirPath(activity), Toast.LENGTH_LONG).show());
+                activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.mkfileError) + " " + path + " - " + activity.getString(R.string.fallbackToDefault) + ": " + getBackupDirectoryPath(activity), Toast.LENGTH_LONG).show());
             }
         } else
-            backupDir = fileCreator.createBackupFolder(activity, getDefaultBackupDirPath(activity));
+            backupDir = fileCreator.createBackupFolder(activity, getBackupDirectoryPath(activity));
         if (backupDir == null)
-            UIUtils.showWarning(activity, activity.getString(R.string.mkfileError) + " " + getDefaultBackupDirPath(activity), activity.getString(R.string.backupFolderError));
+            UIUtils.showWarning(activity, activity.getString(R.string.mkfileError) + " " + getBackupDirectoryPath(activity), activity.getString(R.string.backupFolderError));
         return backupDir;
     }
 
     public static File getDefaultBackupDir(Context context, Activity activity) {
-        String backupDirPath = FileUtils.getDefaultBackupDirPath(context);
+        String backupDirPath = FileUtils.getBackupDirectoryPath(context);
         return FileUtils.createBackupDir(activity, backupDirPath);
     }
 
@@ -63,12 +76,12 @@ public class FileUtils {
     Optimized a little bit to our usage
     https://stackoverflow.com/questions/34927748/android-5-0-documentfile-from-tree-uri
      */
-    public static String getAbsolutPath(Context con, @Nullable final Uri treeUri) {
+    public static String getAbsolutPath(Context context, @Nullable final Uri treeUri) {
         if (treeUri == null) return null;
         String volumeId = getVolumeIdFromTreeUri(treeUri);
-        if (volumeId == null) return DEFAULT_BACKUP_FOLDER;
-        String volumePath = getVolumePath(volumeId, con);
-        if (volumePath == null) return DEFAULT_BACKUP_FOLDER;
+        if (volumeId == null) return getDefaultBackupFolderPath(context);
+        String volumePath = getVolumePath(volumeId, context);
+        if (volumePath == null) return getDefaultBackupFolderPath(context);
         if (volumePath.endsWith(File.separator))
             volumePath = volumePath.substring(0, volumePath.length() - 1);
         String documentPath = getDocumentPathFromTreeUri(treeUri);
@@ -84,12 +97,10 @@ public class FileUtils {
 
     private static String getVolumePath(final String volumeId, Context context) {
         try {
-            // TODO replace the usage of Environment.getExternalStoragePublicDirectory()
             if (volumeId.equals("home"))
-                return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
-            // TODO replace the usage of Environment.getExternalStoragePublicDirectory()
+                return FileUtils.getExternalStoragePublicDirectory(context, Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
             if (volumeId.equals("downloads"))
-                return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+                return FileUtils.getExternalStoragePublicDirectory(context, Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
             StorageManager mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
             Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
             Object result = getVolumeList.invoke(mStorageManager);
@@ -143,7 +154,7 @@ public class FileUtils {
             if (!created) {
                 fallbackFlag = true;
                 Log.e(TAG, "couldn't create " + dir.getAbsolutePath());
-                dir = new File(getDefaultBackupDirPath(context));
+                dir = new File(getBackupDirectoryPath(context));
                 if (!dir.exists()) {
                     boolean defaultCreated = dir.mkdirs();
                     if (!defaultCreated) {

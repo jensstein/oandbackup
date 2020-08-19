@@ -44,7 +44,7 @@ public abstract class BaseAppAction {
     }
 
     public File getBackupFolder() {
-        return new File(FileUtils.getDefaultBackupDirPath(this.context));
+        return new File(FileUtils.getBackupDirectoryPath(this.context));
     }
 
     public File getAppBackupFolder(AppInfo app) {

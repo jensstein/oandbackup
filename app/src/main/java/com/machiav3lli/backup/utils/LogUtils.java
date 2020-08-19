@@ -31,10 +31,6 @@ public class LogUtils {
     public LogUtils() {
     }
 
-    public static String getDefaultLogFilePath(Context context) {
-        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, FileUtils.DEFAULT_BACKUP_FOLDER) + "/OAndBackupX.log";
-    }
-
     public static void logDeviceInfo(Context context, String tag) {
         final String abiVersion = Build.SUPPORTED_ABIS[0];
         try {
@@ -58,13 +54,12 @@ public class LogUtils {
             try {
                 logFile.createNewFile();
             } catch (IOException e) {
-                logFile = new File(getDefaultLogFilePath(context));
+                logFile = new File(FileUtils.getDefaultLogFilePath(context));
                 logFile.createNewFile();
             }
             return logFile;
         } catch (IOException e) {
-            Log.e(TAG, String.format(
-                    "Caught exception when creating log file: %s", e));
+            Log.e(TAG, String.format("Caught exception when creating log file: %s", e));
             return null;
         }
     }

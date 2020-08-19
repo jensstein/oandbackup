@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.machiav3lli.backup.databinding.FragmentLogsBinding;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 
 public class LogsFragment extends Fragment {
@@ -52,7 +53,7 @@ public class LogsFragment extends Fragment {
 
     private class TextLoadRunnable implements Runnable {
         public void run() {
-            String txt = new LogUtils(LogUtils.getDefaultLogFilePath(requireContext())).read();
+            String txt = new LogUtils(FileUtils.getDefaultLogFilePath(requireContext())).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
             requireActivity().runOnUiThread(LogsFragment.this::appendNextLines);

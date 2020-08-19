@@ -8,12 +8,11 @@ import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
 
 public class CustomPackageList {
     private static final List<AppInfo> appInfoList = MainActivityX.getOriginalList();
@@ -23,7 +22,7 @@ public class CustomPackageList {
     }
 
     public static void showList(Activity activity, String filename) {
-        final LogUtils frw = new LogUtils(getDefaultBackupDirPath(activity), filename);
+        final LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(activity), filename);
         final CharSequence[] items = collectItems();
         final ArrayList<Integer> selected = new ArrayList<>();
         boolean[] checked = new boolean[items.length];

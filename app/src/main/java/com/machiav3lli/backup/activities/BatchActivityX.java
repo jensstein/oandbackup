@@ -84,7 +84,7 @@ public class BatchActivityX extends BaseActivity
             UIUtils.reShowMessage(handleMessages, threadId);
         }
 
-        String backupDirPath = FileUtils.getDefaultBackupDirPath(this);
+        String backupDirPath = FileUtils.getBackupDirectoryPath(this);
         backupDir = FileUtils.createBackupDir(this, backupDirPath);
         if (originalList.isEmpty())
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
@@ -234,12 +234,11 @@ public class BatchActivityX extends BaseActivity
 
             // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
             UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
-                try (FileWriter fw = new FileWriter(LogUtils.getDefaultLogFilePath(this.getApplicationContext()), true)) {
+                try (FileWriter fw = new FileWriter(FileUtils.getDefaultLogFilePath(this.getApplicationContext()), true)) {
                     fw.write(errors);
                     Toast.makeText(
                             BatchActivityX.this,
-                            String.format(this.getString(R.string.logfileSavedAt),
-                                    LogUtils.getDefaultLogFilePath(this.getApplicationContext())),
+                            String.format(this.getString(R.string.logfileSavedAt), FileUtils.getDefaultLogFilePath(this.getApplicationContext())),
                             Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
                     new AlertDialog.Builder(BatchActivityX.this)

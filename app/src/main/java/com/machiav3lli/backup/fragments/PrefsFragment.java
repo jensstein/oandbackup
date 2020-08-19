@@ -69,7 +69,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
-        pref.setSummary(FileUtils.getDefaultBackupDirPath(requireContext()));
+        pref.setSummary(FileUtils.getBackupDirectoryPath(requireContext()));
         pref.setOnPreferenceClickListener(preference -> this.onClickBackupDirectory());
 
         pref = findPreference(Constants.PREFS_QUICK_REBOOT);
@@ -171,7 +171,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private void setDefaultDir(Context context, String dir) {
-        FileUtils.setDefaultBackupDirPath(context, dir);
+        FileUtils.setBackupDirectoryPath(context, dir);
         Preference pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
         pref.setSummary(dir);
@@ -183,7 +183,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         if (requestCode == DEFAULT_DIR_CODE && data != null) {
             Uri uri = data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
-                String oldDir = FileUtils.getDefaultBackupDirPath(requireContext());
+                String oldDir = FileUtils.getBackupDirectoryPath(requireContext());
                 String newPath = FileUtils.getAbsolutPath(requireContext(), DocumentsContract.buildDocumentUriUsingTree(uri,
                         DocumentsContract.getTreeDocumentId(uri)));
                 if (!oldDir.equals(newPath)) {

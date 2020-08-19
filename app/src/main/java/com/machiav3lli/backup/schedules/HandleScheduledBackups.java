@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.machiav3lli.backup.utils.FileUtils.getDefaultBackupDirPath;
+import static com.machiav3lli.backup.utils.FileUtils.getBackupDirectoryPath;
 
 public class HandleScheduledBackups {
     private static final String TAG = Constants.classTag(".HandleScheduledBackups");
@@ -50,7 +50,7 @@ public class HandleScheduledBackups {
 
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem) {
         new Thread(() -> {
-            String backupDirPath = getDefaultBackupDirPath(context);
+            String backupDirPath = getBackupDirectoryPath(context);
             boolean specialBackups = prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
             backupDir = new File(backupDirPath);
             ArrayList<AppInfo> list = (ArrayList<AppInfo>) AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
@@ -82,7 +82,7 @@ public class HandleScheduledBackups {
                     }
                     break;
                 case CUSTOM:
-                    LogUtils frw = new LogUtils(getDefaultBackupDirPath(context),
+                    LogUtils frw = new LogUtils(getBackupDirectoryPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
                     for (AppInfo appInfo : list) {
                         if (frw.contains(appInfo.getPackageName())) {

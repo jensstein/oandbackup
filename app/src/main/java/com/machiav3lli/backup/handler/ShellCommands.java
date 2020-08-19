@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.topjohnwu.superuser.Shell;
 
@@ -28,7 +29,6 @@ import java.util.regex.Pattern;
 
 import static com.machiav3lli.backup.utils.CommandUtils.iterableToString;
 import static com.machiav3lli.backup.utils.FileUtils.getName;
-import static com.machiav3lli.backup.utils.LogUtils.getDefaultLogFilePath;
 
 public class ShellCommands {
     static final String FALLBACK_UTILBOX_PATH = "false";
@@ -95,7 +95,7 @@ public class ShellCommands {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.getDefault());
         String dateFormated = dateFormat.format(date);
         try {
-            File outFile = new LogUtils().createLogFile(context, getDefaultLogFilePath(context));
+            File outFile = new LogUtils().createLogFile(context, FileUtils.getDefaultLogFilePath(context));
             if (outFile != null) {
                 try (FileWriter fw = new FileWriter(outFile.getAbsoluteFile(),
                         true);

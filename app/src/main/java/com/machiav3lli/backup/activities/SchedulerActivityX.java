@@ -189,12 +189,12 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     public void renameCustomListFile(long id, long destinationId) {
-        LogUtils frw = new LogUtils(FileUtils.getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + id);
+        LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(this), SCHEDULECUSTOMLIST + id);
         frw.rename(SCHEDULECUSTOMLIST + destinationId);
     }
 
     public void removeCustomListFile(long number) {
-        LogUtils frw = new LogUtils(FileUtils.getDefaultBackupDirPath(this), SCHEDULECUSTOMLIST + number);
+        LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(this), SCHEDULECUSTOMLIST + number);
         frw.delete();
     }
 

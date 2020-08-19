@@ -82,7 +82,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         handleMessages = new HandleMessages(requireContext());
         ArrayList<String> users = savedInstanceState != null ? savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) : new ArrayList<>();
         shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users);
-        String backupDirPath = FileUtils.getDefaultBackupDirPath(requireContext());
+        String backupDirPath = FileUtils.getBackupDirectoryPath(requireContext());
         backupDir = FileUtils.createBackupDir(getActivity(), backupDirPath);
         return sheet;
     }
