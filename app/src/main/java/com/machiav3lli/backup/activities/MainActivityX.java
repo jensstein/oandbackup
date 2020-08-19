@@ -81,7 +81,7 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         setupOnClicks(this);
 
         handleMessages = new HandleMessages(this);
-        prefs = this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
+        prefs = PrefUtils.getPrivateSharedPrefs(this);
         showBatteryOptimizationDialog();
         showEncryptionDialog();
         users = new ArrayList<>();

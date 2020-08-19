@@ -48,7 +48,7 @@ public class BatchActivityX extends BaseActivity
         implements BatchConfirmDialog.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Constants.classTag(".BatchActivityX");
     private static final int RESULT_OK = 0;
-    File backupDir;
+    private File backupDir;
     private boolean checkboxSelectAllBoolean = false;
     private boolean changesMade;
     private SortFilterSheet sheetSortFilter;

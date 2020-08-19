@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class LogUtils {
     private static final String TAG = Constants.classTag(".LogUtils");
-    File file;
+    private File file;
 
     public LogUtils(String absolutePath) {
         this.file = new File(absolutePath);
