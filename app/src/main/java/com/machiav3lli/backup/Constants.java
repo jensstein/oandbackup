@@ -26,6 +26,7 @@ public class Constants {
     public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
+    public static final String PREFS_BIOMETRICLOCK = "biometricLock";
     public static final String PREFS_REMEMBERFILTERING = "rememberFiltering";
     public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_ENCRYPTION = "encryption";

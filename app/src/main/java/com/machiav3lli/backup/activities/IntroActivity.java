@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.activities;
 
+import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.biometric.BiometricPrompt;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -224,7 +227,28 @@ public class IntroActivity extends BaseActivity {
     }
 
     private void launchMainActivity() {
-        binding.permissionsButton.setVisibility(View.GONE);
-        startActivity(new Intent(this, MainActivityX.class));
+        if (PrefUtils.isBiometricLockAvailable(this) && PrefUtils.isLockEnabled(this)) {
+            BiometricPrompt biometricPrompt = createBeometricPrompt(this);
+            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle(getString(R.string.prefs_biometriclock))
+                    .setConfirmationRequired(true)
+                    .setDeviceCredentialAllowed(true)
+                    .build();
+            biometricPrompt.authenticate(promptInfo);
+        } else {
+            binding.permissionsButton.setVisibility(View.GONE);
+            startActivity(new Intent(this, MainActivityX.class));
+        }
+    }
+
+    private BiometricPrompt createBeometricPrompt(Activity activity) {
+        return new BiometricPrompt(this, ContextCompat.getMainExecutor(this), new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                binding.permissionsButton.setVisibility(View.GONE);
+                startActivity(new Intent(activity, MainActivityX.class));
+            }
+        });
     }
 }

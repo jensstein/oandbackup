@@ -59,6 +59,10 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         String oldLang = ((ListPreference) findPreference(Constants.PREFS_LANGUAGES)).getValue();
         pref.setOnPreferenceChangeListener((preference, newValue) -> onPrefChangeLanguage(oldLang, newValue.toString()));
 
+        pref = findPreference(Constants.PREFS_BIOMETRICLOCK);
+        assert pref != null;
+        pref.setVisible(PrefUtils.isBiometricLockAvailable(requireContext()));
+
         CheckBoxPreference encryptPref = findPreference(Constants.PREFS_ENCRYPTION);
         EditTextPreference passwordPref = findPreference(Constants.PREFS_PASSWORD);
         assert encryptPref != null;

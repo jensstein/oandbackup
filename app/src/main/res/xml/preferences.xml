@@ -22,16 +22,22 @@
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="rememberFiltering"
-            android:summary="@string/prefs_summaryRememberFiltering"
-            android:title="@string/prefs_rememberFiltering"
+            android:key="biometricLock"
+            android:summary="@string/prefs_biometriclock_summary"
+            android:title="@string/prefs_biometriclock"
             app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:defaultValue="7"
             android:inputType="number"
             android:key="oldBackups"
-            android:summary="@string/prefs_summaryOldBackups"
-            android:title="@string/prefs_oldBackups"
+            android:summary="@string/prefs_oldbackups_summary"
+            android:title="@string/prefs_oldbackups"
+            app:iconSpaceReserved="false" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="rememberFiltering"
+            android:summary="@string/prefs_rememberfiltering_summary"
+            android:title="@string/prefs_rememberfiltering"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory

@@ -3,6 +3,7 @@ package com.machiav3lli.backup.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.biometric.BiometricManager;
 import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
@@ -23,6 +24,14 @@ public class PrefUtils {
 
     public static boolean isEncryptionEnabled(Context context) {
         return !getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "").isEmpty();
+    }
+
+    public static boolean isLockEnabled(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_BIOMETRICLOCK, true);
+    }
+
+    public static boolean isBiometricLockAvailable(Context context) {
+        return BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
     }
 
     public static SharedPreferences getDefaultSharedPreferences(Context context) {
