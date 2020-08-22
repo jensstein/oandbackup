@@ -190,6 +190,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     private void setupOnClicks(AppSheet fragment) {
+        binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
         binding.exodusReport.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.exodusUrl(app.getPackageName())))));
         binding.appInfo.setOnClickListener(v -> {
             Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

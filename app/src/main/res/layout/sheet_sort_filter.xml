@@ -6,7 +6,6 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/cards_spacing"
         android:background="@drawable/card_static"
         android:scrollbars="none">
 
@@ -15,41 +14,63 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/cards_spacing"
-                android:text="@string/sort_options"
-                android:textAppearance="@style/TextAppearance.Title" />
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/sortBy"
-                style="@style/Chip.Group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/cards_spacing">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByPackageName"
-                    style="@style/Chip.Filter"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sortPackageName" />
+                    android:orientation="vertical">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByLabel"
-                    style="@style/Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortLabel" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/cards_spacing"
+                        android:text="@string/sort_options"
+                        android:textAppearance="@style/TextAppearance.Title" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByDataSize"
-                    style="@style/Chip.Filter"
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/sortBy"
+                        style="@style/Chip.Group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/cards_spacing">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/sortByPackageName"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sortPackageName" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/sortByLabel"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sortLabel" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/sortByDataSize"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sortDataSize" />
+                    </com.google.android.material.chip.ChipGroup>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dismiss"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortDataSize" />
-            </com.google.android.material.chip.ChipGroup>
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_margin="@dimen/buttons_spacing"
+                    android:background="@drawable/ripple_click"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_round_arrow_down_42" />
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -201,19 +222,10 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/dismiss"
-                    android:layout_width="48dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_neutral_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ic_round_next_32" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/reset"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginEnd="@dimen/cards_spacing"
                     android:layout_weight="1"
                     android:background="@drawable/button_negative_ripple"
                     android:clickable="true"

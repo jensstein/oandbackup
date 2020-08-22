@@ -190,7 +190,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     void setTimeLeft(Schedule schedule, long now) {
         if (!schedule.isEnabled()) {
             binding.timeLeft.setText("");
-            binding.timeLeftLine.setVisibility(View.INVISIBLE);
+            binding.timeLeftLine.setVisibility(View.GONE);
         } else {
             final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                     schedule.getHour(), schedule.getPlaced(), now);
@@ -203,6 +203,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     }
 
     private void setupOnClicks() {
+        binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
         binding.enableCheckbox.setOnClickListener(v -> {
             final long id = sched.getId();
             try {

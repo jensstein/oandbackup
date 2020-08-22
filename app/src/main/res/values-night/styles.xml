@@ -66,7 +66,7 @@
         <item name="android:elevation">2dp</item>
     </style>
 
-    <!-- Buttons & Chips -->
+    <!-- Buttons, Chips & Widgets -->
     <style name="ItemLayout">
         <item name="android:background">@drawable/card_ripple</item>
         <item name="android:orientation">horizontal</item>
@@ -150,8 +150,13 @@
         <item name="android:textColor">@color/app_accent</item>
     </style>
 
-    <style name="Button.NavBar" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/ripple_click</item>
-        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    <style name="NumberPicker">
+        <item name="np_dividerColor">@android:color/transparent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="np_orientation">horizontal</item>
+        <item name="android:layout_marginHorizontal">@dimen/cards_spacing</item>
+        <item name="np_selectedTextColor">?colorAccent</item>
+        <item name="np_textColor">?colorControlNormal</item>
     </style>
 </resources>

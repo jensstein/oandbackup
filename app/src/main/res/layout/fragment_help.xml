@@ -93,7 +93,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/help_telegram"
+                    android:text="@string/help_group"
                     android:textAppearance="@style/TextAppearance.Label"
                     android:textStyle="bold" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -117,7 +117,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/help_telegram"
+                    android:text="@string/help_group"
                     android:textAppearance="@style/TextAppearance.Label"
                     android:textStyle="bold" />
             </androidx.appcompat.widget.LinearLayoutCompat>
