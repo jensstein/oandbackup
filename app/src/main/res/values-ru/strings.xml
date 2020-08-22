@@ -64,14 +64,14 @@
     <string name="uninstallFailure">ошибка деинсталляции</string>
     <string name="errorDialogTitle">Произошла ошибка</string>
     <string name="customListTitle">Настраиваемый список</string>
-    <string name="quickRebootTitle">Быстрая перезагрузка</string>
+    <string name="prefs_quickreboot">Быстрая перезагрузка</string>
     <string name="quickRebootMessage">Вы хотите перезапустить интерфейс?</string>
-    <string name="help_title">Помощь</string>
+    <string name="prefs_help">Помощь</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
     <string name="shareTitle">отправить</string>
 
     <string name="tools_title">инструменты</string>
-    <string name="prefs_batchDelete">удалить р.к.?</string>
+    <string name="prefs_batchdelete">удалить р.к.?</string>
     <string name="batchDeleteMessage">удаление р.к.</string>
     <string name="batchDeleteNotificationTitle">удалить р.к.</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -85,41 +85,36 @@
     <string name="disablePackageTitle">Отключить для пользователей</string>
 
     <string name="prefs_title">Настройки</string>
-    <string name="prefs_acquireWakelock">Предотвратить сон</string>
-    <string name="prefs_summaryAcquireWakelock">Использовать wakelock во время пакетных операций для предотвращения сна.  значительно ускорит резервирование и восстановление, но будет потреблять больше энергии</string>
+    <string name="prefs_acquirewakelock">Предотвратить сон</string>
+    <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна.  значительно ускорит резервирование и восстановление, но будет потреблять больше энергии</string>
     <string name="prefs_pathscategory">Настраиваемые пути</string>
-    <string name="prefs_pathBackupFolder">Папка для р.к.</string>
-    <string name="prefs_summaryBackupFolder">Путь к папке с р.к., оставьте пустым для стандартного</string>
-    <string name="prefs_pathToybox">Busybox</string>
-    <string name="prefs_summaryToybox">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
-    <string name="prefs_oldBackups">Отфильтровать р.к. по возрасту</string>
+    <string name="prefs_pathbackupfolder">Папка для р.к.</string>
+    <string name="prefs_pathbusybox">Busybox</string>
+    <string name="prefs_pathbusybox_summary">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
+    <string name="prefs_oldbackups">Отфильтровать р.к. по возрасту</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
-    <string name="prefs_summaryOldBackups">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\"</string>
-    <string name="prefs_copySelfApk">Копировать собственный apk</string>
-    <string name="prefs_summaryCopySelfApk">Разместить копию oandbackup в верхнем уровне папки с р.к. при резервировании</string>
+    <string name="prefs_oldbackups_summary">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\"</string>
+    <string name="prefs_copyselfapk">Копировать собственный apk</string>
+    <string name="prefs_copyselfapk_summary">Разместить копию oandbackup в верхнем уровне папки с р.к. при резервировании</string>
     <string name="prefs_languages">Язык</string>
-    <string name="prefs_languageSystemDefault">Системный</string>
-    <string name="prefs_rememberFiltering">Запомнить сортировку и фильтр</string>
-    <string name="prefs_summaryRememberFiltering">Сохраняет выбранные методы сортировки и фильтрования. учитываются только отмеченные флажком.</string>
-    <string name="prefs_disableNotifications">Отключить уведомления</string>
-    <string name="prefs_summaryDisableNotifications">Когда отмечено, oandbackup не показывает никаких уведомлений</string>
-    <string name="prefs_followSymlinks">следовать по символическим ссылкам</string>
-    <string name="prefs_summaryFollowSymlinks">Всегда следовать по символическим ссылкам при копировании (cp -L)</string>
+    <string name="prefs_language_system">Системный</string>
+    <string name="prefs_rememberfiltering">Запомнить сортировку и фильтр</string>
+    <string name="prefs_rememberfiltering_summary">Сохраняет выбранные методы сортировки и фильтрования. учитываются только отмеченные флажком.</string>
     <string name="prefs_enableSpecialBackups">Включить специальные р.к.</string>
 
     <string name="sched_title">планирование</string>
     <string name="sched_notificationMessage">запланированное резервирование</string>
-    <string name="sched_interval">интервал в днях</string>
-    <string name="sched_hourOfDay">час дня</string>
+    <string name="sched_interval">интервал в днях:</string>
+    <string name="sched_hourOfDay">час дня:</string>
     <string name="sched_checkbox">Включить</string>
     <string name="sched_activateButton">Начать резервирование</string>
     <string name="sched_startingbackup">начало запланированного резервирования</string>
-    <string name="sched_backupMode">Режим резервирования</string>
+    <string name="sched_mode">Режим резервирования:</string>
     <string name="sched_timeLeft">часов до следующего резервирования:</string>
     <string name="sched_customListUpdateButton">Обновить пользовательский список</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
 
-    <string name="blacklistDialogTitle">Черный список</string>
+    <string name="sched_blacklist">Черный список</string>
 
     <string name="spec_accounts">Аккуанты</string>
     <string name="spec_appwidgets">Виджеты приложений</string>
@@ -130,6 +125,5 @@
 
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
 
-    <string name="logviewer_message_loading">Загрузка журнала</string>
     <string name="help_license">лицензия</string>
 </resources>

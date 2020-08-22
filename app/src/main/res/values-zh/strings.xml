@@ -67,9 +67,9 @@
     <string name="uninstallFailure">卸载时出错</string>
     <string name="errorDialogTitle">发生错误</string>
     <string name="customListTitle">自定义列表</string>
-    <string name="quickRebootTitle">快速重启</string>
+    <string name="prefs_quickreboot">快速重启</string>
     <string name="quickRebootMessage">您想重启用户空间吗？</string>
-    <string name="help_title">帮助</string>
+    <string name="prefs_help">帮助</string>
     <string name="notInstalledModeDataWarning">应用无法从一个无 APK 的备份中还原</string>
     <string name="shareTitle">分享</string>
 
@@ -90,53 +90,48 @@
     <string name="prefs_service">服务首选项</string>
     <string name="prefs_user">用户首选项</string>
     <string name="prefs_theme">主题</string>
-    <string name="prefs_acquireWakelock">阻止睡眠</string>
+    <string name="prefs_acquirewakelock">阻止睡眠</string>
     <string name="prefs_pathscategory">自定义路径</string>
-    <string name="prefs_batchDelete">删除备份</string>
-    <string name="prefs_pathBackupFolder">备份文件夹</string>
-    <string name="prefs_pathToybox">Busybox 文件夹</string>
-    <string name="prefs_oldBackups">按时间筛选备份</string>
-    <string name="prefs_copySelfApk">复制本应用自身 APK</string>
+    <string name="prefs_batchdelete">删除备份</string>
+    <string name="prefs_pathbackupfolder">备份文件夹</string>
+    <string name="prefs_pathbusybox">Busybox 文件夹</string>
+    <string name="prefs_oldbackups">按时间筛选备份</string>
+    <string name="prefs_copyselfapk">复制本应用自身 APK</string>
     <string name="prefs_languages">语言</string>
-    <string name="prefs_languageSystemDefault">系统默认</string>
-    <string name="prefs_rememberFiltering">记住排序和筛选方式</string>
-    <string name="prefs_followSymlinks">跟随符号链接</string>
+    <string name="prefs_language_system">系统默认</string>
+    <string name="prefs_rememberfiltering">记住排序和筛选方式</string>
     <string name="prefs_enableSpecialBackups">启用特殊备份</string>
-    <string name="prefs_disableNotifications">禁用通知</string>
-    <string name="prefs_excludeCache">清除应用缓存</string>
+    <string name="prefs_excludecache">清除应用缓存</string>
     <string name="prefs_encryption">加密</string>
     <string name="prefs_password">加密密码</string>
-    <string name="prefs_backupExternalData">备份外部数据</string>
-    <string name="prefs_backupDeviceProtectedData">备份受设备保护的数据</string>
-    <string name="prefs_summaryBackupDeviceProtectedData">备份/还原 data/user_de 中的数据</string>
-    <string name="prefs_summaryBackupExternalData">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
-    <string name="prefs_summary_password">设为空表示不加密</string>
-    <string name="prefs_summary_encryption">启用以加密数据备份</string>
-    <string name="prefs_summaryExcludeCache">进行数据备份之前清除应用缓存</string>
-    <string name="prefs_summaryDisableNotifications">OAndBackupX 将不会显示任何通知</string>
-    <string name="prefs_summaryAcquireWakelock">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量</string>
-    <string name="prefs_summaryBackupFolder">备份文件夹路径（默认为空）</string>
-    <string name="prefs_summaryToybox">toybox/busybox 可执行文件的路径。请确保路径正确（默认为空）</string>
-    <string name="prefs_summaryOldBackups">筛选指定天数前的备份，与“显示旧备份”筛选一起使用</string>
-    <string name="prefs_summaryCopySelfApk">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
-    <string name="prefs_summaryRememberFiltering">保存所选的排序和筛选方式，只考虑那些在菜单中被复选项标记的应用</string>
-    <string name="prefs_summaryFollowSymlinks">当复制时总是跟随符号链接 (cp -L)</string>
-    <string name="prefs_summaryQuickReboot">终止 system_server 进程以强制重启用户空间</string>
-    <string name="prefs_summaryBatchDelete">删除当前未安装的所有应用的备份</string>
+    <string name="prefs_externaldata">备份外部数据</string>
+    <string name="prefs_deviceprotecteddata">备份受设备保护的数据</string>
+    <string name="prefs_deviceprotecteddata_summary">备份/还原 data/user_de 中的数据</string>
+    <string name="prefs_externaldata_summary">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
+    <string name="prefs_password_summary">设为空表示不加密</string>
+    <string name="prefs_encryption_summary">启用以加密数据备份</string>
+    <string name="prefs_excludecache_summary">进行数据备份之前清除应用缓存</string>
+    <string name="prefs_acquirewakelock_summary">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量</string>
+    <string name="prefs_pathbusybox_summary">toybox/busybox 可执行文件的路径。请确保路径正确（默认为空）</string>
+    <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用</string>
+    <string name="prefs_copyselfapk_summary">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
+    <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些在菜单中被复选项标记的应用</string>
+    <string name="prefs_quickreboot_summary">终止 system_server 进程以强制重启用户空间</string>
+    <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份</string>
 
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>
-    <string name="sched_interval">间隔天数</string>
-    <string name="sched_hourOfDay">当天几点</string>
+    <string name="sched_interval">间隔天数:</string>
+    <string name="sched_hourOfDay">当天几点:</string>
     <string name="sched_checkbox">启用</string>
     <string name="sched_activateButton">现在开始备份</string>
     <string name="sched_startingbackup">正在开始定时备份...</string>
-    <string name="sched_backupMode">备份模式</string>
+    <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">距离下次备份的时间:</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
 
-    <string name="blacklistDialogTitle">黑名单</string>
+    <string name="sched_blacklist">黑名单</string>
 
     <string name="spec_accounts">账户</string>
     <string name="spec_appwidgets">应用微件</string>
@@ -146,8 +141,6 @@
     <string name="spec_wifiAccessPoints">Wifi 接入点</string>
 
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
-    <string name="logviewer_message_loading">加载日志文件</string>
 
     <string name="error_creating_notification_channel">无法创建通知通道</string>
     <string name="error_updating_schedule_mode">更新定时任务 %2$d 的 %1$s 出错</string>
@@ -161,7 +154,7 @@
     <string name="app_s_icon">应用图标</string>
     <string name="bothBackedUp">APK+数据</string>
     <string name="all">全选</string>
-    <string name="logViewerTitle">查看日志</string>
+    <string name="prefs_logviewer">查看日志</string>
     <string name="ask_for_permissions">请求权限</string>
     <string name="systemApp">系统应用</string>
     <string name="userApp">用户应用</string>
@@ -175,9 +168,9 @@
     <string name="encrypted_data_title">已加密数据：</string>
     <string name="other_filters_options">特殊筛选：</string>
     <string name="deleted_backup">删除备份</string>
-    <string name="theme_light">亮色</string>
-    <string name="theme_dark">暗色</string>
-    <string name="theme_system">系统主题</string>
+    <string name="prefs_theme_light">亮色</string>
+    <string name="prefs_theme_dark">暗色</string>
+    <string name="prefs_theme_system">系统主题</string>
     <string name="empty_filtered_list">筛选后的列表为空，故将筛选器设置回默认值</string>
     <string name="dialog_refuse">忽略</string>
     <string name="dialog_approve">开始设置</string>

@@ -54,7 +54,7 @@ public class BlacklistDialogFragment extends DialogFragment {
             }
             i++;
         }
-        builder.setTitle(R.string.blacklistDialogTitle)
+        builder.setTitle(R.string.sched_blacklist)
                 .setMultiChoiceItems(labels.toArray(new CharSequence[0]),
                         checkedPackages, (dialogInterface, which, isChecked) -> {
                             String packageName = appInfoList.get(which).getPackageName();

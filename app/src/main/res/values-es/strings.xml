@@ -64,14 +64,14 @@
     <string name="uninstallFailure">Error al desinstalar</string>
     <string name="errorDialogTitle">Han ocurrido errores</string>
     <string name="customListTitle">Lista personalizada</string>
-    <string name="quickRebootTitle">Reinicio rápido</string>
+    <string name="prefs_quickreboot">Reinicio rápido</string>
     <string name="quickRebootMessage">¿Desea reiniciar la interfaz de usuario?</string>
-    <string name="help_title">Ayuda</string>
+    <string name="prefs_help">Ayuda</string>
     <string name="notInstalledModeDataWarning">La aplicación no se puede restaurar desde un respaldo sin la APK</string>
     <string name="shareTitle">Compartir</string>
 
     <string name="tools_title">Herramientas</string>
-    <string name="prefs_batchDelete">¿Eliminar respaldos?</string>
+    <string name="prefs_batchdelete">¿Eliminar respaldos?</string>
     <string name="batchDeleteMessage">Eliminando respaldos...</string>
     <string name="batchDeleteNotificationTitle">Eliminar respaldos</string>
         <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -85,41 +85,36 @@
     <string name="disablePackageTitle">Deshabilitar para usuarios</string>
 
     <string name="prefs_title">Preferencias</string>
-    <string name="prefs_acquireWakelock">Impedir suspensión</string>
-    <string name="prefs_summaryAcquireWakelock">Obtiene un wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
+    <string name="prefs_acquirewakelock">Impedir suspensión</string>
+    <string name="prefs_acquirewakelock_summary">Obtiene un wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
     <string name="prefs_pathscategory">Rutas personalizadass</string>
-    <string name="prefs_pathBackupFolder">Carpeta de respaldos</string>
-    <string name="prefs_summaryBackupFolder">Ruta a la carpeta de respaldos. Dejar en blanco para el valor predeterminado.</string>
-    <string name="prefs_pathToybox">Busybox</string>
-    <string name="prefs_summaryToybox">Ruta al ejecutable busybox (confirme que sea correcta). Dejar en blanco para el valor predeterminado.</string>
-    <string name="prefs_oldBackups">Filtrar respaldos por antigüedad</string>
+    <string name="prefs_pathbackupfolder">Carpeta de respaldos</string>
+    <string name="prefs_pathbusybox">Busybox</string>
+    <string name="prefs_pathbusybox_summary">Ruta al ejecutable busybox (confirme que sea correcta). Dejar en blanco para el valor predeterminado.</string>
+    <string name="prefs_oldbackups">Filtrar respaldos por antigüedad</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
-    <string name="prefs_summaryOldBackups">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>
-    <string name="prefs_copySelfApk">Autocopiar</string>
-    <string name="prefs_summaryCopySelfApk">Poner una copia de oandbackup en el nivel superior del directorio de respaldos cuando se respalde.</string>
+    <string name="prefs_oldbackups_summary">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>
+    <string name="prefs_copyselfapk">Autocopiar</string>
+    <string name="prefs_copyselfapk_summary">Poner una copia de oandbackup en el nivel superior del directorio de respaldos cuando se respalde.</string>
     <string name="prefs_languages">Idiomas</string>
-    <string name="prefs_languageSystemDefault">Idioma del sistema</string>
-    <string name="prefs_rememberFiltering">Recordar orden y filtro</string>
-    <string name="prefs_summaryRememberFiltering">Guarda el orden elegido y el método de filtrado. Solo los elementos marcados serán considerados.</string>
-    <string name="prefs_disableNotifications">Deshabilitar notificaciones</string>
-    <string name="prefs_summaryDisableNotifications">Cuando está marcado, oandbackup no muestra ninguna notificación</string>
-    <string name="prefs_followSymlinks">Seguir enlaces simbólicos</string>
-    <string name="prefs_summaryFollowSymlinks">Siempre seguir enlaces simbólicos al copiar (cp -L)</string>
+    <string name="prefs_language_system">Idioma del sistema</string>
+    <string name="prefs_rememberfiltering">Recordar orden y filtro</string>
+    <string name="prefs_rememberfiltering_summary">Guarda el orden elegido y el método de filtrado. Solo los elementos marcados serán considerados.</string>
     <string name="prefs_enableSpecialBackups">Habilitar respaldos especiales</string>
 
     <string name="sched_title">Programación</string>
     <string name="sched_notificationMessage">Respaldos programados</string>
-    <string name="sched_interval">Intervalo en días</string>
-    <string name="sched_hourOfDay">Hora del día</string>
+    <string name="sched_interval">Intervalo en días:</string>
+    <string name="sched_hourOfDay">Hora del día:</string>
     <string name="sched_checkbox">Habilitar</string>
     <string name="sched_activateButton">Iniciar respaldo ahora</string>
     <string name="sched_startingbackup">Iniciar respaldos programados</string>
-    <string name="sched_backupMode">Modo de respaldo</string>
+    <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_timeLeft">Horas hasta el próximo respaldo:</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
 
-    <string name="blacklistDialogTitle">Lista negra</string>
+    <string name="sched_blacklist">Lista negra</string>
 
     <string name="spec_accounts">Cuentas</string>
     <string name="spec_appwidgets">Widgets de aplicaciones</string>
@@ -130,5 +125,4 @@
 
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
 
-    <string name="logviewer_message_loading">Cargando archivo de registro...</string>
 </resources>

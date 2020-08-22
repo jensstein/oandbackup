@@ -2,7 +2,7 @@
 <resources>
     <!-- languageEntries shouldn't be translated -->
     <string-array name="languageEntries">
-        <item>@string/prefs_languageSystemDefault</item>
+        <item>@string/prefs_language_system</item>
         <item>Deutsch (deutschland)</item>
         <item>English</item>
         <item>Ελληνικά</item>

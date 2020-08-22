@@ -64,13 +64,13 @@
   <string name="uninstallFailure">Грешка при уклањању</string>
   <string name="errorDialogTitle">Грешке су се појавиле</string>
   <string name="customListTitle">Произвољна листа</string>
-  <string name="quickRebootTitle">Брзо поновно покретање</string>
+  <string name="prefs_quickreboot">Брзо поновно покретање</string>
   <string name="quickRebootMessage">Да ли желите да поново покренете корисничко окружење?</string>
-  <string name="help_title">Помоћ</string>
+  <string name="prefs_help">Помоћ</string>
   <string name="notInstalledModeDataWarning">Апликација се не може вратити без Apk-а</string>
   <string name="shareTitle">Подели</string>
     <string name="tools_title">Алати</string>
-  <string name="prefs_batchDelete">Обрисати резервне копије?</string>
+  <string name="prefs_batchdelete">Обрисати резервне копије?</string>
   <string name="batchDeleteMessage">Брисање резервне копије</string>
   <string name="batchDeleteNotificationTitle">Обриши резервне копије</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,35 +82,30 @@
   <string name="disablePackage">Онемогући</string>
   <string name="disablePackageTitle">Онемогући за кориснике</string>
   <string name="prefs_title">Подешавања</string>
-  <string name="prefs_acquireWakelock">Спречи режим мировања</string>
-  <string name="prefs_summaryAcquireWakelock">Осигурава да уређај не уђе у режим мировања када се прави резервна копија за више апликација. Убрзаће сам процес прављења копија, али ће потрошити више електричне енергије</string>
+  <string name="prefs_acquirewakelock">Спречи режим мировања</string>
+  <string name="prefs_acquirewakelock_summary">Осигурава да уређај не уђе у режим мировања када се прави резервна копија за више апликација. Убрзаће сам процес прављења копија, али ће потрошити више електричне енергије</string>
   <string name="prefs_pathscategory">Произвољне путање</string>
-  <string name="prefs_pathBackupFolder">Фасцикла за резервне копије</string>
-  <string name="prefs_summaryBackupFolder">Путања до фасцикле са резервним копијама. Оставите празно ако желите фабричку путању.</string>
-  <string name="prefs_pathToybox">busybox</string>
-  <string name="prefs_summaryToybox">Путања до busybox извршне датотеке. Оставите празно ако желите фабричку путању.</string>
-  <string name="prefs_oldBackups">Филтрирај резервне копије по времену</string>
+  <string name="prefs_pathbackupfolder">Фасцикла за резервне копије</string>
+  <string name="prefs_pathbusybox">busybox</string>
+  <string name="prefs_pathbusybox_summary">Путања до busybox извршне датотеке. Оставите празно ако желите фабричку путању.</string>
+  <string name="prefs_oldbackups">Филтрирај резервне копије по времену</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-  <string name="prefs_summaryOldBackups">Филтрирај резервне копије старије од вредности наведене у данима.</string>
-  <string name="prefs_copySelfApk">Копирај сопствени Apk</string>
-  <string name="prefs_summaryCopySelfApk">Смести копију oandbackup-а у врх фасцикле са резервним копијама при прављењу исте</string>
+  <string name="prefs_oldbackups_summary">Филтрирај резервне копије старије од вредности наведене у данима.</string>
+  <string name="prefs_copyselfapk">Копирај сопствени Apk</string>
+  <string name="prefs_copyselfapk_summary">Смести копију oandbackup-а у врх фасцикле са резервним копијама при прављењу исте</string>
   <string name="prefs_languages">Језици</string>
-  <string name="prefs_languageSystemDefault">Подразумевано за систем</string>
-  <string name="prefs_rememberFiltering">Запамтити редослед и филтрирање</string>
-  <string name="prefs_summaryRememberFiltering">Чува Ваша подешавања за сортирање и филтрирање. У обзир се узимају само она која сте обележили у менију.</string>
-  <string name="prefs_disableNotifications">Онемогућити обавештења</string>
-  <string name="prefs_summaryDisableNotifications">Не приказуј обавештења</string>
-  <string name="prefs_followSymlinks">Прати symlink-ове</string>
-  <string name="prefs_summaryFollowSymlinks">Увек прати symlink-ове при копирању (cp -L)</string>
+  <string name="prefs_language_system">Подразумевано за систем</string>
+  <string name="prefs_rememberfiltering">Запамтити редослед и филтрирање</string>
+  <string name="prefs_rememberfiltering_summary">Чува Ваша подешавања за сортирање и филтрирање. У обзир се узимају само она која сте обележили у менију.</string>
   <string name="prefs_enableSpecialBackups">Омогући посебне копије</string>
   <string name="sched_title">Направите распоред</string>
   <string name="sched_notificationMessage">Програмирајте прављење резервне копије</string>
-  <string name="sched_interval">Интервал у данима</string>
-  <string name="sched_hourOfDay">Сат у дану</string>
+  <string name="sched_interval">Интервал у данима:</string>
+  <string name="sched_hourOfDay">Сат у дану:</string>
   <string name="sched_checkbox">Омогући</string>
   <string name="sched_activateButton">Направи резевну копију</string>
   <string name="sched_startingbackup">Покретање програмираног прављења резервне копије</string>
-  <string name="sched_backupMode">Мод прављења резервне копије</string>
+  <string name="sched_mode">Мод прављења резервне копије:</string>
   <string name="sched_timeLeft">Сати до следеће прављења резервне копије:</string>
   <string name="sched_customListUpdateButton">Освежи произвољни списак</string>
   <string name="sched_excludeSystemCheckBox">Изузимање системских апликација</string>
@@ -121,6 +116,5 @@
   <string name="spec_wallpaper">Позадина</string>
   <string name="spec_wifiAccessPoints">Wifi приступне тачке</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="logviewer_message_loading">Учитавам датотеку записника</string>
-    <string name="help_license">Лиценца</string>
+  <string name="help_license">Лиценца</string>
 </resources>

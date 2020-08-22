@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="themeEntries">
-        <item>@string/theme_light</item>
-        <item>@string/theme_dark</item>
-        <item>@string/theme_system</item>
+        <item>@string/prefs_theme_light</item>
+        <item>@string/prefs_theme_dark</item>
+        <item>@string/prefs_theme_system</item>
     </string-array>
 
     <string-array name="themeEntryValues">

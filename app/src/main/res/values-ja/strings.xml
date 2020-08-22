@@ -64,13 +64,13 @@
   <string name="uninstallFailure">アンインストール中にエラー</string>
   <string name="errorDialogTitle">エラーが発生しました</string>
   <string name="customListTitle">カスタムリスト</string>
-  <string name="quickRebootTitle">クイック再起動</string>
+  <string name="prefs_quickreboot">クイック再起動</string>
   <string name="quickRebootMessage">ユーザースペースを再起動しますか?</string>
-  <string name="help_title">ヘルプ</string>
+  <string name="prefs_help">ヘルプ</string>
   <string name="notInstalledModeDataWarning">apkがないためバックアップからアプリを復元できません</string>
   <string name="shareTitle">共有</string>
     <string name="tools_title">ツール</string>
-  <string name="prefs_batchDelete">バックアップを削除しますか?</string>
+  <string name="prefs_batchdelete">バックアップを削除しますか?</string>
   <string name="batchDeleteMessage">バックアップの削除中</string>
   <string name="batchDeleteNotificationTitle">バックアップを削除</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,35 +82,30 @@
   <string name="disablePackage">無効</string>
   <string name="disablePackageTitle">ユーザーに無効</string>
   <string name="prefs_title">設定</string>
-  <string name="prefs_acquireWakelock">スリープを防止</string>
-  <string name="prefs_summaryAcquireWakelock">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します</string>
+  <string name="prefs_acquirewakelock">スリープを防止</string>
+  <string name="prefs_acquirewakelock_summary">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します</string>
   <string name="prefs_pathscategory">カスタム パス</string>
-  <string name="prefs_pathBackupFolder">バックアップ フォルダー</string>
-  <string name="prefs_summaryBackupFolder">バックアップ フォルダーのパス。デフォルトは空白のままにします。</string>
-  <string name="prefs_pathToybox">busybox</string>
-  <string name="prefs_summaryToybox">busybox 実行ファイルのパス。正しいく入力してください。デフォルトは空白のままにします。</string>
-  <string name="prefs_oldBackups">世代でバックアップをフィルター</string>
+  <string name="prefs_pathbackupfolder">バックアップ フォルダー</string>
+  <string name="prefs_pathbusybox">busybox</string>
+  <string name="prefs_pathbusybox_summary">busybox 実行ファイルのパス。正しいく入力してください。デフォルトは空白のままにします。</string>
+  <string name="prefs_oldbackups">世代でバックアップをフィルター</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-  <string name="prefs_summaryOldBackups">値の日数よりも古いバックアップでフィルター。\'古いバックアップを表示\' フィルターで使用します</string>
-  <string name="prefs_copySelfApk">apk 自身をコピー</string>
-  <string name="prefs_summaryCopySelfApk">バックアップ時に、バックアップフォルダの最上位に oandbackup のコピーを作成します</string>
+  <string name="prefs_oldbackups_summary">値の日数よりも古いバックアップでフィルター。\'古いバックアップを表示\' フィルターで使用します</string>
+  <string name="prefs_copyselfapk">apk 自身をコピー</string>
+  <string name="prefs_copyselfapk_summary">バックアップ時に、バックアップフォルダの最上位に oandbackup のコピーを作成します</string>
   <string name="prefs_languages">言語</string>
-  <string name="prefs_languageSystemDefault">システムデフォルト</string>
-  <string name="prefs_rememberFiltering">並び替えとフィルターを記憶</string>
-  <string name="prefs_summaryRememberFiltering">選択した並び替えやフィルター方法を保存します。メニューのチェックボックスでマークされたもののみ考慮されます。</string>
-  <string name="prefs_disableNotifications">通知を無効にする</string>
-  <string name="prefs_summaryDisableNotifications">チェックすると oandbackup は何も通知を表示しません</string>
-  <string name="prefs_followSymlinks">シンボリックリンクをたどる</string>
-  <string name="prefs_summaryFollowSymlinks">コピー時に、常にシンボリックリンクをたどる (cp -L)</string>
+  <string name="prefs_language_system">システムデフォルト</string>
+  <string name="prefs_rememberfiltering">並び替えとフィルターを記憶</string>
+  <string name="prefs_rememberfiltering_summary">選択した並び替えやフィルター方法を保存します。メニューのチェックボックスでマークされたもののみ考慮されます。</string>
   <string name="prefs_enableSpecialBackups">特別バックアップを有効にする</string>
   <string name="sched_title">スケジューリング</string>
   <string name="sched_notificationMessage">バックアップがスケジュールされました</string>
-  <string name="sched_interval">間隔の日数</string>
-  <string name="sched_hourOfDay">時間</string>
+  <string name="sched_interval">間隔の日数:</string>
+  <string name="sched_hourOfDay">時間:</string>
   <string name="sched_checkbox">有効</string>
   <string name="sched_activateButton">今すぐバックアップを開始</string>
   <string name="sched_startingbackup">スケジュールされたバックアップを開始中</string>
-  <string name="sched_backupMode">バックアップ モード</string>
+  <string name="sched_mode">バックアップ モード:</string>
   <string name="sched_timeLeft">次回のバックアップまでの時間:</string>
   <string name="sched_customListUpdateButton">カスタムリストを更新</string>
   <string name="sched_excludeSystemCheckBox">システムアプリを除外</string>
@@ -121,6 +116,5 @@
   <string name="spec_wallpaper">壁紙</string>
   <string name="spec_wifiAccessPoints">Wifi アクセスポイント</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="logviewer_message_loading">ログファイルを読み込んでいます</string>
-    <string name="help_license">ライセンス</string>
+  <string name="help_license">ライセンス</string>
 </resources>

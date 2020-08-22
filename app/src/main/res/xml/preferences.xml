@@ -47,45 +47,45 @@
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="encryption"
-            android:summary="@string/prefs_summary_encryption"
+            android:summary="@string/prefs_encryption_summary"
             android:title="@string/prefs_encryption"
             app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:defaultValue=""
             android:inputType="textPassword"
             android:key="password"
-            android:summary="@string/prefs_summary_password"
+            android:summary="@string/prefs_password_summary"
             android:title="@string/prefs_password"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="excludeCache"
-            android:summary="@string/prefs_summaryExcludeCache"
-            android:title="@string/prefs_excludeCache"
+            android:summary="@string/prefs_excludecache_summary"
+            android:title="@string/prefs_excludecache"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="backupExternalData"
-            android:summary="@string/prefs_summaryBackupExternalData"
-            android:title="@string/prefs_backupExternalData"
+            android:summary="@string/prefs_externaldata_summary"
+            android:title="@string/prefs_externaldata"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="backupDeviceProtectedData"
-            android:summary="@string/prefs_summaryBackupDeviceProtectedData"
-            android:title="@string/prefs_backupDeviceProtectedData"
+            android:summary="@string/prefs_deviceprotecteddata_summary"
+            android:title="@string/prefs_deviceprotecteddata"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="copySelfApk"
-            android:summary="@string/prefs_summaryCopySelfApk"
-            android:title="@string/prefs_copySelfApk"
+            android:summary="@string/prefs_copyselfapk_summary"
+            android:title="@string/prefs_copyselfapk"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="acquireWakelock"
-            android:summary="@string/prefs_summaryAcquireWakelock"
-            android:title="@string/prefs_acquireWakelock"
+            android:summary="@string/prefs_acquirewakelock_summary"
+            android:title="@string/prefs_acquirewakelock"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
@@ -99,12 +99,12 @@
         app:iconSpaceReserved="false">
         <androidx.preference.Preference
             android:key="pathBackupFolder"
-            android:title="@string/prefs_pathBackupFolder"
+            android:title="@string/prefs_pathbackupfolder"
             app:iconSpaceReserved="false" />
         <androidx.preference.EditTextPreference
             android:key="pathToybox"
-            android:summary="@string/prefs_summaryToybox"
-            android:title="@string/prefs_pathToybox"
+            android:summary="@string/prefs_pathbusybox_summary"
+            android:title="@string/prefs_pathbusybox"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
@@ -113,21 +113,21 @@
         app:iconSpaceReserved="false">
         <androidx.preference.Preference
             android:key="quickReboot"
-            android:summary="@string/prefs_summaryQuickReboot"
-            android:title="@string/quickRebootTitle"
+            android:summary="@string/prefs_quickreboot_summary"
+            android:title="@string/prefs_quickreboot"
             app:iconSpaceReserved="false" />
         <androidx.preference.Preference
             android:key="batchDelete"
-            android:summary="@string/prefs_summaryBatchDelete"
-            android:title="@string/prefs_batchDelete"
+            android:summary="@string/prefs_batchdelete_summary"
+            android:title="@string/prefs_batchdelete"
             app:iconSpaceReserved="false" />
         <androidx.preference.Preference
             android:key="logViewer"
-            android:title="@string/logViewerTitle"
+            android:title="@string/prefs_logviewer"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.Preference
         android:key="help"
-        android:title="@string/help_title"
+        android:title="@string/prefs_help"
         app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>

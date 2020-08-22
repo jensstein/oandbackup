@@ -133,7 +133,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
     private boolean onClickQuickReboot(ShellCommands shellCommands) {
         new AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.quickRebootTitle)
+                .setTitle(R.string.prefs_quickreboot)
                 .setMessage(R.string.quickRebootMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> shellCommands.quickReboot())
                 .setNegativeButton(R.string.dialogNo, null)
@@ -155,7 +155,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         }
         if (!deleteList.isEmpty()) {
             new AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.prefs_batchDelete)
+                    .setTitle(R.string.prefs_batchdelete)
                     .setMessage(message.toString().trim())
                     .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                         changesMade();

@@ -64,13 +64,13 @@
   <string name="uninstallFailure">fel vid avinstallationen</string>
   <string name="errorDialogTitle">fel uppstod</string>
   <string name="customListTitle">anpassad lista</string>
-  <string name="quickRebootTitle">snabb omstart</string>
+  <string name="prefs_quickreboot">snabb omstart</string>
   <string name="quickRebootMessage">vill du starta om användarrymden?</string>
-  <string name="help_title">hjälp</string>
+  <string name="prefs_help">hjälp</string>
   <string name="notInstalledModeDataWarning">appen kan inte återställas från en säkerhetskopia som saknar apk-filen</string>
   <string name="shareTitle">dela</string>
     <string name="tools_title">verktyg</string>
-  <string name="prefs_batchDelete">ta bort säkerhetskopior?</string>
+  <string name="prefs_batchdelete">ta bort säkerhetskopior?</string>
   <string name="batchDeleteMessage">tar bort säkerhetskopior</string>
   <string name="batchDeleteNotificationTitle">ta bort säkerhetskopior</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,35 +82,30 @@
   <string name="disablePackage">inaktiverad</string>
   <string name="disablePackageTitle">inaktiverad för användare</string>
   <string name="prefs_title">inställningar</string>
-  <string name="prefs_acquireWakelock">förhindra viloläge</string>
-  <string name="prefs_summaryAcquireWakelock">låt inte enheten somna medan batchoperationer körs. detta kommer att påskynda säkerhetskopieringar och återställningar, men det kommer att förbruka mer batteri</string>
+  <string name="prefs_acquirewakelock">förhindra viloläge</string>
+  <string name="prefs_acquirewakelock_summary">låt inte enheten somna medan batchoperationer körs. detta kommer att påskynda säkerhetskopieringar och återställningar, men det kommer att förbruka mer batteri</string>
   <string name="prefs_pathscategory">anpassade sökvägar</string>
-  <string name="prefs_pathBackupFolder">säkerhetskopieringsmapp</string>
-  <string name="prefs_summaryBackupFolder">sökväg till säkerhetskopiorna, lämna tom för standard.</string>
-  <string name="prefs_pathToybox">busybox</string>
-  <string name="prefs_summaryToybox">sökväg till exekverbar busybox. se till att den korrekt. lämna tom för standardsökväg.</string>
-  <string name="prefs_oldBackups">filtrera säkerhetskopior efter ålder</string>
+  <string name="prefs_pathbackupfolder">säkerhetskopieringsmapp</string>
+  <string name="prefs_pathbusybox">busybox</string>
+  <string name="prefs_pathbusybox_summary">sökväg till exekverbar busybox. se till att den korrekt. lämna tom för standardsökväg.</string>
+  <string name="prefs_oldbackups">filtrera säkerhetskopior efter ålder</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-  <string name="prefs_summaryOldBackups">filtrera säkerhetskopior äldre än värdet i dagar. används med filtret \'visa gamla säkerhetskopior\'</string>
-  <string name="prefs_copySelfApk">kopiera egen apk</string>
-  <string name="prefs_summaryCopySelfApk">placera en kopia av oandbackup i den översta nivån av säkerhetskopieringsmappen vid säkerhetskopiering</string>
+  <string name="prefs_oldbackups_summary">filtrera säkerhetskopior äldre än värdet i dagar. används med filtret \'visa gamla säkerhetskopior\'</string>
+  <string name="prefs_copyselfapk">kopiera egen apk</string>
+  <string name="prefs_copyselfapk_summary">placera en kopia av oandbackup i den översta nivån av säkerhetskopieringsmappen vid säkerhetskopiering</string>
   <string name="prefs_languages">språk</string>
-  <string name="prefs_languageSystemDefault">systemstandard</string>
-  <string name="prefs_rememberFiltering">kom ihåg sortering och filter</string>
-  <string name="prefs_summaryRememberFiltering">sparar den valda sorterings- och filtreringsmetoden. endast de som markeras med en kryssruta i menyn beaktas.</string>
-  <string name="prefs_disableNotifications">inaktivera aviseringar</string>
-  <string name="prefs_summaryDisableNotifications">när markerad, så visar oandbackup inga aviseringar</string>
-  <string name="prefs_followSymlinks">följ symboliska länkar</string>
-  <string name="prefs_summaryFollowSymlinks">följ alltid de symboliska länkarna vid kopiering (cp -L)</string>
+  <string name="prefs_language_system">systemstandard</string>
+  <string name="prefs_rememberfiltering">kom ihåg sortering och filter</string>
+  <string name="prefs_rememberfiltering_summary">sparar den valda sorterings- och filtreringsmetoden. endast de som markeras med en kryssruta i menyn beaktas.</string>
   <string name="prefs_enableSpecialBackups">aktivera speciella säkerhetskopior</string>
   <string name="sched_title">schemaläggning</string>
   <string name="sched_notificationMessage">schemalagd säkerhetskopiering</string>
-  <string name="sched_interval">intervall i dagar</string>
-  <string name="sched_hourOfDay">timme av dygnet</string>
+  <string name="sched_interval">intervall i dagar:</string>
+  <string name="sched_hourOfDay">timme av dygnet:</string>
   <string name="sched_checkbox">aktivera</string>
   <string name="sched_activateButton">starta säkerhetskopiering nu</string>
   <string name="sched_startingbackup">startar den schemalagda säkerhetskopieringen</string>
-  <string name="sched_backupMode">säkerhetskopieringsläge</string>
+  <string name="sched_mode">säkerhetskopieringsläge:</string>
   <string name="sched_timeLeft">timmar till nästa säkerhetskopiering:</string>
   <string name="sched_customListUpdateButton">uppdatera anpassad lista</string>
   <string name="sched_excludeSystemCheckBox">uteslut system-appar</string>
@@ -121,6 +116,5 @@
   <string name="spec_wallpaper">Bakgrund</string>
   <string name="spec_wifiAccessPoints">Åtkomstpunkter för Wifi</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="logviewer_message_loading">laddar loggfil</string>
-    <string name="help_license">Licens</string>
+  <string name="help_license">Licens</string>
 </resources>

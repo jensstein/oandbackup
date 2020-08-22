@@ -69,9 +69,6 @@
     <string name="uninstallFailure">Error on uninstall</string>
     <string name="errorDialogTitle">Errors occurred</string>
     <string name="customListTitle">Custom list</string>
-    <string name="quickRebootTitle">Quick reboot</string>
-    <string name="quickRebootMessage">Do you wish to restart userspace?</string>
-    <string name="help_title">Help</string>
     <string name="notInstalledModeDataWarning">App cannot be restored from a backup without APK</string>
     <string name="shareTitle">Share</string>
 
@@ -89,57 +86,60 @@
     <string name="disablePackageTitle">Disable for users</string>
 
     <string name="prefs_title">Preferences</string>
-    <string name="prefs_service">Service preferences</string>
     <string name="prefs_user">User preferences</string>
     <string name="prefs_theme">Theme</string>
-    <string name="prefs_acquireWakelock">Prevent sleep</string>
-    <string name="prefs_pathscategory">Custom paths</string>
-    <string name="prefs_batchDelete">Delete backups</string>
-    <string name="prefs_pathBackupFolder">Backup folder</string>
-    <string name="prefs_pathToybox">Busybox folder</string>
-    <string name="prefs_oldBackups">Filter backups by age</string>
-    <string name="prefs_copySelfApk">Copy own APK</string>
+    <string name="prefs_theme_light">Light</string>
+    <string name="prefs_theme_dark">Dark</string>
+    <string name="prefs_theme_system">System\'s theme</string>
     <string name="prefs_languages">Language</string>
-    <string name="prefs_languageSystemDefault">System default</string>
-    <string name="prefs_rememberFiltering">Remember sort and filter</string>
-    <string name="prefs_followSymlinks">Follow symbolic links</string>
-    <string name="prefs_enableSpecialBackups">Enable special backups</string>
-    <string name="prefs_disableNotifications">Disable notification</string>
-    <string name="prefs_excludeCache">Exclude app\'s cache</string>
+    <string name="prefs_language_system">System default</string>
+    <string name="prefs_biometriclock">Biometric lock</string>
+    <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. Fingerprint, Face Unlock)</string>
+    <string name="prefs_rememberfiltering">Remember sort and filter</string>
+    <string name="prefs_rememberfiltering_summary">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
+    <string name="prefs_oldbackups">Filter backups by age</string>
+    <string name="prefs_oldbackups_summary">Filter backups older than value in days. used with the filter \'show old backups\'</string>
+    <string name="prefs_service">Service preferences</string>
     <string name="prefs_encryption">Encryption</string>
+    <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
     <string name="prefs_password">Encryption password</string>
-    <string name="prefs_backupExternalData">Backup external data</string>
-    <string name="prefs_backupDeviceProtectedData">Backup device protected data</string>
-    <string name="prefs_summaryBackupDeviceProtectedData">Backs up and restores data that is placed in data/user_de</string>
-    <string name="prefs_summaryBackupExternalData">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_summary_password">Set to empty to disable encryption</string>
-    <string name="prefs_summary_encryption">Enable to encrypt data backups</string>
-    <string name="prefs_summaryExcludeCache">Exclude application\'s cache from data backup</string>
-    <string name="prefs_summaryDisableNotifications">OAndBackupX will show no notifications</string>
-    <string name="prefs_summaryAcquireWakelock">Acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
-    <string name="prefs_summaryBackupFolder">Path to backup folder. leave blank for default.</string>
-    <string name="prefs_summaryToybox">Path to toybox/busybox executable. be sure it\'s correct. leave blank for default.</string>
-    <string name="prefs_summaryOldBackups">Filter backups older than value in days. used with the filter \'show old backups\'</string>
-    <string name="prefs_summaryCopySelfApk">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
-    <string name="prefs_summaryRememberFiltering">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
-    <string name="prefs_summaryFollowSymlinks">Always follow symbolic links when copying (cp -L)</string>
-    <string name="prefs_summaryQuickReboot">Kills the system_server process to force a restart of user space</string>
-    <string name="prefs_summaryBatchDelete">Delete backups of all apps not currently installed</string>
+    <string name="prefs_password_summary">Set to empty to disable encryption</string>
+    <string name="prefs_excludecache">Exclude app\'s cache</string>
+    <string name="prefs_excludecache_summary">Exclude application\'s cache from data backup</string>
+    <string name="prefs_externaldata">Backup external data</string>
+    <string name="prefs_externaldata_summary">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_deviceprotecteddata">Backup device protected data</string>
+    <string name="prefs_deviceprotecteddata_summary">Backs up and restores data that is placed in data/user_de</string>
+    <string name="prefs_copyselfapk">Copy own APK</string>
+    <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
+    <string name="prefs_acquirewakelock">Prevent sleep</string>
+    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. will speed up backups and restores considerably but will consume more energy</string>
+    <string name="prefs_enableSpecialBackups">Enable special backups</string>
+    <string name="prefs_pathscategory">Custom paths</string>
+    <string name="prefs_pathbackupfolder">Backup folder</string>
+    <string name="prefs_pathbusybox">Busybox folder</string>
+    <string name="prefs_pathbusybox_summary">Path to toybox/busybox executable. be sure it\'s correct. leave blank for default.</string>
+    <string name="prefs_quickreboot">Quick reboot</string>
+    <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
+    <string name="prefs_batchdelete">Delete backups</string>
+    <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed</string>
+    <string name="prefs_logviewer">View the log</string>
+    <string name="prefs_help">Help</string>
 
     <string name="sched_title">Scheduling</string>
     <string name="sched_add">Add Schedule</string>
     <string name="sched_notificationMessage">Scheduled backup</string>
-    <string name="sched_interval">Interval in days</string>
-    <string name="sched_hourOfDay">Hour of day</string>
+    <string name="sched_interval">Interval in days:</string>
+    <string name="sched_hourOfDay">Hour of day:</string>
     <string name="sched_checkbox">Enable</string>
     <string name="sched_activateButton">Start backup now</string>
     <string name="sched_startingbackup">Starting scheduled backup…</string>
-    <string name="sched_backupMode">Backup mode</string>
+    <string name="sched_mode">Backup mode:</string>
+    <string name="sched_submode">Backup sub-mode:</string>
     <string name="sched_timeLeft">Time until next backup:</string>
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
-
-    <string name="blacklistDialogTitle">Blacklist</string>
+    <string name="sched_blacklist">Blacklist</string>
 
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">Application Widgets</string>
@@ -147,10 +147,6 @@
     <string name="spec_data">Data Usage and Policy</string>
     <string name="spec_wallpaper">Wallpaper</string>
     <string name="spec_wifiAccessPoints">Wifi Access Points</string>
-
-    <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
-    <string name="logviewer_message_loading">Loading log file…</string>
 
     <string name="error_creating_notification_channel">Unable to create notification channel</string>
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>
@@ -165,7 +161,6 @@
     <string name="app_s_icon">App\'s icon</string>
     <string name="bothBackedUp">APK and data</string>
     <string name="all">All</string>
-    <string name="logViewerTitle">View the log</string>
     <string name="ask_for_permissions">ask for permissions</string>
     <string name="systemApp">System app</string>
     <string name="userApp">User app</string>
@@ -179,9 +174,6 @@
     <string name="encrypted_data_title">Encrypted data:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">Deleted the backup</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system">System\'s theme</string>
     <string name="empty_filtered_list">The filtered List is empty, therefore setting the filters back to default</string>
     <string name="dialog_refuse">Won\'t do it</string>
     <string name="dialog_approve">Let\'s do it</string>
@@ -196,10 +188,11 @@
     <string name="app_size">App Size:</string>
     <string name="data_size">Data Size:</string>
     <string name="cache_size">Cache Size:</string>
-    <string name="logfileSavedAt">Logfile saved at %s</string>
+    <string name="logfileSavedAt" translatable="false">Logfile saved at %s</string>
     <string name="help_license">License</string>
-    <string name="help_telegram">Our Group</string>
+    <string name="help_group">Our Group</string>
     <string name="enable_encryption_title">Data Encryption</string>
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
+    <string name="quickRebootMessage">Do you wish to restart userspace?</string>
 </resources>

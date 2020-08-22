@@ -64,13 +64,13 @@
   <string name="uninstallFailure">Feil under avinstalleringen</string>
   <string name="errorDialogTitle">En feil har oppstått</string>
   <string name="customListTitle">Tilpasset liste</string>
-  <string name="quickRebootTitle">Hurtig omstart</string>
+  <string name="prefs_quickreboot">Hurtig omstart</string>
   <string name="quickRebootMessage">Ønsker du å omstarte \'user space\' (brukerområde)?</string>
-  <string name="help_title">Hjelp</string>
+  <string name="prefs_help">Hjelp</string>
   <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
   <string name="shareTitle">Del med</string>
     <string name="tools_title">Verktøyer</string>
-  <string name="prefs_batchDelete">Slett sikkerhetskopier?</string>
+  <string name="prefs_batchdelete">Slett sikkerhetskopier?</string>
   <string name="batchDeleteMessage">Sletter sikkerhetskopier</string>
   <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,35 +82,30 @@
   <string name="disablePackage">Deaktiver</string>
   <string name="disablePackageTitle">Deaktiver for brukere</string>
   <string name="prefs_title">Innstillinger</string>
-  <string name="prefs_acquireWakelock">Hindre dvalemodus</string>
-  <string name="prefs_summaryAcquireWakelock">Få en en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Det vil gjøre gjenoppretting og lagring av sikkerhetskopier mye fortere men bruker mer energi.</string>
+  <string name="prefs_acquirewakelock">Hindre dvalemodus</string>
+  <string name="prefs_acquirewakelock_summary">Få en en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Det vil gjøre gjenoppretting og lagring av sikkerhetskopier mye fortere men bruker mer energi.</string>
   <string name="prefs_pathscategory">Tilpassete filstier</string>
-  <string name="prefs_pathBackupFolder">Mappe for sikkerhetskopier</string>
-  <string name="prefs_summaryBackupFolder">Filsti til mappe for sikkerhetskopier. La stå tomt for standardoppsett.</string>
-  <string name="prefs_pathToybox">busybox</string>
-  <string name="prefs_summaryToybox">Filsti til busybox programfil. Vær sikker at den er korrekt. La stå tomt for standardoppsett.</string>
-  <string name="prefs_oldBackups">Filtrer sikkerhetskopier etter alderen</string>
+  <string name="prefs_pathbackupfolder">Mappe for sikkerhetskopier</string>
+  <string name="prefs_pathbusybox">busybox</string>
+  <string name="prefs_pathbusybox_summary">Filsti til busybox programfil. Vær sikker at den er korrekt. La stå tomt for standardoppsett.</string>
+  <string name="prefs_oldbackups">Filtrer sikkerhetskopier etter alderen</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-  <string name="prefs_summaryOldBackups">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filter \'vis gamle sikkerhetskopier\'.</string>
-  <string name="prefs_copySelfApk">Kopier oandbackup APK</string>
-  <string name="prefs_summaryCopySelfApk">Kopier oandbackup APKen til mappen for sikkerhetskopier når det lages en sikkerhetskopi</string>
+  <string name="prefs_oldbackups_summary">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filter \'vis gamle sikkerhetskopier\'.</string>
+  <string name="prefs_copyselfapk">Kopier oandbackup APK</string>
+  <string name="prefs_copyselfapk_summary">Kopier oandbackup APKen til mappen for sikkerhetskopier når det lages en sikkerhetskopi</string>
   <string name="prefs_languages">Språk</string>
-  <string name="prefs_languageSystemDefault">Systemets standard</string>
-  <string name="prefs_rememberFiltering">Husk sortering og filtere</string>
-  <string name="prefs_summaryRememberFiltering">Lagrer utvalgte sortering og filter innstillinger. Tar bare hensyn til de som er markert med en avkryssingsboks i menyen.</string>
-  <string name="prefs_disableNotifications">Deaktiver varslinger</string>
-  <string name="prefs_summaryDisableNotifications">Når avkrysset vil oandbackup ikke vise noen varslinger</string>
-  <string name="prefs_followSymlinks">Følg symbolske lenker</string>
-  <string name="prefs_summaryFollowSymlinks">Alltid følg symbolske lenker under kopiering (cp -L)</string>
+  <string name="prefs_language_system">Systemets standard</string>
+  <string name="prefs_rememberfiltering">Husk sortering og filtere</string>
+  <string name="prefs_rememberfiltering_summary">Lagrer utvalgte sortering og filter innstillinger. Tar bare hensyn til de som er markert med en avkryssingsboks i menyen.</string>
   <string name="prefs_enableSpecialBackups">Aktiver spesielle sikkerhetskopier</string>
   <string name="sched_title">Planlegge</string>
   <string name="sched_notificationMessage">Planlegget sikkerhetskopi</string>
-  <string name="sched_interval">Intervall i dager</string>
-  <string name="sched_hourOfDay">Klokkeslett</string>
+  <string name="sched_interval">Intervall i dager:</string>
+  <string name="sched_hourOfDay">Klokkeslett:</string>
   <string name="sched_checkbox">Aktiver</string>
   <string name="sched_activateButton">Start å lage sikkerhetskopien nå</string>
   <string name="sched_startingbackup">Starter planlegget sikkerhetskopi</string>
-  <string name="sched_backupMode">Metode for sikkerhetskopi</string>
+  <string name="sched_mode">Metode for sikkerhetskopi:</string>
   <string name="sched_timeLeft">Timer til neste sikkerhetskopien:</string>
   <string name="sched_customListUpdateButton">Oppdater tilpasset liste</string>
   <string name="sched_excludeSystemCheckBox">Ekskluder system apper</string>
@@ -121,6 +116,5 @@
   <string name="spec_wallpaper">Bakgrunnsbilde</string>
   <string name="spec_wifiAccessPoints">WiFi-tilgangspunkter</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="logviewer_message_loading">Laster inn loggfilen</string>
-    <string name="help_license">Lisens</string>
+  <string name="help_license">Lisens</string>
 </resources>

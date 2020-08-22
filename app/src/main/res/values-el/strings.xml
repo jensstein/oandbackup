@@ -65,9 +65,9 @@
     <string name="uninstallFailure">Σφάλμα κατά την απεγκατάσταση</string>
     <string name="errorDialogTitle">Εμφανίστηκαν σφάλματα</string>
     <string name="customListTitle">Ειδική λίστα</string>
-    <string name="quickRebootTitle">Γρήγορη επανεκκίνηση</string>
+    <string name="prefs_quickreboot">Γρήγορη επανεκκίνηση</string>
     <string name="quickRebootMessage">Επιθυμείτε να επανεκκίνησετε το χώρο χρήστη;</string>
-    <string name="help_title">Βοήθεια</string>
+    <string name="prefs_help">Βοήθεια</string>
     <string name="notInstalledModeDataWarning">Η εφαρμογή δεν μπορεί να επαναφερθεί από ένα αντίγραφο χωρίς apk</string>
     <string name="shareTitle">Κοινοποίηση</string>
 
@@ -88,53 +88,48 @@
     <string name="prefs_service">Προτιμήσεις υπηρεσίας</string>
     <string name="prefs_user">Προτιμήσεις χρήστη</string>
     <string name="prefs_theme">Θέμα</string>
-    <string name="prefs_acquireWakelock">Αποτροπή ύπνου</string>
+    <string name="prefs_acquirewakelock">Αποτροπή ύπνου</string>
     <string name="prefs_pathscategory">Ειδικοί φάκελοι</string>
-    <string name="prefs_batchDelete">Διαγραφή αντιγράφων</string>
-    <string name="prefs_pathBackupFolder">Φάκελος αντιγράφων</string>
-    <string name="prefs_pathToybox">Φάκελος busybox</string>
-    <string name="prefs_oldBackups">Φιλτράρισμα αντιγράφων κατά παλαιότητα</string>
-    <string name="prefs_copySelfApk">Αντιγραφή της ίδιας της εφαρμογής</string>
+    <string name="prefs_batchdelete">Διαγραφή αντιγράφων</string>
+    <string name="prefs_pathbackupfolder">Φάκελος αντιγράφων</string>
+    <string name="prefs_pathbusybox">Φάκελος busybox</string>
+    <string name="prefs_oldbackups">Φιλτράρισμα αντιγράφων κατά παλαιότητα</string>
+    <string name="prefs_copyselfapk">Αντιγραφή της ίδιας της εφαρμογής</string>
     <string name="prefs_languages">Γλώσσα</string>
-    <string name="prefs_languageSystemDefault">Προεπιλογή συστήματος</string>
-    <string name="prefs_rememberFiltering">Διατήρηση ταξινόμησης και φιλτραρίσματος</string>
-    <string name="prefs_followSymlinks">Να ακολουθούνται συμβολικοί δεσμοί</string>
+    <string name="prefs_language_system">Προεπιλογή συστήματος</string>
+    <string name="prefs_rememberfiltering">Διατήρηση ταξινόμησης και φιλτραρίσματος</string>
     <string name="prefs_enableSpecialBackups">Ενεργοποίηση ειδικών αντιγράφων</string>
-    <string name="prefs_disableNotifications">Απενεργοποίηση ειδοποιήσεων</string>
-    <string name="prefs_excludeCache">Καθαρισμός μνήμης cache της εφαρμογής</string>
+    <string name="prefs_excludecache">Καθαρισμός μνήμης cache της εφαρμογής</string>
     <string name="prefs_encryption">Κρυπτογράφηση</string>
     <string name="prefs_password">Κωδικός κρυπτογράφησης</string>
-    <string name="prefs_backupExternalData">Δημιουργία αντιγράφου εξωτερικών δεδομένων</string>
-    <string name="prefs_backupDeviceProtectedData">Δημιουργία αντιγράφου προστατευμένων από τη συσκευή δεδομένων</string>
-    <string name="prefs_summaryBackupDeviceProtectedData">Δημιουργεί αντίγραφο και επαναφέρει δεδομένα που βρίσκονται στο data/user_de</string>
-    <string name="prefs_summaryBackupExternalData">Δημιουργεί αντίγραφο και επαναφέρει δεδομένα που βρίσκονται στον εξωτερικό χώρο αποθήκευσης (e.g. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_summary_password">Αφήστε κενό για απενεργοποίηση κρυπτογράφησης</string>
-    <string name="prefs_summary_encryption">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
-    <string name="prefs_summaryExcludeCache">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
-    <string name="prefs_summaryDisableNotifications">Το OAndBackupX δε θα εμφανίζει ειδοποιήσεις</string>
-    <string name="prefs_summaryAcquireWakelock">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια</string>
-    <string name="prefs_summaryBackupFolder">Διαδρομή φακέλου αντιγράφων. Αφήστε κενό για προεπιλογή.</string>
-    <string name="prefs_summaryToybox">Διαδρομή στο εκτελέσιμο busybox. Βεβαιωθείτε ότι είναι σωστό. Αφήστε κενό για προεπιλογή.</string>
-    <string name="prefs_summaryOldBackups">Φιλτράρισμα αντιγράφων παλαιότερων από την τιμή σε μέρες. Χρησιμοποιείται μαζί με το φίλτρο \'εμφάνιση παλαιών αντιγράφων\'</string>
-    <string name="prefs_summaryCopySelfApk">Τοποθετήστε ένα αντίγραφο του OAndBackupX στο υψηλότερο επίπεδο του φακέλου αντιγράφων όταν δημιουργηθεί αντίγραφο</string>
-    <string name="prefs_summaryRememberFiltering">Αποθηκεύει την επιλεγμένη μέθοδο ταξινόμησης και φιλτραρίσματος. Μόνον αυτά που είναι σημειωμένα με ένα κουτάκι στον κατάλογο λαμβάνονται υπόψιν.</string>
-    <string name="prefs_summaryFollowSymlinks">Να ακολουθούνται πάντα οι συμβολικοί δεσμοί κατά την αντιγραφή (cp -L)</string>
-    <string name="prefs_summaryQuickReboot">Τερματίζει τη διεργασία system_server ώστε να εξαναγκάσει την επανεκκίνηση του χώρου χρήστη</string>
-    <string name="prefs_summaryBatchDelete">Διαγραφή των αντιγράφων όλων των εφαρμογών που δεν είναι εγκατεστημένες στο παρόν</string>
+    <string name="prefs_externaldata">Δημιουργία αντιγράφου εξωτερικών δεδομένων</string>
+    <string name="prefs_deviceprotecteddata">Δημιουργία αντιγράφου προστατευμένων από τη συσκευή δεδομένων</string>
+    <string name="prefs_deviceprotecteddata_summary">Δημιουργεί αντίγραφο και επαναφέρει δεδομένα που βρίσκονται στο data/user_de</string>
+    <string name="prefs_externaldata_summary">Δημιουργεί αντίγραφο και επαναφέρει δεδομένα που βρίσκονται στον εξωτερικό χώρο αποθήκευσης (e.g. /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_password_summary">Αφήστε κενό για απενεργοποίηση κρυπτογράφησης</string>
+    <string name="prefs_encryption_summary">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
+    <string name="prefs_excludecache_summary">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
+    <string name="prefs_acquirewakelock_summary">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια</string>
+    <string name="prefs_pathbusybox_summary">Διαδρομή στο εκτελέσιμο busybox. Βεβαιωθείτε ότι είναι σωστό. Αφήστε κενό για προεπιλογή.</string>
+    <string name="prefs_oldbackups_summary">Φιλτράρισμα αντιγράφων παλαιότερων από την τιμή σε μέρες. Χρησιμοποιείται μαζί με το φίλτρο \'εμφάνιση παλαιών αντιγράφων\'</string>
+    <string name="prefs_copyselfapk_summary">Τοποθετήστε ένα αντίγραφο του OAndBackupX στο υψηλότερο επίπεδο του φακέλου αντιγράφων όταν δημιουργηθεί αντίγραφο</string>
+    <string name="prefs_rememberfiltering_summary">Αποθηκεύει την επιλεγμένη μέθοδο ταξινόμησης και φιλτραρίσματος. Μόνον αυτά που είναι σημειωμένα με ένα κουτάκι στον κατάλογο λαμβάνονται υπόψιν.</string>
+    <string name="prefs_quickreboot_summary">Τερματίζει τη διεργασία system_server ώστε να εξαναγκάσει την επανεκκίνηση του χώρου χρήστη</string>
+    <string name="prefs_batchdelete_summary">Διαγραφή των αντιγράφων όλων των εφαρμογών που δεν είναι εγκατεστημένες στο παρόν</string>
 
     <string name="sched_title">Προγραμματισμός</string>
     <string name="sched_notificationMessage">Προγραμματισμένο αντίγραφο</string>
-    <string name="sched_interval">Μεσοδιάστημα σε ημέρες</string>
-    <string name="sched_hourOfDay">Ώρα της ημέρας</string>
+    <string name="sched_interval">Μεσοδιάστημα σε ημέρες:</string>
+    <string name="sched_hourOfDay">Ώρα της ημέρας:</string>
     <string name="sched_checkbox">Ενεργοποίηση</string>
     <string name="sched_activateButton">Εκκίνηση δημιουργίας αντιγράφου τώρα</string>
     <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου</string>
-    <string name="sched_backupMode">Λειτουργία δημιουργίας αντιγράφου</string>
+    <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Ώρες μέχρι το επόμενο αντίγραφο:</string>
     <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
 
-    <string name="blacklistDialogTitle">Μαύρη λίστα</string>
+    <string name="sched_blacklist">Μαύρη λίστα</string>
 
     <string name="spec_accounts">Λογαριασμοί</string>
     <string name="spec_appwidgets">Γραφικά στοιχεία Εφαρμογής</string>
@@ -144,8 +139,6 @@
     <string name="spec_wifiAccessPoints">Σημεία Πρόσβασης Wifi</string>
 
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
-    <string name="logviewer_message_loading">Φόρτωση αρχείου καταγραφής</string>
 
     <string name="error_creating_notification_channel">Αδυναμία δημιουργίας καναλιού ειδοποιήσεων</string>
     <string name="error_updating_schedule_mode">Σφάλμα ενημέρωσης %1$s του προγράμματος %2$d</string>
@@ -161,7 +154,7 @@
     <string name="app_s_icon">Εικονίδιο εφαρμογής</string>
     <string name="bothBackedUp">Εφαρμογή και δεδομένα</string>
     <string name="all">Όλα</string>
-    <string name="logViewerTitle">Εμφάνιση αρχείου καταγραφής</string>
+    <string name="prefs_logviewer">Εμφάνιση αρχείου καταγραφής</string>
     <string name="ask_for_permissions">Ερώτηση για άδειες</string>
     <string name="systemApp">Εφαρμογή συστήματος</string>
     <string name="userApp">Εφαρμογή χρήστη</string>
@@ -175,9 +168,9 @@
     <string name="encrypted_data_title">Κρυπτογραφημένα δεδομένα:</string>
     <string name="other_filters_options">Ειδικά φίλτρα:</string>
     <string name="deleted_backup">Το αντίγραφο διαγράφηκε</string>
-    <string name="theme_light">Φωτεινό</string>
-    <string name="theme_dark">Σκούρο</string>
-    <string name="theme_system">Θέμα συστήματος</string>
+    <string name="prefs_theme_light">Φωτεινό</string>
+    <string name="prefs_theme_dark">Σκούρο</string>
+    <string name="prefs_theme_system">Θέμα συστήματος</string>
     <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή, επομένως τα φίλτρα επιστρέφουν στην προεπιλογή</string>
     <string name="dialog_refuse">Δε θα το κάνω</string>
     <string name="dialog_approve">Ας το κάνω</string>

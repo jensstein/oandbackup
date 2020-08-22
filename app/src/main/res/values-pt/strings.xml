@@ -64,13 +64,13 @@
   <string name="uninstallFailure">Erro ao desinstalar</string>
   <string name="errorDialogTitle">Ocorreram erros</string>
   <string name="customListTitle">Lista personalizada</string>
-  <string name="quickRebootTitle">Reinicio rápido</string>
+  <string name="prefs_quickreboot">Reinicio rápido</string>
   <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
-  <string name="help_title">Ajuda</string>
+  <string name="prefs_help">Ajuda</string>
   <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
   <string name="shareTitle">Partilhar</string>
     <string name="tools_title">Ferramentas</string>
-  <string name="prefs_batchDelete">Eliminar backups?</string>
+  <string name="prefs_batchdelete">Eliminar backups?</string>
   <string name="batchDeleteMessage">A eliminar backups...</string>
   <string name="batchDeleteNotificationTitle">Eliminar backups</string>
   <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,35 +82,30 @@
   <string name="disablePackage">Desativar</string>
   <string name="disablePackageTitle">Desativar para</string>
   <string name="prefs_title">Preferências</string>
-  <string name="prefs_acquireWakelock">Impedir suspensão</string>
-  <string name="prefs_summaryAcquireWakelock">Obter wakelock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
+  <string name="prefs_acquirewakelock">Impedir suspensão</string>
+  <string name="prefs_acquirewakelock_summary">Obter wakelock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
   <string name="prefs_pathscategory">Caminhos personalizados</string>
-  <string name="prefs_pathBackupFolder">Pasta de backup</string>
-  <string name="prefs_summaryBackupFolder">Caminho da pasta de backups. Deixe em branco para utilizar a pasta padrão.</string>
-  <string name="prefs_pathToybox">Busybox</string>
-  <string name="prefs_summaryToybox">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
-  <string name="prefs_oldBackups">Filtrar backups por antiguidade</string>
+  <string name="prefs_pathbackupfolder">Pasta de backup</string>
+  <string name="prefs_pathbusybox">Busybox</string>
+  <string name="prefs_pathbusybox_summary">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
+  <string name="prefs_oldbackups">Filtrar backups por antiguidade</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-  <string name="prefs_summaryOldBackups">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado.</string>
-  <string name="prefs_copySelfApk">Copiar apk</string>
-  <string name="prefs_summaryCopySelfApk">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
+  <string name="prefs_oldbackups_summary">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado.</string>
+  <string name="prefs_copyselfapk">Copiar apk</string>
+  <string name="prefs_copyselfapk_summary">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
   <string name="prefs_languages">Idioma</string>
-  <string name="prefs_languageSystemDefault">Idioma do sistema</string>
-  <string name="prefs_rememberFiltering">Memorizar ordem e filtro</string>
-  <string name="prefs_summaryRememberFiltering">Guarda o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
-  <string name="prefs_disableNotifications">Desativar notificações</string>
-  <string name="prefs_summaryDisableNotifications">Se ativa, o oandbackup não mostrará quaisquer notificações.</string>
-  <string name="prefs_followSymlinks">Seguir ligações simbólicas</string>
-  <string name="prefs_summaryFollowSymlinks">Seguir sempre ligações simbólicas ao copiar (cp -L)</string>
+  <string name="prefs_language_system">Idioma do sistema</string>
+  <string name="prefs_rememberfiltering">Memorizar ordem e filtro</string>
+  <string name="prefs_rememberfiltering_summary">Guarda o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
   <string name="prefs_enableSpecialBackups">Ativar backups especiais</string>
   <string name="sched_title">Agendamento</string>
   <string name="sched_notificationMessage">Backup agendado</string>
-  <string name="sched_interval">Intervalo em dias</string>
-  <string name="sched_hourOfDay">Hora do dia</string>
+  <string name="sched_interval">Intervalo em dias:</string>
+  <string name="sched_hourOfDay">Hora do dia:</string>
   <string name="sched_checkbox">Ativar</string>
   <string name="sched_activateButton">Iniciar backup agora</string>
   <string name="sched_startingbackup">Iniciar agendamento</string>
-  <string name="sched_backupMode">Modo de backup</string>
+  <string name="sched_mode">Modo de backup:</string>
   <string name="sched_timeLeft">Horas até ao próximo backup:</string>
   <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
   <string name="sched_excludeSystemCheckBox">Excluir aplicações do sistema</string>
@@ -121,6 +116,5 @@
   <string name="spec_wallpaper">Papel de parede</string>
   <string name="spec_wifiAccessPoints">Pontos de acesso WiFi</string>
   <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-  <string name="logviewer_message_loading">A carregar ficheiro de registo</string>
-    <string name="help_license">Licença</string>
+  <string name="help_license">Licença</string>
 </resources>
