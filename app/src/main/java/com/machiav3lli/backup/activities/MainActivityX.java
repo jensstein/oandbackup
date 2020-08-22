@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -37,8 +36,6 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 import com.topjohnwu.superuser.BuildConfig;
 import com.topjohnwu.superuser.Shell;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,14 +108,6 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
             sheetApp = new AppSheet(item, position);
             sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
             return false;
-        });
-
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) binding.fabSortFilter.hide();
-                else if (dy < 0) binding.fabSortFilter.show();
-            }
         });
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

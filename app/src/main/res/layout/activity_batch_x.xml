@@ -63,86 +63,91 @@
     <FrameLayout
         android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_static">
+        android:background="@drawable/bar_static_round">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/radios"
-                    style="@style/Chip.Group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/radioBoth"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radioBoth" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/radioApk"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radioApk" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/radioData"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radioData" />
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/cards_spacing">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/cbAll"
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/cards_spacing"
-                    android:singleLine="true"
-                    android:text="@string/all" />
+                    android:scrollbars="none">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/actionButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:layout_marginEnd="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_positive_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text=""
-                    android:textColor="?colorAccent" />
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/radios"
+                        style="@style/Chip.Group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/radioBoth"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/radioBoth" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/radioApk"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/radioApk" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/radioData"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/radioData" />
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        android:singleLine="true"
+                        android:text="@string/all" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/actionButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_positive_ripple"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text=""
+                        android:textColor="?colorAccent" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/fabSortFilter"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/app_accent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_round_filter_list_32"
+                android:tooltipText="@string/sort_and_filter" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSortFilter"
-        style="@style/FAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="38dp"
-        android:layout_marginBottom="50dp"
-        android:contentDescription="@string/sort_and_filter"
-        android:src="@drawable/ic_round_filter_list_32" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

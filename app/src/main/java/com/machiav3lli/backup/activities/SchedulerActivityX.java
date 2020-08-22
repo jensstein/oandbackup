@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.annimon.stream.Optional;
 import com.machiav3lli.backup.BlacklistListener;
@@ -34,8 +33,6 @@ import com.machiav3lli.backup.utils.LogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -81,13 +78,6 @@ public class SchedulerActivityX extends BaseActivity
         itemAdapter.add(list);
 
         binding.backButton.setOnClickListener(v -> finish());
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) binding.fabAddSchedule.hide();
-                else if (dy < 0) binding.fabAddSchedule.show();
-            }
-        });
     }
 
     private void setupOnClicks(SchedulerActivityX activity) {

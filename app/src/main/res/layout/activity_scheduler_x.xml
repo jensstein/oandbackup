@@ -39,35 +39,35 @@
     <FrameLayout
         android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_static">
+        android:background="@drawable/bar_static_round">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="48dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/blacklistButton"
-                style="@style/Button.NavBar"
-                android:layout_width="48dp"
+                style="@style/Button.NavBar.Start"
+                android:layout_width="52dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_round_blacklist_32"
-                android:tooltipText="@string/blacklistDialogTitle" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </FrameLayout>
+                android:tooltipText="@string/sched_blacklist" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddSchedule"
-        style="@style/FAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="38dp"
-        android:layout_marginBottom="50dp"
-        android:contentDescription="@string/sched_add"
-        android:src="@drawable/ic_round_add_sched_32" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/fabAddSchedule"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_round_add_sched_32"
+                android:tooltipText="@string/sched_add" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

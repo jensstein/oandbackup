@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -29,13 +28,10 @@ import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -111,13 +107,6 @@ public class BatchActivityX extends BaseActivity
             item.getApp().setChecked(!item.getApp().isChecked());
             fastAdapter.notifyAdapterDataSetChanged();
             return false;
-        });
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) binding.fabSortFilter.hide();
-                else if (dy < 0) binding.fabSortFilter.show();
-            }
         });
         binding.searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

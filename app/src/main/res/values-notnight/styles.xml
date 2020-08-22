@@ -42,7 +42,8 @@
     <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">52dp</item>
+        <item name="android:layout_marginBottom">52dp</item>
+        <item name="android:layout_marginHorizontal">36dp</item>
         <item name="android:layout_gravity">bottom|center_horizontal</item>
         <item name="layout_behavior">@string/hide_bottom_view_on_scroll_behavior</item>
         <item name="android:elevation">2dp</item>
@@ -88,6 +89,21 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">?colorSecondary</item>
+    </style>
+
+    <style name="Button.NavBar.Start" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/button_start_navbar</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+    <style name="Button.NavBar.Middle" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/button_middle_navbar</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+    </style>
+
+    <style name="Button.NavBar.End" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/button_end_navbar</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
     <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">
