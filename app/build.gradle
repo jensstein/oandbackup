@@ -44,7 +44,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    buildToolsVersion '30.0.2'
 }
 
 ext {
