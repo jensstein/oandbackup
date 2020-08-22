@@ -86,7 +86,7 @@ public class BatchActivityX extends BaseActivity
 
         String backupDirPath = FileUtils.getBackupDirectoryPath(this);
         backupDir = FileUtils.createBackupDir(this, backupDirPath);
-        if (originalList.isEmpty())
+        if (originalList == null || originalList.isEmpty())
             originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
                     prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
 
