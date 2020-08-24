@@ -86,13 +86,13 @@ Version 3.0.0 marks an overhaul of the backup proces and thus a break in compati
 
 OAndBackupX is built with gradle, for that you need the android sdk.
 
-## Licenses
+## Licenses <img align="right" src="agplv3.png" width="64" />
 
-OAndBackupX is licensed under the MIT license (see LICENSE.txt)
+OAndBackupX is licensed under the [GNU's Aferro GPL v3](LICENSE.txt))
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
-Placeholders Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
+Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
 
 ## Credits
 
