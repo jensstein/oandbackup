@@ -156,8 +156,8 @@
     <string name="all">Semua</string>
     <string name="prefs_logviewer">Lihat log</string>
     <string name="ask_for_permissions">minta izin</string>
-    <string name="systemApp">Aplikasi sistem</string>
-    <string name="userApp">Aplikasi pengguna</string>
+    <string name="apptype_system">Aplikasi sistem</string>
+    <string name="apptype_user">Aplikasi pengguna</string>
     <string name="resetFilter">Setel ulang</string>
     <string name="applyFilter">Menerapkan</string>
     <string name="available_actions">Tindakan yang tersedia:</string>

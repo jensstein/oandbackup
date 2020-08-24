@@ -14,7 +14,6 @@
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="colorControlNormal">@android:color/white</item>
-        <item name="actionBarSize">@dimen/action_bar_height</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.DayNight">
@@ -93,17 +92,14 @@
 
     <style name="Button.NavBar.Start" parent="android:Widget.Material.Button">
         <item name="android:background">@drawable/button_start_navbar</item>
-        <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
     <style name="Button.NavBar.Middle" parent="android:Widget.Material.Button">
         <item name="android:background">@drawable/button_middle_navbar</item>
-        <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
     <style name="Button.NavBar.End" parent="android:Widget.Material.Button">
         <item name="android:background">@drawable/button_end_navbar</item>
-        <item name="android:textAppearance">@style/TextAppearance.Button</item>
     </style>
 
     <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">
@@ -116,6 +112,20 @@
         <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
         <item name="selectionRequired">true</item>
         <item name="singleSelection">true</item>
+    </style>
+
+    <style name="Chip.Group.Tags" parent="Widget.MaterialComponents.ChipGroup">
+        <item name="chipSpacingHorizontal">@dimen/small_spacing</item>
+        <item name="selectable">false</item>
+    </style>
+
+    <style name="Chip.Tag" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
     </style>
 
     <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">

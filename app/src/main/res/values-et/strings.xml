@@ -156,8 +156,8 @@
     <string name="all">Kõik</string>
     <string name="prefs_logviewer">Vaata logi</string>
     <string name="ask_for_permissions">küsi luba</string>
-    <string name="systemApp">Süsteemirakendus</string>
-    <string name="userApp">Kasutajarakendus</string>
+    <string name="apptype_system">Süsteemirakendus</string>
+    <string name="apptype_user">Kasutajarakendus</string>
     <string name="resetFilter">Lähtesta</string>
     <string name="applyFilter">Rakenda</string>
     <string name="available_actions">Saadaolevad tegevused:</string>

@@ -156,8 +156,8 @@
     <string name="all">Όλα</string>
     <string name="prefs_logviewer">Εμφάνιση αρχείου καταγραφής</string>
     <string name="ask_for_permissions">Ερώτηση για άδειες</string>
-    <string name="systemApp">Εφαρμογή συστήματος</string>
-    <string name="userApp">Εφαρμογή χρήστη</string>
+    <string name="apptype_system">Εφαρμογή συστήματος</string>
+    <string name="apptype_user">Εφαρμογή χρήστη</string>
     <string name="resetFilter">Επαναρύθμιση</string>
     <string name="applyFilter">Εφαρμογή</string>
     <string name="available_actions">Διαθέσιμες ενέργειες:</string>

@@ -7,7 +7,9 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
-import static com.machiav3lli.backup.utils.ItemUtils.pickColor;
 
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
     public static final Creator<BatchItemX> CREATOR = new Creator<BatchItemX>() {
@@ -88,8 +89,10 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
         AppCompatCheckBox checkbox = itemView.findViewById(R.id.enableCheckbox);
         AppCompatTextView label = itemView.findViewById(R.id.label);
         AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
-        AppCompatTextView versionCode = itemView.findViewById(R.id.versionCode);
-        AppCompatTextView backupMode = itemView.findViewById(R.id.backupMode);
+        AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
+        Chip backupMode = itemView.findViewById(R.id.backupMode);
+        Chip appType = itemView.findViewById(R.id.appType);
+        Chip update = itemView.findViewById(R.id.update);
 
         public ViewHolder(View view) {
             super(view);
@@ -102,26 +105,19 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             checkbox.setChecked(app.isChecked());
             label.setText(app.getLabel());
             packageName.setText(app.getPackageName());
-            if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
-                String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
-                versionCode.setText(updatedVersionString);
-                if (updatedVersionString.length() < 15) versionCode.setEllipsize(null);
-            } else versionCode.setText(app.getVersionName());
-            switch (app.getBackupMode()) {
-                case AppInfo.MODE_APK:
-                    backupMode.setText(R.string.onlyApkBackedUp);
-                    break;
-                case AppInfo.MODE_DATA:
-                    backupMode.setText(R.string.onlyDataBackedUp);
-                    break;
-                case AppInfo.MODE_BOTH:
-                    backupMode.setText(R.string.bothBackedUp);
-                    break;
-                default:
-                    backupMode.setText("");
-                    break;
+            if (app.getLogInfo() != null) {
+                lastBackup.setVisibility(View.VISIBLE);
+                lastBackup.setText(ItemUtils.getFormattedDate(false));
+            } else {
+                lastBackup.setVisibility(View.GONE);
             }
-            pickColor(app, packageName);
+            if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
+                update.setVisibility(View.VISIBLE);
+            } else {
+                update.setVisibility(View.GONE);
+            }
+            ItemUtils.pickBackupMode(app.getBackupMode(), backupMode);
+            ItemUtils.pickAppType(app, appType);
         }
 
         @Override
@@ -129,8 +125,9 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             checkbox.setText(null);
             label.setText(null);
             packageName.setText(null);
-            versionCode.setText(null);
+            lastBackup.setText(null);
             backupMode.setText(null);
+            appType.setText(null);
         }
     }
 }

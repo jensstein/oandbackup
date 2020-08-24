@@ -136,8 +136,8 @@
     <string name="prefs_batchdelete_summary">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</string>
     <string name="prefs_quickreboot_summary">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>
     <string name="ask_for_permissions">Berechtigungen erfragen</string>
-    <string name="systemApp">System-App</string>
-    <string name="userApp">Benutzer-App</string>
+    <string name="apptype_system">System-App</string>
+    <string name="apptype_user">Benutzer-App</string>
     <string name="resetFilter">Zurücksetzen</string>
     <string name="backup_mode_title">Sicherungsmodus:</string>
     <string name="version_name_title">Versionsname:</string>

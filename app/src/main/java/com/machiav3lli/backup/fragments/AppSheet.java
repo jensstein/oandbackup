@@ -2,6 +2,7 @@ package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -141,8 +143,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         else binding.icon.setImageResource(R.drawable.ic_placeholder);
         binding.label.setText(app.getLabel());
         binding.packageName.setText(app.getPackageName());
-        if (app.isSystem()) binding.appType.setText(R.string.systemApp);
-        else binding.appType.setText(R.string.userApp);
+        if (app.isSpecial()) {
+            binding.appType.setText(R.string.apptype_special);
+        } else if (app.isSystem()) {
+            binding.appType.setText(R.string.apptype_system);
+        } else {
+            binding.appType.setText(R.string.apptype_user);
+        }
         if (app.isSpecial()) {
             UIUtils.setVisibility(binding.appSizeLine, View.GONE, update);
             UIUtils.setVisibility(binding.dataSizeLine, View.GONE, update);
@@ -158,9 +165,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         if (app.isSplit()) binding.appSplits.setText(R.string.dialogYes);
         else binding.appSplits.setText(R.string.dialogNo);
         if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
-            String updatedVersionString = app.getLogInfo().getVersionName() + " -> " + app.getVersionName();
+            String updatedVersionString = app.getLogInfo().getVersionName() + " (" + app.getVersionName() + ")";
             binding.versionName.setText(updatedVersionString);
-        } else binding.versionName.setText(app.getVersionName());
+            binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_secondary));
+        } else {
+            binding.versionName.setText(app.getVersionName());
+            binding.versionName.setTextColor(binding.packageName.getTextColors());
+        }
         if (app.getLogInfo() != null) {
             UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
             binding.lastBackup.setText(ItemUtils.getFormattedDate(true));
@@ -169,14 +180,17 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             case AppInfo.MODE_APK:
                 UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
                 binding.backupMode.setText(R.string.onlyApkBackedUp);
+                binding.backupMode.setTextColor(Color.rgb(69, 244, 155));
                 break;
             case AppInfo.MODE_DATA:
                 UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
                 binding.backupMode.setText(R.string.onlyDataBackedUp);
+                binding.backupMode.setTextColor(Color.rgb(225, 94, 216));
                 break;
             case AppInfo.MODE_BOTH:
                 UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
                 binding.backupMode.setText(R.string.bothBackedUp);
+                binding.backupMode.setTextColor(Color.rgb(255, 76, 87));
                 break;
             default:
                 UIUtils.setVisibility(binding.backupModeLine, View.GONE, update);
@@ -186,7 +200,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(binding.encryptedLine, View.VISIBLE, update);
             binding.encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
         } else UIUtils.setVisibility(binding.encryptedLine, View.GONE, update);
-        ItemUtils.pickColor(app, binding.appType);
+        ItemUtils.pickTypeColor(app, binding.appType);
     }
 
     private void setupOnClicks(AppSheet fragment) {

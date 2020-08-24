@@ -35,33 +35,32 @@
                             android:id="@+id/icon"
                             android:layout_width="@dimen/app_icon_size"
                             android:layout_height="@dimen/app_icon_size"
-                            android:layout_marginEnd="@dimen/med_spacing"
+                            android:layout_marginEnd="@dimen/cards_spacing"
                             android:contentDescription="@string/app_s_icon"
                             android:src="@drawable/ic_placeholder" />
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/app_icon_size"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/label"
+                                style="@style/TextViewWrapped"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="0.6"
-                                android:ellipsize="end"
-                                android:singleLine="true"
-                                android:textAppearance="@style/TextAppearance.Title" />
+                                android:textAppearance="@style/TextAppearance.Label" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/packageName"
+                                style="@style/TextViewWrapped"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="0.4"
-                                android:ellipsize="end"
-                                android:singleLine="true"
-                                android:textSize="@dimen/main_text" />
+                                android:textAppearance="@style/TextAppearance.Secondary" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -89,17 +88,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/app_s_type_title"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appType"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -114,17 +111,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/app_size"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -139,17 +134,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/data_size"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/dataSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -164,17 +157,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/cache_size"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cacheSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/wipeCache"
@@ -196,16 +187,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/split_apks"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appSplits"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -219,17 +209,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/version_name_title"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/versionName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -244,17 +232,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/last_backup_title"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/lastBackup"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -269,17 +255,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/backup_mode_title"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/backupMode"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -294,53 +278,43 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/encrypted_data_title"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/encrypted"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:ellipsize="end"
                         android:gravity="end"
-                        android:singleLine="true"
-                        android:textSize="@dimen/main_text" />
+                        android:textAppearance="@style/TextAppearance.Lines" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/cards_spacing"
-                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:layout_margin="@dimen/cards_spacing"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/cards_spacing"
+                        android:layout_weight="1"
                         android:text="@string/available_actions"
                         android:textAppearance="@style/TextAppearance.Title" />
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/exodusReport"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_margin="@dimen/cards_spacing">
+                        app:srcCompat="@drawable/ic_outline_exodus_24" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/exodusReport"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/ic_outline_exodus_24" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/appInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_outline_info_24" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-                </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/cards_spacing"
+                        app:srcCompat="@drawable/ic_outline_info_24" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <HorizontalScrollView

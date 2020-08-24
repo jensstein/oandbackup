@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/cards_spacing"
@@ -13,7 +14,7 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/app_icon_size"
             android:layout_height="@dimen/app_icon_size"
-            android:layout_marginEnd="@dimen/med_spacing"
+            android:layout_marginEnd="@dimen/cards_spacing"
             android:contentDescription="@string/app_s_icon"
             android:src="@drawable/ic_placeholder" />
 
@@ -32,20 +33,37 @@
                     android:id="@+id/label"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.6"
-                    android:ellipsize="end"
-                    android:singleLine="true"
+                    android:layout_weight="1"
+                    style="@style/TextViewWrapped"
                     android:textAppearance="@style/TextAppearance.Label" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/lastBackup"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:ellipsize="end"
-                    android:gravity="end|center_vertical"
-                    android:singleLine="true"
-                    android:textSize="@dimen/secondary_text" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/actions"
+                    style="@style/Chip.Group.Tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/update"
+                        style="@style/Chip.Tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tag_update"
+                        android:textColor="?colorSecondary"
+                        app:chipStrokeColor="?colorSecondary" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupMode"
+                        style="@style/Chip.Tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/appType"
+                        style="@style/Chip.Tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.chip.ChipGroup>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -58,20 +76,18 @@
                     android:id="@+id/packageName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textSize="@dimen/secondary_text" />
+                    android:layout_weight="0.75"
+                    style="@style/TextViewWrapped"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/backupMode"
+                    android:id="@+id/lastBackup"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.3"
-                    android:ellipsize="end"
+                    android:layout_weight="0.25"
                     android:gravity="end"
-                    android:singleLine="true"
-                    android:textSize="@dimen/secondary_text" />
+                    style="@style/TextViewWrapped"
+                    android:textAppearance="@style/TextAppearance.Secondary"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

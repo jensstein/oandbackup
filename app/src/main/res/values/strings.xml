@@ -162,8 +162,9 @@
     <string name="bothBackedUp">APK and data</string>
     <string name="all">All</string>
     <string name="ask_for_permissions">ask for permissions</string>
-    <string name="systemApp">System app</string>
-    <string name="userApp">User app</string>
+    <string name="apptype_system">System app</string>
+    <string name="apptype_user">User app</string>
+    <string name="apptype_special">Special backup</string>
     <string name="resetFilter">Reset</string>
     <string name="applyFilter">Apply</string>
     <string name="available_actions">Available actions:</string>
@@ -195,4 +196,11 @@
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
     <string name="quickRebootMessage">Do you wish to restart userspace?</string>
+    <string name="tag_user" translatable="false">USR</string>
+    <string name="tag_system" translatable="false">SYS</string>
+    <string name="tag_special" translatable="false">SPC</string>
+    <string name="tag_apk" translatable="false">APK</string>
+    <string name="tag_data" translatable="false">DAT</string>
+    <string name="tag_apk_and_data" translatable="false"><![CDATA[A&D]]></string>
+    <string name="tag_update" translatable="false">UPD</string>
 </resources>

@@ -22,7 +22,7 @@
             android:imeOptions="flagNoExtractUi|actionSearch"
             android:inputType="text"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.SearchBar"
+            android:textAppearance="@style/TextAppearance.Title"
             app:elevation="@dimen/small_spacing"
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"

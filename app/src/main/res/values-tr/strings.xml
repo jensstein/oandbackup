@@ -156,8 +156,8 @@
     <string name="all">Hepsi</string>
     <string name="prefs_logviewer">Günlüğü görüntüle</string>
     <string name="ask_for_permissions">izinleri al</string>
-    <string name="systemApp">Sistem uygulamaları</string>
-    <string name="userApp">Kullanıcı uygulamaları</string>
+    <string name="apptype_system">Sistem uygulamaları</string>
+    <string name="apptype_user">Kullanıcı uygulamaları</string>
     <string name="resetFilter">Sıfırla</string>
     <string name="applyFilter">Uygula</string>
     <string name="available_actions">Mevcut eylemler:</string>
