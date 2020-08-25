@@ -1,6 +1,22 @@
 changelog
 =========
 
+3.1.0 (25.08.2020)
+-------------------
+* Removed: dropped Android Nougat support
+* Added: new tags system
+* Added: biometric lock preference
+* Added: persistent checked items in Batch
+* Updated: the whole UI
+* Updated: change schedule custom app list to show labels instead of package names
+* Updated: reduce repeatability of encryption AlertDialog
+* Updated: set default external data and obb preference to off
+* Updated: show only the Date of latest backup in Main
+* Fixed: crash on launching batch fast
+* Fixed: crashing when tapping outside of ProgressDialog in Main
+* Refactored the code improving quality and performance
+* Moved to Affero GPL v3
+
 3.0.0 (04.08.2020)
 -------------------
 **THIS RELEASE ISN'T COMPATIBLE WITH THE VERSIONS BEFORE**

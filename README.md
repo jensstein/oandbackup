@@ -5,6 +5,7 @@
 OAndBackupX is a fork of the infamous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device. Therefore all types of contribution are welcome.
 
 Now on functionality of our App:
+
 * It requires root and allows you to backup individual apps and their data.
 * Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
 * Restoring system apps should be possible without requiring a reboot afterwards.
@@ -34,11 +35,11 @@ Our [Code of Conduct](COC.md) applies to the communication in the community same
 
 If enabled the data backup will be encrypted with AES 256 based on a password you can set in the settings, which you'll have to use when you want to restore the data. This way you can store your backups more securely, worrying less about their readability.  
 
-## Compatibility with oandbackup backups
+## Compatibility
+
+Version 3.0.0 marks an overhaul of the backup proces and thus breaks compatibility with previous versions.
 
 Till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
-
-Version 3.0.0 marks an overhaul of the backup proces and thus a break in compatibility with the older versions.
 
 ## Changes & TODOs
 
@@ -49,18 +50,17 @@ Version 3.0.0 marks an overhaul of the backup proces and thus a break in compati
 - [x] Add Split Apk Support
 - [x] Modeling Sort/Filter and added some new filters
 - [x] Add App Info and Exodus Report shortcuts to AppSheet
-- [x] Extend Preferences
 - [x] Add support for protected data, external data and obb backups
-- [x] Clear cache before data backups
+- [x] Exclude cache from data backups
 - [x] Add in-app backup encryption
-- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~70% done,)
-- [ ] Switch to Storage Access Framework (connected to the previous one)
-    - till it's finished there'll be no support for external storage (e.g. SD-Cards, USB-OTG)
+- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~70% done,WIP)
+- [ ] Switch to Storage Access Framework (WIP)
+  - till it's finished there'll be no support for external storage (e.g. SD-Cards, USB-OTG)
 - [ ] New android Scope Storage permissions compatibility (first: after android 11 release - if forced to)
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
-#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/CONTRIBUTION.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
+#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/DEVDOC.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
 
 ## Screenshots
 
@@ -88,7 +88,7 @@ OAndBackupX is built with gradle, for that you need the android sdk.
 
 ## Licenses <img align="right" src="agplv3.png" width="64" />
 
-OAndBackupX is licensed under the [GNU's Aferro GPL v3](LICENSE.txt))
+OAndBackupX is licensed under the [GNU's Aferro GPL v3](LICENSE.txt).
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
