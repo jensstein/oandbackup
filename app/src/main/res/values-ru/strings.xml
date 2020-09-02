@@ -45,9 +45,9 @@
     <string name="suCheck">проверка superuser и busybox</string>
     <string name="noSu">Невозможно получить права суперпользователя</string>
     <string name="busyboxProblem">Невозможно найти busybox. пожалуйста, проверьте журнал ошибок</string>
-        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Невозможно создать</string>
-        <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
     <string name="fallbackToDefault">Возврат к настройкам по-умолчанию</string>
     <string name="backupFolderError">Пожалуйста, выберите верное расположение в настройках и проверьте, что оно существует, либо возможно его создание</string>
     <string name="shellReturnSuccess">успех</string>
@@ -69,21 +69,18 @@
     <string name="prefs_help">Помощь</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
     <string name="shareTitle">отправить</string>
-
     <string name="tools_title">инструменты</string>
     <string name="prefs_batchdelete">удалить р.к.?</string>
     <string name="batchDeleteMessage">удаление р.к.</string>
     <string name="batchDeleteNotificationTitle">удалить р.к.</string>
-        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">р.к. удалено:</string>
     <string name="batchDeleteNothingToDelete">нет р.к. для удаления</string>
-
     <string name="enablePackage">Включить</string>
-        <!-- enablePackageTitle: title for a list of checkable users -->
+    <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Включить для пользователей</string>
     <string name="disablePackage">Отключить</string>
     <string name="disablePackageTitle">Отключить для пользователей</string>
-
     <string name="prefs_title">Настройки</string>
     <string name="prefs_acquirewakelock">Предотвратить сон</string>
     <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна.  значительно ускорит резервирование и восстановление, но будет потреблять больше энергии</string>
@@ -92,7 +89,7 @@
     <string name="prefs_pathbusybox">Busybox</string>
     <string name="prefs_pathbusybox_summary">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
     <string name="prefs_oldbackups">Отфильтровать р.к. по возрасту</string>
-        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
+    <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_oldbackups_summary">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\"</string>
     <string name="prefs_copyselfapk">Копировать собственный apk</string>
     <string name="prefs_copyselfapk_summary">Разместить копию oandbackup в верхнем уровне папки с р.к. при резервировании</string>
@@ -101,7 +98,6 @@
     <string name="prefs_rememberfiltering">Запомнить сортировку и фильтр</string>
     <string name="prefs_rememberfiltering_summary">Сохраняет выбранные методы сортировки и фильтрования. учитываются только отмеченные флажком.</string>
     <string name="prefs_enableSpecialBackups">Включить специальные р.к.</string>
-
     <string name="sched_title">планирование</string>
     <string name="sched_notificationMessage">запланированное резервирование</string>
     <string name="sched_interval">интервал в днях:</string>
@@ -113,17 +109,50 @@
     <string name="sched_timeLeft">часов до следующего резервирования:</string>
     <string name="sched_customListUpdateButton">Обновить пользовательский список</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
-
     <string name="sched_blacklist">Черный список</string>
-
     <string name="spec_accounts">Аккуанты</string>
     <string name="spec_appwidgets">Виджеты приложений</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Использование данных и политика</string>
     <string name="spec_wallpaper">Обои</string>
     <string name="spec_wifiAccessPoints">Точки доступа Wifi</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="help_license">лицензия</string>
+    <string name="prefs_service">Настройки служб</string>
+    <string name="sort_and_filter">Сортировка и фильтры</string>
+    <string name="enable_encryption_title">Шифрование данных</string>
+    <string name="cache_size">Размер кэша:</string>
+    <string name="data_size">Размер данных:</string>
+    <string name="app_size">Размер приложения:</string>
+    <string name="backup_filters">Фильтры резервного копирования:</string>
+    <string name="ignore_battery_optimization_title">Оптимизация батареи</string>
+    <string name="other_filters_options">Специальные фильтры:</string>
+    <string name="encrypted_data_title">Зашифрованные данные:</string>
+    <string name="app_s_type_title">Тип приложения:</string>
+    <string name="last_backup_title">Последняя резервная копия:</string>
+    <string name="backup_mode_title">Режим резервного копирования:</string>
+    <string name="version_name_title">Название версии:</string>
+    <string name="available_actions">Доступные действия:</string>
+    <string name="applyFilter">Применить</string>
+    <string name="resetFilter">Сброс</string>
+    <string name="all">Все</string>
+    <string name="app_s_icon">Значок приложения</string>
+    <string name="sortDataSize">Размер данных</string>
+    <string name="sortPackageName">Название пакета</string>
+    <string name="sort_options">Сортировать по:</string>
+    <string name="filter_options">Фильтры:</string>
+    <string name="sched_add">Добавить расписание</string>
+    <string name="prefs_deviceprotecteddata">Резервное копирование данных, защищенных устройством</string>
+    <string name="prefs_externaldata">Резервное копирование внешних данных</string>
+    <string name="prefs_password">Пароль шифрования</string>
+    <string name="prefs_encryption_summary">Включить шифрование резервных копий данных</string>
+    <string name="prefs_encryption">Шифрование</string>
+    <string name="prefs_theme_system">Тема системы</string>
+    <string name="prefs_theme_dark">Темная</string>
+    <string name="prefs_theme_light">Светлая</string>
+    <string name="prefs_theme">Тема</string>
+    <string name="prefs_user">Пользовательские настройки</string>
+    <string name="dialogSave">Сохранить</string>
+    <string name="radioSystem">Системные приложения</string>
+    <string name="radioUser">Пользовательские приложения</string>
 </resources>
