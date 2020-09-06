@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="backup">Sichern</string>
     <string name="restore">Wiederherstellen</string>
@@ -40,22 +40,22 @@
     <string name="dialogCancel">Abbrechen</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nein</string>
-    <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
-    <string name="collectingData">Paketinformationen sammeln…</string>
-    <string name="suCheck">Überprüfe auf Superuser und Busybox…</string>
-    <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
-    <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehlerprotokoll überprüfen!</string>
+    <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert</string>
+    <string name="collectingData">Paketinformationen sammeln …</string>
+    <string name="suCheck">Überprüfe auf Superuser und Busybox …</string>
+    <string name="noSu">Konnte Superuser-Rechte nicht erlangen</string>
+    <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehlerprotokoll überprüfen</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
-    <string name="mkfileError">Konnte Datei nicht erstellen!</string>
+    <string name="mkfileError">Konnte Datei nicht erstellen</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
     <string name="fallbackToDefault">Standard wiederhergestellt</string>
-    <string name="backupFolderError">Bitte korrekten Pfad in den Einstellungen festlegen und sicherstellen, dass dieser existiert und beschreibbar ist!</string>
-    <string name="shellReturnSuccess">Erfolgreich!</string>
-    <string name="shellReturnError">Fehler!</string>
-    <string name="backupProgress">Sichere…</string>
+    <string name="backupFolderError">Bitte korrekten Pfad in den Einstellungen festlegen und sicherstellen, dass dieser existiert und beschreibbar ist</string>
+    <string name="shellReturnSuccess">Erfolgreich</string>
+    <string name="shellReturnError">Fehler</string>
+    <string name="backupProgress">Sichere …</string>
     <string name="backupSuccess">Sicherung abgeschlossen</string>
     <string name="backupFailure">Fehler beim Sichern</string>
-    <string name="restoreProgress">Wiederherstellung</string>
+    <string name="restoreProgress">Wiederherstellung …</string>
     <string name="restoreSuccess">Wiederherstellung vollständig</string>
     <string name="restoreFailure">Fehler bei der Wiederherstellung</string>
     <string name="batchSuccess">Operation abgeschlossen</string>
@@ -67,11 +67,11 @@
     <string name="prefs_quickreboot">Gerät neustarten</string>
     <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
     <string name="prefs_help">Hilfe</string>
-    <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden!</string>
+    <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
     <string name="shareTitle">Teilen</string>
     <string name="tools_title">Hilfsmittel</string>
-    <string name="prefs_batchdelete">Sicherungen löschen?</string>
-    <string name="batchDeleteMessage">Lösche Sicherungen…</string>
+    <string name="prefs_batchdelete">Sicherungen löschen</string>
+    <string name="batchDeleteMessage">Lösche Sicherungen …</string>
     <string name="batchDeleteNotificationTitle">Sicherungen löschen</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Gelöschte Sicherungen:</string>
@@ -87,7 +87,7 @@
     <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>
     <string name="prefs_pathbackupfolder">Sicherungsverzeichnis</string>
     <string name="prefs_pathbusybox">Busyboxverzeichnis</string>
-    <string name="prefs_pathbusybox_summary">Pfad zur Busybox-Programmdatei. Auf Richtigkeit überprüfen! (Leer lassen für Standardwert)</string>
+    <string name="prefs_pathbusybox_summary">Pfad zur Busybox-Programmdatei. Auf Richtigkeit überprüfen! (Leer lassen für Standardwert).</string>
     <string name="prefs_oldbackups">Sicherungen nach Alter filtern</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für \"Alte Sicherungen anzeigen\"</string>
@@ -96,7 +96,7 @@
     <string name="prefs_languages">Sprache</string>
     <string name="prefs_language_system">Systemsprache</string>
     <string name="prefs_rememberfiltering">Sortierung und Filter beibehalten</string>
-    <string name="prefs_rememberfiltering_summary">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü ausgewählten werden beachtet</string>
+    <string name="prefs_rememberfiltering_summary">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü ausgewählten werden beachtet.</string>
     <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
     <string name="sched_title">Sicherung planen</string>
     <string name="sched_notificationMessage">Geplante Sicherung</string>
@@ -104,7 +104,7 @@
     <string name="sched_hourOfDay">Stunde des Tages:</string>
     <string name="sched_checkbox">Aktivieren</string>
     <string name="sched_activateButton">Sicherung jetzt starten</string>
-    <string name="sched_startingbackup">Starte geplante Sicherung</string>
+    <string name="sched_startingbackup">Geplante Sicherung starten …</string>
     <string name="sched_mode">Sicherungsmodus:</string>
     <string name="sched_timeLeft">Zeit bis zur nächsten Sicherung:</string>
     <string name="sched_customListUpdateButton">Eigene Liste aktualisieren</string>
@@ -124,15 +124,15 @@
     <string name="radioUser">Benutzer-Apps</string>
     <string name="radioSystem">System-Apps</string>
     <string name="app_s_icon">App-Icon</string>
-    <string name="permission_not_granted">Teilen</string>
-    <string name="restart_dialog">Dateien-Browser</string>
+    <string name="permission_not_granted">Die Erlaubnis zum Zugriff auf externen Speicher ist erforderlich</string>
+    <string name="restart_dialog">Antrag scheint neu gestartet werden zu müssen</string>
     <string name="error_updating_schedule_mode">App kann aus einer Sicherung ohne Apk nicht wiederhergestellt werden</string>
-    <string name="error_creating_notification_channel">Hilfe</string>
-    <string name="bothBackedUp">Apk und Daten</string>
+    <string name="error_creating_notification_channel">Benachrichtigungskanal kann nicht erstellt werden</string>
+    <string name="bothBackedUp">APK und Daten</string>
     <string name="all">Alle</string>
     <string name="prefs_service">Betriebseinstellungen</string>
     <string name="prefs_user">Benutzerdefinierte Einstellungen</string>
-    <string name="prefs_logviewer">OAndBackupX Log anzeigen</string>
+    <string name="prefs_logviewer">Protokoll anzeigen</string>
     <string name="prefs_batchdelete_summary">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</string>
     <string name="prefs_quickreboot_summary">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>
     <string name="ask_for_permissions">Berechtigungen erfragen</string>
@@ -155,7 +155,7 @@
     <string name="dialog_refuse">Ich will es nicht</string>
     <string name="dialog_approve">Los!</string>
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
-    <string name="ignore_battery_optimization_message">Es kann passieren, dass der Sicherungsprozess im Hintergrund plötzlich abbricht. In solchen Fällen hilft das Ausschalten der Akku-Optimierung.</string>
+    <string name="ignore_battery_optimization_message">Es kann passieren, dass der Sicherungsprozess im Hintergrund plötzlich abbricht. In solchen Fällen hilft das Ausschalten der Akku-Optimierung</string>
     <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstützt das Ausschalten der Akku-Optimierung leider nicht!</string>
     <string name="prefs_excludecache">App-Cache ausschließen</string>
     <string name="prefs_excludecache_summary">Den Cache der App von der Datensicherung ausschließen</string>
@@ -183,9 +183,10 @@
     <string name="enable_encryption_title">Datenverschlüsselung</string>
     <string name="enable_encryption_message">Es ist nicht sicher, deine Daten unverschlüsselt auf deinem Gerät zu speichern. Für die Sicherheit deiner Daten aktiviere die Verschlüsselung und setze ein Passwort.</string>
     <string name="sched_add">Geplante Sicherung hinzufügen</string>
-    <string name="sort_and_filter"><![CDATA[Sortieren & Filtern]]></string>
-    <string name="sortDataSize">Daten-Größe</string>
+    <string name="sort_and_filter">Sortieren und filtern</string>
+    <string name="sortDataSize">Datengröße</string>
     <string name="prefs_biometriclock">Biometrische Sperre</string>
-    <string name="prefs_biometriclock_summary">die App mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Face Unlock)</string>
+    <string name="prefs_biometriclock_summary">die Anwendung mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Gesichtsentsperrung)</string>
     <string name="sched_submode">Sicherungssubmodus:</string>
+    <string name="apptype_special">Spezielle Sicherung</string>
 </resources>
