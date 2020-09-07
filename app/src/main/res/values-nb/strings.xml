@@ -63,7 +63,7 @@
     <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
     <string name="shareTitle">Del med</string>
     <string name="prefs_tools">Verktøyer</string>
-    <string name="prefs_batchdelete">Slett sikkerhetskopier?</string>
+    <string name="prefs_batchdelete">Slett sikkerhetskopier\?</string>
     <string name="batchDeleteMessage">Sletter sikkerhetskopier…</string>
     <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
