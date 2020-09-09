@@ -41,8 +41,7 @@ public class ItemUtils {
                 + app.getBackupMode()
                 + (app.isDisabled() ? 0 : 1)
                 + (app.isInstalled() ? 1 : 0)
-                + (app.getLogInfo() != null ? 1 : 0)
-                + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0)
+                + (app.getLogInfo() != null ? app.getLogInfo().getLastBackupMillis() : 0)
                 + app.getCacheSize();
     }
 
