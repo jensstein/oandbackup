@@ -86,7 +86,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null) {
                 lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(ItemUtils.getFormattedDate(false));
+                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(),false));
             } else {
                 lastBackup.setVisibility(View.GONE);
             }

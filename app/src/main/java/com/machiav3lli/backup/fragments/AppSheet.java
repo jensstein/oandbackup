@@ -191,7 +191,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
         if (app.getLogInfo() != null) {
             UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
-            binding.lastBackup.setText(ItemUtils.getFormattedDate(true));
+            binding.lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), true));
         } else UIUtils.setVisibility(binding.lastBackupLine, View.GONE, update);
         switch (app.getBackupMode()) {
             case AppInfo.MODE_APK:

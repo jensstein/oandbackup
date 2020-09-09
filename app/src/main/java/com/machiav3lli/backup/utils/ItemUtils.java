@@ -55,8 +55,10 @@ public class ItemUtils {
                 + (sched.isEnabled() ? 1 : 0);
     }
 
-    public static String getFormattedDate(boolean withTime) {
-        Date date = Calendar.getInstance().getTime();
+    public static String getFormattedDate(long lastUpdate, boolean withTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(lastUpdate);
+        Date date = calendar.getTime();
         DateFormat dateFormat = withTime ? DateFormat.getDateTimeInstance() : DateFormat.getDateInstance();
         return dateFormat.format(date);
     }

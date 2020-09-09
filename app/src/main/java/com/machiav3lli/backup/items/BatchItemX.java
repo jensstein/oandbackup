@@ -124,7 +124,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null) {
                 lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(ItemUtils.getFormattedDate(false));
+                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(),false));
             } else {
                 lastBackup.setVisibility(View.GONE);
             }
