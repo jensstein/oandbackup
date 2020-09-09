@@ -1,0 +1,7 @@
+**OAndBackupX 1.1.1**
+* Toegevoegd: Exodus rapporteert snellink naar AppSheet
+* Opgelost: niet opstarten als een icoon van een app dimensie <= 0 heeft
+* Veranderd: standaard is nu om OAndBackupX naar de parent backup folder te kopieren
+* Toegevoegd: Grieks (Credits @tsiflimagas)
+* Bijgewerkt: Hoofdlettergebruik en Engelse Strings (Credits: @atrate)
+* Bijgewerkt: generaliseren Chinees, Nederlands, Pools en Zweeds
