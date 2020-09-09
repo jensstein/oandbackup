@@ -42,7 +42,7 @@
     <string name="dialogNo">Nein</string>
     <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
     <string name="collectingData">Paketinformationen sammeln…</string>
-    <string name="suCheck">Überprüfe auf Superuser und Busybox…</string>
+    <string name="utilboxCheck">Überprüfe auf Busybox/Toybox…</string>
     <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
     <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehlerprotokoll überprüfen!</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
@@ -188,4 +188,12 @@
     <string name="prefs_biometriclock">Biometrische Sperre</string>
     <string name="prefs_biometriclock_summary">die App mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Face Unlock)</string>
     <string name="sched_submode">Sicherungssubmodus:</string>
+    <string name="prefs_password_match_true">Die Passwörter stimmen überein</string>
+    <string name="prefs_password_match_false">Die Passwörter stimmen nicht überein</string>
+    <string name="prefs_passwordconfirmation">Verschlüsselungspasswortbestätigung</string>
+    <string name="apptype_special">Spezielle Sicherung</string>
+    <string name="dialog_unlock">Entsperren</string>
+    <string name="dialog_start">Los!</string>
+    <string name="storage_access">Speicherzugriff</string>
+    <string name="welcome_to_oabx">Willkommen zu OABX!</string>
 </resources>
