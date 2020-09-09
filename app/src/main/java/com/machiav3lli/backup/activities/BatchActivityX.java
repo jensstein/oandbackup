@@ -212,9 +212,9 @@ public class BatchActivityX extends BaseActivity
                 final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
                 ActionResult result;
                 if (this.backupBoolean) {
-                    result = backupRestoreHelper.backup(this, IntroActivity.getShellHandlerInstance(), item.getApp(), mode);
+                    result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), item.getApp(), mode);
                 } else {
-                    result = backupRestoreHelper.restore(this, item.getApp(), IntroActivity.getShellHandlerInstance(), mode);
+                    result = backupRestoreHelper.restore(this, item.getApp(), MainActivityX.getShellHandlerInstance(), mode);
                 }
                 results.add(result);
                 i++;

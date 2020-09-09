@@ -26,7 +26,6 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.IntroActivity;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.AppInfoHelper;
@@ -138,7 +137,7 @@ public class HandleScheduledBackups {
                     String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
                     NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-                    ActionResult result = backupRestoreHelper.backup(context, IntroActivity.getShellHandlerInstance(), appInfo, subMode);
+                    ActionResult result = backupRestoreHelper.backup(context, MainActivityX.getShellHandlerInstance(), appInfo, subMode);
 
                     if (i == total) {
                         String notificationTitle = !result.succeeded ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);

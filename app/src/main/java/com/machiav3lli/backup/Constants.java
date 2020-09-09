@@ -26,7 +26,8 @@ public class Constants {
     public static final String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
 
     public static final String PREFS_SORT_FILTER = "sortFilter";
-    public static final String PREFS_Ignore_Battery_Optimization = "ignoreBatteryOptimization";
+    public static final String PREFS_FIRST_LAUNCH = "firstLaunch";
+    public static final String PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization";
     public static final String PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter";
 
     public static final String PREFS_SCHEDULES = "schedules";

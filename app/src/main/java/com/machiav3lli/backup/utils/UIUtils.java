@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -32,6 +33,19 @@ import com.machiav3lli.backup.items.ActionResult;
 
 public class UIUtils {
     private static final String TAG = Constants.classTag(".UIUtils");
+
+    public static void setDayNightTheme(String theme) {
+        switch (theme) {
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
 
     public static void showActionResult(final Activity activity, final ActionResult result, DialogInterface.OnClickListener saveMethod) {
         activity.runOnUiThread(() -> {

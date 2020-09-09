@@ -17,14 +17,10 @@
  */
 package com.machiav3lli.backup.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,6 +37,7 @@ import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
 import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.MainItemX;
@@ -62,6 +59,7 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
     private static final String TAG = Constants.classTag(".MainActivityX");
     private static final int BATCH_REQUEST = 1;
     private static List<AppInfo> originalList;
+    private static ShellHandler shellHandler;
 
     static {
         /* Shell.Config methods shall be called before any shell is created
@@ -96,12 +94,12 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
 
         handleMessages = new HandleMessages(this);
         prefs = PrefUtils.getPrivateSharedPrefs(this);
-        showBatteryOptimizationDialog();
         showEncryptionDialog();
         users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
         shellCommands = new ShellCommands(this, prefs, users);
+        checkUtilBox();
 
         if (!SortFilterManager.getRememberFiltering(this))
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
@@ -159,6 +157,32 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         binding.schedulerButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class)));
     }
 
+    public boolean initShellHandler(Context context) {
+        try {
+            MainActivityX.shellHandler = new ShellHandler(context);
+        } catch (ShellHandler.UtilboxNotAvailableException e) {
+            Log.e(MainActivityX.TAG, "Could initialize ShellHandler: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static ShellHandler getShellHandlerInstance() {
+        return MainActivityX.shellHandler;
+    }
+
+    private boolean checkUtilBox() {
+        this.handleMessages.showMessage(MainActivityX.TAG, getString(R.string.utilboxCheck));
+        boolean goodToGo = true;
+        // Initialize the ShellHandler for further root checks
+        if (!this.initShellHandler(this)) {
+            UIUtils.showWarning(this, MainActivityX.TAG, this.getString(R.string.busyboxProblem), (dialog, id) -> this.finishAffinity());
+            goodToGo = false;
+        }
+        this.handleMessages.endMessage();
+        return goodToGo;
+    }
+
     public Intent batchIntent(Class<BatchActivityX> batchClass, boolean backup) {
         Intent batchIntent = new Intent(getApplicationContext(), batchClass);
         batchIntent.putExtra(Constants.classAddress(".backupBoolean"), backup);
@@ -203,29 +227,6 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         refresh();
     }
 
-    private void showBatteryOptimizationDialog() {
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        boolean dontShowAgain = prefs.getBoolean(Constants.PREFS_Ignore_Battery_Optimization, false);
-        if (dontShowAgain || powerManager.isIgnoringBatteryOptimizations(getPackageName())) return;
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.ignore_battery_optimization_title)
-                .setMessage(R.string.ignore_battery_optimization_message)
-                .setPositiveButton(R.string.dialog_approve, (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                    intent.setData(Uri.parse("package:" + getPackageName()));
-                    try {
-                        startActivity(intent);
-                    } catch (ActivityNotFoundException e) {
-                        Log.w(TAG, "Ignore battery optimizations not supported", e);
-                        Toast.makeText(this, R.string.ignore_battery_optimization_not_supported, Toast.LENGTH_LONG).show();
-                        prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply();
-                    }
-                })
-                .setNeutralButton(R.string.dialog_refuse, (dialog, which) ->
-                        prefs.edit().putBoolean(Constants.PREFS_Ignore_Battery_Optimization, true).apply())
-                .show();
-    }
-
     private void showEncryptionDialog() {
         SharedPreferences defPrefs = PrefUtils.getDefaultSharedPreferences(this);
         boolean dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && !defPrefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
@@ -239,7 +240,6 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
                     .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)))
                     .show();
         }
-
     }
 
     public void refresh(boolean withAppSheet) {

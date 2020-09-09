@@ -23,7 +23,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,7 +31,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.IntroActivity;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.schedules.db.Schedule;
@@ -88,24 +87,22 @@ public class ScheduleService extends Service
     public void onCreate() {
         final String channelId = TAG;
         // Do some initialization
-        IntroActivity startupActivity = new IntroActivity();
+        MainActivityX startupActivity = new MainActivityX();
         startupActivity.initShellHandler(this);
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            final NotificationChannel notificationChannel =
-                    new NotificationChannel(channelId, channelId,
-                            NotificationManager.IMPORTANCE_DEFAULT);
-            final NotificationManager notificationManager = getSystemService(
-                    NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(
-                        notificationChannel);
-            } else {
-                Log.w(TAG, "Unable to create notification channel");
-                Toast.makeText(this, getString(
-                        R.string.error_creating_notification_channel),
-                        Toast.LENGTH_LONG).show();
-            }
+        final NotificationChannel notificationChannel =
+                new NotificationChannel(channelId, channelId,
+                        NotificationManager.IMPORTANCE_DEFAULT);
+        final NotificationManager notificationManager = getSystemService(
+                NotificationManager.class);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(
+                    notificationChannel);
+        } else {
+            Log.w(TAG, "Unable to create notification channel");
+            Toast.makeText(this, getString(
+                    R.string.error_creating_notification_channel),
+                    Toast.LENGTH_LONG).show();
         }
         final Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setOngoing(true)
