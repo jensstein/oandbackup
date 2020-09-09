@@ -104,6 +104,9 @@
     <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
     <string name="prefs_password">Encryption password</string>
     <string name="prefs_password_summary">Set to empty to disable encryption</string>
+    <string name="prefs_passwordconfirmation">Encryption password confirmation</string>
+    <string name="prefs_password_match_true">The passwords match</string>
+    <string name="prefs_password_match_false">The passwords doesn\'t match</string>
     <string name="prefs_excludecache">Exclude app\'s cache</string>
     <string name="prefs_excludecache_summary">Exclude application\'s cache from data backup</string>
     <string name="prefs_externaldata">Backup external data</string>

@@ -48,6 +48,7 @@ public class Constants {
     public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_ENCRYPTION = "encryption";
     public static final String PREFS_PASSWORD = "password";
+    public static final String PREFS_PASSWORD_CONFIRMATION = "passwordConfirmation";
     public static final String PREFS_SALT = "salt";
     public static final String PREFS_EXCLUDECACHE = "excludeCache";
     public static final String PREFS_EXTERNALDATA = "backupExternalData";

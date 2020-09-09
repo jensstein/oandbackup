@@ -74,6 +74,12 @@
             android:summary="@string/prefs_password_summary"
             android:title="@string/prefs_password"
             app:iconSpaceReserved="false" />
+        <androidx.preference.EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="passwordConfirmation"
+            android:title="@string/prefs_passwordconfirmation"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="excludeCache"

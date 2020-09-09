@@ -82,11 +82,19 @@ public class PrefsFragment extends PreferenceFragmentCompat {
 
         CheckBoxPreference encryptPref = findPreference(Constants.PREFS_ENCRYPTION);
         EditTextPreference passwordPref = findPreference(Constants.PREFS_PASSWORD);
+        EditTextPreference passwordConfirmationPref = findPreference(Constants.PREFS_PASSWORD_CONFIRMATION);
         assert encryptPref != null;
         assert passwordPref != null;
+        assert passwordConfirmationPref != null;
         passwordPref.setVisible(encryptPref.isChecked());
+        passwordConfirmationPref.setVisible(encryptPref.isChecked());
+        passwordConfirmationPref.setSummary(passwordPref.getText().equals(passwordConfirmationPref.getText()) ?
+                getString(R.string.prefs_password_match_true) : getString(R.string.prefs_password_match_false));
         passwordPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
-        encryptPref.setOnPreferenceChangeListener((preference, newValue) -> onPrefChangeEncryption(encryptPref, passwordPref));
+        passwordConfirmationPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD));
+        encryptPref.setOnPreferenceChangeListener((preference, newValue) -> onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref));
+        passwordPref.setOnPreferenceChangeListener((preference, newValue) -> onPrefChangePassword(passwordConfirmationPref, (String) newValue, passwordConfirmationPref.getText()));
+        passwordConfirmationPref.setOnPreferenceChangeListener((preference, newValue) -> onPrefChangePassword(passwordConfirmationPref, passwordPref.getText(), (String) newValue));
 
         pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY);
         assert pref != null;
@@ -136,9 +144,19 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         return true;
     }
 
-    private boolean onPrefChangeEncryption(CheckBoxPreference encryption, EditTextPreference password) {
-        if (encryption.isChecked()) password.setText("");
+    private boolean onPrefChangeEncryption(CheckBoxPreference encryption, EditTextPreference password, EditTextPreference passwordConfirmation) {
+        if (encryption.isChecked()) {
+            password.setText("");
+            passwordConfirmation.setText("");
+        }
         password.setVisible(!encryption.isChecked());
+        passwordConfirmation.setVisible(!encryption.isChecked());
+        return true;
+    }
+
+    private boolean onPrefChangePassword(EditTextPreference passwordConfirmation, String password, String passwordCheck) {
+        passwordConfirmation.setSummary(password.equals(passwordCheck) ?
+                getString(R.string.prefs_password_match_true) : getString(R.string.prefs_password_match_false));
         return true;
     }
 
