@@ -45,7 +45,6 @@
     <string name="dialogNo">Tidak</string>
     <string name="restoreDataWithoutApkError">Tidak dapat mengembalikan data tanpa mengembalikan APK, paket tidak diinstal</string>
     <string name="collectingData">Mengumpulkan info paket...</string>
-    <string name="suCheck">Memeriksa superuser dan busybox...</string>
     <string name="noSu">Tidak bisa mendapatkan izin pengguna super</string>
     <string name="busyboxProblem">Tidak dapat menemukan busybox. silakan periksa log kesalahan</string>
     <!-- mkfileError: kesalahan terjadi saat membuat file. format: string + " " + nama file -->

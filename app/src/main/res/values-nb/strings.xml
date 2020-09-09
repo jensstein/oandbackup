@@ -42,7 +42,7 @@
     <string name="dialogNo">Nei</string>
     <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APKen, pakken er ikke installert</string>
     <string name="collectingData">Samler informasjon om pakken</string>
-    <string name="suCheck">Sjekker for \'superuser\' og \'busybox\'</string>
+    <string name="utilboxCheck">Sjekker for \'busybox/toybox\'</string>
     <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>
     <string name="busyboxProblem">Fant ikke \'busybox\'. vennligst sjekk feilrapporten</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->

@@ -26,7 +26,8 @@ public class Constants {
     public static final String BLACKLIST_ARGS_PACKAGES = "blacklistedPackages";
 
     public static final String PREFS_SORT_FILTER = "sortFilter";
-    public static final String PREFS_Ignore_Battery_Optimization = "ignoreBatteryOptimization";
+    public static final String PREFS_FIRST_LAUNCH = "firstLaunch";
+    public static final String PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization";
     public static final String PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter";
 
     public static final String PREFS_SCHEDULES = "schedules";
@@ -48,6 +49,7 @@ public class Constants {
     public static final String PREFS_OLDBACKUPS = "oldBackups";
     public static final String PREFS_ENCRYPTION = "encryption";
     public static final String PREFS_PASSWORD = "password";
+    public static final String PREFS_PASSWORD_CONFIRMATION = "passwordConfirmation";
     public static final String PREFS_SALT = "salt";
     public static final String PREFS_EXCLUDECACHE = "excludeCache";
     public static final String PREFS_EXTERNALDATA = "backupExternalData";
@@ -66,7 +68,7 @@ public class Constants {
     public static final String HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md";
     public static final String HELP_TELEGRAM = "https://t.me/OAndBackupX";
     public static final String HELP_ELEMENT = "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net";
-    public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.txt";
+    public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md";
 
     private Constants() {
     }

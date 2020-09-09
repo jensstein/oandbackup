@@ -41,7 +41,7 @@
     <string name="dialogNo">non</string>
     <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'APK car l\'application n\'est pas installée</string>
     <string name="collectingData">collecte des informations des paquets…</string>
-    <string name="suCheck">vérification de le présence de superuser et busybox…</string>
+    <string name="utilboxCheck">vérification de le présence de busybox/toybox…</string>
     <string name="noSu">impossible d\'acquérir les droits de super-utilisateur</string>
     <string name="busyboxProblem">impossible de trouver busybox. référez-vous au journal des erreurs</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->

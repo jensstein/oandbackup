@@ -104,23 +104,13 @@ Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrit
 
 Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
-### Languages:
+### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/?utm_source=widget)
 
-Greek: [Kostas Giapis](https://github.com/tsiflimagas)
+The Translations are now being hosted by [Weblate.org](https://hosted.weblate.org/engage/oandbackupx/).
 
-Italian: [Urnyx05](https://github.com/Urnyx05)
+Before that, translations were done analog/offline by those great people:
 
-English: [Atrate](https://github.com/Atrate)
-
-Chinese: [Tuchit](https://github.com/tuchit) and [Linsui](https://github.com/linsui)
-
-Turkish: [scrubjay55](https://github.com/scrubjay55)
-
-Polish: [Antyradek](https://github.com/Antyradek)
-
-Indonesian: [Ninja1998](https://github.com/NiNjA1998)
-
-German: [elea11](https://github.com/elea11)
+[Kostas Giapis](https://github.com/tsiflimagas), [Urnyx05](https://github.com/Urnyx05), [Atrate](https://github.com/Atrate), [Tuchit](https://github.com/tuchit), [Linsui](https://github.com/linsui), [scrubjay55](https://github.com/scrubjay55), [Antyradek](https://github.com/Antyradek), [Ninja1998](https://github.com/NiNjA1998), [elea11](https://github.com/elea11).
 
 ## Author
 

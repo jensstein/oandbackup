@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -38,7 +37,7 @@
             android:title="@string/prefs_languages"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="biometricLock"
             android:summary="@string/prefs_biometriclock_summary"
             android:title="@string/prefs_biometriclock"
@@ -73,6 +72,12 @@
             android:key="password"
             android:summary="@string/prefs_password_summary"
             android:title="@string/prefs_password"
+            app:iconSpaceReserved="false" />
+        <androidx.preference.EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="passwordConfirmation"
+            android:title="@string/prefs_passwordconfirmation"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"

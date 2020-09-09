@@ -41,8 +41,7 @@ public class ItemUtils {
                 + app.getBackupMode()
                 + (app.isDisabled() ? 0 : 1)
                 + (app.isInstalled() ? 1 : 0)
-                + (app.getLogInfo() != null ? 1 : 0)
-                + (app.getLogInfo() != null ? (app.getLogInfo().isEncrypted() ? 1 : 0) : 0)
+                + (app.getLogInfo() != null ? app.getLogInfo().getLastBackupMillis() : 0)
                 + app.getCacheSize();
     }
 
@@ -55,8 +54,10 @@ public class ItemUtils {
                 + (sched.isEnabled() ? 1 : 0);
     }
 
-    public static String getFormattedDate(boolean withTime) {
-        Date date = Calendar.getInstance().getTime();
+    public static String getFormattedDate(long lastUpdate, boolean withTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(lastUpdate);
+        Date date = calendar.getTime();
         DateFormat dateFormat = withTime ? DateFormat.getDateTimeInstance() : DateFormat.getDateInstance();
         return dateFormat.format(date);
     }

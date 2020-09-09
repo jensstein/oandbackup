@@ -42,7 +42,6 @@
   <string name="dialogNo">Não</string>
     <string name="restoreDataWithoutApkError">Não pode restaurar dados sem o respetivo apk. Pacote não instalado. </string>
   <string name="collectingData">A obter informação de pacotes</string>
-  <string name="suCheck">A verificar superuser e busybox</string>
   <string name="noSu">Não foi possível obter as permissões superuser</string>
   <string name="busyboxProblem">Não foi possível encontrar busybox. Consulte o registo de erros</string>
   <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
