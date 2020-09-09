@@ -45,7 +45,6 @@
     <string name="dialogNo">Nie</string>
     <string name="restoreDataWithoutApkError">Nie można przywrócić danych bez przywracania APK, pakiet nie jest zainstalowany</string>
     <string name="collectingData">Zbieranie informacji o pakiecie</string>
-    <string name="suCheck">Sprawdzanie dla superuser i Busybox</string>
     <string name="noSu">Nie można uzyskać uprawnień superuser</string>
     <string name="busyboxProblem">Nie można znaleźć Busybox, sprawdź dziennik błędów</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->

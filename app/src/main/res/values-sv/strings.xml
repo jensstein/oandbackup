@@ -42,7 +42,6 @@
   <string name="dialogNo">nej</string>
     <string name="restoreDataWithoutApkError">det går inte att återställa data utan att återställa apk, paketet är inte installerat</string>
   <string name="collectingData">samlar in paketinfo</string>
-  <string name="suCheck">kontrollerar superuser och busybox</string>
   <string name="noSu">kunde inte få superuser-behörighet</string>
   <string name="busyboxProblem">kunde inte hitta busybox, titta i felloggen</string>
   <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->

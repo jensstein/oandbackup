@@ -42,7 +42,6 @@
   <string name="dialogNo">No</string>
     <string name="restoreDataWithoutApkError">Non è possibile ripristinare i dati senza ripristinare l\'apk, l\'applicazione non è installata:</string>
   <string name="collectingData">Caricamento delle informazioni sulle applicazioni</string>
-  <string name="suCheck">Controllo della presenza di superuser e busybox</string>
   <string name="noSu">Impossibile ottenere i permessi da superuser</string>
   <string name="busyboxProblem">Impossibile trovare busybox, controllare i log di errore</string>
   <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->

@@ -57,7 +57,7 @@ public class PrefUtils {
     }
 
     public static boolean isLockEnabled(Context context) {
-        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_BIOMETRICLOCK, true);
+        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_BIOMETRICLOCK, false);
     }
 
     public static boolean isBiometricLockAvailable(Context context) {

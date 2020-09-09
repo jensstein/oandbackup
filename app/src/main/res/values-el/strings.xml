@@ -42,7 +42,6 @@
     <string name="dialogNo">Όχι</string>
     <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο</string>
     <string name="collectingData">Συλλογή πληροφοριών πακέτου</string>
-    <string name="suCheck">Έλεγχος για υπερχρήστη και busybox</string>
 
     <string name="noSu">Αδυναμία απόκτησης αδειών υπερχρήστη</string>
     <string name="busyboxProblem">Αδυναμία εύρεσης busybox. Παρακαλώ ελέγξτε το αρχείο καταγραφής σφαλμάτων</string>

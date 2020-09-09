@@ -45,7 +45,6 @@
     <string name="dialogNo">否</string>
     <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK</string>
     <string name="collectingData">正在收集安装包信息...</string>
-    <string name="suCheck">正在检查超级用户和 busybox...</string>
     <string name="noSu">无法获得超级用户权限</string>
     <string name="busyboxProblem">未找到 busybox。请检查错误日志</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
