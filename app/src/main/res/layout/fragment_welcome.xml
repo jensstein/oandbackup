@@ -143,13 +143,14 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/cards_spacing">
+        android:layout_marginHorizontal="@dimen/large_spacing">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/welcomeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/large_spacing"
-            android:text="WIP"/>
+            android:text="@string/intro_welcome_message"
+            android:textColor="?android:strokeColor" />
     </androidx.core.widget.NestedScrollView>
 </androidx.appcompat.widget.LinearLayoutCompat>

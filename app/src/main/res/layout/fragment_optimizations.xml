@@ -65,7 +65,8 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="WIP (the WHY)" />
+                    android:layout_marginHorizontal="@dimen/buttons_spacing"
+                    android:text="@string/intro_permission_usageaccess" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -98,7 +99,8 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="WIP (the WHY)" />
+                    android:layout_marginHorizontal="@dimen/buttons_spacing"
+                    android:text="@string/intro_permission_batteryoptimization" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>

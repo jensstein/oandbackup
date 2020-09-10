@@ -211,4 +211,16 @@
     <string name="tag_update" translatable="false">UPD</string>
     <string name="storage_access">Storage Access</string>
     <string name="welcome_to_oabx">Welcome to OABX!</string>
+    <string name="intro_welcome_message"> OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.
+        \n The app is still in beta stages and a lot of rebasing is done often. So please read the changelog carefully with each new release.
+        \n All types of contribution are welcome was it translation, ideas, reporting bugs or code work.
+        \n
+        \n Now on functionality of our App:
+        \n • It requires root and allows you to backup individual apps and their data.
+        \n • Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+        \n • Restoring system apps should be possible without requiring a reboot afterwards, but still we don\'t advise to do it.
+        \n • Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating unique custom lists.</string>
+    <string name="intro_permission_storage">The app uses read/write permission of storage to be able to access the external storage, set a custom backup folder and provide the possibility for the backup of external data/obb of other apps.</string>
+    <string name="intro_permission_usageaccess">The app needs this permission to be able to check the stats and sizes of data and cache of your apps.</string>
+    <string name="intro_permission_batteryoptimization">The app can face some problems doing scheduled backups on some ROMs that adopt an aggressive battery optimizations e.g. MIUI, but even on vanilla AOSP such a problem can happen.</string>
 </resources>
