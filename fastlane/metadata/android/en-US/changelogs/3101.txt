@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Added: the Intro
+* Added: encryption password check field
+* Removed: Busybox path preference
+* Fixed: showing the present date instead of the last backup
+* Fixed: not updating the items' update tag after new backup
+* Updated: Translations (Norwegian, Russian, Italian, French, Dutch, German)
+* Updated: set remember sort/filter default to true
+* Updated: set biometric lock default to off
+* Updated: hide log viewer
