@@ -17,10 +17,7 @@
  */
 package com.machiav3lli.backup.handler;
 
-import android.content.Context;
 import android.util.Log;
-
-import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.utils.CommandUtils;
@@ -33,25 +30,17 @@ import java.util.List;
 
 public class ShellHandler {
     private static final String TAG = Constants.classTag(".ShellHandler");
-    private static final String[] UTILBOX_DEFAULT_PREFERENCE = {"toybox", "busybox", "/system/xbin/busybox"};
-
     private String utilboxPath;
 
-    public ShellHandler(Context context) throws UtilboxNotAvailableException {
-        String userUtilboxPath = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.PREFS_PATH_TOYBOX, "");
-        if (userUtilboxPath.isEmpty()) {
-            for (String utilboxDefaultPath : ShellHandler.UTILBOX_DEFAULT_PREFERENCE) {
-                try {
-                    this.setUtilboxPath(utilboxDefaultPath);
-                    break;
-                } catch (UtilboxNotAvailableException e) {
-                    Log.d(ShellHandler.TAG, String.format("Tried utilbox path `%s`. Not available.", utilboxDefaultPath));
-                }
-            }
-            if (this.utilboxPath == null) {
-                Log.d(ShellHandler.TAG, "No more options for utilbox. Bailing out.");
-                throw new UtilboxNotAvailableException(ShellHandler.UTILBOX_DEFAULT_PREFERENCE, null);
-            }
+    public ShellHandler() throws UtilboxNotAvailableException {
+        try {
+            this.setUtilboxPath(Constants.UTILBOX_PATH);
+        } catch (UtilboxNotAvailableException e) {
+            Log.d(ShellHandler.TAG, String.format("Tried utilbox path `%s`. Not available.", Constants.UTILBOX_PATH));
+        }
+        if (this.utilboxPath == null) {
+            Log.d(ShellHandler.TAG, "No more options for utilbox. Bailing out.");
+            throw new UtilboxNotAvailableException(Constants.UTILBOX_PATH, null);
         }
     }
 
@@ -120,7 +109,7 @@ public class ShellHandler {
             }
             Log.i(ShellHandler.TAG, String.format("Using Utilbox `%s`: %s", utilboxPath, utilBoxVersion));
         } catch (ShellCommandFailedException e) {
-            throw new UtilboxNotAvailableException(new String[]{utilboxPath}, e);
+            throw new UtilboxNotAvailableException(utilboxPath, e);
         }
         this.utilboxPath = utilboxPath;
     }
@@ -156,14 +145,14 @@ public class ShellHandler {
     }
 
     public static class UtilboxNotAvailableException extends Exception {
-        private final String[] triedBinaries;
+        private final String triedBinaries;
 
-        public UtilboxNotAvailableException(String[] triedBinaries, Throwable cause) {
+        public UtilboxNotAvailableException(String triedBinaries, Throwable cause) {
             super(cause);
             this.triedBinaries = triedBinaries;
         }
 
-        public String[] getTriedBinaries() {
+        public String getTriedBinaries() {
             return this.triedBinaries;
         }
     }

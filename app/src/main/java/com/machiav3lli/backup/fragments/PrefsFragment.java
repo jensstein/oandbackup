@@ -35,7 +35,6 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -64,7 +63,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         Preference pref;
         ArrayList<String> users = requireActivity().getIntent().getStringArrayListExtra("com.machiav3lli.backup.users");
-        ShellCommands shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users);
+        ShellCommands shellCommands = new ShellCommands(requireContext(), users);
         handleMessages = new HandleMessages(requireContext());
 
         pref = findPreference(Constants.PREFS_THEME);

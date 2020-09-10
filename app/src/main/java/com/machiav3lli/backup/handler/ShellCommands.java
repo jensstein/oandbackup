@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.handler;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -55,35 +54,17 @@ public class ShellCommands {
     private static String errors = "";
     private final Context context;
     boolean multiuserEnabled;
-    private String utilboxPath;
     private ArrayList<String> users;
 
-    public ShellCommands(Context context, SharedPreferences prefs, List<String> users) {
+    public ShellCommands(Context context, List<String> users) {
         this.users = (ArrayList<String>) users;
         this.context = context;
-        this.utilboxPath = prefs.getString(Constants.PREFS_PATH_TOYBOX, "toybox").trim();
-        if (this.utilboxPath.isEmpty()) {
-            Log.w(TAG, "Path to toybox not set in preferences. Trying to discover alternatives");
-            String[] boxPaths = new String[]{"toybox", "busybox", "/system/xbin/busybox"};
-            for (String box : boxPaths) {
-                if (checkUtilBoxPath(box)) {
-                    this.utilboxPath = box;
-                    break;
-                }
-            }
-            if (this.utilboxPath.isEmpty()) {
-                // fallback: Nothing found, so set it to false to trigger an harmless error
-                // when it is still ran
-                Log.e(TAG, "No utilbox found");
-                this.utilboxPath = ShellCommands.FALLBACK_UTILBOX_PATH;
-            }
-        }
         this.users = (ArrayList<String>) getUsers();
         multiuserEnabled = this.users != null && this.users.size() > 1;
     }
 
-    public ShellCommands(Context context, SharedPreferences prefs) {
-        this(context, prefs, new ArrayList<>());
+    public ShellCommands(Context context) {
+        this(context, new ArrayList<>());
     }
 
     private static ArrayList<String> getIdsFromStat(String stat) {
@@ -228,11 +209,11 @@ public class ShellCommands {
         Shell.Result shellResult;
         Ownership ownership = this.getOwnership(packageDir);
         Log.d(TAG, "Changing permissions for " + packageDir);
-        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chown -R %s %s", this.utilboxPath, ownership.toString(), packageDir));
+        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chown -R %s %s", Constants.UTILBOX_PATH, ownership.toString(), packageDir));
         if (!shellResult.isSuccess()) {
             throw new ShellCommandException(shellResult.getCode(), shellResult.getErr());
         }
-        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chmod -R 771 %s", this.utilboxPath, packageDir));
+        shellResult = ShellCommands.runAsRoot(errors, String.format("%s chmod -R 771 %s", Constants.UTILBOX_PATH, packageDir));
         if (!shellResult.isSuccess()) {
             throw new ShellCommandException(shellResult.getCode(), shellResult.getErr());
         }
@@ -244,17 +225,17 @@ public class ShellCommands {
             // Uninstalling while user app
             shellResult = ShellCommands.runAsRoot(String.format("pm uninstall %s", packageName));
             // don't care for the result here, it likely fails due to file not found
-            ShellCommands.runAsRoot(String.format("%s rm -r /data/lib/%s/*", utilboxPath, packageName));
+            ShellCommands.runAsRoot(String.format("%s rm -r /data/lib/%s/*", Constants.UTILBOX_PATH, packageName));
         } else {
             // Deleting while system app
             // it seems that busybox mount sometimes fails silently so use toolbox instead
             String apkSubDir = getName(sourceDir);
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf("."));
             String command = "(mount -o remount,rw /system" + " && " +
-                    String.format("%s rm %s", utilboxPath, sourceDir) + " ; " +
+                    String.format("%s rm %s", Constants.UTILBOX_PATH, sourceDir) + " ; " +
                     String.format("rm -r /system/app/%s", apkSubDir) + " ; " +
-                    String.format("%s rm -r %s", utilboxPath, dataDir) + " ; " +
-                    String.format("%s rm -r /data/app-lib/%s*", utilboxPath, packageName) + "); " +
+                    String.format("%s rm -r %s", Constants.UTILBOX_PATH, dataDir) + " ; " +
+                    String.format("%s rm -r /data/app-lib/%s*", Constants.UTILBOX_PATH, packageName) + "); " +
                     "mount -o remount,ro /system";
             shellResult = ShellCommands.runAsRoot(command);
         }
@@ -288,7 +269,7 @@ public class ShellCommands {
     }
 
     public boolean checkUtilBoxPath() {
-        return checkUtilBoxPath(utilboxPath);
+        return checkUtilBoxPath(Constants.UTILBOX_PATH);
     }
 
     /**
@@ -318,7 +299,7 @@ public class ShellCommands {
         if (users != null && !users.isEmpty()) {
             return users;
         } else {
-            Shell.Result shellResult = ShellCommands.runAsRoot(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", utilboxPath));
+            Shell.Result shellResult = ShellCommands.runAsRoot(String.format("pm list users | %s sed -nr 's/.*\\{([0-9]+):.*/\\1/p'", Constants.UTILBOX_PATH));
             ArrayList<String> usersNew = new ArrayList<>();
             for (String line : shellResult.getOut()) {
                 if (line.trim().length() != 0)
@@ -329,7 +310,7 @@ public class ShellCommands {
     }
 
     public void quickReboot() {
-        Shell.Result shellResult = ShellCommands.runAsRoot(String.format("%s pkill system_server", utilboxPath));
+        Shell.Result shellResult = ShellCommands.runAsRoot(String.format("%s pkill system_server", Constants.UTILBOX_PATH));
         if (!shellResult.isSuccess()) {
             for (String line : shellResult.getErr()) {
                 ShellCommands.writeErrorLog(this.context, "", line);

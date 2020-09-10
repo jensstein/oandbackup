@@ -98,7 +98,7 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(this, prefs, users);
+        shellCommands = new ShellCommands(this, users);
         checkUtilBox();
 
         if (!SortFilterManager.getRememberFiltering(this))
@@ -159,7 +159,7 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
 
     public boolean initShellHandler(Context context) {
         try {
-            MainActivityX.shellHandler = new ShellHandler(context);
+            MainActivityX.shellHandler = new ShellHandler();
         } catch (ShellHandler.UtilboxNotAvailableException e) {
             Log.e(MainActivityX.TAG, "Could initialize ShellHandler: " + e.getMessage());
             return false;
@@ -217,13 +217,8 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (Constants.PREFS_PATH_BACKUP_DIRECTORY.equals(key)) {
+        if (Constants.PREFS_PATH_BACKUP_DIRECTORY.equals(key))
             backupDir = FileUtils.getDefaultBackupDir(this, this);
-        } else if (Constants.PREFS_PATH_TOYBOX.equals(key)) {
-            shellCommands = new ShellCommands(this, sharedPreferences);
-            if (!shellCommands.checkUtilBoxPath())
-                UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
-        }
         refresh();
     }
 

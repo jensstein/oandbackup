@@ -36,6 +36,10 @@
             android:key="languages"
             android:title="@string/prefs_languages"
             app:iconSpaceReserved="false" />
+        <androidx.preference.Preference
+            android:key="pathBackupFolder"
+            android:title="@string/prefs_pathbackupfolder"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="biometricLock"
@@ -113,20 +117,6 @@
             android:defaultValue="true"
             android:key="enableSpecialBackups"
             android:title="@string/prefs_enableSpecialBackups"
-            app:iconSpaceReserved="false" />
-    </androidx.preference.PreferenceCategory>
-    <androidx.preference.PreferenceCategory
-        android:key="pathscategory"
-        android:title="@string/prefs_pathscategory"
-        app:iconSpaceReserved="false">
-        <androidx.preference.Preference
-            android:key="pathBackupFolder"
-            android:title="@string/prefs_pathbackupfolder"
-            app:iconSpaceReserved="false" />
-        <androidx.preference.EditTextPreference
-            android:key="pathToybox"
-            android:summary="@string/prefs_pathbusybox_summary"
-            android:title="@string/prefs_pathbusybox"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory

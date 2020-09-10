@@ -90,7 +90,7 @@ public class BatchActivityX extends BaseActivity
         ArrayList<String> users = new ArrayList<>();
         if (savedInstanceState != null)
             users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(this, prefs, users);
+        shellCommands = new ShellCommands(this, users);
 
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
@@ -290,18 +290,9 @@ public class BatchActivityX extends BaseActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        switch (key) {
-            case Constants.PREFS_PATH_BACKUP_DIRECTORY:
-                backupDir = FileUtils.getDefaultBackupDir(this, this);
-                break;
-            case Constants.PREFS_PATH_TOYBOX:
-                shellCommands = new ShellCommands(this, sharedPreferences);
-                if (!shellCommands.checkUtilBoxPath())
-                    UIUtils.showWarning(this, TAG, getString(R.string.busyboxProblem));
-                break;
-            default:
-                refresh(false);
-        }
+        if (Constants.PREFS_PATH_BACKUP_DIRECTORY.equals(key))
+            backupDir = FileUtils.getDefaultBackupDir(this, this);
+        refresh(false);
     }
 
     public void refresh(boolean resume) {

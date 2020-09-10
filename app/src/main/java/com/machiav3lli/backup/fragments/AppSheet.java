@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -99,7 +98,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         });
         handleMessages = new HandleMessages(requireContext());
         ArrayList<String> users = savedInstanceState != null ? savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) : new ArrayList<>();
-        shellCommands = new ShellCommands(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()), users);
+        shellCommands = new ShellCommands(requireContext(), users);
         String backupDirPath = FileUtils.getBackupDirectoryPath(requireContext());
         backupDir = FileUtils.createBackupDir(getActivity(), backupDirPath);
         return sheet;

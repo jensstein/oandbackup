@@ -29,6 +29,7 @@ public class Constants {
     public static final String PREFS_FIRST_LAUNCH = "firstLaunch";
     public static final String PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization";
     public static final String PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter";
+    public static final String UTILBOX_PATH = "toybox";
 
     public static final String PREFS_SCHEDULES = "schedules";
     public static final String PREFS_SCHEDULES_TOTAL = "total";
@@ -55,7 +56,6 @@ public class Constants {
     public static final String PREFS_EXTERNALDATA = "backupExternalData";
     public static final String PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData";
     public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
-    public static final String PREFS_PATH_TOYBOX = "pathToybox";
     public static final String PREFS_QUICK_REBOOT = "quickReboot";
     public static final String PREFS_BATCH_DELETE = "batchDelete";
     public static final String PREFS_LOGVIEWER = "logViewer";
