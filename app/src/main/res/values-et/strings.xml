@@ -151,7 +151,6 @@
     <string name="bothBackedUp">APK ja andmed</string>
     <string name="all">Kõik</string>
     <string name="prefs_logviewer">Vaata logi</string>
-    <string name="ask_for_permissions">küsi luba</string>
     <string name="apptype_system">Süsteemirakendus</string>
     <string name="apptype_user">Kasutajarakendus</string>
     <string name="resetFilter">Lähtesta</string>

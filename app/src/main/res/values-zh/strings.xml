@@ -151,7 +151,6 @@
     <string name="bothBackedUp">APK+数据</string>
     <string name="all">全选</string>
     <string name="prefs_logviewer">查看日志</string>
-    <string name="ask_for_permissions">请求权限</string>
     <string name="apptype_system">系统应用</string>
     <string name="apptype_user">用户应用</string>
     <string name="resetFilter">重置</string>

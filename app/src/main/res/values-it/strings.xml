@@ -142,7 +142,6 @@
     <string name="bothBackedUp">APK e dati</string>
     <string name="all">Tutto</string>
     <string name="prefs_logviewer">Vedi il log</string>
-    <string name="ask_for_permissions">Richiedi i permessi</string>
     <string name="apptype_system">App di sistema</string>
     <string name="apptype_user">App Utente</string>
     <string name="applyFilter">Applica</string>

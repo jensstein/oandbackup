@@ -151,7 +151,6 @@
     <string name="bothBackedUp">APK i dane</string>
     <string name="all">Wszystko</string>
     <string name="prefs_logviewer">Wyświetl dziennik</string>
-    <string name="ask_for_permissions">Zapytaj o pozwolenia</string>
     <string name="apptype_system">Aplikacja systemowa</string>
     <string name="apptype_user">Aplikacja użytkownika</string>
     <string name="resetFilter">Zresetuj</string>

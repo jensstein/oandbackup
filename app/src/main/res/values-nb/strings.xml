@@ -145,7 +145,6 @@
     <string name="apptype_special">Spesiell sikkerhetskopi</string>
     <string name="apptype_user">Brukerprogram</string>
     <string name="apptype_system">Systemprogram</string>
-    <string name="ask_for_permissions">spør om tilganger</string>
     <string name="all">Alle</string>
     <string name="bothBackedUp">APK og data</string>
     <string name="app_s_icon">Programmets ikon</string>

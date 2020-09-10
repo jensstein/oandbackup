@@ -151,7 +151,6 @@
     <string name="bothBackedUp">APK ve veri</string>
     <string name="all">Hepsi</string>
     <string name="prefs_logviewer">Günlüğü görüntüle</string>
-    <string name="ask_for_permissions">izinleri al</string>
     <string name="apptype_system">Sistem uygulamaları</string>
     <string name="apptype_user">Kullanıcı uygulamaları</string>
     <string name="resetFilter">Sıfırla</string>

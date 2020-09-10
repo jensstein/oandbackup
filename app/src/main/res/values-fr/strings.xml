@@ -137,7 +137,6 @@
     <string name="resetFilter">Réinitialiser</string>
     <string name="apptype_user">Application utilisateur</string>
     <string name="apptype_system">Application système</string>
-    <string name="ask_for_permissions">demander des autorisations</string>
     <string name="all">Tout</string>
     <string name="bothBackedUp">APK et données</string>
     <string name="app_s_icon">Icône de l\'appli</string>
