@@ -83,10 +83,7 @@
   <string name="prefs_title">設定</string>
   <string name="prefs_acquirewakelock">スリープを防止</string>
   <string name="prefs_acquirewakelock_summary">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します</string>
-  <string name="prefs_pathscategory">カスタム パス</string>
   <string name="prefs_pathbackupfolder">バックアップ フォルダー</string>
-  <string name="prefs_pathbusybox">busybox</string>
-  <string name="prefs_pathbusybox_summary">busybox 実行ファイルのパス。正しいく入力してください。デフォルトは空白のままにします。</string>
   <string name="prefs_oldbackups">世代でバックアップをフィルター</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_oldbackups_summary">値の日数よりも古いバックアップでフィルター。\'古いバックアップを表示\' フィルターで使用します</string>

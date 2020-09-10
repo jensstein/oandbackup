@@ -88,10 +88,8 @@
     <string name="prefs_user">Προτιμήσεις χρήστη</string>
     <string name="prefs_theme">Θέμα</string>
     <string name="prefs_acquirewakelock">Αποτροπή ύπνου</string>
-    <string name="prefs_pathscategory">Ειδικοί φάκελοι</string>
     <string name="prefs_batchdelete">Διαγραφή αντιγράφων</string>
     <string name="prefs_pathbackupfolder">Φάκελος αντιγράφων</string>
-    <string name="prefs_pathbusybox">Φάκελος busybox</string>
     <string name="prefs_oldbackups">Φιλτράρισμα αντιγράφων κατά παλαιότητα</string>
     <string name="prefs_copyselfapk">Αντιγραφή της ίδιας της εφαρμογής</string>
     <string name="prefs_languages">Γλώσσα</string>
@@ -109,7 +107,6 @@
     <string name="prefs_encryption_summary">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
     <string name="prefs_excludecache_summary">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
     <string name="prefs_acquirewakelock_summary">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια</string>
-    <string name="prefs_pathbusybox_summary">Διαδρομή στο εκτελέσιμο busybox. Βεβαιωθείτε ότι είναι σωστό. Αφήστε κενό για προεπιλογή.</string>
     <string name="prefs_oldbackups_summary">Φιλτράρισμα αντιγράφων παλαιότερων από την τιμή σε μέρες. Χρησιμοποιείται μαζί με το φίλτρο \'εμφάνιση παλαιών αντιγράφων\'</string>
     <string name="prefs_copyselfapk_summary">Τοποθετήστε ένα αντίγραφο του OAndBackupX στο υψηλότερο επίπεδο του φακέλου αντιγράφων όταν δημιουργηθεί αντίγραφο</string>
     <string name="prefs_rememberfiltering_summary">Αποθηκεύει την επιλεγμένη μέθοδο ταξινόμησης και φιλτραρίσματος. Μόνον αυτά που είναι σημειωμένα με ένα κουτάκι στον κατάλογο λαμβάνονται υπόψιν.</string>

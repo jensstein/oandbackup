@@ -86,10 +86,7 @@
     <string name="prefs_title">Preferencias</string>
     <string name="prefs_acquirewakelock">Impedir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Obtiene un wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
-    <string name="prefs_pathscategory">Rutas personalizadass</string>
     <string name="prefs_pathbackupfolder">Carpeta de respaldos</string>
-    <string name="prefs_pathbusybox">Busybox</string>
-    <string name="prefs_pathbusybox_summary">Ruta al ejecutable busybox (confirme que sea correcta). Dejar en blanco para el valor predeterminado.</string>
     <string name="prefs_oldbackups">Filtrar respaldos por antigüedad</string>
         <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_oldbackups_summary">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>

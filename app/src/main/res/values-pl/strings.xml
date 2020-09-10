@@ -90,10 +90,8 @@
     <string name="prefs_user">Ustawienia użytkownika</string>
     <string name="prefs_theme">Motyw</string>
     <string name="prefs_acquirewakelock">Zapobiegaj przejściu w stan spoczynku</string>
-    <string name="prefs_pathscategory">Własne ścieżki</string>
     <string name="prefs_batchdelete">Usunąć kopie zapasowe?</string>
     <string name="prefs_pathbackupfolder">Katalog kopii zapasowej</string>
-    <string name="prefs_pathbusybox">Katalog Busybox</string>
     <string name="prefs_oldbackups">Filtruj kopie po czasie</string>
     <string name="prefs_copyselfapk">Skopiuj własne APK</string>
     <string name="prefs_languages">Język</string>
@@ -111,7 +109,6 @@
     <string name="prefs_encryption_summary">Włącz aby szyfrować kopię zapasową</string>
     <string name="prefs_excludecache_summary">Usuń pamięć podręczną aplikacji przed wykonaniem kopii</string>
     <string name="prefs_acquirewakelock_summary">Pozyskuj wakelock\'i podczas wykonywania grupowych operacji w celu uniknięcia przejścia w stan spoczynku, przyspiesza tworzenie kopii i przywracanie, ale zużywa dużo energii</string>
-    <string name="prefs_pathbusybox_summary">Ścieżka do pliku wykonywalnego Busybox. Upewnij się, że jest poprawna. Pozostaw puste dla domyślnej.</string>
     <string name="prefs_oldbackups_summary">Filtrowanie kopii zapasowych starszych niż wartość w dniach, używany z filtrem „pokaż stare kopie zapasowe”</string>
     <string name="prefs_copyselfapk_summary">Umieść kopię zapasową OAndBackupX w najwyższym poziomie katalogu kopii zapasowej podczas tworzenia kopii</string>
     <string name="prefs_rememberfiltering_summary">Zapisuje wybraną metodę sortowania i filtrowania. Rozpatrywane są tylko te zaznaczone zaznaczeniem w menu.</string>

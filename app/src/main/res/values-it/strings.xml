@@ -84,10 +84,7 @@
     <string name="prefs_title">Opzioni</string>
     <string name="prefs_acquirewakelock">Impedisci la modalità sleep</string>
     <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia</string>
-    <string name="prefs_pathscategory">Percorsi personalizzati</string>
     <string name="prefs_pathbackupfolder">Cartella di backup</string>
-    <string name="prefs_pathbusybox">Busybox</string>
-    <string name="prefs_pathbusybox_summary">Percorso dell\'eseguibile di busybox, assicurarsi che sia corretto, predefinito se vuoto.</string>
     <string name="prefs_oldbackups">Filtra i backup per obsolescenza</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'</string>

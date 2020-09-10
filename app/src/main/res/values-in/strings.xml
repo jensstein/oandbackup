@@ -90,10 +90,8 @@
     <string name="prefs_user">Preferensi pengguna</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_acquirewakelock">Cegah tidur</string>
-    <string name="prefs_pathscategory">Jalur khusus</string>
     <string name="prefs_batchdelete">Hapus cadangan</string>
     <string name="prefs_pathbackupfolder">Folder cadangan</string>
-    <string name="prefs_pathbusybox">Folder busybox</string>
     <string name="prefs_oldbackups">Saring cadangan berdasarkan usia</string>
     <string name="prefs_copyselfapk">Salin sendiri APK</string>
     <string name="prefs_languages">Bahasa</string>
@@ -111,7 +109,6 @@
     <string name="prefs_encryption_summary">Aktifkan untuk mengenkripsi cadangan data</string>
     <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan backup data</string>
     <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi</string>
-    <string name="prefs_pathbusybox_summary">Jalur ke toybox/busybox dapat dieksekusi. pastikan itu benar. biarkan kosong untuk default.</string>
     <string name="prefs_oldbackups_summary">Saring cadangan yang lebih lama dari nilai dalam beberapa hari.  digunakan dengan filter \'tampilkan backup lama\'</string>
     <string name="prefs_copyselfapk_summary">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan saat dicadangkan</string>
     <string name="prefs_rememberfiltering_summary">Menyimpan metode penyortiran dan penyaringan yang dipilih. Hanya yang ditandai oleh kotak centang di menu yang dipertimbangkan.</string>

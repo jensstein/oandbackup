@@ -90,10 +90,8 @@
     <string name="prefs_user">用户首选项</string>
     <string name="prefs_theme">主题</string>
     <string name="prefs_acquirewakelock">阻止睡眠</string>
-    <string name="prefs_pathscategory">自定义路径</string>
     <string name="prefs_batchdelete">删除备份</string>
     <string name="prefs_pathbackupfolder">备份文件夹</string>
-    <string name="prefs_pathbusybox">Busybox 文件夹</string>
     <string name="prefs_oldbackups">按时间筛选备份</string>
     <string name="prefs_copyselfapk">复制本应用自身 APK</string>
     <string name="prefs_languages">语言</string>
@@ -111,7 +109,6 @@
     <string name="prefs_encryption_summary">启用以加密数据备份</string>
     <string name="prefs_excludecache_summary">进行数据备份之前清除应用缓存</string>
     <string name="prefs_acquirewakelock_summary">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量</string>
-    <string name="prefs_pathbusybox_summary">toybox/busybox 可执行文件的路径。请确保路径正确（默认为空）</string>
     <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用</string>
     <string name="prefs_copyselfapk_summary">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
     <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些在菜单中被复选项标记的应用</string>

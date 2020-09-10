@@ -83,10 +83,7 @@
   <string name="prefs_title">Voorkeuren</string>
   <string name="prefs_acquirewakelock">Voorkom slaapmodus</string>
   <string name="prefs_acquirewakelock_summary">Zorg voor een wakelock tijdens bulk operaties om slaapmodus te voorkomen. Dit zal het back-uppen en terugzetten aanzienlijk versnellen maar zal meer energie verbruiken</string>
-  <string name="prefs_pathscategory">Aangepaste paden</string>
   <string name="prefs_pathbackupfolder">Back-up folder</string>
-  <string name="prefs_pathbusybox">Busybox</string>
-  <string name="prefs_pathbusybox_summary">Pad van busybox programma. stel zeker dat het correct is. leeglaten voor standaard</string>
   <string name="prefs_oldbackups">Filter back-ups op ouderdom</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_oldbackups_summary">Filter back-ups op \'ouder dan\', met dagen als waarde. wordt gebruikt i.c.m. de filter \'laat oude back-ups zien\' </string>

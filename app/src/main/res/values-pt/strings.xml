@@ -83,10 +83,7 @@
   <string name="prefs_title">Preferências</string>
   <string name="prefs_acquirewakelock">Impedir suspensão</string>
   <string name="prefs_acquirewakelock_summary">Obter wakelock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
-  <string name="prefs_pathscategory">Caminhos personalizados</string>
   <string name="prefs_pathbackupfolder">Pasta de backup</string>
-  <string name="prefs_pathbusybox">Busybox</string>
-  <string name="prefs_pathbusybox_summary">Caminho do executável busybox. Deixe em branco para utilizar o caminho padrão.</string>
   <string name="prefs_oldbackups">Filtrar backups por antiguidade</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_oldbackups_summary">Considerar como antigos os backups cuja antiguidade seja superior ao número de dias especificado.</string>

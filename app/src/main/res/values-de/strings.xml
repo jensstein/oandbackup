@@ -84,10 +84,7 @@
     <string name="prefs_title">Einstellungen</string>
     <string name="prefs_acquirewakelock">Standby verhindern</string>
     <string name="prefs_acquirewakelock_summary">Wakelock anfordern und Standby verhindern, während Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie</string>
-    <string name="prefs_pathscategory">Benutzerdefinierte Pfade</string>
     <string name="prefs_pathbackupfolder">Sicherungsverzeichnis</string>
-    <string name="prefs_pathbusybox">Busyboxverzeichnis</string>
-    <string name="prefs_pathbusybox_summary">Pfad zur Busybox-Programmdatei. Auf Richtigkeit überprüfen! (Leer lassen für Standardwert).</string>
     <string name="prefs_oldbackups">Sicherungen nach Alter filtern</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für \"Alte Sicherungen anzeigen\"</string>

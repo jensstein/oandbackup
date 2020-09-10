@@ -83,10 +83,7 @@
     <string name="prefs_title">Настройки</string>
     <string name="prefs_acquirewakelock">Предотвратить сон</string>
     <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна.  значительно ускорит резервирование и восстановление, но будет потреблять больше энергии</string>
-    <string name="prefs_pathscategory">Настраиваемые пути</string>
     <string name="prefs_pathbackupfolder">Папка для р.к.</string>
-    <string name="prefs_pathbusybox">Busybox</string>
-    <string name="prefs_pathbusybox_summary">Путь к файлу busybox. проверьте правильность. оставьте пустым для стандартного</string>
     <string name="prefs_oldbackups">Отфильтровать р.к. по возрасту</string>
     <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_oldbackups_summary">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\"</string>

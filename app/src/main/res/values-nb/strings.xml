@@ -84,10 +84,7 @@
     <string name="prefs_title">Innstillinger</string>
     <string name="prefs_acquirewakelock">Hindre dvalemodus</string>
     <string name="prefs_acquirewakelock_summary">Få en en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Det vil gjøre gjenoppretting og lagring av sikkerhetskopier mye fortere men bruker mer energi.</string>
-    <string name="prefs_pathscategory">Tilpassete filstier</string>
     <string name="prefs_pathbackupfolder">Mappe for sikkerhetskopier</string>
-    <string name="prefs_pathbusybox">busybox</string>
-    <string name="prefs_pathbusybox_summary">Filsti til busybox programfil. Vær sikker at den er korrekt. La stå tomt for standardoppsett.</string>
     <string name="prefs_oldbackups">Filtrer sikkerhetskopier etter alderen</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filter \'vis gamle sikkerhetskopier\'.</string>

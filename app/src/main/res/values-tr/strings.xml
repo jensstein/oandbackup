@@ -90,10 +90,8 @@
     <string name="prefs_user">Kullanıcı seçenekleri</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_acquirewakelock">Uykuyu önle</string>
-    <string name="prefs_pathscategory">Özel dosya yolları</string>
     <string name="prefs_batchdelete">Yedekleri sil</string>
     <string name="prefs_pathbackupfolder">Yedeklenecek klasör</string>
-    <string name="prefs_pathbusybox">Busybox klasörü</string>
     <string name="prefs_oldbackups">Yedekleri zamana göre filtrele</string>
     <string name="prefs_copyselfapk">Kendi APK yedeği</string>
     <string name="prefs_languages">Dil</string>
@@ -111,7 +109,6 @@
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Veri yedeklemeden önce uygulamanın önbelleğini temizle</string>
     <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken ukuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
-    <string name="prefs_pathbusybox_summary">toybox/busybox dosya yolu. doğruluğuna emin olun. varsayılan için boş bırakın.</string>
     <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtreler. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
     <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedek klasörüne oandbackup\'ın apksını yerleştirir.</string>
     <string name="prefs_rememberfiltering_summary">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>

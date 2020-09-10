@@ -83,10 +83,7 @@
     <string name="prefs_title">paramètres</string>
     <string name="prefs_acquirewakelock">empêcher la mise en veille</string>
     <string name="prefs_acquirewakelock_summary">prendre un wakelock pendant les opérations par lot pour empêcher la mise en veille. cela accélèrera les sauvegardes et restauration au prix d\'une plus grande consommation énergétique</string>
-    <string name="prefs_pathscategory">chemins personnalisés</string>
     <string name="prefs_pathbackupfolder">dossier de sauvegarde</string>
-    <string name="prefs_pathbusybox">busybox</string>
-    <string name="prefs_pathbusybox_summary">Chemin d\'accès au binaire de busybox. assurez-vous qu\'il soit correct. laisser vide pour garder le chemin par défaut.</string>
     <string name="prefs_oldbackups">filtrer les sauvegarde par ancienneté</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté</string>

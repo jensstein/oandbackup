@@ -83,10 +83,7 @@
   <string name="prefs_title">inställningar</string>
   <string name="prefs_acquirewakelock">förhindra viloläge</string>
   <string name="prefs_acquirewakelock_summary">låt inte enheten somna medan batchoperationer körs. detta kommer att påskynda säkerhetskopieringar och återställningar, men det kommer att förbruka mer batteri</string>
-  <string name="prefs_pathscategory">anpassade sökvägar</string>
   <string name="prefs_pathbackupfolder">säkerhetskopieringsmapp</string>
-  <string name="prefs_pathbusybox">busybox</string>
-  <string name="prefs_pathbusybox_summary">sökväg till exekverbar busybox. se till att den korrekt. lämna tom för standardsökväg.</string>
   <string name="prefs_oldbackups">filtrera säkerhetskopior efter ålder</string>
   <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
   <string name="prefs_oldbackups_summary">filtrera säkerhetskopior äldre än värdet i dagar. används med filtret \'visa gamla säkerhetskopior\'</string>
