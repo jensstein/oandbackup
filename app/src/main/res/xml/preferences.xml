@@ -50,7 +50,7 @@
             android:title="@string/prefs_oldbackups"
             app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="rememberFiltering"
             android:summary="@string/prefs_rememberfiltering_summary"
             android:title="@string/prefs_rememberfiltering"
