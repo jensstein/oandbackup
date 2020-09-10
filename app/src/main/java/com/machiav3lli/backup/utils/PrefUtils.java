@@ -92,7 +92,7 @@ public class PrefUtils {
     }
 
     public static boolean canAccessExternalStorage(Context context) {
-        final File externalStorage = context.getExternalFilesDir(null).getParentFile();
+        final File externalStorage = FileUtils.getExternalStorageDirectory(context);
         return externalStorage != null && externalStorage.canRead() && externalStorage.canWrite();
     }
 
