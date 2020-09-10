@@ -185,4 +185,14 @@
     <string name="showSplitAPKs">Delt-APK</string>
     <string name="radioSystem">Systemprogrammer</string>
     <string name="radioUser">Brukerprogrammer</string>
+    <string name="intro_permission_batteryoptimization">Programmet kan få problemer med planlagte sikkerhetskopier på noen Android-distribusjoner som har aggressiv batterioptimisering f.eks. MIUI, men selv på vanlig AOSP kan dette inntreffe.</string>
+    <string name="intro_permission_usageaccess">Programmet trenger tilgang for å kunne sjekke statistikk og størrelser for data og hurtiglager tilhørende dine programmer.</string>
+    <string name="intro_permission_storage">Programmet bruker lese-/skrivetilgang til lagring for å få tilgang til eksternt lagringsmedium, oppsett av egendefinert sikkerhetskopimappe og mulighet for sikkerhetskopiering av ekstern data/obb tilhørende andre programmer.</string>
+    <string name="welcome_to_oabx">Velkommen til OABX.</string>
+    <string name="storage_access">Lagringstilgang</string>
+    <string name="dialog_unlock">Lås opp</string>
+    <string name="dialog_start">Start</string>
+    <string name="prefs_password_match_false">Passordene samsvarer ikke</string>
+    <string name="prefs_password_match_true">Passordene samsvarer</string>
+    <string name="prefs_passwordconfirmation">Bekreftelse av krypteringspassord</string>
 </resources>
