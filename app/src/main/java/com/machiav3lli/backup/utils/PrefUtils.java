@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.PowerManager;
 
 import androidx.biometric.BiometricManager;
 import androidx.core.app.ActivityCompat;
@@ -42,7 +43,6 @@ public class PrefUtils {
     private static final String TAG = Constants.classTag(".PrefUtils");
     public static final int READ_PERMISSION = 2;
     public static final int WRITE_PERMISSION = 3;
-    public static final int STATS_PERMISSION = 4;
 
     public static byte[] getCryptoSalt(Context context) {
         String userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "");
@@ -107,5 +107,9 @@ public class PrefUtils {
         } else {
             return (mode == AppOpsManager.MODE_ALLOWED);
         }
+    }
+
+    public static boolean checkBatteryOptimization(Context context, SharedPreferences prefs, PowerManager powerManager) {
+        return prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false) || powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 }

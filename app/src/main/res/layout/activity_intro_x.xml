@@ -66,21 +66,11 @@
         android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/negativeButton"
-            style="@style/Button.Negative"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/med_spacing"
-            android:text="@string/ask_for_permissions"
-            android:visibility="gone" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/positiveButton"
             style="@style/Button.Positive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:text="@string/ask_for_permissions" />
+            android:text="@string/dialog_start" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

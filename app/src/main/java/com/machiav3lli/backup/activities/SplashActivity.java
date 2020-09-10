@@ -17,9 +17,11 @@
  */
 package com.machiav3lli.backup.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.ActivitySplashBinding;
@@ -37,17 +39,18 @@ public class SplashActivity extends BaseActivity {
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         SharedPreferences prefs = PrefUtils.getPrivateSharedPrefs(this);
+        PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         Intent introIntent = new Intent(getApplicationContext(), IntroActivityX.class);
         if (prefs.getBoolean(Constants.PREFS_FIRST_LAUNCH, true)) {
             startActivity(introIntent);
-        } else if (!PrefUtils.checkStoragePermissions(this)) {
-            introIntent.putExtra(Constants.classAddress(".fragmentNumber"), 2);
-            startActivity(introIntent);
-        } else if (!PrefUtils.checkUsageStatsPermission(this)) {
+        } else if (PrefUtils.checkStoragePermissions(this) &&
+                PrefUtils.checkUsageStatsPermission(this) &&
+                (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+                        || powerManager.isIgnoringBatteryOptimizations(getPackageName()))) {
             introIntent.putExtra(Constants.classAddress(".fragmentNumber"), 3);
             startActivity(introIntent);
         } else {
-            introIntent.putExtra(Constants.classAddress(".fragmentNumber"), 4);
+            introIntent.putExtra(Constants.classAddress(".fragmentNumber"), 2);
             startActivity(introIntent);
         }
         this.overridePendingTransition(0, 0);
