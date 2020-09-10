@@ -50,5 +50,6 @@ public class SplashActivity extends BaseActivity {
             introIntent.putExtra(Constants.classAddress(".fragmentNumber"), 4);
             startActivity(introIntent);
         }
+        this.overridePendingTransition(0, 0);
     }
 }
