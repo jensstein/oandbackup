@@ -1,0 +1,2 @@
+**OAndBackupX 1.0.0**
+* Toegevoegd: optie om de cache te verwijderen voor een data backup

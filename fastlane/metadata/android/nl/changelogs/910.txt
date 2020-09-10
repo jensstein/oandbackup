@@ -1,0 +1,5 @@
+**OAndBackupX 0.9.10**
+* Herschreven: Scheduler (moet uitvoerig getest worden)
+* Opgelost: links in help
+* Opruimen van code
+* UI tweaks

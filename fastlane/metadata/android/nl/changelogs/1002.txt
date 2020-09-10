@@ -1,0 +1,7 @@
+**OAndBackupX 1.0.2**
+* Toegevoegd: Item click feedback
+* Bijgewerkt: scrolling eXperience
+* Opgelost: Splash scherm
+* Opgelost: swipe om te verversen gedrag
+* Opgelost: Statusbar thema
+* en sommige UI verbeteringen

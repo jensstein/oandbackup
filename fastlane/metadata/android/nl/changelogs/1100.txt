@@ -1,0 +1,6 @@
+**OAndBackupX 1.1.0**
+* Toegevoegd: data back-up encryptie
+* Opgelost: planning
+* Bijgewerkt: formaat van de notificaties
+* Sommige elementen van de UI verbeterd
+* en prestaties verbeterd

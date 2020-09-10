@@ -1,0 +1,8 @@
+**OAndBackupX 0.9.12 (aka 1.0.0-rc1)**
+* Toegevoegd: app's info snellink in App Sheet
+* Bijgewerkt: punch van UI elementen
+* Bijgewerkt: nieuwe standaard back-up folder /OAndBackupX
+* Opgelost: gedrag van adapter na de uitvoer van acties
+* Opgelost: crash van de adapter
+* Omgeschakeld: van het opschonen van de cache van de app naar weglaten uit de backup(Credit @icewind1991)
+* Verbeterd: gedrag van verschillende UI elementen
