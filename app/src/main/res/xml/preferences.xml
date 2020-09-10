@@ -146,7 +146,8 @@
         <androidx.preference.Preference
             android:key="logViewer"
             android:title="@string/prefs_logviewer"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.Preference
         android:key="help"
