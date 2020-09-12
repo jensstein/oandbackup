@@ -112,7 +112,7 @@
     <string name="prefs_copyselfapk">Copy own APK</string>
     <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
     <string name="prefs_acquirewakelock">Prevent sleep</string>
-    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restores considerably but will consume more energy</string>
+    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restorations considerably but will consume more energy</string>
     <string name="prefs_enableSpecialBackups">Enable special backups</string>
     <string name="prefs_quickreboot">Quick reboot</string>
     <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
