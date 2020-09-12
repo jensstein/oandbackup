@@ -24,7 +24,7 @@
     <string name="searchHint">Uygulamaları ara</string>
     <string name="deleteBackup">Yedeği sil</string>
     <string name="uninstall">Uygulamayı kaldır</string>
-    <string name="uninstallProgress">Kaldırılıyor</string>
+    <string name="uninstallProgress">Kaldırılıyor…</string>
     <string name="showOnlySystem">Yalnızca sistem uygulamaları</string>
     <string name="showOnlyUser">Yalnızca kullanıcı uygulamaları</string>
     <string name="showNotBackedup">Henüz yedeklenmemiş uygulamalar</string>
@@ -41,10 +41,10 @@
     <string name="deleteBackupDialogMessage">Yedekleme dosyalarını sil?</string>
     <string name="dialogOK">Tamam</string>
     <string name="dialogCancel">İptal</string>
-    <string name="dialogYes">Evet</string> 
+    <string name="dialogYes">Evet</string>
     <string name="dialogNo">Hayır</string>
     <string name="restoreDataWithoutApkError">APK geri yüklenmeden veri geri yüklenemiyor, paket kurulu değil</string>
-    <string name="collectingData">Paket bilgisi alınıyor</string>
+    <string name="collectingData">Paket bilgisi alınıyor…</string>
     <string name="noSu">superuser izinleri alınamadı</string>
     <string name="busyboxProblem">busybox bulunamadı. hata günlüğünü kontrol edin</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
@@ -71,20 +71,17 @@
     <string name="prefs_help">Yardım</string>
     <string name="notInstalledModeDataWarning">APK olmadan uygulama yedekten geri yüklenemez</string>
     <string name="shareTitle">Paylaş</string>
-
     <string name="tools_title">Araçlar</string>
     <string name="batchDeleteMessage">Yedeklemeler siliniyor…</string>
     <string name="batchDeleteNotificationTitle">Yedekleri sil</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Silinen yedekler:</string>
     <string name="batchDeleteNothingToDelete">Silinecek yedek yok</string>
-
     <string name="enablePackage">Etkinleştir</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Kullanıcı için etkinleştir</string>
     <string name="disablePackage">Etkisizleştir</string>
     <string name="disablePackageTitle">Kullanıcı için etkisizleştir</string>
-
     <string name="prefs_title">Seçenekler</string>
     <string name="prefs_service">Servis seçenekleri</string>
     <string name="prefs_user">Kullanıcı seçenekleri</string>
@@ -108,13 +105,12 @@
     <string name="prefs_password_summary">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Veri yedeklemeden önce uygulamanın önbelleğini temizle</string>
-    <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken ukuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
-    <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtreler. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
-    <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedek klasörüne oandbackup\'ın apksını yerleştirir.</string>
+    <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken ukuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar</string>
+    <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtreler. \'Eski yedekleri göster\' filtresi ile kullanılır</string>
+    <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedekleme klasörüne OAndBackupX\'in bir kopyasını yerleştirir</string>
     <string name="prefs_rememberfiltering_summary">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
     <string name="prefs_quickreboot_summary">userspace\'i yeniden başlatmaya zorlamak için system_server prosesini öldür</string>
     <string name="prefs_batchdelete_summary">Kurulu olmayan uygulamarın yedeklerini sil</string>
-
     <string name="sched_title">Zamanlama</string>
     <string name="sched_notificationMessage">Zamanlanmış yedekleme</string>
     <string name="sched_interval">Gün olarak sıklık:</string>
@@ -126,23 +122,18 @@
     <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat:</string>
     <string name="sched_customListUpdateButton">Özel listeyi güncelle</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
-
     <string name="sched_blacklist">Karaliste</string>
-
     <string name="spec_accounts">Hesaplar</string>
     <string name="spec_appwidgets">Uygulama Widgetları</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Veri kullanımı ve poliçesi</string>
     <string name="spec_wallpaper">Duvar kağıdı</string>
     <string name="spec_wifiAccessPoints">Wifi Erişim Noktası</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="error_creating_notification_channel">Bildirim kanalı oluşturulamadı</string>
     <string name="error_updating_schedule_mode">%2$d zamanlamasındaki %1$s güncellerken hata</string>
     <string name="permission_not_granted">Harici depolamaya erişim izni gerekli</string>
     <string name="restart_dialog">Uygulamanın yeniden başlatılması gerekiyor</string>
-
     <string name="filter_options">Filtreler:</string>
     <string name="sort_options">Göre sırala:</string>
     <string name="sortLabel">İsim</string>
@@ -175,4 +166,40 @@
     <string name="failed_unzipping">Veri ayrıştırılırken hata, şifreleme parolasını kontrol edin!</string>
     <string name="split_apks">Split-APKlar:</string>
     <string name="backup_filters">Yedek filtreleri:</string>
+    <string name="intro_welcome_message">OAndBackupX, onu 2020 ve daha ilerisine taşımak amacıyla meşhur OAndBackup\'tan çatallanmıştır. Şimdiye kadar uygulamanın işlevselliğinin ve kullanıcı arayüzünün çoğu yeniden yazılmış ve bazıları eklenmiştir.
+\n Uygulama hala beta aşamasındadır ve sıklıkla yeniden temelleme (rebase) yapılmaktadır. Lütfen her yeni sürümde değişiklik günlüğünü dikkatlice okuyun.
+\n Çeviri, fikirler, hataları bildirme veya kod çalışması gibi her türlü katkı memnuniyetle karşılanır.
+\n
+\n Sıra geldi uygulamamızın işlevlerine:
+\n • Root izni gerektirir ve bireysel olarak uygulamaları ve verilerini yedeklemenize izin verir.
+\n • Bireysel olarak programların hem yedeklenmesi hem de geri yüklenmesi ve birden çok programın toplu olarak yedeklenmesi ve geri yüklenmesi desteklenir.
+\n • Sistem uygulamalarını geri yüklemek, sonrasında yeniden başlatma gerektirmeden mümkündür, ancak yine de bunu yapmanızı önermiyoruz.
+\n • Yedeklemeler, bireysel olarak sayılarında bir sınırlama olmaksızın zamanlanabilir ve benzersiz özel listeler oluşturma imkanı vardır.</string>
+    <string name="intro_permission_batteryoptimization">Uygulama, agresif pil optimizasyonları kullanan bazı ROM\'larda, örn. MIUI, zamanlanmış yedekleme yaparken bazı sorunlarla karşılaşabilir ancak sıradan AOSP\'de bile böyle bir sorun meydana gelebilir.</string>
+    <string name="intro_permission_usageaccess">Uygulamanın, verilerinizin istatistikleri ve boyutları ile uygulamalarınızın önbelleğini denetleyebilmesi için bu izne ihtiyacı vardır.</string>
+    <string name="intro_permission_storage">Bu uygulama, harici depolamaya erişmek, özel bir yedekleme klasörü ayarlamak ve diğer uygulamaların harici verilerinin/obb\'sinin yedeklenmesine olanak sağlamak için depolama okuma/yazma iznini kullanır.</string>
+    <string name="welcome_to_oabx">OABX\'e hoş geldiniz!</string>
+    <string name="storage_access">Depolama Erişimi</string>
+    <string name="sort_and_filter">Sırala ve Filtrele</string>
+    <string name="enable_encryption_message">Verilerinizi cihazınızda şifrelenmemiş halde tutmak güvenli değildir. Verilerinizin güvenliği için şifrelemeyi etkinleştirin ve bir parola belirleyin.</string>
+    <string name="enable_encryption_title">Veri Şifreleme</string>
+    <string name="help_group">Grubumuz</string>
+    <string name="help_license">Lisans</string>
+    <string name="cache_size">Önbellek Boyutu:</string>
+    <string name="data_size">Veri Boyutu:</string>
+    <string name="app_size">Uygulama Boyutu:</string>
+    <string name="grant_usage_access_message">Bu, uygulama dosyalarının boyutları hakkında bilgi almak için önemlidir</string>
+    <string name="grant_usage_access_title">Kullanım Erişimi Ver</string>
+    <string name="apptype_special">Özel yedekleme</string>
+    <string name="sortDataSize">Veri boyutu</string>
+    <string name="dialog_unlock">Kilidi aç</string>
+    <string name="dialog_start">Haydi başlayalım</string>
+    <string name="dialogSave">Kaydet</string>
+    <string name="sched_submode">Yedekleme alt modu:</string>
+    <string name="sched_add">Zamanlama Ekle</string>
+    <string name="prefs_password_match_false">Parolalar eşleşmiyor</string>
+    <string name="prefs_password_match_true">Parolalar eşleşiyor</string>
+    <string name="prefs_passwordconfirmation">Şifreleme parolası onayı</string>
+    <string name="prefs_biometriclock_summary">Uygulamayı cihazın biyometrik kilidiyle (örn. Parmak İzi, Yüz Tanıma Kilidi) güvenli hale getir</string>
+    <string name="prefs_biometriclock">Biyometrik kilit</string>
 </resources>
