@@ -107,7 +107,7 @@
     <string name="prefs_excludecache_summary">Exclude app\'s cache from data backup</string>
     <string name="prefs_externaldata">Back up external data</string>
     <string name="prefs_externaldata_summary">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_deviceprotecteddata">Back up device protected data</string>
+    <string name="prefs_deviceprotecteddata">Back up device-protected data</string>
     <string name="prefs_deviceprotecteddata_summary">Backs up and restores data that is placed in data/user_de</string>
     <string name="prefs_copyselfapk">Copy own APK</string>
     <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
