@@ -40,16 +40,16 @@
     <string name="dialogCancel">Avbrut</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nei</string>
-    <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APKen, pakken er ikke installert</string>
+    <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APK-en, pakken er ikke installert</string>
     <string name="collectingData">Samler informasjon om pakken</string>
     <string name="utilboxCheck">Sjekker for \'busybox/toybox\'</string>
     <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>
-    <string name="busyboxProblem">Fant ikke \'busybox\'. vennligst sjekk feilrapporten</string>
+    <string name="busyboxProblem">Fant ikke BusyBox. Sjekk feilrapporten</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Kunne ikke opprette</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
     <string name="fallbackToDefault">Prøver standardoppsett</string>
-    <string name="backupFolderError">Vennligst angi den korrekte filstien i innstillingene og vær sikker at den eksisterer og er opprettbar</string>
+    <string name="backupFolderError">Angi den korrekte filstien i innstillingene og vær sikker at den eksisterer og er opprettbar</string>
     <string name="shellReturnSuccess">Suksess</string>
     <string name="shellReturnError">Feil</string>
     <string name="backupProgress">Lager sikkerhetskopi</string>
@@ -87,7 +87,7 @@
     <string name="prefs_pathbackupfolder">Mappe for sikkerhetskopier</string>
     <string name="prefs_oldbackups">Filtrer sikkerhetskopier etter alderen</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filter \'vis gamle sikkerhetskopier\'.</string>
+    <string name="prefs_oldbackups_summary">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filteret «Vis gamle sikkerhetskopier».</string>
     <string name="prefs_copyselfapk">Kopier oandbackup APK</string>
     <string name="prefs_copyselfapk_summary">Kopier oandbackup APKen til mappen for sikkerhetskopier når det lages en sikkerhetskopi</string>
     <string name="prefs_languages">Språk</string>
@@ -107,11 +107,11 @@
     <string name="sched_customListUpdateButton">Oppdater tilpasset liste</string>
     <string name="sched_excludeSystemCheckBox">Ekskluder system apper</string>
     <string name="spec_accounts">Kontoer</string>
-    <string name="spec_appwidgets">App elementer</string>
+    <string name="spec_appwidgets">Program-miniprogrammer</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Databruk og retningslinje</string>
     <string name="spec_wallpaper">Bakgrunnsbilde</string>
-    <string name="spec_wifiAccessPoints">WiFi-tilgangspunkter</string>
+    <string name="spec_wifiAccessPoints">Wi-Fi-tilgangspunkter</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
     <string name="help_license">Lisens</string>
     <string name="sort_and_filter">Sorter og filtrer</string>
