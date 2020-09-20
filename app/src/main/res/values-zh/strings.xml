@@ -71,20 +71,17 @@
     <string name="prefs_help">帮助</string>
     <string name="notInstalledModeDataWarning">应用无法从一个无 APK 的备份中还原</string>
     <string name="shareTitle">分享</string>
-
     <string name="tools_title">工具</string>
     <string name="batchDeleteMessage">正在删除备份...</string>
     <string name="batchDeleteNotificationTitle">删除备份</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">备份已删除：</string>
     <string name="batchDeleteNothingToDelete">没有要删除的备份</string>
-
     <string name="enablePackage">启用</string>
-        <!-- enablePackageTitle: title for a list of checkable users -->
+    <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">为用户启用</string>
     <string name="disablePackage">禁用</string>
     <string name="disablePackageTitle">为用户禁用</string>
-
     <string name="prefs_title">首选项</string>
     <string name="prefs_service">服务首选项</string>
     <string name="prefs_user">用户首选项</string>
@@ -114,7 +111,6 @@
     <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些在菜单中被复选项标记的应用</string>
     <string name="prefs_quickreboot_summary">终止 system_server 进程以强制重启用户空间</string>
     <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份</string>
-
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>
     <string name="sched_interval">间隔天数:</string>
@@ -126,23 +122,18 @@
     <string name="sched_timeLeft">距离下次备份的时间:</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
-
     <string name="sched_blacklist">黑名单</string>
-
     <string name="spec_accounts">账户</string>
     <string name="spec_appwidgets">应用微件</string>
     <string name="spec_bluetooth">蓝牙</string>
     <string name="spec_data">数据使用和政策</string>
     <string name="spec_wallpaper">壁纸</string>
     <string name="spec_wifiAccessPoints">Wifi 接入点</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="error_creating_notification_channel">无法创建通知通道</string>
     <string name="error_updating_schedule_mode">更新定时任务 %2$d 的 %1$s 出错</string>
     <string name="permission_not_granted">需要访问外部存储的权限</string>
     <string name="restart_dialog">似乎需要重启应用</string>
-
     <string name="filter_options">筛选条件：</string>
     <string name="sort_options">排序方式：</string>
     <string name="sortLabel">应用名称</string>
@@ -181,4 +172,34 @@
     <string name="data_size">用户数据：</string>
     <string name="cache_size">缓存：</string>
     <string name="help_license">许可证</string>
+    <string name="intro_permission_batteryoptimization">计划任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题</string>
+    <string name="intro_permission_usageaccess">该应用需要此权限才能检查统计信息，应用的缓存及数据大小</string>
+    <string name="intro_permission_storage">该应用需要对存储的读/写权限来访问外部存储，以便设置自定义备份文件夹，并实现备份其他应用程序的外部数据/obb的可能性</string>
+    <string name="intro_welcome_message">"OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+. 目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能
+\n  该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志
+\n  欢迎任何形式的贡献：翻译，想法，报告错误或是代码工作
+\n
+\n  OAndBackupX 功能一览：
+\n  •需 root! 并允许您备份单个应用及其用户数据
+\n  •支持单独备份和还原单个应用，也支持批量备份和还原
+\n  •可以无需重启来还原系统应用，但是我们仍然建议重启
+\n  •支持计划任务，可同时添加多个计划任务，并且可以创建自定义列表"</string>
+    <string name="welcome_to_oabx">欢迎使用 OABX!</string>
+    <string name="storage_access">访问存储空间</string>
+    <string name="sort_and_filter">排序&amp;过滤</string>
+    <string name="enable_encryption_message">不加密设备上的数据会不安全。为了确保您的数据安全，请启用加密并设置密码</string>
+    <string name="enable_encryption_title">数据加密</string>
+    <string name="help_group">官方群组</string>
+    <string name="apptype_special">特别备份</string>
+    <string name="sortDataSize">数据大小</string>
+    <string name="dialog_unlock">解锁</string>
+    <string name="dialog_start">前往</string>
+    <string name="dialogSave">保存</string>
+    <string name="sched_submode">备份子模式：</string>
+    <string name="sched_add">添加计划任务</string>
+    <string name="prefs_password_match_false">密码不匹配！</string>
+    <string name="prefs_password_match_true">密码匹配</string>
+    <string name="prefs_passwordconfirmation">确认加密密码</string>
+    <string name="prefs_biometriclock_summary">使用生物识别锁 (例如指纹，人脸解锁) 保护应用安全</string>
+    <string name="prefs_biometriclock">生物识别锁</string>
 </resources>
