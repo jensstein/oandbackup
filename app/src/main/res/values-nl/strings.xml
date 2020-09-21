@@ -139,7 +139,7 @@
     <string name="data_size">Data Grootte:</string>
     <string name="app_size">App Grootte:</string>
     <string name="grant_usage_access_message">Dit is essentieel om informatie te verkrijgen over de grootte van de bestanden van de app</string>
-    <string name="grant_usage_access_title">Verleen Gebruiksrechten</string>
+    <string name="grant_usage_access_title">Verleen Gebruikstoegang</string>
     <string name="backup_filters">Back-up Filters:</string>
     <string name="split_apks">Splits APK\'s:</string>
     <string name="failed_unzipping">Fout tijdens het uitpakken van de data, controleer het wachtwoord voor de versleuteling!</string>
@@ -168,9 +168,9 @@
     <string name="sort_options">Sorteren op:</string>
     <string name="filter_options">Filters:</string>
     <string name="dialog_unlock">Ontgrendelen</string>
-    <string name="dialog_start">Laten we gaan</string>
-    <string name="dialog_approve">Laten we het doen</string>
-    <string name="dialog_refuse">Doe ik niet</string>
+    <string name="dialog_start">Start</string>
+    <string name="dialog_approve">Akkoord</string>
+    <string name="dialog_refuse">Annuleer</string>
     <string name="dialogSave">Opslaan</string>
     <string name="restart_dialog">Applicatie lijkt een herstart nodig te hebben</string>
     <string name="permission_not_granted">Toestemming om toegang te krijgen tot externe opslag is vereist</string>
