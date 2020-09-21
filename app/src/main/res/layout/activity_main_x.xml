@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -23,106 +22,162 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/appBar"
-        style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            style="@android:style/Widget.Material.SearchView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:autofillHints="@string/searchHint"
-            android:clickable="true"
-            android:focusable="true"
-            android:foregroundGravity="center_horizontal"
-            android:imeOptions="flagNoExtractUi|actionSearch"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.Title"
-            app:elevation="@dimen/small_spacing"
-            app:iconifiedByDefault="false"
-            app:queryBackground="@android:color/transparent"
-            app:queryHint="@string/searchHint"
-            app:searchIcon="@drawable/ic_app_vv" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainer"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/cards_spacing"
-            app:fastScrollEnabled="true"
-            app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
-            app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
-            app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
-            app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
-            tools:listitem="@layout/item_main_x" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:layout_height="wrap_content"
+            app:navGraph="@navigation/navi_graph_main" />
+
+        <HorizontalScrollView
+            android:id="@+id/modeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:paddingHorizontal="@dimen/cards_spacing"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/radios"
+                style="@style/Chip.Group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/radioBoth"
+                    style="@style/Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioBoth" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/radioApk"
+                    style="@style/Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioApk" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/radioData"
+                    style="@style/Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radioData" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/cards_spacing"
+                app:fastScrollEnabled="true"
+                app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
+                app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
+                app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
+                app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
+                tools:listitem="@layout/item_main_x" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <FrameLayout
         android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
         android:background="@drawable/bar_static_round">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/settingsButton"
-                style="@style/Button.NavBar.Start"
-                android:layout_width="52dp"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_outline_settings_32"
-                android:tooltipText="@string/prefs_title" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/batchBackupButton"
-                style="@style/Button.NavBar.Middle"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_outline_backup_32"
-                android:tooltipText="@string/batchbackup" />
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/batchBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        android:singleLine="true"
+                        android:text="@string/all" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/buttonAction"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_positive_ripple"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text=""
+                        android:textColor="?colorAccent" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/buttonSettings"
+                        style="@style/Button.NavBar.Start"
+                        android:layout_width="52dp"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_outline_settings_32"
+                        android:tooltipText="@string/prefs_title" />
+
+                    <com.google.android.material.bottomnavigation.BottomNavigationView
+                        android:id="@+id/bottom_navigation"
+                        style="@style/Bar.BottomNavigation"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:background="@drawable/button_middle_navbar"
+                        app:itemRippleColor="?colorAccent"
+                        app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                        app:menu="@menu/navi_menu_main" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/buttonScheduler"
+                        style="@style/Button.NavBar.Middle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_outline_scheduler_32"
+                        android:tooltipText="@string/sched_title" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/batchRestoreButton"
-                style="@style/Button.NavBar.Middle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_round_restore_32"
-                android:tooltipText="@string/batchrestore" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/schedulerButton"
-                style="@style/Button.NavBar.Middle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_outline_scheduler_32"
-                android:tooltipText="@string/sched_title" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/fabSortFilter"
+                android:id="@+id/buttonSortFilter"
                 style="@style/Button.NavBar.End"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
@@ -130,7 +185,7 @@
                 android:focusable="true"
                 android:src="@drawable/ic_round_filter_list_32"
                 android:tooltipText="@string/sort_and_filter" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </LinearLayout>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

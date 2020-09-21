@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -17,6 +16,7 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <resources>
+
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/app_accent</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
@@ -58,11 +58,17 @@
     <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginVertical">52dp</item>
+        <item name="android:layout_marginBottom">64dp</item>
         <item name="android:layout_marginHorizontal">36dp</item>
         <item name="android:layout_gravity">bottom|center_horizontal</item>
         <item name="layout_behavior">@string/hide_bottom_view_on_scroll_behavior</item>
         <item name="android:elevation">2dp</item>
+    </style>
+
+    <style name="Bar.BottomNavigation" parent="@style/Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconTint">@color/chip_text</item>
+        <item name="labelVisibilityMode">unlabeled</item>
+        <item name="itemIconSize">32dp</item>
     </style>
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Dark" />
@@ -76,7 +82,8 @@
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginHorizontal">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:elevation">2dp</item>

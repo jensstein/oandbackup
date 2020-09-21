@@ -17,29 +17,42 @@
  */
 package com.machiav3lli.backup.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.machiav3lli.backup.BuildConfig;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.databinding.ActivityMainXBinding;
+import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
 import com.machiav3lli.backup.fragments.AppSheet;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.AppInfoHelper;
+import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.handler.ShellCommands;
+import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.FileUtils;
@@ -48,145 +61,79 @@ import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
-import com.topjohnwu.superuser.BuildConfig;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MainActivityX extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = Constants.classTag(".MainActivityX");
-    private static final int BATCH_REQUEST = 1;
-    private static List<AppInfo> originalList;
+public class MainActivityX extends BaseActivity implements BatchConfirmDialog.ConfirmListener {
+    private static final String TAG = Constants.classTag(".MainActivityNeo");
     private static ShellHandler shellHandler;
 
     static {
         /* Shell.Config methods shall be called before any shell is created
          * This is the why in this example we call it in a static block
          * The followings are some examples, check Javadoc for more details */
-        Shell.Config.verboseLogging(BuildConfig.DEBUG);
-        Shell.Config.setTimeout(20);
+        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setTimeout(20));
     }
 
-    long threadId = -1;
-    File backupDir;
-    ItemAdapter<MainItemX> itemAdapter;
-    FastAdapter<MainItemX> fastAdapter;
-    SortFilterSheet sheetSortFilter;
-    AppSheet sheetApp;
-    HandleMessages handleMessages;
-    SharedPreferences prefs;
-    ArrayList<String> users;
-    ShellCommands shellCommands;
+    private static List<AppInfo> appsList;
+    public final ArrayList<String> checkedList = new ArrayList<>();
+
+
+    private BadgeDrawable updatedBadge;
+    private int badgeCounter;
+    private HandleMessages handleMessages;
+    private PowerManager powerManager;
+    private long threadId = -1;
     private ActivityMainXBinding binding;
-
-    public static List<AppInfo> getOriginalList() {
-        return originalList;
-    }
+    private final ItemAdapter<MainItemX> mainItemAdapter = new ItemAdapter<>();
+    private FastAdapter<MainItemX> mainFastAdapter;
+    private final ItemAdapter<BatchItemX> batchItemAdapter = new ItemAdapter<>();
+    private FastAdapter<BatchItemX> batchFastAdapter;
+    private boolean mainBoolean;
+    private boolean backupBoolean;
+    private File backupDir;
+    private SharedPreferences prefs;
+    private NavController navController;
+    private SortFilterSheet sheetSortFilter;
+    private AppSheet sheetApp;
+    private SearchViewController searchViewController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainXBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupOnClicks(this);
-
         handleMessages = new HandleMessages(this);
+        powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         prefs = PrefUtils.getPrivateSharedPrefs(this);
-        showEncryptionDialog();
-        users = new ArrayList<>();
-        if (savedInstanceState != null)
-            users = savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS);
-        shellCommands = new ShellCommands(this, users);
-        checkUtilBox();
-
-        if (!SortFilterManager.getRememberFiltering(this))
-            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
-
+        runOnUiThread(this::showEncryptionDialog);
         if (savedInstanceState != null) {
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             UIUtils.reShowMessage(handleMessages, threadId);
         }
-
-        binding.refreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
-        binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
-        binding.refreshLayout.setOnRefreshListener(this::refresh);
-
-        itemAdapter = new ItemAdapter<>();
-        fastAdapter = FastAdapter.with(itemAdapter);
-        fastAdapter.setHasStableIds(true);
-        binding.recyclerView.setAdapter(fastAdapter);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        fastAdapter.setOnClickListener((view, itemIAdapter, item, position) -> {
-            if (sheetApp != null) sheetApp.dismissAllowingStateLoss();
-            sheetApp = new AppSheet(item, position);
-            sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
-            return false;
-        });
-        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                itemAdapter.filter(newText);
-                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
-                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                itemAdapter.filter(query);
-                itemAdapter.getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
-                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
-                return true;
-            }
-        });
+        checkUtilBox();
     }
 
-    private void setupOnClicks(Context context) {
-        binding.fabSortFilter.setOnClickListener(v -> {
-            if (sheetSortFilter == null)
-                sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(context).toString()));
-            sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
+    @Override
+    protected void onStart() {
+        super.onStart();
+        runOnUiThread(() -> {
+            setupViews();
+            setupNavigation();
+            setupOnClicks();
         });
-        binding.settingsButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)));
-        binding.batchBackupButton.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivityX.class, true), BATCH_REQUEST));
-        binding.batchRestoreButton.setOnClickListener(v -> startActivityForResult(batchIntent(BatchActivityX.class, false), BATCH_REQUEST));
-        binding.schedulerButton.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class)));
-    }
-
-    public boolean initShellHandler(Context context) {
-        try {
-            MainActivityX.shellHandler = new ShellHandler();
-        } catch (ShellHandler.UtilboxNotAvailableException e) {
-            Log.e(MainActivityX.TAG, "Could initialize ShellHandler: " + e.getMessage());
-            return false;
+        if (getIntent().getExtras() != null) {
+            int fragmentNumber = getIntent().getExtras().getInt(Constants.classAddress(".fragmentNumber"));
+            moveTo(fragmentNumber);
         }
-        return true;
-    }
-
-    public static ShellHandler getShellHandlerInstance() {
-        return MainActivityX.shellHandler;
-    }
-
-    private boolean checkUtilBox() {
-        this.handleMessages.showMessage(MainActivityX.TAG, getString(R.string.utilboxCheck));
-        boolean goodToGo = true;
-        // Initialize the ShellHandler for further root checks
-        if (!this.initShellHandler(this)) {
-            UIUtils.showWarning(this, MainActivityX.TAG, this.getString(R.string.busyboxProblem), (dialog, id) -> this.finishAffinity());
-            goodToGo = false;
-        }
-        this.handleMessages.endMessage();
-        return goodToGo;
-    }
-
-    public Intent batchIntent(Class<BatchActivityX> batchClass, boolean backup) {
-        Intent batchIntent = new Intent(getApplicationContext(), batchClass);
-        batchIntent.putExtra(Constants.classAddress(".backupBoolean"), backup);
-        return batchIntent;
     }
 
     @Override
@@ -195,31 +142,184 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState = fastAdapter.saveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         handleMessages = new HandleMessages(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        refresh();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState = mainFastAdapter.saveInstanceState(outState);
+        outState = batchFastAdapter.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onDestroy() {
         if (handleMessages != null) handleMessages.endMessage();
-        prefs.registerOnSharedPreferenceChangeListener(this);
         super.onDestroy();
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (Constants.PREFS_PATH_BACKUP_DIRECTORY.equals(key))
-            backupDir = FileUtils.getDefaultBackupDir(this, this);
-        refresh();
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        setupNavigation();
+    }
+
+    public static ShellHandler getShellHandlerInstance() {
+        return MainActivityX.shellHandler;
+    }
+
+    public static List<AppInfo> getAppsList() {
+        return appsList;
+    }
+
+    public ItemAdapter<MainItemX> getMainItemAdapter() {
+        return mainItemAdapter;
+    }
+
+    public ItemAdapter<BatchItemX> getBatchItemAdapter() {
+        return batchItemAdapter;
+    }
+
+    public void setSearchViewController(SearchViewController searchViewController) {
+        this.searchViewController = searchViewController;
+    }
+
+    private void setupViews() {
+        binding.refreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
+        binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
+        binding.cbAll.setChecked(false);
+        updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment);
+        updatedBadge.setVisible(badgeCounter != 0);
+        mainFastAdapter = FastAdapter.with(mainItemAdapter);
+        mainFastAdapter.setHasStableIds(true);
+        batchFastAdapter = FastAdapter.with(batchItemAdapter);
+        batchFastAdapter.setHasStableIds(true);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.refreshLayout.setOnRefreshListener(this::refresh);
+    }
+
+    private void setupNavigation() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        assert navHostFragment != null;
+        navController = navHostFragment.getNavController();
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == binding.bottomNavigation.getSelectedItemId())
+                return false;
+            NavigationUI.onNavDestinationSelected(item, navController);
+            return true;
+        });
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.mainFragment) {
+                navigateMain();
+            } else if (destination.getId() == R.id.backupFragment) {
+                backupBoolean = true;
+                navigateBatch();
+            } else if (destination.getId() == R.id.restoreFragment) {
+                backupBoolean = false;
+                navigateBatch();
+            }
+        });
+    }
+
+    private void navigateMain() {
+        mainBoolean = true;
+        binding.batchBar.setVisibility(View.GONE);
+        binding.modeBar.setVisibility(View.GONE);
+        binding.recyclerView.setAdapter(mainFastAdapter);
+    }
+
+    private void navigateBatch() {
+        mainBoolean = false;
+        binding.radioBoth.setChecked(true);
+        binding.batchBar.setVisibility(View.VISIBLE);
+        binding.modeBar.setVisibility(View.VISIBLE);
+        binding.buttonAction.setText(backupBoolean ? R.string.backup : R.string.restore);
+        binding.recyclerView.setAdapter(batchFastAdapter);
+        binding.buttonAction.setOnClickListener(v -> actionOnClick(backupBoolean));
+        checkedList.clear();
+    }
+
+    private void setupOnClicks() {
+        binding.buttonSettings.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)));
+        binding.buttonScheduler.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SchedulerActivityX.class)));
+        binding.cbAll.setOnClickListener(this::onCheckAllChanged);
+        binding.buttonSortFilter.setOnClickListener(v -> {
+            if (sheetSortFilter == null)
+                sheetSortFilter = new SortFilterSheet(new SortFilterModel(SortFilterManager.getFilterPreferences(this).toString()));
+            sheetSortFilter.show(getSupportFragmentManager(), "SORTFILTERSHEET");
+        });
+        mainFastAdapter.setOnClickListener((view, itemIAdapter, item, position) -> {
+            if (sheetApp != null) sheetApp.dismissAllowingStateLoss();
+            sheetApp = new AppSheet(item, position);
+            sheetApp.showNow(getSupportFragmentManager(), "APPSHEET");
+            return false;
+        });
+        batchFastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
+            item.getApp().setChecked(!item.getApp().isChecked());
+            if (item.getApp().isChecked()) {
+                if (!checkedList.contains(item.getApp().getPackageName())) {
+                    checkedList.add(item.getApp().getPackageName());
+                }
+            } else {
+                checkedList.remove(item.getApp().getPackageName());
+            }
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            updateCheckAll();
+            return false;
+        });
+    }
+
+    private void onCheckAllChanged(View v) {
+        boolean startIsChecked = ((AppCompatCheckBox) v).isChecked();
+        binding.cbAll.setChecked(startIsChecked);
+        for (BatchItemX item : batchItemAdapter.getAdapterItems()) {
+            item.getApp().setChecked(startIsChecked);
+            if (startIsChecked) {
+                if (!checkedList.contains(item.getApp().getPackageName())) {
+                    checkedList.add(item.getApp().getPackageName());
+                }
+            } else {
+                checkedList.remove(item.getApp().getPackageName());
+            }
+        }
+        batchFastAdapter.notifyAdapterDataSetChanged();
+    }
+
+    private void updateCheckAll() {
+        binding.cbAll.setChecked(checkedList.size() == batchItemAdapter.getItemList().size());
+    }
+
+    private void actionOnClick(boolean backupBoolean) {
+        ArrayList<AppInfo> selectedList = new ArrayList<>();
+        for (BatchItemX item : batchItemAdapter.getAdapterItems()) {
+            if (item.getApp().isChecked()) selectedList.add(item.getApp());
+        }
+        Bundle arguments = new Bundle();
+        arguments.putParcelableArrayList("selectedList", selectedList);
+        arguments.putBoolean("backupBoolean", backupBoolean);
+        BatchConfirmDialog dialog = new BatchConfirmDialog();
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "DialogFragment");
+    }
+
+    private int checkSelectedMode() {
+        if (binding.radioApk.isChecked()) {
+            return AppInfo.MODE_APK;
+        } else if (binding.radioData.isChecked()) {
+            return AppInfo.MODE_DATA;
+        } else return AppInfo.MODE_BOTH;
+    }
+
+    public void moveTo(int position) {
+        if (position == 1) {
+            navController.navigate(R.id.mainFragment);
+        } else if (position == 2) {
+            navController.navigate(R.id.backupFragment);
+        } else if (position == 3) {
+            navController.navigate(R.id.restoreFragment);
+        }
     }
 
     private void showEncryptionDialog() {
@@ -237,37 +337,180 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         }
     }
 
-    public void refresh(boolean withAppSheet) {
+    @Override
+    public void onConfirmed(List<AppInfo> selectedList) {
+        Thread thread = new Thread(() -> doAction(selectedList));
+        thread.start();
+        threadId = thread.getId();
+    }
+
+    // TODO 1. implement the new logic with app/data checkboxes, 2. optimize/reduce complexity
+    public void doAction(List<AppInfo> selectedList) {
+        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
+        if (this.prefs.getBoolean("acquireWakelock", true)) {
+            wl.acquire(15 * 60 * 1000L /*15 minutes*/);
+            Log.i(MainActivityX.TAG, "wakelock acquired");
+        }
+        int notificationId = (int) System.currentTimeMillis();
+        int total = selectedList.size();
+        int i = 1;
+        List<ActionResult> results = new ArrayList<>(total);
+        for (AppInfo app : selectedList) {
+            String message = "(" + i + '/' + total + ')';
+            String title = (this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress))
+                    + " (" + i + '/' + total + ')';
+            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, app.getLabel(), false);
+            this.handleMessages.setMessage(app.getLabel(), message);
+            int mode = checkSelectedMode();
+            final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+            ActionResult result;
+            if (this.backupBoolean) {
+                result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), app, mode);
+            } else {
+                result = backupRestoreHelper.restore(this, app, MainActivityX.getShellHandlerInstance(), mode);
+            }
+            results.add(result);
+            i++;
+        }
+        if (this.handleMessages.isShowing()) {
+            this.handleMessages.endMessage();
+        }
+        if (wl.isHeld()) {
+            wl.release();
+            Log.i(MainActivityX.TAG, "wakelock released");
+        }
+        // Calculate the overall result
+        String errors = results.parallelStream()
+                .map(ActionResult::getMessage)
+                .filter(msg -> !msg.isEmpty())
+                .collect(Collectors.joining("\n"));
+        ActionResult overAllResult = new ActionResult(null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
+
+        // Update the notification
+        String msg = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
+        String notificationTitle = overAllResult.succeeded ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
+        NotificationHelper.showNotification(this, MainActivityX.class, notificationId, notificationTitle, msg, true);
+
+        // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
+        UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
+            try (FileWriter fw = new FileWriter(FileUtils.getDefaultLogFilePath(this.getApplicationContext()), true)) {
+                fw.write(errors);
+                Toast.makeText(
+                        MainActivityX.this,
+                        String.format(this.getString(R.string.logfileSavedAt), FileUtils.getDefaultLogFilePath(this.getApplicationContext())),
+                        Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                new AlertDialog.Builder(MainActivityX.this)
+                        .setTitle(R.string.errorDialogTitle)
+                        .setMessage(e.getLocalizedMessage())
+                        .setPositiveButton(R.string.dialogOK, null)
+                        .show();
+            }
+        });
+        this.refresh();
+    }
+
+    public static boolean initShellHandler() {
+        try {
+            MainActivityX.shellHandler = new ShellHandler();
+        } catch (ShellHandler.UtilboxNotAvailableException e) {
+            Log.e(MainActivityX.TAG, "Could initialize ShellHandler: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    private void checkUtilBox() {
+        this.handleMessages.showMessage(MainActivityX.TAG, getString(R.string.utilboxCheck));
+        // Initialize the ShellHandler for further root checks
+        if (!MainActivityX.initShellHandler()) {
+            UIUtils.showWarning(this, MainActivityX.TAG, this.getString(R.string.busyboxProblem), (dialog, id) -> this.finishAffinity());
+        }
+        this.handleMessages.endMessage();
+    }
+
+    public void refresh() {
+        if (mainBoolean) {
+            refresh(true, false, new ArrayList<>());
+        } else {
+            refresh(false, backupBoolean, new ArrayList<>());
+        }
+    }
+
+    public void refreshWithAppSheet() {
+        refresh(true, true, new ArrayList<>());
+    }
+
+    public void resumeRefresh(List<String> checkedList) {
+        if (mainBoolean) {
+            refresh(true, true, checkedList);
+        } else {
+            refresh(false, backupBoolean, checkedList);
+        }
+    }
+
+    public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> checkedList) {
+        Log.d(MainActivityX.TAG, "refreshing");
+        runOnUiThread(() -> {
+            binding.refreshLayout.setRefreshing(true);
+            searchViewController.clean();
+        });
+        badgeCounter = 0;
+        if (mainBoolean || checkedList.isEmpty()) this.checkedList.clear();
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
-        backupDir = FileUtils.getDefaultBackupDir(this, this);
-        runOnUiThread(() -> binding.refreshLayout.setRefreshing(true));
         new Thread(() -> {
-            originalList = AppInfoHelper.getPackageInfo(this, backupDir, true,
-                    this.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
-            ArrayList<AppInfo> filteredList = SortFilterManager.applyFilter(originalList, SortFilterManager.getFilterPreferences(this).toString(), this);
-            ArrayList<MainItemX> list = createItemsList(filteredList);
-            runOnUiThread(() -> {
-                if (filteredList.isEmpty()) {
-                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
-                    itemAdapter.clear();
-                    itemAdapter.add(list);
-                } else {
-                    FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
-                }
-                if (withAppSheet && sheetApp != null) {
-                    refreshAppSheet();
-                }
-                binding.searchView.setQuery("", false);
-                binding.refreshLayout.setRefreshing(false);
-            });
+            backupDir = FileUtils.getDefaultBackupDir(this, this);
+            appsList = AppInfoHelper.getPackageInfo(this, backupDir, true,
+                    PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true));
+            List<AppInfo> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
+            if (mainBoolean) refreshMain(filteredList, backupOrAppSheetBoolean);
+            else refreshBatch(filteredList, backupOrAppSheetBoolean, checkedList);
         }).start();
+    }
+
+    private void refreshMain(List<AppInfo> filteredList, boolean appSheetBoolean) {
+        ArrayList<MainItemX> mainList = createMainAppsList(filteredList);
+        runOnUiThread(() -> {
+            if (filteredList.isEmpty()) {
+                Toast.makeText(getBaseContext(), getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
+                mainItemAdapter.clear();
+            }
+            FastAdapterDiffUtil.INSTANCE.set(mainItemAdapter, mainList);
+            searchViewController.setup();
+            if (updatedBadge != null) {
+                updatedBadge.setNumber(badgeCounter);
+                updatedBadge.setVisible(badgeCounter != 0);
+            }
+            mainFastAdapter.notifyAdapterDataSetChanged();
+            binding.refreshLayout.setRefreshing(false);
+            if (appSheetBoolean && sheetApp != null) {
+                refreshAppSheet();
+            }
+        });
+    }
+
+    private ArrayList<MainItemX> createMainAppsList(List<AppInfo> filteredList) {
+        ArrayList<MainItemX> list = new ArrayList<>();
+        if (filteredList.isEmpty()) {
+            for (AppInfo app : SortFilterManager.applyFilter(appsList, "0000", this)) {
+                list.add(new MainItemX(app));
+                if (app.isUpdated()) badgeCounter += 1;
+            }
+            SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
+        } else {
+            for (AppInfo app : filteredList) {
+                list.add(new MainItemX(app));
+                if (app.isUpdated()) badgeCounter += 1;
+            }
+        }
+        return list;
     }
 
     private void refreshAppSheet() {
         int position = sheetApp.getPosition();
-        if (itemAdapter.getItemList().size() > position) {
-            if (sheetApp.getPackageName().equals(fastAdapter.getItem(position).getApp().getPackageName())) {
-                sheetApp.updateApp(fastAdapter.getItem(position));
+        if (mainItemAdapter.getItemList().size() > position) {
+            if (sheetApp.getPackageName().equals(mainFastAdapter.getItem(position).getApp().getPackageName())) {
+                sheetApp.updateApp(mainFastAdapter.getItem(position));
             } else {
                 sheetApp.dismissAllowingStateLoss();
             }
@@ -276,22 +519,41 @@ public class MainActivityX extends BaseActivity implements SharedPreferences.OnS
         }
     }
 
-    private ArrayList<MainItemX> createItemsList(ArrayList<AppInfo> filteredList) {
-        ArrayList<MainItemX> list = new ArrayList<>();
+    private void refreshBatch(List<AppInfo> filteredList, boolean backupBoolean, List<String> checkedList) {
+        ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean, checkedList);
+        runOnUiThread(() -> {
+            if (filteredList.isEmpty()) {
+                Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
+                batchItemAdapter.clear();
+            }
+            FastAdapterDiffUtil.INSTANCE.set(batchItemAdapter, batchList);
+            searchViewController.setup();
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            updateCheckAll();
+            binding.refreshLayout.setRefreshing(false);
+        });
+    }
+
+    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfo> filteredList, boolean backupBoolean, List<String> checkedList) {
+        ArrayList<BatchItemX> list = new ArrayList<>();
         if (filteredList.isEmpty()) {
-            for (AppInfo app : originalList) {
-                list.add(new MainItemX(app));
+            for (AppInfo app : SortFilterManager.applyFilter(appsList, "0000", this)) {
+                if (toAddToBatch(backupBoolean, app)) list.add(new BatchItemX(app));
             }
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         } else {
             for (AppInfo app : filteredList) {
-                list.add(new MainItemX(app));
+                if (!checkedList.isEmpty() && checkedList.contains(app.getPackageName())) {
+                    app.setChecked(true);
+                    this.checkedList.add(app.getPackageName());
+                }
+                if (toAddToBatch(backupBoolean, app)) list.add(new BatchItemX(app));
             }
         }
         return list;
     }
 
-    public void refresh() {
-        refresh(false);
+    private boolean toAddToBatch(boolean backupBoolean, AppInfo app) {
+        return (backupBoolean && app.isInstalled()) || (!backupBoolean && app.getBackupMode() != AppInfo.MODE_UNSET);
     }
 }

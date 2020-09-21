@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomPackageList {
-    private static final List<AppInfo> appInfoList = MainActivityX.getOriginalList();
+    private static final List<AppInfo> appInfoList = MainActivityX.getAppsList();
 
     public static void showList(Activity activity, long number) {
         showList(activity, SchedulerActivityX.SCHEDULECUSTOMLIST + number);

@@ -88,7 +88,7 @@ public class ScheduleService extends Service
         final String channelId = TAG;
         // Do some initialization
         MainActivityX startupActivity = new MainActivityX();
-        startupActivity.initShellHandler(this);
+        startupActivity.initShellHandler();
 
         final NotificationChannel notificationChannel =
                 new NotificationChannel(channelId, channelId,

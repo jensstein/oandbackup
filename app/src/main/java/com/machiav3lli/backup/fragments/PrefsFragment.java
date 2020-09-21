@@ -178,7 +178,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     private boolean onClickBatchDelete() {
         final ArrayList<AppInfo> deleteList = new ArrayList<>();
         StringBuilder message = new StringBuilder();
-        final ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getOriginalList());
+        final ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
         if (!appInfoList.isEmpty()) {
             for (AppInfo appInfo : appInfoList) {
                 if (!appInfo.isInstalled()) {

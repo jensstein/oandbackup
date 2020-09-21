@@ -52,7 +52,7 @@ public class BlacklistDialogFragment extends DialogFragment {
                 SchedulerActivityX.GLOBALBLACKLISTID);
         ArrayList<String> blacklistedPackages = args.getStringArrayList(
                 Constants.BLACKLIST_ARGS_PACKAGES);
-        ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getOriginalList());
+        ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
         boolean[] checkedPackages = new boolean[appInfoList.size()];
         ArrayList<String> labels = new ArrayList<>();
         int i = 0;

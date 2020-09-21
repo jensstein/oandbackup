@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@drawable/ic_round_main_32"
+        android:title="@string/app_name" />
+
+    <item
+        android:id="@+id/backupFragment"
+        android:icon="@drawable/ic_outline_backup_32"
+        android:title="@string/backup" />
+
+    <item
+        android:id="@+id/restoreFragment"
+        android:icon="@drawable/ic_round_restore_32"
+        android:title="@string/restore" />
+</menu>
