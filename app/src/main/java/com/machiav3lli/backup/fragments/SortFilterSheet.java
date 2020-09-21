@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding;
 import com.machiav3lli.backup.handler.SortFilterManager;
 import com.machiav3lli.backup.items.SortFilterModel;
@@ -85,10 +86,12 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
         binding.reset.setOnClickListener(v -> {
             SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("0000"));
+            requireMainActivity().refresh();
             dismissAllowingStateLoss();
         });
         binding.apply.setOnClickListener(v -> {
             SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
+            requireMainActivity().refresh();
             dismissAllowingStateLoss();
         });
     }
@@ -102,5 +105,9 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         binding.backupFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putBackupFilter(checkedId));
         binding.specialFilters.check(sortFilterModel.getSpecialFilterId());
         binding.specialFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSpecialFilter(checkedId));
+    }
+
+    public MainActivityX requireMainActivity() {
+        return (MainActivityX) super.requireActivity();
     }
 }

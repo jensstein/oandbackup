@@ -231,7 +231,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 Log.i(AppSheet.TAG, String.format("%s: Wiping cache", app));
                 String command = ShellCommands.wipeCacheCommand(requireContext(), app);
                 ShellHandler.runAsRoot(command);
-                requireMainActivityX().refresh(true);
+                requireMainActivity().refreshWithAppSheet();
             } catch (ShellHandler.ShellCommandFailedException e) {
                 // Not a critical issue
                 Log.w(AppSheet.TAG, "Cache couldn't be deleted: " + CommandUtils.iterableToString(e.getShellResult().getErr()));
@@ -264,7 +264,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                         if (backupDir != null)
                             ShellCommands.deleteBackup(new File(backupDir, app.getPackageName()));
                         handleMessages.endMessage();
-                        requireMainActivityX().refresh(true);
+                        requireMainActivity().refreshWithAppSheet();
                     });
                     deleteBackupThread.start();
                     Toast.makeText(requireContext(), R.string.deleted_backup, Toast.LENGTH_LONG).show();
@@ -313,7 +313,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                             NotificationHelper.showNotification(getContext(), MainActivityX.class, notificationId++, app.getLabel(), getString(R.string.uninstallFailure), true);
                             UIUtils.showErrors(requireActivity());
                         }
-                        requireMainActivityX().refresh(true);
+                        requireMainActivity().refreshWithAppSheet();
                     });
                     uninstallThread.start();
                 })
@@ -324,11 +324,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @Override
     public void onActionCalled(AppInfo app, BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
-            new BackupTask(app, handleMessages, requireMainActivityX(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
-            requireMainActivityX().refresh(true);
+            new BackupTask(app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
+            requireMainActivity().refreshWithAppSheet();
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
-            new RestoreTask(app, handleMessages, requireMainActivityX(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
-            requireMainActivityX().refresh(true);
+            new RestoreTask(app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
+            requireMainActivity().refreshWithAppSheet();
         } else
             Log.e(TAG, "unknown actionType: " + actionType);
     }
@@ -347,14 +347,14 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 })
                 .setPositiveButton(R.string.dialogOK, (dialog, which) -> {
                     shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
-                    requireMainActivityX().refresh(true);
+                    requireMainActivity().refreshWithAppSheet();
                 })
                 .setNegativeButton(R.string.dialogCancel, (dialog, which) -> {
                 })
                 .show();
     }
 
-    private MainActivityX requireMainActivityX() {
+    private MainActivityX requireMainActivity() {
         return (MainActivityX) requireActivity();
     }
 }
