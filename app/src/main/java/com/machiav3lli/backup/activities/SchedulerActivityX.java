@@ -75,7 +75,7 @@ public class SchedulerActivityX extends BaseActivity
         super.onCreate(savedInstanceState);
         binding = ActivitySchedulerXBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupOnClicks(this);
+        setupOnClicks();
 
         handleAlarms = new HandleAlarms(this);
         list = new ArrayList<>();
@@ -97,7 +97,7 @@ public class SchedulerActivityX extends BaseActivity
         binding.backButton.setOnClickListener(v -> finish());
     }
 
-    private void setupOnClicks(SchedulerActivityX activity) {
+    private void setupOnClicks() {
         binding.blacklistButton.setOnClickListener(v -> new Thread(() -> {
             Bundle args = new Bundle();
             args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
@@ -108,12 +108,12 @@ public class SchedulerActivityX extends BaseActivity
                     blacklistedPackages);
             BlacklistDialogFragment blacklistDialogFragment = new BlacklistDialogFragment();
             blacklistDialogFragment.setArguments(args);
-            blacklistDialogFragment.addBlacklistListener(activity);
+            blacklistDialogFragment.addBlacklistListener(this);
             blacklistDialogFragment.show(getSupportFragmentManager(), "blacklistDialog");
         }).start());
         binding.fabAddSchedule.setOnClickListener(v -> {
-            new AddScheduleTask(activity).execute();
-            new refreshTask(activity).execute();
+            new AddScheduleTask(this).execute();
+            new refreshTask(this).execute();
         });
     }
 

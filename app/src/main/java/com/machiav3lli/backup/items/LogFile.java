@@ -32,9 +32,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 public class LogFile implements Parcelable {
     public static final Parcelable.Creator<LogFile> CREATOR = new Parcelable.Creator<LogFile>() {

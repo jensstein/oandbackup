@@ -50,9 +50,9 @@ public class BackupDialogFragment extends DialogFragment {
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.BACKUP;
         assert app != null;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(app.getLabel());
-        builder.setMessage(R.string.backup);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle(app.getLabel())
+                .setMessage(R.string.backup);
 
         boolean showApkBtn = app.getSourceDir().length() > 0;
         if (showApkBtn) {
@@ -62,7 +62,6 @@ public class BackupDialogFragment extends DialogFragment {
         if (showDataBtn) {
             builder.setNeutralButton(R.string.handleData, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_DATA));
         }
-
         if (showApkBtn && showDataBtn) {
             int textId = app.isInstalled() ? R.string.handleBoth : R.string.radioBoth;
             builder.setPositiveButton(textId, (dialog, id) -> listener.onActionCalled(app, actionType, AppInfo.MODE_BOTH));
