@@ -219,6 +219,10 @@ public class AppInfo implements Parcelable {
         return false;
     }
 
+    public boolean isUpdated() {
+        return (logInfo != null && logInfo.getVersionCode() != 0 && versionCode > logInfo.getVersionCode());
+    }
+
     @NotNull
     public String toString() {
         return String.format("%s [%s]", this.packageName, this.label);

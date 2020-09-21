@@ -179,7 +179,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
         if (app.isSplit()) binding.appSplits.setText(R.string.dialogYes);
         else binding.appSplits.setText(R.string.dialogNo);
-        if (app.getLogInfo() != null && (app.getLogInfo().getVersionCode() != 0 && app.getVersionCode() > app.getLogInfo().getVersionCode())) {
+        if (app.isUpdated()) {
             String updatedVersionString = app.getLogInfo().getVersionName() + " (" + app.getVersionName() + ")";
             binding.versionName.setText(updatedVersionString);
             binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_secondary));
