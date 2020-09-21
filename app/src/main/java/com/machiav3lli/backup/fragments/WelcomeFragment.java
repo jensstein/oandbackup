@@ -33,7 +33,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.FragmentWelcomeBinding;
 
 public class WelcomeFragment extends Fragment {
-
+    private static final String TAG = Constants.classTag(".WelcomeFragment");
     private FragmentWelcomeBinding binding;
 
     @Nullable
@@ -41,15 +41,14 @@ public class WelcomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentWelcomeBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        setupOnClicks();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        drawContent();
+        setupViews();
+        setupOnClicks();
     }
 
     @Override
@@ -65,9 +64,9 @@ public class WelcomeFragment extends Fragment {
         binding.license.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))));
     }
 
-    private void drawContent() {
+    private void setupViews() {
         try {
-            binding.versionName.setText(String.format("%s", requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName));
+            binding.versionName.setText(requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
     }

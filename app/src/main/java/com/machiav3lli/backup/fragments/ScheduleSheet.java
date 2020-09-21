@@ -93,11 +93,15 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = SheetScheduleBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setupOnClicks();
         setupChips();
         setupSchedInfo();
-        return view;
     }
 
     private void setupChips() {

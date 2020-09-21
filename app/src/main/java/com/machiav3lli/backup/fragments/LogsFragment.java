@@ -40,14 +40,13 @@ public class LogsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentLogsBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        setupOnClicks();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupOnClicks();
         new Thread(new TextLoadRunnable()).start();
     }
 

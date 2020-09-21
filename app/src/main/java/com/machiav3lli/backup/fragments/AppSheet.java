@@ -114,11 +114,15 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = SheetAppBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setupOnClicks(this);
         setupChips(false);
         setupAppInfo(false);
-        return view;
     }
 
     public void updateApp(MainItemX item) {

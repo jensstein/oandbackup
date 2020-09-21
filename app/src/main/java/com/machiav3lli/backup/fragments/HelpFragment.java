@@ -53,15 +53,14 @@ public class HelpFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentHelpBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        setupOnClicks();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        drawContent();
+        setupOnClicks();
+        setupViews();
     }
 
     @Override
@@ -77,7 +76,7 @@ public class HelpFragment extends Fragment {
         binding.license.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))));
     }
 
-    private void drawContent() {
+    private void setupViews() {
         try {
             binding.helpVersionName.setText(String.format("%s", requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0).versionName));
             InputStream is = getResources().openRawResource(R.raw.help);
