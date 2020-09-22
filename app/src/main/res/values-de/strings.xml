@@ -44,7 +44,7 @@
     <string name="collectingData">Paketinformationen sammeln…</string>
     <string name="utilboxCheck">Überprüfe auf Busybox/Toybox…</string>
     <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
-    <string name="busyboxProblem">Konnte Busybox nicht finden. Bitte Fehlerprotokoll überprüfen!</string>
+    <string name="busyboxProblem">Konnte BusyBox nicht finden. Bitte das Fehlerprotokoll überprüfen!</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Konnte Datei nicht erstellen</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
@@ -122,7 +122,7 @@
     <string name="radioSystem">System-Apps</string>
     <string name="app_s_icon">App-Icon</string>
     <string name="permission_not_granted">Die Erlaubnis zum Zugriff auf externen Speicher ist erforderlich</string>
-    <string name="restart_dialog">Antrag scheint neu gestartet werden zu müssen</string>
+    <string name="restart_dialog">App scheint neu gestartet werden zu müssen</string>
     <string name="error_updating_schedule_mode">App kann aus einer Sicherung ohne Apk nicht wiederhergestellt werden</string>
     <string name="error_creating_notification_channel">Benachrichtigungskanal kann nicht erstellt werden</string>
     <string name="bothBackedUp">APK und Daten</string>
@@ -182,7 +182,7 @@
     <string name="sort_and_filter">Sortieren und filtern</string>
     <string name="sortDataSize">Datengröße</string>
     <string name="prefs_biometriclock">Biometrische Sperre</string>
-    <string name="prefs_biometriclock_summary">die Anwendung mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Gesichtsentsperrung)</string>
+    <string name="prefs_biometriclock_summary">Die Anwendung mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Gesichtsentsperrung)</string>
     <string name="sched_submode">Sicherungssubmodus:</string>
     <string name="prefs_password_match_true">Die Passwörter stimmen überein</string>
     <string name="prefs_password_match_false">Die Passwörter stimmen nicht überein</string>
