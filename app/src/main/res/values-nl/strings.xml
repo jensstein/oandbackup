@@ -390,4 +390,5 @@
     <string name="smsmms_permission_title"></string>
     <string name="forceKillMessage"></string>
     <string name="msg_appkill_warning"></string>
+    <string name="sched_exported"></string>
 </resources>
