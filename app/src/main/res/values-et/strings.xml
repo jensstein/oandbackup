@@ -380,7 +380,7 @@
     <string name="prefs_useexpedited_summary" translatable="false"></string>
     <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
     <string name="prefs_cachepackages_summary" translatable="false"></string>
-    <string name="sched_exported"/>
+    <string name="sched_exported"></string>
     <string name="forceKillMessage"/>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata"></string>
