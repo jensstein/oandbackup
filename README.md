@@ -106,6 +106,8 @@ Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootB
 
 ### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/?utm_source=widget)
 
+[<img src="https://hosted.weblate.org/widgets/oandbackupx/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/)
+
 The Translations are now being hosted by [Weblate.org](https://hosted.weblate.org/engage/oandbackupx/).
 
 Before that, translations were done analog/offline by those great people:

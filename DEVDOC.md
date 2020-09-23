@@ -36,8 +36,4 @@
 
 ## Planned Restructure
 
-- [ ] Fragmentize Batch: to clean up the need for double use of Batch Activity and separate Backup and Restore logic more clearly.
-
-- [ ] Main-Batch Direct Navigation: with the aim to remove the need to recreate the app list anew each time navigating between Main and Batch.
-
 - [ ] Add (Backup/Restore) Swipe-Gestures to Main.

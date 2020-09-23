@@ -1,7 +1,21 @@
 changelog
 =========
 
-## 3.1.1 (11.09.2020)
+3.2.0 (23.09.2020)
+------------------
+
+* Added: new Navigation
+* Added: badge for updated apps in Main
+* Fixed: save checked items in Batch
+* Fixed: sync of check all in Batch
+* Fixed: search filtering unexpected behavior(caused by caching)
+* Fixed: resume behavior
+* Updated: improve refresh performance
+* Updated: improve on visual performance (Action instances and Sheets launch speed)
+* Updated: Translations (Norwegian, Dutch, Turkish, Chinese, Portuguese)
+
+3.1.1 (11.09.2020)
+------------------
 
 * Added: the Intro
 * Added: encryption password check field
