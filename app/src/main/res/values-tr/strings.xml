@@ -159,7 +159,7 @@
     <string name="prefs_theme_system">Sistem teması</string>
     <string name="empty_filtered_list">Filtrelenmiş liste boş olduğundan filtreler öntanımlı değerlerine döndürüldü</string>
     <string name="dialog_refuse">Uğraşamam</string>
-    <string name="dialog_approve">Hadi yapalım</string>
+    <string name="dialog_approve">Hadi yapalım!</string>
     <string name="ignore_battery_optimization_title">Pil optimizasyonu</string>
     <string name="ignore_battery_optimization_message">Yedeklemeler bazen durabilir. Bunu engellemek için, pil optimizasyonunu kapatmalısınız</string>
     <string name="ignore_battery_optimization_not_supported">Ne yazık ki bu cihaz pil optimizasyonu kapatmayı desteklemiyor!</string>
@@ -193,7 +193,7 @@
     <string name="apptype_special">Özel yedekleme</string>
     <string name="sortDataSize">Veri boyutu</string>
     <string name="dialog_unlock">Kilidi aç</string>
-    <string name="dialog_start">Haydi başlayalım</string>
+    <string name="dialog_start">Hadi başlayalım!</string>
     <string name="dialogSave">Kaydet</string>
     <string name="sched_submode">Yedekleme alt modu:</string>
     <string name="sched_add">Zamanlama Ekle</string>
