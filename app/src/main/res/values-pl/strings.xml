@@ -24,7 +24,7 @@
     <string name="searchHint">Wyszukaj aplikacje</string>
     <string name="deleteBackup">Usuń kopię zapasową</string>
     <string name="uninstall">Odinstaluj aplikację</string>
-    <string name="uninstallProgress">Odinstalowywanie</string>
+    <string name="uninstallProgress">Odinstalowywanie…</string>
     <string name="showOnlySystem">Pokaż tylko aplikacje systemowe</string>
     <string name="showOnlyUser">Pokaż tylko aplikacje użytkownika</string>
     <string name="showNotBackedup">Pokaż aplikacje, które jeszcze nie mają kopii zapasowych</string>
@@ -43,8 +43,8 @@
     <string name="dialogCancel">Anuluj</string>
     <string name="dialogYes">Tak</string>
     <string name="dialogNo">Nie</string>
-    <string name="restoreDataWithoutApkError">Nie można przywrócić danych bez przywracania APK, pakiet nie jest zainstalowany</string>
-    <string name="collectingData">Zbieranie informacji o pakiecie</string>
+    <string name="restoreDataWithoutApkError">Nie można przywrócić danych bez przywracania APK, pakiet nie jest zainstalowany.</string>
+    <string name="collectingData">Zbieranie informacji o pakiecie…</string>
     <string name="noSu">Nie można uzyskać uprawnień superuser</string>
     <string name="busyboxProblem">Nie można znaleźć Busybox, sprawdź dziennik błędów</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
@@ -54,10 +54,10 @@
     <string name="backupFolderError">Proszę ustawić prawidłową ścieżkę w ustawieniach i upewnić się, że istnieje lub jest możliwa do stworzenia</string>
     <string name="shellReturnSuccess">Sukces</string>
     <string name="shellReturnError">Błąd</string>
-    <string name="backupProgress">Tworzenie kopii</string>
+    <string name="backupProgress">Tworzenie kopii…</string>
     <string name="backupSuccess">Zakończono tworzenie kopii zapasowej</string>
     <string name="backupFailure">Błąd podczas tworzenia kopii zapasowej</string>
-    <string name="restoreProgress">Przywracanie</string>
+    <string name="restoreProgress">Przywracanie…</string>
     <string name="restoreSuccess">Przywracanie zakończone</string>
     <string name="restoreFailure">Błąd podczas przywracania</string>
     <string name="batchSuccess">Operacja zakończona</string>
@@ -71,20 +71,17 @@
     <string name="prefs_help">Pomoc</string>
     <string name="notInstalledModeDataWarning">Nie można przywrócić aplikacji z kopii zapasowej bez APK</string>
     <string name="shareTitle">Udostępnij</string>
-
     <string name="tools_title">Narzędzia</string>
-    <string name="batchDeleteMessage">Usuwanie kopii zapasowych</string>
+    <string name="batchDeleteMessage">Usuwanie kopii zapasowych…</string>
     <string name="batchDeleteNotificationTitle">Usuń kopie zapasowe</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Usunięto kopie zapasowe:</string>
     <string name="batchDeleteNothingToDelete">Brak kopii zapasowych do usunięcia</string>
-
     <string name="enablePackage">Włącz</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Włącz dla użytkowników</string>
     <string name="disablePackage">Wyłącz</string>
     <string name="disablePackageTitle">Wyłącz dla użytkowników</string>
-
     <string name="prefs_title">Ustawienia</string>
     <string name="prefs_service">Ustawienia usługi</string>
     <string name="prefs_user">Ustawienia użytkownika</string>
@@ -108,41 +105,35 @@
     <string name="prefs_password_summary">Ustaw na puste aby wyłączyć szyfrowanie</string>
     <string name="prefs_encryption_summary">Włącz aby szyfrować kopię zapasową</string>
     <string name="prefs_excludecache_summary">Usuń pamięć podręczną aplikacji przed wykonaniem kopii</string>
-    <string name="prefs_acquirewakelock_summary">Pozyskuj wakelock\'i podczas wykonywania grupowych operacji w celu uniknięcia przejścia w stan spoczynku, przyspiesza tworzenie kopii i przywracanie, ale zużywa dużo energii</string>
-    <string name="prefs_oldbackups_summary">Filtrowanie kopii zapasowych starszych niż wartość w dniach, używany z filtrem „pokaż stare kopie zapasowe”</string>
+    <string name="prefs_acquirewakelock_summary">Pozyskuj wakelock\'i podczas wykonywania grupowych operacji w celu uniknięcia przejścia w stan spoczynku, przyspiesza tworzenie kopii i przywracanie, ale zużywa dużo energii.</string>
+    <string name="prefs_oldbackups_summary">Filtrowanie kopii zapasowych starszych niż wartość w dniach, używany z filtrem „pokaż stare kopie zapasowe”.</string>
     <string name="prefs_copyselfapk_summary">Umieść kopię zapasową OAndBackupX w najwyższym poziomie katalogu kopii zapasowej podczas tworzenia kopii</string>
     <string name="prefs_rememberfiltering_summary">Zapisuje wybraną metodę sortowania i filtrowania. Rozpatrywane są tylko te zaznaczone zaznaczeniem w menu.</string>
     <string name="prefs_quickreboot_summary">Zabija proces system_server aby wymusić restart przestrzeni użytkownika</string>
     <string name="prefs_batchdelete_summary">Usuń kopie zapasowe aplikacji, które nie są obecnie zainstalowane</string>
-
     <string name="sched_title">Harmonogram</string>
     <string name="sched_notificationMessage">Planowana kopia zapasowa</string>
     <string name="sched_interval">Przedział czasu w dniach:</string>
     <string name="sched_hourOfDay">Godzina dnia:</string>
     <string name="sched_checkbox">Włącz</string>
     <string name="sched_activateButton">Rozpocznij teraz tworzenie kopii zapasowej</string>
-    <string name="sched_startingbackup">Uruchamianie zaplanowanej kopii zapasowej</string>
+    <string name="sched_startingbackup">Uruchamianie zaplanowanej kopii zapasowej…</string>
     <string name="sched_mode">Tryb tworzenia kopii zapasowych:</string>
     <string name="sched_timeLeft">Godziny do następnej kopii zapasowej:</string>
     <string name="sched_customListUpdateButton">Uaktualnij listę niestandardową</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
-
     <string name="sched_blacklist">Czarna lista</string>
-
     <string name="spec_accounts">Konta</string>
     <string name="spec_appwidgets">Widżety aplikacji</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Używanie danych i zasady</string>
     <string name="spec_wallpaper">Tapeta</string>
     <string name="spec_wifiAccessPoints">Punkty dostępowe Wifi</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="error_creating_notification_channel">Nie można stworzyć kanału powiadomień</string>
     <string name="error_updating_schedule_mode">Błąd aktualizowania %1$s planowania %2$d</string>
     <string name="permission_not_granted">Potrzeba pozwolenia na dostęp do pamięci zewnętrznej</string>
     <string name="restart_dialog">Aplikacja musi być uruchomiona ponownie</string>
-
     <string name="filter_options">Filtry:</string>
     <string name="sort_options">Sortuj po:</string>
     <string name="sortLabel">Tekst</string>
