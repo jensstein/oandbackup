@@ -374,4 +374,8 @@
     <string name="prefs_theme_dynamic"></string>
     <string name="intro_permission_batteryoptimization"></string>
     <string name="stats_backups"></string>
+    <string name="enable_encryption_message"></string>
+    <string name="dialog_approve"></string>
+    <string name="dialog_start"></string>
+    <string name="sched_exported"></string>
 </resources>
