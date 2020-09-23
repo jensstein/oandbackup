@@ -383,8 +383,8 @@
     <string name="prefs_useexpedited_summary" translatable="false"></string>
     <string name="forceKillMessage"/>
     <string name="msg_appkill_warning"/>
-    <string name="sched_exported"/>
-    <string name="enable_encryption_message"/>
+    <string name="sched_exported"></string>
+    <string name="enable_encryption_message"></string>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata_summary"></string>
     <string name="prefs_nobackupdata"></string>
