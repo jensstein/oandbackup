@@ -40,7 +40,7 @@
     <string name="dialogCancel">Annulla</string>
     <string name="dialogYes">Sì</string>
     <string name="dialogNo">No</string>
-    <string name="restoreDataWithoutApkError">Non è possibile ripristinare i dati senza ripristinare l\'APK, l\'applicazione non è installata</string>
+    <string name="restoreDataWithoutApkError">Non è possibile ripristinare i dati senza ripristinare l\'APK, l\'applicazione non è installata.</string>
     <string name="collectingData">Caricamento delle informazioni sulle applicazioni…</string>
     <string name="utilboxCheck">Controllo della presenza di busybox/toybox…</string>
     <string name="noSu">Impossibile ottenere i permessi da superuser</string>
@@ -70,7 +70,7 @@
     <string name="notInstalledModeDataWarning">Impossibile ripristinare l\'applicazione da un backup senza apk</string>
     <string name="shareTitle">Condividi</string>
     <string name="tools_title">Strumenti</string>
-    <string name="prefs_batchdelete">Elimina i backup</string>
+    <string name="prefs_batchdelete">Elimina i backup\?</string>
     <string name="batchDeleteMessage">Eliminazione dei backup…</string>
     <string name="batchDeleteNotificationTitle">Cancella i backup</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -83,11 +83,11 @@
     <string name="disablePackageTitle">Disabilita per gli utenti</string>
     <string name="prefs_title">Opzioni</string>
     <string name="prefs_acquirewakelock">Impedisci la modalità sleep</string>
-    <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia</string>
+    <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
     <string name="prefs_pathbackupfolder">Cartella di backup</string>
     <string name="prefs_oldbackups">Filtra i backup per obsolescenza</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'</string>
+    <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'.</string>
     <string name="prefs_copyselfapk">Copia l\'APK del programma</string>
     <string name="prefs_copyselfapk_summary">Crea una copia di oandbackup nel livello superiore della cartella di backup quando effettua il salvataggio</string>
     <string name="prefs_languages">Lingua</string>
@@ -126,7 +126,7 @@
     <string name="prefs_encryption_summary">Attiva per criptare i dati dei backup</string>
     <string name="prefs_excludecache_summary">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
     <string name="prefs_quickreboot_summary">Chiude il processo system_server per forzare un riavvio dello spazio utente</string>
-    <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment</string>
+    <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment.</string>
     <string name="sched_activateButton">Inizia backup ora</string>
     <string name="sched_blacklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
