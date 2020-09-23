@@ -43,7 +43,7 @@
     <string name="dialogCancel">Tühista</string>
     <string name="dialogYes">Jah</string>
     <string name="dialogNo">Ei</string>
-    <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud</string>
+    <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud.</string>
     <string name="collectingData">Paketi info kogumine…</string>
     <string name="noSu">Superuseri õiguste saamine ebaõnnestus</string>
     <string name="busyboxProblem">Busyboxi ei leitud, palun kontrolli vealogi</string>
@@ -87,7 +87,7 @@
     <string name="prefs_user">Kasutaja eelistused</string>
     <string name="prefs_theme">Teema</string>
     <string name="prefs_acquirewakelock">Väldi unerežiimi</string>
-    <string name="prefs_batchdelete">Kustuta varundused</string>
+    <string name="prefs_batchdelete">Kustuta varundused\?</string>
     <string name="prefs_pathbackupfolder">Varunduste kaust</string>
     <string name="prefs_oldbackups">Filtreeri varundusi vanuse järgi</string>
     <string name="prefs_copyselfapk">Kopeeri oma APK</string>
@@ -105,12 +105,12 @@
     <string name="prefs_password_summary">Krüpteeringu keelamiseks jäta tühjaks</string>
     <string name="prefs_encryption_summary">Luba, et krüpteerida andmevarundusi</string>
     <string name="prefs_excludecache_summary">Välista andmevarundusest rakenduse vahemälu</string>
-    <string name="prefs_acquirewakelock_summary">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt</string>
-    <string name="prefs_oldbackups_summary">Filtreeri varundusi, mis on vanemad kui määratud väärtus (päevades). Kasutatakse filtri \"Kuva vanu varundusi\" puhul</string>
+    <string name="prefs_acquirewakelock_summary">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt.</string>
+    <string name="prefs_oldbackups_summary">Filtreeri varundusi, mis on vanemad kui määratud väärtus (päevades). Kasutatakse filtri \"Kuva vanu varundusi\" puhul.</string>
     <string name="prefs_copyselfapk_summary">Aseta varundamisel OAndBackupX-i koopia varunduskausta juurtasemele</string>
     <string name="prefs_rememberfiltering_summary">Salvestab valitud sorteerimise ja filtreerimise meetodi. Arvestatakse vaid neid, mida märgid menüüs linnukesega.</string>
     <string name="prefs_quickreboot_summary">Tapab system_server protsessi, sundimaks kasutajakeskkonna taaskäivitamist</string>
-    <string name="prefs_batchdelete_summary">Kustuta kõikide hetkel mittepaigaldatud rakenduste varundused</string>
+    <string name="prefs_batchdelete_summary">Kustuta kõikide hetkel mittepaigaldatud rakenduste varundused.</string>
     <string name="sched_title">Ajastamine</string>
     <string name="sched_notificationMessage">Ajastatud varundus</string>
     <string name="sched_interval">Intervall päevades:</string>
