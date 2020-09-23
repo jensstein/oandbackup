@@ -40,7 +40,7 @@
     <string name="dialogCancel">Annuleer</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nee</string>
-    <string name="restoreDataWithoutApkError">Kan de data niet terugzetten zonder de APK terug te zetten, pakket is niet geïnstalleerd</string>
+    <string name="restoreDataWithoutApkError">Kan de data niet terugzetten zonder de APK terug te zetten, pakket is niet geïnstalleerd.</string>
     <string name="collectingData">Pakketinformatie aan het verzamelen…</string>
     <string name="noSu">Kon geen superuser rechten verkrijgen</string>
     <string name="busyboxProblem">Kon busybox niet vinden. Controleer de foutlog</string>
@@ -69,7 +69,7 @@
     <string name="notInstalledModeDataWarning">App kan niet teruggezet worden vanuit een back-up zonder een APK</string>
     <string name="shareTitle">Delen</string>
     <string name="tools_title">Hulpmiddelen</string>
-    <string name="prefs_batchdelete">Verwijder back-ups</string>
+    <string name="prefs_batchdelete">Verwijder back-ups\?</string>
     <string name="batchDeleteMessage">Back-ups aan het verwijderen…</string>
     <string name="batchDeleteNotificationTitle">Verwijder back-ups</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,11 +82,11 @@
     <string name="disablePackageTitle">Uitschakelen voor gebuikers</string>
     <string name="prefs_title">Voorkeuren</string>
     <string name="prefs_acquirewakelock">Voorkom slaapmodus</string>
-    <string name="prefs_acquirewakelock_summary">Zorg voor een wakelock tijdens batch operaties om slaapmodus te voorkomen. Dit zal het back-uppen en terugzetten aanzienlijk versnellen maar zal meer energie verbruiken</string>
+    <string name="prefs_acquirewakelock_summary">Zorg voor een wakelock tijdens batch operaties om slaapmodus te voorkomen. Dit zal het back-uppen en terugzetten aanzienlijk versnellen maar zal meer energie verbruiken.</string>
     <string name="prefs_pathbackupfolder">Back-up folder</string>
     <string name="prefs_oldbackups">Filter back-ups op leeftijd</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filter back-ups op \'ouder dan\', met dagen als waarde. Wordt gebruikt i.c.m. de filter \'laat oude back-ups zien\'</string>
+    <string name="prefs_oldbackups_summary">Filter back-ups op \'ouder dan\', met dagen als waarde. Wordt gebruikt i.c.m. de filter \'laat oude back-ups zien\'.</string>
     <string name="prefs_copyselfapk">Kopieer eigen APK</string>
     <string name="prefs_copyselfapk_summary">Plaats een kopie van OAndBackupX op het hoogste niveau van de back-up folder wanneer deze geback-upt wordt</string>
     <string name="prefs_languages">Taal</string>
@@ -180,7 +180,7 @@
     <string name="sched_submode">Backup sub-modus:</string>
     <string name="sched_add">Voeg planning toe</string>
     <string name="prefs_logviewer">Bekijk de log</string>
-    <string name="prefs_batchdelete_summary">Verwijder back-ups van alle apps die op het moment niet geïnstalleerd zijn</string>
+    <string name="prefs_batchdelete_summary">Verwijder back-ups van alle apps die op het moment niet geïnstalleerd zijn.</string>
     <string name="prefs_quickreboot_summary">Sluit het proces system_server af om een herstart van de gebruikers ruimte af te dwingen</string>
     <string name="prefs_deviceprotecteddata_summary">Maakt back-up en herstelt data die geplaatst is in data/user_de</string>
     <string name="prefs_deviceprotecteddata">Back-up toestel beveiligde data</string>
