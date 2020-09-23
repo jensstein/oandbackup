@@ -20,7 +20,7 @@
     <string name="searchHint">Αναζήτηση εφαρμογών</string>
     <string name="deleteBackup">Διαγραφή αντιγράφου</string>
     <string name="uninstall">Απεγκατάσταση εφαρμογής</string>
-    <string name="uninstallProgress">Απεγκατάσταση</string>
+    <string name="uninstallProgress">Απεγκατάσταση…</string>
     <string name="radioAll">Όλες οι εφαρμογές</string>
     <string name="showOnlySystem">Μόνον εφαρμογές συστήματος</string>
     <string name="showOnlyUser">Μόνον εφαρμογές χρήστη</string>
@@ -40,9 +40,8 @@
     <string name="dialogCancel">Ακύρωση</string>
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
-    <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο</string>
-    <string name="collectingData">Συλλογή πληροφοριών πακέτου</string>
-
+    <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο.</string>
+    <string name="collectingData">Συλλογή πληροφοριών πακέτου…</string>
     <string name="noSu">Αδυναμία απόκτησης αδειών υπερχρήστη</string>
     <string name="busyboxProblem">Αδυναμία εύρεσης busybox. Παρακαλώ ελέγξτε το αρχείο καταγραφής σφαλμάτων</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
@@ -52,10 +51,10 @@
     <string name="backupFolderError">Παρακαλώ ορίστε το σωστό φάκελο στις προτιμήσεις και βεβαιωθείτε ότι υπάρχει ή είναι δημιουγήσιμος</string>
     <string name="shellReturnSuccess">Επιτυχία</string>
     <string name="shellReturnError">Σφάλμα</string>
-    <string name="backupProgress">Δημιουργία αντιγράφου</string>
+    <string name="backupProgress">Δημιουργία αντιγράφου…</string>
     <string name="backupSuccess">Η δημιουργία αντιγράφου ολοκληρώθηκε</string>
     <string name="backupFailure">Σφάλμα κατά τη δημιουργία αντιγράφου</string>
-    <string name="restoreProgress">Επαναφορά</string>
+    <string name="restoreProgress">Επαναφορά…</string>
     <string name="restoreSuccess">Η επαναφορά ολοκληρώθηκε</string>
     <string name="restoreFailure">Σφάλμα κατά την επαναφορά</string>
     <string name="batchSuccess">Η διαδικασία ολοκληρώθηκε</string>
@@ -69,26 +68,23 @@
     <string name="prefs_help">Βοήθεια</string>
     <string name="notInstalledModeDataWarning">Η εφαρμογή δεν μπορεί να επαναφερθεί από ένα αντίγραφο χωρίς apk</string>
     <string name="shareTitle">Κοινοποίηση</string>
-
     <string name="tools_title">Εργαλεία</string>
-    <string name="batchDeleteMessage">Διαγραφή αντιγράφων</string>
+    <string name="batchDeleteMessage">Διαγραφή αντιγράφων…</string>
     <string name="batchDeleteNotificationTitle">Διαγραφή αντιγράφων</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Διεγραμμένα αντίγραφα:</string>
     <string name="batchDeleteNothingToDelete">Δεν υπάρχουν αντίγραφα για διαγραφή</string>
-
     <string name="enablePackage">Ενεργοποίηση</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Ενεργοποίηση για χρήστες</string>
     <string name="disablePackage">Απενεργοποίηση</string>
     <string name="disablePackageTitle">Απενεργοποίηση για χρήστες</string>
-
     <string name="prefs_title">Προτιμήσεις</string>
     <string name="prefs_service">Προτιμήσεις υπηρεσίας</string>
     <string name="prefs_user">Προτιμήσεις χρήστη</string>
     <string name="prefs_theme">Θέμα</string>
     <string name="prefs_acquirewakelock">Αποτροπή ύπνου</string>
-    <string name="prefs_batchdelete">Διαγραφή αντιγράφων</string>
+    <string name="prefs_batchdelete">Διαγραφή αντιγράφων\?</string>
     <string name="prefs_pathbackupfolder">Φάκελος αντιγράφων</string>
     <string name="prefs_oldbackups">Φιλτράρισμα αντιγράφων κατά παλαιότητα</string>
     <string name="prefs_copyselfapk">Αντιγραφή της ίδιας της εφαρμογής</string>
@@ -106,41 +102,35 @@
     <string name="prefs_password_summary">Αφήστε κενό για απενεργοποίηση κρυπτογράφησης</string>
     <string name="prefs_encryption_summary">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
     <string name="prefs_excludecache_summary">Καθαρισμός της μνήμης cache της εφαρμογής πριν τη δημιουργία αντιγράφου δεδομένων</string>
-    <string name="prefs_acquirewakelock_summary">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια</string>
-    <string name="prefs_oldbackups_summary">Φιλτράρισμα αντιγράφων παλαιότερων από την τιμή σε μέρες. Χρησιμοποιείται μαζί με το φίλτρο \'εμφάνιση παλαιών αντιγράφων\'</string>
+    <string name="prefs_acquirewakelock_summary">Απόκτηση wakelock κατά την εκτέλεση διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Θα επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά αλλά θα καταναλώνει περισσότερη ενέργεια.</string>
+    <string name="prefs_oldbackups_summary">Φιλτράρισμα αντιγράφων παλαιότερων από την τιμή σε μέρες. Χρησιμοποιείται μαζί με το φίλτρο \'εμφάνιση παλαιών αντιγράφων\'.</string>
     <string name="prefs_copyselfapk_summary">Τοποθετήστε ένα αντίγραφο του OAndBackupX στο υψηλότερο επίπεδο του φακέλου αντιγράφων όταν δημιουργηθεί αντίγραφο</string>
     <string name="prefs_rememberfiltering_summary">Αποθηκεύει την επιλεγμένη μέθοδο ταξινόμησης και φιλτραρίσματος. Μόνον αυτά που είναι σημειωμένα με ένα κουτάκι στον κατάλογο λαμβάνονται υπόψιν.</string>
     <string name="prefs_quickreboot_summary">Τερματίζει τη διεργασία system_server ώστε να εξαναγκάσει την επανεκκίνηση του χώρου χρήστη</string>
-    <string name="prefs_batchdelete_summary">Διαγραφή των αντιγράφων όλων των εφαρμογών που δεν είναι εγκατεστημένες στο παρόν</string>
-
+    <string name="prefs_batchdelete_summary">Διαγραφή των αντιγράφων όλων των εφαρμογών που δεν είναι εγκατεστημένες στο παρόν.</string>
     <string name="sched_title">Προγραμματισμός</string>
     <string name="sched_notificationMessage">Προγραμματισμένο αντίγραφο</string>
     <string name="sched_interval">Μεσοδιάστημα σε ημέρες:</string>
     <string name="sched_hourOfDay">Ώρα της ημέρας:</string>
     <string name="sched_checkbox">Ενεργοποίηση</string>
     <string name="sched_activateButton">Εκκίνηση δημιουργίας αντιγράφου τώρα</string>
-    <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου</string>
+    <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου…</string>
     <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Ώρες μέχρι το επόμενο αντίγραφο:</string>
     <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
-
     <string name="sched_blacklist">Μαύρη λίστα</string>
-
     <string name="spec_accounts">Λογαριασμοί</string>
     <string name="spec_appwidgets">Γραφικά στοιχεία Εφαρμογής</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Χρήση Δεδομένων και Άδεια</string>
     <string name="spec_wallpaper">Ταπετσαρία</string>
     <string name="spec_wifiAccessPoints">Σημεία Πρόσβασης Wifi</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="error_creating_notification_channel">Αδυναμία δημιουργίας καναλιού ειδοποιήσεων</string>
     <string name="error_updating_schedule_mode">Σφάλμα ενημέρωσης %1$s του προγράμματος %2$d</string>
     <string name="permission_not_granted">Απαιτείται άδεια πρόσβασης στον εξωτερικό χώρο</string>
     <string name="restart_dialog">Φαίνεται πως η εφαρμογή χρειάζεται να επανεκκινηθεί</string>
-
     <string name="filter_options">Φίλτρα:</string>
     <string name="sort_options">Ταξινόμηση κατά:</string>
     <string name="sortLabel">Ετικέτα</string>
