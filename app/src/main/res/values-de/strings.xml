@@ -36,11 +36,11 @@
     <string name="sort">Sortieren und Filtern</string>
     <string name="uninstallDialogMessage">Diese App deinstallieren?</string>
     <string name="deleteBackupDialogMessage">Sicherungsdateien löschen?</string>
-    <string name="dialogOK">Ok</string>
+    <string name="dialogOK">OK</string>
     <string name="dialogCancel">Abbrechen</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nein</string>
-    <string name="restoreDataWithoutApkError">Kann Daten nicht ohne APK wiederherstellen, Paket ist nicht installiert!</string>
+    <string name="restoreDataWithoutApkError">Kann Daten ohne die APK nicht wiederherstellen, Paket ist nicht installiert!</string>
     <string name="collectingData">Paketinformationen sammeln…</string>
     <string name="utilboxCheck">Überprüfe auf Busybox/Toybox…</string>
     <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
@@ -98,7 +98,7 @@
     <string name="sched_title">Sicherung planen</string>
     <string name="sched_notificationMessage">Geplante Sicherung</string>
     <string name="sched_interval">Intervall in Tagen:</string>
-    <string name="sched_hourOfDay">Stunde des Tages:</string>
+    <string name="sched_hourOfDay">Die Uhrzeit:</string>
     <string name="sched_checkbox">Aktivieren</string>
     <string name="sched_activateButton">Sicherung jetzt starten</string>
     <string name="sched_startingbackup">Geplante Sicherung starten …</string>
@@ -111,7 +111,7 @@
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Datenschutzbestimmungen</string>
     <string name="spec_wallpaper">Hintergrundbild</string>
-    <string name="spec_wifiAccessPoints">WLAN Access-Point</string>
+    <string name="spec_wifiAccessPoints">WLAN Zugriffspunkte</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
     <string name="sched_blacklist">Ausschlussliste</string>
     <string name="filter_options">Filter:</string>
