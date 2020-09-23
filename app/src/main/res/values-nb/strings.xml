@@ -20,7 +20,7 @@
     <string name="searchHint">Søk etter apper</string>
     <string name="deleteBackup">Slett sikkerhetskopi</string>
     <string name="uninstall">Avinstaller app</string>
-    <string name="uninstallProgress">Avinstallerer</string>
+    <string name="uninstallProgress">Avinstallerer…</string>
     <string name="radioAll">Vis alle apper</string>
     <string name="showOnlySystem">Vis bare system apper</string>
     <string name="showOnlyUser">Vis bare vanlige apper</string>
@@ -40,8 +40,8 @@
     <string name="dialogCancel">Avbrut</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nei</string>
-    <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APK-en, pakken er ikke installert</string>
-    <string name="collectingData">Samler informasjon om pakken</string>
+    <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APK-en, pakken er ikke installert.</string>
+    <string name="collectingData">Samler informasjon om pakken…</string>
     <string name="utilboxCheck">Sjekker for \'busybox/toybox\'</string>
     <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>
     <string name="busyboxProblem">Fant ikke BusyBox. Sjekk feilrapporten</string>
@@ -52,10 +52,10 @@
     <string name="backupFolderError">Angi den korrekte filstien i innstillingene og vær sikker at den eksisterer og er opprettbar</string>
     <string name="shellReturnSuccess">Suksess</string>
     <string name="shellReturnError">Feil</string>
-    <string name="backupProgress">Lager sikkerhetskopi</string>
+    <string name="backupProgress">Lager sikkerhetskopi…</string>
     <string name="backupSuccess">Sikkerhetskopi ferdig</string>
     <string name="backupFailure">Feil under lagring av sikkerhetskopien</string>
-    <string name="restoreProgress">Gjenoppretter</string>
+    <string name="restoreProgress">Gjenoppretter…</string>
     <string name="restoreSuccess">Gjenoppretting ferdig</string>
     <string name="restoreFailure">Feil under gjenoppretting</string>
     <string name="batchSuccess">Prosessen er avsluttet</string>
@@ -71,7 +71,7 @@
     <string name="shareTitle">Del med</string>
     <string name="tools_title">Verktøyer</string>
     <string name="prefs_batchdelete">Slett sikkerhetskopier?</string>
-    <string name="batchDeleteMessage">Sletter sikkerhetskopier</string>
+    <string name="batchDeleteMessage">Sletter sikkerhetskopier…</string>
     <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Sikkerhetskopier ble slettet: </string>
@@ -101,7 +101,7 @@
     <string name="sched_hourOfDay">Klokkeslett:</string>
     <string name="sched_checkbox">Aktiver</string>
     <string name="sched_activateButton">Start å lage sikkerhetskopien nå</string>
-    <string name="sched_startingbackup">Starter planlegget sikkerhetskopi</string>
+    <string name="sched_startingbackup">Starter planlegget sikkerhetskopi…</string>
     <string name="sched_mode">Metode for sikkerhetskopi:</string>
     <string name="sched_timeLeft">Timer til neste sikkerhetskopien:</string>
     <string name="sched_customListUpdateButton">Oppdater tilpasset liste</string>
