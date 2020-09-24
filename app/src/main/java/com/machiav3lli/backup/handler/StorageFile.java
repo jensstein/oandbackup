@@ -24,6 +24,7 @@ public class StorageFile {
     private final StorageFile parent;
     private final Context context;
     private Uri uri;
+    private String name;
 
     protected StorageFile(@Nullable StorageFile parent, Context context, Uri uri) {
         this.parent = parent;
@@ -130,7 +131,9 @@ public class StorageFile {
     }
 
     public String getName() {
-        return DocumentContractApi.getName(this.context, this.uri);
+        if(this.name == null)
+            this.name = DocumentContractApi.getName(this.context, this.uri);
+        return this.name;
     }
 
     public StorageFile getParentFile() {
