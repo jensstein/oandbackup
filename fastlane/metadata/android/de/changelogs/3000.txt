@@ -1,0 +1,11 @@
+**OUndBackupX 3.0.0**
+
+##### DIESE VERSION IST NICHT MIT DEN VORHERIGEN VERSIONEN KOMPATIBEL
+* Geändert: Standard-Sicherungsverzeichnis nach /OABX
+* neu programmiert Verschlüsselung (Danke @Pizze)
+* Hinzugefügt: Sortierung nach Datengröße
+* Hinzugefügt: Warndialog über die Aktivierung der Verschlüsselung
+* Aktualisiert: neu gestaltete Hilfe
+* Hinzugefügt: Tooltips für alle Schaltflächen-Symbole
+* Aktualisiert: adaptive Benutzeroberfläche für das AppSheet
+und mehr ...

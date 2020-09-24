@@ -1,0 +1,6 @@
+**OUndBackupX 0.9.8**
+* Repariert: Filter merken
+* Repariert: Auswählen des Wertes für alte Backups
+* Repariert: leere gefilterte Liste verursacht Absturz
+* Optimiert: Scheduler-Benutzeroberfläche
+* Andere Optimierungen
