@@ -20,7 +20,7 @@
     <string name="searchHint">Buscar aplicaciones</string>
     <string name="deleteBackup">Eliminar respaldo</string>
     <string name="uninstall">Desinstalar aplicación</string>
-    <string name="uninstallProgress">Desinstalando</string>
+    <string name="uninstallProgress">Desinstalando…</string>
     <string name="radioAll">Mostrar todas las aplicaciones</string>
     <string name="showOnlySystem">Mostrar aplicaciones del sistema</string>
     <string name="showOnlyUser">Mostrar aplicaciones del usuario</string>
@@ -40,21 +40,21 @@
     <string name="dialogCancel">Cancelar</string>
     <string name="dialogYes">Sí</string>
     <string name="dialogNo">No</string>
-    <string name="restoreDataWithoutApkError">No es posible restaurar los datos sin la APK, el paquete no está instalado :</string>
-    <string name="collectingData">Obteniendo información de paquetes</string>
+    <string name="restoreDataWithoutApkError">No es posible restaurar los datos sin la APK, el paquete no está instalado.</string>
+    <string name="collectingData">Obteniendo información de paquetes…</string>
     <string name="noSu">No fue posible obtener permisos de superusuario</string>
     <string name="busyboxProblem">No se encontró busybox. Consulte el registro de errores</string>
-        <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">No se ha podido crear</string>
-        <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
     <string name="fallbackToDefault">Volver al valor predeterminado</string>
     <string name="backupFolderError">Por favor defina la ruta correcta en las preferencias y asegúrese de que exista o pueda ser creada</string>
     <string name="shellReturnSuccess">Completado</string>
     <string name="shellReturnError">Error</string>
-    <string name="backupProgress">Respaldando...</string>
+    <string name="backupProgress">Respaldando…</string>
     <string name="backupSuccess">Respaldo completo</string>
     <string name="backupFailure">Error al respaldar</string>
-    <string name="restoreProgress">Restaurando...</string>
+    <string name="restoreProgress">Restaurando…</string>
     <string name="restoreSuccess">Restauración completa</string>
     <string name="restoreFailure">Error al restaurar</string>
     <string name="batchSuccess">Operación terminada</string>
@@ -68,28 +68,25 @@
     <string name="prefs_help">Ayuda</string>
     <string name="notInstalledModeDataWarning">La aplicación no se puede restaurar desde un respaldo sin la APK</string>
     <string name="shareTitle">Compartir</string>
-
     <string name="tools_title">Herramientas</string>
     <string name="prefs_batchdelete">¿Eliminar respaldos?</string>
-    <string name="batchDeleteMessage">Eliminando respaldos...</string>
+    <string name="batchDeleteMessage">Eliminando respaldos…</string>
     <string name="batchDeleteNotificationTitle">Eliminar respaldos</string>
-        <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Respaldos eliminados:</string>
     <string name="batchDeleteNothingToDelete">Sin respaldos</string>
-
     <string name="enablePackage">Habilitar</string>
-        <!-- enablePackageTitle: title for a list of checkable users -->
+    <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Habilitar para usuarios</string>
     <string name="disablePackage">Deshabilitar</string>
     <string name="disablePackageTitle">Deshabilitar para usuarios</string>
-
     <string name="prefs_title">Preferencias</string>
     <string name="prefs_acquirewakelock">Impedir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Obtiene un wakelock durante las operaciones en lote para prevenir la suspensión. Acelera los respaldos y restauraciones considerablemente pero consumirá más energía.</string>
     <string name="prefs_pathbackupfolder">Carpeta de respaldos</string>
     <string name="prefs_oldbackups">Filtrar respaldos por antigüedad</string>
-        <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
-    <string name="prefs_oldbackups_summary">Filtrar respaldos anteriores al número de días especificados. Usando el filtro  \'Mostrar respaldos antiguos\'</string>
+    <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
+    <string name="prefs_oldbackups_summary">Filtrar respaldos anteriores al número de días especificados. Usando el filtro \'Mostrar respaldos antiguos\'.</string>
     <string name="prefs_copyselfapk">Autocopiar</string>
     <string name="prefs_copyselfapk_summary">Poner una copia de oandbackup en el nivel superior del directorio de respaldos cuando se respalde.</string>
     <string name="prefs_languages">Idiomas</string>
@@ -97,28 +94,23 @@
     <string name="prefs_rememberfiltering">Recordar orden y filtro</string>
     <string name="prefs_rememberfiltering_summary">Guarda el orden elegido y el método de filtrado. Solo los elementos marcados serán considerados.</string>
     <string name="prefs_enableSpecialBackups">Habilitar respaldos especiales</string>
-
     <string name="sched_title">Programación</string>
     <string name="sched_notificationMessage">Respaldos programados</string>
     <string name="sched_interval">Intervalo en días:</string>
     <string name="sched_hourOfDay">Hora del día:</string>
     <string name="sched_checkbox">Habilitar</string>
     <string name="sched_activateButton">Iniciar respaldo ahora</string>
-    <string name="sched_startingbackup">Iniciar respaldos programados</string>
+    <string name="sched_startingbackup">Iniciar respaldos programados…</string>
     <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_timeLeft">Horas hasta el próximo respaldo:</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
-
     <string name="sched_blacklist">Lista negra</string>
-
     <string name="spec_accounts">Cuentas</string>
     <string name="spec_appwidgets">Widgets de aplicaciones</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Uso y política de datos</string>
     <string name="spec_wallpaper">Fondos de pantalla</string>
     <string name="spec_wifiAccessPoints">Puntos de Acceso WiFi</string>
-
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
 </resources>

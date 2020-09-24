@@ -24,7 +24,7 @@
     <string name="searchHint">Cari aplikasi</string>
     <string name="deleteBackup">Hapus cadangan</string>
     <string name="uninstall">Copot pemasangan aplikasi</string>
-    <string name="uninstallProgress">Menghapus instalasi...</string>
+    <string name="uninstallProgress">Menghapus instalasi…</string>
     <string name="showOnlySystem">Hanya aplikasi sistem</string>
     <string name="showOnlyUser">Hanya aplikasi pengguna</string>
     <string name="showNotBackedup">Aplikasi tanpa cadangan</string>
@@ -43,8 +43,8 @@
     <string name="dialogCancel">Membatalkan</string>
     <string name="dialogYes">Iya</string>
     <string name="dialogNo">Tidak</string>
-    <string name="restoreDataWithoutApkError">Tidak dapat mengembalikan data tanpa mengembalikan APK, paket tidak diinstal</string>
-    <string name="collectingData">Mengumpulkan info paket...</string>
+    <string name="restoreDataWithoutApkError">Tidak dapat mengembalikan data tanpa mengembalikan APK, paket tidak diinstal.</string>
+    <string name="collectingData">Mengumpulkan info paket…</string>
     <string name="noSu">Tidak bisa mendapatkan izin pengguna super</string>
     <string name="busyboxProblem">Tidak dapat menemukan busybox. silakan periksa log kesalahan</string>
     <!-- mkfileError: kesalahan terjadi saat membuat file. format: string + " " + nama file -->
@@ -54,10 +54,10 @@
     <string name="backupFolderError">Harap tetapkan jalur yang benar dalam preferensi dan pastikan ada atau dapat dibuat</string>
     <string name="shellReturnSuccess">Keberhasilan</string>
     <string name="shellReturnError">Kesalahan</string>
-    <string name="backupProgress">Mencadangkan...</string>
+    <string name="backupProgress">Mencadangkan…</string>
     <string name="backupSuccess">Cadangan selesai</string>
     <string name="backupFailure">Kesalahan pada cadangan</string>
-    <string name="restoreProgress">Memulihkan...</string>
+    <string name="restoreProgress">Memulihkan…</string>
     <string name="restoreSuccess">Pulihkan lengkap</string>
     <string name="restoreFailure">Kesalahan saat memulihkan</string>
     <string name="batchSuccess">Operasi selesai</string>
@@ -71,26 +71,23 @@
     <string name="prefs_help">Tolong</string>
     <string name="notInstalledModeDataWarning">Aplikasi tidak dapat dipulihkan dari cadangan tanpa APK</string>
     <string name="shareTitle">Bagikan</string>
-
     <string name="tools_title">Alat</string>
-    <string name="batchDeleteMessage">Menghapus cadangan...</string>
+    <string name="batchDeleteMessage">Menghapus cadangan…</string>
     <string name="batchDeleteNotificationTitle">Hapus cadangan</string>
     <!-- tools_backupsDeleted: ditampilkan dalam pemberitahuan diikuti oleh jumlah cadangan yang dihapus -->
     <string name="batchDeleteBackupsDeleted">Cadangan dihapus:</string>
     <string name="batchDeleteNothingToDelete">Tidak ada cadangan untuk dihapus</string>
-
     <string name="enablePackage">Memungkinkan</string>
     <!-- enablePackageTitle: judul untuk daftar pengguna yang dapat diperiksa -->
     <string name="enablePackageTitle">Aktifkan untuk pengguna</string>
     <string name="disablePackage">Nonaktifkan</string>
     <string name="disablePackageTitle">Nonaktifkan untuk pengguna</string>
-
     <string name="prefs_title">Preferensi</string>
     <string name="prefs_service">Preferensi layanan</string>
     <string name="prefs_user">Preferensi pengguna</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_acquirewakelock">Cegah tidur</string>
-    <string name="prefs_batchdelete">Hapus cadangan</string>
+    <string name="prefs_batchdelete">Hapus cadangan\?</string>
     <string name="prefs_pathbackupfolder">Folder cadangan</string>
     <string name="prefs_oldbackups">Saring cadangan berdasarkan usia</string>
     <string name="prefs_copyselfapk">Salin sendiri APK</string>
@@ -108,41 +105,35 @@
     <string name="prefs_password_summary">Setel ke kosong untuk menonaktifkan enkripsi</string>
     <string name="prefs_encryption_summary">Aktifkan untuk mengenkripsi cadangan data</string>
     <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan backup data</string>
-    <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi</string>
-    <string name="prefs_oldbackups_summary">Saring cadangan yang lebih lama dari nilai dalam beberapa hari.  digunakan dengan filter \'tampilkan backup lama\'</string>
+    <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi.</string>
+    <string name="prefs_oldbackups_summary">Saring cadangan yang lebih lama dari nilai dalam beberapa hari. digunakan dengan filter \'tampilkan backup lama\'.</string>
     <string name="prefs_copyselfapk_summary">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan saat dicadangkan</string>
     <string name="prefs_rememberfiltering_summary">Menyimpan metode penyortiran dan penyaringan yang dipilih. Hanya yang ditandai oleh kotak centang di menu yang dipertimbangkan.</string>
     <string name="prefs_quickreboot_summary">Membunuh proses system_server untuk memaksa restart ruang pengguna</string>
-    <string name="prefs_batchdelete_summary">Hapus cadangan semua aplikasi yang saat ini tidak diinstal</string>
-
+    <string name="prefs_batchdelete_summary">Hapus cadangan semua aplikasi yang saat ini tidak diinstal.</string>
     <string name="sched_title">Penjadwalan</string>
     <string name="sched_notificationMessage">Pencadangan terjadwal</string>
     <string name="sched_interval">Interval dalam beberapa: hari</string>
     <string name="sched_hourOfDay">Jam hari:</string>
     <string name="sched_checkbox">Memungkinkan</string>
     <string name="sched_activateButton">Mulai cadangan sekarang</string>
-    <string name="sched_startingbackup">Mulai cadangan terjadwal...</string>
+    <string name="sched_startingbackup">Mulai cadangan terjadwal…</string>
     <string name="sched_mode">Mode cadangan:</string>
     <string name="sched_timeLeft">Waktu hingga cadangan berikutnya:</string>
     <string name="sched_customListUpdateButton">Perbarui daftar khusus</string>
     <string name="sched_excludeSystemCheckBox">Kecualikan aplikasi sistem</string>
-
     <string name="sched_blacklist">Daftar hitam</string>
-
     <string name="spec_accounts">Akun</string>
     <string name="spec_appwidgets">Widget Aplikasi</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Penggunaan dan Kebijakan Data</string>
     <string name="spec_wallpaper">Wallpaper</string>
     <string name="spec_wifiAccessPoints">Poin Akses Wifi</string>
-
     <!-- filebrowser_createDirectoryError: kesalahan terjadi saat mencoba membuat direktori. format: string + " " + nama direktori -->
-
     <string name="error_creating_notification_channel">Tidak dapat membuat saluran pemberitahuan</string>
     <string name="error_updating_schedule_mode">Kesalahan memperbarui %1$s dari jadwal %2$d</string>
     <string name="permission_not_granted">Diperlukan izin untuk mengakses penyimpanan eksternal</string>
     <string name="restart_dialog">Aplikasi sepertinya perlu direstart</string>
-
     <string name="filter_options">Filter:</string>
     <string name="sort_options">Sortir dengan:</string>
     <string name="sortLabel">Label</string>

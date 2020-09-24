@@ -24,7 +24,7 @@
     <string name="searchHint">搜索应用</string>
     <string name="deleteBackup">删除备份</string>
     <string name="uninstall">卸载应用</string>
-    <string name="uninstallProgress">正在卸载...</string>
+    <string name="uninstallProgress">正在卸载…</string>
     <string name="showOnlySystem">仅系统应用</string>
     <string name="showOnlyUser">仅用户应用</string>
     <string name="showNotBackedup">未备份的应用</string>
@@ -43,8 +43,8 @@
     <string name="dialogCancel">取消</string>
     <string name="dialogYes">是</string>
     <string name="dialogNo">否</string>
-    <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK</string>
-    <string name="collectingData">正在收集安装包信息...</string>
+    <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK.</string>
+    <string name="collectingData">正在收集安装包信息…</string>
     <string name="noSu">无法获得超级用户权限</string>
     <string name="busyboxProblem">未找到 busybox。请检查错误日志</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
@@ -54,10 +54,10 @@
     <string name="backupFolderError">请在首选项中设置正确的路径，并确保路径存在或可创建</string>
     <string name="shellReturnSuccess">成功</string>
     <string name="shellReturnError">错误</string>
-    <string name="backupProgress">正在备份...</string>
+    <string name="backupProgress">正在备份…</string>
     <string name="backupSuccess">备份完成</string>
     <string name="backupFailure">备份时出错</string>
-    <string name="restoreProgress">正在还原...</string>
+    <string name="restoreProgress">正在还原…</string>
     <string name="restoreSuccess">还原完成</string>
     <string name="restoreFailure">还原时出错</string>
     <string name="batchSuccess">操作完成</string>
@@ -72,7 +72,7 @@
     <string name="notInstalledModeDataWarning">应用无法从一个无 APK 的备份中还原</string>
     <string name="shareTitle">分享</string>
     <string name="tools_title">工具</string>
-    <string name="batchDeleteMessage">正在删除备份...</string>
+    <string name="batchDeleteMessage">正在删除备份…</string>
     <string name="batchDeleteNotificationTitle">删除备份</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">备份已删除：</string>
@@ -87,7 +87,7 @@
     <string name="prefs_user">用户首选项</string>
     <string name="prefs_theme">主题</string>
     <string name="prefs_acquirewakelock">阻止睡眠</string>
-    <string name="prefs_batchdelete">删除备份</string>
+    <string name="prefs_batchdelete">删除备份\?</string>
     <string name="prefs_pathbackupfolder">备份文件夹</string>
     <string name="prefs_oldbackups">按时间筛选备份</string>
     <string name="prefs_copyselfapk">复制本应用自身 APK</string>
@@ -105,19 +105,19 @@
     <string name="prefs_password_summary">设为空表示不加密</string>
     <string name="prefs_encryption_summary">启用以加密数据备份</string>
     <string name="prefs_excludecache_summary">进行数据备份之前清除应用缓存</string>
-    <string name="prefs_acquirewakelock_summary">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量</string>
-    <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用</string>
+    <string name="prefs_acquirewakelock_summary">在批量操作时获取唤醒锁以阻止手机睡眠。这将大大加快备份/还原速度，但同时也会消耗更多电量。</string>
+    <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用.</string>
     <string name="prefs_copyselfapk_summary">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
     <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些在菜单中被复选项标记的应用</string>
     <string name="prefs_quickreboot_summary">终止 system_server 进程以强制重启用户空间</string>
-    <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份</string>
+    <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份。</string>
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>
     <string name="sched_interval">间隔天数:</string>
     <string name="sched_hourOfDay">当天几点:</string>
     <string name="sched_checkbox">启用</string>
     <string name="sched_activateButton">现在开始备份</string>
-    <string name="sched_startingbackup">正在开始定时备份...</string>
+    <string name="sched_startingbackup">正在开始定时备份…</string>
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">距离下次备份的时间:</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>
@@ -172,9 +172,9 @@
     <string name="data_size">用户数据：</string>
     <string name="cache_size">缓存：</string>
     <string name="help_license">许可证</string>
-    <string name="intro_permission_batteryoptimization">计划任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题</string>
-    <string name="intro_permission_usageaccess">该应用需要此权限才能检查统计信息，应用的缓存及数据大小</string>
-    <string name="intro_permission_storage">该应用需要对存储的读/写权限来访问外部存储，以便设置自定义备份文件夹，并实现备份其他应用程序的外部数据/obb的可能性</string>
+    <string name="intro_permission_batteryoptimization">计划任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题。</string>
+    <string name="intro_permission_usageaccess">该应用需要此权限才能检查统计信息，应用的缓存及数据大小。</string>
+    <string name="intro_permission_storage">该应用需要对存储的读/写权限来访问外部存储，以便设置自定义备份文件夹，并实现备份其他应用程序的外部数据/obb的可能性。</string>
     <string name="intro_welcome_message">"OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+. 目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能
 \n  该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志
 \n  欢迎任何形式的贡献：翻译，想法，报告错误或是代码工作

@@ -40,7 +40,7 @@
     <string name="dialogCancel">Cancelar</string>
     <string name="dialogYes">Sim</string>
     <string name="dialogNo">Não</string>
-    <string name="restoreDataWithoutApkError">Não é possível restaurar os dados sem restaurar o APK, o pacote não está instalado</string>
+    <string name="restoreDataWithoutApkError">Não é possível restaurar os dados sem restaurar o APK, o pacote não está instalado.</string>
     <string name="collectingData">Coletando informação de pacote…</string>
     <string name="noSu">Não foi possível obter as permissões superuser</string>
     <string name="busyboxProblem">Não foi possível encontrar o BusyBox. Consulte o registo de erros</string>
@@ -69,7 +69,7 @@
     <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
     <string name="shareTitle">Partilhar</string>
     <string name="tools_title">Ferramentas</string>
-    <string name="prefs_batchdelete">Excluir backups</string>
+    <string name="prefs_batchdelete">Excluir backups\?</string>
     <string name="batchDeleteMessage">Excluindo backups…</string>
     <string name="batchDeleteNotificationTitle">Eliminar backups</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -82,11 +82,11 @@
     <string name="disablePackageTitle">Desativar para</string>
     <string name="prefs_title">Preferências</string>
     <string name="prefs_acquirewakelock">Impedir suspensão</string>
-    <string name="prefs_acquirewakelock_summary">Obter WakeLock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia</string>
+    <string name="prefs_acquirewakelock_summary">Obter WakeLock durante as operações em lote para impedir a suspensão. Melhora o desempenho mas consome mais energia.</string>
     <string name="prefs_pathbackupfolder">Pasta de backup</string>
     <string name="prefs_oldbackups">Filtrar backups por antiguidade</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filtrar backups mais antigos do que o \'valor\' em dias. Usado com o filtro \'Mostrar backups antigos\'</string>
+    <string name="prefs_oldbackups_summary">Filtrar backups mais antigos do que o \'valor\' em dias. Usado com o filtro \'Mostrar backups antigos\'.</string>
     <string name="prefs_copyselfapk">Copiar apk</string>
     <string name="prefs_copyselfapk_summary">Colocar cópia do oandbackup no nível superior da pasta de backups</string>
     <string name="prefs_languages">Idioma</string>
@@ -133,7 +133,7 @@
     <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são salvos no armazenamento externo (por exemplo /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são salvos em data/user_de</string>
     <string name="prefs_quickreboot_summary">Termina o processo system_server para forçar um reinício do espaço do usuário</string>
-    <string name="prefs_batchdelete_summary">Excluir backups de todos os aplicativos não instalados atualmente</string>
+    <string name="prefs_batchdelete_summary">Excluir backups de todos os aplicativos não instalados atualmente.</string>
     <string name="prefs_logviewer">Ver o registro</string>
     <string name="sched_add">Adicionar Agenda</string>
     <string name="sched_submode">Sub-modo de backup:</string>

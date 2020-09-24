@@ -43,7 +43,7 @@
     <string name="dialogCancel">Tühista</string>
     <string name="dialogYes">Jah</string>
     <string name="dialogNo">Ei</string>
-    <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud</string>
+    <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud.</string>
     <string name="collectingData">Paketi info kogumine…</string>
     <string name="noSu">Superuseri õiguste saamine ebaõnnestus</string>
     <string name="busyboxProblem">Busyboxi ei leitud, palun kontrolli vealogi</string>
@@ -71,26 +71,23 @@
     <string name="prefs_help">Abi</string>
     <string name="notInstalledModeDataWarning">Rakendust ei saa varundusest taastada ilma APKita</string>
     <string name="shareTitle">Jaga</string>
-
     <string name="tools_title">Tööriistad</string>
     <string name="batchDeleteMessage">Varunduste kustutamine…</string>
     <string name="batchDeleteNotificationTitle">Kustuta varundused</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Varundusi kustutatud:</string>
     <string name="batchDeleteNothingToDelete">Pole varundusi, mida kustutada</string>
-
     <string name="enablePackage">Luba</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Luba kasutajatele</string>
     <string name="disablePackage">Keela</string>
     <string name="disablePackageTitle">Keela kasutajatele</string>
-
     <string name="prefs_title">Eelistused</string>
     <string name="prefs_service">Teenuse eelistused</string>
     <string name="prefs_user">Kasutaja eelistused</string>
     <string name="prefs_theme">Teema</string>
     <string name="prefs_acquirewakelock">Väldi unerežiimi</string>
-    <string name="prefs_batchdelete">Kustuta varundused</string>
+    <string name="prefs_batchdelete">Kustuta varundused\?</string>
     <string name="prefs_pathbackupfolder">Varunduste kaust</string>
     <string name="prefs_oldbackups">Filtreeri varundusi vanuse järgi</string>
     <string name="prefs_copyselfapk">Kopeeri oma APK</string>
@@ -102,19 +99,18 @@
     <string name="prefs_encryption">Krüpteerimine</string>
     <string name="prefs_password">Krüpteeringu parool</string>
     <string name="prefs_externaldata">Varunda väliseid andmeid</string>
-    <string name="prefs_deviceprotecteddata">Varunda seadme kaitstud andmeid</string>
+    <string name="prefs_deviceprotecteddata">Varunda seadme poolt kaitstud andmeid</string>
     <string name="prefs_deviceprotecteddata_summary">Varundab ja taastab andmed, mis asuvad kohas data/user_de</string>
     <string name="prefs_externaldata_summary">Varundab ja taastab andmed, mis asuvad välismälus (nt /storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Krüpteeringu keelamiseks jäta tühjaks</string>
     <string name="prefs_encryption_summary">Luba, et krüpteerida andmevarundusi</string>
-    <string name="prefs_excludecache_summary">Tühjenda rakenduste vahemälu enne andmevarunduse tegemist</string>
-    <string name="prefs_acquirewakelock_summary">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt</string>
-    <string name="prefs_oldbackups_summary">Filtreeri varundusi, mis on vanemad kui määratud väärtus (päevades). Kasutatakse filtri \"Kuva vanu varundusi\" puhul</string>
+    <string name="prefs_excludecache_summary">Välista andmevarundusest rakenduse vahemälu</string>
+    <string name="prefs_acquirewakelock_summary">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt.</string>
+    <string name="prefs_oldbackups_summary">Filtreeri varundusi, mis on vanemad kui määratud väärtus (päevades). Kasutatakse filtri \"Kuva vanu varundusi\" puhul.</string>
     <string name="prefs_copyselfapk_summary">Aseta varundamisel OAndBackupX-i koopia varunduskausta juurtasemele</string>
     <string name="prefs_rememberfiltering_summary">Salvestab valitud sorteerimise ja filtreerimise meetodi. Arvestatakse vaid neid, mida märgid menüüs linnukesega.</string>
     <string name="prefs_quickreboot_summary">Tapab system_server protsessi, sundimaks kasutajakeskkonna taaskäivitamist</string>
-    <string name="prefs_batchdelete_summary">Kustuta kõikide hetkel mittepaigaldatud rakenduste varundused</string>
-
+    <string name="prefs_batchdelete_summary">Kustuta kõikide hetkel mittepaigaldatud rakenduste varundused.</string>
     <string name="sched_title">Ajastamine</string>
     <string name="sched_notificationMessage">Ajastatud varundus</string>
     <string name="sched_interval">Intervall päevades:</string>
@@ -126,23 +122,18 @@
     <string name="sched_timeLeft">Aega järgmise varunduseni:</string>
     <string name="sched_customListUpdateButton">Uuenda kohandatud nimekirja</string>
     <string name="sched_excludeSystemCheckBox">Välista süsteemirakendused</string>
-
     <string name="sched_blacklist">Must nimekiri</string>
-
     <string name="spec_accounts">Kontod</string>
     <string name="spec_appwidgets">Rakenduste vidinad</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Andmekasutus ja -poliitika</string>
     <string name="spec_wallpaper">Taustapilt</string>
-    <string name="spec_wifiAccessPoints">WiFi juurdepääsupunktid</string>
-
+    <string name="spec_wifiAccessPoints">WiFi-võrgud</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
-
     <string name="error_creating_notification_channel">Teatekanali loomine ebaõnnestus</string>
     <string name="error_updating_schedule_mode">Ajakava %2$d %1$s uuendamine ebaõnnestus</string>
     <string name="permission_not_granted">Välismälule ligipääsemiseks on vajalik luba</string>
     <string name="restart_dialog">Tundub, et rakendus vajab taaskäivitust</string>
-
     <string name="filter_options">Filtrid:</string>
     <string name="sort_options">Sorteeri:</string>
     <string name="sortLabel">Nimi</string>
@@ -168,7 +159,7 @@
     <string name="prefs_theme_system">Süsteemi teema</string>
     <string name="empty_filtered_list">Filtreeritud nimekiri on tühi, seega lähtestame filtrid vaikeväärtusele</string>
     <string name="dialog_refuse">Ära tee nii</string>
-    <string name="dialog_approve">Teeme ära</string>
+    <string name="dialog_approve">Teeme ära!</string>
     <string name="ignore_battery_optimization_title">Aku optimeerimine</string>
     <string name="ignore_battery_optimization_message">Varundused võivad vahest peatuda, selle vältimiseks peaksid keelama aku optimeerimise</string>
     <string name="ignore_battery_optimization_not_supported">See seade ei toeta kahjuks aku optimeerimise keelamist!</string>
@@ -181,4 +172,25 @@
     <string name="data_size">Andmete suurus:</string>
     <string name="cache_size">Vahemälu suurus:</string>
     <string name="help_license">Litsents</string>
+    <string name="enable_encryption_message">Krüpteerimata andmeid ei ole seadmes turvaline hoida. Oma andmete turvamiseks luba krüpteering ja määra parool.</string>
+    <string name="intro_permission_batteryoptimization">Rakendusel võib ajastatud varunduste korral esineda probleeme teatud süsteemides, mis kasutavad agressiivset aku optimeerimist nagu MIUI, aga ka tavalisel AOSP-l võib see probleem esineda.</string>
+    <string name="intro_permission_usageaccess">See rakendus vajab seda luba, et kontrollida sinu rakenduste statistikat ja andmete/vahemälu suuruseid.</string>
+    <string name="intro_permission_storage">See rakendus kasutab mäluruumi kirjutamis-/lugemisõigust, et välisele mäluruumile ligi pääseda, kohandatud varunduskaust määrata ja võimaldada teiste rakenduste väliste andmete või OBB varundamist.</string>
+    <string name="storage_access">Mäluruumi ligipääs</string>
+    <string name="sort_and_filter">Sorteeri ja filtreeri</string>
+    <string name="sched_submode">Varunduse alamrežiim:</string>
+    <string name="welcome_to_oabx">Tere tulemast OABX-i!</string>
+    <string name="enable_encryption_title">Andmete krüpteering</string>
+    <string name="help_group">Meie grupp</string>
+    <string name="apptype_special">Eriline varundus</string>
+    <string name="sortDataSize">Andmete suurus</string>
+    <string name="dialog_unlock">Lukusta lahti</string>
+    <string name="dialog_start">Läksime!</string>
+    <string name="dialogSave">Salvesta</string>
+    <string name="sched_add">Lisa ajastus</string>
+    <string name="prefs_password_match_true">Paroolid kattuvad</string>
+    <string name="prefs_password_match_false">Paroolid ei kattu</string>
+    <string name="prefs_passwordconfirmation">Krüpteeringu parooli kinnitus</string>
+    <string name="prefs_biometriclock_summary">Turva rakendust seadme biomeetrilise lukuga (nt sõrmejälg, näotuvastus)</string>
+    <string name="prefs_biometriclock">Biomeetrialukk</string>
 </resources>

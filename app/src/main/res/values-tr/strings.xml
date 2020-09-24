@@ -43,7 +43,7 @@
     <string name="dialogCancel">İptal</string>
     <string name="dialogYes">Evet</string>
     <string name="dialogNo">Hayır</string>
-    <string name="restoreDataWithoutApkError">APK geri yüklenmeden veriler geri yüklenemiyor, paket kurulu değil</string>
+    <string name="restoreDataWithoutApkError">APK geri yüklenmeden veriler geri yüklenemiyor, paket kurulu değil.</string>
     <string name="collectingData">Paket bilgisi alınıyor…</string>
     <string name="noSu">superuser izinleri alınamadı</string>
     <string name="busyboxProblem">BusyBox bulunamadı. Lütfen hata günlüğüne göz atın</string>
@@ -87,7 +87,7 @@
     <string name="prefs_user">Kullanıcı seçenekleri</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_acquirewakelock">Uykuyu önle</string>
-    <string name="prefs_batchdelete">Yedekleri sil</string>
+    <string name="prefs_batchdelete">Yedekleri sil\?</string>
     <string name="prefs_pathbackupfolder">Yedeklenecek klasör</string>
     <string name="prefs_oldbackups">Yedekleri zamana göre filtrele</string>
     <string name="prefs_copyselfapk">Kendi APK yedeği</string>
@@ -105,12 +105,12 @@
     <string name="prefs_password_summary">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Uygulamanın önbelleğini veri yedeklemesinden hariç tutun</string>
-    <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken uykuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar</string>
-    <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtrele. \'Eski yedekleri göster\' filtresi ile kullanılır</string>
+    <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken uykuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
+    <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtrele. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
     <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedekleme klasörüne OAndBackupX\'in bir kopyasını yerleştirir</string>
     <string name="prefs_rememberfiltering_summary">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
     <string name="prefs_quickreboot_summary">userspace\'i yeniden başlatmaya zorlamak için system_server prosesini öldür</string>
-    <string name="prefs_batchdelete_summary">Kurulu olmayan uygulamarın yedeklerini sil</string>
+    <string name="prefs_batchdelete_summary">Kurulu olmayan uygulamarın yedeklerini sil.</string>
     <string name="sched_title">Zamanlama</string>
     <string name="sched_notificationMessage">Zamanlanmış yedekleme</string>
     <string name="sched_interval">Gün olarak sıklık:</string>
@@ -159,7 +159,7 @@
     <string name="prefs_theme_system">Sistem teması</string>
     <string name="empty_filtered_list">Filtrelenmiş liste boş olduğundan filtreler öntanımlı değerlerine döndürüldü</string>
     <string name="dialog_refuse">Uğraşamam</string>
-    <string name="dialog_approve">Hadi yapalım</string>
+    <string name="dialog_approve">Hadi yapalım!</string>
     <string name="ignore_battery_optimization_title">Pil optimizasyonu</string>
     <string name="ignore_battery_optimization_message">Yedeklemeler bazen durabilir. Bunu engellemek için, pil optimizasyonunu kapatmalısınız</string>
     <string name="ignore_battery_optimization_not_supported">Ne yazık ki bu cihaz pil optimizasyonu kapatmayı desteklemiyor!</string>
@@ -193,7 +193,7 @@
     <string name="apptype_special">Özel yedekleme</string>
     <string name="sortDataSize">Veri boyutu</string>
     <string name="dialog_unlock">Kilidi aç</string>
-    <string name="dialog_start">Haydi başlayalım</string>
+    <string name="dialog_start">Hadi başlayalım!</string>
     <string name="dialogSave">Kaydet</string>
     <string name="sched_submode">Yedekleme alt modu:</string>
     <string name="sched_add">Zamanlama Ekle</string>

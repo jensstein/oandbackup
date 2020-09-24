@@ -40,7 +40,7 @@
     <string name="sort">Sort and filter</string>
     <string name="uninstallDialogMessage">Uninstall this app?</string>
     <string name="deleteBackupDialogMessage">Delete backup files?</string>
-    <string name="restoreDataWithoutApkError">Cannot restore data without restoring the APK, the package is not installed</string>
+    <string name="restoreDataWithoutApkError">Cannot restore data without restoring the APK, the package is not installed.</string>
     <string name="collectingData">Collecting package info…</string>
     <string name="utilboxCheck" translatable="false">Checking for BusyBox/Toybox…</string>
     <string name="noSu">Couldn\'t get superuser permissions</string>
@@ -66,20 +66,17 @@
     <string name="customListTitle">Custom list</string>
     <string name="notInstalledModeDataWarning">App cannot be restored from a backup without APK</string>
     <string name="shareTitle">Share</string>
-
     <string name="tools_title">Tools</string>
     <string name="batchDeleteMessage">Deleting backups…</string>
     <string name="batchDeleteNotificationTitle">Delete backups</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Backups deleted:</string>
     <string name="batchDeleteNothingToDelete">No backups to delete</string>
-
     <string name="enablePackage">Enable</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
     <string name="enablePackageTitle">Enable for users</string>
     <string name="disablePackage">Disable</string>
     <string name="disablePackageTitle">Disable for users</string>
-
     <string name="prefs_title">Preferences</string>
     <string name="prefs_user">User preferences</string>
     <string name="prefs_theme">Theme</string>
@@ -94,7 +91,7 @@
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
     <string name="prefs_rememberfiltering_summary">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
     <string name="prefs_oldbackups">Filter backups by age</string>
-    <string name="prefs_oldbackups_summary">Filter backups older than value in days. Used with the filter \'Show old backups\'</string>
+    <string name="prefs_oldbackups_summary">Filter backups older than value in days. Used with the filter \'Show old backups\'.</string>
     <string name="prefs_service">Service preferences</string>
     <string name="prefs_encryption">Encryption</string>
     <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
@@ -112,15 +109,14 @@
     <string name="prefs_copyselfapk">Copy own APK</string>
     <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
     <string name="prefs_acquirewakelock">Prevent sleep</string>
-    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restorations considerably but will consume more energy</string>
+    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restorations considerably but will consume more energy.</string>
     <string name="prefs_enableSpecialBackups">Enable special backups</string>
     <string name="prefs_quickreboot">Quick reboot</string>
     <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
-    <string name="prefs_batchdelete">Delete backups</string>
-    <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed</string>
+    <string name="prefs_batchdelete">Delete backups\?</string>
+    <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
     <string name="prefs_logviewer">View the log</string>
     <string name="prefs_help">Help</string>
-
     <string name="sched_title">Scheduling</string>
     <string name="sched_add">Add Schedule</string>
     <string name="sched_notificationMessage">Scheduled backup</string>
@@ -135,29 +131,25 @@
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
     <string name="sched_blacklist">Blacklist</string>
-
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">App Widgets</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Data Usage and Policy</string>
     <string name="spec_wallpaper">Wallpaper</string>
     <string name="spec_wifiAccessPoints">Wireless access points</string>
-
     <string name="error_creating_notification_channel">Unable to create notification channel</string>
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>
     <string name="permission_not_granted">Permission to access external storage is required</string>
     <string name="restart_dialog">The app seems needing to be restarted</string>
-
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Cancel</string>
     <string name="dialogYes">Yes</string>
     <string name="dialogNo">No</string>
     <string name="dialogSave">Save</string>
     <string name="dialog_refuse">Won\'t do it</string>
-    <string name="dialog_approve">Let\'s do it</string>
-    <string name="dialog_start">Let\'s go</string>
+    <string name="dialog_approve">Let\'s do it!</string>
+    <string name="dialog_start">Let\'s go!</string>
     <string name="dialog_unlock">Unlock</string>
-
     <string name="filter_options">Filters:</string>
     <string name="sort_options">Sort by:</string>
     <string name="sortLabel">Label</string>

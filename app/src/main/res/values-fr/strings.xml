@@ -39,7 +39,7 @@
     <string name="dialogCancel">annuler</string>
     <string name="dialogYes">oui</string>
     <string name="dialogNo">non</string>
-    <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'APK car l\'application n\'est pas installée</string>
+    <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'APK car l\'application n\'est pas installée.</string>
     <string name="collectingData">collecte des informations des paquets…</string>
     <string name="utilboxCheck">vérification de le présence de busybox/toybox…</string>
     <string name="noSu">impossible d\'acquérir les droits de super-utilisateur</string>
@@ -82,11 +82,11 @@
     <string name="disablePackageTitle">désactiver pour les utilisateurs</string>
     <string name="prefs_title">paramètres</string>
     <string name="prefs_acquirewakelock">empêcher la mise en veille</string>
-    <string name="prefs_acquirewakelock_summary">prendre un wakelock pendant les opérations par lot pour empêcher la mise en veille. cela accélèrera les sauvegardes et restauration au prix d\'une plus grande consommation énergétique</string>
+    <string name="prefs_acquirewakelock_summary">prendre un wakelock pendant les opérations par lot pour empêcher la mise en veille. cela accélèrera les sauvegardes et restauration au prix d\'une plus grande consommation énergétique.</string>
     <string name="prefs_pathbackupfolder">dossier de sauvegarde</string>
     <string name="prefs_oldbackups">filtrer les sauvegarde par ancienneté</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté</string>
+    <string name="prefs_oldbackups_summary">filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté.</string>
     <string name="prefs_copyselfapk">Copier l’APK propre</string>
     <string name="prefs_copyselfapk_summary">place une copie d\'OAndBackupX à la racine du dossier de sauvegarde lors d\'une sauvegarde</string>
     <string name="prefs_languages">Langue</string>

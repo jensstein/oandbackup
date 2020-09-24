@@ -40,7 +40,7 @@
     <string name="dialogCancel">Abbrechen</string>
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nein</string>
-    <string name="restoreDataWithoutApkError">Kann Daten ohne die APK nicht wiederherstellen, Paket ist nicht installiert!</string>
+    <string name="restoreDataWithoutApkError">Kann Daten ohne die APK nicht wiederherstellen, Paket ist nicht installiert.</string>
     <string name="collectingData">Paketinformationen sammeln…</string>
     <string name="utilboxCheck">Überprüfe auf Busybox/Toybox…</string>
     <string name="noSu">Konnte Superuser-Rechte nicht erlangen!</string>
@@ -70,7 +70,7 @@
     <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
     <string name="shareTitle">Teilen</string>
     <string name="tools_title">Hilfsmittel</string>
-    <string name="prefs_batchdelete">Sicherungen löschen</string>
+    <string name="prefs_batchdelete">Sicherungen löschen\?</string>
     <string name="batchDeleteMessage">Lösche Sicherungen …</string>
     <string name="batchDeleteNotificationTitle">Sicherungen löschen</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -83,11 +83,11 @@
     <string name="disablePackageTitle">Für Benutzer deaktivieren</string>
     <string name="prefs_title">Einstellungen</string>
     <string name="prefs_acquirewakelock">Standby verhindern</string>
-    <string name="prefs_acquirewakelock_summary">Wakelock anfordern und Standby verhindern, während Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie</string>
+    <string name="prefs_acquirewakelock_summary">Wakelock anfordern und Standby verhindern, während Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie.</string>
     <string name="prefs_pathbackupfolder">Sicherungsverzeichnis</string>
     <string name="prefs_oldbackups">Sicherungen nach Alter filtern</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für \"Alte Sicherungen anzeigen\"</string>
+    <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für \"Alte Sicherungen anzeigen\".</string>
     <string name="prefs_copyselfapk">Eigene APK-Datei kopieren</string>
     <string name="prefs_copyselfapk_summary">Erstelle eine Kopie von OAndBackupX auf höchster Ebene im Sicherungsverzeichnis</string>
     <string name="prefs_languages">Sprache</string>
@@ -130,7 +130,7 @@
     <string name="prefs_service">Betriebseinstellungen</string>
     <string name="prefs_user">Benutzerdefinierte Einstellungen</string>
     <string name="prefs_logviewer">Protokoll anzeigen</string>
-    <string name="prefs_batchdelete_summary">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen</string>
+    <string name="prefs_batchdelete_summary">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen.</string>
     <string name="prefs_quickreboot_summary">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>
     <string name="apptype_system">System-App</string>
     <string name="apptype_user">Benutzer-App</string>
