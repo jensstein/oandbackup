@@ -1,0 +1,11 @@
+**OAndBackupX 3.2.0**
+
+* Neu: Navigation (Hauptmenu)
+* Neu: Indikator für aktualisierte Apps 
+* Repariert: ausgewählte Apps in Batch speichern
+* Repariert: Sync von "Alle auswählen in Batch".
+* Repariert: Suchfilter - unerwartetes Verhalten (verursacht durch Caching)
+* Repariert: Verhalten beim Fortsetzen
+* Aktualisiert: verbesserte App-Listen-Aktualisierung
+* Aktualisiert: Verbesserung der visuellen Leistung (Aktionen und Geschwindigkeit beim AppSheet öffnen)
+* Aktualisiert: Übersetzungen
