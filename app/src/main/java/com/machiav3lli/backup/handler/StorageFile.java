@@ -15,10 +15,14 @@ import com.machiav3lli.backup.Constants;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiresApi(26)
 public class StorageFile {
     static final String TAG = Constants.classTag(".StorageFile");
+    static Map<String, StorageFile[]> cache;
+    static boolean cacheDirty = true;
 
     @Nullable
     private final StorageFile parent;
@@ -65,6 +69,10 @@ public class StorageFile {
         }
     }
 
+    public static void invalidateCache() {
+        StorageFile.cacheDirty = true;
+    }
+
     @Nullable
     public StorageFile findFile(@NonNull String displayName) {
         try {
@@ -83,33 +91,42 @@ public class StorageFile {
         if(!this.exists()){
             throw new FileNotFoundException("File " + this.uri + " does not exist");
         }
-        final ContentResolver resolver = this.context.getContentResolver();
-        final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(this.uri,
-                DocumentsContract.getDocumentId(this.uri));
-        final ArrayList<Uri> results = new ArrayList<>();
-        Cursor cursor = null;
-        //noinspection OverlyBroadCatchBlock
-        try {
-            cursor = resolver.query(childrenUri, new String[]{
-                    DocumentsContract.Document.COLUMN_DOCUMENT_ID}, null, null, null);
-            while (cursor.moveToNext()) {
-                final String documentId = cursor.getString(0);
-                final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri,
-                        documentId);
-                results.add(documentUri);
+        String uri = this.uri.toString();
+        if ((StorageFile.cache == null) || StorageFile.cacheDirty) {
+            StorageFile.cache = new HashMap<String, StorageFile[]>();
+            StorageFile.cacheDirty = false;
+        }
+        if (StorageFile.cache.get(uri) == null) {
+            final ContentResolver resolver = this.context.getContentResolver();
+            final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(this.uri,
+                    DocumentsContract.getDocumentId(this.uri));
+            final ArrayList<Uri> results = new ArrayList<>();
+            Cursor cursor = null;
+            //noinspection OverlyBroadCatchBlock
+            try {
+                cursor = resolver.query(childrenUri, new String[]{
+                        DocumentsContract.Document.COLUMN_DOCUMENT_ID}, null, null, null);
+                while (cursor.moveToNext()) {
+                    final String documentId = cursor.getString(0);
+                    final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri,
+                            documentId);
+                    results.add(documentUri);
+                }
+            } catch (Exception e) {
+                Log.w(StorageFile.TAG, "Failed query: " + e);
+            } finally {
+                StorageFile.closeQuietly(cursor);
             }
-        } catch (Exception e) {
-            Log.w(StorageFile.TAG, "Failed query: " + e);
-        } finally {
-            StorageFile.closeQuietly(cursor);
+            final Uri[] result = results.toArray(new Uri[0]);
+            final StorageFile[] resultFiles = new StorageFile[result.length];
+            for (int i = 0; i < result.length; i++) {
+                resultFiles[i] = new StorageFile(this, this.context, result[i]);
+            }
+            StorageFile.cache.put(uri, resultFiles);
         }
-        final Uri[] result = results.toArray(new Uri[0]);
-        final StorageFile[] resultFiles = new StorageFile[result.length];
-        for (int i = 0; i < result.length; i++) {
-            resultFiles[i] = new StorageFile(this, this.context, result[i]);
-        }
-        return resultFiles;
+        return StorageFile.cache.get(uri);
     }
+
 
     public boolean renameTo(String displayName) {
         //noinspection OverlyBroadCatchBlock

@@ -32,6 +32,7 @@ public final class BackendController {
 
     public static List<AppInfoV2> getApplicationList(Context context, boolean includeUninstalled)
             throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+        StorageFile.invalidateCache();
         PackageManager pm = context.getPackageManager();
         StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
