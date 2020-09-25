@@ -477,7 +477,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> checkedList) {
         Log.d(MainActivityX.TAG, "refreshing");
         runOnUiThread(() -> {
-            binding.refreshLayout.setRefreshing(true);
+            binding.refreshLayout.setRefreshing(true);  //TODO: hg42 refresh can run in parallel, needs counting or multiple (overlaying?) Spinners
             searchViewController.clean();
         });
         badgeCounter = 0;

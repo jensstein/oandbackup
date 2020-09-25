@@ -80,6 +80,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
             }
             UIUtils.showActionResult(mainActivityX, this.result, null);
         }
+        mainActivityX.refreshWithAppSheet();
         if (signal != null) {
             signal.countDown();
         }

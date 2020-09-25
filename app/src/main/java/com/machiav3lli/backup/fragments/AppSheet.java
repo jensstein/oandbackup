@@ -394,7 +394,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     public void onActionCalled(BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
             new BackupTask(this.app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
-            requireMainActivity().refreshWithAppSheet();
+            //TODO: hg42: requireMainActivity().refreshWithAppSheet();  // too early...seems to prevent later refresh (check it! if so, why?)
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
             // Latest Backup for now
             BackupItem selectedBackup = this.app.getLatestBackup();
