@@ -1,34 +1,17 @@
 <html>
     <body>
-        <h2>Benutzungshinweise</h2>
-        <p><strong>Sicherungsmodus</strong>: Von einer App kann nur ihre APK, nur ihre Benutzerdaten
-            oder beides gesichert werden. Falls die App zum Zeitpunkt der Wiederherstellung nicht
-            installiert ist, wird die APK dennoch dafür benötigt.
+        <h2>Usage notes</h2>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
         </p>
-        <p><strong>Sicherung löschen</strong>: Löscht die Sicherungsdateien der angewählten App.
+        <p><strong>Sicherung löschen</strong>: Löscht die Dateien einer Sicherung für die ausgewählte App.
         </p>
-        <p><strong>Deinstallieren</strong>: Aggressiver als normales Deinstallieren. Zusätzlich zum
-            entsprechenden Kommando via Android, löscht die Deinstallation aus OAndBackupX heraus
-            auch Dateien, die eine App evtl. in /data/app-lib/ zurückgelassen hat.
+        <p><strong>Deinstallieren</strong>: Etwas aggressiver als eine normale Deinstallation. Zusätzlich zu einer normalen Deinstallation über Android-Befehle, werden bei der Deinstallation via OAndBackupX Dateien gelöscht, die die Anwendung möglicherweise in /data/app-lib/ zurückgelassen hat.
         </p>
-        <p><strong>Aktivieren / Deaktivieren</strong>: Verwendet Androids `pm`-Skript um eine App zu
-            aktivieren oder deaktivieren. Letzteres entfernt sie aus der Benutzeroberfläche ohne sie
-            zu deinstallieren. Dies kann verwendet werden, um eine App für mehrere Benutzer zu
-            (de)aktivieren, wenn das Gerät den Mehrfachbenutzer-Modus aktiviert hat. Diese werden
-            mittels ID-Nummern identifiziert, wobei die 0 für den ersten Benutzer (Besitzer) steht.
+        <p><strong> Aktivieren / deaktivieren</strong>: Verwendet das Android-Skript `pm`, um eine Anwendung zu aktivieren oder zu deaktivieren. Durch das Deaktivieren einer Anwendung wird diese von der normalen Benutzeroberfläche entfernt, ohne das sie deinstalliert werden muss. Dies kann verwendet werden, um eine Anwendung für mehrere Benutzer gleichzeitig zu aktivieren oder zu deaktivieren (wenn auf dem Gerät mehrere Benutzer exisiteren). Benutzer werden mit einer ID identifiziert. 0 ist der erste Benutzer (Besitzer).
         </p>
-        <p><strong>Mehrfachbenutzer</strong>: Diese Funktion ist noch experimentell, sollte aber
-            funktionieren. Die Wiederherstellung einer Sicherung in einem Mehrbenutzerszenario führt
-            `pm install -r $apk` aus und deaktiviert die App für alle Benutzer, für die sie unter
-            /data/system/user/$user/package-restrictions.xml nicht als aktiviert ("1") eingetragen
-            ist.<br>Dies kann zu Problemen für Benutzer führen, die die gleiche App später
-            installieren. Allerdings ist es notwendig, um zu verhindern, dass die App für alle
-            Benutzer gleichzeitig installiert wird. Das Kontextmenü bietet "Aktivieren"- und
-            "Deaktivieren"-Optionen an, die benutzt werden können, wenn andere Benutzer aufgrund
-            einer Deaktivierung oder Wiederherstellung eine App nicht mehr nutzen können.
-            <br>
-            Aktivieren und Deaktivieren funktioniert nur nach der ersten Installation (nicht
-            notwendigerweise von OAndBackupX) oder Wiederherstellung einer App.
+        <p><strong>Mehrere Benutzer</strong>: Multi-User ist noch etwas experimentell, sollte aber funktionieren. Beim Wiederherstellen in einem Mehrbenutzer-Szenario wird `pm install -r $apk` aufgerufen und anschließend wird die Anwendung für jeden Benutzer deaktiviert, der die Anwendung in /data/system/user/$user/package-restrictions.xml aufgelistet hat (es sei denn, die Anwendung ist als enabled="1" aufgeführt). 
+Dies kann für Benutzer, die dieselbe Anwendung zu einem späteren Zeitpunkt installieren, zu Problemen führen, ist aber notwendig, um zu verhindern, dass die Anwendung für alle Benutzer gleichzeitig installiert wird. Das Kontextmenü verfügt über eine Option zum Aktivieren oder Deaktivieren von Anwendungen, die verwendet werden können, wenn andere Benutzer eine bestimmte Anwendung aufgrund der Deaktivierung bei der Wiederherstellung nicht mehr verwenden können. 
+Aktivieren und Deaktivieren funktioniert nur nach einer Erstinstallation (nicht notwendigerweise von OAndBackupx) oder Wiederherstellung der Anwendung.
         </p>
     </body>
 </html>
