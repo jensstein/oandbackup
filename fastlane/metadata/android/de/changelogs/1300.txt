@@ -1,0 +1,9 @@
+**OUndBackupX 1.3.0**
+* Aktualisiert: neues Filtersystem
+* Aktualisiert: reduzierte Startbildchirm-Wartezeit
+* Hinzugefügt: Split-APK-Unterstützung (muss mehr getested werden, Danke @Tiefkuehlpizze)
+* Aktualisiert: Suche unterstützt Paketname
+* Repariert: Cache nicht gefunden / Symlink-Fehler
+* Hinzugefügt: OBB-Unterstützung (bedarf weiterer Tests)
+* Sprachen hinzugefügt: ITA, CHN, TUR, POL (Danke @Urnyx05 @tuchit @scrubjay55 @Antyradek)
+* Optimiert: Benutzeroberfläche und Leistung
