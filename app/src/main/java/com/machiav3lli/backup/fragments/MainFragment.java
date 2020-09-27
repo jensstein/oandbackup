@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -49,12 +48,6 @@ public class MainFragment extends Fragment implements SearchViewController {
     HandleMessages handleMessages;
     SharedPreferences prefs;
     private FragmentMainBinding binding;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        requireMainActivity().setSearchViewController(this);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +102,7 @@ public class MainFragment extends Fragment implements SearchViewController {
     public void onResume() {
         super.onResume();
         handleMessages = new HandleMessages(requireContext());
+        requireMainActivity().setSearchViewController(this);
         requireMainActivity().resumeRefresh(new ArrayList<>());
     }
 

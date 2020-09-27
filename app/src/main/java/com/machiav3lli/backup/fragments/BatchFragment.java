@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,16 +45,11 @@ public class BatchFragment extends Fragment implements SearchViewController {
     private ArrayList<String> checkedList = new ArrayList<>();
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        requireMainActivity().setSearchViewController(this);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handleMessages = new HandleMessages(requireContext());
         if (savedInstanceState != null) {
+            checkedList = savedInstanceState.getStringArrayList("checkedList");
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             UIUtils.reShowMessage(handleMessages, threadId);
         }
@@ -105,9 +99,16 @@ public class BatchFragment extends Fragment implements SearchViewController {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putStringArrayList("checkedList", checkedList);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         handleMessages = new HandleMessages(requireContext());
+        requireMainActivity().setSearchViewController(this);
         requireMainActivity().resumeRefresh(this.checkedList);
     }
 
