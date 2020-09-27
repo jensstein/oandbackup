@@ -1,8 +1,15 @@
-<html><body>
-        <h2>Notatki dot. użytkowania</h2>
-        <p><strong>Tryby kopii zapasowych</strong>: Każdą aplikację można zachomikować jako plik instalacyjny apk, dane aplikacji lub całościowo. Aplikacje obecnie niezainstalowane mogą być przywrócone tylko jeśli zachomikowano ich plik apk.</p>
-        <p><strong>Usuń kopię zapasową</strong>: Usuwa pliki kopii zapasowej dla wybranej aplikacji.</p>
-        <p><strong>Odinstaluj</strong>: Metoda bardziej skuteczna niż normalne usuwanie. W przeciwieństwie do systemowego deinstalatora, odinstalowywanie z poziomu OAndBackupX usuwa aplikację razem ze wszystkimi plikami, które mogą pozostać w /data/app-lib/. Działa również na aplikacjach systemowych.</p>
-        <p><strong>Włącz / wyłącz</strong>: Używa androidowego skryptu `pm`, Aby włączyć lub wyłączyć aplikację. Wyłączenie aplikacji usuwa ją z normalnego interfejsu użytkownika bez konieczności deinstalacji. Może to być używane do włączania lub wyłączania aplikacji dla wielu użytkowników naraz (jeśli z urządzenia korzysta wielu użytkowników). Użytkownicy są identyfikowani z id. 0 jest pierwszym użytkownikiem (właścicielem).</p>
-        <p><strong>Wielu użytkowników</strong>: Obsługa wielu użytkowników jest wciąż eksperymentalna, ale powinna działać. Podczas przywracania w przypadku wielu użytkowników, `pm install -r $apk` zostanie wywołany, a następnie aplikacja jest wyłączona dla każdego użytkownika, który ma wymienioną aplikację w pliku /data/system/user/$user/package-restrictions.xml (chyba, że aplikacja jest na liście jako enabled="1").<br>Może to powodować problemy dla użytkowników instalujących tę samą aplikację w późniejszym czasie, ale konieczne jest uniemożliwienie instalowania aplikacji wszystkim użytkownikom w tym samym czasie. w menu kontekstowym można włączyć lub wyłączyć aplikacje, które mogą być użyte, jeśli inni użytkownicy nie będą mogli używać określonej aplikacji z powodu wyłączenia podczas przywracania.<br>Włączanie i wyłączanie działa tylko po pierwszej instalacji (niekoniecznie z OAndBackupX) lub przywróceniu aplikacji.</p>
-</body></html>
+<html>
+    <body>
+        <h2>Wskazówki dotyczące użytkowania</h2>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Odinstaluj</strong>: Nieco bardziej agresywne niż normalne odinstalowanie. Oprócz normalnego odinstalowywania za pomocą poleceń Androida, odinstalowanie z OAndBackupX usuwa pliki, które aplikacja mogła pozostać w /data/app-lib/.
+        </p>
+        <p><strong> Włącz / wyłącz</strong>: Używa Androidowego skryptu 'pm', aby włączyć lub wyłączyć aplikację. Wyłączenie aplikacji powoduje usunięcie jej z normalnego interfejsu użytkownika bez odinstalowywania. Może to służyć do włączania lub wyłączania aplikacji dla wielu użytkowników na raz (jeśli urządzenie ma wielu użytkowników). Użytkownicy są identyfikowane za pomocą identyfikatora. 0 jest pierwszym użytkownikiem (właścicielem).
+        </p>
+        <p><strong>Wielu użytkowników</strong>: Tryb wielu użytkowników jest jeszcze trochę eksperymentalny, ale powinien działać. Podczas przywracania w scenariuszu wieloużytkownikowym, `pm install -r $apk` zostaje wywołany i następnie aplikacja jest wyłączona dla każdego użytkownika, który ma aplikację wymienioną w /data/system/user/$user/package-restrictions.xml (chyba że aplikacja jest wymieniona jako włączona="1"). <br> Może to spowodować problemy dla użytkowników instalujących tę samą aplikację w późniejszym czasie, ale jest konieczne, aby uniemożliwić instalację aplikacji dla wszystkich użytkowników w tym samym czasie. Menu kontekstowe posiada opcję włączania lub wyłączania aplikacji, z której można korzystać, gdy inni użytkownicy nie będą mogli korzystać z konkretnej aplikacji z powodu wyłączenia funkcji przywracania. <br> Włączanie i wyłączanie działa tylko po pierwszej instalacji (niekoniecznie z OAndBackupx) lub przywróceniu aplikacji.
+        </p>
+    </body>
+</html>
