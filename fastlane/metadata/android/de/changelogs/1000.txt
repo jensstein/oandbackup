@@ -1,2 +1,2 @@
-**OUndBackupX 1.0.0**
+**OAndBackupX 1.0.0**
 * Hinzugefügt: Option zum Löschen des Zwischenspeichers vor einer Sicherung der App-Daten

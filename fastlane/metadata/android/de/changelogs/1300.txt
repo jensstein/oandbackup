@@ -1,4 +1,4 @@
-**OUndBackupX 1.3.0**
+**OAndBackupX 1.3.0**
 * Aktualisiert: neues Filtersystem
 * Aktualisiert: reduzierte Startbildchirm-Wartezeit
 * Hinzugefügt: Split-APK-Unterstützung (muss mehr getested werden, Danke @Tiefkuehlpizze)
