@@ -23,11 +23,8 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.BackupProperties;
-
-import java.io.File;
 
 // TODO rebase those Tasks, as AsyncTask is deprecated
 public class RestoreTask extends BaseTask {
@@ -35,9 +32,9 @@ public class RestoreTask extends BaseTask {
     private final Uri backupLocation;
 
     public RestoreTask(AppInfoV2 appInfo, HandleMessages handleMessages, MainActivityX oAndBackupX,
-                       File backupDirectory, BackupProperties backupProperties, Uri backupLocation, ShellHandler shellHandler, int restoreMode) {
+                       BackupProperties backupProperties, Uri backupLocation, ShellHandler shellHandler, int restoreMode) {
         super(BackupRestoreHelper.ActionType.RESTORE, appInfo, handleMessages,
-                oAndBackupX, backupDirectory, shellHandler, restoreMode);
+                oAndBackupX, shellHandler, restoreMode);
         this.backupProperties = backupProperties;
         this.backupLocation = backupLocation;
     }

@@ -13,7 +13,6 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public final class GsonUtil {
     private static Gson instance;
@@ -44,8 +43,7 @@ public final class GsonUtil {
 
     static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
         @Override
-        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
+        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
             return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
     }

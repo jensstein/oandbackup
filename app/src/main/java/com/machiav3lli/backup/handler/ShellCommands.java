@@ -22,26 +22,13 @@ import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfoV2;
-import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.machiav3lli.backup.utils.CommandUtils.iterableToString;
 import static com.machiav3lli.backup.utils.FileUtils.getName;
 
 public class ShellCommands {

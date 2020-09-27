@@ -5,9 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.documentfile.provider.DocumentFile;
-
-
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
@@ -40,7 +37,7 @@ public final class DocumentHelper {
         return dir;
     }
 
-    public static boolean deleteRecursive(Context context, Uri uri){
+    public static boolean deleteRecursive(Context context, Uri uri) {
         StorageFile target = StorageFile.fromUri(context, uri);
         return DocumentHelper.deleteRecursive(target);
     }
@@ -106,12 +103,10 @@ public final class DocumentHelper {
     }
 
     public static void suCopyFileToDocument(ContentResolver resolver, ShellHandler.FileInfo sourceFile, StorageFile targetDir) throws IOException {
-        try (SuFileInputStream inputFile = new SuFileInputStream(sourceFile.getAbsolutePath())) {
-            StorageFile newFile = targetDir.createFile("application/octet-stream", sourceFile.getFilename());
-            assert newFile != null;
-            try (OutputStream outputFile = resolver.openOutputStream(newFile.getUri())) {
-                ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile);
-            }
+        StorageFile newFile = targetDir.createFile("application/octet-stream", sourceFile.getFilename());
+        assert newFile != null;
+        try (OutputStream outputFile = resolver.openOutputStream(newFile.getUri())) {
+            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile);
         }
     }
 

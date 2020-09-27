@@ -17,8 +17,6 @@
  */
 package com.machiav3lli.backup.items;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -36,29 +34,14 @@ import java.util.List;
 
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
 
-public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements Parcelable {
+public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
 
     private boolean isChecked;
 
-    public static final Creator<BatchItemX> CREATOR = new Creator<BatchItemX>() {
-        @Override
-        public BatchItemX createFromParcel(Parcel in) {
-            return new BatchItemX(in);
-        }
-
-        @Override
-        public BatchItemX[] newArray(int size) {
-            return new BatchItemX[size];
-        }
-    };
     AppInfoV2 app;
 
     public BatchItemX(AppInfoV2 app) {
         this.app = app;
-    }
-
-    protected BatchItemX(Parcel in) {
-        this.app = in.readParcelable(AppInfo.class.getClassLoader());
     }
 
     public AppInfoV2 getApp() {
@@ -92,25 +75,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
     @Override
     public int getType() {
         return R.id.fastadapter_item;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        /*dest.writeParcelable(app.getLogInfo(), flags);
-        dest.writeString(app.getLabel());
-        dest.writeString(app.getPackageName());
-        dest.writeString(app.getVersionName());
-        dest.writeString(app.getSourceDir());
-        dest.writeString(app.getDataDir());
-        dest.writeInt(app.getVersionCode());
-        dest.writeInt(app.getBackupMode());
-        dest.writeBooleanArray(new boolean[]{app.isSystem(), app.isInstalled(), app.isChecked()});
-        dest.writeParcelable(app.getIcon(), flags);*/
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {

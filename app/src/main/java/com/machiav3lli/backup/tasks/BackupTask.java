@@ -21,7 +21,6 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppInfoV2;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public class BackupTask extends BaseTask {
     public BackupTask(AppInfoV2 appInfo, HandleMessages handleMessages, MainActivityX oAndBackupX,
                       File backupDirectory, ShellHandler shellHandler, int backupMode) {
         super(BackupRestoreHelper.ActionType.BACKUP, appInfo, handleMessages,
-                oAndBackupX, backupDirectory, shellHandler, backupMode);
+                oAndBackupX, shellHandler, backupMode);
     }
 
     @Override

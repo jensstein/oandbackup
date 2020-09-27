@@ -31,6 +31,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseAppAction {
+    public static final int MODE_UNSET = 0;
+    public static final int MODE_APK = 1;
+    public static final int MODE_DATA = 2;
+    public static final int MODE_BOTH = 3;
     protected static final String BACKUP_DIR_DATA = "data";
     protected static final String BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files";
     protected static final String BACKUP_DIR_EXTERNAL_FILES = "external_files";

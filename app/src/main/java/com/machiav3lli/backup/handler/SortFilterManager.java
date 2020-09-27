@@ -20,7 +20,7 @@ package com.machiav3lli.backup.handler;
 import android.content.Context;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -80,15 +80,15 @@ public class SortFilterManager {
         switch (filter.charAt(2)) {
             case '1':
                 for (AppInfoV2 item : list)
-                    if (item.getBackupMode() != AppInfo.MODE_BOTH) nlist.remove(item);
+                    if (item.getBackupMode() != BaseAppAction.MODE_BOTH) nlist.remove(item);
                 break;
             case '2':
                 for (AppInfoV2 item : list)
-                    if (item.getBackupMode() != AppInfo.MODE_APK) nlist.remove(item);
+                    if (item.getBackupMode() != BaseAppAction.MODE_APK) nlist.remove(item);
                 break;
             case '3':
                 for (AppInfoV2 item : list)
-                    if (item.getBackupMode() != AppInfo.MODE_DATA) nlist.remove(item);
+                    if (item.getBackupMode() != BaseAppAction.MODE_DATA) nlist.remove(item);
                 break;
             case '4':
                 for (AppInfoV2 item : list)

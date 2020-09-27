@@ -20,26 +20,17 @@ package com.machiav3lli.backup.handler.action;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.documentfile.provider.DocumentFile;
-
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
-import com.machiav3lli.backup.utils.PrefUtils;
-
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BackupSpecialAction extends BackupAppAction {
     private static final String TAG = Constants.classTag(".BackupSpecialAction");
@@ -50,11 +41,11 @@ public class BackupSpecialAction extends BackupAppAction {
 
     @Override
     public ActionResult run(AppInfoV2 app, int backupMode) {
-        if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+        if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
             Log.e(BackupSpecialAction.TAG, String.format("%s", "Special contents don't have APKs to backup. Ignoring"));
         }
-        if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
-            return super.run(app, AppInfo.MODE_DATA);
+        if ((backupMode & BaseAppAction.MODE_DATA) == BaseAppAction.MODE_DATA) {
+            return super.run(app, BaseAppAction.MODE_DATA);
         }
         return new ActionResult(app, null, "Special backup only backups data, but data was not selected for backup", false);
     }

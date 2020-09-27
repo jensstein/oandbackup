@@ -29,7 +29,6 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.DocumentHelper;
@@ -57,6 +56,9 @@ public class RestoreAppAction extends BaseAppAction {
     private static final String TAG = Constants.classTag(".RestoreAppAction");
     private static final String BASEAPKFILENAME = "base.apk";
     private static final File PACKAGE_STAGING_DIRECTORY = new File("/data/local/tmp");
+    public static final String LOG_DIR_IS_MISSING_CANNOT_RESTORE = "Backup directory %s is missing. Cannot restore";
+    protected static final String LOG_EXTRACTING_S = "[%s] Extracting %s";
+    protected static final String LOG_BACKUP_ARCHIVE_MISSING = "Backup archive %s is missing. Cannot restore";
 
     public RestoreAppAction(Context context, ShellHandler shell) {
         super(context, shell);
@@ -66,12 +68,12 @@ public class RestoreAppAction extends BaseAppAction {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
         try {
             this.killPackage(app.getPackageName());
-            if ((backupMode & AppInfo.MODE_APK) == AppInfo.MODE_APK) {
+            if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 this.restorePackage(backupLocation, backupProperties);
                 app.refreshFromPackageManager(this.getContext());
             }
 
-            if ((backupMode & AppInfo.MODE_DATA) == AppInfo.MODE_DATA) {
+            if ((backupMode & BaseAppAction.MODE_DATA) == BaseAppAction.MODE_DATA) {
                 this.restoreAllData(app, backupProperties, backupLocation);
             }
         } catch (RestoreFailedException | Crypto.CryptoSetupException e) {
@@ -266,7 +268,7 @@ public class RestoreAppAction extends BaseAppAction {
             StorageFile backupDirFile = StorageFile.fromUri(this.getContext(), backupInstanceRoot);
             StorageFile backupDirToRestore = backupDirFile.findFile(what);
             if(backupDirToRestore == null){
-                throw new RestoreFailedException("Backup directory " + what + " is missing. Cannot restore");
+                throw new RestoreFailedException(String.format(LOG_DIR_IS_MISSING_CANNOT_RESTORE, what));
             }
             DocumentHelper.suRecursiveCopyFileFromDocument(this.getContext(), backupDirToRestore.getUri(), targetPath);
         } catch (IOException e) {
@@ -351,10 +353,10 @@ public class RestoreAppAction extends BaseAppAction {
 
     public void restoreData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DATA, backupProperties.isEncrypted());
-        Log.d(TAG, String.format("[%s] Extracting %s", backupProperties.getPackageName(), backupFilename));
+        Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
         if(backupArchive == null){
-            throw new RestoreFailedException("Backup archive " + backupFilename + " is missing. Cannot restore");
+            throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getDataDir(), backupProperties.isEncrypted(), this.getContext().getCacheDir());
         this.genericRestorePermissions(BaseAppAction.BACKUP_DIR_DATA, new File(app.getDataDir()));
@@ -362,10 +364,10 @@ public class RestoreAppAction extends BaseAppAction {
 
     public void restoreExternalData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted());
-        Log.d(TAG, String.format("[%s] Extracting %s", backupProperties.getPackageName(), backupFilename));
+        Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
         if(backupArchive == null){
-            throw new RestoreFailedException("Backup archive " + backupFilename + " is missing. Cannot restore");
+            throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         File externalDataDir = new File(app.getExternalDataDir());
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
@@ -384,10 +386,10 @@ public class RestoreAppAction extends BaseAppAction {
 
     public void restoreDeviceProtectedData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted());
-        Log.d(TAG, String.format("[%s] Extracting %s", backupProperties.getPackageName(), backupFilename));
+        Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
         if(backupArchive == null){
-            throw new RestoreFailedException("Backup archive " + backupFilename + " is missing. Cannot restore");
+            throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getDeviceProtectedDataDir(), backupProperties.isEncrypted(), this.getContext().getCacheDir());
         this.genericRestorePermissions(

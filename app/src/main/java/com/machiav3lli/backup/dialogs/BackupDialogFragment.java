@@ -27,7 +27,7 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -56,18 +56,18 @@ public class BackupDialogFragment extends DialogFragment {
         if (showApkBtn) {
             // App Button
             builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, AppInfo.MODE_APK);
+                this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK);
             });
 
             // Both Button
             int textId = R.string.handleBoth;
             builder.setPositiveButton(textId, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, AppInfo.MODE_BOTH);
+                this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH);
             });
         }
         // Data button (always visible)
         builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
-            this.listener.onActionCalled(actionType, AppInfo.MODE_DATA);
+            this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA);
         });
         return builder.create();
     }

@@ -176,16 +176,20 @@ public class ShellHandler {
         return (!err.isEmpty() && err.get(0).toLowerCase().contains("no such file or directory"));
     }
 
-    @SuppressWarnings("resource")
     public static void quirkLibsuReadFileWorkaround(FileInfo inputFile, OutputStream output) throws IOException {
+        ShellHandler.quirkLibsuReadFileWorkaround(inputFile.getAbsolutePath(), inputFile.getFilesize(), output);
+    }
+
+    @SuppressWarnings("resource")
+    public static void quirkLibsuReadFileWorkaround(String filepath, long filesize, OutputStream output) throws IOException {
         final short maxRetries = 10;
-        SuRandomAccessFile in = SuRandomAccessFile.open(inputFile.getAbsolutePath(), "r");
+        SuRandomAccessFile in = SuRandomAccessFile.open(filepath, "r");
         byte[] buf = new byte[TarUtils.BUFFERSIZE];
         long readOverall = 0;
         int retriesLeft = maxRetries;
         while (true) {
             int read = in.read(buf);
-            if (0 > read && inputFile.getFilesize() > readOverall) {
+            if (0 > read && filesize > readOverall) {
                 // For some reason, SuFileInputStream throws eof much to early on slightly bigger files
                 // This workaround detects the unfinished file like the tar archive does (it tracks
                 // the written amount of bytes, too because it needs to match the header)
@@ -195,16 +199,16 @@ public class ShellHandler {
                             "Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?", maxRetries));
                     throw new IOException(String.format(
                             "Could not read expected amount of input bytes %d; stopped after %d tries at %d",
-                            inputFile.getFilesize(), maxRetries, readOverall
+                            filesize, maxRetries, readOverall
                     ));
                 }
                 Log.w(ShellHandler.TAG, String.format(
                         "SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
-                        readOverall, inputFile.getFilesize() - readOverall, retriesLeft
+                        readOverall, filesize - readOverall, retriesLeft
                 ));
                 // Reopen the file to reset eof flag
                 in.close();
-                in = SuRandomAccessFile.open(inputFile.getAbsolutePath(), "r");
+                in = SuRandomAccessFile.open(filepath, "r");
                 in.seek(readOverall);
                 // Reduce the retries
                 retriesLeft--;
@@ -218,9 +222,6 @@ public class ShellHandler {
             // successful write, resetting retries
             retriesLeft = maxRetries;
         }
-    }
-
-    public static void quirkLibsuWriteFileWorkaround() {
     }
 
 

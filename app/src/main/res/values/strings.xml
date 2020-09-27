@@ -116,6 +116,7 @@
     <string name="prefs_batchdelete">Delete backups\?</string>
     <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
     <string name="prefs_logviewer">View the log</string>
+    <string name="prefs_unset">Unset</string>
     <string name="prefs_help">Help</string>
     <string name="sched_title">Scheduling</string>
     <string name="sched_add">Add Schedule</string>

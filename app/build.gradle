@@ -43,11 +43,6 @@ android {
             versionNameSuffix '-neo'
             minifyEnabled true
         }
-        neotkp {
-            applicationIdSuffix '.neotkp'
-            versionNameSuffix '-neo-tkp'
-            minifyEnabled true
-        }
         debug {
             applicationIdSuffix '.debug'
         }
@@ -98,7 +93,6 @@ dependencies {
     // Libs
     implementation "androidx.room:room-runtime:${versions.room}"
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
-    annotationProcessor "org.projectlombok:lombok:1.18.12"
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
     implementation "com.annimon:stream:${versions.stream}"

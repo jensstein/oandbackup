@@ -59,8 +59,6 @@ import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.tasks.BackupTask;
 import com.machiav3lli.backup.tasks.RestoreTask;
-import com.machiav3lli.backup.utils.CommandUtils;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.ItemUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
@@ -140,8 +138,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(this.binding.delete, View.VISIBLE, update);
             // Sharing is not possible at the moment
             UIUtils.setVisibility(this.binding.share, View.GONE, update);
-            // Todo: Verify the effect
-            // UIUtils.setVisibility(this.binding.restore, app.getBackupMode() == AppInfo.MODE_UNSET ? View.GONE : View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.restore, View.VISIBLE, update);
         } else {
             UIUtils.setVisibility(this.binding.delete, View.GONE, update);
@@ -312,19 +308,17 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.delete.setOnClickListener(v -> new AlertDialog.Builder(this.requireContext())
                 .setTitle(this.app.getAppInfo().getPackageLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
-                .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
-                    new Thread(() -> {
-                        this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.deleteBackup));
-                        if (!this.app.hasBackups()) {
-                            Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
-                            return;
-                        }
-                        // Latest backup only currently
-                        this.app.delete(this.requireContext(), this.app.getLatestBackup());
-                        this.handleMessages.endMessage();
-                        this.requireMainActivity().refreshWithAppSheet();
-                    }).start();
-                })
+                .setPositiveButton(R.string.dialogYes, (dialog, which) -> new Thread(() -> {
+                    this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.deleteBackup));
+                    if (!this.app.hasBackups()) {
+                        Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
+                        return;
+                    }
+                    // Latest backup only currently
+                    this.app.delete(this.requireContext(), this.app.getLatestBackup());
+                    this.handleMessages.endMessage();
+                    this.requireMainActivity().refreshWithAppSheet();
+                }).start())
                 .setNegativeButton(R.string.dialogNo, null)
                 .show());
         binding.share.setVisibility(View.GONE);
@@ -398,7 +392,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
             // Latest Backup for now
             BackupItem selectedBackup = this.app.getLatestBackup();
-            new RestoreTask(this.app, this.handleMessages, this.requireMainActivity(), this.backupDir,
+            new RestoreTask(this.app, this.handleMessages, this.requireMainActivity(),
                     selectedBackup.getBackupProperties(), selectedBackup.getBackupLocation(),
                     MainActivityX.getShellHandlerInstance(), mode).execute();
             this.requireMainActivity().refreshWithAppSheet();

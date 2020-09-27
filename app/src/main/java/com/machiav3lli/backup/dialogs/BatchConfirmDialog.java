@@ -26,7 +26,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppMetaInfo;
 
 import org.jetbrains.annotations.NotNull;

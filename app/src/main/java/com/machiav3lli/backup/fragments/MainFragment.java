@@ -33,11 +33,9 @@ import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.FragmentMainBinding;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements SearchViewController {

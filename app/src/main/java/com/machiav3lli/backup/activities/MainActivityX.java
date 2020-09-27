@@ -50,8 +50,8 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfo;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.AppMetaInfo;
 import com.machiav3lli.backup.items.BackupItem;
@@ -76,8 +76,6 @@ import java.util.stream.Collectors;
 
 public class MainActivityX extends BaseActivity implements BatchConfirmDialog.ConfirmListener {
     private static final String TAG = Constants.classTag(".MainActivityNeo");
-    private static final int BATCH_REQUEST = 1;
-    private static List<AppInfoV2> originalList;
     private static ShellHandler shellHandler;
 
     static {
@@ -105,7 +103,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     private FastAdapter<BatchItemX> batchFastAdapter;
     private boolean mainBoolean;
     private boolean backupBoolean;
-    private File backupDir;
     private SharedPreferences prefs;
     private NavController navController;
     private SortFilterSheet sheetSortFilter;
@@ -313,10 +310,10 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     private int checkSelectedMode() {
         if (binding.radioApk.isChecked()) {
-            return AppInfo.MODE_APK;
+            return BaseAppAction.MODE_APK;
         } else if (binding.radioData.isChecked()) {
-            return AppInfo.MODE_DATA;
-        } else return AppInfo.MODE_BOTH;
+            return BaseAppAction.MODE_DATA;
+        } else return BaseAppAction.MODE_BOTH;
     }
 
     public void moveTo(int position) {
@@ -586,6 +583,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     private boolean toAddToBatch(boolean backupBoolean, AppInfoV2 app) {
-        return backupBoolean ? app.isInstalled() : app.getBackupMode() != AppInfo.MODE_UNSET;
+        return backupBoolean ? app.isInstalled() : app.getBackupMode() != BaseAppAction.MODE_UNSET;
     }
 }

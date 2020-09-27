@@ -55,7 +55,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     private static final int RESULT_OK = 0;
     private static final int DEFAULT_DIR_CODE = 0;
     private HandleMessages handleMessages;
-    private File backupDir;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -99,7 +98,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         try {
             pref.setSummary(PrefUtils.getStorageRootDir(requireContext()));
         } catch (PrefUtils.StorageLocationNotConfiguredException e) {
-            pref.setSummary("Unset"); // Todo: Move to language file!
+            pref.setSummary(getString(R.string.prefs_unset));
         }
         pref.setOnPreferenceClickListener(preference -> this.onClickBackupDirectory());
 
@@ -107,8 +106,6 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         assert pref != null;
         pref.setOnPreferenceClickListener(preference -> this.onClickQuickReboot(shellCommands));
 
-        Bundle extra = requireActivity().getIntent().getExtras();
-        if (extra != null) backupDir = (File) extra.get("com.machiav3lli.backup.backupDir");
         pref = findPreference(Constants.PREFS_BATCH_DELETE);
         assert pref != null;
         pref.setOnPreferenceClickListener(preference -> this.onClickBatchDelete());

@@ -6,9 +6,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.machiav3lli.backup.utils.GsonUtil;
@@ -16,7 +13,6 @@ import com.machiav3lli.backup.utils.GsonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 public class BackupProperties extends AppMetaInfo implements Parcelable {
 

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.StorageFile;
-import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -125,14 +124,6 @@ public class AppInfoV2 {
             return backupHistory;
         }
         return backupHistory;
-    }
-
-    private static List<BackupItem> getBackupHistory(Context context, StorageFile backupRoot, String packageName) {
-        return AppInfoV2.getBackupHistory(context, backupRoot.findFile(packageName).getUri());
-    }
-
-    private static AppMetaInfo getInstalledApp(Context context, String packageName) throws PackageManager.NameNotFoundException {
-        return new AppMetaInfo(context, context.getPackageManager().getPackageInfo(packageName, 0));
     }
 
     private boolean refreshStorageStats() {

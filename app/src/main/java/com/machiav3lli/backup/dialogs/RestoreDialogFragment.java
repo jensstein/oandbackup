@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.dialogs;
 
 import android.app.Dialog;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -27,7 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 
 import org.jetbrains.annotations.NotNull;
 import com.machiav3lli.backup.items.AppMetaInfo;
@@ -61,18 +60,18 @@ public class RestoreDialogFragment extends DialogFragment {
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.RESTORE;
         if (showApkBtn) {
             builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, AppInfo.MODE_APK);
+                this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK);
             });
         }
         if (showDataBtn) {
             builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, AppInfo.MODE_DATA);
+                this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA);
             });
         }
         if (showBothBtn) {
             int textId = R.string.radioBoth;
             builder.setPositiveButton(textId, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, AppInfo.MODE_BOTH);
+                this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH);
             });
         }
         return builder.create();

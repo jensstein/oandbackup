@@ -134,7 +134,6 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                         Build.VERSION.SDK_INT,
                         new String[]{
                                 "/data/misc/wifi/WifiConfigStore.xml",
-                                "/data/misc/wifi/WifiConfigStore.xml.encrypted-checksum"
                         })),
         };
         return Arrays.asList(result);

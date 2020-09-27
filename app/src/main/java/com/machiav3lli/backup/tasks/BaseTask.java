@@ -30,7 +30,6 @@ import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.utils.UIUtils;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
@@ -48,7 +47,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     BackupRestoreHelper backupRestoreHelper;
 
     public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfoV2 app, HandleMessages handleMessages,
-                    MainActivityX oAndBackupX, File backupDirectory, ShellHandler shellHandler, int mode) {
+                    MainActivityX oAndBackupX, ShellHandler shellHandler, int mode) {
         this.actionType = actionType;
         this.app = app;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
@@ -73,14 +72,10 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);
-            if (result == 0) {
-                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getAppInfo().getPackageLabel(), message, true);
-            } else {
-                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getAppInfo().getPackageLabel(), message, true);
-            }
+            NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getAppInfo().getPackageLabel(), message, true);
             UIUtils.showActionResult(mainActivityX, this.result, null);
+            mainActivityX.refreshWithAppSheet();
         }
-        mainActivityX.refreshWithAppSheet();
         if (signal != null) {
             signal.countDown();
         }

@@ -27,6 +27,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.schedules.db.Schedule;
 
 import java.text.DateFormat;
@@ -36,15 +37,6 @@ import com.machiav3lli.backup.items.AppInfoV2;
 
 public final class ItemUtils {
     private static final String TAG = Constants.classTag(".ItemUtils");
-
-    public static long calculateID(AppInfoV2 app) {
-        return app.getPackageName().hashCode()
-                + app.getBackupMode()
-                + (app.isDisabled() ? 0 : 1)
-                + (app.isInstalled() ? 1 : 0)
-                + (app.getLogInfo() != null ? app.getLogInfo().getLastBackupMillis() : 0)
-                + app.getCacheSize();
-    }
 
     public static long calculateScheduleID(Schedule sched) {
         return sched.getId()
@@ -135,15 +127,15 @@ public final class ItemUtils {
 
     public static void pickItemBackupMode(int backupMode, AppCompatImageView apk, AppCompatImageView data) {
         switch (backupMode) {
-            case AppInfoV2.MODE_APK:
+            case BaseAppAction.MODE_APK:
                 apk.setVisibility(View.VISIBLE);
                 data.setVisibility(View.GONE);
                 break;
-            case AppInfoV2.MODE_DATA:
+            case BaseAppAction.MODE_DATA:
                 apk.setVisibility(View.GONE);
                 data.setVisibility(View.VISIBLE);
                 break;
-            case AppInfoV2.MODE_BOTH:
+            case BaseAppAction.MODE_BOTH:
                 apk.setVisibility(View.VISIBLE);
                 data.setVisibility(View.VISIBLE);
                 break;

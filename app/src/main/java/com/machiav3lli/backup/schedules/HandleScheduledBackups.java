@@ -74,11 +74,10 @@ public class HandleScheduledBackups {
             try {
                 list = BackendController.getApplicationList(this.context);
             } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
-                // Todo: Log this failure!
+                Log.e(TAG, String.format("Scheduled backup failed due to %s: %s", e.getClass().getSimpleName(), e));
+                // Todo: Log this failure visible to the user!
                 return;
             }
-            // Todo: Reenable Sorting
-            //list.sort(SortFilterManager.appInfoLabelComparator);
             ArrayList<AppInfoV2> listToBackUp = new ArrayList<>();
             switch (mode) {
                 case ALL:
@@ -122,6 +121,7 @@ public class HandleScheduledBackups {
     public void backup(final List<AppInfoV2> backupList, final int subMode) {
         if (backupDir != null) {
             new Thread(() -> {
+                Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
                 @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
                 if (prefs.getBoolean("acquireWakelock", true)) {
                     wl.acquire(10 * 60 * 1000L /*10 minutes*/);
