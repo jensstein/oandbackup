@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Process;
 import android.util.Log;
 
+import com.machiav3lli.backup.BuildConfig;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
@@ -19,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -30,8 +30,9 @@ public final class BackendController {
     /*
     List of packages ignored for any reason
      */
-    private static final List<String> ignoredPackages = Collections.singletonList(
-            "android" // virtual package. Data directory is /data -> not a good idea to backup
+    private static final List<String> ignoredPackages = Arrays.asList(
+            "android", // virtual package. Data directory is /data -> not a good idea to backup
+            BuildConfig.APPLICATION_ID // ignore own package, it would send a SIGTERM to itself on backup/restore
     );
 
     private BackendController() {
