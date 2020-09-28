@@ -106,15 +106,15 @@
     <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicações do sistema</string>
     <string name="spec_accounts">Contas</string>
-    <string name="spec_appwidgets">Widgets do aplicativo</string>
+    <string name="spec_appwidgets">Widgets da app</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Utilização de dados e políticas</string>
     <string name="spec_wallpaper">Papel de parede</string>
     <string name="spec_wifiAccessPoints">Pontos de acesso WiFi</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
     <string name="help_license">Licença</string>
-    <string name="radioUser">Aplicativos do usuário</string>
-    <string name="radioSystem">Aplicativos do sistema</string>
+    <string name="radioUser">Apps do utilizador</string>
+    <string name="radioSystem">Apps do sistema</string>
     <string name="showSplitAPKs">Dividir-APK</string>
     <string name="prefs_user">Preferências do usuário</string>
     <string name="prefs_theme">Tema</string>
@@ -129,11 +129,11 @@
     <string name="prefs_password_summary">Deixar vazio para desativar a criptografia</string>
     <string name="prefs_passwordconfirmation">Confirmação de senha de encriptação</string>
     <string name="prefs_password_match_true">As senhas combinam</string>
-    <string name="prefs_excludecache">Excluir o cache do aplicativo</string>
+    <string name="prefs_excludecache">Excluir o cache da app</string>
     <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são salvos no armazenamento externo (por exemplo /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são salvos em data/user_de</string>
-    <string name="prefs_quickreboot_summary">Termina o processo system_server para forçar um reinício do espaço do usuário</string>
-    <string name="prefs_batchdelete_summary">Excluir backups de todos os aplicativos não instalados atualmente.</string>
+    <string name="prefs_quickreboot_summary">Termina o processo system_server para forçar um reinício do espaço do utilizador</string>
+    <string name="prefs_batchdelete_summary">Excluir backups de todas as apps não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver o registro</string>
     <string name="sched_add">Adicionar Agenda</string>
     <string name="sched_submode">Sub-modo de backup:</string>
@@ -151,11 +151,11 @@
     <string name="sortLabel">Identificação</string>
     <string name="sortPackageName">Nome do pacote</string>
     <string name="sortDataSize">Tamanho dos dados</string>
-    <string name="app_s_icon">Ícone do aplicativo</string>
+    <string name="app_s_icon">Ícone da app</string>
     <string name="bothBackedUp">APK e dados</string>
     <string name="all">Tudo</string>
-    <string name="apptype_system">Aplicativo do sistema</string>
-    <string name="apptype_user">Aplicativo do usuário</string>
+    <string name="apptype_system">App do sistema</string>
+    <string name="apptype_user">App do utilizador</string>
     <string name="apptype_special">Backup especial</string>
     <string name="resetFilter">Reiniciar</string>
     <string name="applyFilter">Aplicar</string>
@@ -163,7 +163,7 @@
     <string name="version_name_title">Nome da versão:</string>
     <string name="backup_mode_title">Modo de backup:</string>
     <string name="last_backup_title">Último backup:</string>
-    <string name="app_s_type_title">Tipo de aplicativo:</string>
+    <string name="app_s_type_title">Tipo de app:</string>
     <string name="encrypted_data_title">Dados criptografados:</string>
     <string name="other_filters_options">Filtros especiais:</string>
     <string name="deleted_backup">Excluído o backup</string>
@@ -174,8 +174,8 @@
     <string name="split_apks">Dividir os APKs:</string>
     <string name="backup_filters">Backup dos filtros:</string>
     <string name="grant_usage_access_title">Conceder acesso ao uso</string>
-    <string name="grant_usage_access_message">Isto é essencial para obter as informações sobre os tamanhos dos arquivos de aplicativos</string>
-    <string name="app_size">Tamanho do aplicativo:</string>
+    <string name="grant_usage_access_message">Isto é essencial para obter as informações sobre os tamanhos dos ficheiros de apps</string>
+    <string name="app_size">Tamanho da app:</string>
     <string name="data_size">Tamanho dos dados:</string>
     <string name="cache_size">Tamanho do Cache:</string>
     <string name="help_group">Nosso Grupo</string>
@@ -184,29 +184,29 @@
     <string name="sort_and_filter">Ordenar e filtrar</string>
     <string name="storage_access">Acesso ao armazenamento</string>
     <string name="welcome_to_oabx">Bem-vindo ao OABX!</string>
-    <string name="intro_permission_storage">O aplicativo usa permissão de leitura/gravação de armazenamento para poder acessar o armazenamento externo, definir uma pasta de backup personalizada e fornecer a possibilidade de backup de dados/obb externos de outros aplicativos.</string>
-    <string name="intro_permission_usageaccess">O aplicativo precisa desta permissão para poder verificar as estatísticas e os tamanhos dos dados e o cache de seus aplicativos.</string>
-    <string name="intro_permission_batteryoptimization">O aplicativo pode enfrentar alguns problemas fazendo os Backups programados em alguns ROMs que adotam uma otimização agressiva da bateria, por exemplo, MIUI, mas mesmo em AOSP puro tal problema pode acontecer.</string>
-    <string name="prefs_biometriclock_summary">Proteja o aplicativo com a bloqueio biométrico do dispositivo (por exemplo, impressão digital, desbloqueio facial)</string>
+    <string name="intro_permission_storage">A app usa a permissão de leitura/gravação de armazenamento para poder acessar o armazenamento externo, definir uma pasta de backup personalizada e fornecer a possibilidade de backup de dados/obb externos de outros aplicativos.</string>
+    <string name="intro_permission_usageaccess">A app precisa desta permissão para poder verificar as estatísticas e os tamanhos dos dados e o cache das suas apps.</string>
+    <string name="intro_permission_batteryoptimization">A app pode enfrentar alguns problemas fazendo os Backups programados em alguns ROMs que adotam uma otimização agressiva da bateria, por exemplo, MIUI, mas mesmo em AOSP puro tal problema pode acontecer.</string>
+    <string name="prefs_biometriclock_summary">Proteja a app com a bloqueio biométrico do aparelho (por exemplo, impressão digital, desbloqueio facial)</string>
     <string name="prefs_password_match_false">As senhas não correspondem</string>
-    <string name="prefs_excludecache_summary">Excluir o cache do aplicativo do backup de dados</string>
+    <string name="prefs_excludecache_summary">Excluir o cache da app do backup de dados</string>
     <string name="prefs_externaldata">Fazer backup de dados externos</string>
     <string name="prefs_deviceprotecteddata">Fazer backup de dados protegidos por dispositivo</string>
-    <string name="restart_dialog">O aplicativo precisa ser reiniciado</string>
+    <string name="restart_dialog">A app precisa ser reiniciada</string>
     <string name="empty_filtered_list">A lista de filtros está vazia, sendo assim, os filtros estão de volta ao padrão</string>
-    <string name="intro_welcome_message">O OAndBackupX é um Fork do reconhecido OAndBackup com o objetivo de levá-lo até 2020 e mais. Por enquanto, a maior parte da funcionalidade e da interface do aplicativo são reescritas e algumas são adicionadas.
+    <string name="intro_welcome_message">O OAndBackupX é um Fork do reconhecido OAndBackup com o objetivo de levá-lo até 2020 e mais. Por enquanto, a maior parte da funcionalidade e da interface da app são reescritas e algumas são adicionadas.
 \n
-\n O aplicativo ainda se encontra em fase beta e muitas vezes estão sendo feitas as melhorias. Leia atentamente o registro de alterações a cada novo lançamento.
+\n A app ainda se encontra em fase beta e muitas vezes estão a ser feitas as melhorias. Leia atentamente o registo de alterações a cada novo lançamento.
 \n
-\n Todos os tipos de contribuição são bem-vindos, seja tradução, idéias, relato de bugs ou contribuição ao código.
+\n Todos os tipos de contribuição são bem-vindos, seja tradução, ideias, relato de bugs ou contribuição ao código.
 \n
-\n Agora sobre a funcionalidade de nosso aplicativo:
+\n Agora sobre a funcionalidade da nossa app:
 \n
-\n • Requer Root e permite que você faça o backup de aplicativos e seus dados.
+\n • Requer Root e permite que faça o backup de apps e seus dados.
 \n
-\n • Tanto o backup como a restauração dos aplicativos um por vez ou de lotes são suportados.
+\n • Tanto o backup como a restauração das apps um por vez ou de lotes são suportados.
 \n
-\n • A restauração dos aplicativos do sistema deve ser possível sem exigir uma reinicialização posterior, mas mesmo assim não aconselhamos fazê-lo.
+\n • A restauração de apps do sistema deve ser possível sem exigir uma reinicialização posterior, mas mesmo assim não aconselhamos fazê-lo.
 \n
 \n • Os backups podem ser programados sem limite no número de programações individuais e há a possibilidade de criar listas personalizadas exclusivas.</string>
 </resources>
