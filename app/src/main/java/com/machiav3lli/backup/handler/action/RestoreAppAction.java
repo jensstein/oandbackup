@@ -323,6 +323,7 @@ public class RestoreAppAction extends BaseAppAction {
 
     private void genericRestorePermissions(String type, File targetDir) throws RestoreFailedException {
         try {
+            Log.i(RestoreAppAction.TAG, "Getting user/group info and apply it recursively on " + targetDir);
             // retrieve the assigned uid and gid from the data directory Android created
             String[] uidgid = this.getShell().suGetOwnerAndGroup(targetDir.getAbsolutePath());
             // get the contents. lib for example must be owned by root
@@ -336,9 +337,10 @@ public class RestoreAppAction extends BaseAppAction {
                 Log.i(RestoreAppAction.TAG, String.format("No chown targets. Is this an app without any %s ? Doing nothing.", type));
                 return;
             }
+            Log.d(RestoreAppAction.TAG, String.format("Changing owner and group of '%s' to %s:%s and restoring selinux context", targetDir, uidgid[0], uidgid[1]));
             String command = this.prependUtilbox(String.format(
-                    "chown -R %s:%s %s", uidgid[0], uidgid[1],
-                    String.join(" ", chownTargets)));
+                    "chown -R %s:%s %s && restorecon -R -v \"%s\"", uidgid[0], uidgid[1],
+                    String.join(" ", chownTargets), targetDir));
             ShellHandler.runAsRoot(command);
         } catch (ShellHandler.ShellCommandFailedException e) {
             String errorMessage = "Could not update permissions for " + type;
