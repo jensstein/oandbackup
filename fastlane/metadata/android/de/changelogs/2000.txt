@@ -1,4 +1,4 @@
-**OUndBackupX 2.0.0**
+**OAndBackupX 2.0.0**
 * Auf sulib umgeschaltet (Danke @Tiefkuehlpizze)
 * Entfernt (entgültig):  oab-utils (Danke  @Tiefkuehlpizze)
 * Neue Benutzeroberflächen-Elemente für App-, Filter- & ScheduleSheet

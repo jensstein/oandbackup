@@ -1,0 +1,4 @@
+** OAndBackupX 0.9.6 **
+* Dodano sprawdzanie aktualizacji
+* Naprawiono spójność motywu
+* Naprawiono niektóre linie tekstu

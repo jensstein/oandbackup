@@ -1,4 +1,4 @@
-**OUndBackupX 1.0.2**
+**OAndBackupX 1.0.2**
 * Hinzugefügt: Menüpunkt Klick-Feedback
 * Aktualisiert: verhalten beim Blättern 
 * Repariert: Startbildschirm

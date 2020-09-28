@@ -1,4 +1,4 @@
-**OUndBackupX 3.0.0**
+**OAndBackupX 3.0.0**
 
 ##### DIESE VERSION IST NICHT MIT DEN VORHERIGEN VERSIONEN KOMPATIBEL
 * Geändert: Standard-Sicherungsverzeichnis nach /OABX

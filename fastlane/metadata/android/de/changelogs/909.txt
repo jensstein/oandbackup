@@ -1,2 +1,2 @@
-**OUndBackupX 0.9.9**
+**OAndBackupX 0.9.9**
 * Entfernt: Prüfung auf Aktualisierungen (Veröffentlichung in F-Droid vorbereitet)

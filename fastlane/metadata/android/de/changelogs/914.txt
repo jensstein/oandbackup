@@ -1,2 +1,2 @@
-**OUndBackupX 0.9.14 (alias 1.0.0-rc3)**
+**OAndBackupX 0.9.14 (alias 1.0.0-rc3)**
 * zurück zum Bereinigen des Zwischenspeichers

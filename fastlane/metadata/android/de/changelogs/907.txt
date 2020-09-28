@@ -1,4 +1,4 @@
-**OUndBackupX 0.9.7**
+**OAndBackupX 0.9.7**
 * Repariert: Update-Logik
 * Entfernt: PGP-Verschlüsselung und symbolischen Links folgen
 * Quell-Code aufgeräumt

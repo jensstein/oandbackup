@@ -1,4 +1,4 @@
-**OUndBackupX 0.9.12 (alias 1.0.0-rc1)**
+**OAndBackupX 0.9.12 (alias 1.0.0-rc1)**
 * Hinzugefügt: App-Info Verknüpfung im AppSheet
 * Aktualisiert: Betätigen von Benutzeroberflächen-Elementen
 * Aktualisiert: neues Standard-Sicherungsverzeichnis /OAndBackupX
