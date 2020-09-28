@@ -1,8 +1,15 @@
-<html><body>
-        <h2>Notas de utilização</h2>
-        <p><strong>Modo de backup</strong>: Pode criar um backup do ficheiro apk, dos dados ou de ambos. Uma aplicação que não esteja instalada apenas pode ser restaurada se o ficheiro apk existir.</p>
-        <p><strong>Eliminar backup</strong>: Apaga os ficheiros de backup de uma aplicação.</p>
-        <p><strong>Desinstalar</strong>: Um pouco mais agressivo que uma desinstalação normal. Para além de remover a aplicação através dos comandos android, também remove os ficheiros que possam estar presentes no diretório /data/app-lib/. Também funciona com as aplicações do sistema.</p>
-        <p><strong>Ativar/desativar</strong>: Utiliza o script "pm" para ativar ou desativar uma aplicação. A desativação de uma aplicação remove-a da interface de utilizador mas não a desinstala. Pode ser utilizada para ativar ou desativar a aplicação para vários utilizadores em simultâneo (caso existam).  Os utilizadores são identificados pela sua ID. O número 0 representa o primeiro utilizador.</p>
-        <p><strong>Vários utilizadores</strong>: Algo experimental mas deve funcionar. Ao restaurar aplicações num cenário multi-utilizador, é invocado `pm install -r $apk` e a aplicação é desativada para todos os utilizadores que possuam a aplicação em /data/system/user/$user/package-restrictions.xml (a menos que a aplicação esteja listada como enabled="1").<br>Podem ocorrer problemas para utilizadores que instalem essa aplicação posteriormente, mas é necessário para impedir que a aplicação seja instalada para todos os utilizadores. O menu de contexto tem uma opção para ativar e desativar as aplicações  que pode ser utilizada caso algum dos utilizadores não consiga utilizar uma aplicação através da desativação ao restaurar.<br>A ativação ou desativação apenas funciona após a instalação inicial ou restauro da aplicação(não necessariamente através do OAndBackupX.</p>
-</body></html>
+<html>
+    <body>
+        <h2>Notas de uso</h2>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Desinstalar</strong>: Um pouco mais agressivo do que uma desinstalação normal. Além de fazer uma desinstalação normal via comandos do android, desinstalar do OAndBackupX apaga ficheiros que a app pode ter deixado em /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+    </body>
+</html>
