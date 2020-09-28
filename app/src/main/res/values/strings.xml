@@ -190,13 +190,6 @@
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
     <string name="quickRebootMessage">Do you wish to restart userspace?</string>
-    <string name="tag_user" translatable="false">USR</string>
-    <string name="tag_system" translatable="false">SYS</string>
-    <string name="tag_special" translatable="false">SPC</string>
-    <string name="tag_apk" translatable="false">APK</string>
-    <string name="tag_data" translatable="false">DAT</string>
-    <string name="tag_apk_and_data" translatable="false"><![CDATA[A&D]]></string>
-    <string name="tag_update" translatable="false">UPD</string>
     <string name="storage_access">Storage Access</string>
     <string name="welcome_to_oabx">Welcome to OABX!</string>
     <string name="intro_welcome_message"> OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.

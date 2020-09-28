@@ -21,9 +21,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
-import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppInfo;
@@ -62,15 +63,15 @@ public class ItemUtils {
         return dateFormat.format(date);
     }
 
-    public static void pickTypeColor(AppInfo app, AppCompatTextView text) {
+    public static void pickSheetAppType(AppInfo app, AppCompatTextView text) {
         int color;
         if (app.isInstalled()) {
             if (app.isSpecial()) {
-                color = Color.rgb(155, 69, 214);
+                color = Color.rgb(144, 69, 254);
             } else if (app.isSystem()) {
-                color = Color.rgb(69, 147, 254);
+                color = Color.rgb(69, 144, 254);
             } else {
-                color = Color.rgb(244, 155, 69);
+                color = Color.rgb(254, 144, 69);
             }
             if (app.isDisabled()) {
                 color = Color.DKGRAY;
@@ -79,17 +80,43 @@ public class ItemUtils {
         text.setTextColor(color);
     }
 
-    public static void pickAppType(AppInfo app, Chip chip) {
+    public static void pickSheetBackupMode(int backupMode, AppCompatTextView backup, LinearLayoutCompat backupModeLine, boolean update) {
+        switch (backupMode) {
+            case AppInfo.MODE_APK:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
+                backup.setText(R.string.onlyApkBackedUp);
+                backup.setTextColor(Color.rgb(69, 244, 144));
+                break;
+            case AppInfo.MODE_DATA:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
+                backup.setText(R.string.onlyDataBackedUp);
+                backup.setTextColor(Color.rgb(244, 69, 144));
+                break;
+            case AppInfo.MODE_BOTH:
+                UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
+                backup.setText(R.string.bothBackedUp);
+                backup.setTextColor(Color.rgb(155, 155, 244));
+                break;
+            default:
+                UIUtils.setVisibility(backupModeLine, View.GONE, update);
+                break;
+        }
+    }
+
+    public static void pickItemAppType(AppInfo app, AppCompatImageView icon) {
         ColorStateList color;
         if (app.isSpecial()) {
-            chip.setText(R.string.tag_special);
-            color = ColorStateList.valueOf(Color.rgb(155, 69, 214));
+            color = ColorStateList.valueOf(Color.rgb(144, 69, 254));
+            icon.setVisibility(View.VISIBLE);
+            icon.setImageResource(R.drawable.ic_round_special_24);
         } else if (app.isSystem()) {
-            chip.setText(R.string.tag_system);
-            color = ColorStateList.valueOf(Color.rgb(69, 147, 254));
+            color = ColorStateList.valueOf(Color.rgb(69, 144, 254));
+            icon.setVisibility(View.VISIBLE);
+            icon.setImageResource(R.drawable.ic_outline_system_24);
         } else {
-            chip.setText(R.string.tag_user);
-            color = ColorStateList.valueOf(Color.rgb(244, 155, 69));
+            color = ColorStateList.valueOf(Color.rgb(254, 144, 69));
+            icon.setVisibility(View.VISIBLE);
+            icon.setImageResource(R.drawable.ic_outline_user_24);
         }
         if (app.isDisabled()) {
             color = ColorStateList.valueOf(Color.DKGRAY);
@@ -97,34 +124,27 @@ public class ItemUtils {
         if (!app.isInstalled()) {
             color = ColorStateList.valueOf(Color.GRAY);
         }
-        chip.setTextColor(color);
-        chip.setChipStrokeColor(color);
+        icon.setImageTintList(color);
     }
 
-    public static void pickBackupMode(int backupMode, Chip chip) {
-        ColorStateList color;
+    public static void pickItemBackupMode(int backupMode, AppCompatImageView apk, AppCompatImageView data) {
         switch (backupMode) {
             case AppInfo.MODE_APK:
-                chip.setVisibility(View.VISIBLE);
-                chip.setText(R.string.tag_apk);
-                color = ColorStateList.valueOf(Color.rgb(69, 244, 155));
+                apk.setVisibility(View.VISIBLE);
+                data.setVisibility(View.GONE);
                 break;
             case AppInfo.MODE_DATA:
-                chip.setVisibility(View.VISIBLE);
-                chip.setText(R.string.tag_data);
-                color = ColorStateList.valueOf(Color.rgb(225, 94, 216));
+                apk.setVisibility(View.GONE);
+                data.setVisibility(View.VISIBLE);
                 break;
             case AppInfo.MODE_BOTH:
-                chip.setVisibility(View.VISIBLE);
-                chip.setText(R.string.tag_apk_and_data);
-                color = ColorStateList.valueOf(Color.rgb(255, 76, 87));
+                apk.setVisibility(View.VISIBLE);
+                data.setVisibility(View.VISIBLE);
                 break;
             default:
-                chip.setVisibility(View.GONE);
-                color = ColorStateList.valueOf(Color.TRANSPARENT);
+                apk.setVisibility(View.GONE);
+                data.setVisibility(View.GONE);
                 break;
         }
-        chip.setTextColor(color);
-        chip.setChipStrokeColor(color);
     }
 }

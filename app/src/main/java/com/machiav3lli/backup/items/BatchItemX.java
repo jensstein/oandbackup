@@ -22,9 +22,9 @@ import android.os.Parcelable;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -107,9 +107,10 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
         AppCompatTextView label = itemView.findViewById(R.id.label);
         AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
-        Chip backupMode = itemView.findViewById(R.id.backupMode);
-        Chip appType = itemView.findViewById(R.id.appType);
-        Chip update = itemView.findViewById(R.id.update);
+        AppCompatImageView apk = itemView.findViewById(R.id.apkMode);
+        AppCompatImageView data = itemView.findViewById(R.id.dataMode);
+        AppCompatImageView appType = itemView.findViewById(R.id.appType);
+        AppCompatImageView update = itemView.findViewById(R.id.update);
 
         public ViewHolder(View view) {
             super(view);
@@ -124,13 +125,13 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             packageName.setText(app.getPackageName());
             if (app.getLogInfo() != null) {
                 lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(),false));
+                lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), false));
             } else lastBackup.setVisibility(View.GONE);
             if (app.isUpdated()) {
                 update.setVisibility(View.VISIBLE);
             } else update.setVisibility(View.GONE);
-            ItemUtils.pickBackupMode(app.getBackupMode(), backupMode);
-            ItemUtils.pickAppType(app, appType);
+            ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
+            ItemUtils.pickItemAppType(app, appType);
         }
 
         @Override
@@ -139,8 +140,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> implements P
             label.setText(null);
             packageName.setText(null);
             lastBackup.setText(null);
-            backupMode.setText(null);
-            appType.setText(null);
         }
     }
 }

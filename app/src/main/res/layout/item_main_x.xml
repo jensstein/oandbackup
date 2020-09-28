@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -49,39 +48,39 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/label"
+                    style="@style/TextViewWrapped"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    style="@style/TextViewWrapped"
                     android:textAppearance="@style/TextAppearance.Label" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/actions"
-                    style="@style/Chip.Group.Tags"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/update"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_outline_update_24" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/update"
-                        style="@style/Chip.Tag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/tag_update"
-                        android:textColor="?colorSecondary"
-                        app:chipStrokeColor="?colorSecondary" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/dataMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_outline_data_24" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupMode"
-                        style="@style/Chip.Tag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/apkMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_outline_apk_24" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/appType"
-                        style="@style/Chip.Tag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.chip.ChipGroup>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/appType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_outline_system_24" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -92,20 +91,20 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/packageName"
+                    style="@style/TextViewWrapped"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.75"
-                    style="@style/TextViewWrapped"
                     android:textAppearance="@style/TextAppearance.Secondary" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/lastBackup"
+                    style="@style/TextViewWrapped"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
                     android:gravity="end"
-                    style="@style/TextViewWrapped"
-                    android:textAppearance="@style/TextAppearance.Secondary"/>
+                    android:textAppearance="@style/TextAppearance.Secondary" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

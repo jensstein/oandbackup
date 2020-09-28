@@ -191,6 +191,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
         binding.cbAll.setChecked(false);
         updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment);
+        updatedBadge.setBackgroundColor(getResources().getColor(R.color.app_accent, getTheme()));
         updatedBadge.setVisible(badgeCounter != 0);
         mainFastAdapter = FastAdapter.with(mainItemAdapter);
         mainFastAdapter.setHasStableIds(true);

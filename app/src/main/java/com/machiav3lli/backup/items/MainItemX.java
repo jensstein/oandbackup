@@ -22,7 +22,6 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.google.android.material.chip.Chip;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -68,9 +67,10 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
         AppCompatTextView label = itemView.findViewById(R.id.label);
         AppCompatTextView packageName = itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = itemView.findViewById(R.id.lastBackup);
-        Chip backupMode = itemView.findViewById(R.id.backupMode);
-        Chip appType = itemView.findViewById(R.id.appType);
-        Chip update = itemView.findViewById(R.id.update);
+        AppCompatImageView apk = itemView.findViewById(R.id.apkMode);
+        AppCompatImageView data = itemView.findViewById(R.id.dataMode);
+        AppCompatImageView appType = itemView.findViewById(R.id.appType);
+        AppCompatImageView update = itemView.findViewById(R.id.update);
         AppCompatImageView icon = itemView.findViewById(R.id.icon);
 
         public ViewHolder(View view) {
@@ -90,8 +90,8 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             } else {
                 lastBackup.setVisibility(View.GONE);
             }
-            ItemUtils.pickAppType(app, appType);
-            ItemUtils.pickBackupMode(app.getBackupMode(), backupMode);
+            ItemUtils.pickItemAppType(app, appType);
+            ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
             if (app.isUpdated()) {
                 update.setVisibility(View.VISIBLE);
             } else update.setVisibility(View.GONE);
@@ -102,8 +102,6 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             label.setText(null);
             packageName.setText(null);
             lastBackup.setText(null);
-            backupMode.setText(null);
-            appType.setText(null);
             icon.setImageDrawable(null);
         }
     }

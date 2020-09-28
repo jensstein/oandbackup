@@ -19,7 +19,6 @@ package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -186,7 +185,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         if (app.isUpdated()) {
             String updatedVersionString = app.getLogInfo().getVersionName() + " (" + app.getVersionName() + ")";
             binding.versionName.setText(updatedVersionString);
-            binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_secondary));
+            binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_accent));
         } else {
             binding.versionName.setText(app.getVersionName());
             binding.versionName.setTextColor(binding.packageName.getTextColors());
@@ -195,31 +194,12 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(binding.lastBackupLine, View.VISIBLE, update);
             binding.lastBackup.setText(ItemUtils.getFormattedDate(app.getLogInfo().getLastBackupMillis(), true));
         } else UIUtils.setVisibility(binding.lastBackupLine, View.GONE, update);
-        switch (app.getBackupMode()) {
-            case AppInfo.MODE_APK:
-                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
-                binding.backupMode.setText(R.string.onlyApkBackedUp);
-                binding.backupMode.setTextColor(Color.rgb(69, 244, 155));
-                break;
-            case AppInfo.MODE_DATA:
-                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
-                binding.backupMode.setText(R.string.onlyDataBackedUp);
-                binding.backupMode.setTextColor(Color.rgb(225, 94, 216));
-                break;
-            case AppInfo.MODE_BOTH:
-                UIUtils.setVisibility(binding.backupModeLine, View.VISIBLE, update);
-                binding.backupMode.setText(R.string.bothBackedUp);
-                binding.backupMode.setTextColor(Color.rgb(255, 76, 87));
-                break;
-            default:
-                UIUtils.setVisibility(binding.backupModeLine, View.GONE, update);
-                break;
-        }
+        ItemUtils.pickSheetBackupMode(app.getBackupMode(), binding.backupMode, binding.backupModeLine, update);
         if (app.getLogInfo() != null && app.getBackupMode() != AppInfo.MODE_APK) {
             UIUtils.setVisibility(binding.encryptedLine, View.VISIBLE, update);
             binding.encrypted.setText(app.getLogInfo().isEncrypted() ? R.string.dialogYes : R.string.dialogNo);
         } else UIUtils.setVisibility(binding.encryptedLine, View.GONE, update);
-        ItemUtils.pickTypeColor(app, binding.appType);
+        ItemUtils.pickSheetAppType(app, binding.appType);
     }
 
     private void setupOnClicks(AppSheet fragment) {
