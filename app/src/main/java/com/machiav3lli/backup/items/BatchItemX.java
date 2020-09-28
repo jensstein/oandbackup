@@ -103,16 +103,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
                 // Todo: Find a proper way to display multiple backups. Just showing the latest for now
                 BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
                 BackupProperties backupProperties = backupInfo.getBackupProperties();
-                // Todo: Be more precise
-                if(backupProperties.hasApk() && backupProperties.hasAppData()) {
-                    this.backupMode.setText(R.string.bothBackedUp);
-                }else if(backupProperties.hasApk()){
-                    this.backupMode.setText(R.string.onlyApkBackedUp);
-                }else if(backupProperties.hasAppData()){
-                    this.backupMode.setText(R.string.onlyDataBackedUp);
-                }else{
-                    this.backupMode.setText("");
-                }
+                // Todo: Be more precise on the backup contents (external data, devices protected data, obb data)
                 if (app.isUpdated()) {
                     update.setVisibility(View.VISIBLE);
                 } else {

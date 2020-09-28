@@ -95,16 +95,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
                 BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
                 BackupProperties backupProperties = backupInfo.getBackupProperties();
                 this.lastBackup.setText(backupProperties.getBackupDate().toString());
-                // Todo: Be more precise
-                if(backupProperties.hasApk() && backupProperties.hasAppData()) {
-                    this.backupMode.setText(R.string.bothBackedUp);
-                }else if(backupProperties.hasApk()){
-                    this.backupMode.setText(R.string.onlyApkBackedUp);
-                }else if(backupProperties.hasAppData()){
-                    this.backupMode.setText(R.string.onlyDataBackedUp);
-                }else{
-                    this.backupMode.setText("");
-                }
+                // Todo: Be more precise on the backup contents (external data, devices protected data, obb data)
 
                 // --- Handle Update Chip
                 if(app.isInstalled() && backupProperties.getVersionCode() > app.getPackageInfo().versionCode){
