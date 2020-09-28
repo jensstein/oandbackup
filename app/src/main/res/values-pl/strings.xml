@@ -46,7 +46,7 @@
     <string name="restoreDataWithoutApkError">Nie można przywrócić danych bez przywracania APK, pakiet nie jest zainstalowany.</string>
     <string name="collectingData">Zbieranie informacji o pakiecie…</string>
     <string name="noSu">Nie można uzyskać uprawnień superuser</string>
-    <string name="busyboxProblem">Nie można znaleźć Busybox, sprawdź dziennik błędów</string>
+    <string name="busyboxProblem">Nie można znaleźć BusyBox, sprawdź dziennik błędów</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Nie można utworzyć</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -159,7 +159,7 @@
     <string name="prefs_theme_system">Systemowy</string>
     <string name="empty_filtered_list">Przefiltrowana lista jest pusta, ustawianie filtrów z powrotem na domyślne</string>
     <string name="dialog_refuse">Nie zrobię tego</string>
-    <string name="dialog_approve">Zróbmy to</string>
+    <string name="dialog_approve">Zróbmy to!</string>
     <string name="ignore_battery_optimization_title">Optymalizacja baterii</string>
     <string name="ignore_battery_optimization_message">Tworzenie kopii może się czasami zatrzymać, aby tego uniknąć wyłącz optymalizację baterii</string>
     <string name="ignore_battery_optimization_not_supported">To urządzenie niestety nie wspiera ignorowania optymalizacji baterii!</string>
@@ -178,4 +178,28 @@
     <string name="prefs_passwordconfirmation">Potwierdź hasło do szyfrowania</string>
     <string name="prefs_biometriclock_summary">Zabezpiecz aplikację z użyciem blokady biometrycznej (np. z użyciem odcisku palca, twarzy)</string>
     <string name="prefs_biometriclock">Blokada biometryczna</string>
+    <string name="intro_welcome_message">OAndBackupX to fork niesławnego OAndBackup, którego celem jest doprowadzenie go do roku 2020 i dalej. Na razie większość funkcji i interfejsu użytkownika aplikacji zostało przepisanych, a niektóre zostały dodane.
+\n Aplikacja jest nadal w fazie beta i często przeprowadza się wiele zmian bazy. Dlatego prosimy o uważne czytanie dziennika zmian przy każdym nowym wydaniu.
+\n Mile widziane są wszelkiego rodzaju wkłady, czy to tłumaczenia, pomysły, zgłaszanie błędów czy praca nad kodem.
+\n
+\n Teraz funkcjonalność naszej aplikacji:
+\n • Wymaga roota i umożliwia tworzenie kopii zapasowych poszczególnych aplikacji i ich danych.
+\n • Obsługiwane jest zarówno tworzenie kopii zapasowych, jak i przywracanie poszczególnych programów pojedynczo, a także tworzenie wielu kopii na raz i przywracanie ich.
+\n • Przywracanie aplikacji systemowych powinno być możliwe bez konieczności późniejszego ponownego uruchamiania, ale nadal nie zalecamy tego robić.
+\n • Kopie zapasowe można planować bez ograniczenia liczby indywidualnych harmonogramów — istnieje także możliwość tworzenia list niestandardowych.</string>
+    <string name="intro_permission_batteryoptimization">Aplikacja może mieć problemy z wykonywaniem zaplanowanych kopii zapasowych na niektórych ROM-ach, które używają agresywnej optymalizacji baterii np. MIUI, ale nawet na AOSP taki problem może się zdarzyć.</string>
+    <string name="intro_permission_usageaccess">Aplikacja potrzebuje tego uprawnienia, aby móc sprawdzić statystyki i rozmiary danych i pamięci podręcznej aplikacji.</string>
+    <string name="intro_permission_storage">Aplikacja korzysta z uprawnień do odczytu/zapisu pamięci masowej, aby uzyskać dostęp do zewnętrznej pamięci masowej, ustawić niestandardowy folder kopii zapasowej i zapewnić możliwość tworzenia kopii zapasowych danych zewnętrznych / obb innych aplikacji.</string>
+    <string name="welcome_to_oabx">Witamy w OABX!</string>
+    <string name="storage_access">Dostęp do pamięci</string>
+    <string name="sort_and_filter">Sortowanie i filtrowanie</string>
+    <string name="enable_encryption_message">Przechowywanie danych na urządzeniu nie jest bezpieczne. Dla bezpieczeństwa włącz szyfrowanie i ustaw hasło.</string>
+    <string name="enable_encryption_title">Szyfrowanie danych</string>
+    <string name="help_group">Nasza grupa</string>
+    <string name="cache_size">Rozmiar pamięci podręcznej:</string>
+    <string name="data_size">Rozmiar danych:</string>
+    <string name="app_size">Rozmiar aplikacji:</string>
+    <string name="grant_usage_access_message">Jest to niezbędne do uzyskania informacji o rozmiarach plików aplikacji</string>
+    <string name="grant_usage_access_title">Przyznaj dostęp do danych użytkowania</string>
+    <string name="dialog_start">Zaczynajmy!</string>
 </resources>
