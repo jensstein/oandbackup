@@ -204,4 +204,7 @@
     <string name="intro_permission_storage">Die Anwendung verwendet die Lese-/Schreibberechtigung des Speichers, um auf den externen Speicher zugreifen zu können, einen benutzerdefinierten Backup-Ordner einzurichten und die Möglichkeit für die Sicherung externer Daten/OBB anderer Anwendungen zu bieten.</string>
     <string name="intro_permission_usageaccess">Die Anwendung benötigt diese Berechtigung, um die Statistiken und Größen der Daten und des Caches Ihrer Anwendungen lesen zu können.</string>
     <string name="intro_permission_batteryoptimization">Die App kann bei geplanten Backups auf einigen ROMs, die aggressive Batterieoptimierungen haben, wie z.B. MIUI, auf Probleme stoßen, aber selbst auch auf Vanilla-AOSP kann ein solches Problem auftreten.</string>
+    <string name="help_legend">Die Legende:</string>
+    <string name="radioUpdated">Aktualisiert</string>
+    <string name="help_appTypeHint">* Das Symbol des Anwendungstyps wäre grau, wenn die Anwendung deinstalliert ist, und dunkelgrau, wenn die Anwendung deaktiviert ist.</string>
 </resources>

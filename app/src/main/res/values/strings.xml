@@ -15,6 +15,7 @@
     <string name="radioApk">APK</string>
     <string name="radioData">Data</string>
     <string name="radioSpecial">Special backups</string>
+    <string name="radioUpdated">Updated</string>
     <string name="de_selectAll">De/select all</string>
     <string name="onlyApkBackedUp">Only APK</string>
     <string name="onlyDataBackedUp">Only data</string>
@@ -186,6 +187,8 @@
     <string name="logfileSavedAt" translatable="false">Logfile saved at %s</string>
     <string name="help_license">License</string>
     <string name="help_group">Our Group</string>
+    <string name="help_legend">Legend:</string>
+    <string name="help_appTypeHint">* App type\'s icon would be gray if the app is uninstalled and dark gray if the app is disabled.</string>
     <string name="enable_encryption_title">Data Encryption</string>
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
