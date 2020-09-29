@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -51,6 +50,8 @@
                     <com.shawnlin.numberpicker.NumberPicker
                         android:id="@+id/intervalDays"
                         style="@style/NumberPicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
                         app:np_max="30"
                         app:np_min="1" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -77,6 +78,8 @@
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/timeOfDay"
                 style="@style/NumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
                 app:np_max="23"
                 app:np_min="0" />
 
@@ -129,6 +132,26 @@
                     android:layout_height="wrap_content"
                     android:text="@string/showNewAndUpdated" />
             </com.google.android.material.chip.ChipGroup>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/excludeSystem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:text="@string/sched_excludeSystemCheckBox"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/customListUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:background="@drawable/button_neutral_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/sched_customListUpdateButton"
+                android:textColor="?colorControlNormal"
+                android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -188,39 +211,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginEnd="@dimen/cards_spacing"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/buttons_spacing"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/excludeSystem"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/sched_excludeSystemCheckBox"
-                        android:visibility="gone" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/customListUpdate"
+                        android:id="@+id/enableCheckbox"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/cards_spacing"
                         android:layout_weight="1"
-                        android:background="@drawable/button_neutral_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text="@string/sched_customListUpdateButton"
-                        android:textColor="?colorControlNormal"
-                        android:visibility="invisible" />
+                        android:singleLine="true"
+                        android:text="@string/sched_checkbox" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/removeButton"
-                        android:layout_width="48dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/button_negative_ripple"
                         android:clickable="true"
@@ -229,31 +240,16 @@
                         android:tint="@color/app_secondary" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/activateButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/enableCheckbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        android:singleLine="true"
-                        android:text="@string/sched_checkbox" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/activateButton"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginVertical="@dimen/buttons_spacing"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_positive_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text="@string/sched_activateButton"
-                        android:textColor="?colorAccent" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    android:layout_marginVertical="@dimen/buttons_spacing"
+                    android:background="@drawable/button_positive_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/sched_activateButton"
+                    android:textColor="?colorAccent" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>

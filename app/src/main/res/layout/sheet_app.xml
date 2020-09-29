@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -334,68 +333,62 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <HorizontalScrollView
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/actions"
+                style="@style/Chip.Group"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:scrollbars="none">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/actions"
-                    style="@style/Chip.Group"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/backup"
+                    style="@style/Chip.Action.Positive"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:text="@string/backup" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backup"
-                        style="@style/Chip.Action.Positive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/backup" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/restore"
+                    style="@style/Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/restore" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/restore"
-                        style="@style/Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/restore" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/delete"
+                    style="@style/Chip.Action.Negative"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/deleteBackup" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/delete"
-                        style="@style/Chip.Action.Negative"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/deleteBackup" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/share"
+                    style="@style/Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shareTitle" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/share"
-                        style="@style/Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/shareTitle" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/enablePackage"
+                    style="@style/Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enablePackage" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/enablePackage"
-                        style="@style/Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/enablePackage" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/disablePackage"
+                    style="@style/Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/disablePackage" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/disablePackage"
-                        style="@style/Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/disablePackage" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/uninstall"
-                        style="@style/Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/uninstall" />
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/uninstall"
+                    style="@style/Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/uninstall" />
+            </com.google.android.material.chip.ChipGroup>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

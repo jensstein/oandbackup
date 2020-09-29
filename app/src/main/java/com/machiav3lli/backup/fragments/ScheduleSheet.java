@@ -308,7 +308,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                 hideSecondaryButton(binding.excludeSystem);
                 break;
             case R.id.schedCustomList:
-                if (binding.customListUpdate.getVisibility() != View.INVISIBLE) break;
+                if (binding.customListUpdate.getVisibility() != View.GONE) break;
                 binding.customListUpdate.setVisibility(View.VISIBLE);
                 binding.customListUpdate.setTag(number);
                 hideSecondaryButton(binding.customListUpdate);
@@ -321,8 +321,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     public void hideSecondaryButton(View v) {
         int id = (v != null) ? v.getId() : -1;
-        if (binding.customListUpdate.getVisibility() != View.INVISIBLE && id != binding.customListUpdate.getId())
-            binding.customListUpdate.setVisibility(View.INVISIBLE);
+        if (binding.customListUpdate.getVisibility() != View.GONE && id != binding.customListUpdate.getId())
+            binding.customListUpdate.setVisibility(View.GONE);
         if (binding.excludeSystem.getVisibility() != View.GONE && id != binding.excludeSystem.getId())
             binding.excludeSystem.setVisibility(View.GONE);
     }
