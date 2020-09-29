@@ -292,6 +292,10 @@ public class RestoreAppAction extends BaseAppAction {
     }
 
     private void genericRestoreFromArchive(final Uri archiveUri, final String targetDir, boolean isEncrypted, final File cachePath) throws RestoreFailedException, Crypto.CryptoSetupException {
+        // Check if the archive exists, uncompressTo can also throw FileNotFoundException
+        if (!StorageFile.fromUri(this.getContext(), archiveUri).exists()) {
+            throw new RestoreFailedException("Backup archive at " + archiveUri + " is missing");
+        }
         Path tempDir = null;
         try (TarArchiveInputStream inputStream = this.openArchiveFile(archiveUri, isEncrypted)) {
             // Create a temporary directory in OABX's cache directory and uncompress the data into it
@@ -303,7 +307,7 @@ public class RestoreAppAction extends BaseAppAction {
             String command = this.prependUtilbox(String.format("mv \"%s\"/* \"%s\"", tempDir, targetDir));
             ShellHandler.runAsRoot(command);
         } catch (FileNotFoundException e) {
-            throw new RestoreFailedException("Backup archive at " + archiveUri + " is missing", e);
+            throw new RestoreFailedException("Could not find a file during restore at: " + e, e);
         } catch (IOException e) {
             throw new RestoreFailedException("Could not read the input file or write an output file due to IOException: " + e, e);
         } catch (ShellHandler.ShellCommandFailedException e) {
