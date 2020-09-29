@@ -1,12 +1,15 @@
 <html>
-        <body>
-                <h2>Kasutusmärkmed</h2>
-                <p><strong>Varundusrežiimid</strong>: Rakendust saab varundada vaid selle APKiga, ainult selle andmed või mõlemad. Rakendust, mida ei ole hetkel paigaldatud saab taastada vaid siis kui APK on varundatud.</p>
-                <p><strong>Kustuta varundus</strong>: Kustutab valitud rakenduse varundusfailid.</p>
-                <p><strong>Eemalda</strong>: Tavalisest eemaldamisest mõnevõrra agressiivsem. Peale selle, et see teeb tavalise eemalduse Androidi käskude abil, kustutab OAndBackupX ka failid, mida rakendus on alles jätnud kausta /data/app-lib/. See töötab ka süsteemirakendustega.</p>
-                <p><strong>Luba/keela</strong>: Kasutab rakenduse lubamiseks või keelamiseks Androidi käsku `pm`. Rakenduse keelamine eemaldab selle nähtavast kasutajaliidesest ilma eemaldamiseta. Seda saab kasutada ka rakenduse lubamiseks või keelamiseks mitme kasutaja puhul (kui seadmes on mitu kasutajat lisatud). Kasutajaid identifitseeritakse ID-ga, 0 on esimene kasutaja (omanik).</p>
-                <p><strong>Mitu kasutajat</strong>: Mitmikkasutajarežiim on veel mõnevõrra katsetusjärgus, kuid peaks töötama. Mitmikkasutajarežiimis taastamisel kutsutakse käsku `pm install -r $apk` ning rakendus keelatakse iga kasutaja jaoks, kellel on see rakendus failis /data/system/user/$user/package-restrictions.xml loetletud (väljaarvatud siis, kui see on loetletud tähisega enabled="1").<br/>
-                        See võib põhjustada kasutajatele probleeme sama rakenduse hilisemal paigaldusel, kuid on vajalik, et rakendus ei oleks iga kasutaja jaoks samal ajal paigaldatud. Kontekstmenüüs on valik rakenduste lubamiseks või keelamiseks, mida saab kasutada kui teised kasutajad ei saa kindlat rakendust kasutada, kuna taastamisel see keelati.<br/>
-                        Lubamine ja keelamine toimivad ainult peale esialgset paigaldust (mitte tingimata OAndBackupX-i poolt) või taastust.</p>
-        </body>
+    <body>
+        <h2>Kasutusmärkmed</h2>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+    </body>
 </html>
