@@ -37,7 +37,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 
 public final class FileUtils {
-    public static final String BACKUP_SUBDIR_NAME = "OABXNG";
+    public static final String BACKUP_SUBDIR_NAME = "OABX";
     public static final String LOG_FILE_NAME = "OAndBackupX.log";
     private static Uri backupLocation;
 
@@ -83,15 +83,6 @@ public final class FileUtils {
             throws StorageLocationNotConfiguredException, BackupLocationInAccessibleException {
         if (FileUtils.backupLocation == null) {
             String storageRoot = PrefUtils.getStorageRootDir(context);
-            /*
-            content://com.android.externalstorage.documents/tree/160D-2E03%3AOABXNG%2FSubdir
-            -> DocumentsContract.getTreeDocumentId(Uri.parse(storageRoot))
-            -> 160D-2E03:OABXNG/Subdir
-            => /mnt/media_rw/160D-2E03/OABXNG/Subdir
-            content://com.android.externalstorage.documents/tree/primary%3AOABX%2FInternalDir
-            -> primary:OABX/InternalDir
-            new TreeDocumentFile(null, context, backupLocationDoc.getUri()).getUri().getPath()
-             */
             if (storageRoot.isEmpty()) {
                 throw new StorageLocationNotConfiguredException();
             }

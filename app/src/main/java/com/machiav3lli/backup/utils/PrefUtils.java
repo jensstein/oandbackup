@@ -23,8 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.provider.DocumentsContract;
 
@@ -46,7 +46,6 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class PrefUtils {
     private static final String TAG = Constants.classTag(".PrefUtils");
-    public static final String BACKUP_SUBDIR_NAME = "OABXNG";
     public static final int READ_PERMISSION = 2;
     public static final int WRITE_PERMISSION = 3;
     public static final int STATS_PERMISSION = 4;
