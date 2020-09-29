@@ -375,8 +375,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                                     this.getString(R.string.uninstallFailure), true
                             );
                             UIUtils.showError(this.requireActivity(), e.getMessage());
+                        } finally {
+                            this.handleMessages.endMessage();
+                            requireMainActivity().refreshWithAppSheet();
                         }
-                        requireMainActivity().refreshWithAppSheet();
                     });
                     uninstallThread.start();
                 })
