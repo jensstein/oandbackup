@@ -42,9 +42,12 @@ import java.util.Objects;
 
 import kotlin.NotImplementedError;
 
+@SuppressWarnings("OctalInteger")  // Used to handle file modes
 public final class TarUtils {
     private static final String TAG = Constants.classTag(".TarUtils");
     public static final int BUFFERSIZE = 8 * 1024 * 1024;
+    public static final int FILE_MODE_OR_MASK = 0100000;
+    public static final int DIR_MODE_OR_MASK = 040000;
 
     /**
      * Adds a filepath to the given archive.
@@ -87,7 +90,7 @@ public final class TarUtils {
                     entry = new TarArchiveEntry(file.getFilepath());
                     entry.setSize(file.getFilesize());
                     entry.setNames(file.getOwner(), file.getGroup());
-                    entry.setMode(file.getFilemode());
+                    entry.setMode(TarUtils.FILE_MODE_OR_MASK | file.getFilemode());
                     archive.putArchiveEntry(entry);
                     try {
                         ShellHandler.quirkLibsuReadFileWorkaround(file, archive);
@@ -102,7 +105,7 @@ public final class TarUtils {
                 case DIRECTORY:
                     entry = new TarArchiveEntry(file.getFilepath(), TarConstants.LF_DIR);
                     entry.setNames(file.getOwner(), file.getGroup());
-                    entry.setMode(file.getFilemode());
+                    entry.setMode(TarUtils.DIR_MODE_OR_MASK | file.getFilemode());
                     archive.putArchiveEntry(entry);
                     archive.closeArchiveEntry();
                     break;
@@ -110,14 +113,14 @@ public final class TarUtils {
                     entry = new TarArchiveEntry(file.getFilepath(), TarConstants.LF_LINK);
                     entry.setLinkName(file.getLinkName());
                     entry.setNames(file.getOwner(), file.getGroup());
-                    entry.setMode(file.getFilemode());
+                    entry.setMode(TarUtils.FILE_MODE_OR_MASK | file.getFilemode());
                     archive.putArchiveEntry(entry);
                     archive.closeArchiveEntry();
                     break;
                 case NAMED_PIPE:
                     entry = new TarArchiveEntry(file.getFilepath(), TarConstants.LF_FIFO);
                     entry.setNames(file.getOwner(), file.getGroup());
-                    entry.setMode(file.getFilemode());
+                    entry.setMode(TarUtils.FILE_MODE_OR_MASK | file.getFilemode());
                     archive.putArchiveEntry(entry);
                     archive.closeArchiveEntry();
                     break;
@@ -159,6 +162,7 @@ public final class TarUtils {
         TarArchiveEntry tarEntry;
         while ((tarEntry = archive.getNextTarEntry()) != null) {
             final File targetPath = new File(targetDir, tarEntry.getName());
+            Log.d(TarUtils.TAG, String.format("Uncompressing %s (filesize: %d)", tarEntry.getName(), tarEntry.getRealSize()));
             boolean doChmod = true;
             if (tarEntry.isDirectory()) {
                 if (!targetPath.mkdirs()) {
@@ -171,6 +175,12 @@ public final class TarUtils {
                     throw new IOException(String.format("Unable to create symlink: %s -> %s : %s", tarEntry.getLinkName(), targetPath.getAbsolutePath(), e));
                 }
                 doChmod = false;
+            } else if (tarEntry.isFIFO()) {
+                try {
+                    Os.mkfifo(targetPath.getAbsolutePath(), tarEntry.getMode());
+                } catch (ErrnoException e) {
+                    throw new IOException(String.format("Unable to create fifo %s: %s", targetPath.getAbsolutePath(), e));
+                }
             } else {
                 final File parent = targetPath.getParentFile();
                 if (!parent.exists() && !parent.mkdirs()) {
