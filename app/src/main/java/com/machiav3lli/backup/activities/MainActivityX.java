@@ -66,7 +66,6 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -352,7 +351,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     public void doAction(List<AppMetaInfo> selectedList) {
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
         if (this.prefs.getBoolean("acquireWakelock", true)) {
-            wl.acquire(15 * 60 * 1000L /*15 minutes*/);
+            wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
             Log.i(MainActivityX.TAG, "wakelock acquired");
         }
         // get the AppInfoV2 objects again
