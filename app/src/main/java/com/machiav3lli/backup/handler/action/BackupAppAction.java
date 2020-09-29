@@ -226,13 +226,16 @@ public class BackupAppAction extends BaseAppAction {
             }
             for (ShellHandler.FileInfo dir : dirsInSource) {
                 allFilesToBackup.add(dir);
-                try {
-                    allFilesToBackup.addAll(
-                            this.getShell().suGetDetailedDirectoryContents(dir.getAbsolutePath(), true, dir.getFilename())
-                    );
-                } catch (ShellHandler.ShellCommandFailedException e) {
-                    if (ShellHandler.isFileNotFoundException(e)) {
-                        Log.w(BackupAppAction.TAG, "Directory has been deleted during processing: " + dir);
+                // Do not process files in the "root" directory of the app's data
+                if (dir.getFiletype() == ShellHandler.FileInfo.FileType.DIRECTORY) {
+                    try {
+                        allFilesToBackup.addAll(
+                                this.getShell().suGetDetailedDirectoryContents(dir.getAbsolutePath(), true, dir.getFilename())
+                        );
+                    } catch (ShellHandler.ShellCommandFailedException e) {
+                        if (ShellHandler.isFileNotFoundException(e)) {
+                            Log.w(BackupAppAction.TAG, "Directory has been deleted during processing: " + dir);
+                        }
                     }
                 }
             }
