@@ -19,8 +19,6 @@ package com.machiav3lli.backup.handler.action;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -86,16 +84,9 @@ public abstract class BaseAppAction {
     @SuppressLint("DefaultLocale")
     public void killPackage(String packageName) {
         try {
-            ApplicationInfo applicationInfo = this.context.getPackageManager().getApplicationInfo(packageName, 0);
-            if (applicationInfo.uid == 1000) {
-                Log.w(BaseAppAction.TAG, "Requested to kill processes of UID 1000. Refusing to kill system's processes!");
-                return;
-            }
-            ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill", applicationInfo.uid));
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(BaseAppAction.TAG, packageName + " does not exist. Cannot kill any processes!");
+            ShellHandler.runAsRoot(String.format("am force-stop --user all %s", packageName));
         } catch (ShellHandler.ShellCommandFailedException e) {
-            e.printStackTrace();
+            Log.w(BaseAppAction.TAG, "Could not kill package " + packageName + ": " + String.join(" ", e.getShellResult().getErr()));
         }
     }
 }
