@@ -69,7 +69,7 @@ public class LogsFragment extends Fragment {
 
     private class TextLoadRunnable implements Runnable {
         public void run() {
-            String txt = new LogUtils(FileUtils.getDefaultLogFilePath(requireContext())).read();
+            String txt = new LogUtils(FileUtils.getDefaultLogFilePath(requireContext()).toString()).read();
             textParts = txt.split("\n");
             index = textParts.length - 1;
             requireActivity().runOnUiThread(LogsFragment.this::appendNextLines);

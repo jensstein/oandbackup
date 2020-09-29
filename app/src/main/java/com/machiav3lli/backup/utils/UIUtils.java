@@ -62,22 +62,13 @@ public class UIUtils {
         });
     }
 
-    public static void showErrors(final Activity activity) {
+    public static void showError(final Activity activity, final String message) {
         activity.runOnUiThread(() -> {
-            String errors = ShellCommands.getErrors();
-            if (errors.length() > 0) {
-                new AlertDialog.Builder(activity)
-                        .setTitle(R.string.errorDialogTitle)
-                        .setMessage(errors)
-                        .setPositiveButton(R.string.dialogOK, null)
-                        .show();
-                ShellCommands.clearErrors();
-            }
-        });
-    }
-
-    public static void showWarning(final Activity activity, final String title, final String message) {
-        UIUtils.showWarning(activity, title, message, (dialog, id) -> {
+            new AlertDialog.Builder(activity)
+                    .setTitle(R.string.errorDialogTitle)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.dialogOK, null)
+                    .show();
         });
     }
 

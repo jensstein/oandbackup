@@ -27,20 +27,18 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoV2;
 import com.machiav3lli.backup.utils.UIUtils;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
 // TODO rebase those Tasks, as AsyncTask is deprecated
 public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     final BackupRestoreHelper.ActionType actionType;
-    final AppInfo app;
+    final AppInfoV2 app;
     final WeakReference<HandleMessages> handleMessagesReference;
     final WeakReference<MainActivityX> mainActivityXReference;
-    final File backupDirectory;
     final ShellHandler shellHandler;
     final int mode;
     protected ActionResult result;
@@ -48,16 +46,15 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     CountDownLatch signal;
     BackupRestoreHelper backupRestoreHelper;
 
-    public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfo app, HandleMessages handleMessages,
-                    MainActivityX oAndBackupX, File backupDirectory, ShellHandler shellHandler, int mode) {
+    public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfoV2 app, HandleMessages handleMessages,
+                    MainActivityX oAndBackupX, ShellHandler shellHandler, int mode) {
         this.actionType = actionType;
         this.app = app;
         this.handleMessagesReference = new WeakReference<>(handleMessages);
         this.mainActivityXReference = new WeakReference<>(oAndBackupX);
-        this.backupDirectory = backupDirectory;
         this.shellHandler = shellHandler;
         this.mode = mode;
-        backupRestoreHelper = new BackupRestoreHelper();
+        this.backupRestoreHelper = new BackupRestoreHelper();
     }
 
     @Override
@@ -65,7 +62,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         final HandleMessages handleMessages = handleMessagesReference.get();
         final MainActivityX oAndBackupX = mainActivityXReference.get();
         if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing())
-            handleMessages.showMessage(app.getLabel(), getProgressMessage(oAndBackupX, actionType));
+            handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getProgressMessage(oAndBackupX, actionType));
     }
 
     @Override
@@ -75,12 +72,9 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);
-            if (result == 0) {
-                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
-            } else {
-                NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), app.getLabel(), message, true);
-            }
+            NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getAppInfo().getPackageLabel(), message, true);
             UIUtils.showActionResult(mainActivityX, this.result, null);
+            mainActivityX.refreshWithAppSheet();
         }
         if (signal != null) {
             signal.countDown();

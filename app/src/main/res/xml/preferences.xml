@@ -118,6 +118,12 @@
             android:key="enableSpecialBackups"
             android:title="@string/prefs_enableSpecialBackups"
             app:iconSpaceReserved="false" />
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="killBeforeAction"
+            android:title="Force-kill app process before backup/restore"
+            android:summary="Experts only: This can help, if the app is changing files during backup and the backup fails."
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:key="prefsTools"

@@ -70,7 +70,7 @@ public class BatchFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextChange(String newText) {
                 requireMainActivity().getBatchItemAdapter().filter(newText);
                 requireMainActivity().getBatchItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
                                 || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
@@ -79,7 +79,7 @@ public class BatchFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextSubmit(String query) {
                 requireMainActivity().getBatchItemAdapter().filter(query);
                 requireMainActivity().getBatchItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
                                 || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }

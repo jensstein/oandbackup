@@ -28,7 +28,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.items.AppInfo;
+import com.machiav3lli.backup.items.AppInfoV2;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class BlacklistDialogFragment extends DialogFragment {
                 SchedulerActivityX.GLOBALBLACKLISTID);
         ArrayList<String> blacklistedPackages = args.getStringArrayList(
                 Constants.BLACKLIST_ARGS_PACKAGES);
-        ArrayList<AppInfo> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
+        ArrayList<AppInfoV2> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
         boolean[] checkedPackages = new boolean[appInfoList.size()];
         ArrayList<String> labels = new ArrayList<>();
         int i = 0;
@@ -62,8 +62,8 @@ public class BlacklistDialogFragment extends DialogFragment {
             boolean b2 = blacklistedPackages.contains(appInfo2.getPackageName());
             return (b1 != b2) ? (b1 ? -1 : 1) : 0;
         });
-        for (AppInfo appInfo : appInfoList) {
-            labels.add(appInfo.getLabel());
+        for (AppInfoV2 appInfo : appInfoList) {
+            labels.add(appInfo.getAppInfo().getPackageLabel());
             assert blacklistedPackages != null;
             if (blacklistedPackages.contains(appInfo.getPackageName())) {
                 checkedPackages[i] = true;
