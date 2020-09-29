@@ -339,6 +339,12 @@ public class SchedulerActivityX extends BaseActivity
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
+    }
+
     private static class ResultHolder<T> {
         private final Optional<T> object;
         private final Optional<Throwable> error;
