@@ -67,7 +67,10 @@ public class RestoreAppAction extends BaseAppAction {
     public ActionResult run(AppInfoV2 app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
         try {
-            this.killPackage(app.getPackageName());
+            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_KILLBEFOREACTION, true)) {
+                Log.d(RestoreAppAction.TAG, "Killing package to avoid file changes during restore");
+                this.killPackage(app.getPackageName());
+            }
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 this.restorePackage(backupLocation, backupProperties);
                 app.refreshFromPackageManager(this.getContext());
@@ -83,7 +86,7 @@ public class RestoreAppAction extends BaseAppAction {
                     false
             );
         }
-        Log.i(RestoreAppAction.TAG, String.format("%s: Backup done: %s", app, backupProperties));
+        Log.i(RestoreAppAction.TAG, String.format("%s: Restore done: %s", app, backupProperties));
         return new ActionResult(app, backupProperties, "", true);
     }
 

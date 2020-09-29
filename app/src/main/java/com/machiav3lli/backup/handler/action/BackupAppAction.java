@@ -75,9 +75,10 @@ public class BackupAppAction extends BaseAppAction {
         }
         BackupBuilder backupBuilder = new BackupBuilder(this.getContext(), app.getAppInfo(), appBackupRootUri);
         StorageFile backupDir = backupBuilder.getBackupPath();
-
-        Log.d(BackupAppAction.TAG, "Killing package to avoid file changes during backup");
-        this.killPackage(app.getPackageName());
+        if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_KILLBEFOREACTION, true)) {
+            Log.d(BackupAppAction.TAG, "Killing package to avoid file changes during backup");
+            this.killPackage(app.getPackageName());
+        }
         BackupProperties backupProperties;
         try {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {

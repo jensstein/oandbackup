@@ -96,6 +96,6 @@ public class SystemRestoreAppAction extends RestoreAppAction {
     @Override
     public void killPackage(String packageName) {
         // stub
-        // Do not kill system apps
+        // Nothing to kill here
     }
 }
