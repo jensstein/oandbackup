@@ -69,7 +69,7 @@
     <string name="notInstalledModeDataWarning">A app não pode ser restaurada de um backup sem o ficheiro apk</string>
     <string name="shareTitle">Partilhar</string>
     <string name="tools_title">Ferramentas</string>
-    <string name="prefs_batchdelete">Excluir backups\?</string>
+    <string name="prefs_batchdelete">Apagar backups\?</string>
     <string name="batchDeleteMessage">Excluindo backups…</string>
     <string name="batchDeleteNotificationTitle">Eliminar backups</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -116,7 +116,7 @@
     <string name="radioUser">Apps do utilizador</string>
     <string name="radioSystem">Apps do sistema</string>
     <string name="showSplitAPKs">Dividir-APK</string>
-    <string name="prefs_user">Preferências do usuário</string>
+    <string name="prefs_user">Preferências do utilizador</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_theme_light">Claro</string>
     <string name="prefs_theme_dark">Oscuro</string>
@@ -127,13 +127,13 @@
     <string name="prefs_encryption_summary">Permitir criptografar os backups de dados</string>
     <string name="prefs_password">Senha de encriptação</string>
     <string name="prefs_password_summary">Deixar vazio para desativar a criptografia</string>
-    <string name="prefs_passwordconfirmation">Confirmação de senha de encriptação</string>
+    <string name="prefs_passwordconfirmation">Confirmação de palavra-passe de encriptação</string>
     <string name="prefs_password_match_true">As senhas combinam</string>
     <string name="prefs_excludecache">Excluir o cache da app</string>
     <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são salvos no armazenamento externo (por exemplo /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são salvos em data/user_de</string>
     <string name="prefs_quickreboot_summary">Termina o processo system_server para forçar um reinício do espaço do utilizador</string>
-    <string name="prefs_batchdelete_summary">Excluir backups de todas as apps não instaladas atualmente.</string>
+    <string name="prefs_batchdelete_summary">Apagar backups de todas as apps não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver o registro</string>
     <string name="sched_add">Adicionar Agenda</string>
     <string name="sched_submode">Sub-modo de backup:</string>
