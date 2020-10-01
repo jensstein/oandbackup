@@ -202,4 +202,6 @@
     <string name="prefs_passwordconfirmation">Şifreleme parolası onayı</string>
     <string name="prefs_biometriclock_summary">Uygulamayı cihazın biyometrik kilidiyle (örn. parmak izi, yüz tanıma kilidi) güvenli hale getir</string>
     <string name="prefs_biometriclock">Biyometrik kilit</string>
+    <string name="help_appTypeHint">* Uygulama türünün simgesi uygulama kaldırılırsa gri, devre dışı bırakılırsa koyu gri olur.</string>
+    <string name="radioUpdated">Güncellenen</string>
 </resources>

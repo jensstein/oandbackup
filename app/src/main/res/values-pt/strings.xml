@@ -66,7 +66,7 @@
     <string name="prefs_quickreboot">Reinicio rápido</string>
     <string name="quickRebootMessage">Quer reiniciar o userspace?</string>
     <string name="prefs_help">Ajuda</string>
-    <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro apk</string>
+    <string name="notInstalledModeDataWarning">A app não pode ser restaurada de um backup sem o ficheiro apk</string>
     <string name="shareTitle">Partilhar</string>
     <string name="tools_title">Ferramentas</string>
     <string name="prefs_batchdelete">Excluir backups\?</string>
@@ -194,19 +194,13 @@
     <string name="prefs_deviceprotecteddata">Fazer backup de dados protegidos por dispositivo</string>
     <string name="restart_dialog">A app precisa ser reiniciada</string>
     <string name="empty_filtered_list">A lista de filtros está vazia, sendo assim, os filtros estão de volta ao padrão</string>
-    <string name="intro_welcome_message">O OAndBackupX é um Fork do reconhecido OAndBackup com o objetivo de levá-lo até 2020 e mais. Por enquanto, a maior parte da funcionalidade e da interface da app são reescritas e algumas são adicionadas.
-\n
+    <string name="intro_welcome_message">O OAndBackupX é uma bifurcação do reconhecido OAndBackup com o objetivo de levá-lo até 2020 e mais. Por enquanto, a maior parte da funcionalidade e da interface da app são reescritas e algumas são adicionadas.
 \n A app ainda se encontra em fase beta e muitas vezes estão a ser feitas as melhorias. Leia atentamente o registo de alterações a cada novo lançamento.
-\n
 \n Todos os tipos de contribuição são bem-vindos, seja tradução, ideias, relato de bugs ou contribuição ao código.
 \n
 \n Agora sobre a funcionalidade da nossa app:
-\n
-\n • Requer Root e permite que faça o backup de apps e seus dados.
-\n
+\n • Requer Root e permite que faça o backup de apps e os seus dados.
 \n • Tanto o backup como a restauração das apps um por vez ou de lotes são suportados.
-\n
 \n • A restauração de apps do sistema deve ser possível sem exigir uma reinicialização posterior, mas mesmo assim não aconselhamos fazê-lo.
-\n
 \n • Os backups podem ser programados sem limite no número de programações individuais e há a possibilidade de criar listas personalizadas exclusivas.</string>
 </resources>

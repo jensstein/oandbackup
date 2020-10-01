@@ -202,4 +202,7 @@
     <string name="grant_usage_access_message">Jest to niezbędne do uzyskania informacji o rozmiarach plików aplikacji</string>
     <string name="grant_usage_access_title">Przyznaj dostęp do danych użytkowania</string>
     <string name="dialog_start">Zaczynajmy!</string>
+    <string name="help_appTypeHint">* Ikona typu aplikacji będzie szara, jeśli aplikacja zostanie odinstalowana i ciemnoszara, jeśli aplikacja jest wyłączona.</string>
+    <string name="help_legend">Legenda:</string>
+    <string name="radioUpdated">Zaktualizowane</string>
 </resources>

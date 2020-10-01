@@ -204,4 +204,5 @@
 \n • Både sikkerhetskopiering og gjenoppretting av individuelle programmer hver for seg og sikkerhetskopiering i knippe, samt gjenoppretting av flerfoldige programmer støttes.
 \n • Gjenoppretting av systemprogrammer skal være mulig uten omstart etterpå, men det anbefales å ikke gjøre dette.
 \n • Sikkerhetskopier kan planlegges uten begrensning i antall individuelle kjøreplaner, og det er mulighet for opprettelse av unike egendefinerte lister.</string>
+    <string name="radioUpdated">Oppdatert</string>
 </resources>
