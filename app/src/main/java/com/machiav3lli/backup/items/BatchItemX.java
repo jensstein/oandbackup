@@ -94,26 +94,22 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
 
         @Override
         public void bindView(@NotNull BatchItemX item, @NotNull List<?> list) {
-            final AppInfoV2 app = item.getApp();
+            final AppInfoX app = item.getApp();
 
             this.checkbox.setChecked(item.isChecked());
             this.label.setText(app.getAppInfo().getPackageLabel());
             this.packageName.setText(app.getPackageName());
-            if(app.hasBackups()) {
-                List<BackupItem> backupHistory = app.getBackupHistory();
+            if (app.hasBackups()) {
                 // Todo: Find a proper way to display multiple backups. Just showing the latest for now
-                BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
-                BackupProperties backupProperties = backupInfo.getBackupProperties();
                 // Todo: Be more precise on the backup contents (external data, devices protected data, obb data)
                 if (app.isUpdated()) {
                     update.setVisibility(View.VISIBLE);
                 } else {
                     update.setVisibility(View.GONE);
                 }
-                lastBackup.setVisibility(View.VISIBLE);
-                lastBackup.setText(app.getLatestBackup().getBackupProperties().getBackupDate().toString());
-            }else{
-                lastBackup.setVisibility(View.GONE);
+                lastBackup.setText(getFormattedDate(app.getLatestBackup().getBackupProperties().getBackupDate(), false));
+            } else {
+                lastBackup.setText(null);
             }
             ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
             ItemUtils.pickItemAppType(app, appType);

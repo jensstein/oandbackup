@@ -92,24 +92,18 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             }
             this.label.setText(meta.getPackageLabel());
             this.packageName.setText(app.getPackageName());
-            if(app.hasBackups()) {
-                List<BackupItem> backupHistory = app.getBackupHistory();
+            if (app.hasBackups()) {
                 // Todo: Find a proper way to display multiple backups. Just showing the latest for now
-                BackupItem backupInfo = backupHistory.get(backupHistory.size() - 1);
-                BackupProperties backupProperties = backupInfo.getBackupProperties();
-                this.lastBackup.setText(backupProperties.getBackupDate().toString());
                 // Todo: Be more precise on the backup contents (external data, devices protected data, obb data)
-
-                // --- Handle Update Chip
-                if(app.isInstalled() && backupProperties.getVersionCode() > app.getPackageInfo().versionCode){
-                    this.update.setVisibility(View.VISIBLE);
-                }
+                if (app.isUpdated()) {
+                    update.setVisibility(View.VISIBLE);
+                } else update.setVisibility(View.GONE);
+                this.lastBackup.setText(getFormattedDate(app.getLatestBackup().getBackupProperties().getBackupDate(), false));
+            } else {
+                this.lastBackup.setText(null);
             }
-            ItemUtils.pickItemAppType(app, appType);
             ItemUtils.pickItemBackupMode(app.getBackupMode(), apk, data);
-            if (app.isUpdated()) {
-                update.setVisibility(View.VISIBLE);
-            } else update.setVisibility(View.GONE);
+            ItemUtils.pickItemAppType(app, appType);
         }
 
         @Override

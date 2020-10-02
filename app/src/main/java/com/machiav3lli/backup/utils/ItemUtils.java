@@ -28,12 +28,13 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 
 import java.text.DateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import com.machiav3lli.backup.items.AppInfoV2;
 
 public final class ItemUtils {
     private static final String TAG = Constants.classTag(".ItemUtils");
@@ -47,19 +48,17 @@ public final class ItemUtils {
                 + (sched.isEnabled() ? 1 : 0);
     }
 
-    public static String getFormattedDate(long lastUpdate, boolean withTime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(lastUpdate);
-        Date date = calendar.getTime();
+    public static String getFormattedDate(LocalDateTime lastUpdate, boolean withTime) {
+        Date date = Date.from(lastUpdate.atZone(ZoneId.systemDefault()).toInstant());
         DateFormat dateFormat = withTime ? DateFormat.getDateTimeInstance() : DateFormat.getDateInstance();
         return dateFormat.format(date);
     }
 
-    public static long calculateID(AppInfoV2 app) {
+    public static long calculateID(AppInfoX app) {
         return app.getPackageName().hashCode();
     }
 
-    public static void pickSheetAppType(AppInfoV2 app, AppCompatTextView text) {
+    public static void pickSheetAppType(AppInfoX app, AppCompatTextView text) {
         int color;
         if (app.isInstalled()) {
             if (app.getAppInfo().isSpecial()) {
