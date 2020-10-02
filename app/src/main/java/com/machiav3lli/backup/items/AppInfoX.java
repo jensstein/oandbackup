@@ -179,12 +179,11 @@ public class AppInfoV2 {
     }
 
     public boolean isInstalled() {
-        return this.packageInfo != null;
+        return this.packageInfo != null || metaInfo.isSpecial();
     }
 
     public boolean isDisabled() {
-        // Todo: Implement this
-        return false;
+        return !metaInfo.isSpecial() && (packageInfo != null && !packageInfo.applicationInfo.enabled);
     }
 
     public boolean hasBackups() {
