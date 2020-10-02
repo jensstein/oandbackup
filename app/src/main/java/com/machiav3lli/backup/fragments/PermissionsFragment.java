@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -52,6 +53,7 @@ public class PermissionsFragment extends Fragment {
     private FragmentPermissionsBinding binding;
     PowerManager powerManager;
     SharedPreferences prefs;
+    boolean useScopedStorage = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @Nullable
     @Override
@@ -88,7 +90,7 @@ public class PermissionsFragment extends Fragment {
     }
 
     private void setupViews() {
-        binding.cardStoragePermission.setVisibility(PrefUtils.checkStoragePermissions(requireContext()) ? View.GONE : View.VISIBLE);
+        binding.cardStoragePermission.setVisibility(PrefUtils.checkStoragePermissions(requireContext()) || useScopedStorage ? View.GONE : View.VISIBLE);
         binding.cardStorageLocation.setVisibility(PrefUtils.isStorageDirSetAndOk(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardUsageAccess.setVisibility(PrefUtils.checkUsageStatsPermission(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardBatteryOptimization.setVisibility(PrefUtils.checkBatteryOptimization(requireContext(), prefs, powerManager) ? View.GONE : View.VISIBLE);
@@ -102,19 +104,15 @@ public class PermissionsFragment extends Fragment {
     }
 
     private void updateState() {
-        if (PrefUtils.checkStoragePermissions(requireContext()) &&
+        if ((PrefUtils.checkStoragePermissions(requireContext()) || useScopedStorage) &&
                 PrefUtils.isStorageDirSetAndOk(requireContext()) &&
                 PrefUtils.checkUsageStatsPermission(requireContext()) &&
                 (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(requireContext().getPackageName()))) {
-            moveTo(3);
+            ((IntroActivityX) requireActivity()).moveTo(3);
         } else {
             setupViews();
         }
-    }
-
-    private void moveTo(int position) {
-        ((IntroActivityX) requireActivity()).moveTo(position);
     }
 
     private void getUsageStatsPermission() {
@@ -173,13 +171,11 @@ public class PermissionsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PrefUtils.BACKUP_DIR:
-                Uri uri = data.getData();
-                if (resultCode == Activity.RESULT_OK) {
-                    PrefUtils.setStorageRootDir(this.getContext(), uri);
-                }
-                break;
+        if (requestCode == PrefUtils.BACKUP_DIR) {
+            Uri uri = data.getData();
+            if (resultCode == Activity.RESULT_OK) {
+                PrefUtils.setStorageRootDir(this.getContext(), uri);
+            }
         }
     }
 }
