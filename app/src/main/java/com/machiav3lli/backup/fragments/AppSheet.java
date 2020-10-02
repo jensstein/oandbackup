@@ -52,7 +52,7 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.handler.ShellHandler;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.AppMetaInfo;
 import com.machiav3lli.backup.items.BackupItem;
 import com.machiav3lli.backup.items.BackupProperties;
@@ -66,10 +66,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.machiav3lli.backup.utils.ItemUtils.getFormattedDate;
+
 public class AppSheet extends BottomSheetDialogFragment implements ActionListener {
     private static final String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
-    AppInfoV2 app;
+    AppInfoX app;
     HandleMessages handleMessages;
     ShellCommands shellCommands;
     File backupDir;
@@ -334,13 +336,13 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             Bundle arguments = new Bundle();
             arguments.putString("label", app.getAppInfo().getPackageLabel());
             switch (app.getBackupMode()) {
-                case AppInfo.MODE_APK:
+                case AppInfoX.MODE_APK:
                     arguments.putSerializable("apk", apk);
                     break;
-                case AppInfo.MODE_DATA:
+                case AppInfoX.MODE_DATA:
                     arguments.putSerializable("data", data);
                     break;
-                case AppInfo.MODE_BOTH:
+                case AppInfoX.MODE_BOTH:
                     arguments.putSerializable("apk", data);
                     arguments.putSerializable("data", data);
                     break;

@@ -52,7 +52,7 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.AppMetaInfo;
 import com.machiav3lli.backup.items.BackupItem;
 import com.machiav3lli.backup.items.BatchItemX;
@@ -86,7 +86,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 .setTimeout(20));
     }
 
-    private static List<AppInfoV2> appsList;
+    private static List<AppInfoX> appsList;
     public final ArrayList<String> checkedList = new ArrayList<>();
 
 
@@ -173,7 +173,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         return MainActivityX.shellHandler;
     }
 
-    public static List<AppInfoV2> getAppsList() {
+    public static List<AppInfoX> getAppsList() {
         return appsList;
     }
 
@@ -355,7 +355,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             Log.i(MainActivityX.TAG, "wakelock acquired");
         }
         // get the AppInfoV2 objects again
-        List<AppInfoV2> selectedApps = new ArrayList<>(selectedList.size());
+        List<AppInfoX> selectedApps = new ArrayList<>(selectedList.size());
         for (AppMetaInfo appInfo : selectedList) {
             Optional<BatchItemX> foundItem = this.batchItemAdapter.getAdapterItems().stream()
                     .filter(item -> item.getApp().getAppInfo().equals(appInfo))
@@ -371,7 +371,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         int total = selectedList.size();
         int i = 1;
         List<ActionResult> results = new ArrayList<>(total);
-        for (AppInfoV2 app : selectedApps) {
+        for (AppInfoX app : selectedApps) {
             String message = "(" + i + '/' + total + ')';
             String title = (this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress))
                     + " (" + i + '/' + total + ')';
@@ -483,7 +483,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             try {
                 appsList = BackendController.getApplicationList(this.getApplicationContext());
                 PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
-                List<AppInfoV2> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
+                List<AppInfoX> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
                 if (mainBoolean) refreshMain(filteredList, backupOrAppSheetBoolean);
                 else refreshBatch(filteredList, backupOrAppSheetBoolean, checkedList);
 
@@ -493,7 +493,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }).start();
     }
 
-    private void refreshMain(List<AppInfoV2> filteredList, boolean appSheetBoolean) {
+    private void refreshMain(List<AppInfoX> filteredList, boolean appSheetBoolean) {
         ArrayList<MainItemX> mainList = createMainAppsList(filteredList);
         runOnUiThread(() -> {
             if (filteredList.isEmpty()) {
@@ -514,16 +514,16 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         });
     }
 
-    private ArrayList<MainItemX> createMainAppsList(List<AppInfoV2> filteredList) {
+    private ArrayList<MainItemX> createMainAppsList(List<AppInfoX> filteredList) {
         ArrayList<MainItemX> list = new ArrayList<>();
         if (filteredList.isEmpty()) {
-            for (AppInfoV2 app : SortFilterManager.applyFilter(appsList, "0000", this)) {
+            for (AppInfoX app : SortFilterManager.applyFilter(appsList, "0000", this)) {
                 list.add(new MainItemX(app));
                 if (app.isUpdated()) badgeCounter += 1;
             }
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         } else {
-            for (AppInfoV2 app : filteredList) {
+            for (AppInfoX app : filteredList) {
                 list.add(new MainItemX(app));
                 if (app.isUpdated()) badgeCounter += 1;
             }
@@ -544,7 +544,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
-    private void refreshBatch(List<AppInfoV2> filteredList, boolean backupBoolean, List<String> checkedList) {
+    private void refreshBatch(List<AppInfoX> filteredList, boolean backupBoolean, List<String> checkedList) {
         ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean, checkedList);
         runOnUiThread(() -> {
             if (filteredList.isEmpty()) {
@@ -559,21 +559,21 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         });
     }
 
-    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoV2> filteredList, boolean backupBoolean, List<String> checkedList) {
+    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoX> filteredList, boolean backupBoolean, List<String> checkedList) {
         ArrayList<BatchItemX> list = new ArrayList<>();
         if (filteredList.isEmpty()) {
-            for (AppInfoV2 app : SortFilterManager.applyFilter(appsList, "0000", this)) {
+            for (AppInfoX app : SortFilterManager.applyFilter(appsList, "0000", this)) {
                 if (toAddToBatch(backupBoolean, app)) list.add(new BatchItemX(app));
             }
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         } else {
-            for (AppInfoV2 app : filteredList) {
+            for (AppInfoX app : filteredList) {
                 if (!checkedList.isEmpty() && checkedList.contains(app.getPackageName())) {
                     this.checkedList.add(app.getPackageName());
                 }
                 if (toAddToBatch(backupBoolean, app)) {
                     BatchItemX item = new BatchItemX(app);
-                    item.setChecked(true);
+                    if (checkedList.contains(app.getPackageName())) item.setChecked(true);
                     list.add(item);
                 }
             }
@@ -581,7 +581,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         return list;
     }
 
-    private boolean toAddToBatch(boolean backupBoolean, AppInfoV2 app) {
+    private boolean toAddToBatch(boolean backupBoolean, AppInfoX app) {
         return backupBoolean ? app.isInstalled() : app.getBackupMode() != BaseAppAction.MODE_UNSET;
     }
 }

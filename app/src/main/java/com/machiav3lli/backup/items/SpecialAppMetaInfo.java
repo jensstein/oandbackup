@@ -73,7 +73,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
      * @throws FileUtils.BackupLocationInAccessibleException when the backup location cannot be read for any reason
      * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
      */
-    public static List<AppInfoV2> getSpecialPackages(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public static List<AppInfoX> getSpecialPackages(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         final int userId = ShellCommands.getCurrentUser();
         final String userDir = "/data/system/users/" + userId;
         // Careful: It is possible to specify whole directories, but there are two rules:
@@ -84,8 +84,8 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
         //      the same directory in the archive and the restore would do the same but in reverse.
         // Documentation note: This could be outdated, make sure the logic in BackupSpecialAction and
         // RestoreSpecialAction hasn't changed!
-        AppInfoV2[] result = {
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+        AppInfoX[] result = {
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.accounts",
                         context.getString(R.string.spec_accounts),
                         Build.VERSION.RELEASE,
@@ -93,7 +93,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                         new String[]{
                                 "/data/system_ce/" + userId + "/accounts_ce.db"
                         })),
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.appwidgets",
                         context.getString(R.string.spec_appwidgets),
                         Build.VERSION.RELEASE,
@@ -101,7 +101,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                         new String[]{
                                 userDir + "/appwidgets.xml"
                         })),
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.bluetooth",
                         context.getString(R.string.spec_bluetooth),
                         Build.VERSION.RELEASE,
@@ -109,7 +109,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                         new String[]{
                                 "/data/misc/bluedroid/"
                         })),
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.data.usage.policy",
                         context.getString(R.string.spec_data),
                         Build.VERSION.RELEASE,
@@ -118,7 +118,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                                 "/data/system/netpolicy.xml",
                                 "/data/system/netstats/"
                         })),
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.wallpaper",
                         context.getString(R.string.spec_wallpaper),
                         Build.VERSION.RELEASE,
@@ -127,7 +127,7 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
                                 userDir + "/wallpaper",
                                 userDir + "/wallpaper_info.xml"
                         })),
-                new AppInfoV2(context, new SpecialAppMetaInfo(
+                new AppInfoX(context, new SpecialAppMetaInfo(
                         "special.wifi.access.points",
                         context.getString(R.string.spec_wifiAccessPoints),
                         Build.VERSION.RELEASE,

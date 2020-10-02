@@ -33,18 +33,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.machiav3lli.backup.utils.ItemUtils.calculateID;
+import static com.machiav3lli.backup.utils.ItemUtils.getFormattedDate;
 
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
 
     private boolean isChecked;
 
-    AppInfoV2 app;
+    AppInfoX app;
 
-    public BatchItemX(AppInfoV2 app) {
+    public BatchItemX(AppInfoX app) {
         this.app = app;
     }
 
-    public AppInfoV2 getApp() {
+    public AppInfoX getApp() {
         return app;
     }
 

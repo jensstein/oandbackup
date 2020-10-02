@@ -32,7 +32,7 @@ import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
@@ -70,7 +70,7 @@ public class HandleScheduledBackups {
             boolean specialBackups = prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
             backupDir = new File(backupDirPath);
             //ArrayList<AppInfoV2> list = AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
-            List<AppInfoV2> list = null;
+            List<AppInfoX> list = null;
             try {
                 list = BackendController.getApplicationList(this.context);
             } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
@@ -78,27 +78,27 @@ public class HandleScheduledBackups {
                 // Todo: Log this failure visible to the user!
                 return;
             }
-            ArrayList<AppInfoV2> listToBackUp = new ArrayList<>();
+            ArrayList<AppInfoX> listToBackUp = new ArrayList<>();
             switch (mode) {
                 case ALL:
                     listToBackUp.addAll(list);
                     break;
                 case USER:
-                    for (AppInfoV2 appInfo : list) {
+                    for (AppInfoX appInfo : list) {
                         if (!appInfo.getAppInfo().isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
                     break;
                 case SYSTEM:
-                    for (AppInfoV2 appInfo : list) {
+                    for (AppInfoX appInfo : list) {
                         if (appInfo.getAppInfo().isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
                     break;
                 case NEW_UPDATED:
-                    for (AppInfoV2 appInfo : list) {
+                    for (AppInfoX appInfo : list) {
                         if ((!excludeSystem || !appInfo.getAppInfo().isSystem()) && (appInfo.hasBackups() || (appInfo.getAppInfo().getVersionCode() > appInfo.getLatestBackup().getBackupProperties().getVersionCode()))) {
                             listToBackUp.add(appInfo);
                         }
@@ -107,7 +107,7 @@ public class HandleScheduledBackups {
                 case CUSTOM:
                     LogUtils frw = new LogUtils(getBackupDirectoryPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
-                    for (AppInfoV2 appInfo : list) {
+                    for (AppInfoX appInfo : list) {
                         if (frw.contains(appInfo.getPackageName())) {
                             listToBackUp.add(appInfo);
                         }
@@ -118,7 +118,7 @@ public class HandleScheduledBackups {
         }).start();
     }
 
-    public void backup(final List<AppInfoV2> backupList, final int subMode) {
+    public void backup(final List<AppInfoX> backupList, final int subMode) {
         if (backupDir != null) {
             new Thread(() -> {
                 Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
@@ -135,7 +135,7 @@ public class HandleScheduledBackups {
                 SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
                 List<String> blacklistedPackages = blacklistsDBHelper
                         .getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID);
-                for (AppInfoV2 appInfo : backupList) {
+                for (AppInfoX appInfo : backupList) {
                     if (blacklistedPackages.contains(appInfo.getPackageName())) {
                         Log.i(TAG, String.format("%s ignored",
                                 appInfo.getPackageName()));

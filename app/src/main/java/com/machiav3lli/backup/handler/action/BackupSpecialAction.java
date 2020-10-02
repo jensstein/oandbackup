@@ -25,7 +25,7 @@ import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
-    public ActionResult run(AppInfoV2 app, int backupMode) {
+    public ActionResult run(AppInfoX app, int backupMode) {
         if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
             Log.e(BackupSpecialAction.TAG, String.format("%s", "Special contents don't have APKs to backup. Ignoring"));
         }
@@ -51,7 +51,7 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
-    protected boolean backupData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupData(AppInfoX app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         Log.i(BackupSpecialAction.TAG, String.format("%s: Backup special data", app));
         if (!(app.getAppInfo() instanceof SpecialAppMetaInfo)) {
             throw new IllegalArgumentException("Provided app is not an instance of SpecialAppMetaInfo");
@@ -83,24 +83,24 @@ public class BackupSpecialAction extends BackupAppAction {
 
     // Stubbing some functions, to avoid executing them with potentially dangerous results
     @Override
-    protected void backupPackage(AppInfoV2 app, StorageFile backupInstanceDir) {
+    protected void backupPackage(AppInfoX app, StorageFile backupInstanceDir) {
         // stub
     }
 
     @Override
-    protected boolean backupDeviceProtectedData(AppInfoV2 app, StorageFile backupInstanceDir) {
-        // stub
-        return false;
-    }
-
-    @Override
-    protected boolean backupExternalData(AppInfoV2 app, StorageFile backupInstanceDir) {
+    protected boolean backupDeviceProtectedData(AppInfoX app, StorageFile backupInstanceDir) {
         // stub
         return false;
     }
 
     @Override
-    protected boolean backupObbData(AppInfoV2 app, StorageFile backupInstanceDir) {
+    protected boolean backupExternalData(AppInfoX app, StorageFile backupInstanceDir) {
+        // stub
+        return false;
+    }
+
+    @Override
+    protected boolean backupObbData(AppInfoX app, StorageFile backupInstanceDir) {
         // stub
         return false;
     }

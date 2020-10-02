@@ -32,7 +32,7 @@ import com.machiav3lli.backup.handler.action.RestoreAppAction;
 import com.machiav3lli.backup.handler.action.RestoreSpecialAction;
 import com.machiav3lli.backup.handler.action.SystemRestoreAppAction;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
@@ -47,7 +47,7 @@ import java.util.List;
 public class BackupRestoreHelper {
     private static final String TAG = Constants.classTag(".BackupRestoreHelper");
 
-    public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfoV2 app, int backupMode) {
+    public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfoX app, int backupMode) {
         BackupAppAction action;
         // Select and prepare the action to use
         if (app.getAppInfo().isSpecial()) {
@@ -79,7 +79,7 @@ public class BackupRestoreHelper {
     }
 
     public ActionResult restore(
-            Context context, AppInfoV2 app, BackupProperties backupProperties,
+            Context context, AppInfoX app, BackupProperties backupProperties,
             Uri backupLocation, ShellHandler shell, int mode) {
         RestoreAppAction restoreAction;
         if (app.getAppInfo().isSpecial()) {

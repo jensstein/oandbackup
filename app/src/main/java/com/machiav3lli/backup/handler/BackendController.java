@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.machiav3lli.backup.BuildConfig;
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
@@ -38,21 +38,21 @@ public final class BackendController {
     private BackendController() {
     }
 
-    public static List<AppInfoV2> getApplicationList(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public static List<AppInfoX> getApplicationList(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         return BackendController.getApplicationList(context, true);
     }
 
-    public static List<AppInfoV2> getApplicationList(Context context, boolean includeUninstalled)
+    public static List<AppInfoX> getApplicationList(Context context, boolean includeUninstalled)
             throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         StorageFile.invalidateCache();
         boolean includeSpecial = PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
         PackageManager pm = context.getPackageManager();
         StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
-        List<AppInfoV2> packageList = packageInfoList.stream()
+        List<AppInfoX> packageList = packageInfoList.stream()
                 .filter(packageInfo -> !ignoredPackages.contains(packageInfo.packageName))
                 // Get AppInfoV2 objects with history etc
-                .map(pi -> new AppInfoV2(context, pi, backupRoot.getUri()))
+                .map(pi -> new AppInfoX(context, pi, backupRoot.getUri()))
                 .collect(Collectors.toList());
         // Special Backups must added before the uninstalled packages, because otherwise it would
         // discover the backup directory and run in a special case where no the directory is empty.
@@ -64,17 +64,17 @@ public final class BackendController {
 
         if (includeUninstalled) {
             List<String> installedPackageNames = packageList.stream()
-                    .map(AppInfoV2::getPackageName)
+                    .map(AppInfoX::getPackageName)
                     .collect(Collectors.toList());
 
             List<StorageFile> directoriesInBackupRoot = BackendController.getDirectoriesInBackupRoot(context);
-            List<AppInfoV2> missingAppsWithBackup = directoriesInBackupRoot.stream()
+            List<AppInfoX> missingAppsWithBackup = directoriesInBackupRoot.stream()
                     .filter(backupDir -> !installedPackageNames.contains(backupDir.getName()))
                     // Try to create AppInfoV2 objects
                     // if it fails, null the object for filtering in the next step to avoid crashes
                     .map(backupDir -> {
                         try {
-                            return new AppInfoV2(context, backupDir.getUri());
+                            return new AppInfoX(context, backupDir.getUri());
                         } catch (AssertionError e) {
                             Log.e(TAG, "Could not process backup folder for uninstalled application in " + backupDir.getName() + ": " + e);
                             return null;

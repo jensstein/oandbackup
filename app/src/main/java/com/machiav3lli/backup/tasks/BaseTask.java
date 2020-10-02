@@ -27,7 +27,7 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.utils.UIUtils;
 
 import java.lang.ref.WeakReference;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 // TODO rebase those Tasks, as AsyncTask is deprecated
 public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     final BackupRestoreHelper.ActionType actionType;
-    final AppInfoV2 app;
+    final AppInfoX app;
     final WeakReference<HandleMessages> handleMessagesReference;
     final WeakReference<MainActivityX> mainActivityXReference;
     final ShellHandler shellHandler;
@@ -46,7 +46,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     CountDownLatch signal;
     BackupRestoreHelper backupRestoreHelper;
 
-    public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfoV2 app, HandleMessages handleMessages,
+    public BaseTask(BackupRestoreHelper.ActionType actionType, AppInfoX app, HandleMessages handleMessages,
                     MainActivityX oAndBackupX, ShellHandler shellHandler, int mode) {
         this.actionType = actionType;
         this.app = app;

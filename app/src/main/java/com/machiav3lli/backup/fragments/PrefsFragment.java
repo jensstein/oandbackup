@@ -42,11 +42,10 @@ import com.machiav3lli.backup.activities.PrefsActivity;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,11 +181,11 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean onClickBatchDelete() {
-        final ArrayList<AppInfoV2> deleteList = new ArrayList<>();
+        final ArrayList<AppInfoX> deleteList = new ArrayList<>();
         StringBuilder message = new StringBuilder();
-        final ArrayList<AppInfoV2> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
+        final ArrayList<AppInfoX> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
         if (!appInfoList.isEmpty()) {
-            for (AppInfoV2 appInfo : appInfoList) {
+            for (AppInfoX appInfo : appInfoList) {
                 if (!appInfo.isInstalled()) {
                     deleteList.add(appInfo);
                     message.append(appInfo.getAppInfo().getPackageLabel()).append("\n");
@@ -252,9 +251,9 @@ public class PrefsFragment extends PreferenceFragmentCompat {
         requireActivity().setResult(RESULT_OK, result);
     }
 
-    public void deleteBackups(List<AppInfoV2> deleteList) {
+    public void deleteBackups(List<AppInfoX> deleteList) {
         handleMessages.showMessage(getString(R.string.batchDeleteMessage), "");
-        for (AppInfoV2 appInfo : deleteList) {
+        for (AppInfoX appInfo : deleteList) {
             handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getAppInfo().getPackageLabel());
             Log.i(TAG, "deleting backups of " + appInfo.getAppInfo().getPackageLabel());
             appInfo.deleteAllBackups();

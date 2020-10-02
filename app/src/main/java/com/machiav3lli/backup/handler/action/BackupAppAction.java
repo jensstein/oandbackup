@@ -29,7 +29,7 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.BackupBuilder;
 import com.machiav3lli.backup.utils.DocumentHelper;
@@ -59,7 +59,7 @@ public class BackupAppAction extends BaseAppAction {
         super(context, shell);
     }
 
-    public ActionResult run(AppInfoV2 app, int backupMode) {
+    public ActionResult run(AppInfoX app, int backupMode) {
         Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
         Uri appBackupRootUri = null;
         try {
@@ -152,7 +152,7 @@ public class BackupAppAction extends BaseAppAction {
         DocumentHelper.suRecursiveCopyFileToDocument(this.getContext(), allFilesToBackup, backupDir.getUri());
     }
 
-    protected void backupPackage(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupAppAction.BackupFailedException {
+    protected void backupPackage(AppInfoX app, StorageFile backupInstanceDir) throws BackupAppAction.BackupFailedException {
         Log.i(BackupAppAction.TAG, String.format("[%s] Backup package apks", app.getPackageName()));
         String[] apksToBackup;
         if (app.getApkSplits() == null) {
@@ -246,14 +246,14 @@ public class BackupAppAction extends BaseAppAction {
         }
     }
 
-    protected boolean backupData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupData(AppInfoX app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         final String backupType = BaseAppAction.BACKUP_DIR_DATA;
         Log.i(BackupAppAction.TAG, String.format(LOG_START_BACKUP, app.getPackageName(), backupType));
         List<ShellHandler.FileInfo> filesToBackup = this.assembleFileList(app.getDataDir());
         return this.genericBackupData(backupType, backupInstanceDir.getUri(), filesToBackup, true);
     }
 
-    protected boolean backupExternalData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupExternalData(AppInfoX app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         final String backupType = BaseAppAction.BACKUP_DIR_EXTERNAL_FILES;
         Log.i(BackupAppAction.TAG, String.format(LOG_START_BACKUP, app.getPackageName(), backupType));
         try {
@@ -269,7 +269,7 @@ public class BackupAppAction extends BaseAppAction {
         }
     }
 
-    protected boolean backupObbData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupObbData(AppInfoX app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         final String backupType = BaseAppAction.BACKUP_DIR_OBB_FILES;
         Log.i(BackupAppAction.TAG, String.format(LOG_START_BACKUP, app.getPackageName(), backupType));
         try {
@@ -285,7 +285,7 @@ public class BackupAppAction extends BaseAppAction {
         }
     }
 
-    protected boolean backupDeviceProtectedData(AppInfoV2 app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
+    protected boolean backupDeviceProtectedData(AppInfoX app, StorageFile backupInstanceDir) throws BackupFailedException, Crypto.CryptoSetupException {
         final String backupType = BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES;
         Log.i(BackupAppAction.TAG, String.format(LOG_START_BACKUP, app.getPackageName(), backupType));
         try {

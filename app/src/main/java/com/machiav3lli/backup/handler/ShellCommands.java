@@ -21,7 +21,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
@@ -78,7 +78,7 @@ public class ShellCommands {
         }
     }
 
-    public static void wipeCache(Context context, AppInfoV2 app) throws ShellActionFailedException {
+    public static void wipeCache(Context context, AppInfoX app) throws ShellActionFailedException {
         Log.i(TAG, String.format("%s: Wiping cache", app.getPackageName()));
         StringBuilder commandBuilder = new StringBuilder();
         // Normal app cache always exists

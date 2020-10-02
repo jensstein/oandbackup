@@ -80,17 +80,17 @@ public final class ItemUtils {
 
     public static void pickSheetBackupMode(int backupMode, AppCompatTextView backup, LinearLayoutCompat backupModeLine, boolean update) {
         switch (backupMode) {
-            case AppInfoV2.MODE_APK:
+            case AppInfoX.MODE_APK:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyApkBackedUp);
                 backup.setTextColor(Color.rgb(69, 244, 144));
                 break;
-            case AppInfoV2.MODE_DATA:
+            case AppInfoX.MODE_DATA:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyDataBackedUp);
                 backup.setTextColor(Color.rgb(244, 69, 144));
                 break;
-            case AppInfoV2.MODE_BOTH:
+            case AppInfoX.MODE_BOTH:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.bothBackedUp);
                 backup.setTextColor(Color.rgb(155, 155, 244));
@@ -101,7 +101,7 @@ public final class ItemUtils {
         }
     }
 
-    public static void pickItemAppType(AppInfoV2 app, AppCompatImageView icon) {
+    public static void pickItemAppType(AppInfoX app, AppCompatImageView icon) {
         ColorStateList color;
         if (app.getAppInfo().isSpecial()) {
             color = ColorStateList.valueOf(Color.rgb(144, 69, 254));

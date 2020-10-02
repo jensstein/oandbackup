@@ -31,15 +31,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.machiav3lli.backup.utils.ItemUtils.getFormattedDate;
+
 
 public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
-    AppInfoV2 app;
+    AppInfoX app;
 
-    public MainItemX(AppInfoV2 app) {
+    public MainItemX(AppInfoX app) {
         this.app = app;
     }
 
-    public AppInfoV2 getApp() {
+    public AppInfoX getApp() {
         return this.app;
     }
 
@@ -80,8 +82,9 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
 
         @Override
         public void bindView(@NotNull MainItemX item, @NotNull List<?> list) {
-            final AppInfoV2 app = item.getApp();
+            final AppInfoX app = item.getApp();
             final AppMetaInfo meta = app.getAppInfo();
+
             if (meta.getApplicationIcon() != null) {
                 this.icon.setImageDrawable(meta.getApplicationIcon());
             } else {

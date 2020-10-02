@@ -29,7 +29,7 @@ import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -64,7 +64,7 @@ public class RestoreAppAction extends BaseAppAction {
         super(context, shell);
     }
 
-    public ActionResult run(AppInfoV2 app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
+    public ActionResult run(AppInfoX app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
         try {
             if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_KILLBEFOREACTION, true)) {
@@ -90,7 +90,7 @@ public class RestoreAppAction extends BaseAppAction {
         return new ActionResult(app, backupProperties, "", true);
     }
 
-    protected void restoreAllData(AppInfoV2 app, BackupProperties backupProperties, Uri backupLocation) throws Crypto.CryptoSetupException, RestoreFailedException {
+    protected void restoreAllData(AppInfoX app, BackupProperties backupProperties, Uri backupLocation) throws Crypto.CryptoSetupException, RestoreFailedException {
         Log.i(TAG, String.format("[%s] Restoring app's data", backupProperties.getPackageName()));
         StorageFile backupDir = StorageFile.fromUri(this.getContext(), backupLocation);
         this.restoreData(app, backupProperties, backupDir);
@@ -360,7 +360,7 @@ public class RestoreAppAction extends BaseAppAction {
         }
     }
 
-    public void restoreData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DATA, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
@@ -371,7 +371,7 @@ public class RestoreAppAction extends BaseAppAction {
         this.genericRestorePermissions(BaseAppAction.BACKUP_DIR_DATA, new File(app.getDataDir()));
     }
 
-    public void restoreExternalData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreExternalData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
@@ -389,11 +389,11 @@ public class RestoreAppAction extends BaseAppAction {
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getExternalDataDir(), backupProperties.isEncrypted(), this.getContext().getExternalCacheDir());
     }
 
-    public void restoreObbData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException {
+    public void restoreObbData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException {
         this.genericRestoreDataByCopying(app.getObbFilesDir(), backupLocation.getUri(), BaseAppAction.BACKUP_DIR_OBB_FILES);
     }
 
-    public void restoreDeviceProtectedData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreDeviceProtectedData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);

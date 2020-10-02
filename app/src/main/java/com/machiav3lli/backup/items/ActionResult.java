@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class ActionResult {
     public static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH);
-    public final AppInfoV2 app;
+    public final AppInfoX app;
     public final LocalDateTime occurrence;
     public final String message;
     /**
@@ -35,7 +35,7 @@ public class ActionResult {
     public final BackupProperties backupProperties;
     public final boolean succeeded;
 
-    public ActionResult(AppInfoV2 app, BackupProperties backupProperties, @NotNull String message, boolean succeeded) {
+    public ActionResult(AppInfoX app, BackupProperties backupProperties, @NotNull String message, boolean succeeded) {
         this.occurrence = LocalDateTime.now();
         this.app = app;
         this.succeeded = succeeded;

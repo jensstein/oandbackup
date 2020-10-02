@@ -26,7 +26,7 @@ import com.machiav3lli.backup.handler.Crypto;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
-import com.machiav3lli.backup.items.AppInfoV2;
+import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -58,12 +58,12 @@ public class RestoreSpecialAction extends RestoreAppAction {
     }
 
     @Override
-    protected void restoreAllData(AppInfoV2 app, BackupProperties backupProperties, Uri backupLocation) throws Crypto.CryptoSetupException, RestoreFailedException {
+    protected void restoreAllData(AppInfoX app, BackupProperties backupProperties, Uri backupLocation) throws Crypto.CryptoSetupException, RestoreFailedException {
         this.restoreData(app, backupProperties, StorageFile.fromUri(this.getContext(), backupLocation));
     }
 
     @Override
-    public void restoreData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
         Log.i(RestoreSpecialAction.TAG, String.format("%s: Restore special data", app));
         SpecialAppMetaInfo metaInfo = (SpecialAppMetaInfo) app.getAppInfo();
         File tempPath = new File(this.getContext().getCacheDir(), backupProperties.getPackageName());
@@ -125,17 +125,17 @@ public class RestoreSpecialAction extends RestoreAppAction {
     }
 
     @Override
-    public void restoreDeviceProtectedData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
+    public void restoreDeviceProtectedData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 
     @Override
-    public void restoreExternalData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
+    public void restoreExternalData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 
     @Override
-    public void restoreObbData(AppInfoV2 app, BackupProperties backupProperties, StorageFile backupLocation) {
+    public void restoreObbData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) {
         // stub
     }
 }
