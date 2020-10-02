@@ -37,7 +37,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 
 public final class FileUtils {
-    public static final String BACKUP_SUBDIR_NAME = "OABX";
+    public static final String BACKUP_SUBDIR_NAME = "OABackupX";
     public static final String LOG_FILE_NAME = "OAndBackupX.log";
     private static Uri backupLocation;
 
