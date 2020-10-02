@@ -148,7 +148,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
         if (this.app.isInstalled()) {
             UIUtils.setVisibility(this.binding.enablePackage, this.app.isDisabled() ? View.VISIBLE : View.GONE, update);
-            UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() || this.app.getAppInfo().isSpecial() ? View.GONE : View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.uninstall, View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.backup, View.VISIBLE, update);
         } else {
@@ -227,7 +227,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 this.binding.versionName.setText(String.format("%s -> %s", appInfo.getVersionName(), backupProperties.getVersionName()));
             }
             UIUtils.setVisibility(this.binding.lastBackupLine, View.VISIBLE, update);
-            this.binding.lastBackup.setText(backupProperties.getBackupDate().toString());
+            this.binding.lastBackup.setText(getFormattedDate(app.getLatestBackup().getBackupProperties().getBackupDate(), true));
 
             // Todo: Be more precise
             if (backupProperties.hasApk() && backupProperties.hasAppData()) {
@@ -255,6 +255,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(this.binding.backupModeLine, View.GONE, update);
             UIUtils.setVisibility(this.binding.encryptedLine, View.GONE, update);
         }
+        ItemUtils.pickSheetBackupMode(app.getBackupMode(), binding.backupMode, binding.backupModeLine, update);
         ItemUtils.pickSheetAppType(this.app, this.binding.appType);
     }
 
@@ -352,7 +353,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             ShareDialogFragment shareDialog = new ShareDialogFragment();
             shareDialog.setArguments(arguments);
             shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
-            */
+             */
         });
         binding.enablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), true));
         binding.disablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), false));
@@ -392,7 +393,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     public void onActionCalled(BackupRestoreHelper.ActionType actionType, int mode) {
         if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
             new BackupTask(this.app, handleMessages, requireMainActivity(), backupDir, MainActivityX.getShellHandlerInstance(), mode).execute();
-            //TODO: hg42: requireMainActivity().refreshWithAppSheet();  // too early...seems to prevent later refresh (check it! if so, why?)
+            // TODO: hg42: requireMainActivity().refreshWithAppSheet();  // too early...seems to prevent later refresh (check it! if so, why?)
         } else if (actionType == BackupRestoreHelper.ActionType.RESTORE) {
             // Latest Backup for now
             BackupItem selectedBackup = this.app.getLatestBackup();
