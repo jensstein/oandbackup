@@ -118,7 +118,7 @@ public class PrefUtils {
         return context.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE);
     }
 
-    public static void requireStorageLocation(Fragment fragment){
+    public static void requireStorageLocation(Fragment fragment) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         fragment.startActivityForResult(intent, PrefUtils.BACKUP_DIR);
     }

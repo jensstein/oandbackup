@@ -18,11 +18,9 @@
 package com.machiav3lli.backup.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -62,21 +60,14 @@ public class IntroActivityX extends BaseActivity {
     private void setupNavigation() {
         navController = Navigation.findNavController(this, R.id.introContainer);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            switch (destination.getId()) {
-                case R.id.welcomeFragment: {
-                    binding.positiveButton.setText(R.string.dialog_start);
-                    binding.positiveButton.setOnClickListener(v -> {
-                        if (this.checkRootAccess()) {
-                            prefs.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply();
-                            moveTo(2);
-                        }
-                    });
-                    break;
-                }
-                case R.id.permissionsFragment: {
-                    //this.handlePermissionsFragment();
-                    break;
-                }
+            if (destination.getId() == R.id.welcomeFragment) {
+                binding.positiveButton.setText(R.string.dialog_start);
+                binding.positiveButton.setOnClickListener(v -> {
+                    if (this.checkRootAccess()) {
+                        prefs.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply();
+                        moveTo(2);
+                    }
+                });
             }
         });
     }
@@ -130,7 +121,7 @@ public class IntroActivityX extends BaseActivity {
     }
 
     private void launchBiometricPrompt() {
-        BiometricPrompt biometricPrompt = createBeometricPrompt(this);
+        BiometricPrompt biometricPrompt = createBiometricPrompt(this);
         BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle(getString(R.string.prefs_biometriclock))
                 .setConfirmationRequired(true)
@@ -139,7 +130,7 @@ public class IntroActivityX extends BaseActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
-    private BiometricPrompt createBeometricPrompt(Activity activity) {
+    private BiometricPrompt createBiometricPrompt(Activity activity) {
         return new BiometricPrompt(this, ContextCompat.getMainExecutor(this), new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {

@@ -73,9 +73,10 @@ public abstract class BaseAppAction {
     }
 
     public abstract static class AppActionFailedException extends Exception {
-        protected AppActionFailedException(String message){
+        protected AppActionFailedException(String message) {
             super(message);
         }
+
         protected AppActionFailedException(String message, Throwable cause) {
             super(message, cause);
         }

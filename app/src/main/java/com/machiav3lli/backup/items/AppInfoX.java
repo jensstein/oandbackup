@@ -25,9 +25,8 @@ import java.util.List;
  * Information container for regular and system apps.
  * It knows if an app is installed and if it has backups to restore.
  */
-public class AppInfoV2 {
+public class AppInfoX {
     private static final String TAG = Constants.classTag(".AppInfoV2");
-
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;
@@ -51,20 +50,20 @@ public class AppInfoV2 {
      * @throws FileUtils.BackupLocationInAccessibleException   when the backup location cannot be read for any reason
      * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
      */
-    AppInfoV2(Context context, @NotNull AppMetaInfo metaInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    AppInfoX(Context context, @NotNull AppMetaInfo metaInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         this.context = context;
         this.metaInfo = metaInfo;
         this.packageName = metaInfo.getPackageName();
         StorageFile backupDoc = DocumentHelper.getBackupRoot(context).findFile(this.packageName);
         if (backupDoc != null) {
             this.backupDir = backupDoc.getUri();
-            this.backupHistory = AppInfoV2.getBackupHistory(context, this.backupDir);
+            this.backupHistory = AppInfoX.getBackupHistory(context, this.backupDir);
         } else {
             this.backupHistory = new ArrayList<>();
         }
     }
 
-    public AppInfoV2(Context context, PackageInfo packageInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public AppInfoX(Context context, PackageInfo packageInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         this.context = context;
         this.packageName = packageInfo.packageName;
         this.packageInfo = packageInfo;
@@ -75,10 +74,10 @@ public class AppInfoV2 {
         this.refreshStorageStats();
     }
 
-    public AppInfoV2(Context context, @NotNull Uri packageBackupRoot) {
+    public AppInfoX(Context context, @NotNull Uri packageBackupRoot) {
         this.context = context;
         this.backupDir = packageBackupRoot;
-        this.backupHistory = AppInfoV2.getBackupHistory(context, packageBackupRoot);
+        this.backupHistory = AppInfoX.getBackupHistory(context, packageBackupRoot);
         this.packageName = StorageFile.fromUri(context, this.backupDir).getName();
 
         try {
@@ -86,7 +85,7 @@ public class AppInfoV2 {
             this.metaInfo = new AppMetaInfo(context, this.packageInfo);
             this.refreshStorageStats();
         } catch (PackageManager.NameNotFoundException e) {
-            Log.i(AppInfoV2.TAG, this.packageName + " is not installed.");
+            Log.i(AppInfoX.TAG, this.packageName + " is not installed.");
             if (this.backupHistory.isEmpty()) {
                 throw new AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e);
             }
@@ -94,14 +93,14 @@ public class AppInfoV2 {
         }
     }
 
-    public AppInfoV2(Context context, PackageInfo packageInfo, Uri backupRoot) {
+    public AppInfoX(Context context, PackageInfo packageInfo, Uri backupRoot) {
         this.context = context;
         this.packageName = packageInfo.packageName;
         this.packageInfo = packageInfo;
         StorageFile packageBackupRoot = StorageFile.fromUri(context, backupRoot).findFile(this.packageName);
         if (packageBackupRoot != null) {
             this.backupDir = packageBackupRoot.getUri();
-            this.backupHistory = AppInfoV2.getBackupHistory(context, this.backupDir);
+            this.backupHistory = AppInfoX.getBackupHistory(context, this.backupDir);
         }
         this.metaInfo = new AppMetaInfo(context, packageInfo);
         this.refreshStorageStats();
@@ -116,7 +115,7 @@ public class AppInfoV2 {
                     try {
                         backupHistory.add(new BackupItem(context, backupInstance));
                     } catch (BackupItem.BrokenBackupException e) {
-                        Log.w(AppInfoV2.TAG, String.format("Incomplete backup or wrong structure found: %s", e.getMessage()));
+                        Log.w(AppInfoX.TAG, String.format("Incomplete backup or wrong structure found: %s", e.getMessage()));
                     }
                 }
             }
@@ -131,29 +130,29 @@ public class AppInfoV2 {
             this.storageStats = BackendController.getPackageStorageStats(this.context, this.getPackageName());
             return true;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(AppInfoV2.TAG, "Could not refresh StorageStats. Package was not found: " + e.getMessage());
+            Log.e(AppInfoX.TAG, "Could not refresh StorageStats. Package was not found: " + e.getMessage());
             return false;
         }
     }
 
     public boolean refreshFromPackageManager(Context context) {
-        Log.d(AppInfoV2.TAG, String.format("Trying to refresh package information for %s from PackageManager", this.getPackageName()));
+        Log.d(AppInfoX.TAG, String.format("Trying to refresh package information for %s from PackageManager", this.getPackageName()));
         try {
             this.packageInfo = context.getPackageManager().getPackageInfo(this.packageName, 0);
             this.metaInfo = new AppMetaInfo(context, this.packageInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            Log.i(AppInfoV2.TAG, this.packageName + " is not installed. Refresh failed");
+            Log.i(AppInfoX.TAG, this.packageName + " is not installed. Refresh failed");
             return false;
         }
         return true;
     }
 
     public void refreshBackupHistory() {
-        this.backupHistory = AppInfoV2.getBackupHistory(this.context, this.backupDir);
+        this.backupHistory = AppInfoX.getBackupHistory(this.context, this.backupDir);
     }
 
     public void deleteAllBackups() {
-        Log.i(AppInfoV2.TAG, String.format("Deleting %s backups of %s", this.backupHistory.size(), this));
+        Log.i(AppInfoX.TAG, String.format("Deleting %s backups of %s", this.backupHistory.size(), this));
         for (BackupItem item : this.backupHistory) {
             this.delete(this.context, item);
         }
@@ -166,7 +165,7 @@ public class AppInfoV2 {
                     + backupItem.getBackupProperties().getPackageName()
                     + " but this object is for " + this.getPackageName());
         }
-        Log.d(AppInfoV2.TAG, "Deleting " + this);
+        Log.d(AppInfoX.TAG, "Deleting " + this);
         DocumentHelper.deleteRecursive(context, backupItem.getBackupLocation());
         this.backupHistory.remove(backupItem);
     }
@@ -274,16 +273,16 @@ public class AppInfoV2 {
      * 3 if apk and data is available
      */
     public int getBackupMode() {
-        int backupMode = AppInfoV2.MODE_UNSET;
+        int backupMode = AppInfoX.MODE_UNSET;
         if (this.hasBackups()) {
             boolean hasApk = this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasApk());
             boolean hasData = this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasAppData());
             if (hasApk && hasData) {
-                backupMode = AppInfoV2.MODE_BOTH;
+                backupMode = AppInfoX.MODE_BOTH;
             } else if (hasApk) {
-                backupMode = AppInfoV2.MODE_APK;
+                backupMode = AppInfoX.MODE_APK;
             } else {
-                backupMode = AppInfoV2.MODE_DATA;
+                backupMode = AppInfoX.MODE_DATA;
             }
         }
         return backupMode;

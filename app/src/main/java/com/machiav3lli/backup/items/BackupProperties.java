@@ -176,11 +176,11 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         return this.cipherType;
     }
 
-    public boolean isEncrypted(){
+    public boolean isEncrypted() {
         return this.cipherType != null && !this.cipherType.isEmpty();
     }
 
-    private void setBackupLocation(@NotNull Uri backupLocation){
+    private void setBackupLocation(@NotNull Uri backupLocation) {
         this.backupLocation = backupLocation;
     }
 
