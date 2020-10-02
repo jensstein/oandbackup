@@ -189,7 +189,7 @@
 \n • Kopie zapasowe można planować bez ograniczenia liczby indywidualnych harmonogramów — istnieje także możliwość tworzenia list niestandardowych.</string>
     <string name="intro_permission_batteryoptimization">Aplikacja może mieć problemy z wykonywaniem zaplanowanych kopii zapasowych na niektórych ROM-ach, które używają agresywnej optymalizacji baterii np. MIUI, ale nawet na AOSP taki problem może się zdarzyć.</string>
     <string name="intro_permission_usageaccess">Aplikacja potrzebuje tego uprawnienia, aby móc sprawdzić statystyki i rozmiary danych i pamięci podręcznej aplikacji.</string>
-    <string name="intro_permission_storage">Aplikacja korzysta z uprawnień do odczytu/zapisu pamięci masowej, aby uzyskać dostęp do zewnętrznej pamięci masowej, ustawić niestandardowy folder kopii zapasowej i zapewnić możliwość tworzenia kopii zapasowych danych zewnętrznych / obb innych aplikacji.</string>
+    <string name="intro_permission_storage">"Aplikacja korzysta z uprawnień do odczytu/zapisu pamięci masowej, aby uzyskać dostęp do zewnętrznej pamięci masowej  i zapewnić możliwość tworzenia kopii zapasowych danych zewnętrznych / obb innych aplikacji."</string>
     <string name="welcome_to_oabx">Witamy w OABX!</string>
     <string name="storage_access">Dostęp do pamięci</string>
     <string name="sort_and_filter">Sortowanie i filtrowanie</string>
