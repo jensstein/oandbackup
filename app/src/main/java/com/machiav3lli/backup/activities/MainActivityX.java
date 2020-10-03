@@ -354,7 +354,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
             Log.i(MainActivityX.TAG, "wakelock acquired");
         }
-        // get the AppInfoV2 objects again
+        // get the AppInfoX objects again
         List<AppInfoX> selectedApps = new ArrayList<>(selectedList.size());
         for (AppMetaInfo appInfo : selectedList) {
             Optional<BatchItemX> foundItem = this.batchItemAdapter.getAdapterItems().stream()

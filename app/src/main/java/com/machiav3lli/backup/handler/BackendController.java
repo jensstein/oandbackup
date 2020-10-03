@@ -51,7 +51,7 @@ public final class BackendController {
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
         List<AppInfoX> packageList = packageInfoList.stream()
                 .filter(packageInfo -> !ignoredPackages.contains(packageInfo.packageName))
-                // Get AppInfoV2 objects with history etc
+                // Get AppInfoX objects with history etc
                 .map(pi -> new AppInfoX(context, pi, backupRoot.getUri()))
                 .collect(Collectors.toList());
         // Special Backups must added before the uninstalled packages, because otherwise it would
@@ -70,7 +70,7 @@ public final class BackendController {
             List<StorageFile> directoriesInBackupRoot = BackendController.getDirectoriesInBackupRoot(context);
             List<AppInfoX> missingAppsWithBackup = directoriesInBackupRoot.stream()
                     .filter(backupDir -> !installedPackageNames.contains(backupDir.getName()))
-                    // Try to create AppInfoV2 objects
+                    // Try to create AppInfoX objects
                     // if it fails, null the object for filtering in the next step to avoid crashes
                     .map(backupDir -> {
                         try {
