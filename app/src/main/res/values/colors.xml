@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ ~ OAndBackupX: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<resources>
+    <color name="app_accent">#FF3333</color>
+    <color name="app_primary_base">#EEEEEE</color>
+    <color name="app_primary_inverse">#333333</color>
+    <color name="app_secondary">#0099FF</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="ic_exodus">#BB66FF</color>
+    <color name="ic_update">#FF3333</color>
+    <color name="ic_apk">#0099FF</color>
+    <color name="ic_data">#00CCCC</color>
+    <color name="ic_system">#BB66FF</color>
+    <color name="ic_user">#FF9966</color>
+    <color name="ic_special">#FFCC00</color>
+</resources>
