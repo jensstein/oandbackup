@@ -67,7 +67,7 @@ public class RestoreAppAction extends BaseAppAction {
     public ActionResult run(AppInfoX app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
         try {
-            if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_KILLBEFOREACTION, true)) {
+            if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {
                 Log.d(RestoreAppAction.TAG, "Killing package to avoid file changes during restore");
                 this.killPackage(app.getPackageName());
             }
