@@ -17,7 +17,10 @@
  */
 package com.machiav3lli.backup.utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.View;
 
@@ -25,8 +28,10 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import com.google.android.material.internal.ContextUtils;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
@@ -37,7 +42,16 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public final class ItemUtils {
-    private static final String TAG = Constants.classTag(".ItemUtils");
+    public static final String TAG = Constants.classTag(".ItemUtils");
+    public static final int colorUpdate = Color.parseColor("#FF3333");
+    public static final int colorApk = Color.rgb(69, 244, 144);
+    public static final int colorData = Color.rgb(244, 69, 144);
+    public static final int colorBoth = Color.rgb(155, 155, 244);
+    public static final int colorSystem = Color.rgb(69, 144, 254);
+    public static final int colorUser = Color.rgb(254, 144, 69);
+    public static final int colorSpecial = Color.rgb(144, 69, 254);
+    public static final int colorDisabled = Color.DKGRAY;
+    public static final int colorUninstalled = Color.GRAY;
 
     public static long calculateScheduleID(Schedule sched) {
         return sched.getId()
@@ -62,17 +76,17 @@ public final class ItemUtils {
         int color;
         if (app.isInstalled()) {
             if (app.getAppInfo().isSpecial()) {
-                color = Color.rgb(144, 69, 254);
+                color = colorSpecial;
             } else if (app.getAppInfo().isSystem()) {
-                color = Color.rgb(69, 144, 254);
+                color = colorSystem;
             } else {
-                color = Color.rgb(254, 144, 69);
+                color = colorUser;
             }
             if (app.isDisabled()) {
-                color = Color.DKGRAY;
+                color = colorDisabled;
             }
         } else {
-            color = Color.GRAY;
+            color = colorUninstalled;
         }
         text.setTextColor(color);
     }
@@ -82,17 +96,17 @@ public final class ItemUtils {
             case AppInfoX.MODE_APK:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyApkBackedUp);
-                backup.setTextColor(Color.rgb(69, 244, 144));
+                backup.setTextColor(colorApk);
                 break;
             case AppInfoX.MODE_DATA:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.onlyDataBackedUp);
-                backup.setTextColor(Color.rgb(244, 69, 144));
+                backup.setTextColor(colorData);
                 break;
             case AppInfoX.MODE_BOTH:
                 UIUtils.setVisibility(backupModeLine, View.VISIBLE, update);
                 backup.setText(R.string.bothBackedUp);
-                backup.setTextColor(Color.rgb(155, 155, 244));
+                backup.setTextColor(colorBoth);
                 break;
             default:
                 UIUtils.setVisibility(backupModeLine, View.GONE, update);
@@ -103,23 +117,25 @@ public final class ItemUtils {
     public static void pickItemAppType(AppInfoX app, AppCompatImageView icon) {
         ColorStateList color;
         if (app.getAppInfo().isSpecial()) {
-            color = ColorStateList.valueOf(Color.rgb(144, 69, 254));
+            color = ColorStateList.valueOf(colorSpecial);
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_round_special_24);
         } else if (app.getAppInfo().isSystem()) {
-            color = ColorStateList.valueOf(Color.rgb(69, 144, 254));
+            color = ColorStateList.valueOf(colorSystem);
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_outline_system_24);
         } else {
-            color = ColorStateList.valueOf(Color.rgb(254, 144, 69));
+            color = ColorStateList.valueOf(colorUser);
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_outline_user_24);
         }
-        if (app.isDisabled()) {
-            color = ColorStateList.valueOf(Color.DKGRAY);
-        }
-        if (!app.isInstalled()) {
-            color = ColorStateList.valueOf(Color.GRAY);
+        if ( ! app.getAppInfo().isSpecial() ) {
+            if (app.isDisabled()) {
+                color = ColorStateList.valueOf(colorDisabled);
+            }
+            if (!app.isInstalled()) {
+                color = ColorStateList.valueOf(colorUninstalled);
+            }
         }
         icon.setImageTintList(color);
     }
@@ -143,5 +159,6 @@ public final class ItemUtils {
                 data.setVisibility(View.GONE);
                 break;
         }
+        // TODO: hg42: if data or apk do not exist, handle it as already backuped and choose another (darker?) color
     }
 }
