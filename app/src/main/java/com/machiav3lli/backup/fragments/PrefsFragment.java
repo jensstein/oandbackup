@@ -188,7 +188,7 @@ public class PrefsFragment extends PreferenceFragmentCompat {
             for (AppInfoX appInfo : appInfoList) {
                 if (!appInfo.isInstalled()) {
                     deleteList.add(appInfo);
-                    message.append(appInfo.getAppInfo().getPackageLabel()).append("\n");
+                    message.append(appInfo.getPackageLabel()).append("\n");
                 }
             }
         }
@@ -254,8 +254,8 @@ public class PrefsFragment extends PreferenceFragmentCompat {
     public void deleteBackups(List<AppInfoX> deleteList) {
         handleMessages.showMessage(getString(R.string.batchDeleteMessage), "");
         for (AppInfoX appInfo : deleteList) {
-            handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getAppInfo().getPackageLabel());
-            Log.i(TAG, "deleting backups of " + appInfo.getAppInfo().getPackageLabel());
+            handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getPackageLabel());
+            Log.i(TAG, "deleting backups of " + appInfo.getPackageLabel());
             appInfo.deleteAllBackups();
             appInfo.refreshBackupHistory();
         }

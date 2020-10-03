@@ -62,7 +62,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         final HandleMessages handleMessages = handleMessagesReference.get();
         final MainActivityX oAndBackupX = mainActivityXReference.get();
         if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing())
-            handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getProgressMessage(oAndBackupX, actionType));
+            handleMessages.showMessage(this.app.getPackageLabel(), getProgressMessage(oAndBackupX, actionType));
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);
-            NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getAppInfo().getPackageLabel(), message, true);
+            NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getPackageLabel(), message, true);
             UIUtils.showActionResult(mainActivityX, this.result, null);
             mainActivityX.refreshWithAppSheet();
         }

@@ -60,7 +60,7 @@ public class BackupAppAction extends BaseAppAction {
     }
 
     public ActionResult run(AppInfoX app, int backupMode) {
-        Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getAppInfo().getPackageLabel()));
+        Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getPackageLabel()));
         Uri appBackupRootUri = null;
         try {
             appBackupRootUri = app.getBackupDir(true);

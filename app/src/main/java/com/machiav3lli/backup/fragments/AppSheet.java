@@ -147,20 +147,20 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         }
         if (this.app.isInstalled()) {
             UIUtils.setVisibility(this.binding.enablePackage, this.app.isDisabled() ? View.VISIBLE : View.GONE, update);
-            UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() || this.app.getAppInfo().isSpecial() ? View.GONE : View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() || this.app.isSpecial() ? View.GONE : View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.uninstall, View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.backup, View.VISIBLE, update);
         } else {
             // Special app is not installed but backup should be possible... maybe a check of the backup is really
             // possible on the device could be an indicator for `isInstalled()` of special packages
-            if (!this.app.getAppInfo().isSpecial()) {
+            if (!this.app.isSpecial()) {
                 UIUtils.setVisibility(this.binding.backup, View.GONE, update);
             }
             UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
             UIUtils.setVisibility(this.binding.enablePackage, View.GONE, update);
             UIUtils.setVisibility(this.binding.disablePackage, View.GONE, update);
         }
-        if (this.app.getAppInfo().isSystem()) {
+        if (this.app.isSystem()) {
             UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
         }
     }
@@ -213,11 +213,11 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             BackupProperties backupProperties = backup.getBackupProperties();
 
             if (this.app.isUpdated()) {
-                String updatedVersionString = backupProperties.getVersionName() + " (" + this.app.getAppInfo().getVersionName() + ")";
+                String updatedVersionString = backupProperties.getVersionName() + " (" + this.app.getVersionName() + ")";
                 binding.versionName.setText(updatedVersionString);
                 binding.versionName.setTextColor(ItemUtils.colorUpdate);
             } else {
-                binding.versionName.setText(this.app.getAppInfo().getVersionName());
+                binding.versionName.setText(this.app.getVersionName());
                 binding.versionName.setTextColor(binding.packageName.getTextColors());
             }
 
@@ -285,7 +285,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.backup.setOnClickListener(v -> {
             Bundle arguments = new Bundle();
             arguments.putParcelable("package", this.app.getPackageInfo());
-            arguments.putString("packageLabel", this.app.getAppInfo().getPackageLabel());
+            arguments.putString("packageLabel", this.app.getPackageLabel());
             BackupDialogFragment dialog = new BackupDialogFragment(fragment);
             dialog.setArguments(arguments);
             dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
@@ -293,7 +293,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.restore.setOnClickListener(v -> {
             BackupItem backup = this.app.getLatestBackup();
             BackupProperties properties = backup.getBackupProperties();
-            if (!this.app.getAppInfo().isSpecial()
+            if (!this.app.isSpecial()
                     && !this.app.isInstalled()
                     && !properties.hasApk()
                     && properties.hasAppData()) {
@@ -309,10 +309,10 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             }
         });
         binding.delete.setOnClickListener(v -> new AlertDialog.Builder(this.requireContext())
-                .setTitle(this.app.getAppInfo().getPackageLabel())
+                .setTitle(this.app.getPackageLabel())
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> new Thread(() -> {
-                    this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.deleteBackup));
+                    this.handleMessages.showMessage(this.app.getPackageLabel(), getString(R.string.deleteBackup));
                     if (!this.app.hasBackups()) {
                         Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
                         return;
@@ -335,7 +335,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             File apk = new File(backupDir, app.getPackageName() + File.separator + app.getLogInfo().getApk());
             File data = new File(backupDir, app.getPackageName() + File.separator + dataPath + ".zip");
             Bundle arguments = new Bundle();
-            arguments.putString("label", app.getAppInfo().getPackageLabel());
+            arguments.putString("label", app.getPackageLabel());
             switch (app.getBackupMode()) {
                 case AppInfoX.MODE_APK:
                     arguments.putSerializable("apk", apk);
@@ -358,23 +358,23 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.enablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), true));
         binding.disablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), false));
         binding.uninstall.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
-                .setTitle(this.app.getAppInfo().getPackageLabel())
+                .setTitle(this.app.getPackageLabel())
                 .setMessage(R.string.uninstallDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> {
                     Thread uninstallThread = new Thread(() -> {
-                        Log.i(TAG, "uninstalling " + this.app.getAppInfo().getPackageLabel());
-                        this.handleMessages.showMessage(this.app.getAppInfo().getPackageLabel(), getString(R.string.uninstallProgress));
+                        Log.i(TAG, "uninstalling " + this.app.getPackageLabel());
+                        this.handleMessages.showMessage(this.app.getPackageLabel(), getString(R.string.uninstallProgress));
                         try {
-                            this.shellCommands.uninstall(this.app.getPackageName(), this.app.getApkPath(), this.app.getDataDir(), this.app.getAppInfo().isSystem());
+                            this.shellCommands.uninstall(this.app.getPackageName(), this.app.getApkPath(), this.app.getDataDir(), this.app.isSystem());
                             NotificationHelper.showNotification(
                                     this.getContext(), MainActivityX.class, this.notificationId++,
-                                    this.app.getAppInfo().getPackageLabel(),
+                                    this.app.getPackageLabel(),
                                     this.getString(R.string.uninstallSuccess), true
                             );
                         } catch (ShellCommands.ShellActionFailedException e) {
                             NotificationHelper.showNotification(
                                     this.getContext(), MainActivityX.class, this.notificationId++,
-                                    this.app.getAppInfo().getPackageLabel(),
+                                    this.app.getPackageLabel(),
                                     this.getString(R.string.uninstallFailure), true
                             );
                             UIUtils.showError(this.requireActivity(), e.getMessage());

@@ -72,8 +72,8 @@ public class MainFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextChange(String newText) {
                 requireMainActivity().getMainItemAdapter().filter(newText);
                 requireMainActivity().getMainItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
-                                || mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
+                        mainItemX.getApp().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                                || mainItemX.getApp().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
 
@@ -81,7 +81,7 @@ public class MainFragment extends Fragment implements SearchViewController {
             public boolean onQueryTextSubmit(String query) {
                 requireMainActivity().getMainItemAdapter().filter(query);
                 requireMainActivity().getMainItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
-                        mainItemX.getApp().getAppInfo().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
+                        mainItemX.getApp().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
                                 || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }

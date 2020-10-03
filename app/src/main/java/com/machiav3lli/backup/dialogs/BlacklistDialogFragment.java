@@ -60,10 +60,10 @@ public class BlacklistDialogFragment extends DialogFragment {
             assert blacklistedPackages != null;
             boolean b1 = blacklistedPackages.contains(appInfo1.getPackageName());
             boolean b2 = blacklistedPackages.contains(appInfo2.getPackageName());
-            return (b1 != b2) ? (b1 ? -1 : 1) : appInfo1.getAppInfo().getPackageLabel().compareToIgnoreCase(appInfo2.getAppInfo().getPackageLabel());
+            return (b1 != b2) ? (b1 ? -1 : 1) : appInfo1.getPackageLabel().compareToIgnoreCase(appInfo2.getPackageLabel());
         });
         for (AppInfoX appInfo : appInfoList) {
-            labels.add(appInfo.getAppInfo().getPackageLabel());
+            labels.add(appInfo.getPackageLabel());
             assert blacklistedPackages != null;
             if (blacklistedPackages.contains(appInfo.getPackageName())) {
                 checkedPackages[i] = true;

@@ -97,7 +97,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
             final AppInfoX app = item.getApp();
 
             this.checkbox.setChecked(item.isChecked());
-            this.label.setText(app.getAppInfo().getPackageLabel());
+            this.label.setText(app.getPackageLabel());
             this.packageName.setText(app.getPackageName());
             if (app.hasBackups()) {
                 // Todo: Find a proper way to display multiple backups. Just showing the latest for now
