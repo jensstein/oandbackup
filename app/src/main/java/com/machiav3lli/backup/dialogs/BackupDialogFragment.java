@@ -28,6 +28,7 @@ import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,8 +49,11 @@ public class BackupDialogFragment extends DialogFragment {
         final String packageLabel = arguments.getString("packageLabel");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity())
-            .setTitle(packageLabel)
-            .setMessage(R.string.backup);
+                .setTitle(this.getContext().getString(R.string.backup) + ' ' + packageLabel);
+
+        if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {
+            builder.setMessage(R.string.msg_appkill_warning);
+        }
 
         boolean showApkBtn = pi != null && !pi.applicationInfo.sourceDir.isEmpty();
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.BACKUP;
