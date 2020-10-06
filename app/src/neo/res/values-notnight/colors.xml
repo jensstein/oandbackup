@@ -23,4 +23,10 @@
     <color name="app_secondary">#163DE0</color>
     <color name="ic_launcher_background">#000000</color>
     <color name="ic_exodus">#AB47BC</color>
+    <color name="ic_update">#F43345</color>
+    <color name="ic_apk">#45f490</color>
+    <color name="ic_data">#f44590</color>
+    <color name="ic_system">#4590FE</color>
+    <color name="ic_user">#FE9045</color>
+    <color name="ic_special">#9045FE</color>
 </resources>

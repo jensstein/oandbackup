@@ -34,7 +34,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -216,7 +215,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             if (this.app.isUpdated()) {
                 String updatedVersionString = backupProperties.getVersionName() + " (" + this.app.getAppInfo().getVersionName() + ")";
                 binding.versionName.setText(updatedVersionString);
-                binding.versionName.setTextColor(ContextCompat.getColor(requireContext(), R.color.app_accent));
+                binding.versionName.setTextColor(ItemUtils.colorUpdate);
             } else {
                 binding.versionName.setText(this.app.getAppInfo().getVersionName());
                 binding.versionName.setTextColor(binding.packageName.getTextColors());
