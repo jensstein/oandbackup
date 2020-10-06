@@ -21,7 +21,7 @@
     <color name="app_primary_base">#E9ECEF</color>
     <color name="app_primary_inverse">#323639</color>
     <color name="app_secondary">#163DE0</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="ic_launcher_background">#000000</color>
     <color name="ic_exodus">#AB47BC</color>
     <color name="ic_update">#FF3333</color>
     <color name="ic_apk">#45f490</color>
