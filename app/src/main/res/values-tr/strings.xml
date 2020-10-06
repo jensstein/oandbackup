@@ -177,7 +177,7 @@
 \n • Yedeklemeler, bireysel olarak sayılarında bir sınırlama olmaksızın zamanlanabilir ve benzersiz özel listeler oluşturma imkanı vardır.</string>
     <string name="intro_permission_batteryoptimization">Uygulama, agresif pil optimizasyonları kullanan bazı ROM\'larda, örn. MIUI, zamanlanmış yedekleme yaparken bazı sorunlarla karşılaşabilir ancak sıradan AOSP\'de bile böyle bir sorun meydana gelebilir.</string>
     <string name="intro_permission_usageaccess">Uygulamanın, verilerinizin istatistikleri ve boyutları ile uygulamalarınızın önbelleğini denetleyebilmesi için bu izne ihtiyacı vardır.</string>
-    <string name="intro_permission_storage">Bu uygulama, harici depolamaya erişmek, özel bir yedekleme klasörü ayarlamak ve diğer uygulamaların harici verilerinin/obb\'sinin yedeklenmesine olanak sağlamak için depolama okuma/yazma iznini kullanır.</string>
+    <string name="intro_permission_storage">Bu uygulama, harici depolamaya erişmek ve diğer uygulamaların harici verilerinin/obb\'sinin yedeklenmesine olanak sağlamak için depolama okuma/yazma iznini kullanır.</string>
     <string name="welcome_to_oabx">OABX\'e hoş geldiniz!</string>
     <string name="storage_access">Depolama Erişimi</string>
     <string name="sort_and_filter">Sırala ve Filtrele</string>
@@ -204,4 +204,5 @@
     <string name="prefs_biometriclock">Biyometrik kilit</string>
     <string name="help_appTypeHint">* Uygulama türünün simgesi uygulama kaldırılırsa gri, devre dışı bırakılırsa koyu gri olur.</string>
     <string name="radioUpdated">Güncellenen</string>
+    <string name="intro_permission_storage_location">Uygulama, yedeklemeleri depolamak için bir yedekleme konumuna ihtiyaç duymaktadır. Uygulama tam bir yedekleme için birkaç gigabayt depolamaya ihtiyaç duyabilir ve dosya sistemine çok fazla sorgulama yapar. Lütfen ağ tabanlı depolama konumlarını seçerken bunu aklınızda bulundurun.</string>
 </resources>
