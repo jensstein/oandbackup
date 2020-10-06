@@ -27,6 +27,7 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppMetaInfo;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +46,11 @@ public class BatchConfirmDialog extends DialogFragment {
         String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
         StringBuilder message = new StringBuilder();
         assert selectedList != null;
+        if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {
+            message.append(this.getContext().getString(R.string.msg_appkill_warning));
+            message.append("\n\n");
+        }
+
         for (AppMetaInfo item : selectedList)
             message.append(item.getPackageLabel()).append("\n");
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());

@@ -286,6 +286,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         binding.backup.setOnClickListener(v -> {
             Bundle arguments = new Bundle();
             arguments.putParcelable("package", this.app.getPackageInfo());
+            arguments.putString("packageLabel", this.app.getAppInfo().getPackageLabel());
             BackupDialogFragment dialog = new BackupDialogFragment(fragment);
             dialog.setArguments(arguments);
             dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");

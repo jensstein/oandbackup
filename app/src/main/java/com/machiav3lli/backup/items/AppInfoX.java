@@ -26,7 +26,7 @@ import java.util.List;
  * It knows if an app is installed and if it has backups to restore.
  */
 public class AppInfoX {
-    private static final String TAG = Constants.classTag(".AppInfoV2");
+    private static final String TAG = Constants.classTag(".AppInfoX");
     public static final int MODE_UNSET = 0;
     public static final int MODE_APK = 1;
     public static final int MODE_DATA = 2;

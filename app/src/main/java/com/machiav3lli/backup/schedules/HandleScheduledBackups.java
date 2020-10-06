@@ -69,7 +69,7 @@ public class HandleScheduledBackups {
             String backupDirPath = getBackupDirectoryPath(context);
             boolean specialBackups = prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
             backupDir = new File(backupDirPath);
-            //ArrayList<AppInfoV2> list = AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
+            //ArrayList<AppInfoX> list = AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
             List<AppInfoX> list = null;
             try {
                 list = BackendController.getApplicationList(this.context);

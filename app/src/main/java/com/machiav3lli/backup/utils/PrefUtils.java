@@ -164,6 +164,10 @@ public class PrefUtils {
         return prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false) || powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 
+    public static boolean isKillBeforeActionEnabled(Context context) {
+        return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, true);
+    }
+
     public static class StorageLocationNotConfiguredException extends Exception {
 
         public StorageLocationNotConfiguredException() {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_unlock">Otključaj</string>
+    <string name="dialog_start">Idemo!</string>
+    <string name="dialogSave">Spremi</string>
+    <string name="dialogNo">Ne</string>
+    <string name="dialogYes">Da</string>
+    <string name="dialogCancel">Otkaži</string>
+    <string name="prefs_languages">Jezik</string>
+    <string name="prefs_help">Pomoć</string>
+    <string name="help_license">Licenca</string>
+    <string name="apptype_user">Korisnička aplikacija</string>
+    <string name="apptype_system">Sistemska aplikacija</string>
+    <string name="all">Sve</string>
+    <string name="applyFilter">Primjeni</string>
+    <string name="shellReturnError">Greška</string>
+    <string name="sched_blacklist">Crna lista</string>
+    <string name="showNewAndUpdated">Nove i ažurirane aplikacije</string>
+    <string name="onlyDataBackedUp">Samo podaci</string>
+    <string name="radioUpdated">Ažurirano</string>
+    <string name="radioData">Podaci</string>
+    <string name="radioBoth">APK i Podaci</string>
+    <string name="radioUser">Korisničke aplikacije</string>
+    <string name="handleBoth">Oboje</string>
+    <string name="handleData">Podaci</string>
+    <string name="showNotBackedup">Aplikacije bez sigurnosne kopije</string>
+    <string name="showOnlyUser">Samo korisničke aplikacije</string>
+    <string name="showOnlySystem">Samo sistemske aplikacije</string>
+    <string name="refresh">Osvježi</string>
+    <string name="onlyApkBackedUp">Samo APK</string>
+    <string name="radioApk">APK</string>
+    <string name="radioSystem">Sistemske aplikacije</string>
+    <string name="radioAll">Sve aplikacije</string>
+    <string name="handleApk">APK</string>
+    <string name="backup">Sigurnosna kopija</string>
+</resources>
