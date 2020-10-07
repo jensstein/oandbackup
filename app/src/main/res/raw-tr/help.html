@@ -1,34 +1,15 @@
 <html>
     <body>
-        <h2>Usage notes</h2>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data
-            or both. An app not currently installed can only be restored if the apk is present.
+        <h2>Kullanım notları</h2>
+        <p><strong>Yedekleme modları</strong>: Bir uygulama yalnızca apk'si, yalnızca verileri veya her ikisi ile yedeklenebilir. Kurulu durumda olmayan bir uygulama yalnızca apk dosyası varsa geri yüklenebilir.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        <p><strong>Yedeklemeyi sil</strong>: Seçili uygulama için yedekleme dosyalarını siler.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition
-            to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes
-            files the app might have left over in /data/app-lib/.
+        <p><strong>Kaldır</strong>: Normal bir kaldırmaya göre biraz daha agresif. Android komutlarıyla normal bir kaldırma işlemi gerçekleştirmenin yanı sıra, OAndBackupX'ten kaldırma işlemi, uygulamanın /data/app-lib/ içinde bırakmış olabileceği dosyaları da siler.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an
-            app. Disabling an app removes it from the normal user interface without uninstalling.
-            This can be used for enabling or disabling an app for muliple users at a time (if the
-            device has multiple users enabled). Users are identified with an id. 0 is the first user
-            (owner).
+        <p><strong>Etkinleştir/devre dışı bırak</strong>: Bir uygulamayı etkinleştirmek veya devre dışı bırakmak için `pm` Android betiğini kullanır. Bir uygulamayı devre dışı bırakmak, onu kaldırmadan normal kullanıcı arayüzünden gizler. Bu, aynı anda birden fazla kullanıcı için (cihazda birden fazla etkinleştirilmiş kullanıcı varsa) bir uygulamayı etkinleştirmek veya devre dışı bırakmak için kullanılabilir. Kullanıcılar bir kimlik numarası ile tanımlanır. 0 ilk kullanıcıdır (sahip).
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should
-            work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and
-            subsequently the app is disabled for every user who has the app listed in
-            /data/system/user/$user/package-restrictions.xml (unless the app is listed as
-            enabled="1").
-            <br />
-            This can create problems for users installing the same app at some later point, but is
-            necessary to prevent the app from being installed to all users at the same time. The
-            context menu has an option to enable or disable apps which can be used if other users
-            become unable to use a specific app due to disabling on restore.
-            <br />
-            Enabling and disabling only works after an initial install (not necessarily from
-            OAndBackupx) or restore of the app.
+        <p><strong>Birden çok kullanıcı</strong>: Çok kullanıcılı hala biraz deneyseldir ama düzgün çalışması beklenir. Çok kullanıcılı bir durumda geri yüklerken, `pm install -r $apk` çalıştırılır ve daha sonra /data/system/user/$user/package-restrictions.xml dosyasında uygulama listelenmiş olan her kullanıcı için uygulama devre dışı bırakılır (uygulama enabled="1" olarak listelenmemişse). <br> Bu, daha sonraki bir noktada aynı uygulamayı kuran kullanıcılar için sorun yaratabilir, ancak uygulamanın aynı anda tüm kullanıcılar için kurulmasını önlemek için gereklidir. Bağlam menüsünde, geri yükleme sırasında devre dışı bırakılması nedeniyle diğer kullanıcıların belirli bir uygulamayı kullanamaması durumunda kullanılabilecek uygulamaları etkinleştirme veya devre dışı bırakma seçeneği vardır. <br> Etkinleştirme ve devre dışı bırakma, yalnızca uygulamanın ilk kurulumundan (OAndBackupX'ten olması gerekmez) veya geri yüklenmesinden sonra çalışır.
         </p>
     </body>
 </html>
