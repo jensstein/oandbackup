@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <h2>Kullanım notları</h2>
+        <p><strong>Yedekleme modları</strong>: Bir uygulama yalnızca apk'si, yalnızca verileri veya her ikisi ile yedeklenebilir. Kurulu durumda olmayan bir uygulama yalnızca apk dosyası varsa geri yüklenebilir.
+        </p>
+        <p><strong>Yedeklemeyi sil</strong>: Seçili uygulama için yedekleme dosyalarını siler.
+        </p>
+        <p><strong>Kaldır</strong>: Normal bir kaldırmaya göre biraz daha agresif. Android komutlarıyla normal bir kaldırma işlemi gerçekleştirmenin yanı sıra, OAndBackupX'ten kaldırma işlemi, uygulamanın /data/app-lib/ içinde bırakmış olabileceği dosyaları da siler.
+        </p>
+        <p><strong>Etkinleştir/devre dışı bırak</strong>: Bir uygulamayı etkinleştirmek veya devre dışı bırakmak için `pm` Android betiğini kullanır. Bir uygulamayı devre dışı bırakmak, onu kaldırmadan normal kullanıcı arayüzünden gizler. Bu, aynı anda birden fazla kullanıcı için (cihazda birden fazla etkinleştirilmiş kullanıcı varsa) bir uygulamayı etkinleştirmek veya devre dışı bırakmak için kullanılabilir. Kullanıcılar bir kimlik numarası ile tanımlanır. 0 ilk kullanıcıdır (sahip).
+        </p>
+        <p><strong>Birden çok kullanıcı</strong>: Çok kullanıcılı hala biraz deneyseldir ama düzgün çalışması beklenir. Çok kullanıcılı bir durumda geri yüklerken, `pm install -r $apk` çalıştırılır ve daha sonra /data/system/user/$user/package-restrictions.xml dosyasında uygulama listelenmiş olan her kullanıcı için uygulama devre dışı bırakılır (uygulama enabled="1" olarak listelenmemişse). <br> Bu, daha sonraki bir noktada aynı uygulamayı kuran kullanıcılar için sorun yaratabilir, ancak uygulamanın aynı anda tüm kullanıcılar için kurulmasını önlemek için gereklidir. Bağlam menüsünde, geri yükleme sırasında devre dışı bırakılması nedeniyle diğer kullanıcıların belirli bir uygulamayı kullanamaması durumunda kullanılabilecek uygulamaları etkinleştirme veya devre dışı bırakma seçeneği vardır. <br> Etkinleştirme ve devre dışı bırakma, yalnızca uygulamanın ilk kurulumundan (OAndBackupX'ten olması gerekmez) veya geri yüklenmesinden sonra çalışır.
+        </p>
+    </body>
+</html>
