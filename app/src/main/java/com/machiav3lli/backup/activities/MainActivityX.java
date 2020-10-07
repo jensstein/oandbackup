@@ -375,8 +375,8 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             String message = "(" + i + '/' + total + ')';
             String title = (this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress))
                     + " (" + i + '/' + total + ')';
-            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, app.getAppInfo().getPackageLabel(), false);
-            this.handleMessages.setMessage(app.getAppInfo().getPackageLabel(), message);
+            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, app.getPackageLabel(), false);
+            this.handleMessages.setMessage(app.getPackageLabel(), message);
             int mode = checkSelectedMode();
             final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
             ActionResult result;

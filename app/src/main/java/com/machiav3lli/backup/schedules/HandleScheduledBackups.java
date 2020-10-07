@@ -85,21 +85,21 @@ public class HandleScheduledBackups {
                     break;
                 case USER:
                     for (AppInfoX appInfo : list) {
-                        if (!appInfo.getAppInfo().isSystem()) {
+                        if (!appInfo.isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
                     break;
                 case SYSTEM:
                     for (AppInfoX appInfo : list) {
-                        if (appInfo.getAppInfo().isSystem()) {
+                        if (appInfo.isSystem()) {
                             listToBackUp.add(appInfo);
                         }
                     }
                     break;
                 case NEW_UPDATED:
                     for (AppInfoX appInfo : list) {
-                        if ((!excludeSystem || !appInfo.getAppInfo().isSystem()) && (appInfo.hasBackups() || (appInfo.getAppInfo().getVersionCode() > appInfo.getLatestBackup().getBackupProperties().getVersionCode()))) {
+                        if ((!excludeSystem || !appInfo.isSystem()) && (appInfo.hasBackups() || (appInfo.getVersionCode() > appInfo.getLatestBackup().getBackupProperties().getVersionCode()))) {
                             listToBackUp.add(appInfo);
                         }
                     }
@@ -143,7 +143,7 @@ public class HandleScheduledBackups {
                         continue;
                     }
                     String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
-                    NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getAppInfo().getPackageLabel(), false);
+                    NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getPackageLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
                     ActionResult result = backupRestoreHelper.backup(context, MainActivityX.getShellHandlerInstance(), appInfo, subMode);
 

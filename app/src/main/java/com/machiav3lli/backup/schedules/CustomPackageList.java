@@ -69,7 +69,7 @@ public class CustomPackageList {
         ArrayList<String> list = new ArrayList<>();
         if (!appInfoList.isEmpty()) {
             for (AppInfoX appInfo : appInfoList)
-                list.add(appInfo.getAppInfo().getPackageLabel());
+                list.add(appInfo.getPackageLabel());
         }
         return list.toArray(new CharSequence[0]);
     }

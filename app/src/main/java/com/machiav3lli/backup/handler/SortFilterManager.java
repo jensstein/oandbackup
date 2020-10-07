@@ -34,7 +34,7 @@ import java.util.List;
 public class SortFilterManager {
 
     public static final Comparator<AppInfoX> appInfoLabelComparator = (m1, m2) ->
-            m1.getAppInfo().getPackageLabel().compareToIgnoreCase(m2.getAppInfo().getPackageLabel());
+            m1.getPackageLabel().compareToIgnoreCase(m2.getPackageLabel());
     public static final Comparator<AppInfoX> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
     public static final Comparator<AppInfoX> appDataSizeComparator = (m1, m2) ->
@@ -61,13 +61,13 @@ public class SortFilterManager {
         ArrayList<AppInfoX> nlist = new ArrayList<>(list);
         switch (filter.charAt(1)) {
             case '1':
-                for (AppInfoX item : list) if (!item.getAppInfo().isSystem()) nlist.remove(item);
+                for (AppInfoX item : list) if (!item.isSystem()) nlist.remove(item);
                 break;
             case '2':
-                for (AppInfoX item : list) if (item.getAppInfo().isSystem()) nlist.remove(item);
+                for (AppInfoX item : list) if (item.isSystem()) nlist.remove(item);
                 break;
             case '3':
-                for (AppInfoX item : list) if (!item.getAppInfo().isSpecial()) nlist.remove(item);
+                for (AppInfoX item : list) if (!item.isSpecial()) nlist.remove(item);
                 break;
             default:
                 break;
@@ -107,7 +107,7 @@ public class SortFilterManager {
                 for (AppInfoX item : list) {
                     if (!(!item.hasBackups() ||
                             (item.getLatestBackup().getBackupProperties().getVersionCode() != 0
-                                    && item.getAppInfo().getVersionCode() > item.getLatestBackup().getBackupProperties().getVersionCode()))
+                                    && item.getVersionCode() > item.getLatestBackup().getBackupProperties().getVersionCode()))
                     ) {
                         nlist.remove(item);
                     }

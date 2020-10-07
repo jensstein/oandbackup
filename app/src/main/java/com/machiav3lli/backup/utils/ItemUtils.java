@@ -17,10 +17,7 @@
  */
 package com.machiav3lli.backup.utils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.View;
 
@@ -28,10 +25,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
-import com.google.android.material.internal.ContextUtils;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
@@ -75,9 +70,9 @@ public final class ItemUtils {
     public static void pickSheetAppType(AppInfoX app, AppCompatTextView text) {
         int color;
         if (app.isInstalled()) {
-            if (app.getAppInfo().isSpecial()) {
+            if (app.isSpecial()) {
                 color = colorSpecial;
-            } else if (app.getAppInfo().isSystem()) {
+            } else if (app.isSystem()) {
                 color = colorSystem;
             } else {
                 color = colorUser;
@@ -116,11 +111,11 @@ public final class ItemUtils {
 
     public static void pickItemAppType(AppInfoX app, AppCompatImageView icon) {
         ColorStateList color;
-        if (app.getAppInfo().isSpecial()) {
+        if (app.isSpecial()) {
             color = ColorStateList.valueOf(colorSpecial);
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_round_special_24);
-        } else if (app.getAppInfo().isSystem()) {
+        } else if (app.isSystem()) {
             color = ColorStateList.valueOf(colorSystem);
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_outline_system_24);
@@ -129,7 +124,7 @@ public final class ItemUtils {
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_outline_user_24);
         }
-        if ( ! app.getAppInfo().isSpecial() ) {
+        if ( ! app.isSpecial() ) {
             if (app.isDisabled()) {
                 color = ColorStateList.valueOf(colorDisabled);
             }

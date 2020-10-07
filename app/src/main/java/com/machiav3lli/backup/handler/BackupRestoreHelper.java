@@ -50,7 +50,7 @@ public class BackupRestoreHelper {
     public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfoX app, int backupMode) {
         BackupAppAction action;
         // Select and prepare the action to use
-        if (app.getAppInfo().isSpecial()) {
+        if (app.isSpecial()) {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 Log.e(BackupRestoreHelper.TAG,
                         String.format("%s: Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.", app));
@@ -82,9 +82,9 @@ public class BackupRestoreHelper {
             Context context, AppInfoX app, BackupProperties backupProperties,
             Uri backupLocation, ShellHandler shell, int mode) {
         RestoreAppAction restoreAction;
-        if (app.getAppInfo().isSpecial()) {
+        if (app.isSpecial()) {
             restoreAction = new RestoreSpecialAction(context, shell);
-        } else if (app.getAppInfo().isSystem()) {
+        } else if (app.isSystem()) {
             restoreAction = new SystemRestoreAppAction(context, shell);
         } else {
             restoreAction = new RestoreAppAction(context, shell);

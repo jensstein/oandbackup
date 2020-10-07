@@ -185,6 +185,34 @@ public class AppInfoX {
         return !metaInfo.isSpecial() && (packageInfo != null && !packageInfo.applicationInfo.enabled);
     }
 
+    public boolean isSystem() {
+        return (this.packageInfo != null && metaInfo.isSystem()) || metaInfo.isSpecial();
+    }
+
+    public boolean isSpecial() {
+        return metaInfo.isSpecial();
+    }
+
+    public PackageInfo getPackageInfo() {
+        return this.packageInfo;
+    }
+
+    public String getPackageName() {
+        return this.packageName;
+    }
+
+    public String getPackageLabel() {
+        return metaInfo.getPackageLabel() != null ? metaInfo.getPackageLabel() : getPackageName();
+    }
+
+    public int getVersionCode() {
+        return metaInfo.getVersionCode();
+    }
+
+    public String getVersionName() {
+        return metaInfo.getVersionName();
+    }
+
     public boolean hasBackups() {
         return !this.backupHistory.isEmpty();
     }
@@ -194,14 +222,6 @@ public class AppInfoX {
             return this.backupHistory.get(this.backupHistory.size() - 1);
         }
         return null;
-    }
-
-    public PackageInfo getPackageInfo() {
-        return this.packageInfo;
-    }
-
-    public String getPackageName() {
-        return this.packageName;
     }
 
     public AppMetaInfo getAppInfo() {
@@ -262,7 +282,7 @@ public class AppInfoX {
 
     public boolean isUpdated() {
         return this.hasBackups()
-                && this.getLatestBackup().getBackupProperties().getVersionCode() > this.getAppInfo().getVersionCode();
+                && this.getLatestBackup().getBackupProperties().getVersionCode() > this.getVersionCode();
     }
 
     /**
