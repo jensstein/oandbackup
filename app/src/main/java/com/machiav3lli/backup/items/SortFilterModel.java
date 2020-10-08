@@ -38,11 +38,11 @@ public class SortFilterModel {
     public int getSortById() {
         switch (code.charAt(0)) {
             case '1':
-                return R.id.sortByLabel;
+                return R.id.sortByPackageName;
             case '2':
                 return R.id.sortByDataSize;
             default:
-                return R.id.sortByPackageName;
+                return R.id.sortByLabel;
         }
     }
 
@@ -92,7 +92,7 @@ public class SortFilterModel {
     public void putSortBy(int id) {
         char sortBy;
         switch (id) {
-            case R.id.sortByLabel:
+            case R.id.sortByPackageName:
                 sortBy = '1';
                 break;
             case R.id.sortByDataSize:
