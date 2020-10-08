@@ -27,7 +27,7 @@
     <string name="backupProgress">جار النسخ الاحتياطي…</string>
     <string name="shellReturnError">خطأ</string>
     <string name="shellReturnSuccess">نجاح</string>
-    <string name="backupFolderError">ي\\\\</string>
+    <string name="backupFolderError"></string>
     <string name="busyboxProblem">تعذر العثور على BusyBox. يرجى التحقق من سجل الأخطاء</string>
     <string name="noSu">تعذر الحصول على صلاحيات superuser</string>
     <string name="collectingData">جار جمع معلومات الحزمة…</string>
