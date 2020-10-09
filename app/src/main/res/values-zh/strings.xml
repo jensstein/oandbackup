@@ -197,9 +197,13 @@
     <string name="dialogSave">保存</string>
     <string name="sched_submode">备份子模式：</string>
     <string name="sched_add">添加计划任务</string>
-    <string name="prefs_password_match_false">密码不匹配！</string>
+    <string name="prefs_password_match_false">密码不匹配.</string>
     <string name="prefs_password_match_true">密码匹配</string>
     <string name="prefs_passwordconfirmation">确认加密密码</string>
     <string name="prefs_biometriclock_summary">使用生物识别锁 (例如指纹，人脸解锁) 保护应用安全</string>
     <string name="prefs_biometriclock">生物识别锁</string>
+    <string name="prefs_unset">取消</string>
+    <string name="intro_permission_storage_location">该应用程序需要一个备份位置来存储备份。 该应用程序可能需要数GB的存储空间才能进行完整备份。 使用基于网络的存储位置时，请注意这一点。</string>
+    <string name="help_appTypeHint">* 如果应用程序已卸载，则该应用程序类型的图标将为灰色；如果禁用该应用程序，则该图标将为深灰色。</string>
+    <string name="radioUpdated">已升级</string>
 </resources>

@@ -55,4 +55,25 @@
     <string name="deleteBackup">Obriši sigurnosnu kopiju</string>
     <string name="search">Pretraživanje</string>
     <string name="backupConfirmation">Napraviti sigurnosnu kopiju\?</string>
+    <string name="prefs_passwordconfirmation">Potvrda šifre za enkripciju</string>
+    <string name="prefs_password_summary">Ostavite prazno da bi isključili enkripciju</string>
+    <string name="customListTitle">Prilagođena lista</string>
+    <string name="mkfileError">Nije moguće napraviti</string>
+    <string name="busyboxProblem">BusyBox nije pronađen. Molimo provjerite zapisnik grešaka</string>
+    <string name="prefs_logviewer">Pogledaj zapisnik</string>
+    <string name="prefs_copyselfapk">Kopiraj lični APK</string>
+    <string name="prefs_password">Šifra za enkripciju</string>
+    <string name="disablePackageTitle">Onemogući za korisnike</string>
+    <string name="disablePackage">Onemogući</string>
+    <string name="enablePackageTitle">Omogući za korisnike</string>
+    <string name="enablePackage">Omogući</string>
+    <string name="batchDeleteBackupsDeleted">Obrisane sigurnosne kopije:</string>
+    <string name="errorDialogTitle">Došlo je do grešaka</string>
+    <string name="batchSuccess">Operacija završena</string>
+    <string name="backupFailure">Greška pri izradi sigurnosne kopije</string>
+    <string name="backupSuccess">Sigurnosna kopija napravljena</string>
+    <string name="backupProgress">Izrada sigurnosne kopije u toku…</string>
+    <string name="showNotInstalled">Aplikacije koje nisu instalirane</string>
+    <string name="searchHint">Traži aplikacije</string>
+    <string name="radioSpecial">Posebne sigurnosne kopije</string>
 </resources>
