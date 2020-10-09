@@ -64,6 +64,7 @@ public class Constants {
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_HELP = "help";
     public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
+    public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
 
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_USERS = "users";

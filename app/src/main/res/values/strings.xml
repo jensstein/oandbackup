@@ -116,6 +116,8 @@
     <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
     <string name="prefs_batchdelete">Delete backups\?</string>
     <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
+    <string name="prefs_numBackupRevisions">Number of backup revisions</string>
+    <string name="prefs_numBackupRevisions_summary">The oldest revision will be deleted upon creation of a new backup if the number is exceeded. Set it to zero to keep all revisions.</string>
     <string name="prefs_logviewer">View the log</string>
     <string name="prefs_unset">Unset</string>
     <string name="prefs_help">Help</string>

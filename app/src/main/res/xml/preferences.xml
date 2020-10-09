@@ -101,6 +101,15 @@
             android:summary="@string/prefs_deviceprotecteddata_summary"
             android:title="@string/prefs_deviceprotecteddata"
             app:iconSpaceReserved="false" />
+        <androidx.preference.SeekBarPreference
+            android:key="numBackupRevisions"
+            android:summary="@string/prefs_numBackupRevisions_summary"
+            android:title="@string/prefs_numBackupRevisions"
+            android:max="10"
+            android:defaultValue="2"
+            app:showSeekBarValue="true"
+            app:min="0"
+            app:iconSpaceReserved="false" />
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="copySelfApk"
