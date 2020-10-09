@@ -33,6 +33,7 @@ import com.machiav3lli.backup.handler.action.RestoreSpecialAction;
 import com.machiav3lli.backup.handler.action.SystemRestoreAppAction;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.items.BackupItem;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 public class BackupRestoreHelper {
@@ -75,6 +77,7 @@ public class BackupRestoreHelper {
                 Log.e(TAG, "OABX apk was not copied to the backup dir: " + e);
             }
         }
+        this.housekeepPackageBackups(context, app);
         return result;
     }
 
@@ -129,6 +132,27 @@ public class BackupRestoreHelper {
             return false;
         }
         return true;
+    }
+
+    protected void housekeepPackageBackups(Context context, AppInfoX app) {
+        int numBackupRevisions = PrefUtils.getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2);
+        List<BackupItem> backupHistory = app.getBackupHistory();
+        if (numBackupRevisions == 0) {
+            Log.i(TAG, String.format("[%s] Infinite backup revisions configured. Not deleting any backup. %s (valid) backups available", app.getPackageName(), backupHistory.size()));
+            return;
+        }
+        if (numBackupRevisions > backupHistory.size()) {
+            Log.i(TAG, String.format("[%s] Less backup revisions (%s) than configured maximum (%s). Not deleting anything.", app.getPackageName(), backupHistory.size(), numBackupRevisions));
+            return;
+        }
+        int revisionsToDelete = backupHistory.size() - numBackupRevisions;
+        Log.i(TAG, String.format("[%s] More backup revisions than configured maximum (%s / %s). Deleting %s backup(s).", app.getPackageName(), backupHistory.size(), numBackupRevisions, revisionsToDelete));
+        backupHistory.sort(Comparator.comparing(obj -> obj.getBackupProperties().getBackupDate()));
+        for (int i = 0; i < revisionsToDelete; i++) {
+            BackupItem deleteTarget = backupHistory.get(0);
+            Log.i(TAG, String.format("[%s] Deleting backup revision %s", app.getPackageName(), deleteTarget));
+            app.delete(context, deleteTarget);
+        }
     }
 
     public enum ActionType {BACKUP, RESTORE}

@@ -165,7 +165,7 @@ public class AppInfoX {
                     + backupItem.getBackupProperties().getPackageName()
                     + " but this object is for " + this.getPackageName());
         }
-        Log.d(AppInfoX.TAG, "Deleting " + this);
+        Log.d(AppInfoX.TAG, String.format("[%s] Deleting backup revision %s", this.getPackageName(), backupItem));
         DocumentHelper.deleteRecursive(context, backupItem.getBackupLocation());
         this.backupHistory.remove(backupItem);
     }
