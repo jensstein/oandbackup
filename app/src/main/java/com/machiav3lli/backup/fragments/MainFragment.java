@@ -73,7 +73,7 @@ public class MainFragment extends Fragment implements SearchViewController {
                 requireMainActivity().getMainItemAdapter().filter(newText);
                 requireMainActivity().getMainItemAdapter().getItemFilter().setFilterPredicate((mainItemX, charSequence) ->
                         mainItemX.getApp().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase())
-                                || mainItemX.getApp().getPackageLabel().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
+                                || mainItemX.getApp().getPackageName().toLowerCase().contains(String.valueOf(charSequence).toLowerCase()));
                 return true;
             }
 
