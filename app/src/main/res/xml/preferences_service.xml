@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ OAndBackupX: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="encryption"
+        android:summary="@string/prefs_encryption_summary"
+        android:title="@string/prefs_encryption"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.EditTextPreference
+        android:defaultValue=""
+        android:inputType="textPassword"
+        android:key="password"
+        android:summary="@string/prefs_password_summary"
+        android:title="@string/prefs_password"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.EditTextPreference
+        android:defaultValue=""
+        android:inputType="textPassword"
+        android:key="passwordConfirmation"
+        android:title="@string/prefs_passwordconfirmation"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:key="excludeCache"
+        android:summary="@string/prefs_excludecache_summary"
+        android:title="@string/prefs_excludecache"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="backupExternalData"
+        android:summary="@string/prefs_externaldata_summary"
+        android:title="@string/prefs_externaldata"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:key="backupDeviceProtectedData"
+        android:summary="@string/prefs_deviceprotecteddata_summary"
+        android:title="@string/prefs_deviceprotecteddata"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.SeekBarPreference
+        android:key="numBackupRevisions"
+        android:summary="@string/prefs_numBackupRevisions_summary"
+        android:title="@string/prefs_numBackupRevisions"
+        android:max="10"
+        android:defaultValue="2"
+        app:showSeekBarValue="true"
+        app:min="0"
+        app:iconSpaceReserved="false" />
+</androidx.preference.PreferenceScreen>

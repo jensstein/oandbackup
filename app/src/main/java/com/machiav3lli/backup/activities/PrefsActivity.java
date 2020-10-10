@@ -19,11 +19,15 @@ package com.machiav3lli.backup.activities;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceFragmentCompat;
+
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding;
-import com.machiav3lli.backup.fragments.PrefsFragment;
 
 public class PrefsActivity extends BaseActivity {
+    private static final String TAG = Constants.classTag(".PrefsActivity");
 
     private ActivityPrefsBinding binding;
 
@@ -38,5 +42,14 @@ public class PrefsActivity extends BaseActivity {
                 super.onBackPressed();
             else getSupportFragmentManager().popBackStack();
         });
+    }
+
+    public static class PrefsFragment extends PreferenceFragmentCompat {
+        private static final String TAG = Constants.classTag(".PrefsFragment");
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.preferences, rootKey);
+        }
     }
 }

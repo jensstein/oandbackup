@@ -18,27 +18,20 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        android:fragment="com.machiav3lli.backup.fragments.PrefsUserFragment"
-        app:icon="@drawable/ic_outline_user_24"
-        app:layout="@layout/item_prefs_x"
-        app:title="@string/prefs_user" />
+    <androidx.preference.Preference
+        android:key="quickReboot"
+        android:summary="@string/prefs_quickreboot_summary"
+        android:title="@string/prefs_quickreboot"
+        app:iconSpaceReserved="false" />
 
-    <Preference
-        android:fragment="com.machiav3lli.backup.fragments.PrefsServiceFragment"
-        app:icon="@drawable/ic_round_service_24"
-        app:layout="@layout/item_prefs_x"
-        app:title="@string/prefs_service" />
+    <androidx.preference.Preference
+        android:key="batchDelete"
+        android:summary="@string/prefs_batchdelete_summary"
+        android:title="@string/prefs_batchdelete"
+        app:iconSpaceReserved="false" />
 
-    <Preference
-        android:fragment="com.machiav3lli.backup.fragments.PrefsAdvancedFragment"
-        app:icon="@drawable/ic_outline_advanced_24"
-        app:layout="@layout/item_prefs_x"
-        app:title="@string/prefs_advanced" />
-
-    <Preference
-        android:fragment="com.machiav3lli.backup.fragments.PrefsToolsFragment"
-        app:icon="@drawable/ic_outline_tools_24"
-        app:layout="@layout/item_prefs_x"
-        app:title="@string/prefs_tools" />
+    <androidx.preference.Preference
+        android:key="logViewer"
+        android:title="@string/prefs_logviewer"
+        app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>
