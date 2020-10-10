@@ -35,6 +35,7 @@ import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
+import com.machiav3lli.backup.fragments.HelpSheet;
 import com.machiav3lli.backup.fragments.ScheduleSheet;
 import com.machiav3lli.backup.items.SchedulerItemX;
 import com.machiav3lli.backup.schedules.BlacklistContract;
@@ -69,6 +70,7 @@ public class SchedulerActivityX extends BaseActivity
     private FastAdapter<SchedulerItemX> fastAdapter;
     private ActivitySchedulerXBinding binding;
     private BlacklistsDBHelper blacklistsDBHelper;
+    private HelpSheet sheetHelp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +116,10 @@ public class SchedulerActivityX extends BaseActivity
         binding.fabAddSchedule.setOnClickListener(v -> {
             new AddScheduleTask(this).execute();
             new refreshTask(this).execute();
+        });
+        binding.helpButton.setOnClickListener(v -> {
+            if (sheetHelp == null) sheetHelp = new HelpSheet();
+            sheetHelp.showNow(SchedulerActivityX.this.getSupportFragmentManager(), "APPSHEET");
         });
     }
 

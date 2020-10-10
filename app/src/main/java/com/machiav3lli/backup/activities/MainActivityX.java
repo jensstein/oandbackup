@@ -43,6 +43,7 @@ import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.databinding.ActivityMainXBinding;
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog;
 import com.machiav3lli.backup.fragments.AppSheet;
+import com.machiav3lli.backup.fragments.HelpSheet;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
@@ -106,6 +107,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     private NavController navController;
     private SortFilterSheet sheetSortFilter;
     private AppSheet sheetApp;
+    public HelpSheet sheetHelp;
     private SearchViewController searchViewController;
 
 
@@ -166,6 +168,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        setupViews();
         setupNavigation();
     }
 
@@ -482,7 +485,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         new Thread(() -> {
             try {
                 appsList = BackendController.getApplicationList(this.getApplicationContext());
-                PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
+                PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
                 List<AppInfoX> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
                 if (mainBoolean) refreshMain(filteredList, backupOrAppSheetBoolean);
                 else refreshBatch(filteredList, backupOrAppSheetBoolean, checkedList);

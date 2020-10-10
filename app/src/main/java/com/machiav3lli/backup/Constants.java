@@ -62,7 +62,6 @@ public class Constants {
     public static final String PREFS_BATCH_DELETE = "batchDelete";
     public static final String PREFS_LOGVIEWER = "logViewer";
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
-    public static final String PREFS_HELP = "help";
     public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
     public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
 

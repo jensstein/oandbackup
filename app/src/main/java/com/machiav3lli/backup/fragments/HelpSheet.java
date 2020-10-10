@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,34 +26,44 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.databinding.FragmentHelpBinding;
+import com.machiav3lli.backup.databinding.SheetHelpBinding;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class HelpFragment extends Fragment {
+public class HelpSheet extends BottomSheetDialogFragment {
+    private static final String TAG = Constants.classTag(".HelpSheet");
+    private SheetHelpBinding binding;
 
-    private FragmentHelpBinding binding;
-
-    static String convertStreamToString(InputStream is) {
-        Scanner s = new Scanner(is, "utf-8").useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        BottomSheetDialog sheet = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        sheet.setOnShowListener(d -> {
+            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) d;
+            FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null)
+                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+        return sheet;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = FragmentHelpBinding.inflate(inflater, container, false);
+        binding = SheetHelpBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -88,5 +99,10 @@ public class HelpFragment extends Fragment {
             binding.helpHtml.setText(e.toString());
         } catch (PackageManager.NameNotFoundException ignored) {
         }
+    }
+
+    static String convertStreamToString(InputStream is) {
+        Scanner s = new Scanner(is, "utf-8").useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 }

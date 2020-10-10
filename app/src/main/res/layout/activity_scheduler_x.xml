@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -23,20 +22,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static">
+        android:background="@drawable/bar_static"
+        android:elevation="@dimen/small_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:background="@drawable/ripple_click"
             android:contentDescription=""
             android:padding="@dimen/cards_spacing"
+            app:layout_constraintBottom_toBottomOf="@id/appBar"
+            app:layout_constraintStart_toStartOf="@id/appBar"
+            app:layout_constraintTop_toTopOf="@id/appBar"
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/helpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple_click"
+            android:contentDescription=""
+            android:padding="@dimen/med_spacing"
+            app:layout_constraintBottom_toBottomOf="@id/appBar"
+            app:layout_constraintEnd_toEndOf="@id/appBar"
+            app:layout_constraintTop_toTopOf="@id/appBar"
+            app:srcCompat="@drawable/ic_outline_info_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

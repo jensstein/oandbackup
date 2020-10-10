@@ -84,6 +84,11 @@ public class BatchFragment extends Fragment implements SearchViewController {
                 return true;
             }
         });
+        binding.helpButton.setOnClickListener(v -> {
+            if (requireMainActivity().sheetHelp == null)
+                requireMainActivity().sheetHelp = new HelpSheet();
+            requireMainActivity().sheetHelp.showNow(requireActivity().getSupportFragmentManager(), "APPSHEET");
+        });
     }
 
     @Override
