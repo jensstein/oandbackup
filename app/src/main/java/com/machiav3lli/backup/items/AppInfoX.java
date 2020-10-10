@@ -266,8 +266,8 @@ public class AppInfoX {
         return this.packageInfo.applicationInfo.sourceDir;
     }
 
-    public StorageStats getStorageStats() {
-        return this.storageStats;
+    public long getDataBytes() {
+        return metaInfo.isSpecial() ? 0 : this.storageStats.getDataBytes();
     }
 
     /**

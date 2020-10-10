@@ -38,7 +38,7 @@ public class SortFilterManager {
     public static final Comparator<AppInfoX> appInfoPackageNameComparator = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
     public static final Comparator<AppInfoX> appDataSizeComparator = (m1, m2) ->
-            Long.compare(m1.getStorageStats().getDataBytes(), m2.getStorageStats().getDataBytes());
+            Long.compare(m1.getDataBytes(), m2.getDataBytes());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
