@@ -66,10 +66,9 @@
     <string name="customListTitle">Tilpasset liste</string>
     <string name="prefs_quickreboot">Hurtig omstart</string>
     <string name="quickRebootMessage">Ønsker du å omstarte \'user space\' (brukerområde)?</string>
-    <string name="prefs_help">Hjelp</string>
     <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
     <string name="shareTitle">Del med</string>
-    <string name="tools_title">Verktøyer</string>
+    <string name="prefs_tools">Verktøyer</string>
     <string name="prefs_batchdelete">Slett sikkerhetskopier?</string>
     <string name="batchDeleteMessage">Sletter sikkerhetskopier…</string>
     <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>

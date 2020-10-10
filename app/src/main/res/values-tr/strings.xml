@@ -68,10 +68,9 @@
     <string name="customListTitle">Özel liste</string>
     <string name="prefs_quickreboot">Hızlı yeniden başlat</string>
     <string name="quickRebootMessage">userspace\'i yeniden başlatmak istediğine emin misin?</string>
-    <string name="prefs_help">Yardım</string>
     <string name="notInstalledModeDataWarning">APK olmadan uygulama yedekten geri yüklenemez</string>
     <string name="shareTitle">Paylaş</string>
-    <string name="tools_title">Araçlar</string>
+    <string name="prefs_tools">Araçlar</string>
     <string name="batchDeleteMessage">Yedeklemeler siliniyor…</string>
     <string name="batchDeleteNotificationTitle">Yedekleri sil</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->

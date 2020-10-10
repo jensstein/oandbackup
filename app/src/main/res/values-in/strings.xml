@@ -68,10 +68,9 @@
     <string name="customListTitle">Daftar kustom</string>
     <string name="prefs_quickreboot">Reboot cepat</string>
     <string name="quickRebootMessage">Apakah Anda ingin memulai kembali userspace?</string>
-    <string name="prefs_help">Tolong</string>
     <string name="notInstalledModeDataWarning">Aplikasi tidak dapat dipulihkan dari cadangan tanpa APK</string>
     <string name="shareTitle">Bagikan</string>
-    <string name="tools_title">Alat</string>
+    <string name="prefs_tools">Alat</string>
     <string name="batchDeleteMessage">Menghapus cadangan…</string>
     <string name="batchDeleteNotificationTitle">Hapus cadangan</string>
     <!-- tools_backupsDeleted: ditampilkan dalam pemberitahuan diikuti oleh jumlah cadangan yang dihapus -->

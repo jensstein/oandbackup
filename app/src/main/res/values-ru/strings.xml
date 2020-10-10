@@ -65,10 +65,9 @@
     <string name="customListTitle">Настраиваемый список</string>
     <string name="prefs_quickreboot">Быстрая перезагрузка</string>
     <string name="quickRebootMessage">Вы хотите перезапустить интерфейс?</string>
-    <string name="prefs_help">Помощь</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
     <string name="shareTitle">Отправить</string>
-    <string name="tools_title">Инструменты</string>
+    <string name="prefs_tools">Инструменты</string>
     <string name="prefs_batchdelete">Удалить р.к.\?</string>
     <string name="batchDeleteMessage">Удаление р.к. …</string>
     <string name="batchDeleteNotificationTitle">Удалить р.к.</string>

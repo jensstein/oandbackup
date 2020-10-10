@@ -67,7 +67,6 @@
     <string name="customListTitle">Custom list</string>
     <string name="notInstalledModeDataWarning">App cannot be restored from a backup without APK</string>
     <string name="shareTitle">Share</string>
-    <string name="tools_title">Tools</string>
     <string name="batchDeleteMessage">Deleting backups…</string>
     <string name="batchDeleteNotificationTitle">Delete backups</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
@@ -80,6 +79,9 @@
     <string name="disablePackageTitle">Disable for users</string>
     <string name="prefs_title">Preferences</string>
     <string name="prefs_user">User preferences</string>
+    <string name="prefs_service">Service preferences</string>
+    <string name="prefs_advanced">Advanced preferences</string>
+    <string name="prefs_tools">Tools</string>
     <string name="prefs_theme">Theme</string>
     <string name="prefs_theme_light">Light</string>
     <string name="prefs_theme_dark">Dark</string>
@@ -93,7 +95,6 @@
     <string name="prefs_rememberfiltering_summary">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
     <string name="prefs_oldbackups">Filter backups by age</string>
     <string name="prefs_oldbackups_summary">Filter backups older than value in days. Used with the filter \'Show old backups\'.</string>
-    <string name="prefs_service">Service preferences</string>
     <string name="prefs_encryption">Encryption</string>
     <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
     <string name="prefs_password">Encryption password</string>
@@ -112,6 +113,8 @@
     <string name="prefs_acquirewakelock">Prevent sleep</string>
     <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restorations considerably but will consume more energy.</string>
     <string name="prefs_enableSpecialBackups">Enable special backups</string>
+    <string name="prefs_forcekill">Force-kill app process before backup/restore</string>
+    <string name="prefs_forcekill_summary">Experts only: This can help, if the app is changing files during backup and the backup fails.</string>
     <string name="prefs_quickreboot">Quick reboot</string>
     <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
     <string name="prefs_batchdelete">Delete backups\?</string>
@@ -120,7 +123,6 @@
     <string name="prefs_numBackupRevisions_summary">The oldest revision will be deleted upon creation of a new backup if the number is exceeded. Set it to zero to keep all revisions.</string>
     <string name="prefs_logviewer">View the log</string>
     <string name="prefs_unset">Unset</string>
-    <string name="prefs_help">Help</string>
     <string name="sched_title">Scheduling</string>
     <string name="sched_add">Add Schedule</string>
     <string name="sched_notificationMessage">Scheduled backup</string>

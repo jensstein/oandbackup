@@ -36,9 +36,9 @@
             android:background="@drawable/ripple_click"
             android:contentDescription=""
             android:padding="@dimen/cards_spacing"
-            app:layout_constraintBottom_toBottomOf="@id/appBar"
-            app:layout_constraintStart_toStartOf="@id/appBar"
-            app:layout_constraintTop_toTopOf="@id/appBar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_round_arrow_back_32" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -48,9 +48,9 @@
             android:background="@drawable/ripple_click"
             android:contentDescription=""
             android:padding="@dimen/med_spacing"
-            app:layout_constraintBottom_toBottomOf="@id/appBar"
-            app:layout_constraintEnd_toEndOf="@id/appBar"
-            app:layout_constraintTop_toTopOf="@id/appBar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_outline_info_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

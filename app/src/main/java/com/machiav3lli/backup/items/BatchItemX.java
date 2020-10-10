@@ -84,9 +84,9 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
         AppCompatTextView packageName = this.itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = this.itemView.findViewById(R.id.lastBackup);
         AppCompatImageView apk = this.itemView.findViewById(R.id.apkMode);
-        AppCompatImageView data = itemView.findViewById(R.id.dataMode);
-        AppCompatImageView appType = itemView.findViewById(R.id.appType);
-        AppCompatImageView update = itemView.findViewById(R.id.update);
+        AppCompatImageView data = this.itemView.findViewById(R.id.dataMode);
+        AppCompatImageView appType = this.itemView.findViewById(R.id.appType);
+        AppCompatImageView update = this.itemView.findViewById(R.id.update);
 
         public ViewHolder(View view) {
             super(view);

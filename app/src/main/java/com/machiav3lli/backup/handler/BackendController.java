@@ -45,7 +45,7 @@ public final class BackendController {
     public static List<AppInfoX> getApplicationList(Context context, boolean includeUninstalled)
             throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         StorageFile.invalidateCache();
-        boolean includeSpecial = PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
+        boolean includeSpecial = PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
         PackageManager pm = context.getPackageManager();
         StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);

@@ -7,7 +7,6 @@
     <string name="dialogYes">Da</string>
     <string name="dialogCancel">Otkaži</string>
     <string name="prefs_languages">Jezik</string>
-    <string name="prefs_help">Pomoć</string>
     <string name="help_license">Licenca</string>
     <string name="apptype_user">Korisnička aplikacija</string>
     <string name="apptype_system">Sistemska aplikacija</string>
@@ -36,7 +35,7 @@
     <string name="prefs_language_system">Sistemski zadano</string>
     <string name="prefs_theme_system">Sistemska tema</string>
     <string name="prefs_theme">Tema</string>
-    <string name="tools_title">Alati</string>
+    <string name="prefs_tools">Alati</string>
     <string name="shareTitle">Podijeli</string>
     <string name="uninstallFailure">Greška prilikom deinstalacije</string>
     <string name="uninstallSuccess">Deinstalacija je završena</string>

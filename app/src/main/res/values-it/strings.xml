@@ -66,10 +66,9 @@
     <string name="customListTitle">Elenco personalizzato</string>
     <string name="prefs_quickreboot">Riavvio veloce</string>
     <string name="quickRebootMessage">Si desidera riavviare l\'ambiente utente?</string>
-    <string name="prefs_help">Aiuto</string>
     <string name="notInstalledModeDataWarning">Impossibile ripristinare l\'applicazione da un backup senza apk</string>
     <string name="shareTitle">Condividi</string>
-    <string name="tools_title">Strumenti</string>
+    <string name="prefs_tools">Strumenti</string>
     <string name="prefs_batchdelete">Elimina i backup\?</string>
     <string name="batchDeleteMessage">Eliminazione dei backup…</string>
     <string name="batchDeleteNotificationTitle">Cancella i backup</string>

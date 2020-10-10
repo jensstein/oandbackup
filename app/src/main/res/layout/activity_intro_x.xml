@@ -21,33 +21,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static">
+        android:background="@drawable/bar_static"
+        android:elevation="@dimen/small_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/backButton"
             android:layout_width="@dimen/app_icon_size"
             android:layout_height="@dimen/app_icon_size"
             android:background="@drawable/ripple_click"
-            android:foregroundGravity="left|center_vertical"
             android:padding="@dimen/buttons_spacing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_app_vv" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/cards_spacing"
+            android:layout_height="wrap_content"
             android:autofillHints="@string/searchHint"
-            android:gravity="center"
             android:singleLine="true"
             android:text="@string/welcome_to_oabx"
             android:textAppearance="@style/TextAppearance.Title"
-            app:elevation="@dimen/small_spacing" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <fragment
         android:id="@+id/introContainer"

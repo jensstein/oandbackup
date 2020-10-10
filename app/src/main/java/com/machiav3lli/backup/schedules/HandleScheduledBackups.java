@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.schedules;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -67,10 +66,8 @@ public class HandleScheduledBackups {
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem) {
         new Thread(() -> {
             String backupDirPath = getBackupDirectoryPath(context);
-            boolean specialBackups = prefs.getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, true);
             backupDir = new File(backupDirPath);
-            //ArrayList<AppInfoX> list = AppInfoHelper.getPackageInfo(context, backupDir, false, specialBackups);
-            List<AppInfoX> list = null;
+            List<AppInfoX> list;
             try {
                 list = BackendController.getApplicationList(this.context);
             } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
@@ -122,7 +119,7 @@ public class HandleScheduledBackups {
         if (backupDir != null) {
             new Thread(() -> {
                 Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
-                @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+                PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
                 if (prefs.getBoolean("acquireWakelock", true)) {
                     wl.acquire(10 * 60 * 1000L /*10 minutes*/);
                     Log.i(TAG, "wakelock acquired");

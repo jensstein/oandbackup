@@ -68,10 +68,9 @@
     <string name="customListTitle">Kohandatud nimekiri</string>
     <string name="prefs_quickreboot">Kiire taaskäivitus</string>
     <string name="quickRebootMessage">Kas soovid kasutajakeskkonna taaskäivitada?</string>
-    <string name="prefs_help">Abi</string>
     <string name="notInstalledModeDataWarning">Rakendust ei saa varundusest taastada ilma APKita</string>
     <string name="shareTitle">Jaga</string>
-    <string name="tools_title">Tööriistad</string>
+    <string name="prefs_tools">Tööriistad</string>
     <string name="batchDeleteMessage">Varunduste kustutamine…</string>
     <string name="batchDeleteNotificationTitle">Kustuta varundused</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->

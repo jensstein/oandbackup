@@ -68,10 +68,9 @@
     <string name="customListTitle">Lista niestandardowa</string>
     <string name="prefs_quickreboot">Szybki restart</string>
     <string name="quickRebootMessage">Czy chcesz zrestartować przestrzeń użytkownika?</string>
-    <string name="prefs_help">Pomoc</string>
     <string name="notInstalledModeDataWarning">Nie można przywrócić aplikacji z kopii zapasowej bez APK</string>
     <string name="shareTitle">Udostępnij</string>
-    <string name="tools_title">Narzędzia</string>
+    <string name="prefs_tools">Narzędzia</string>
     <string name="batchDeleteMessage">Usuwanie kopii zapasowych…</string>
     <string name="batchDeleteNotificationTitle">Usuń kopie zapasowe</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->

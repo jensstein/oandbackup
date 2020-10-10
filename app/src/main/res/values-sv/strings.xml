@@ -65,10 +65,9 @@
     <string name="customListTitle">anpassad lista</string>
     <string name="prefs_quickreboot">snabb omstart</string>
     <string name="quickRebootMessage">vill du starta om användarrymden?</string>
-    <string name="prefs_help">hjälp</string>
     <string name="notInstalledModeDataWarning">appen kan inte återställas från en säkerhetskopia som saknar apk-filen</string>
     <string name="shareTitle">dela</string>
-    <string name="tools_title">verktyg</string>
+    <string name="prefs_tools">verktyg</string>
     <string name="prefs_batchdelete">ta bort säkerhetskopior?</string>
     <string name="batchDeleteMessage">tar bort säkerhetskopior…</string>
     <string name="batchDeleteNotificationTitle">ta bort säkerhetskopior</string>

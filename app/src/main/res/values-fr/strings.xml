@@ -65,10 +65,9 @@
     <string name="customListTitle">liste personnalisée</string>
     <string name="prefs_quickreboot">redémarrage rapide</string>
     <string name="quickRebootMessage">Voulez-vous redémarrer l\'environnement utilisateur \?</string>
-    <string name="prefs_help">Aide</string>
     <string name="notInstalledModeDataWarning">l\'application ne peut être restaurer sans apk</string>
     <string name="shareTitle">partager</string>
-    <string name="tools_title">outils</string>
+    <string name="prefs_tools">outils</string>
     <string name="prefs_batchdelete">effacer les sauvegardes ?</string>
     <string name="batchDeleteMessage">Effacement des sauvegardes…</string>
     <string name="batchDeleteNotificationTitle">effacer les sauvegardes</string>

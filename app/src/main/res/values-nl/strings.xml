@@ -65,10 +65,9 @@
     <string name="customListTitle">Aangepaste lijst</string>
     <string name="prefs_quickreboot">Snelle herstart</string>
     <string name="quickRebootMessage">Wilt u de userspace herstarten?</string>
-    <string name="prefs_help">Hulp</string>
     <string name="notInstalledModeDataWarning">App kan niet teruggezet worden vanuit een back-up zonder een APK</string>
     <string name="shareTitle">Delen</string>
-    <string name="tools_title">Hulpmiddelen</string>
+    <string name="prefs_tools">Hulpmiddelen</string>
     <string name="prefs_batchdelete">Verwijder back-ups\?</string>
     <string name="batchDeleteMessage">Back-ups aan het verwijderen…</string>
     <string name="batchDeleteNotificationTitle">Verwijder back-ups</string>

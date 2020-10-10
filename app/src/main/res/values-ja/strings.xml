@@ -65,10 +65,9 @@
     <string name="customListTitle">カスタムリスト</string>
     <string name="prefs_quickreboot">クイック再起動</string>
     <string name="quickRebootMessage">ユーザースペースを再起動しますか?</string>
-    <string name="prefs_help">ヘルプ</string>
     <string name="notInstalledModeDataWarning">apkがないためバックアップからアプリを復元できません</string>
     <string name="shareTitle">共有</string>
-    <string name="tools_title">ツール</string>
+    <string name="prefs_tools">ツール</string>
     <string name="prefs_batchdelete">バックアップを削除しますか?</string>
     <string name="batchDeleteMessage">バックアップの削除中…</string>
     <string name="batchDeleteNotificationTitle">バックアップを削除</string>

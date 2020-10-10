@@ -65,10 +65,9 @@
     <string name="customListTitle">Ειδική λίστα</string>
     <string name="prefs_quickreboot">Γρήγορη επανεκκίνηση</string>
     <string name="quickRebootMessage">Επιθυμείτε να επανεκκίνησετε το χώρο χρήστη;</string>
-    <string name="prefs_help">Βοήθεια</string>
     <string name="notInstalledModeDataWarning">Η εφαρμογή δεν μπορεί να επαναφερθεί από ένα αντίγραφο χωρίς apk</string>
     <string name="shareTitle">Κοινοποίηση</string>
-    <string name="tools_title">Εργαλεία</string>
+    <string name="prefs_tools">Εργαλεία</string>
     <string name="batchDeleteMessage">Διαγραφή αντιγράφων…</string>
     <string name="batchDeleteNotificationTitle">Διαγραφή αντιγράφων</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->

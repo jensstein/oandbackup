@@ -68,9 +68,10 @@ public class SpecialAppMetaInfo extends AppMetaInfo implements Parcelable {
 
     /**
      * Returns the list of special (virtual) packages
+     *
      * @param context Context object
      * @return a list of of virtual packages
-     * @throws FileUtils.BackupLocationInAccessibleException when the backup location cannot be read for any reason
+     * @throws FileUtils.BackupLocationInAccessibleException   when the backup location cannot be read for any reason
      * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
      */
     public static List<AppInfoX> getSpecialPackages(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {

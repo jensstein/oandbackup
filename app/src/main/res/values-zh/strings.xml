@@ -68,10 +68,9 @@
     <string name="customListTitle">自定义列表</string>
     <string name="prefs_quickreboot">快速重启</string>
     <string name="quickRebootMessage">您想重启用户空间吗？</string>
-    <string name="prefs_help">帮助</string>
     <string name="notInstalledModeDataWarning">应用无法从一个无 APK 的备份中还原</string>
     <string name="shareTitle">分享</string>
-    <string name="tools_title">工具</string>
+    <string name="prefs_tools">工具</string>
     <string name="batchDeleteMessage">正在删除备份…</string>
     <string name="batchDeleteNotificationTitle">删除备份</string>
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
