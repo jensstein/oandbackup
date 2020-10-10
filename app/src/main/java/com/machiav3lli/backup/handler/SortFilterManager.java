@@ -128,13 +128,9 @@ public class SortFilterManager {
                     if (item.hasBackups()) {
                         lastBackup = item.getLatestBackup().getBackupProperties().getBackupDate();
                         diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now());
-                        if (diff > 0) {
+                        if (diff < days) {
                             nlist.remove(item);
                         }
-                        /*diff = System.currentTimeMillis() - lastBackup;
-                        if (!(lastBackup > 0 && diff > (days * 24 * 60 * 60 * 1000f)))
-                            nlist.remove(item);
-                         */
                     } else {
                         nlist.remove(item);
                     }
