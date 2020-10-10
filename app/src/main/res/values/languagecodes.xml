@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -20,19 +19,21 @@
     <!-- languageEntries shouldn't be translated -->
     <string-array name="languageEntries">
         <item>@string/prefs_language_system</item>
+        <item>عربي</item>
+        <item>Bosanski</item>
         <item>Deutsch (deutschland)</item>
-        <item>English</item>
         <item>Ελληνικά</item>
+        <item>English</item>
         <item>Español</item>
         <item>Eesti keel</item>
         <item>Français</item>
         <item>Indonesian</item>
         <item>Italiano</item>
         <item>日本語</item>
-        <item>Nederlands</item>
         <item>Norsk bokmål</item>
+        <item>Nederlands</item>
         <item>Polski</item>
-        <item>Português (portugal)</item>
+        <item>Português</item>
         <item>Pусский</item>
         <item>Српски</item>
         <item>Svenska</item>
@@ -43,17 +44,19 @@
     <!-- languageEntryValues shouldn't be translated -->
     <string-array name="languageEntryValues">
         <item>system</item>
+        <item>ar</item>
+        <item>bs</item>
         <item>de</item>
-        <item>en</item>
         <item>el</item>
+        <item>en</item>
         <item>es</item>
         <item>et</item>
         <item>fr</item>
         <item>in</item>
         <item>it</item>
         <item>ja</item>
-        <item>nl</item>
         <item>nb</item>
+        <item>nl</item>
         <item>pl</item>
         <item>pt</item>
         <item>ru</item>
