@@ -36,6 +36,12 @@ public class PrefsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPrefsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new PrefsFragment()).commit();
         binding.backButton.setOnClickListener(v -> {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0)
