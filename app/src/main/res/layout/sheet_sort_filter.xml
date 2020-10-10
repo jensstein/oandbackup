@@ -55,18 +55,18 @@
                         android:layout_marginHorizontal="@dimen/cards_spacing">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/sortByPackageName"
-                            style="@style/Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sortPackageName" />
-
-                        <com.google.android.material.chip.Chip
                             android:id="@+id/sortByLabel"
                             style="@style/Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/sortLabel" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/sortByPackageName"
+                            style="@style/Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sortPackageName" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/sortByDataSize"

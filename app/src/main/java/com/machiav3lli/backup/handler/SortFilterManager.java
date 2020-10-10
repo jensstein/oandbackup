@@ -152,13 +152,13 @@ public class SortFilterManager {
     private static ArrayList<AppInfoX> applySort(ArrayList<AppInfoX> list, CharSequence filter) {
         switch (filter.charAt(0)) {
             case '1':
-                list.sort(appInfoLabelComparator);
+                list.sort(appInfoPackageNameComparator);
                 break;
             case '2':
                 list.sort(appDataSizeComparator);
                 break;
             default:
-                list.sort(appInfoPackageNameComparator);
+                list.sort(appInfoLabelComparator);
         }
         return list;
     }
