@@ -105,4 +105,12 @@
     <string name="sortByLabel">Sortiraj po oznaci</string>
     <string name="showOnlyDataBackedUp">Aplikacije samo sa kopiranim podacima</string>
     <string name="showOnlyApkBackedUp">Aplikacije samo sa kopiranim APK</string>
+    <string name="sched_checkbox">Omogući</string>
+    <string name="apptype_special">Posebna sigurnosna kopija</string>
+    <string name="app_s_type_title">Tip aplikacije:</string>
+    <string name="other_filters_options">Posebni filteri:</string>
+    <string name="encrypted_data_title">Šifrirani podaci:</string>
+    <string name="failed_unzipping">Greška prilikom raspakivanja podataka, provjerite šifru za enkripciju!</string>
+    <string name="data_size">Veličina podataka:</string>
+    <string name="app_size">Veličina aplikacije:</string>
 </resources>
