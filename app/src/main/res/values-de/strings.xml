@@ -209,4 +209,9 @@
     <string name="intro_permission_storage_location">Die App benötigt ein Verzeichnis Speichern der Backups. Die App benötigt möglicherweise einige Gigabyte Speicherplatz für ein vollständiges Backup und fragt das Dateisystem häufig ab. Bitte bedenken Sie dies bei der Auswahl netzwerkbasierter Speicherorte.</string>
     <string name="prefs_unset">Nicht aktiviert</string>
     <string name="msg_appkill_warning">Die ausgewählte(n) App(s) wird(werden) gestoppt. Bitte stellen Sie sicher, dass Sie entweder Ihr Gerät nach der Aktion neu starten oder Apps wie Ihren Wecker oder Kalender danach öffnen, um zu vermeiden, dass Sie wichtige Benachrichtigungen verpassen. Möglicherweise wird Ihre Tastatur oder Ihr \'Launcher\' auf die Standard-App zurückgesetzt.</string>
+    <string name="prefs_numBackupRevisions_summary">Die älteste Sicherung wird bei der Erstellung einer neuen gelöscht, wenn die Anzahl überschritten wird. Setzen Sie sie auf Null, um alle Sicherungen zu behalten.</string>
+    <string name="prefs_numBackupRevisions">Anzahl der Sicherungen, die aufbewahrt werden</string>
+    <string name="prefs_forcekill_summary">Nur für Fortgeschrittene: Das Aktivieren dieser Option kann helfen, wenn die Anwendung Dateien während des Sicherung ändert und die Sicherung fehlschlägt.</string>
+    <string name="prefs_forcekill">Beenden der App Prozesse vor der Sicherung/Wiederherstellung erzwingen</string>
+    <string name="prefs_advanced">Einstellungen für Fortgeschrittene</string>
 </resources>
