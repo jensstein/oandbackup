@@ -113,4 +113,11 @@
     <string name="failed_unzipping">Greška prilikom raspakivanja podataka, provjerite šifru za enkripciju!</string>
     <string name="data_size">Veličina podataka:</string>
     <string name="app_size">Veličina aplikacije:</string>
+    <string name="prefs_pathbackupfolder">Mapa za sigurnosne kopije</string>
+    <string name="prefs_advanced">Napredne postavke</string>
+    <string name="prefs_service">Postavke usluge</string>
+    <string name="batchDeleteNothingToDelete">Nema sigurnosnih kopija za obrisati</string>
+    <string name="collectingData">Prikupljam info o paketu…</string>
+    <string name="deleteBackupDialogMessage">Obrisati datoteke sigurnosne kopije\?</string>
+    <string name="showSplitAPKs">Podijeljeni APK</string>
 </resources>
