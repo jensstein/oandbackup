@@ -170,4 +170,8 @@
     <string name="app_size">Ukuran Aplikasi:</string>
     <string name="data_size">Ukuran data:</string>
     <string name="cache_size">Ukuran Tembolok:</string>
+    <string name="prefs_password_match_true">Kata Sandi Sesuai</string>
+    <string name="prefs_forcekill">Tutup paksa aplikasi sebelum backup/dikembalikan</string>
+    <string name="prefs_password_match_false">Kata Sandi Tidak Sesuai</string>
+    <string name="prefs_passwordconfirmation">Konfirmasi enkripsi katasandi</string>
 </resources>
