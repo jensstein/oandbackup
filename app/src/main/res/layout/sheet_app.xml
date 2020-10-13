@@ -23,7 +23,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/card_static"
+        android:background="@drawable/bg_card_static"
         android:scrollbars="none">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -87,10 +87,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_margin="@dimen/buttons_spacing"
-                        android:background="@drawable/ripple_click"
+                        android:background="@drawable/bg_ripple_click"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/ic_round_arrow_down_42" />
+                        android:src="@drawable/ic_arrow_down_42" />
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -187,8 +187,8 @@
                         android:id="@+id/wipeCache"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:background="@drawable/ripple_click"
-                        app:srcCompat="@drawable/ic_outline_wipe_24" />
+                        android:background="@drawable/bg_ripple_click"
+                        app:srcCompat="@drawable/ic_wipe_24" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -322,14 +322,14 @@
                         android:id="@+id/exodusReport"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ic_outline_exodus_24" />
+                        app:srcCompat="@drawable/ic_exodus_24" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/appInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_info_24" />
+                        app:srcCompat="@drawable/ic_info_24" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 

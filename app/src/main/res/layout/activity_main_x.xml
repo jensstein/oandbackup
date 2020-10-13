@@ -96,7 +96,7 @@
     <FrameLayout
         android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_static_round">
+        android:background="@drawable/bg_bar_static_round">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,7 +130,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginVertical="@dimen/buttons_spacing"
                         android:layout_weight="1"
-                        android:background="@drawable/button_positive_ripple"
+                        android:background="@drawable/bg_button_positive_ripple"
                         android:clickable="true"
                         android:focusable="true"
                         android:text=""
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/ic_outline_settings_32"
+                        android:src="@drawable/ic_settings_32"
                         android:tooltipText="@string/prefs_title" />
 
                     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -158,7 +158,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
-                        android:background="@drawable/button_middle_navbar"
+                        android:background="@drawable/bg_button_middle_navbar"
                         app:itemRippleColor="?colorAccent"
                         app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
                         app:menu="@menu/navi_menu_main" />
@@ -171,7 +171,7 @@
                         android:layout_weight="1"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/ic_outline_scheduler_32"
+                        android:src="@drawable/ic_scheduler_32"
                         android:tooltipText="@string/sched_title" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </LinearLayout>
@@ -183,7 +183,7 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_filter_list_32"
+                android:src="@drawable/ic_filter_list_32"
                 android:tooltipText="@string/sort_and_filter" />
         </LinearLayout>
     </FrameLayout>

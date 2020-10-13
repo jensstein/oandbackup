@@ -20,25 +20,25 @@
 
     <Preference
         android:fragment="com.machiav3lli.backup.fragments.PrefsUserFragment"
-        app:icon="@drawable/ic_outline_user_24"
+        app:icon="@drawable/ic_user_24"
         app:layout="@layout/item_prefs_x"
         app:title="@string/prefs_user" />
 
     <Preference
         android:fragment="com.machiav3lli.backup.fragments.PrefsServiceFragment"
-        app:icon="@drawable/ic_round_service_24"
+        app:icon="@drawable/ic_service_24"
         app:layout="@layout/item_prefs_x"
         app:title="@string/prefs_service" />
 
     <Preference
         android:fragment="com.machiav3lli.backup.fragments.PrefsAdvancedFragment"
-        app:icon="@drawable/ic_outline_advanced_24"
+        app:icon="@drawable/ic_advanced_24"
         app:layout="@layout/item_prefs_x"
         app:title="@string/prefs_advanced" />
 
     <Preference
         android:fragment="com.machiav3lli.backup.fragments.PrefsToolsFragment"
-        app:icon="@drawable/ic_outline_tools_24"
+        app:icon="@drawable/ic_tools_24"
         app:layout="@layout/item_prefs_x"
         app:title="@string/prefs_tools" />
 </androidx.preference.PreferenceScreen>

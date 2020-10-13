@@ -45,6 +45,6 @@
         android:layout_marginEnd="36dp"
         android:layout_marginBottom="52dp"
         android:contentDescription="@string/prefs_logviewer"
-        android:src="@drawable/ic_round_arrow_down_42"
+        android:src="@drawable/ic_arrow_down_42"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

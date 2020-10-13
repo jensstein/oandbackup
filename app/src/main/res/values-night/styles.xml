@@ -91,7 +91,7 @@
 
     <!-- Buttons, Chips & Widgets -->
     <style name="ItemLayout">
-        <item name="android:background">@drawable/card_ripple</item>
+        <item name="android:background">@drawable/bg_card_ripple</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:padding">@dimen/cards_spacing</item>
     </style>
@@ -115,15 +115,15 @@
     </style>
 
     <style name="Button.NavBar.Start" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/button_start_navbar</item>
+        <item name="android:background">@drawable/bg_button_start_navbar</item>
     </style>
 
     <style name="Button.NavBar.Middle" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/button_middle_navbar</item>
+        <item name="android:background">@drawable/bg_button_middle_navbar</item>
     </style>
 
     <style name="Button.NavBar.End" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/button_end_navbar</item>
+        <item name="android:background">@drawable/bg_button_end_navbar</item>
     </style>
 
     <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">

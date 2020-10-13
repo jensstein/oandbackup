@@ -23,7 +23,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/card_static"
+        android:background="@drawable/bg_card_static"
         android:scrollbars="none">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -62,10 +62,10 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_margin="@dimen/buttons_spacing"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/bg_ripple_click"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_round_arrow_down_42" />
+                    android:src="@drawable/ic_arrow_down_42" />
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -146,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:background="@drawable/button_neutral_ripple"
+                android:background="@drawable/bg_button_neutral_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/sched_customListUpdateButton"
@@ -233,10 +233,10 @@
                         android:id="@+id/removeButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/button_negative_ripple"
+                        android:background="@drawable/bg_button_negative_ripple"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/ic_round_delete_32"
+                        android:src="@drawable/ic_delete_32"
                         android:tint="@color/app_secondary" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -245,7 +245,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:background="@drawable/button_positive_ripple"
+                    android:background="@drawable/bg_button_positive_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/sched_activateButton"

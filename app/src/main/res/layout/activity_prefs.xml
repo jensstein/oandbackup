@@ -23,7 +23,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static"
+        android:background="@drawable/bg_bar_static"
         android:elevation="@dimen/small_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -31,13 +31,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/bg_ripple_click"
             android:contentDescription=""
             android:padding="@dimen/cards_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_round_arrow_back_32" />
+            app:srcCompat="@drawable/ic_arrow_back_32" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView

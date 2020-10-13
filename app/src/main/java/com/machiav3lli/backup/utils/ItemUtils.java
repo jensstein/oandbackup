@@ -114,15 +114,15 @@ public final class ItemUtils {
         if (app.isSpecial()) {
             color = ColorStateList.valueOf(colorSpecial);
             icon.setVisibility(View.VISIBLE);
-            icon.setImageResource(R.drawable.ic_round_special_24);
+            icon.setImageResource(R.drawable.ic_special_24);
         } else if (app.isSystem()) {
             color = ColorStateList.valueOf(colorSystem);
             icon.setVisibility(View.VISIBLE);
-            icon.setImageResource(R.drawable.ic_outline_system_24);
+            icon.setImageResource(R.drawable.ic_system_24);
         } else {
             color = ColorStateList.valueOf(colorUser);
             icon.setVisibility(View.VISIBLE);
-            icon.setImageResource(R.drawable.ic_outline_user_24);
+            icon.setImageResource(R.drawable.ic_user_24);
         }
         if ( ! app.isSpecial() ) {
             if (app.isDisabled()) {

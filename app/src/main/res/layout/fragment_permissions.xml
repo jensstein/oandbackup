@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/card_ripple"
+                android:background="@drawable/bg_card_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_round_storage_32" />
+                        app:srcCompat="@drawable/ic_storage_32" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/card_ripple"
+                android:background="@drawable/bg_card_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_round_storage_32" />
+                        app:srcCompat="@drawable/ic_storage_32" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/card_ripple"
+                android:background="@drawable/bg_card_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_perm_usage_access_32" />
+                        app:srcCompat="@drawable/ic_perm_usage_access_32" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -151,7 +151,7 @@
                 android:id="@+id/cardBatteryOptimization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_ripple"
+                android:background="@drawable/bg_card_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -167,7 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_battery_optimization_32" />
+                        app:srcCompat="@drawable/ic_battery_optimization_32" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"

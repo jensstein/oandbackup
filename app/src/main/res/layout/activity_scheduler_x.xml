@@ -25,7 +25,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static"
+        android:background="@drawable/bg_bar_static"
         android:elevation="@dimen/small_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -33,25 +33,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/bg_ripple_click"
             android:contentDescription=""
             android:padding="@dimen/cards_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_round_arrow_back_32" />
+            app:srcCompat="@drawable/ic_arrow_back_32" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/helpButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/bg_ripple_click"
             android:contentDescription=""
             android:padding="@dimen/med_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_outline_info_24" />
+            app:srcCompat="@drawable/ic_info_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
@@ -72,7 +72,7 @@
     <FrameLayout
         android:id="@+id/bottomBar"
         style="@style/Bar.Bottom"
-        android:background="@drawable/bar_static_round">
+        android:background="@drawable/bg_bar_static_round">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -87,7 +87,7 @@
                 android:layout_gravity="start"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_blacklist_32"
+                android:src="@drawable/ic_blacklist_32"
                 android:tooltipText="@string/sched_blacklist" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -98,7 +98,7 @@
                 android:layout_gravity="end"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_round_add_sched_32"
+                android:src="@drawable/ic_add_sched_32"
                 android:tooltipText="@string/sched_add" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </FrameLayout>

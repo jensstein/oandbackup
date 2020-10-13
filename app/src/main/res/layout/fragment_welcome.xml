@@ -34,7 +34,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/cards_spacing"
             android:layout_weight="0.25"
-            android:background="@drawable/card_ripple"
+            android:background="@drawable/bg_card_ripple"
             android:orientation="horizontal"
             android:padding="@dimen/cards_spacing">
 
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/cards_spacing"
-                app:srcCompat="@drawable/ic_round_update_32" />
+                app:srcCompat="@drawable/ic_update_32" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/cards_spacing"
             android:layout_weight="0.25"
-            android:background="@drawable/card_ripple"
+            android:background="@drawable/bg_card_ripple"
             android:orientation="horizontal"
             android:padding="@dimen/cards_spacing">
 
@@ -97,7 +97,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/cards_spacing"
             android:layout_weight="0.25"
-            android:background="@drawable/card_ripple"
+            android:background="@drawable/bg_card_ripple"
             android:orientation="horizontal"
             android:padding="@dimen/cards_spacing">
 
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
-            android:background="@drawable/card_ripple"
+            android:background="@drawable/bg_card_ripple"
             android:orientation="horizontal"
             android:padding="@dimen/cards_spacing">
 
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/cards_spacing"
-                app:srcCompat="@drawable/ic_outline_info_32" />
+                app:srcCompat="@drawable/ic_info_32" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"

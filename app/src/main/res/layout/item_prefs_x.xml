@@ -22,7 +22,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_click"
+        android:background="@drawable/bg_ripple_click"
         android:orientation="horizontal"
         android:padding="@dimen/cards_spacing">
 

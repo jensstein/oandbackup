@@ -24,13 +24,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
         style="@style/Widget.AppBar"
-        android:background="@drawable/bar_static"
+        android:background="@drawable/bg_bar_static"
         android:elevation="@dimen/small_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/app_icon_size"
             android:layout_height="@dimen/app_icon_size"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/bg_ripple_click"
             android:padding="@dimen/buttons_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
