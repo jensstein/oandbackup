@@ -79,8 +79,10 @@ public class IntroActivityX extends BaseActivity {
                 break;
             case 2:
                 navController.navigate(R.id.permissionsFragment);
+                binding.positiveButton.setVisibility(View.GONE);
                 break;
             case 3:
+                binding.positiveButton.setVisibility(View.VISIBLE);
                 binding.positiveButton.setOnClickListener(view -> launchMainActivity());
                 launchMainActivity();
                 break;
