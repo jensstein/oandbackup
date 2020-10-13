@@ -68,6 +68,7 @@ android {
 ext {
     versions = [
             room              : "2.2.5",
+            gson              : "2.8.6",
             lifecycle         : "2.2.0",
             stream            : "1.2.1",
             rootBeer          : '0.0.8',
@@ -78,11 +79,11 @@ ext {
 
             appcompat         : "1.2.0",
             fragment          : "1.2.5",
-            material          : "1.3.0-alpha02",
+            material          : "1.3.0-alpha03",
             preference        : "1.1.1",
             swiperefreshlayout: "1.1.0",
-            fastadapter       : "5.2.3",
-            numberpicker      : "2.4.10",
+            fastadapter       : "5.2.4",
+            numberpicker      : "2.4.11",
             navigation        : "2.3.0",
 
             androidx_test     : "1.3.0",
@@ -96,7 +97,7 @@ dependencies {
     // Libs
     implementation "androidx.room:room-runtime:${versions.room}"
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
     implementation "com.annimon:stream:${versions.stream}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
