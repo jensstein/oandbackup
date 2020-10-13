@@ -23,96 +23,83 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_static"
+        android:background="@drawable/bg_card_static"
         android:scrollbars="none">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/help_info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/linearLayoutCompat"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="start"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/changelog"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        app:srcCompat="@drawable/ic_app_vv" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                android:layout_height="wrap_content"
+                android:padding="@dimen/cards_spacing"
+                app:layout_constraintBottom_toTopOf="@id/help_legend"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/changelog"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/card_ripple"
+                    android:background="@drawable/bg_card_ripple"
                     android:orientation="horizontal"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@+id/telegram"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/linearLayoutCompat"
+                    app:layout_constraintEnd_toStartOf="@id/dismiss"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_round_update_32" />
+                        app:srcCompat="@drawable/ic_update_32" />
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        android:text="@string/app_name"
+                        android:textAppearance="@style/TextAppearance.Label"
+                        android:textStyle="bold" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            android:text="@string/app_name"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/helpVersionName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/small_spacing"
-                            android:textAppearance="@style/TextAppearance.Secondary" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/helpVersionName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/small_spacing"
+                        android:textAppearance="@style/TextAppearance.Secondary" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dismiss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="@dimen/cards_spacing"
+                    android:background="@drawable/bg_ripple_click"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_arrow_down_42"
+                    app:layout_constraintBottom_toBottomOf="@id/changelog"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/changelog"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/telegram"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/card_ripple"
+                    android:layout_marginTop="@dimen/cards_spacing"
+                    android:background="@drawable/bg_card_ripple"
                     android:orientation="horizontal"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@+id/element"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/changelog"
+                    app:layout_constraintStart_toStartOf="@+id/element"
                     app:layout_constraintTop_toBottomOf="@+id/changelog">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -134,13 +121,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/card_ripple"
+                    android:background="@drawable/bg_card_ripple"
                     android:orientation="horizontal"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@+id/license"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/telegram"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/telegram">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -162,9 +148,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/card_ripple"
+                    android:background="@drawable/bg_card_ripple"
                     android:orientation="horizontal"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -176,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_info_32" />
+                        app:srcCompat="@drawable/ic_info_32" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -188,16 +172,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/help_legend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/cards_spacing"
-                android:paddingBottom="@dimen/cards_spacing">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/helpHtml"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:paddingBottom="@dimen/cards_spacing"
+                app:layout_constraintBottom_toTopOf="@id/help_html"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/help_info">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -220,7 +204,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
                         android:tint="@color/ic_system"
-                        app:srcCompat="@drawable/ic_outline_system_24" />
+                        app:srcCompat="@drawable/ic_system_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -236,7 +220,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
                         android:tint="@color/ic_user"
-                        app:srcCompat="@drawable/ic_outline_user_24" />
+                        app:srcCompat="@drawable/ic_user_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -260,7 +244,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
                         android:tint="@color/ic_special"
-                        app:srcCompat="@drawable/ic_round_special_24" />
+                        app:srcCompat="@drawable/ic_special_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -275,7 +259,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_apk_24" />
+                        app:srcCompat="@drawable/ic_apk_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -298,7 +282,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_data_24" />
+                        app:srcCompat="@drawable/ic_data_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -313,7 +297,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_outline_update_24" />
+                        app:srcCompat="@drawable/ic_update_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
@@ -329,8 +313,16 @@
                     android:layout_height="wrap_content"
                     android:text="@string/help_appTypeHint" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/help_html"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/cards_spacing"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/help_legend" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </FrameLayout>

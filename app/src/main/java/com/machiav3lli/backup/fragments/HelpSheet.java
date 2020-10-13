@@ -81,6 +81,7 @@ public class HelpSheet extends BottomSheetDialogFragment {
     }
 
     private void setupOnClicks() {
+        binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
         binding.changelog.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))));
         binding.telegram.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))));
         binding.element.setOnClickListener(v -> requireContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))));
