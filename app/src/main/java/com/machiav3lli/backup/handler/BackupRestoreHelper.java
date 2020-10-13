@@ -148,7 +148,7 @@ public class BackupRestoreHelper {
         int revisionsToDelete = backupHistory.size() - numBackupRevisions;
         Log.i(TAG, String.format("[%s] More backup revisions than configured maximum (%s / %s). Deleting %s backup(s).", app.getPackageName(), backupHistory.size(), numBackupRevisions, revisionsToDelete));
         backupHistory.sort(Comparator.comparing(obj -> obj.getBackupProperties().getBackupDate()));
-        for (int i = 0; i < revisionsToDelete; i++) {
+        for (int i = 0; i <= revisionsToDelete; i++) {
             BackupItem deleteTarget = backupHistory.get(0);
             Log.i(TAG, String.format("[%s] Deleting backup revision %s", app.getPackageName(), deleteTarget));
             app.delete(context, deleteTarget);
