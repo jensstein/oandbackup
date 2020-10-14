@@ -28,4 +28,12 @@
         <item>dark</item>
         <item>system</item>
     </string-array>
+    <string-array name="housekeepingMomentEntries">
+        <item>@string/prefs_moment_before_backup</item>
+        <item>@string/prefs_moment_after_backup</item>
+    </string-array>
+    <string-array name="housekeepingMomentValues">
+        <item>before</item>
+        <item>after</item>
+    </string-array>
 </resources>

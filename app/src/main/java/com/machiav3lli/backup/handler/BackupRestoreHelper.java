@@ -46,12 +46,21 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.machiav3lli.backup.Constants.PREFS_HOUSEKEEPING_MOMENT;
+
 public class BackupRestoreHelper {
     private static final String TAG = Constants.classTag(".BackupRestoreHelper");
 
     public ActionResult backup(Context context, ShellHandler shell, @NotNull AppInfoX app, int backupMode) {
-        BackupAppAction action;
+        Constants.HousekeepingMoment housekeepingWhen = Constants.HousekeepingMoment.fromString(
+                PrefUtils.getDefaultSharedPreferences(context)
+                        .getString(PREFS_HOUSEKEEPING_MOMENT, Constants.HousekeepingMoment.AFTER.getValue()));
+
+        if (housekeepingWhen.equals(Constants.HousekeepingMoment.BEFORE)) {
+            this.housekeepPackageBackups(context, app, housekeepingWhen);
+        }
         // Select and prepare the action to use
+        BackupAppAction action;
         if (app.isSpecial()) {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 Log.e(BackupRestoreHelper.TAG,
@@ -77,7 +86,9 @@ public class BackupRestoreHelper {
                 Log.e(TAG, "OABX apk was not copied to the backup dir: " + e);
             }
         }
-        this.housekeepPackageBackups(context, app);
+        if (housekeepingWhen.equals(Constants.HousekeepingMoment.AFTER)) {
+            this.housekeepPackageBackups(context, app, housekeepingWhen);
+        }
         return result;
     }
 
@@ -134,8 +145,15 @@ public class BackupRestoreHelper {
         return true;
     }
 
-    protected void housekeepPackageBackups(Context context, AppInfoX app) {
+    protected void housekeepPackageBackups(Context context, AppInfoX app, Constants.HousekeepingMoment housekeepingWhen) {
         int numBackupRevisions = PrefUtils.getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2);
+        // If the backup is going to be created, reduce the number of backup revisions by one.
+        // It's expected that the additional deleted backup will be created in the next moments.
+        // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
+        // 3 should exist and housekeeping will work fine without adjustments
+        if (housekeepingWhen.equals(Constants.HousekeepingMoment.BEFORE)) {
+            numBackupRevisions--;
+        }
         List<BackupItem> backupHistory = app.getBackupHistory();
         if (numBackupRevisions == 0) {
             Log.i(TAG, String.format("[%s] Infinite backup revisions configured. Not deleting any backup. %s (valid) backups available", app.getPackageName(), backupHistory.size()));

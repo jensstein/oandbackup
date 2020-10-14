@@ -30,6 +30,7 @@ import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.items.BackupItem;
 import com.machiav3lli.backup.items.BackupProperties;
 import com.machiav3lli.backup.utils.BackupBuilder;
 import com.machiav3lli.backup.utils.DocumentHelper;
@@ -79,7 +80,7 @@ public class BackupAppAction extends BaseAppAction {
             Log.d(BackupAppAction.TAG, "Killing package to avoid file changes during backup");
             this.killPackage(app.getPackageName());
         }
-        BackupProperties backupProperties;
+        BackupItem backupItem;
         try {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 Log.i(BackupAppAction.TAG, String.format("%s: Backing up package", app));
@@ -104,8 +105,9 @@ public class BackupAppAction extends BaseAppAction {
             if (PrefUtils.isEncryptionEnabled(this.getContext())) {
                 backupBuilder.setCipherType(Crypto.getCipherAlgorithm(this.getContext()));
             }
-            backupProperties = backupBuilder.createBackupProperties();
-            this.saveBackupProperties(backupDir, backupProperties);
+            backupItem = backupBuilder.createBackupItem();
+            this.saveBackupProperties(backupDir, backupItem.getBackupProperties());
+            app.addBackup(backupItem);
         } catch (BackupFailedException | Crypto.CryptoSetupException | IOException e) {
             Log.e(BackupAppAction.TAG, String.format("Backup failed due to %s: %s", e.getClass().getSimpleName(), e.getMessage()));
             Log.d(BackupAppAction.TAG, "Backup deleted: " + backupBuilder.getBackupPath().delete());
@@ -115,8 +117,8 @@ public class BackupAppAction extends BaseAppAction {
                     false
             );
         }
-        Log.i(BackupAppAction.TAG, String.format("%s: Backup done: %s", app, backupProperties));
-        return new ActionResult(app, backupProperties, "", true);
+        Log.i(BackupAppAction.TAG, String.format("%s: Backup done: %s", app, backupItem));
+        return new ActionResult(app, backupItem.getBackupProperties(), "", true);
     }
 
     protected void saveBackupProperties(@NonNull StorageFile backupInstanceDir, @NotNull BackupProperties properties) throws IOException {
