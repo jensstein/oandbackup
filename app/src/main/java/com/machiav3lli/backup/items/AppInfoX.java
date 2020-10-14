@@ -151,6 +151,11 @@ public class AppInfoX {
         this.backupHistory = AppInfoX.getBackupHistory(this.context, this.backupDir);
     }
 
+    public void addBackup(@NotNull BackupItem backupItem) {
+        Log.d(AppInfoX.TAG, String.format("[%s] Adding backup: %s", this.getPackageName(), backupItem));
+        this.backupHistory.add(backupItem);
+    }
+
     public void deleteAllBackups() {
         Log.i(AppInfoX.TAG, String.format("Deleting %s backups of %s", this.backupHistory.size(), this));
         for (BackupItem item : this.backupHistory) {

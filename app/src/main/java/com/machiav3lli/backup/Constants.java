@@ -64,6 +64,7 @@ public class Constants {
     public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
     public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
+    public static final String PREFS_HOUSEKEEPING_MOMENT = "pref_housekeepingMoment";
 
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_USERS = "users";
@@ -74,6 +75,29 @@ public class Constants {
     public static final String HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md";
 
     public static final DateTimeFormatter BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+
+    public enum HousekeepingMoment {
+        BEFORE("before"),
+        AFTER("after");
+        final String value;
+
+        HousekeepingMoment(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+
+        public static HousekeepingMoment fromString(String value) {
+            for (HousekeepingMoment enumValue : HousekeepingMoment.values()) {
+                if (enumValue.value.equals(value)) {
+                    return enumValue;
+                }
+            }
+            throw new IllegalArgumentException("No constant with value '" + value + '\'');
+        }
+    }
 
     private Constants() {
     }
