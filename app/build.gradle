@@ -70,7 +70,6 @@ ext {
             room              : "2.2.5",
             gson              : "2.8.6",
             lifecycle         : "2.2.0",
-            stream            : "1.2.1",
             rootBeer          : '0.0.8',
             libsu             : "3.0.2",
             commons_compress  : "1.20",
@@ -99,7 +98,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:${versions.room}"
     implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
-    implementation "com.annimon:stream:${versions.stream}"
     implementation "com.scottyab:rootbeer-lib:${versions.rootBeer}"
     implementation "com.github.topjohnwu.libsu:core:${versions.libsu}"
     implementation "com.github.topjohnwu.libsu:io:${versions.libsu}"

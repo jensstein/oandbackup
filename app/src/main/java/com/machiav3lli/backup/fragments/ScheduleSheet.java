@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import com.annimon.stream.Optional;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -56,6 +55,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Optional;
 
 // TODO take care of: "Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements"
 public class ScheduleSheet extends BottomSheetDialogFragment {

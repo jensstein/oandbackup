@@ -30,7 +30,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.annimon.stream.Optional;
 import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding;
@@ -55,6 +54,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {

@@ -24,8 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.schedules.db.Schedule;
@@ -35,11 +33,12 @@ import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = Constants.classTag(".BootReceiver");
 
-    @SuppressLint({"RestrictedApi", "UnsafeProtectedBroadcastReceiver"})
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         final HandleAlarms handleAlarms = getHandleAlarms(context);
@@ -81,7 +80,7 @@ public class BootReceiver extends BroadcastReceiver {
                 Log.w(TAG, "Bootreceiver database thread resources was null");
                 return;
             }
-            final List<Schedule> schedules = Stream.of(scheduleDao.getAll())
+            final List<Schedule> schedules = scheduleDao.getAll().stream()
                     .filter(schedule -> schedule.isEnabled() && schedule.getInterval() > 0)
                     .collect(Collectors.toList());
             for (Schedule schedule : schedules) {
