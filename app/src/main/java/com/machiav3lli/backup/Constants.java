@@ -20,7 +20,6 @@ package com.machiav3lli.backup;
 import java.time.format.DateTimeFormatter;
 
 public class Constants {
-
     public static final String TAG_BASE = "OAndBackupX";
     public static final String PREFS_SHARED_PRIVATE = "com.machiav3lli.backup";
 
@@ -47,9 +46,11 @@ public class Constants {
     public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
     public static final String PREFS_LANGUAGES_DEFAULT = "system";
+    public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
     public static final String PREFS_BIOMETRICLOCK = "biometricLock";
-    public static final String PREFS_REMEMBERFILTERING = "rememberFiltering";
     public static final String PREFS_OLDBACKUPS = "oldBackups";
+    public static final String PREFS_REMEMBERFILTERING = "rememberFiltering";
+
     public static final String PREFS_ENCRYPTION = "encryption";
     public static final String PREFS_PASSWORD = "password";
     public static final String PREFS_PASSWORD_CONFIRMATION = "passwordConfirmation";
@@ -57,14 +58,15 @@ public class Constants {
     public static final String PREFS_EXCLUDECACHE = "excludeCache";
     public static final String PREFS_EXTERNALDATA = "backupExternalData";
     public static final String PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData";
-    public static final String PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder";
+    public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
+    public static final String PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment";
+
+    public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
+    public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
+
     public static final String PREFS_QUICK_REBOOT = "quickReboot";
     public static final String PREFS_BATCH_DELETE = "batchDelete";
     public static final String PREFS_LOGVIEWER = "logViewer";
-    public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
-    public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
-    public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
-    public static final String PREFS_HOUSEKEEPING_MOMENT = "pref_housekeepingMoment";
 
     public static final String BUNDLE_THREADID = "threadId";
     public static final String BUNDLE_USERS = "users";
