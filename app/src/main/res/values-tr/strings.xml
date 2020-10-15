@@ -212,4 +212,6 @@
     <string name="prefs_forcekill_summary">Yalnızca uzmanlar: Uygulama yedekleme sırasında dosyaları değiştirirse ve yedekleme başarısız olursa bu yardımcı olabilir.</string>
     <string name="prefs_forcekill">Yedeklemeden/geri yüklemeden önce uygulama işlemini zorla sonlandır</string>
     <string name="prefs_advanced">Gelişmiş tercihler</string>
+    <string name="prefs_moment_before_backup">Yedeklemeden Önce</string>
+    <string name="prefs_moment_after_backup">Yedeklemeden Sonra</string>
 </resources>
