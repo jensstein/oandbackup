@@ -27,9 +27,10 @@ import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SortFilterManager {
 
@@ -57,99 +58,88 @@ public class SortFilterManager {
         return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true);
     }
 
-    public static ArrayList<AppInfoX> applyFilter(List<AppInfoX> list, CharSequence filter, Context context) {
-        ArrayList<AppInfoX> nlist = new ArrayList<>(list);
+    public static List<AppInfoX> applyFilter(List<AppInfoX> list, CharSequence filter, Context context) {
+        Predicate<AppInfoX> predicate;
         switch (filter.charAt(1)) {
             case '1':
-                for (AppInfoX item : list) if (!item.isSystem()) nlist.remove(item);
+                predicate = AppInfoX::isSystem;
                 break;
             case '2':
-                for (AppInfoX item : list) if (item.isSystem()) nlist.remove(item);
+                predicate = appInfoX -> !appInfoX.isSystem();
                 break;
             case '3':
-                for (AppInfoX item : list) if (!item.isSpecial()) nlist.remove(item);
+                predicate = AppInfoX::isSpecial;
                 break;
-            default:
+            default: // equal to 0
+                predicate = appInfoX -> true;
                 break;
         }
-        return applyBackupFilter(nlist, filter, context);
+        List<AppInfoX> filteredList = list.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+        return applyBackupFilter(filteredList, filter, context);
     }
 
-    private static ArrayList<AppInfoX> applyBackupFilter(ArrayList<AppInfoX> list, CharSequence filter, Context context) {
-        ArrayList<AppInfoX> nlist = new ArrayList<>(list);
+    private static List<AppInfoX> applyBackupFilter(List<AppInfoX> list, CharSequence filter, Context context) {
+        Predicate<AppInfoX> predicate;
         switch (filter.charAt(2)) {
             case '1':
-                for (AppInfoX item : list)
-                    if (item.getBackupMode() != BaseAppAction.MODE_BOTH) nlist.remove(item);
+                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_BOTH;
                 break;
             case '2':
-                for (AppInfoX item : list)
-                    if (item.getBackupMode() != BaseAppAction.MODE_APK) nlist.remove(item);
+                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_APK;
                 break;
             case '3':
-                for (AppInfoX item : list)
-                    if (item.getBackupMode() != BaseAppAction.MODE_DATA) nlist.remove(item);
+                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_DATA;
                 break;
             case '4':
-                for (AppInfoX item : list)
-                    if (item.hasBackups()) nlist.remove(item);
+                predicate = appInfoX -> !appInfoX.hasBackups();
                 break;
-            default:
+            default: // equal to 0
+                predicate = appInfoX -> true;
                 break;
         }
-        return applySpecialFilter(nlist, filter, context);
+        List<AppInfoX> filteredList = list.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+        return applySpecialFilter(filteredList, filter, context);
     }
 
-    private static ArrayList<AppInfoX> applySpecialFilter(ArrayList<AppInfoX> list, CharSequence filter, Context context) {
-        ArrayList<AppInfoX> nlist = new ArrayList<>(list);
+    private static List<AppInfoX> applySpecialFilter(List<AppInfoX> list, CharSequence filter, Context context) {
+        Predicate<AppInfoX> predicate;
         switch (filter.charAt(3)) {
             case '1':
-                for (AppInfoX item : list) {
-                    if (!(!item.hasBackups() ||
-                            (item.getLatestBackup().getBackupProperties().getVersionCode() != 0
-                                    && item.getVersionCode() > item.getLatestBackup().getBackupProperties().getVersionCode()))
-                    ) {
-                        nlist.remove(item);
-                    }
-                }
+                predicate = appInfoX -> !appInfoX.hasBackups() || appInfoX.isUpdated();
                 break;
             case '2':
-                for (AppInfoX item : list) {
-                    if (item.isInstalled()) {
-                        nlist.remove(item);
-                    }
-                }
+                predicate = appInfoX -> !appInfoX.isInstalled();
                 break;
             case '3':
                 int days = Integer.parseInt(PrefUtils.getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7"));
-                LocalDateTime lastBackup;
-                long diff;
-                for (AppInfoX item : list) {
-                    if (item.hasBackups()) {
-                        lastBackup = item.getLatestBackup().getBackupProperties().getBackupDate();
-                        diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now());
-                        if (diff < days) {
-                            nlist.remove(item);
-                        }
+                predicate = appInfoX -> {
+                    if (appInfoX.hasBackups()) {
+                        LocalDateTime lastBackup = appInfoX.getLatestBackup().getBackupProperties().getBackupDate();
+                        long diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now());
+                        return diff >= days;
                     } else {
-                        nlist.remove(item);
+                        return false;
                     }
-                }
+                };
                 break;
             case '4':
-                for (AppInfoX item : list) {
-                    if (item.getApkSplits() == null || item.getApkSplits().length == 0) {
-                        nlist.remove(item);
-                    }
-                }
+                predicate = appInfoX -> appInfoX.getApkSplits() != null && appInfoX.getApkSplits().length != 0;
                 break;
-            default:
+            default: // equal to 0
+                predicate = appInfoX -> true;
                 break;
         }
-        return applySort(nlist, filter);
+        List<AppInfoX> filteredList = list.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+        return applySort(filteredList, filter);
     }
 
-    private static ArrayList<AppInfoX> applySort(ArrayList<AppInfoX> list, CharSequence filter) {
+    private static List<AppInfoX> applySort(List<AppInfoX> list, CharSequence filter) {
         switch (filter.charAt(0)) {
             case '1':
                 list.sort(appInfoPackageNameComparator);

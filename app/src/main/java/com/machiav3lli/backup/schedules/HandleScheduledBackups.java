@@ -40,6 +40,8 @@ import com.machiav3lli.backup.utils.PrefUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.machiav3lli.backup.utils.FileUtils.getBackupDirectoryPath;
 
@@ -75,42 +77,28 @@ public class HandleScheduledBackups {
                 // Todo: Log this failure visible to the user!
                 return;
             }
-            ArrayList<AppInfoX> listToBackUp = new ArrayList<>();
+            Predicate<AppInfoX> predicate;
             switch (mode) {
-                case ALL:
-                    listToBackUp.addAll(list);
-                    break;
                 case USER:
-                    for (AppInfoX appInfo : list) {
-                        if (!appInfo.isSystem()) {
-                            listToBackUp.add(appInfo);
-                        }
-                    }
+                    predicate = appInfoX -> !appInfoX.isSystem();
                     break;
                 case SYSTEM:
-                    for (AppInfoX appInfo : list) {
-                        if (appInfo.isSystem()) {
-                            listToBackUp.add(appInfo);
-                        }
-                    }
+                    predicate = AppInfoX::isSystem;
                     break;
                 case NEW_UPDATED:
-                    for (AppInfoX appInfo : list) {
-                        if ((!excludeSystem || !appInfo.isSystem()) && (appInfo.hasBackups() || (appInfo.getVersionCode() > appInfo.getLatestBackup().getBackupProperties().getVersionCode()))) {
-                            listToBackUp.add(appInfo);
-                        }
-                    }
+                    predicate = appInfoX -> (!excludeSystem || !appInfoX.isSystem()) && (appInfoX.hasBackups() || (appInfoX.getVersionCode() > appInfoX.getLatestBackup().getBackupProperties().getVersionCode()));
                     break;
                 case CUSTOM:
                     LogUtils frw = new LogUtils(getBackupDirectoryPath(context),
                             SchedulerActivityX.SCHEDULECUSTOMLIST + id);
-                    for (AppInfoX appInfo : list) {
-                        if (frw.contains(appInfo.getPackageName())) {
-                            listToBackUp.add(appInfo);
-                        }
-                    }
+                    predicate = appInfoX -> frw.contains(appInfoX.getPackageName());
                     break;
+                default: // equal to ALL
+                    predicate = appInfoX -> true;
             }
+            List<AppInfoX> listToBackUp = list.stream()
+                    .filter(predicate)
+                    .collect(Collectors.toList());
             backup(listToBackUp, subMode);
         }).start();
     }
