@@ -38,7 +38,6 @@ public class AppInfoX {
     private List<BackupItem> backupHistory = new ArrayList<>();
     private Uri backupDir;
     private StorageStats storageStats;
-
     private PackageInfo packageInfo;
 
     /**
@@ -106,6 +105,8 @@ public class AppInfoX {
         this.refreshStorageStats();
     }
 
+    // TODO cause of huge part of cpu time
+    // TODO minimize its usage
     private static List<BackupItem> getBackupHistory(Context context, Uri backupDir) {
         StorageFile backupDoc = StorageFile.fromUri(context, backupDir);
         ArrayList<BackupItem> backupHistory = new ArrayList<>();

@@ -58,8 +58,7 @@ public class BatchConfirmDialog extends DialogFragment {
         builder.setMessage(message.toString().trim());
         builder.setPositiveButton(R.string.dialogYes, (dialogInterface, id) -> {
             try {
-                ConfirmListener confirmListener = (ConfirmListener) requireActivity();
-                confirmListener.onConfirmed(selectedList);
+                ((ConfirmListener) requireActivity()).onConfirmed(selectedList);
             } catch (ClassCastException e) {
                 Log.e(TAG, "BatchConfirmDialog: " + e.toString());
             }

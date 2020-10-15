@@ -38,7 +38,7 @@ import java.util.Date;
 
 public final class ItemUtils {
     public static final String TAG = Constants.classTag(".ItemUtils");
-    public static final int colorUpdate = Color.rgb(244, 51,69);
+    public static final int colorUpdate = Color.rgb(244, 51, 69);
     public static final int colorApk = Color.rgb(69, 244, 144);
     public static final int colorData = Color.rgb(244, 69, 144);
     public static final int colorBoth = Color.rgb(155, 155, 244);
@@ -124,7 +124,7 @@ public final class ItemUtils {
             icon.setVisibility(View.VISIBLE);
             icon.setImageResource(R.drawable.ic_user_24);
         }
-        if ( ! app.isSpecial() ) {
+        if (!app.isSpecial()) {
             if (app.isDisabled()) {
                 color = ColorStateList.valueOf(colorDisabled);
             }

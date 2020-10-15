@@ -26,8 +26,7 @@ public final class BlacklistContract {
             BlacklistEntry.TABLE_NAME, BlacklistEntry._ID,
             BlacklistEntry.COLUMN_PACKAGENAME, BlacklistEntry.COLUMN_BLACKLISTID);
 
-    public static final String DELETE_ENTRIES = String.format(
-            "drop table if exists %s", BlacklistEntry.TABLE_NAME);
+    public static final String DELETE_ENTRIES = String.format("drop table if exists %s", BlacklistEntry.TABLE_NAME);
 
     private BlacklistContract() {
     }

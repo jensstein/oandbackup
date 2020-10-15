@@ -27,10 +27,10 @@ import com.machiav3lli.backup.ActionListener;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.action.BaseAppAction;
-
-import org.jetbrains.annotations.NotNull;
 import com.machiav3lli.backup.items.AppMetaInfo;
 import com.machiav3lli.backup.items.BackupProperties;
+
+import org.jetbrains.annotations.NotNull;
 
 public class RestoreDialogFragment extends DialogFragment {
     private final ActionListener listener;
@@ -59,20 +59,14 @@ public class RestoreDialogFragment extends DialogFragment {
 
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.RESTORE;
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK);
-            });
+            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK));
         }
         if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA);
-            });
+            builder.setNeutralButton(R.string.handleData, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA));
         }
         if (showBothBtn) {
             int textId = R.string.radioBoth;
-            builder.setPositiveButton(textId, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH);
-            });
+            builder.setPositiveButton(textId, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH));
         }
         return builder.create();
     }

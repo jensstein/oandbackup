@@ -87,8 +87,7 @@ public class ScheduleService extends Service
     public void onCreate() {
         final String channelId = TAG;
         // Do some initialization
-        MainActivityX startupActivity = new MainActivityX();
-        startupActivity.initShellHandler();
+        MainActivityX.initShellHandler();
 
         final NotificationChannel notificationChannel =
                 new NotificationChannel(channelId, channelId,
@@ -106,7 +105,7 @@ public class ScheduleService extends Service
         }
         final Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .build();
         startForeground(ID, notification);

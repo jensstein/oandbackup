@@ -228,7 +228,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(this.binding.lastBackupLine, View.VISIBLE, update);
             this.binding.lastBackup.setText(getFormattedDate(app.getLatestBackup().getBackupProperties().getBackupDate(), true));
 
-            // Todo: Be more precise
+            // Todo: Be more precise, introducing obb, external and device protected data
             if (backupProperties.hasApk() && backupProperties.hasAppData()) {
                 UIUtils.setVisibility(this.binding.backupModeLine, View.VISIBLE, update);
                 this.binding.backupMode.setText(R.string.bothBackedUp);

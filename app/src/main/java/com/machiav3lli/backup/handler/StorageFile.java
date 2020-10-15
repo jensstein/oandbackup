@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.machiav3lli.backup.Constants;
 
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiresApi(26)
 public class StorageFile {
     static final String TAG = Constants.classTag(".StorageFile");
     static Map<String, StorageFile[]> cache;
@@ -37,7 +35,7 @@ public class StorageFile {
     }
 
     public static StorageFile fromUri(@NonNull Context context, @NonNull Uri uri) {
-        // Todo: Figure out what's wrong with the Uris coming from the intend and why they need to be processed with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
+        // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
         return new StorageFile(null, context, uri);
     }
 
@@ -74,6 +72,7 @@ public class StorageFile {
     }
 
     @Nullable
+    // TODO cause of huge part of cpu time
     public StorageFile findFile(@NonNull String displayName) {
         try {
             for (StorageFile doc : this.listFiles()) {
@@ -87,13 +86,14 @@ public class StorageFile {
         return null;
     }
 
+    // TODO cause of huge part of cpu time
     public StorageFile[] listFiles() throws FileNotFoundException {
-        if(!this.exists()){
+        if (!this.exists()) {
             throw new FileNotFoundException("File " + this.uri + " does not exist");
         }
         String uri = this.uri.toString();
         if ((StorageFile.cache == null) || StorageFile.cacheDirty) {
-            StorageFile.cache = new HashMap<String, StorageFile[]>();
+            StorageFile.cache = new HashMap<>();
             StorageFile.cacheDirty = false;
         }
         if (StorageFile.cache.get(uri) == null) {
@@ -129,7 +129,7 @@ public class StorageFile {
 
 
     public boolean renameTo(String displayName) {
-        //noinspection OverlyBroadCatchBlock
+        // noinspection OverlyBroadCatchBlock
         try {
             final Uri result = DocumentsContract.renameDocument(
                     this.context.getContentResolver(), this.uri, displayName);
@@ -148,7 +148,7 @@ public class StorageFile {
     }
 
     public String getName() {
-        if(this.name == null)
+        if (this.name == null)
             this.name = DocumentContractApi.getName(this.context, this.uri);
         return this.name;
     }
@@ -174,13 +174,14 @@ public class StorageFile {
             try {
                 closeable.close();
             } catch (RuntimeException rethrown) {
-                //noinspection ProhibitedExceptionThrown
+                // noinspection ProhibitedExceptionThrown
                 throw rethrown;
             } catch (Exception ignored) {
             }
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return DocumentsContract.getDocumentId(this.uri);

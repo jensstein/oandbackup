@@ -85,7 +85,7 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             final AppInfoX app = item.getApp();
             final AppMetaInfo meta = app.getAppInfo();
 
-            if (meta.getApplicationIcon() != null) {
+            if (meta.hasIcon()) {
                 this.icon.setImageDrawable(meta.getApplicationIcon());
             } else {
                 this.icon.setImageResource(R.drawable.ic_placeholder);

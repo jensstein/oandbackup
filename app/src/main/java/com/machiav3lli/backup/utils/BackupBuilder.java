@@ -48,34 +48,28 @@ public class BackupBuilder {
         return this.backupPath;
     }
 
-    public BackupBuilder setHasApk(boolean hasApk) {
+    public void setHasApk(boolean hasApk) {
         this.hasApk = hasApk;
-        return this;
     }
 
-    public BackupBuilder setHasAppData(boolean hasAppData) {
+    public void setHasAppData(boolean hasAppData) {
         this.hasAppData = hasAppData;
-        return this;
     }
 
-    public BackupBuilder setHasDevicesProtectedData(boolean hasDevicesProtectedData) {
+    public void setHasDevicesProtectedData(boolean hasDevicesProtectedData) {
         this.hasDevicesProtectedData = hasDevicesProtectedData;
-        return this;
     }
 
-    public BackupBuilder setHasExternalData(boolean hasExternalData) {
+    public void setHasExternalData(boolean hasExternalData) {
         this.hasExternalData = hasExternalData;
-        return this;
     }
 
-    public BackupBuilder setHasObbData(boolean hasObbData) {
+    public void setHasObbData(boolean hasObbData) {
         this.hasObbData = hasObbData;
-        return this;
     }
 
-    public BackupBuilder setCipherType(String cipherType) {
+    public void setCipherType(String cipherType) {
         this.cipherType = cipherType;
-        return this;
     }
 
     public BackupItem createBackupItem() {

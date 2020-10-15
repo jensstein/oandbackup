@@ -59,20 +59,14 @@ public class BackupDialogFragment extends DialogFragment {
         BackupRestoreHelper.ActionType actionType = BackupRestoreHelper.ActionType.BACKUP;
         if (showApkBtn) {
             // App Button
-            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK);
-            });
+            builder.setNegativeButton(R.string.handleApk, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_APK));
 
             // Both Button
             int textId = R.string.handleBoth;
-            builder.setPositiveButton(textId, (dialog, id) -> {
-                this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH);
-            });
+            builder.setPositiveButton(textId, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH));
         }
         // Data button (always visible)
-        builder.setNeutralButton(R.string.handleData, (dialog, id) -> {
-            this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA);
-        });
+        builder.setNeutralButton(R.string.handleData, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA));
         return builder.create();
     }
 }

@@ -98,20 +98,20 @@ public class RestoreAppAction extends BaseAppAction {
         if (backupProperties.hasExternalData() && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             Log.i(TAG, String.format("[%s] Restoring app's external data", backupProperties.getPackageName()));
             this.restoreExternalData(app, backupProperties, backupDir);
-        }else{
+        } else {
             Log.i(TAG, String.format("[%s] Skip restoring app's external data; not part of the backup or disabled", backupProperties.getPackageName()));
         }
         // Careful! This is again external data! It's the same configuration parameter!
         if (backupProperties.hasObbData() && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             Log.i(TAG, String.format("[%s] Restoring app's obb data", backupProperties.getPackageName()));
             this.restoreObbData(app, backupProperties, backupDir);
-        }else{
+        } else {
             Log.i(TAG, String.format("[%s] Skip restoring app's obb data; not part of the backup or disabled", backupProperties.getPackageName()));
         }
         if (backupProperties.hasDevicesProtectedData() && prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
             Log.i(TAG, String.format("[%s] Restoring app's protected data", backupProperties.getPackageName()));
             this.restoreDeviceProtectedData(app, backupProperties, backupDir);
-        }else{
+        } else {
             Log.i(TAG, String.format("[%s] Skip restoring app's device protected data; not part of the backup or disabled", backupProperties.getPackageName()));
         }
     }
@@ -119,7 +119,7 @@ public class RestoreAppAction extends BaseAppAction {
     protected void wipeDirectory(String targetDirectory, List<String> excludeDirs) throws ShellHandler.ShellCommandFailedException {
         List<String> targetContents = new ArrayList<>(Arrays.asList(this.getShell().suGetDirectoryContents(new File(targetDirectory))));
         targetContents.removeAll(excludeDirs);
-        if(targetContents.isEmpty()){
+        if (targetContents.isEmpty()) {
             Log.i(TAG, "Nothing to remove in " + targetDirectory);
             return;
         }
@@ -249,9 +249,9 @@ public class RestoreAppAction extends BaseAppAction {
             throw new RestoreFailedException(error, e);
         } catch (IOException e) {
             throw new RestoreFailedException("Could not copy apk to staging directory", e);
-        }finally{
+        } finally {
             // Cleanup only in case of failure, otherwise it's already included
-            if(!success) {
+            if (!success) {
                 Log.i(TAG, String.format("[%s] Restore unsuccessful. Removing possible leftovers in staging directory", packageName));
                 final File stagingPath = stagingApkPath;
                 String command = Arrays.stream(apksToRestore)
@@ -270,7 +270,7 @@ public class RestoreAppAction extends BaseAppAction {
         try {
             StorageFile backupDirFile = StorageFile.fromUri(this.getContext(), backupInstanceRoot);
             StorageFile backupDirToRestore = backupDirFile.findFile(what);
-            if(backupDirToRestore == null){
+            if (backupDirToRestore == null) {
                 throw new RestoreFailedException(String.format(LOG_DIR_IS_MISSING_CANNOT_RESTORE, what));
             }
             DocumentHelper.suRecursiveCopyFileFromDocument(this.getContext(), backupDirToRestore.getUri(), targetPath);
@@ -316,9 +316,9 @@ public class RestoreAppAction extends BaseAppAction {
         } catch (ShellHandler.ShellCommandFailedException e) {
             String error = BaseAppAction.extractErrorMessage(e.getShellResult());
             throw new RestoreFailedException("Could not restore a file due to a failed root command: " + error, e);
-        }finally {
+        } finally {
             // Clean up the temporary directory if it was initialized
-            if(tempDir != null){
+            if (tempDir != null) {
                 try {
                     FileUtils.forceDelete(tempDir.toFile());
                 } catch (IOException e) {
@@ -364,7 +364,7 @@ public class RestoreAppAction extends BaseAppAction {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DATA, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
-        if(backupArchive == null){
+        if (backupArchive == null) {
             throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getDataDir(), backupProperties.isEncrypted(), this.getContext().getCacheDir());
@@ -375,14 +375,14 @@ public class RestoreAppAction extends BaseAppAction {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
-        if(backupArchive == null){
+        if (backupArchive == null) {
             throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         File externalDataDir = new File(app.getExternalDataDir());
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
-        if(!externalDataDir.exists()){
+        if (!externalDataDir.exists()) {
             boolean mkdirResult = externalDataDir.mkdir();
-            if(!mkdirResult){
+            if (!mkdirResult) {
                 throw new RestoreFailedException("Could not create external data directory at " + externalDataDir);
             }
         }
@@ -397,7 +397,7 @@ public class RestoreAppAction extends BaseAppAction {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
-        if(backupArchive == null){
+        if (backupArchive == null) {
             throw new RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename));
         }
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getDeviceProtectedDataDir(), backupProperties.isEncrypted(), this.getContext().getCacheDir());
@@ -452,9 +452,10 @@ public class RestoreAppAction extends BaseAppAction {
     }
 
     public static class RestoreFailedException extends AppActionFailedException {
-        public RestoreFailedException(String message){
+        public RestoreFailedException(String message) {
             super(message);
         }
+
         public RestoreFailedException(String message, Throwable cause) {
             super(message, cause);
         }

@@ -52,7 +52,7 @@ public class ActionResult {
     public String toString() {
         return String.format(
                 "%s: %s%s",
-                new SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH).format(this.occurrence),
+                timeFormat.format(this.occurrence),
                 this.app != null ? this.app : "NoApp",
                 this.message.isEmpty() ? "" : ' ' + this.message
         );

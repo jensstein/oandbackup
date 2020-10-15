@@ -114,8 +114,7 @@ public class DocumentContractApi {
     }
 
     @Nullable
-    private static String queryForString(Context context, Uri self, String column,
-                                         @Nullable String defaultValue) {
+    private static String queryForString(Context context, Uri self, String column, @Nullable String defaultValue) {
         final ContentResolver resolver = context.getContentResolver();
         Cursor cursor = null;
         try {
@@ -133,8 +132,7 @@ public class DocumentContractApi {
         }
     }
 
-    private static int queryForInt(Context context, Uri self, String column,
-                                   int defaultValue) {
+    private static int queryForInt(Context context, Uri self, String column, int defaultValue) {
         return (int) DocumentContractApi.queryForLong(context, self, column, defaultValue);
     }
 

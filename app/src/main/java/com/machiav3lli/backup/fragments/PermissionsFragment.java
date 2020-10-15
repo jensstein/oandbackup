@@ -22,8 +22,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -46,14 +46,11 @@ import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.util.Arrays;
 
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
 public class PermissionsFragment extends Fragment {
     private static final String TAG = Constants.classTag(".PermissionsFragment");
     private FragmentPermissionsBinding binding;
     PowerManager powerManager;
     SharedPreferences prefs;
-    boolean useScopedStorage = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @Nullable
     @Override
@@ -90,7 +87,7 @@ public class PermissionsFragment extends Fragment {
     }
 
     private void setupViews() {
-        binding.cardStoragePermission.setVisibility(PrefUtils.checkStoragePermissions(requireContext()) || useScopedStorage ? View.GONE : View.VISIBLE);
+        binding.cardStoragePermission.setVisibility(PrefUtils.checkStoragePermissions(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardStorageLocation.setVisibility(PrefUtils.isStorageDirSetAndOk(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardUsageAccess.setVisibility(PrefUtils.checkUsageStatsPermission(requireContext()) ? View.GONE : View.VISIBLE);
         binding.cardBatteryOptimization.setVisibility(PrefUtils.checkBatteryOptimization(requireContext(), prefs, powerManager) ? View.GONE : View.VISIBLE);
@@ -104,7 +101,7 @@ public class PermissionsFragment extends Fragment {
     }
 
     private void updateState() {
-        if ((PrefUtils.checkStoragePermissions(requireContext()) || useScopedStorage) &&
+        if (PrefUtils.checkStoragePermissions(requireContext()) &&
                 PrefUtils.isStorageDirSetAndOk(requireContext()) &&
                 PrefUtils.checkUsageStatsPermission(requireContext()) &&
                 (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
@@ -151,7 +148,7 @@ public class PermissionsFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PrefUtils.WRITE_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.w(PermissionsFragment.TAG, String.format("Permissions were granted: %s -> %s",
                         Arrays.toString(permissions), Arrays.toString(grantResults)));
                 if (!PrefUtils.canAccessExternalStorage(requireContext())) {

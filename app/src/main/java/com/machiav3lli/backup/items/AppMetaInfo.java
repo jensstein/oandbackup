@@ -58,6 +58,7 @@ public class AppMetaInfo implements Parcelable {
         this.packageName = pi.packageName;
         this.packageLabel = pi.applicationInfo.loadLabel(context.getPackageManager()).toString();
         this.versionName = pi.versionName;
+        // TODO: versioncode deprecated, getVersionCodeLong() should be used for >= SDK28
         this.versionCode = pi.versionCode;
         // Don't have access to UserManager service; using a cheap workaround to figure out
         // who is running by parsing it from the data path: /data/user/0/org.example.app

@@ -28,7 +28,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.ActionResult;
 
 public class UIUtils {
@@ -63,13 +62,10 @@ public class UIUtils {
     }
 
     public static void showError(final Activity activity, final String message) {
-        activity.runOnUiThread(() -> {
-            new AlertDialog.Builder(activity)
-                    .setTitle(R.string.errorDialogTitle)
-                    .setMessage(message)
-                    .setPositiveButton(R.string.dialogOK, null)
-                    .show();
-        });
+        activity.runOnUiThread(new AlertDialog.Builder(activity)
+                .setTitle(R.string.errorDialogTitle)
+                .setMessage(message)
+                .setPositiveButton(R.string.dialogOK, null)::show);
     }
 
     public static void showWarning(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener callback) {

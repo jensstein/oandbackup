@@ -75,7 +75,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MainActivityX extends BaseActivity implements BatchConfirmDialog.ConfirmListener {
-    private static final String TAG = Constants.classTag(".MainActivityNeo");
+    private static final String TAG = Constants.classTag(".MainActivityX");
     private static ShellHandler shellHandler;
 
     static {
@@ -88,7 +88,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     private static List<AppInfoX> appsList;
-    public final ArrayList<String> checkedList = new ArrayList<>();
+    public final List<String> checkedList = new ArrayList<>();
 
 
     private BadgeDrawable updatedBadge;
@@ -476,7 +476,9 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> checkedList) {
         Log.d(MainActivityX.TAG, "refreshing");
         runOnUiThread(() -> {
-            binding.refreshLayout.setRefreshing(true);  //TODO: hg42 refresh can run in parallel, needs counting or multiple (overlaying?) Spinners
+            binding.refreshLayout.setRefreshing(true);
+            // TODO: hg42 refresh can run in parallel, needs counting or multiple (overlaying?) Spinners
+            // machiav3lli this is used to show refresh animation even on launch
             searchViewController.clean();
         });
         badgeCounter = 0;

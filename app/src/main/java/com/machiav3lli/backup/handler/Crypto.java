@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.handler;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -156,7 +155,7 @@ public final class Crypto {
         return iv;
     }
 
-    public static String getCipherAlgorithm(Context context){
+    public static String getCipherAlgorithm() {
         return Crypto.DEFAULT_CIPHER_ALGORITHM;
     }
 

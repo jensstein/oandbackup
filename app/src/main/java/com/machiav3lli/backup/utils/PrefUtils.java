@@ -42,14 +42,13 @@ import java.nio.charset.StandardCharsets;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class PrefUtils {
     private static final String TAG = Constants.classTag(".PrefUtils");
     public static final int READ_PERMISSION = 2;
     public static final int WRITE_PERMISSION = 3;
-    public static final int STATS_PERMISSION = 4;
     public static final int BACKUP_DIR = 5;
+    // public static final boolean STORAGE_MODE_R = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
 
     public static byte[] getCryptoSalt(Context context) {
         String userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "");
@@ -96,7 +95,6 @@ public class PrefUtils {
         FileUtils.invalidateBackupLocation();
     }
 
-
     public static boolean isStorageDirSetAndOk(Context context) {
         try {
             String storageDirPath = PrefUtils.getStorageRootDir(context);
@@ -119,12 +117,21 @@ public class PrefUtils {
     }
 
     public static void requireStorageLocation(Fragment fragment) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         fragment.startActivityForResult(intent, PrefUtils.BACKUP_DIR);
     }
 
     public static boolean checkStoragePermissions(Context context) {
-        return (context.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && context.checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        /* if (PrefUtils.STORAGE_MODE_R) {
+            return Environment.isExternalStorageManager();
+        } else {
+            return (context.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        }
+         */
+        return (context.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
     public static void getStoragePermission(Activity activity) {
@@ -133,12 +140,12 @@ public class PrefUtils {
     }
 
     public static void requireReadStoragePermission(Activity activity) {
-        if (activity.checkSelfPermission(READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED)
+        if (activity.checkSelfPermission(READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(activity, new String[]{READ_EXTERNAL_STORAGE}, READ_PERMISSION);
     }
 
     public static void requireWriteStoragePermission(Activity activity) {
-        if (activity.checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED)
+        if (activity.checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION);
     }
 

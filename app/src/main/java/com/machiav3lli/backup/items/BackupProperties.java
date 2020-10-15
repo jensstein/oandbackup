@@ -184,6 +184,7 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.backupLocation = backupLocation;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "BackupProperties{" +

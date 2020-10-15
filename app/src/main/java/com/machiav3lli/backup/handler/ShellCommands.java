@@ -37,13 +37,14 @@ public class ShellCommands {
     private List<String> users;
 
     public ShellCommands(List<String> users) {
-        this.users = (ArrayList<String>) users;
+        this.users = users;
         try {
             this.users = this.getUsers();
         } catch (ShellActionFailedException e) {
             this.users = null;
             String error = null;
-            if (e.getCause() != null && e.getCause() instanceof ShellHandler.ShellCommandFailedException) {
+            // instanceof returns false for nulls, so need to chack if null
+            if (e.getCause() instanceof ShellHandler.ShellCommandFailedException) {
                 error = String.join(" ", ((ShellHandler.ShellCommandFailedException) e.getCause()).getShellResult().getErr());
             }
             Log.e(TAG, "Could not load list of users: " + e +
@@ -175,11 +176,10 @@ public class ShellCommands {
         try {
             Shell.Result result = ShellHandler.runAsRoot(command);
 
-            List<String> usersNew = result.getOut().stream()
+            return result.getOut().stream()
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .collect(Collectors.toList());
-            return usersNew;
         } catch (ShellHandler.ShellCommandFailedException e) {
             throw new ShellActionFailedException(command, "Could not fetch list of users", e);
         }

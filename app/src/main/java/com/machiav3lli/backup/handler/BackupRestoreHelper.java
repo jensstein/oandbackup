@@ -113,30 +113,28 @@ public class BackupRestoreHelper {
         try {
             StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
             StorageFile apkFile = backupRoot.findFile(filename);
-            if (apkFile == null) {
-                try {
-                    PackageInfo myInfo = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-                    List<ShellHandler.FileInfo> fileInfos = shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false);
-                    if (fileInfos.size() != 1) {
-                        throw new FileNotFoundException("Could not find OAndBackupX's own apk file");
-                    }
-                    DocumentHelper.suCopyFileToDocument(context.getContentResolver(), fileInfos.get(0), backupRoot);
-                    // Invalidating cache, otherwise the next call will fail
-                    // Can cost a lot time, but these lines should only run once per installation/update
-                    StorageFile.invalidateCache();
-                    StorageFile baseApkFile = backupRoot.findFile(fileInfos.get(0).getFilename());
-                    if (baseApkFile != null) {
-                        baseApkFile.renameTo(filename);
-                    } else {
-                        Log.e(TAG, String.format("Cannot find just created file '%s' in backup dir for renaming. Skipping", fileInfos.get(0).getFilename()));
-                        return false;
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.wtf(TAG, e.getClass().getCanonicalName() + "! This should never happen! Message: " + e);
-                    return false;
-                } catch (ShellHandler.ShellCommandFailedException e) {
-                    throw new IOException(String.join(" ", e.getShellResult().getErr()), e);
+            if (apkFile == null) try {
+                PackageInfo myInfo = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
+                List<ShellHandler.FileInfo> fileInfos = shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false);
+                if (fileInfos.size() != 1) {
+                    throw new FileNotFoundException("Could not find OAndBackupX's own apk file");
                 }
+                DocumentHelper.suCopyFileToDocument(context.getContentResolver(), fileInfos.get(0), backupRoot);
+                // Invalidating cache, otherwise the next call will fail
+                // Can cost a lot time, but these lines should only run once per installation/update
+                StorageFile.invalidateCache();
+                StorageFile baseApkFile = backupRoot.findFile(fileInfos.get(0).getFilename());
+                if (baseApkFile != null) {
+                    baseApkFile.renameTo(filename);
+                } else {
+                    Log.e(TAG, String.format("Cannot find just created file '%s' in backup dir for renaming. Skipping", fileInfos.get(0).getFilename()));
+                    return false;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.wtf(TAG, e.getClass().getCanonicalName() + "! This should never happen! Message: " + e);
+                return false;
+            } catch (ShellHandler.ShellCommandFailedException e) {
+                throw new IOException(String.join(" ", e.getShellResult().getErr()), e);
             }
         } catch (PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
             Log.e(TAG, e.getClass().getSimpleName() + ": " + e);

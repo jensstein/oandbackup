@@ -62,7 +62,7 @@ public class BackupAppAction extends BaseAppAction {
 
     public ActionResult run(AppInfoX app, int backupMode) {
         Log.i(BackupAppAction.TAG, String.format("Backing up: %s [%s]", app.getPackageName(), app.getPackageLabel()));
-        Uri appBackupRootUri = null;
+        Uri appBackupRootUri;
         try {
             appBackupRootUri = app.getBackupDir(true);
         } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
@@ -103,7 +103,7 @@ public class BackupAppAction extends BaseAppAction {
                 }
             }
             if (PrefUtils.isEncryptionEnabled(this.getContext())) {
-                backupBuilder.setCipherType(Crypto.getCipherAlgorithm(this.getContext()));
+                backupBuilder.setCipherType(Crypto.getCipherAlgorithm());
             }
             backupItem = backupBuilder.createBackupItem();
             this.saveBackupProperties(backupDir, backupItem.getBackupProperties());
@@ -230,15 +230,13 @@ public class BackupAppAction extends BaseAppAction {
             for (ShellHandler.FileInfo dir : dirsInSource) {
                 allFilesToBackup.add(dir);
                 // Do not process files in the "root" directory of the app's data
-                if (dir.getFiletype() == ShellHandler.FileInfo.FileType.DIRECTORY) {
-                    try {
-                        allFilesToBackup.addAll(
-                                this.getShell().suGetDetailedDirectoryContents(dir.getAbsolutePath(), true, dir.getFilename())
-                        );
-                    } catch (ShellHandler.ShellCommandFailedException e) {
-                        if (ShellHandler.isFileNotFoundException(e)) {
-                            Log.w(BackupAppAction.TAG, "Directory has been deleted during processing: " + dir);
-                        }
+                if (dir.getFiletype() == ShellHandler.FileInfo.FileType.DIRECTORY) try {
+                    allFilesToBackup.addAll(
+                            this.getShell().suGetDetailedDirectoryContents(dir.getAbsolutePath(), true, dir.getFilename())
+                    );
+                } catch (ShellHandler.ShellCommandFailedException e) {
+                    if (ShellHandler.isFileNotFoundException(e)) {
+                        Log.w(BackupAppAction.TAG, "Directory has been deleted during processing: " + dir);
                     }
                 }
             }

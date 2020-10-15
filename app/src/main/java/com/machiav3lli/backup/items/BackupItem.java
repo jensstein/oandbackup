@@ -8,18 +8,20 @@ import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.utils.FileUtils;
 
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class BackupItem {
+    private static final String TAG = Constants.classTag(".BackupItem");
+
     public static final String BACKUP_FILE_DATA = "data";
     public static final String BACKUP_FILE_DPD = "protecteddata";
     public static final String BACKUP_FILE_EXT_DATA = "extData";
     public static final String BACKUP_DIR_OBB = "obb";
 
-    private static final String TAG = Constants.classTag(".BackupItem");
     private final BackupProperties backupProperties;
     private final StorageFile backupInstance;
 
@@ -59,7 +61,7 @@ public class BackupItem {
         }
     }
 
-    public Uri getBackupLocation(){
+    public Uri getBackupLocation() {
         return this.backupInstance.getUri();
     }
 
@@ -77,6 +79,7 @@ public class BackupItem {
         return this.backupProperties;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return String.format("BackupItem{ packageName=\"%s\", packageLabel=\"%s\", backupDate=\"%s\" }",
