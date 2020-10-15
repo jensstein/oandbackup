@@ -19,12 +19,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.preference.ListPreference
-        app:defaultValue="system"
-        app:entries="@array/themeEntries"
-        app:entryValues="@array/themeEntryValues"
+        android:defaultValue="system"
+        android:entries="@array/themeEntries"
+        android:entryValues="@array/themeEntryValues"
+        android:key="themes"
+        android:title="@string/prefs_theme"
         app:iconSpaceReserved="false"
-        app:key="themes"
-        app:title="@string/prefs_theme"
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.ListPreference
@@ -33,7 +33,8 @@
         android:entryValues="@array/languageEntryValues"
         android:key="languages"
         android:title="@string/prefs_languages"
-        app:iconSpaceReserved="false" />
+        app:iconSpaceReserved="false"
+        app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.Preference
         android:key="pathBackupFolder"

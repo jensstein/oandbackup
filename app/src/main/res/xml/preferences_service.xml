@@ -62,21 +62,21 @@
         app:iconSpaceReserved="false" />
 
     <androidx.preference.SeekBarPreference
+        android:defaultValue="2"
         android:key="numBackupRevisions"
+        android:max="10"
         android:summary="@string/prefs_numBackupRevisions_summary"
         android:title="@string/prefs_numBackupRevisions"
-        android:max="10"
-        android:defaultValue="2"
-        app:showSeekBarValue="true"
-        app:min="0"
-        app:iconSpaceReserved="false" />
-    <ListPreference
-        android:key="pref_housekeepingMoment"
-        android:title="Revision cleanup moment"
-        android:summary="Configures if the oldest revision is deleted before or after creating a new backup to free the disk space used by the backup."
         app:iconSpaceReserved="false"
+        app:min="0"
+        app:showSeekBarValue="true" />
+
+    <ListPreference
         android:defaultValue="after"
         android:entries="@array/housekeepingMomentEntries"
-        android:entryValues="@array/housekeepingMomentValues" />
-
+        android:entryValues="@array/housekeepingMomentValues"
+        android:key="housekeepingMoment"
+        android:summary="@string/prefs_housekeepingmoment_summary"
+        android:title="@string/prefs_housekeepingmoment"
+        app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>
