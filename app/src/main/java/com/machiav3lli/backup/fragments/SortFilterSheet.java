@@ -30,10 +30,12 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding;
 import com.machiav3lli.backup.handler.SortFilterManager;
 import com.machiav3lli.backup.items.SortFilterModel;
+import com.machiav3lli.backup.utils.PrefUtils;
 
 public class SortFilterSheet extends BottomSheetDialogFragment {
     SortFilterModel sortFilterModel;
@@ -109,6 +111,11 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         binding.backupFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putBackupFilter(checkedId));
         binding.specialFilters.check(sortFilterModel.getSpecialFilterId());
         binding.specialFilters.setOnCheckedChangeListener((group, checkedId) -> sortFilterModel.putSpecialFilter(checkedId));
+        if (PrefUtils.getDefaultSharedPreferences(requireContext()).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)) {
+            this.binding.showOnlySpecial.setVisibility(View.VISIBLE);
+        } else {
+            this.binding.showOnlySpecial.setVisibility(View.GONE);
+        }
     }
 
     public MainActivityX requireMainActivity() {
