@@ -212,4 +212,8 @@
     <string name="prefs_forcekill_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
     <string name="prefs_forcekill">备份/恢复之前强制杀死应用程序进程</string>
     <string name="prefs_advanced">高级设置</string>
+    <string name="prefs_housekeepingmoment_summary">配置是否在创建新备份之前或之后删除最早的修订版本以释放备份使用的磁盘空间。</string>
+    <string name="prefs_housekeepingmoment">版本清理时间</string>
+    <string name="prefs_housekeepingmoment_before">备份前</string>
+    <string name="prefs_housekeepingmoment_after">备份后</string>
 </resources>
