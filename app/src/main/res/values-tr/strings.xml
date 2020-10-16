@@ -214,4 +214,8 @@
     <string name="prefs_advanced">Gelişmiş tercihler</string>
     <string name="prefs_moment_before_backup">Yedeklemeden Önce</string>
     <string name="prefs_moment_after_backup">Yedeklemeden Sonra</string>
+    <string name="prefs_housekeepingmoment_summary">Yedekleme tarafından kullanılan disk alanını boşaltmak için en eski düzeltmenin yeni bir yedekleme oluşturmadan önce mi yoksa sonra mı silineceğini yapılandırır.</string>
+    <string name="prefs_housekeepingmoment">Düzeltme temizleme zamanı</string>
+    <string name="prefs_housekeepingmoment_before">Yedeklemeden Önce</string>
+    <string name="prefs_housekeepingmoment_after">Yedeklemeden Sonra</string>
 </resources>
