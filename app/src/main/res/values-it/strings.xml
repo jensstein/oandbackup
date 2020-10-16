@@ -184,4 +184,9 @@
     <string name="prefs_biometriclock_summary">Proteggi l\'app con il blocco biometrico del dispositivo (ad es. impronta digitale, sblocco facciale)</string>
     <string name="prefs_biometriclock">Blocco biometrico</string>
     <string name="dialogSave">Salva</string>
+    <string name="prefs_password_match_false">Le password non coincidono</string>
+    <string name="prefs_password_match_true">Le password coincidono</string>
+    <string name="prefs_passwordconfirmation">Conferma password di criptazione</string>
+    <string name="prefs_advanced">Preferenze avanzate</string>
+    <string name="radioUpdated">Aggiornato</string>
 </resources>
