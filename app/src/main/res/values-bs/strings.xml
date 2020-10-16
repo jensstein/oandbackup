@@ -163,4 +163,15 @@
     <string name="prefs_rememberfiltering">Zapamti sortiranje i filtriranje</string>
     <string name="prefs_moment_before_backup">Prije izrade sigurnosne kopije</string>
     <string name="prefs_moment_after_backup">Poslije izrade sigurnosne kopije</string>
+    <string name="storage_access">Pristup skladištu</string>
+    <string name="enable_encryption_message">Nije sigurno držati nekriptirane podatke na uređaju. Za sigurnost vaših podataka uključite enkripciju i namjestite šifru.</string>
+    <string name="enable_encryption_title">Enkripcija podataka</string>
+    <string name="cache_size">Veličina keš memorije:</string>
+    <string name="ignore_battery_optimization_not_supported">Ovaj uređaj, nažalost, ne podržava ignoriranje optimizacije baterije!</string>
+    <string name="ignore_battery_optimization_message">Ponekad može doći do prekida izrade sigurnosnih kopija. Da biste to spriječili, isključite optimizaciju baterije</string>
+    <string name="available_actions">Dostupne radnje:</string>
+    <string name="permission_not_granted">Potrebna je dozvola za pristup vanjskom skladištu</string>
+    <string name="error_creating_notification_channel">Nije moguće kreirati kanal za obavijesti</string>
+    <string name="spec_wifiAccessPoints">Bežična pristupna tačka</string>
+    <string name="sched_timeLeft">Vrijeme do sljedeće izrade sigurnosne kopije:</string>
 </resources>
