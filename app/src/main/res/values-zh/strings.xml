@@ -174,15 +174,15 @@
     <string name="intro_permission_batteryoptimization">计划任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题。</string>
     <string name="intro_permission_usageaccess">该应用需要此权限才能检查统计信息，应用的缓存及数据大小。</string>
     <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，并为备份其他应用的外部数据/obb提供可能性。</string>
-    <string name="intro_welcome_message">"OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+. 目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能
-\n  该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志
-\n  欢迎任何形式的贡献：翻译，想法，报告错误或是代码工作
+    <string name="intro_welcome_message">OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+。目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能。
+\n该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志。
+\n欢迎任何形式的贡献：翻译、想法、报告错误或是代码工作。
 \n
-\n  OAndBackupX 功能一览：
-\n  •需 root! 并允许您备份单个应用及其用户数据
-\n  •支持单独备份和还原单个应用，也支持批量备份和还原
-\n  •可以无需重启来还原系统应用，但是我们仍然建议重启
-\n  •支持计划任务，可同时添加多个计划任务，并且可以创建自定义列表"</string>
+\nOAndBackupX 功能一览：
+\n•对已root的设备，允许您备份单个应用及其用户数据。
+\n•支持单独备份和还原单个应用，也支持批量备份和还原。
+\n•可以无需重启来还原系统应用，但是我们仍然建议重启。
+\n•支持计划任务，可同时添加多个计划任务，并且可以创建自定义列表。</string>
     <string name="welcome_to_oabx">欢迎使用 OABX!</string>
     <string name="storage_access">访问存储空间</string>
     <string name="sort_and_filter">排序&amp;过滤</string>
