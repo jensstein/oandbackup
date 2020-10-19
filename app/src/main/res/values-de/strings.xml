@@ -214,4 +214,8 @@
     <string name="prefs_forcekill_summary">Nur für Fortgeschrittene: Das Aktivieren dieser Option kann helfen, wenn die Anwendung Dateien während des Sicherung ändert und die Sicherung fehlschlägt.</string>
     <string name="prefs_forcekill">Beenden der App Prozesse vor der Sicherung/Wiederherstellung erzwingen</string>
     <string name="prefs_advanced">Einstellungen für Fortgeschrittene</string>
+    <string name="prefs_housekeepingmoment_summary">Legt fest, ob die älteste Revision vor oder nach der Erstellung einer neuen Sicherung gelöscht wird, um den von der Sicherung belegten Speicherplatz freizugeben.</string>
+    <string name="prefs_housekeepingmoment">Zeitpunkt des Löschens alter Revisionen</string>
+    <string name="prefs_housekeepingmoment_before">Vor der Sicherung</string>
+    <string name="prefs_housekeepingmoment_after">Nach der Sicherung</string>
 </resources>
