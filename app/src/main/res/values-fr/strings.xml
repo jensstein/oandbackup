@@ -43,7 +43,7 @@
     <string name="collectingData">collecte des informations des paquets…</string>
     <string name="utilboxCheck">vérification de le présence de busybox/toybox…</string>
     <string name="noSu">impossible d\'acquérir les droits de super-utilisateur</string>
-    <string name="busyboxProblem">impossible de trouver busybox. référez-vous au journal des erreurs</string>
+    <string name="busyboxProblem">Impossible de trouver BusyBox. Référez-vous au journal des erreurs</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Impossible de créer</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
@@ -217,4 +217,5 @@
     <string name="prefs_forcekill">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
     <string name="prefs_housekeepingmoment_before">Avant la sauvegarde</string>
     <string name="prefs_advanced">Préférences avancées</string>
+    <string name="radioUpdated">Mis à jour</string>
 </resources>
