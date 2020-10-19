@@ -174,4 +174,6 @@
     <string name="error_creating_notification_channel">Nije moguće kreirati kanal za obavijesti</string>
     <string name="spec_wifiAccessPoints">Bežična pristupna tačka</string>
     <string name="sched_timeLeft">Vrijeme do sljedeće izrade sigurnosne kopije:</string>
+    <string name="sched_startingbackup">Pokretanje planirane izrade sigurnosne kopije…</string>
+    <string name="sched_notificationMessage">Planirana izrada sigurnosne kopije</string>
 </resources>
