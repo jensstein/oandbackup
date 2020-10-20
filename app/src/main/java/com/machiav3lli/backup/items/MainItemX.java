@@ -70,8 +70,6 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
         AppCompatTextView label = this.itemView.findViewById(R.id.label);
         AppCompatTextView packageName = this.itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = this.itemView.findViewById(R.id.lastBackup);
-        AppCompatImageView apk = this.itemView.findViewById(R.id.apkMode);
-        AppCompatImageView data = this.itemView.findViewById(R.id.dataMode);
         AppCompatImageView appType = this.itemView.findViewById(R.id.appType);
         AppCompatImageView update = this.itemView.findViewById(R.id.update);
         AppCompatImageView icon = this.itemView.findViewById(R.id.icon);
@@ -93,8 +91,6 @@ public class MainItemX extends AbstractItem<MainItemX.ViewHolder> {
             this.label.setText(meta.getPackageLabel());
             this.packageName.setText(app.getPackageName());
             if (app.hasBackups()) {
-                // Todo: Find a proper way to display multiple backups. Just showing the latest for now
-                // Todo: Be more precise on the backup contents (external data, devices protected data, obb data)
                 if (app.isUpdated()) {
                     this.update.setVisibility(View.VISIBLE);
                 } else {

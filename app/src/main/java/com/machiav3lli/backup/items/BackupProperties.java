@@ -24,27 +24,27 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
 
     @SerializedName("hasApk")
     @Expose
-    private boolean hasApk;
+    private final boolean hasApk;
 
     @SerializedName("hasAppData")
     @Expose
-    private boolean hasAppData;
+    private final boolean hasAppData;
 
     @SerializedName("hasDevicesProtectedData")
     @Expose
-    private boolean hasDevicesProtectedData;
+    private final boolean hasDevicesProtectedData;
 
     @SerializedName("hasExternalData")
     @Expose
-    private boolean hasExternalData;
+    private final boolean hasExternalData;
 
     @SerializedName("hasObbData")
     @Expose
-    private boolean hasObbData;
+    private final boolean hasObbData;
 
     @SerializedName("cipherType")
     @Expose
-    private String cipherType;
+    private final String cipherType;
 
     @Expose(serialize = false, deserialize = false)
     private Uri backupLocation;
@@ -94,10 +94,6 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.hasExternalData = hasExternalData;
         this.hasObbData = hasObbData;
         this.cipherType = cipherType;
-    }
-
-    BackupProperties() {
-        super();
     }
 
     protected BackupProperties(Parcel in) {

@@ -125,6 +125,7 @@ public class BackupAppAction extends BaseAppAction {
         StorageFile propertiesFile = backupInstanceDir.createFile("application/octet-stream", BackupProperties.PROPERTIES_FILENAME);
         try (BufferedOutputStream propertiesOut = new BufferedOutputStream(this.getContext().getContentResolver().openOutputStream(propertiesFile.getUri(), "w"))) {
             propertiesOut.write(properties.toGson().getBytes(StandardCharsets.UTF_8));
+            // TODO write it also to parent backup history log
         }
         Log.i(BackupAppAction.TAG, String.format("Wrote %s file for backup: %s", BackupProperties.PROPERTIES_FILENAME, properties));
     }
