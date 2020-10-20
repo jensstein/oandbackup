@@ -7,9 +7,9 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Dati</string>
     <string name="handleBoth">Entrambi</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">Dati</string>
-    <string name="radioBoth">APK e dati</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Dati</string>
+    <string name="radio_both">APK e dati</string>
     <string name="de_selectAll">De/seleziona tutto</string>
     <string name="onlyApkBackedUp">Solo APK</string>
     <string name="onlyDataBackedUp">Solo dati</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">Cancella backup</string>
     <string name="uninstall">Disinstalla applicazione</string>
     <string name="uninstallProgress">Disinstallazione…</string>
-    <string name="radioAll">Mostra tutte le applicazioni</string>
+    <string name="radio_all">Mostra tutte le applicazioni</string>
     <string name="showOnlySystem">Mostra solo applicazioni di sistema</string>
     <string name="showOnlyUser">Mostra solo applicazioni utente</string>
     <string name="showNotBackedup">Mostra applicazioni senza backup</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Mostra i backup obsoleti</string>
     <string name="showOnlyApkBackedUp">Mostra applicazioni con backup del solo apk</string>
     <string name="showOnlyDataBackedUp">Mostra applicazioni con backup dei soli dati</string>
-    <string name="radioSpecial">Mostra solo i backup speciali</string>
+    <string name="radio_special">Mostra solo i backup speciali</string>
     <string name="sortByLabel">Ordina per etichetta</string>
     <string name="sortByPackageName">Ordina per nome</string>
     <string name="sort">Ordina e filtra</string>
@@ -135,8 +135,8 @@
     <string name="sort_options">Filtra per:</string>
     <string name="sortLabel">Etichetta</string>
     <string name="sortPackageName">Nome pacchetto</string>
-    <string name="radioUser">App Utente</string>
-    <string name="radioSystem">App di Sistema</string>
+    <string name="radio_user">App Utente</string>
+    <string name="radio_system">App di Sistema</string>
     <string name="app_s_icon">Icona dell\'app</string>
     <string name="bothBackedUp">APK e dati</string>
     <string name="all">Tutto</string>
@@ -188,5 +188,5 @@
     <string name="prefs_password_match_true">Le password coincidono</string>
     <string name="prefs_passwordconfirmation">Conferma password di criptazione</string>
     <string name="prefs_advanced">Preferenze avanzate</string>
-    <string name="radioUpdated">Aggiornato</string>
+    <string name="radio_updated">Aggiornato</string>
 </resources>

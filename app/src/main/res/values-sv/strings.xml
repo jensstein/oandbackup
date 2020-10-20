@@ -7,9 +7,9 @@
     <string name="handleApk">apk</string>
     <string name="handleData">data</string>
     <string name="handleBoth">båda</string>
-    <string name="radioApk">apk</string>
-    <string name="radioData">data</string>
-    <string name="radioBoth">apk + data</string>
+    <string name="radio_apk">apk</string>
+    <string name="radio_data">data</string>
+    <string name="radio_both">apk + data</string>
     <string name="de_selectAll">av/markera alla</string>
     <string name="onlyApkBackedUp">endast apk</string>
     <string name="onlyDataBackedUp">endast data</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">ta bort säkerhetskopia</string>
     <string name="uninstall">avinstallera app</string>
     <string name="uninstallProgress">avinstallerar…</string>
-    <string name="radioAll">visa alla appar</string>
+    <string name="radio_all">visa alla appar</string>
     <string name="showOnlySystem">visa endast system-appar</string>
     <string name="showOnlyUser">visa endast användar-appar</string>
     <string name="showNotBackedup">visa appar som ännu inte har säkerhetskopierats</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">visa gamla säkerhetskopior</string>
     <string name="showOnlyApkBackedUp">visa appar där endast apk har säkerhetskopierats</string>
     <string name="showOnlyDataBackedUp">visa appar där endast data har säkerhetskopierats</string>
-    <string name="radioSpecial">visa endast speciella säkerhetskopior</string>
+    <string name="radio_special">visa endast speciella säkerhetskopior</string>
     <string name="sortByLabel">sortera efter namn</string>
     <string name="sortByPackageName">sortera efter paketnamn</string>
     <string name="sort">sortering och filter</string>

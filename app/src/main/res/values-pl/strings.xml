@@ -7,13 +7,13 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Dane</string>
     <string name="handleBoth">Obie</string>
-    <string name="radioAll">Pokaż wszystkie aplikacje</string>
-    <string name="radioUser">Aplikacje użytkownika</string>
-    <string name="radioSystem">Aplikacje systemowe</string>
-    <string name="radioBoth">APK i dane</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">Dane</string>
-    <string name="radioSpecial">Pokaż tylko specjalne kopie zapasowe</string>
+    <string name="radio_all">Pokaż wszystkie aplikacje</string>
+    <string name="radio_user">Aplikacje użytkownika</string>
+    <string name="radio_system">Aplikacje systemowe</string>
+    <string name="radio_both">APK i dane</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Dane</string>
+    <string name="radio_special">Pokaż tylko specjalne kopie zapasowe</string>
     <string name="de_selectAll">Odznacz/zaznacz wszystko</string>
     <string name="onlyApkBackedUp">Tylko APK</string>
     <string name="onlyDataBackedUp">Tylko dane</string>
@@ -203,5 +203,5 @@
     <string name="dialog_start">Zaczynajmy!</string>
     <string name="help_appTypeHint">* Ikona typu aplikacji będzie szara, jeśli aplikacja zostanie odinstalowana i ciemnoszara, jeśli aplikacja jest wyłączona.</string>
     <string name="help_legend">Legenda:</string>
-    <string name="radioUpdated">Zaktualizowane</string>
+    <string name="radio_updated">Zaktualizowane</string>
 </resources>

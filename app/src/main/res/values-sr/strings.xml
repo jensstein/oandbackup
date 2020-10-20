@@ -7,9 +7,9 @@
     <string name="handleApk">Apk</string>
     <string name="handleData">Подаци</string>
     <string name="handleBoth">Оба</string>
-    <string name="radioApk">Apk</string>
-    <string name="radioData">Подаци</string>
-    <string name="radioBoth">Apk + Подаци</string>
+    <string name="radio_apk">Apk</string>
+    <string name="radio_data">Подаци</string>
+    <string name="radio_both">Apk + Подаци</string>
     <string name="de_selectAll">Обележи/поништи све</string>
     <string name="onlyApkBackedUp">Само Apk</string>
     <string name="onlyDataBackedUp">Само подаци</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">Обриши резервну копију</string>
     <string name="uninstall">Уклони апликацију</string>
     <string name="uninstallProgress">Уклањам…</string>
-    <string name="radioAll">Све апликације</string>
+    <string name="radio_all">Све апликације</string>
     <string name="showOnlySystem">Само системске апликације</string>
     <string name="showOnlyUser">Само корисникове апликације</string>
     <string name="showNotBackedup">Несачуване апликације</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Старе резервне копије</string>
     <string name="showOnlyApkBackedUp">Само са сачуваним Аpk-ом</string>
     <string name="showOnlyDataBackedUp">Само са сачуваним подацима</string>
-    <string name="radioSpecial">Само посебне копије</string>
+    <string name="radio_special">Само посебне копије</string>
     <string name="sortByLabel">Поређај по ознаци</string>
     <string name="sortByPackageName">Поређај по имену пакета</string>
     <string name="sort">Поређај и филтрирај</string>

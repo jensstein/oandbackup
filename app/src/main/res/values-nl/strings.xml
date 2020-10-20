@@ -7,9 +7,9 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Data</string>
     <string name="handleBoth">Beide</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">Data</string>
-    <string name="radioBoth">APK en Data</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Data</string>
+    <string name="radio_both">APK en Data</string>
     <string name="de_selectAll">De/selecteer alles</string>
     <string name="onlyApkBackedUp">Alleen APK</string>
     <string name="onlyDataBackedUp">Alleen data</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">Verwijder back-up</string>
     <string name="uninstall">Deïnstalleer app</string>
     <string name="uninstallProgress">Deïnstalleren…</string>
-    <string name="radioAll">Alle apps</string>
+    <string name="radio_all">Alle apps</string>
     <string name="showOnlySystem">Alleen systeem apps</string>
     <string name="showOnlyUser">Alleen gebruikers apps</string>
     <string name="showNotBackedup">Apps die nog niet zijn geback-upt</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Oude back-ups</string>
     <string name="showOnlyApkBackedUp">Apps waarvan alleen de APK geback-upt is</string>
     <string name="showOnlyDataBackedUp">Apps waarvan alleen de data geback-upt is</string>
-    <string name="radioSpecial">Speciale back-ups</string>
+    <string name="radio_special">Speciale back-ups</string>
     <string name="sortByLabel">Sorteer op label</string>
     <string name="sortByPackageName">Sorteer op pakketnaam</string>
     <string name="sort">Sorteer en filter</string>
@@ -200,6 +200,6 @@
     <string name="prefs_theme">Thema</string>
     <string name="prefs_user">Gebruikersvoorkeuren</string>
     <string name="showSplitAPKs">Split-APK</string>
-    <string name="radioSystem">Systeem Apps</string>
-    <string name="radioUser">Gebruiker apps</string>
+    <string name="radio_system">Systeem Apps</string>
+    <string name="radio_user">Gebruiker apps</string>
 </resources>

@@ -7,9 +7,9 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Данные</string>
     <string name="handleBoth">APK + Данные</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">Данные</string>
-    <string name="radioBoth">APK + Данные</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Данные</string>
+    <string name="radio_both">APK + Данные</string>
     <string name="de_selectAll">Инвертировать всё</string>
     <string name="onlyApkBackedUp">Только apk</string>
     <string name="onlyDataBackedUp">Только данные</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">Удалить р.к.</string>
     <string name="uninstall">Удалить приложение</string>
     <string name="uninstallProgress">Деинсталляция…</string>
-    <string name="radioAll">Показать все приложения</string>
+    <string name="radio_all">Показать все приложения</string>
     <string name="showOnlySystem">Показать только системные приложения</string>
     <string name="showOnlyUser">Показать только пользовательские приложения</string>
     <string name="showNotBackedup">Показать приложения без р.к.</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Показать старые р.к.</string>
     <string name="showOnlyApkBackedUp">Показать приложения только с р.к. APK</string>
     <string name="showOnlyDataBackedUp">Показать приложения только с р.к. данных</string>
-    <string name="radioSpecial">Показать только специальные р.к.</string>
+    <string name="radio_special">Показать только специальные р.к.</string>
     <string name="sortByLabel">Сортировать по названию</string>
     <string name="sortByPackageName">Сортировать по пакетам</string>
     <string name="sort">Сортировка и фильтр</string>
@@ -148,9 +148,9 @@
     <string name="prefs_theme">Тема</string>
     <string name="prefs_user">Пользовательские настройки</string>
     <string name="dialogSave">Сохранить</string>
-    <string name="radioSystem">Системные приложения</string>
-    <string name="radioUser">Пользовательские приложения</string>
-    <string name="radioUpdated">Обновлено</string>
+    <string name="radio_system">Системные приложения</string>
+    <string name="radio_user">Пользовательские приложения</string>
+    <string name="radio_updated">Обновлено</string>
     <string name="apptype_special">Специальная р.к.</string>
     <string name="intro_permission_batteryoptimization">У приложения могут возникнуть проблемы при создании запланированных р.к. на некоторых прошивках из-за агрессивной оптимизации батареи, например, MIUI, но даже на чистой AOSP может возникнуть такая проблема.</string>
     <string name="intro_permission_usageaccess">Приложению необходимо это разрешение для проверки статистики и размера данных и кэша ваших программ.</string>

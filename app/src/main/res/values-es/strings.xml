@@ -8,14 +8,14 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Datos</string>
     <string name="handleBoth">Ambos</string>
-    <string name="radioAll">Todas las aplicaciones</string>
-    <string name="radioUser">Aplicaciones de usuario</string>
-    <string name="radioSystem">Aplicaciones de sistema</string>
-    <string name="radioBoth">Aplicaciones y datos</string>
-    <string name="radioApk">Aplicaciones</string>
-    <string name="radioData">Datos</string>
-    <string name="radioSpecial">Respaldo especial</string>
-    <string name="radioUpdated">Actualizadas</string>
+    <string name="radio_all">Todas las aplicaciones</string>
+    <string name="radio_user">Aplicaciones de usuario</string>
+    <string name="radio_system">Aplicaciones de sistema</string>
+    <string name="radio_both">Aplicaciones y datos</string>
+    <string name="radio_apk">Aplicaciones</string>
+    <string name="radio_data">Datos</string>
+    <string name="radio_special">Respaldo especial</string>
+    <string name="radio_updated">Actualizadas</string>
     <string name="de_selectAll">Des/seleccionar todo</string>
     <string name="onlyApkBackedUp">Solo aplicacion</string>
     <string name="onlyDataBackedUp">Solo datos</string>
@@ -59,7 +59,7 @@
     <string name="restoreProgress">Recuperando…</string>
     <string name="restoreSuccess">Recuperacion finalizada</string>
     <string name="restoreFailure">Error en recuperacion</string>
-    <string name="batchSuccess">Operacion finalizada</string>
+    <string name="batchSuccess">Operación finalizada</string>
     <string name="batchFailure">Finalizado con errores</string>
     <string name="uninstallSuccess">Desinstalacion completa</string>
     <string name="uninstallFailure">Error al desinstalar</string>
@@ -92,7 +92,7 @@
     <string name="prefs_rememberfiltering">Recordar orden y filtros</string>
     <string name="prefs_rememberfiltering_summary">Guardar el orden y filtros establecidos. Solo los seleccionados serán tenidos en cuenta.</string>
     <string name="prefs_oldbackups">Filtrar respaldos por fecha</string>
-    <string name="prefs_oldbackups_summary">Filtrar los backups mas antiguos de n dias.Utiliza el filtro \'Mostrar respaldos antiguos\'.</string>
+    <string name="prefs_oldbackups_summary">Filtrar los backups mas antiguos de n días.Utiliza el filtro \'Mostrar respaldos antiguos\'.</string>
     <string name="prefs_service">Prefencias de servicio</string>
     <string name="prefs_encryption">Encriptacion</string>
     <string name="prefs_encryption_summary">Activar encriptacion de los respaldos de datos</string>
@@ -112,17 +112,17 @@
     <string name="prefs_acquirewakelock">Prevenir sleep</string>
     <string name="prefs_acquirewakelock_summary">Adquirir wakelock mientras las operaciones en lote esten en ejecucion para prevenir sleep. Acelera los respaldos y recuperaciones pero incrementa el consumo de memoria.</string>
     <string name="prefs_enableSpecialBackups">Activar respaldos especiales</string>
-    <string name="prefs_quickreboot">Reinicio rapido</string>
+    <string name="prefs_quickreboot">Reinicio rápido</string>
     <string name="prefs_quickreboot_summary">Matar los procesos de sistema para forzar el reinicio</string>
     <string name="prefs_batchdelete">Eliminar respaldos\?</string>
-    <string name="prefs_batchdelete_summary">Eliminar los respaldos de todas las aplicaciones que ya no estan instaladas.</string>
+    <string name="prefs_batchdelete_summary">Eliminar los respaldos de todas las aplicaciones que ya no están instaladas.</string>
     <string name="prefs_logviewer">Ver log</string>
     <string name="prefs_unset">Desmarcar</string>
-    <string name="sched_title">Programacion</string>
-    <string name="sched_add">Añadir programacion</string>
+    <string name="sched_title">Programación</string>
+    <string name="sched_add">Añadir programación</string>
     <string name="sched_notificationMessage">Programar Repaldo</string>
-    <string name="sched_interval">Intervalo en dias:</string>
-    <string name="sched_hourOfDay">Hora del dia:</string>
+    <string name="sched_interval">Intervalo en días:</string>
+    <string name="sched_hourOfDay">Hora del día:</string>
     <string name="sched_checkbox">Activado</string>
     <string name="sched_activateButton">Iniciar repaldo ahora</string>
     <string name="sched_startingbackup">Iniciando repaldo programado …</string>
@@ -167,7 +167,7 @@
     <string name="available_actions">Acciones disponibles:</string>
     <string name="version_name_title">Nombre version:</string>
     <string name="backup_mode_title">Modo de respaldo:</string>
-    <string name="last_backup_title">Ultimo respaldo:</string>
+    <string name="last_backup_title">Último respaldo:</string>
     <string name="app_s_type_title">Tipo aplicacion:</string>
     <string name="encrypted_data_title">Datos encriptados:</string>
     <string name="other_filters_options">Filtros especiales:</string>
@@ -195,18 +195,18 @@
     <string name="quickRebootMessage">Deseas reinciar el entorno ?</string>
     <string name="storage_access">Acceso a almacenamiento</string>
     <string name="welcome_to_oabx">Bienvenido a OABX!</string>
-    <string name="intro_welcome_message"> OAndBackupX es una variante de OAndBackup con el objetivo de mantenerlo mas alla del 2020. Por ahora, la mayor parte de las funciones y la interfaz de usuario de la aplicacion se estan reescribiendo o agregando.
+    <string name="intro_welcome_message"> OAndBackupX es una variante de OAndBackup con el objetivo de mantenerlo mas allá del 2020. Por ahora, la mayor parte de las funciones y la interfaz de usuario de la aplicacion se están reescribiendo o agregando.
         \ n La aplicacion aun se encuentra en la etapa beta y se realizan muchas modificaciones. Por lo tanto, lea atentamente el registro de cambios con cada nueva version.
-		\ n Todo tipo de contribucion es bienvenida, ya sea traduccion, ideas, informes de errores o trabajo de codigo.
+		\ n Todo tipo de contribucion es bienvenida, ya sea traducción, ideas, informes de errores o trabajo de codigo.
         \n
         \ n Funciones actuales de nuestra aplicacion:
         \ n • Requiere root y le permite realizar copias de seguridad de aplicaciones individuales y sus datos.
-        \ n • Tambien permite tanto realizar copias de seguridad como  restaurar programas individuales uno a uno como por lotes.
+        \ n • También permite tanto realizar copias de seguridad como  restaurar programas individuales uno a uno como por lotes.
         \ n • La restauracion de las aplicaciones del sistema debería ser posible sin necesidad de reiniciar dispositivo y no notificamos si es necesario o no.
 		\ n • Las copias de seguridad se pueden programar sin límite de programaciones y existe la posibilidad de crear listas personalizadas.</string>
 		
     <string name="intro_permission_storage">La aplicacion utiliza permisos de lectura/escritura en el almacenamiento para poder acceder al almacenamiento externo y ofrecer la posibilidad de realizar una copia de seguridad de datos externos/obb de algunas aplicaciones</string>
-    <string name="intro_permission_storage_location">TLa aplicacion necesita una ubicacion para almacenar los respaldos. La aplicacion puede necesitar algunos gigabytes de almacenamiento para cada copia de seguridad completa. Tenga esto en cuenta al elegir la ubicacion de almacenamiento basada en la red.</string>
+    <string name="intro_permission_storage_location">TLa aplicacion necesita una ubicación para almacenar los respaldos. La aplicacion puede necesitar algunos gigabytes de almacenamiento para cada copia de seguridad completa. Tenga esto en cuenta al elegir la ubicación de almacenamiento basada en la red.</string>
     <string name="intro_permission_usageaccess">La aplicacion necesita este permiso para poder verificar las estadísticas y tamaños de datos y cache de sus aplicaciones.</string>
     <string name="intro_permission_batteryoptimization">La aplicación puede tener algunos problemas al realizar copias de seguridad programadas en algunas ROM que tienen optimizaciones de batería agresivas, por ejemplo. MIUI, pero incluso en AOSP de vainilla puede suceder</string>
     <string name="msg_appkill_warning">Se detendrán las aplicaciones seleccionadas. Asegúrese de reiniciar su dispositivo después del proceso o de abrir aplicaciones como su  despertador o calendario para evitar perder notificaciones importantes. Es posible que su teclado o Launcher se restablezca a la aplicación predeterminada.</string>

@@ -265,7 +265,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:text="@string/radioApk"
+                        android:text="@string/radio_apk"
                         android:textAppearance="@style/TextAppearance.Lines"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -289,7 +289,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/cards_spacing"
                         android:layout_weight="4"
-                        android:text="@string/radioData"
+                        android:text="@string/radio_data"
                         android:textAppearance="@style/TextAppearance.Lines"
                         android:textStyle="bold" />
 
@@ -303,7 +303,69 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:text="@string/radioUpdated"
+                        android:text="@string/radio_updated"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/cards_spacing"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/cards_spacing">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        app:srcCompat="@drawable/ic_external_data_24" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        android:layout_weight="4"
+                        android:text="@string/radio_externaldata"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        app:srcCompat="@drawable/ic_obb_data_24" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:text="@string/radio_obbdata"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/cards_spacing"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/cards_spacing">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        app:srcCompat="@drawable/ic_device_encrypted_data_24" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/cards_spacing"
+                        android:layout_weight="4"
+                        android:text="@string/radio_deviceprotecteddata"
                         android:textAppearance="@style/TextAppearance.Lines"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -7,9 +7,9 @@
     <string name="handleApk">APK</string>
     <string name="handleData">Daten</string>
     <string name="handleBoth">APK und Daten</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">Daten</string>
-    <string name="radioBoth">APK und Daten</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Daten</string>
+    <string name="radio_both">APK und Daten</string>
     <string name="de_selectAll">Alle an-/abwählen</string>
     <string name="onlyApkBackedUp">Nur APK</string>
     <string name="onlyDataBackedUp">Nur Daten</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">Sicherung löschen</string>
     <string name="uninstall">App deinstallieren</string>
     <string name="uninstallProgress">Deinstalliere…</string>
-    <string name="radioAll">Alle Apps</string>
+    <string name="radio_all">Alle Apps</string>
     <string name="showOnlySystem">Nur System-Apps</string>
     <string name="showOnlyUser">Nur Benutzer-Apps</string>
     <string name="showNotBackedup">Apps ohne Sicherung</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Alte Sicherungen</string>
     <string name="showOnlyApkBackedUp">Nur Apps, bei denen nur die APK-Datei gesichert wurde</string>
     <string name="showOnlyDataBackedUp">Nur Apps, bei denen nur die App-Daten gesichert wurden</string>
-    <string name="radioSpecial">Spezielle Sicherungen</string>
+    <string name="radio_special">Spezielle Sicherungen</string>
     <string name="sortByLabel">Nach Bezeichnung sortieren</string>
     <string name="sortByPackageName">Nach Paketname sortieren</string>
     <string name="sort">Sortieren und Filtern</string>
@@ -117,8 +117,8 @@
     <string name="sort_options">Sortieren nach:</string>
     <string name="sortPackageName">Paketname</string>
     <string name="sortLabel">Bezeichnung</string>
-    <string name="radioUser">Benutzer-Apps</string>
-    <string name="radioSystem">System-Apps</string>
+    <string name="radio_user">Benutzer-Apps</string>
+    <string name="radio_system">System-Apps</string>
     <string name="app_s_icon">App-Icon</string>
     <string name="permission_not_granted">Die Erlaubnis zum Zugriff auf externen Speicher ist erforderlich</string>
     <string name="restart_dialog">App scheint neu gestartet werden zu müssen</string>
@@ -204,7 +204,7 @@
     <string name="intro_permission_usageaccess">Die Anwendung benötigt diese Berechtigung, um die Statistiken und Größen der Daten und des Caches Ihrer Anwendungen lesen zu können.</string>
     <string name="intro_permission_batteryoptimization">Die App kann bei geplanten Backups auf einigen ROMs, die aggressive Batterieoptimierungen haben, wie z.B. MIUI, auf Probleme stoßen, aber selbst auch auf Vanilla-AOSP kann ein solches Problem auftreten.</string>
     <string name="help_legend">Die Legende:</string>
-    <string name="radioUpdated">Aktualisiert</string>
+    <string name="radio_updated">Aktualisiert</string>
     <string name="help_appTypeHint">* Das Symbol des Anwendungstyps wäre grau, wenn die Anwendung deinstalliert ist, und dunkelgrau, wenn die Anwendung deaktiviert ist.</string>
     <string name="intro_permission_storage_location">Die App benötigt ein Verzeichnis Speichern der Backups. Die App benötigt möglicherweise einige Gigabyte Speicherplatz für ein vollständiges Backup und fragt das Dateisystem häufig ab. Bitte bedenken Sie dies bei der Auswahl netzwerkbasierter Speicherorte.</string>
     <string name="prefs_unset">Nicht aktiviert</string>

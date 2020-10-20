@@ -7,9 +7,9 @@
     <string name="handleApk">APK</string>
     <string name="handleData">données</string>
     <string name="handleBoth">les deux</string>
-    <string name="radioApk">APK</string>
-    <string name="radioData">données</string>
-    <string name="radioBoth">APK et données</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">données</string>
+    <string name="radio_both">APK et données</string>
     <string name="de_selectAll">tout dé/sélectionner</string>
     <string name="onlyApkBackedUp">Uniquement l\'APK</string>
     <string name="onlyDataBackedUp">Uniquement les données</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">effacer la sauvegarde</string>
     <string name="uninstall">désinstaller l\'application</string>
     <string name="uninstallProgress">Désinstallation…</string>
-    <string name="radioAll">Toutes les applications</string>
+    <string name="radio_all">Toutes les applications</string>
     <string name="showOnlySystem">ne montrer que les applications système</string>
     <string name="showOnlyUser">ne montrer que les applications utilisateur</string>
     <string name="showNotBackedup">ne montrer que les applications non sauvegardées</string>
@@ -181,9 +181,9 @@
     <string name="prefs_user">Préférences utilisateur</string>
     <string name="dialogSave">Enregistrer</string>
     <string name="showSplitAPKs">Split-APK</string>
-    <string name="radioSpecial">Sauvegardes spéciales</string>
-    <string name="radioSystem">Applis système</string>
-    <string name="radioUser">Applis utilisateur</string>
+    <string name="radio_special">Sauvegardes spéciales</string>
+    <string name="radio_system">Applis système</string>
+    <string name="radio_user">Applis utilisateur</string>
     <string name="prefs_housekeepingmoment">Temps de nettoyage des révisions</string>
     <string name="msg_appkill_warning">La ou les applications sélectionnées seront arrêtées. Veuillez vous assurer que vous redémarrez votre appareil après le traitement ou que vous ouvrez les applications comme votre réveil ou votre calendrier après coup pour éviter de manquer des notifications importantes. Il se peut que votre clavier ou votre lanceur soit réinitialisé à l\'application par défaut.</string>
     <string name="intro_permission_batteryoptimization">L\'application peut rencontrer des problèmes pour effectuer des sauvegardes programmées sur certaines ROM qui adoptent une optimisation agressive de la batterie, par exemple MIUI, mais même sur AOSP vanilla un tel problème peut se produire.</string>
@@ -217,5 +217,5 @@
     <string name="prefs_forcekill">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
     <string name="prefs_housekeepingmoment_before">Avant la sauvegarde</string>
     <string name="prefs_advanced">Préférences avancées</string>
-    <string name="radioUpdated">Mis à jour</string>
+    <string name="radio_updated">Mis à jour</string>
 </resources>

@@ -55,16 +55,16 @@ public class ShareDialogFragment extends DialogFragment {
         if (withApk) {
             apk = (File) arguments.get("apk");
             apkUri = FileProvider.getUriForFile(requireContext(), requireContext().getApplicationContext().getPackageName() + ".provider", apk);
-            builder.setNegativeButton(R.string.radioApk, (dialog, id) -> startActivity(HandleShares.constructIntentSingle(getString(R.string.shareTitle), apk, apkUri)));
+            builder.setNegativeButton(R.string.radio_apk, (dialog, id) -> startActivity(HandleShares.constructIntentSingle(getString(R.string.shareTitle), apk, apkUri)));
         } else apkUri = null;
 
         if (withData) {
             data = (File) arguments.get("data");
             dataUri = FileProvider.getUriForFile(requireContext(), requireContext().getApplicationContext().getPackageName() + ".provider", data);
-            builder.setNeutralButton(R.string.radioData, (dialog, id) -> startActivity(HandleShares.constructIntentSingle(getString(R.string.shareTitle), data, dataUri)));
+            builder.setNeutralButton(R.string.radio_data, (dialog, id) -> startActivity(HandleShares.constructIntentSingle(getString(R.string.shareTitle), data, dataUri)));
         } else dataUri = null;
         if (withBoth) {
-            builder.setPositiveButton(R.string.radioBoth, (dialog, id) -> startActivity(HandleShares.constructIntentMultiple(getString(R.string.shareTitle), apkUri, dataUri)));
+            builder.setPositiveButton(R.string.radio_both, (dialog, id) -> startActivity(HandleShares.constructIntentMultiple(getString(R.string.shareTitle), apkUri, dataUri)));
         }
         return builder.create();
     }

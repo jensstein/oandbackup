@@ -7,9 +7,9 @@
     <string name="handleApk">apk</string>
     <string name="handleData">データ</string>
     <string name="handleBoth">両方</string>
-    <string name="radioApk">apk</string>
-    <string name="radioData">データ</string>
-    <string name="radioBoth">apk + データ</string>
+    <string name="radio_apk">apk</string>
+    <string name="radio_data">データ</string>
+    <string name="radio_both">apk + データ</string>
     <string name="de_selectAll">すべて選択/解除</string>
     <string name="onlyApkBackedUp">apk のみ</string>
     <string name="onlyDataBackedUp">データのみ</string>
@@ -21,7 +21,7 @@
     <string name="deleteBackup">バックアップを削除</string>
     <string name="uninstall">アプリをアンインストール</string>
     <string name="uninstallProgress">アンインストール中…</string>
-    <string name="radioAll">すべてのアプリを表示</string>
+    <string name="radio_all">すべてのアプリを表示</string>
     <string name="showOnlySystem">システムアプリのみ表示</string>
     <string name="showOnlyUser">ユーザーアプリのみ表示</string>
     <string name="showNotBackedup">バックアップされていないアプリを表示</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">古いバックアップを表示</string>
     <string name="showOnlyApkBackedUp">apkをバックアップしたアプリを表示</string>
     <string name="showOnlyDataBackedUp">データをバックアップしたアプリを表示</string>
-    <string name="radioSpecial">特別バックアップのみ表示</string>
+    <string name="radio_special">特別バックアップのみ表示</string>
     <string name="sortByLabel">ラベル順</string>
     <string name="sortByPackageName">パッケージ名で並び替え</string>
     <string name="sort">並び替えとフィルター</string>

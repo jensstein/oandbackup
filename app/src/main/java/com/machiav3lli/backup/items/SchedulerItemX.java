@@ -91,13 +91,13 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
         void setSchedMode(Schedule schedule) {
             switch (schedule.getMode().getValue()) {
                 case 0:
-                    schedMode.setText(R.string.radioAll);
+                    schedMode.setText(R.string.radio_all);
                     break;
                 case 1:
-                    schedMode.setText(R.string.radioUser);
+                    schedMode.setText(R.string.radio_user);
                     break;
                 case 2:
-                    schedMode.setText(R.string.radioSystem);
+                    schedMode.setText(R.string.radio_system);
                     break;
                 case 3:
                     schedMode.setText(R.string.showNewAndUpdated);
@@ -111,13 +111,13 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
         void setSchedSubMode(Schedule schedule) {
             switch (schedule.getSubmode().getValue()) {
                 case 0:
-                    schedSubMode.setText(R.string.radioApk);
+                    schedSubMode.setText(R.string.radio_apk);
                     break;
                 case 1:
-                    schedSubMode.setText(R.string.radioData);
+                    schedSubMode.setText(R.string.radio_data);
                     break;
                 default:
-                    schedSubMode.setText(R.string.radioBoth);
+                    schedSubMode.setText(R.string.radio_both);
                     break;
             }
         }

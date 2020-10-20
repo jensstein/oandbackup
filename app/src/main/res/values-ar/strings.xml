@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="radioSpecial">نسخ احتياطية مميزة</string>
-    <string name="radioData">البيانات</string>
-    <string name="radioApk">APK</string>
-    <string name="radioBoth">APK والبيانات</string>
-    <string name="radioSystem">تطبيقات النظام</string>
-    <string name="radioUser">تطبيقات المستخدم</string>
-    <string name="radioAll">جميع التطبيقات</string>
+    <string name="radio_special">نسخ احتياطية مميزة</string>
+    <string name="radio_data">البيانات</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_both">APK والبيانات</string>
+    <string name="radio_system">تطبيقات النظام</string>
+    <string name="radio_user">تطبيقات المستخدم</string>
+    <string name="radio_all">جميع التطبيقات</string>
     <string name="handleApk">APK</string>
     <string name="handleBoth">كلاهما</string>
     <string name="handleData">البيانات</string>
@@ -27,7 +27,6 @@
     <string name="backupProgress">جار النسخ الاحتياطي…</string>
     <string name="shellReturnError">خطأ</string>
     <string name="shellReturnSuccess">نجاح</string>
-    <string name="backupFolderError"></string>
     <string name="busyboxProblem">تعذر العثور على BusyBox. يرجى التحقق من سجل الأخطاء</string>
     <string name="noSu">تعذر الحصول على صلاحيات superuser</string>
     <string name="collectingData">جار جمع معلومات الحزمة…</string>

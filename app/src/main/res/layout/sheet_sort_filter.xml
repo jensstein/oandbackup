@@ -108,28 +108,28 @@
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioAll" />
+                    android:text="@string/radio_all" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlySystem"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioSystem" />
+                    android:text="@string/radio_system" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlyUser"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioUser" />
+                    android:text="@string/radio_user" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/showOnlySpecial"
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioSpecial" />
+                    android:text="@string/radio_special" />
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -151,7 +151,7 @@
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioAll" />
+                    android:text="@string/radio_all" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/backupBoth"
@@ -201,7 +201,7 @@
                     style="@style/Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/radioAll" />
+                    android:text="@string/radio_all" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/specialNewAndUpdated"

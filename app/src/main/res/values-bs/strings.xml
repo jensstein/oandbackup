@@ -16,10 +16,10 @@
     <string name="sched_blacklist">Crna lista</string>
     <string name="showNewAndUpdated">Nove i ažurirane aplikacije</string>
     <string name="onlyDataBackedUp">Samo podaci</string>
-    <string name="radioUpdated">Ažurirano</string>
-    <string name="radioData">Podaci</string>
-    <string name="radioBoth">APK i Podaci</string>
-    <string name="radioUser">Korisničke aplikacije</string>
+    <string name="radio_updated">Ažurirano</string>
+    <string name="radio_data">Podaci</string>
+    <string name="radio_both">APK i Podaci</string>
+    <string name="radio_user">Korisničke aplikacije</string>
     <string name="handleBoth">Oboje</string>
     <string name="handleData">Podaci</string>
     <string name="showNotBackedup">Aplikacije bez sigurnosne kopije</string>
@@ -27,9 +27,9 @@
     <string name="showOnlySystem">Samo sistemske aplikacije</string>
     <string name="refresh">Osvježi</string>
     <string name="onlyApkBackedUp">Samo APK</string>
-    <string name="radioApk">APK</string>
-    <string name="radioSystem">Sistemske aplikacije</string>
-    <string name="radioAll">Sve aplikacije</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_system">Sistemske aplikacije</string>
+    <string name="radio_all">Sve aplikacije</string>
     <string name="handleApk">APK</string>
     <string name="backup">Sigurnosna kopija</string>
     <string name="prefs_language_system">Sistemski zadano</string>
@@ -74,7 +74,7 @@
     <string name="backupProgress">Izrada sigurnosne kopije u toku…</string>
     <string name="showNotInstalled">Aplikacije koje nisu instalirane</string>
     <string name="searchHint">Traži aplikacije</string>
-    <string name="radioSpecial">Posebne sigurnosne kopije</string>
+    <string name="radio_special">Posebne sigurnosne kopije</string>
     <string name="welcome_to_oabx">Dobro došli u OABX!</string>
     <string name="help_group">Naša grupa</string>
     <string name="ignore_battery_optimization_title">Optimizacija baterije</string>
@@ -161,8 +161,6 @@
     <string name="prefs_excludecache">Izuzmi keš memoriju aplikacije</string>
     <string name="prefs_oldbackups_summary">Filtriraj sigurnosne kopije starije od vrijednosti u danima. Koristi se sa filterom \'Prikaži stare sigurnosne kopije\'.</string>
     <string name="prefs_rememberfiltering">Zapamti sortiranje i filtriranje</string>
-    <string name="prefs_moment_before_backup">Prije izrade sigurnosne kopije</string>
-    <string name="prefs_moment_after_backup">Poslije izrade sigurnosne kopije</string>
     <string name="storage_access">Pristup skladištu</string>
     <string name="enable_encryption_message">Nije sigurno držati nekriptirane podatke na uređaju. Za sigurnost vaših podataka uključite enkripciju i namjestite šifru.</string>
     <string name="enable_encryption_title">Enkripcija podataka</string>

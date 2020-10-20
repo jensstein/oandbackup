@@ -65,7 +65,7 @@ public class RestoreDialogFragment extends DialogFragment {
             builder.setNeutralButton(R.string.handleData, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_DATA));
         }
         if (showBothBtn) {
-            int textId = R.string.radioBoth;
+            int textId = R.string.radio_both;
             builder.setPositiveButton(textId, (dialog, id) -> this.listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH));
         }
         return builder.create();
