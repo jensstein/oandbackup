@@ -67,10 +67,7 @@ public class RestoreAppAction extends BaseAppAction {
     public ActionResult run(AppInfoX app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getPackageLabel()));
         try {
-            if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {
-                Log.d(RestoreAppAction.TAG, "Killing package to avoid file changes during restore");
-                this.killPackage(app.getPackageName());
-            }
+            this.preprocessPackage(app.getPackageName());
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 this.restorePackage(backupLocation, backupProperties);
                 app.refreshFromPackageManager(this.getContext());
@@ -85,6 +82,8 @@ public class RestoreAppAction extends BaseAppAction {
                     String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
                     false
             );
+        } finally {
+            this.postprocessPackage(app.getPackageName());
         }
         Log.i(RestoreAppAction.TAG, String.format("%s: Restore done: %s", app, backupProperties));
         return new ActionResult(app, backupProperties, "", true);
@@ -310,7 +309,7 @@ public class RestoreAppAction extends BaseAppAction {
             String command = this.prependUtilbox(String.format("mv \"%s\"/* \"%s\"", tempDir, targetDir));
             ShellHandler.runAsRoot(command);
         } catch (FileNotFoundException e) {
-            throw new RestoreFailedException("Could not find a file during restore at: " + e, e);
+            throw new RestoreFailedException("Backup archive at " + archiveUri + " is missing", e);
         } catch (IOException e) {
             throw new RestoreFailedException("Could not read the input file or write an output file due to IOException: " + e, e);
         } catch (ShellHandler.ShellCommandFailedException e) {

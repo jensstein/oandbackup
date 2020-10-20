@@ -19,6 +19,8 @@ package com.machiav3lli.backup.handler.action;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.machiav3lli.backup.Constants;
@@ -41,6 +43,14 @@ public abstract class BaseAppAction {
     private static final String TAG = Constants.classTag(".BaseAppAction");
     private final ShellHandler shell;
     private final Context context;
+    private static final List<String> doNotStop = Arrays.asList(
+            "com.android.shell",            // don't remove this
+            "com.android.systemui",
+            "com.android.externalstorage",
+            "com.android.providers.media",
+            "com.google.android.gms",
+            "com.google.android.gsf"
+    );
 
     protected BaseAppAction(Context context, ShellHandler shell) {
         this.context = context;
@@ -83,9 +93,37 @@ public abstract class BaseAppAction {
     }
 
     @SuppressLint("DefaultLocale")
-    public void killPackage(String packageName) {
+    public void preprocessPackage(String packageName) {
         try {
-            ShellHandler.runAsRoot(String.format("am force-stop --user all %s", packageName));
+            ApplicationInfo applicationInfo = this.context.getPackageManager().getApplicationInfo(packageName, 0);
+            Log.i(BaseAppAction.TAG, String.format("package %s uid %d", packageName, applicationInfo.uid));
+            /**/
+            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
+                Log.w(BaseAppAction.TAG, "Requested to kill processes of UID 1000. Refusing to kill system's processes!");
+                return;
+            }
+            /**/
+            if ( ! doNotStop.contains(packageName) ) { // will stop most activity, needs a good blacklist
+                // pause corresponding processes (but files may still be in the middle and buffers contain unwritten data)
+                //   also pauses essential processes (because some uids are shared between apps and essential services)
+                //ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill -STOP", applicationInfo.uid));
+                //   try to exclude essential services android.* via grep
+                ShellHandler.runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -STOP $pid ; done", applicationInfo.uid));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(BaseAppAction.TAG, packageName + " does not exist. Cannot preprocess!");
+        } catch (ShellHandler.ShellCommandFailedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    public void postprocessPackage(String packageName) {
+        try {
+            ApplicationInfo applicationInfo = this.context.getPackageManager().getApplicationInfo(packageName, 0);
+            ShellHandler.runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -CONT $pid ; done", applicationInfo.uid));
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(BaseAppAction.TAG, packageName + " does not exist. Cannot preprocess!");
         } catch (ShellHandler.ShellCommandFailedException e) {
             Log.w(BaseAppAction.TAG, "Could not kill package " + packageName + ": " + String.join(" ", e.getShellResult().getErr()));
         }

@@ -76,10 +76,9 @@ public class BackupAppAction extends BaseAppAction {
         }
         BackupBuilder backupBuilder = new BackupBuilder(this.getContext(), app.getAppInfo(), appBackupRootUri);
         StorageFile backupDir = backupBuilder.getBackupPath();
-        if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {
-            Log.d(BackupAppAction.TAG, "Killing package to avoid file changes during backup");
-            this.killPackage(app.getPackageName());
-        }
+
+        Log.d(BackupAppAction.TAG, "preprocess package (to avoid file inconsistencies during backup etc.)");
+        this.preprocessPackage(app.getPackageName());
         BackupItem backupItem;
         try {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
@@ -116,6 +115,9 @@ public class BackupAppAction extends BaseAppAction {
                     String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
                     false
             );
+        } finally {
+            Log.d(BackupAppAction.TAG, "postprocess package (to set it back to normal operation)");
+            this.postprocessPackage(app.getPackageName());
         }
         Log.i(BackupAppAction.TAG, String.format("%s: Backup done: %s", app, backupItem));
         return new ActionResult(app, backupItem.getBackupProperties(), "", true);

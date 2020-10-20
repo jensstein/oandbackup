@@ -94,8 +94,12 @@ public class SystemRestoreAppAction extends RestoreAppAction {
     }
 
     @Override
-    public void killPackage(String packageName) {
+    public void preprocessPackage(String packageName) {
         // stub
-        // Nothing to kill here
+    }
+
+    @Override
+    public void postprocessPackage(String packageName) {
+        // stub
     }
 }

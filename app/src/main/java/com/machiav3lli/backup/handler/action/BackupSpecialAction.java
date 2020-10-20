@@ -106,8 +106,11 @@ public class BackupSpecialAction extends BackupAppAction {
     }
 
     @Override
-    public void killPackage(String packageName) {
+    public void preprocessPackage(String packageName) {
         // stub
-        // Do not kill system apps
+    }
+    @Override
+    public void postprocessPackage(String packageName) {
+        // stub
     }
 }
