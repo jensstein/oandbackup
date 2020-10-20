@@ -207,4 +207,6 @@
     <string name="prefs_forcekill_summary">Kun for eksperter: Dette kan hjelpe, hvis programmet endrer filer under sikkerhetskopier og sikkerhetskopien feiler.</string>
     <string name="prefs_forcekill">Drep prosesser med tvang før sikkerhetskopiering/gjenoppretting</string>
     <string name="prefs_advanced">Avanserte innstillinger</string>
+    <string name="prefs_housekeepingmoment_after">Etter sikkerhetskopiering</string>
+    <string name="prefs_housekeepingmoment_before">Før sikkerhetskopiering</string>
 </resources>
