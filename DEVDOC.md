@@ -4,15 +4,7 @@
 
 - [ ] More functionality for AppSheet: kill app, share backup, clear data (for now...).
 
-- [ ] Multi-Backups support:
-
-    - [x] add backend
-
-    - [ ] add frontend:
-
-        - [ ] recycler with list adapter
-
-        - [ ] actions to each backup item
+- [x] Multi-Backups support
 
 - [ ] Add options upon choosing Backup from AppSheet: external/obb/cache.
 

@@ -291,27 +291,24 @@ public class AppInfoX {
                 && this.getLatestBackup().getBackupProperties().getVersionCode() < this.getVersionCode();
     }
 
-    /**
-     * Method to get information what kind of backups are available
-     * Subject to change due to the more complex backup history and potential for better description
-     *
-     * @return 0 if no backup is available, 1 if only apk is available, 2 if only data is available,
-     * 3 if apk and data is available
-     */
-    public int getBackupMode() {
-        int backupMode = AppInfoX.MODE_UNSET;
-        if (this.hasBackups()) {
-            boolean hasApk = this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasApk());
-            boolean hasData = this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasAppData());
-            if (hasApk && hasData) {
-                backupMode = AppInfoX.MODE_BOTH;
-            } else if (hasApk) {
-                backupMode = AppInfoX.MODE_APK;
-            } else {
-                backupMode = AppInfoX.MODE_DATA;
-            }
-        }
-        return backupMode;
+    public boolean hasApk() {
+        return this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasApk());
+    }
+
+    public boolean hasAppData() {
+        return this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasAppData());
+    }
+
+    public boolean hasExternalData() {
+        return this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasExternalData());
+    }
+
+    public boolean hasDeviceProtectedData() {
+        return this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasDevicesProtectedData());
+    }
+
+    public boolean hasObbData() {
+        return this.getBackupHistory().stream().anyMatch(backupItem -> backupItem.getBackupProperties().hasObbData());
     }
 
     @NotNull

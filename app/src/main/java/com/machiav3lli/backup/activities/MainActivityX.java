@@ -587,6 +587,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     private boolean toAddToBatch(boolean backupBoolean, AppInfoX app) {
-        return backupBoolean ? app.isInstalled() : app.getBackupMode() != BaseAppAction.MODE_UNSET;
+        return backupBoolean ? app.isInstalled() : app.hasBackups();
     }
 }

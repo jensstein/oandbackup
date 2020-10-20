@@ -112,7 +112,7 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
                 this.update.setVisibility(View.GONE);
                 this.lastBackup.setText(null);
             }
-            ItemUtils.pickItemBackupMode(app.getBackupMode(), this.apk, this.data);
+            ItemUtils.pickAppBackupMode(app, this.itemView);
             ItemUtils.pickItemAppType(app, this.appType);
         }
 

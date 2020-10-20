@@ -20,8 +20,8 @@ package com.machiav3lli.backup.handler;
 import android.content.Context;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.items.BackupItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.PrefUtils;
 
@@ -40,6 +40,8 @@ public class SortFilterManager {
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
     public static final Comparator<AppInfoX> appDataSizeComparator = (m1, m2) ->
             Long.compare(m1.getDataBytes(), m2.getDataBytes());
+    public static final Comparator<BackupItemX> backupDateComparator = (m1, m2) ->
+            m2.getBackup().getBackupProperties().getBackupDate().compareTo(m1.getBackup().getBackupProperties().getBackupDate());
 
     public static SortFilterModel getFilterPreferences(Context context) {
         SortFilterModel sortFilterModel;
@@ -84,13 +86,13 @@ public class SortFilterManager {
         Predicate<AppInfoX> predicate;
         switch (filter.charAt(2)) {
             case '1':
-                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_BOTH;
+                predicate = appInfoX -> appInfoX.hasApk() && appInfoX.hasAppData();
                 break;
             case '2':
-                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_APK;
+                predicate = AppInfoX::hasApk;
                 break;
             case '3':
-                predicate = appInfoX -> appInfoX.getBackupMode() == BaseAppAction.MODE_DATA;
+                predicate = AppInfoX::hasAppData;
                 break;
             case '4':
                 predicate = appInfoX -> !appInfoX.hasBackups();
