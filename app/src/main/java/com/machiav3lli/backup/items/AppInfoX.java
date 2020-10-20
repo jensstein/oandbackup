@@ -288,7 +288,7 @@ public class AppInfoX {
 
     public boolean isUpdated() {
         return this.hasBackups()
-                && this.getLatestBackup().getBackupProperties().getVersionCode() > this.getVersionCode();
+                && this.getLatestBackup().getBackupProperties().getVersionCode() < this.getVersionCode();
     }
 
     /**
