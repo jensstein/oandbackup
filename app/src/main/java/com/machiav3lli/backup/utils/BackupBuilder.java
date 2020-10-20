@@ -2,6 +2,7 @@ package com.machiav3lli.backup.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.StorageFile;
@@ -23,6 +24,7 @@ public class BackupBuilder {
     private boolean hasExternalData = false;
     private boolean hasObbData = false;
     private String cipherType = null;
+    private String cpuArch = null;
 
     public BackupBuilder(Context context, AppMetaInfo appinfo, Uri backupRoot) {
         this.context = context;
@@ -30,6 +32,7 @@ public class BackupBuilder {
         this.appinfo = appinfo;
         this.backupDate = LocalDateTime.now();
         this.backupPath = this.ensureBackupPath(this.backupRoot);
+        this.cpuArch = Build.SUPPORTED_ABIS[0];
     }
 
 
@@ -77,7 +80,7 @@ public class BackupBuilder {
                 new BackupProperties(this.backupPath.getUri(),
                         this.appinfo, this.backupDate, this.hasApk, this.hasAppData,
                         this.hasDevicesProtectedData, this.hasExternalData,
-                        this.hasObbData, this.cipherType),
+                        this.hasObbData, this.cipherType, this.cpuArch),
                 this.backupPath);
     }
 
@@ -85,6 +88,6 @@ public class BackupBuilder {
         return new BackupProperties(this.backupPath.getUri(),
                 this.appinfo, this.backupDate, this.hasApk, this.hasAppData,
                 this.hasDevicesProtectedData, this.hasExternalData,
-                this.hasObbData, this.cipherType);
+                this.hasObbData, this.cipherType, this.cpuArch);
     }
 }

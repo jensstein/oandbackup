@@ -30,13 +30,25 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/versionName"
             style="@style/TextViewWrapped"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textAppearance="@style/TextAppearance.Label"
             app:layout_constraintBottom_toBottomOf="@id/tags"
-            app:layout_constraintEnd_toStartOf="@id/tags"
+            app:layout_constraintEnd_toStartOf="@id/cpuArch"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tags" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cpuArch"
+            style="@style/TextViewWrapped"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.Secondary"
+            app:layout_constraintBottom_toBottomOf="@id/tags"
+            app:layout_constraintEnd_toStartOf="@id/tags"
+            app:layout_constraintStart_toEndOf="@id/versionName"
             app:layout_constraintTop_toTopOf="@id/tags" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -46,7 +58,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/versionName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/versionName"
+            app:layout_constraintStart_toEndOf="@id/cpuArch"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView

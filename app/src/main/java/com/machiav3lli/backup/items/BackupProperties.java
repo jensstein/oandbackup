@@ -46,12 +46,16 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
     @Expose
     private final String cipherType;
 
+    @SerializedName("cpuArch")
+    @Expose
+    private final String cpuArch;
+
     @Expose(serialize = false, deserialize = false)
     private Uri backupLocation;
 
     public BackupProperties(Uri backupLocation, Context context, PackageInfo pi, LocalDateTime backupDate,
                             boolean hasApk, boolean hasAppData, boolean hasDevicesProtectedData,
-                            boolean hasExternalData, boolean hasObbData, String cipherType) {
+                            boolean hasExternalData, boolean hasObbData, String cipherType, String cpuArch) {
         super(context, pi);
         this.backupLocation = backupLocation;
         this.backupDate = backupDate;
@@ -61,12 +65,13 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.hasExternalData = hasExternalData;
         this.hasObbData = hasObbData;
         this.cipherType = cipherType;
+        this.cpuArch = cpuArch;
     }
 
 
     public BackupProperties(Uri backupLocation, AppMetaInfo base, LocalDateTime backupDate,
                             boolean hasApk, boolean hasAppData, boolean hasDevicesProtectedData,
-                            boolean hasExternalData, boolean hasObbData, String cipherType) {
+                            boolean hasExternalData, boolean hasObbData, String cipherType, String cpuArch) {
         super(base.getPackageName(), base.getPackageLabel(), base.getVersionName(),
                 base.getVersionCode(), base.getProfileId(), base.getSourceDir(),
                 base.getSplitSourceDirs(), base.isSystem());
@@ -78,13 +83,14 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.hasExternalData = hasExternalData;
         this.hasObbData = hasObbData;
         this.cipherType = cipherType;
+        this.cpuArch = cpuArch;
     }
 
     public BackupProperties(Uri backupLocation, String packageName, String packageLabel, String versionName,
                             int versionCode, int profileId, String sourceDir, String[] splitSourceDirs,
                             boolean isSystem, LocalDateTime backupDate,
                             boolean hasApk, boolean hasAppData, boolean hasDevicesProtectedData,
-                            boolean hasExternalData, boolean hasObbData, String cipherType) {
+                            boolean hasExternalData, boolean hasObbData, String cipherType, String cpuArch) {
         super(packageName, packageLabel, versionName, versionCode, profileId, sourceDir, splitSourceDirs, isSystem);
         this.backupLocation = backupLocation;
         this.backupDate = backupDate;
@@ -94,6 +100,7 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.hasExternalData = hasExternalData;
         this.hasObbData = hasObbData;
         this.cipherType = cipherType;
+        this.cpuArch = cpuArch;
     }
 
     protected BackupProperties(Parcel in) {
@@ -104,6 +111,7 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         this.hasExternalData = in.readByte() != 0;
         this.hasObbData = in.readByte() != 0;
         this.cipherType = in.readString();
+        this.cpuArch = in.readString();
     }
 
     @Override
@@ -115,6 +123,7 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         dest.writeByte((byte) (this.hasExternalData ? 1 : 0));
         dest.writeByte((byte) (this.hasObbData ? 1 : 0));
         dest.writeString(this.cipherType);
+        dest.writeString(this.cpuArch);
     }
 
     @Override
@@ -176,6 +185,10 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         return this.cipherType != null && !this.cipherType.isEmpty();
     }
 
+    public String getCpuArch() {
+        return this.cpuArch;
+    }
+
     private void setBackupLocation(@NotNull Uri backupLocation) {
         this.backupLocation = backupLocation;
     }
@@ -191,6 +204,7 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
                 ", hasExternalData=" + hasExternalData +
                 ", hasObbData=" + hasObbData +
                 ", cipherType='" + cipherType + '\'' +
+                ", cpuArch='" + cpuArch + '\'' +
                 ", backupLocation=" + backupLocation +
                 '}';
     }

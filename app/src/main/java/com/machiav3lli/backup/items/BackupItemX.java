@@ -69,6 +69,7 @@ public class BackupItemX extends AbstractItem<BackupItemX.ViewHolder> {
         AppCompatTextView backupDate = this.itemView.findViewById(R.id.backupDate);
         AppCompatTextView encrypted = this.itemView.findViewById(R.id.encrypted);
         AppCompatTextView versionName = this.itemView.findViewById(R.id.versionName);
+        AppCompatTextView cpuArch = this.itemView.findViewById(R.id.cpuArch);
 
         public ViewHolder(View view) {
             super(view);
@@ -80,8 +81,9 @@ public class BackupItemX extends AbstractItem<BackupItemX.ViewHolder> {
             // TODO MAYBE add the user to the info?
             this.backupDate.setText(getFormattedDate(backup.getBackupProperties().getBackupDate(), true));
             this.versionName.setText(backup.getBackupProperties().getVersionName());
+            this.cpuArch.setText(String.format("(%s)", backup.getBackupProperties().getCpuArch()));
             ItemUtils.pickBackupBackupMode(backup.getBackupProperties(), this.itemView);
-            if (backup.getBackupProperties().getCipherType() != null && !backup.getBackupProperties().getCipherType().isEmpty()) {
+            if (backup.getBackupProperties().isEncrypted()) {
                 this.encrypted.setText(backup.getBackupProperties().getCipherType());
             }
         }
