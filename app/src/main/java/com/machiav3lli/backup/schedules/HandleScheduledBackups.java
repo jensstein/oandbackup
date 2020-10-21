@@ -34,12 +34,12 @@ import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -65,7 +65,7 @@ public class HandleScheduledBackups {
         listeners.add(listener);
     }
 
-    public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem) {
+    public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem, final boolean enableCustomList) {
         new Thread(() -> {
             String backupDirPath = getBackupDirectoryPath(context);
             backupDir = new File(backupDirPath);
@@ -78,20 +78,19 @@ public class HandleScheduledBackups {
                 return;
             }
             Predicate<AppInfoX> predicate;
+            Set<String> selectedPackages = CustomPackageList.getScheduleCustomList(context, id);
+            Predicate<String> inCustomList = packageName -> !enableCustomList || selectedPackages.contains(packageName);
             switch (mode) {
                 case USER:
-                    predicate = appInfoX -> !appInfoX.isSystem();
+                    predicate = appInfoX -> !appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
                     break;
                 case SYSTEM:
-                    predicate = AppInfoX::isSystem;
+                    predicate = appInfoX -> appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
                     break;
                 case NEW_UPDATED:
-                    predicate = appInfoX -> (!excludeSystem || !appInfoX.isSystem()) && (appInfoX.hasBackups() || (appInfoX.getVersionCode() > appInfoX.getLatestBackup().getBackupProperties().getVersionCode()));
-                    break;
-                case CUSTOM:
-                    LogUtils frw = new LogUtils(getBackupDirectoryPath(context),
-                            SchedulerActivityX.SCHEDULECUSTOMLIST + id);
-                    predicate = appInfoX -> frw.contains(appInfoX.getPackageName());
+                    predicate = appInfoX -> (!excludeSystem || !appInfoX.isSystem())
+                            && (!appInfoX.hasBackups() || appInfoX.isUpdated())
+                            && inCustomList.test(appInfoX.getPackageName());
                     break;
                 default: // equal to ALL
                     predicate = appInfoX -> true;

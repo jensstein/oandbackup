@@ -187,7 +187,6 @@
     <style name="NumberPicker">
         <item name="np_dividerColor">@android:color/transparent</item>
         <item name="np_orientation">horizontal</item>
-        <item name="android:layout_marginHorizontal">@dimen/cards_spacing</item>
         <item name="np_selectedTextColor">?colorAccent</item>
         <item name="np_textColor">?colorControlNormal</item>
         <item name="np_textSize">20sp</item>

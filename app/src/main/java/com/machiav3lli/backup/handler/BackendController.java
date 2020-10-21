@@ -3,6 +3,7 @@ package com.machiav3lli.backup.handler;
 import android.app.usage.StorageStats;
 import android.app.usage.StorageStatsManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
@@ -12,6 +13,7 @@ import com.machiav3lli.backup.BuildConfig;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
+import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -36,6 +38,24 @@ public final class BackendController {
     );
 
     private BackendController() {
+    }
+
+    public static List<PackageInfo> getPackageInfoList(Context context, Schedule.Mode mode) {
+        PackageManager pm = context.getPackageManager();
+        return pm.getInstalledPackages(0).stream()
+                .filter(packageInfo -> {
+                    boolean isSystem = (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM;
+                    boolean isNotIgnored = !ignoredPackages.contains(packageInfo.packageName);
+                    switch (mode) {
+                        case USER:
+                            return !isSystem && isNotIgnored;
+                        case SYSTEM:
+                            return isSystem && isNotIgnored;
+                        default:
+                            return isNotIgnored;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public static List<AppInfoX> getApplicationList(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {

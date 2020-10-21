@@ -309,8 +309,7 @@ public class Schedule {
         ALL(0),
         USER(1),
         SYSTEM(2),
-        NEW_UPDATED(3),
-        CUSTOM(4);
+        NEW_UPDATED(3);
 
         private final int value;
 
@@ -336,8 +335,6 @@ public class Schedule {
                     return SYSTEM;
                 case 3:
                     return NEW_UPDATED;
-                case 4:
-                    return CUSTOM;
                 default:
                     throw new SchedulingException(String.format(
                             "Unknown mode %s", mode));
@@ -353,9 +350,9 @@ public class Schedule {
      * Scheduling submode, whether to include apk, data or both in the backup
      */
     public enum Submode {
-        APK(0),
-        DATA(1),
-        BOTH(2);
+        APK(1),
+        DATA(2),
+        BOTH(3);
         private final int value;
 
         Submode(int value) {
@@ -372,11 +369,11 @@ public class Schedule {
          */
         public static Submode intToSubmode(int submode) throws SchedulingException {
             switch (submode) {
-                case 0:
-                    return APK;
                 case 1:
-                    return DATA;
+                    return APK;
                 case 2:
+                    return DATA;
+                case 3:
                     return BOTH;
                 default:
                     throw new SchedulingException(String.format(

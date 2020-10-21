@@ -18,33 +18,34 @@
 package com.machiav3lli.backup.schedules;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.util.ArraySet;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.MainActivityX;
-import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.items.AppInfoX;
-import com.machiav3lli.backup.utils.LogUtils;
+import com.machiav3lli.backup.handler.BackendController;
+import com.machiav3lli.backup.schedules.db.Schedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CustomPackageList {
-    private static final List<AppInfoX> appInfoList = MainActivityX.getAppsList();
 
-    public static void showList(Activity activity, long number) {
-        showList(activity, SchedulerActivityX.SCHEDULECUSTOMLIST + number);
+    CustomPackageList() {
     }
 
-    public static void showList(Activity activity, String filename) {
-        final LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(activity), filename);
-        final CharSequence[] items = collectItems();
+    public static void showList(Activity activity, int number, Schedule.Mode mode) {
+        List<PackageInfo> packageInfoList = BackendController.getPackageInfoList(activity, mode);
+        Set<String> selectedList = CustomPackageList.getScheduleCustomList(activity, number);
+        final CharSequence[] items = collectItems(packageInfoList);
         final ArrayList<Integer> selected = new ArrayList<>();
         boolean[] checked = new boolean[items.length];
         for (int i = 0; i < items.length; i++) {
-            if (frw.contains(items[i].toString())) {
+            if (selectedList.contains(items[i].toString())) {
                 checked[i] = true;
                 selected.add(i);
             }
@@ -58,26 +59,34 @@ public class CustomPackageList {
                         selected.remove((Integer) id); // cast as Integer to distinguish between remove(Object) and remove(index)
                     }
                 })
-                .setPositiveButton(R.string.dialogOK, (dialog, id) -> handleSelectedItems(frw, items, selected))
+                .setPositiveButton(R.string.dialogOK, (dialog, id) -> saveSelcted(activity, number, items, selected))
                 .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
                 })
                 .show();
     }
 
-    // TODO: this method (and the others) should probably not be static
-    static CharSequence[] collectItems() {
+    static CharSequence[] collectItems(List<PackageInfo> appInfoList) {
         ArrayList<String> list = new ArrayList<>();
         if (!appInfoList.isEmpty()) {
-            for (AppInfoX appInfo : appInfoList)
-                list.add(appInfo.getPackageLabel());
+            for (PackageInfo pi : appInfoList)
+                list.add(pi.packageName);
         }
-        return list.toArray(new CharSequence[0]);
+        return list.stream().sorted().toArray(CharSequence[]::new);
     }
 
-    private static void handleSelectedItems(LogUtils frw, CharSequence[] items, ArrayList<Integer> selected) {
-        frw.clear();
+    private static void saveSelcted(Context context, int index, CharSequence[] items, ArrayList<Integer> selected) {
+        Set<String> selectedApps = new ArraySet<>();
         for (int pos : selected) {
-            frw.putString(items[pos].toString(), true);
+            selectedApps.add(items[pos].toString());
         }
+        CustomPackageList.setScheduleCustomList(context, index, selectedApps);
+    }
+
+    public static Set<String> getScheduleCustomList(Context context, int index) {
+        return context.getSharedPreferences(Constants.PREFS_SCHEDULES, Context.MODE_PRIVATE).getStringSet(Constants.customListAddress(index), new ArraySet<>());
+    }
+
+    public static void setScheduleCustomList(Context context, int index, Set<String> list) {
+        context.getSharedPreferences(Constants.PREFS_SCHEDULES, Context.MODE_PRIVATE).edit().putStringSet(Constants.customListAddress(index), list).apply();
     }
 }
