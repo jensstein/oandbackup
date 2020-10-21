@@ -93,7 +93,7 @@ public class HandleScheduledBackups {
                             && inCustomList.test(appInfoX.getPackageName());
                     break;
                 default: // equal to ALL
-                    predicate = appInfoX -> true;
+                    predicate = appInfoX -> inCustomList.test(appInfoX.getPackageName());
             }
             List<AppInfoX> listToBackUp = list.stream()
                     .filter(predicate)
