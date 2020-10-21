@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.schedules.db;
 
 import android.content.SharedPreferences;
+import android.util.ArraySet;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -29,6 +30,10 @@ import com.machiav3lli.backup.schedules.SchedulingException;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Holds scheduling data
  */
@@ -36,33 +41,33 @@ import org.jetbrains.annotations.NotNull;
 public class Schedule {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    private boolean enabled;
-    private int hour;
-    private int interval;
-    private long placed;
+    private boolean enabled = false;
+    private int hour = 0;
+    private int interval = 1;
+    private long placed = System.currentTimeMillis();
     @TypeConverters(ModeConverter.class)
     private Mode mode;
     @TypeConverters(SubmodeConverter.class)
     private Submode submode;
     private long timeUntilNextEvent;
-    private boolean excludeSystem;
+    private boolean excludeSystem = false;
+    private boolean enableCustomList = false;
+    @TypeConverters(CustomListConverter.class)
+    private Set<String> customList = new ArraySet<>();
 
     public Schedule() {
         mode = Mode.ALL;
         submode = Submode.BOTH;
     }
 
-    // TODO: the shared preferences files should be replaced by a single database table
-
     /**
      * Get scheduling data from a preferences file.
      *
      * @param preferences preferences object
-     * @param number      number of schedule to fetch
+     * @param number      index of schedule to fetch
      * @return scheduling data object
      */
-    public static Schedule fromPreferences(SharedPreferences preferences,
-                                           long number) throws SchedulingException {
+    public static Schedule fromPreferences(SharedPreferences preferences, long number) throws SchedulingException {
         final Schedule schedule = new Schedule();
         schedule.id = number;
         schedule.enabled = preferences.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false);
@@ -72,6 +77,7 @@ public class Schedule {
         schedule.mode = Mode.intToMode(preferences.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0));
         schedule.submode = Submode.intToSubmode(preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
         schedule.excludeSystem = preferences.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
+        schedule.customList = preferences.getStringSet(Constants.PREFS_SCHEDULES_CUSTOMLIST + number, new ArraySet<>());
         return schedule;
     }
 
@@ -100,7 +106,7 @@ public class Schedule {
     }
 
     public int getInterval() {
-        return interval;
+        return this.interval;
     }
 
     public void setInterval(int interval) {
@@ -108,7 +114,7 @@ public class Schedule {
     }
 
     public long getPlaced() {
-        return placed;
+        return this.placed;
     }
 
     public void setPlaced(long placed) {
@@ -116,19 +122,15 @@ public class Schedule {
     }
 
     public Mode getMode() {
-        return mode;
+        return this.mode;
     }
 
     public void setMode(Mode mode) {
         this.mode = mode;
     }
 
-    public void setMode(int mode) throws SchedulingException {
-        this.mode = Mode.intToMode(mode);
-    }
-
     public Submode getSubmode() {
-        return submode;
+        return this.submode;
     }
 
     public void setSubmode(Submode submode) {
@@ -136,7 +138,7 @@ public class Schedule {
     }
 
     public long getTimeUntilNextEvent() {
-        return timeUntilNextEvent;
+        return this.timeUntilNextEvent;
     }
 
     public void setTimeUntilNextEvent(long timeUntilNextEvent) {
@@ -144,11 +146,28 @@ public class Schedule {
     }
 
     public boolean isExcludeSystem() {
-        return excludeSystem;
+        return this.excludeSystem;
     }
 
     public void setExcludeSystem(boolean excludeSystem) {
         this.excludeSystem = excludeSystem;
+    }
+
+
+    public boolean isEnableCustomList() {
+        return this.enableCustomList;
+    }
+
+    public void setEnableCustomList(boolean enableCustomList) {
+        this.enableCustomList = enableCustomList;
+    }
+
+    public Set<String> getCustomList() {
+        return this.customList;
+    }
+
+    public void setCustomList(Set<String> customList) {
+        this.customList = customList;
     }
 
     /**
@@ -157,15 +176,17 @@ public class Schedule {
      * @param preferences shared preferences object
      */
     public void persist(SharedPreferences preferences) {
-        final SharedPreferences.Editor edit = preferences.edit();
-        edit.putBoolean(Constants.PREFS_SCHEDULES_ENABLED + id, enabled);
-        edit.putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, hour);
-        edit.putInt(Constants.PREFS_SCHEDULES_INTERVAL + id, interval);
-        edit.putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, placed);
-        edit.putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value);
-        edit.putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value);
-        edit.putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, excludeSystem);
-        edit.apply();
+        preferences.edit()
+                .putBoolean(Constants.PREFS_SCHEDULES_ENABLED + id, enabled)
+                .putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, hour)
+                .putInt(Constants.PREFS_SCHEDULES_INTERVAL + id, interval)
+                .putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, placed)
+                .putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value)
+                .putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value)
+                .putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, excludeSystem)
+                .putBoolean(Constants.PREFS_SCHEDULES_ENABLECUSTOMLIST + id, enableCustomList)
+                .putStringSet(Constants.PREFS_SCHEDULES_CUSTOMLIST, customList)
+                .apply();
     }
 
 
@@ -180,8 +201,10 @@ public class Schedule {
                 interval == schedule.interval &&
                 placed == schedule.placed &&
                 excludeSystem == schedule.excludeSystem &&
+                enableCustomList == schedule.enableCustomList &&
                 mode == schedule.mode &&
-                submode == schedule.submode;
+                submode == schedule.submode &&
+                customList.equals(schedule.customList);
     }
 
     @Override
@@ -195,6 +218,8 @@ public class Schedule {
         hash = 31 * hash + mode.hashCode();
         hash = 31 * hash + submode.hashCode();
         hash = 31 * hash + (excludeSystem ? 1 : 0);
+        hash = 31 * hash + (enableCustomList ? 1 : 0);
+        hash = 31 * hash + customList.hashCode();
         return hash;
     }
 
@@ -210,7 +235,71 @@ public class Schedule {
                 ", mode=" + mode +
                 ", submode=" + submode +
                 ", excludeSystem=" + excludeSystem +
+                ", enableCustomList=" + enableCustomList +
+                ", customList=" + customList +
                 '}';
+    }
+
+    public static class Builder {
+        final Schedule schedule;
+
+        public Builder() {
+            schedule = new Schedule();
+        }
+
+        public Builder withId(int id) {
+            schedule.id = id;
+            return this;
+        }
+
+        public Builder withEnabled(boolean enabled) {
+            schedule.enabled = enabled;
+            return this;
+        }
+
+        public Builder withHour(int hour) {
+            schedule.hour = hour;
+            return this;
+        }
+
+        public Builder withInterval(int interval) {
+            schedule.interval = interval;
+            return this;
+        }
+
+        public Builder withPlaced(long placed) {
+            schedule.placed = placed;
+            return this;
+        }
+
+        public Builder withMode(Schedule.Mode mode) {
+            schedule.mode = mode;
+            return this;
+        }
+
+        public Builder withSubmode(Schedule.Submode submode) {
+            schedule.submode = submode;
+            return this;
+        }
+
+        public Builder withExcludeSystem(boolean excludeSystem) {
+            schedule.excludeSystem = excludeSystem;
+            return this;
+        }
+
+        public Builder withEnableCustomList(boolean enableCustomList) {
+            schedule.enableCustomList = enableCustomList;
+            return this;
+        }
+
+        public Builder withCustomList(Set<String> customlist) {
+            schedule.customList = customlist;
+            return this;
+        }
+
+        public Schedule build() {
+            return schedule;
+        }
     }
 
     /**
@@ -300,58 +389,6 @@ public class Schedule {
         }
     }
 
-    public static class Builder {
-        final Schedule schedule;
-
-        public Builder() {
-            schedule = new Schedule();
-        }
-
-        public Builder withId(int id) {
-            schedule.id = id;
-            return this;
-        }
-
-        public Builder withEnabled(boolean enabled) {
-            schedule.enabled = enabled;
-            return this;
-        }
-
-        public Builder withHour(int hour) {
-            schedule.hour = hour;
-            return this;
-        }
-
-        public Builder withInterval(int interval) {
-            schedule.interval = interval;
-            return this;
-        }
-
-        public Builder withPlaced(long placed) {
-            schedule.placed = placed;
-            return this;
-        }
-
-        public Builder withMode(int mode) throws SchedulingException {
-            schedule.mode = Mode.intToMode(mode);
-            return this;
-        }
-
-        public Builder withSubmode(int submode) throws SchedulingException {
-            schedule.submode = Submode.intToSubmode(submode);
-            return this;
-        }
-
-        public Builder withExcludeSystem(boolean excludeSystem) {
-            schedule.excludeSystem = excludeSystem;
-            return this;
-        }
-
-        public Schedule build() {
-            return schedule;
-        }
-    }
-
     static class ModeConverter {
         private ModeConverter() {
         }
@@ -379,6 +416,21 @@ public class Schedule {
         @TypeConverter
         public static Submode toSubmode(String name) {
             return Submode.valueOf(name);
+        }
+    }
+
+    static class CustomListConverter {
+        private CustomListConverter() {
+        }
+
+        @TypeConverter
+        public static Set<String> toCustomList(String stringCustomList) {
+            return new HashSet<>(Arrays.asList(stringCustomList.split(",")));
+        }
+
+        @TypeConverter
+        public static String toString(Set<String> customList) {
+            return String.join(",", customList);
         }
     }
 }

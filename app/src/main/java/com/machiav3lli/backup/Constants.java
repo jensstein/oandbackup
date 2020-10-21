@@ -42,6 +42,8 @@ public class Constants {
     public static final String PREFS_SCHEDULES_SUBMODE = "scheduleSubMode";
     public static final String PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent";
     public static final String PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem";
+    public static final String PREFS_SCHEDULES_ENABLECUSTOMLIST = "enableCustomList";
+    public static final String PREFS_SCHEDULES_CUSTOMLIST = "customList";
 
     public static final String PREFS_THEME = "themes";
     public static final String PREFS_LANGUAGES = "languages";
@@ -106,6 +108,10 @@ public class Constants {
 
     public static String classAddress(String address) {
         return PREFS_SHARED_PRIVATE + address;
+    }
+
+    public static String customListAddress(int index) {
+        return PREFS_SCHEDULES_CUSTOMLIST + index;
     }
 
     public static String classTag(String tag) {
