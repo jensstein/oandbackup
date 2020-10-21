@@ -67,7 +67,11 @@ public class RestoreAppAction extends BaseAppAction {
     public ActionResult run(AppInfoX app, BackupProperties backupProperties, Uri backupLocation, int backupMode) {
         Log.i(RestoreAppAction.TAG, String.format("Restoring up: %s [%s]", app.getPackageName(), app.getPackageLabel()));
         try {
-            this.preprocessPackage(app.getPackageName());
+            boolean stopProcess = PrefUtils.isKillBeforeActionEnabled(this.getContext());
+            if (stopProcess) {
+                Log.d(BackupAppAction.TAG, "preprocess package (to avoid file inconsistencies during backup etc.)");
+                this.preprocessPackage(app.getPackageName());
+            }
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 this.restorePackage(backupLocation, backupProperties);
                 app.refreshFromPackageManager(this.getContext());
@@ -83,7 +87,10 @@ public class RestoreAppAction extends BaseAppAction {
                     false
             );
         } finally {
-            this.postprocessPackage(app.getPackageName());
+            if (stopProcess) {
+                Log.d(BackupAppAction.TAG, "postprocess package (to set it back to normal operation)");
+                this.postprocessPackage(app.getPackageName());
+            }
         }
         Log.i(RestoreAppAction.TAG, String.format("%s: Restore done: %s", app, backupProperties));
         return new ActionResult(app, backupProperties, "", true);
