@@ -69,7 +69,7 @@ public class RestoreAppAction extends BaseAppAction {
         try {
             boolean stopProcess = PrefUtils.isKillBeforeActionEnabled(this.getContext());
             if (stopProcess) {
-                Log.d(BackupAppAction.TAG, "preprocess package (to avoid file inconsistencies during backup etc.)");
+                Log.d(RestoreAppAction.TAG, "preprocess package (to avoid file inconsistencies during backup etc.)");
                 this.preprocessPackage(app.getPackageName());
             }
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
@@ -88,7 +88,7 @@ public class RestoreAppAction extends BaseAppAction {
             );
         } finally {
             if (stopProcess) {
-                Log.d(BackupAppAction.TAG, "postprocess package (to set it back to normal operation)");
+                Log.d(RestoreAppAction.TAG, "postprocess package (to set it back to normal operation)");
                 this.postprocessPackage(app.getPackageName());
             }
         }
