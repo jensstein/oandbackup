@@ -338,7 +338,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             new AlertDialog.Builder(this)
                     .setTitle(R.string.enable_encryption_title)
                     .setMessage(R.string.enable_encryption_message)
-                    .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class)))
+                    .setPositiveButton(R.string.dialog_approve, (dialog, which) -> startActivity(new Intent(getApplicationContext(), PrefsActivity.class).putExtra(".toEncryption", true)))
                     .show();
         }
     }

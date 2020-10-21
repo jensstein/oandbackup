@@ -25,6 +25,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding;
+import com.machiav3lli.backup.fragments.PrefsServiceFragment;
 
 public class PrefsActivity extends BaseActivity {
     private static final String TAG = Constants.classTag(".PrefsActivity");
@@ -36,13 +37,18 @@ public class PrefsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPrefsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new PrefsFragment()).commit();
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(".toEncryption", false)) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new PrefsServiceFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.prefsFragment, new PrefsFragment()).commit();
+        }
         binding.backButton.setOnClickListener(v -> {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0)
                 super.onBackPressed();
