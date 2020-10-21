@@ -25,13 +25,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding;
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment;
 import com.machiav3lli.backup.fragments.HelpSheet;
@@ -45,11 +48,12 @@ import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
-import com.machiav3lli.backup.utils.FileUtils;
-import com.machiav3lli.backup.utils.LogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
+import com.mikepenz.fastadapter.listeners.ClickEventHook;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -63,11 +67,11 @@ public class SchedulerActivityX extends BaseActivity
     public static final String DATABASE_NAME = "schedules.db";
     private static final String TAG = Constants.classTag(".SchedulerActivityX");
     private ArrayList<SchedulerItemX> list;
-    private ItemAdapter<SchedulerItemX> itemAdapter;
     private int totalSchedules;
     private HandleAlarms handleAlarms;
     private ScheduleSheet sheetSchedule;
-    private FastAdapter<SchedulerItemX> fastAdapter;
+    private final ItemAdapter<SchedulerItemX> schedulerItemAdapter = new ItemAdapter<>();
+    private FastAdapter<SchedulerItemX> schedulerFastAdapter;
     private ActivitySchedulerXBinding binding;
     private BlacklistsDBHelper blacklistsDBHelper;
     private HelpSheet sheetHelp;
@@ -77,29 +81,29 @@ public class SchedulerActivityX extends BaseActivity
         super.onCreate(savedInstanceState);
         binding = ActivitySchedulerXBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupOnClicks();
-
         handleAlarms = new HandleAlarms(this);
         list = new ArrayList<>();
         blacklistsDBHelper = new BlacklistsDBHelper(this);
+        setupViews();
+        setupOnClicks();
+    }
 
-        itemAdapter = new ItemAdapter<>();
-        fastAdapter = FastAdapter.with(itemAdapter);
-        fastAdapter.setHasStableIds(true);
-        binding.recyclerView.setAdapter(fastAdapter);
+    private void setupViews() {
+        schedulerFastAdapter = FastAdapter.with(schedulerItemAdapter);
+        schedulerFastAdapter.setHasStableIds(true);
+        binding.recyclerView.setAdapter(schedulerFastAdapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        fastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
+        schedulerItemAdapter.add(list);
+    }
+
+    private void setupOnClicks() {
+        binding.backButton.setOnClickListener(v -> finish());
+        schedulerFastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
             if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
             sheetSchedule = new ScheduleSheet(item);
             sheetSchedule.showNow(getSupportFragmentManager(), "SCHEDULESHEET");
             return false;
         });
-        itemAdapter.add(list);
-
-        binding.backButton.setOnClickListener(v -> finish());
-    }
-
-    private void setupOnClicks() {
         binding.blacklistButton.setOnClickListener(v -> new Thread(() -> {
             Bundle args = new Bundle();
             args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID);
@@ -121,6 +125,14 @@ public class SchedulerActivityX extends BaseActivity
             if (sheetHelp == null) sheetHelp = new HelpSheet();
             sheetHelp.showNow(SchedulerActivityX.this.getSupportFragmentManager(), "APPSHEET");
         });
+        schedulerFastAdapter.addEventHook(new SchedulerActivityX.OnDeleteClickHook());
+        schedulerFastAdapter.addEventHook(new SchedulerActivityX.OnEnableClickHook());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
     }
 
     @Override
@@ -157,8 +169,8 @@ public class SchedulerActivityX extends BaseActivity
         return list;
     }
 
-    public ItemAdapter<SchedulerItemX> getItemAdapter() {
-        return itemAdapter;
+    public ItemAdapter<SchedulerItemX> getSchedulerItemAdapter() {
+        return schedulerItemAdapter;
     }
 
     void migrateSchedulesToDatabase(SharedPreferences preferences) throws SchedulingException {
@@ -174,7 +186,6 @@ public class SchedulerActivityX extends BaseActivity
                 final long[] ids = scheduleDao.insert(schedule);
                 // TODO: throw an exception if renaming failed. This requires
                 //  the renaming logic to propagate errors properly.
-                renameCustomListFile(i, ids[0]);
                 removePreferenceEntries(preferences, i);
                 if (schedule.isEnabled()) {
                     handleAlarms.cancelAlarm(i);
@@ -189,33 +200,28 @@ public class SchedulerActivityX extends BaseActivity
     }
 
     public void removePreferenceEntries(SharedPreferences preferences, int number) {
-        final SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(Constants.PREFS_SCHEDULES_ENABLED + number);
-        editor.remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number);
-        editor.remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number);
-        editor.remove(Constants.PREFS_SCHEDULES_INTERVAL + number);
-        editor.remove(Constants.PREFS_SCHEDULES_MODE + number);
-        editor.remove(Constants.PREFS_SCHEDULES_SUBMODE + number);
-        editor.remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number);
-        editor.remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number);
-        editor.apply();
-    }
-
-    public void renameCustomListFile(long id, long destinationId) {
-        LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(this), SCHEDULECUSTOMLIST + id);
-        frw.rename(SCHEDULECUSTOMLIST + destinationId);
-    }
-
-    public void removeCustomListFile(long number) {
-        LogUtils frw = new LogUtils(FileUtils.getBackupDirectoryPath(this), SCHEDULECUSTOMLIST + number);
-        frw.delete();
+        preferences.edit()
+                .remove(Constants.PREFS_SCHEDULES_ENABLED + number)
+                .remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number)
+                .remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number)
+                .remove(Constants.PREFS_SCHEDULES_INTERVAL + number)
+                .remove(Constants.PREFS_SCHEDULES_MODE + number)
+                .remove(Constants.PREFS_SCHEDULES_SUBMODE + number)
+                .remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number)
+                .remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number)
+                .remove(Constants.PREFS_SCHEDULES_ENABLECUSTOMLIST + number)
+                .remove(Constants.PREFS_SCHEDULES_CUSTOMLIST + number)
+                .apply();
     }
 
     private void refresh(List<Schedule> schedules) {
         list = new ArrayList<>();
         if (!schedules.isEmpty())
             for (Schedule schedule : schedules) list.add(new SchedulerItemX(schedule));
-        if (itemAdapter != null) FastAdapterDiffUtil.INSTANCE.set(itemAdapter, list);
+        if (schedulerItemAdapter != null) {
+            schedulerItemAdapter.clear();
+            schedulerItemAdapter.add(list);
+        }
     }
 
     // TODO rebase those Tasks, as AsyncTask is deprecated
@@ -273,11 +279,9 @@ public class SchedulerActivityX extends BaseActivity
                 return new ResultHolder<>();
             }
 
-            final SharedPreferences preferences = scheduler
-                    .getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
+            final SharedPreferences preferences = scheduler.getSharedPreferences(Constants.PREFS_SCHEDULES, 0);
             if (preferences.contains(Constants.PREFS_SCHEDULES_TOTAL)) {
-                scheduler.totalSchedules = preferences.getInt(
-                        Constants.PREFS_SCHEDULES_TOTAL, 0);
+                scheduler.totalSchedules = preferences.getInt(Constants.PREFS_SCHEDULES_TOTAL, 0);
                 // set to zero so there is always at least one schedule on activity start
                 scheduler.totalSchedules = Math.max(scheduler.totalSchedules, 0);
                 try {
@@ -345,10 +349,38 @@ public class SchedulerActivityX extends BaseActivity
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (sheetSchedule != null) sheetSchedule.dismissAllowingStateLoss();
+    public class OnDeleteClickHook extends ClickEventHook<SchedulerItemX> {
+        @Nullable
+        @Override
+        public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
+            return viewHolder.itemView.findViewById(R.id.delete);
+        }
+
+        @Override
+        public void onClick(@NotNull View view, int i, @NotNull FastAdapter<SchedulerItemX> fastAdapter, @NotNull SchedulerItemX item) {
+            new ScheduleSheet.RemoveScheduleTask(SchedulerActivityX.this).execute(item.getSched());
+            new SchedulerActivityX.refreshTask(SchedulerActivityX.this).execute();
+        }
+    }
+
+    public class OnEnableClickHook extends ClickEventHook<SchedulerItemX> {
+        @Nullable
+        @Override
+        public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
+            return viewHolder.itemView.findViewById(R.id.enableCheckbox);
+        }
+
+        @Override
+        public void onClick(@NotNull View view, int i, @NotNull FastAdapter<SchedulerItemX> fastAdapter, @NotNull SchedulerItemX item) {
+            item.getSched().setEnabled(((AppCompatCheckBox) view).isChecked());
+            ScheduleSheet.UpdateScheduleRunnable updateScheduleRunnable =
+                    new ScheduleSheet.UpdateScheduleRunnable(SchedulerActivityX.this, BlacklistsDBHelper.DATABASE_NAME, item.getSched());
+            new Thread(updateScheduleRunnable).start();
+            if (!item.getSched().isEnabled()) {
+                handleAlarms.cancelAlarm((int) item.getSched().getId());
+            }
+            schedulerFastAdapter.notifyAdapterDataSetChanged();
+        }
     }
 
     private static class ResultHolder<T> {
