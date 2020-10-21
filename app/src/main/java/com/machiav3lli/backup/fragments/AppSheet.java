@@ -29,7 +29,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,6 +65,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -157,7 +157,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             List<BackupItemX> backupList = new ArrayList<>();
             for (BackupItem backup : app.getBackupHistory())
                 backupList.add(new BackupItemX(backup));
-            backupList.sort(SortFilterManager.backupDateComparator);
+            backupList.sort(SortFilterManager.BACKUP_DATE_COMPARATOR);
             FastAdapterDiffUtil.INSTANCE.set(backupItemAdapter, backupList);
         }
     }
@@ -299,7 +299,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     public class OnRestoreClickHook extends ClickEventHook<BackupItemX> {
-        @org.jetbrains.annotations.Nullable
+
+        @Nullable
         @Override
         public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
             return viewHolder.itemView.findViewById(R.id.restore);
@@ -326,7 +327,8 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     }
 
     public class OnDeleteClickHook extends ClickEventHook<BackupItemX> {
-        @org.jetbrains.annotations.Nullable
+
+        @Nullable
         @Override
         public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
             return viewHolder.itemView.findViewById(R.id.delete);

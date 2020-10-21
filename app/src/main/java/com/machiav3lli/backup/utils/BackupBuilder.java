@@ -35,7 +35,6 @@ public class BackupBuilder {
         this.cpuArch = Build.SUPPORTED_ABIS[0];
     }
 
-
     private StorageFile ensureBackupPath(Uri backupRoot) {
         String dateTimeStr = Constants.BACKUP_DATE_TIME_FORMATTER.format(this.backupDate);
         // root/packageName/userId/dateTimeStr

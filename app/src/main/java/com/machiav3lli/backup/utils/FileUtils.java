@@ -87,11 +87,11 @@ public final class FileUtils {
                 throw new StorageLocationNotConfiguredException();
             }
             DocumentFile storageRootDoc = DocumentFile.fromTreeUri(context, Uri.parse(storageRoot));
-            if(storageRootDoc == null || !storageRootDoc.exists()){
+            if (storageRootDoc == null || !storageRootDoc.exists()) {
                 throw new BackupLocationInAccessibleException("Cannot access the root location.");
             }
             DocumentFile backupLocationDoc = storageRootDoc.findFile(FileUtils.BACKUP_SUBDIR_NAME);
-            if(backupLocationDoc == null || !backupLocationDoc.exists()){
+            if (backupLocationDoc == null || !backupLocationDoc.exists()) {
                 Log.i(FileUtils.TAG, "Backup directory does not exist. Creating it");
                 backupLocationDoc = storageRootDoc.createDirectory(FileUtils.BACKUP_SUBDIR_NAME);
                 assert backupLocationDoc != null;
@@ -105,7 +105,7 @@ public final class FileUtils {
      * Invalidates the cached value for the backup location URI so that the next call to
      * `getBackupDir` will set it again.
      */
-    public static void invalidateBackupLocation(){
+    public static void invalidateBackupLocation() {
         FileUtils.backupLocation = null;
     }
 

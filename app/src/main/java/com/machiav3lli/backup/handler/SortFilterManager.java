@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 
 public class SortFilterManager {
 
-    public static final Comparator<AppInfoX> appInfoLabelComparator = (m1, m2) ->
+    public static final Comparator<AppInfoX> APP_INFO_LABEL_COMPARATOR = (m1, m2) ->
             m1.getPackageLabel().compareToIgnoreCase(m2.getPackageLabel());
-    public static final Comparator<AppInfoX> appInfoPackageNameComparator = (m1, m2) ->
+    public static final Comparator<AppInfoX> APP_INFO_PACKAGE_NAME_COMPARATOR = (m1, m2) ->
             m1.getPackageName().compareToIgnoreCase(m2.getPackageName());
-    public static final Comparator<AppInfoX> appDataSizeComparator = (m1, m2) ->
+    public static final Comparator<AppInfoX> APP_INFO_DATA_SIZE_COMPARATOR = (m1, m2) ->
             Long.compare(m1.getDataBytes(), m2.getDataBytes());
-    public static final Comparator<BackupItemX> backupDateComparator = (m1, m2) ->
+    public static final Comparator<BackupItemX> BACKUP_DATE_COMPARATOR = (m1, m2) ->
             m2.getBackup().getBackupProperties().getBackupDate().compareTo(m1.getBackup().getBackupProperties().getBackupDate());
 
     public static SortFilterModel getFilterPreferences(Context context) {
@@ -144,13 +144,13 @@ public class SortFilterManager {
     private static List<AppInfoX> applySort(List<AppInfoX> list, CharSequence filter) {
         switch (filter.charAt(0)) {
             case '1':
-                list.sort(appInfoPackageNameComparator);
+                list.sort(APP_INFO_PACKAGE_NAME_COMPARATOR);
                 break;
             case '2':
-                list.sort(appDataSizeComparator);
+                list.sort(APP_INFO_DATA_SIZE_COMPARATOR);
                 break;
             default:
-                list.sort(appInfoLabelComparator);
+                list.sort(APP_INFO_LABEL_COMPARATOR);
         }
         return list;
     }

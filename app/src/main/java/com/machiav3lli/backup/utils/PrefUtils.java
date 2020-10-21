@@ -48,7 +48,10 @@ public class PrefUtils {
     public static final int READ_PERMISSION = 2;
     public static final int WRITE_PERMISSION = 3;
     public static final int BACKUP_DIR = 5;
-    // public static final boolean STORAGE_MODE_R = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+    // public static final boolean STORAGE_MODE_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+
+    PrefUtils() {
+    }
 
     public static byte[] getCryptoSalt(Context context) {
         String userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "");
@@ -157,7 +160,7 @@ public class PrefUtils {
     public static boolean checkUsageStatsPermission(Context context) {
         AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         assert appOps != null;
-        final int mode = Build.VERSION.SDK_INT >= 29 ?
+        final int mode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
                 appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName())
                 : appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
         if (mode == AppOpsManager.MODE_DEFAULT) {
