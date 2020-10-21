@@ -62,6 +62,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/update"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_update_24" />
+
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/obbMode"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -81,13 +88,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_external_data_24" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/update"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_update_24" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/dataMode"
