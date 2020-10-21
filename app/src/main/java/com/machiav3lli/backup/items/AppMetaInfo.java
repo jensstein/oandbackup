@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -58,8 +59,7 @@ public class AppMetaInfo implements Parcelable {
         this.packageName = pi.packageName;
         this.packageLabel = pi.applicationInfo.loadLabel(context.getPackageManager()).toString();
         this.versionName = pi.versionName;
-        // TODO: versioncode deprecated, getVersionCodeLong() should be used for >= SDK28
-        this.versionCode = pi.versionCode;
+        this.versionCode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? (int) pi.getLongVersionCode() : pi.versionCode;
         // Don't have access to UserManager service; using a cheap workaround to figure out
         // who is running by parsing it from the data path: /data/user/0/org.example.app
         try {
