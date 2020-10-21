@@ -3,13 +3,13 @@
         <h2>Usage notes</h2>
         <p><strong>Modos de backup</strong>: uma app pode ser copiado apenas com o apk dela, apenas com os dados dela ou ambos. Uma app não instalada atualmente só pode ser restaurada se o apk estiver presente.
         </p>
-        <p><strong>Deletar backup</strong>: Deleta os arquivos de backup para a app escolhida.
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
         </p>
         <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
         </p>
-        <p><strong> habilita/desabilita</strong>&gt; Usa o script android`pm` para habilitar o desabilitar uma app. Desabilitando uma app, remove-a da interface de usuário normal sem desinstalá-la. Isso pode ser usado para habilitar ou desabilitar uma app para múltiplos usuário ao mesmo tempo (Se o dispositivo tem múltiplos usuário habilitados). Usuários são identificados com uma id 0 é o primeiro usuário (proprietário).
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
         </p>
-        <p><strong>Múltiplos usuários</strong>: Multi-usuário ainda é algo experimental mas deve funcionar. Quando restaurar em um cenário multi-usuário, `pm install -r $apk` é chamado e, subsequentemente, a app é desabilitada para todo usuário que tem a app listada em /data/system/user/$user/package-restrictions.xml (a não ser que a app esteja listada como habilitada="1". <br> Isso pode criar problemas para usuário instalando a mesma app no ponto posterior, mas, é necessário prevenir a app de ser instalada para todos os usuário ao mesmo tempo. O menu contexto tem uma opção para habilitar ou desabilitar apps que pode ser usadas se outros usuário se tornarem inaptos para usar específica app, devido à desabilitação na restauração.<br> Habilitando e desabilitando funciona somente após uma instalação inicial (não necessariamente do OAndBackupx) ou restaurar da app.
+        <p><strong>Múltiplos usuários</strong>: Multi-usuário ainda é algo experimental mas deve funcionar. Quando restaurar em um cenário multi-usuário, `pm install -r $apk` é chamado e, subsequentemente, a app é desabilitada para todo usuário que tem a app listada em /data/system/user/$user/package-restrictions.xml (a não ser que a app esteja listada como habilitada="1". <br> Isso pode criar problemas para usuário instalando a mesma app no ponto posterior, mas, é necessário prevenir a app de ser instalada para todos os usuário ao mesmo tempo. O menu contexto tem uma opção para habilitar ou desabilitar apps que pode ser usadas se outros usuário se tornarem inaptos para usar específica app, devido à desabilitação na restauração.<br> Habilitar e desabilitar funciona somente após uma instalação inicial (não necessariamente do OAndBackupx) ou restaurar da app.
         </p>
     </body>
 </html>
