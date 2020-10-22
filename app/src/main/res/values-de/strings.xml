@@ -218,4 +218,7 @@
     <string name="prefs_housekeepingmoment">Zeitpunkt des Löschens alter Revisionen</string>
     <string name="prefs_housekeepingmoment_before">Vor der Sicherung</string>
     <string name="prefs_housekeepingmoment_after">Nach der Sicherung</string>
+    <string name="radio_obbdata">OBB Daten</string>
+    <string name="radio_deviceprotecteddata">Geschützte Geräte-Daten</string>
+    <string name="radio_externaldata">Externe Daten</string>
 </resources>
