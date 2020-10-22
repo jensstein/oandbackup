@@ -216,4 +216,7 @@
     <string name="prefs_housekeepingmoment">版本清理时间</string>
     <string name="prefs_housekeepingmoment_before">备份前</string>
     <string name="prefs_housekeepingmoment_after">备份后</string>
+    <string name="radio_obbdata">OBB 数据</string>
+    <string name="radio_deviceprotecteddata">受保护的设备数据</string>
+    <string name="radio_externaldata">外部数据</string>
 </resources>
