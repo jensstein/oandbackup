@@ -216,4 +216,7 @@
     <string name="prefs_housekeepingmoment">Düzeltme temizleme zamanı</string>
     <string name="prefs_housekeepingmoment_before">Yedeklemeden Önce</string>
     <string name="prefs_housekeepingmoment_after">Yedeklemeden Sonra</string>
+    <string name="radio_obbdata">OBB Verisi</string>
+    <string name="radio_deviceprotecteddata">Cihaz Korumalı Veri</string>
+    <string name="radio_externaldata">Harici Veri</string>
 </resources>
