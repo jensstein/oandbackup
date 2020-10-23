@@ -80,7 +80,7 @@
     <string name="prefs_user">Ustawienia użytkownika</string>
     <string name="prefs_theme">Motyw</string>
     <string name="prefs_acquirewakelock">Zapobiegaj przejściu w stan spoczynku</string>
-    <string name="prefs_batchdelete">Usunąć kopie zapasowe?</string>
+    <string name="prefs_batchdelete">Usunąć kopie zapasowe\?</string>
     <string name="prefs_pathbackupfolder">Katalog kopii zapasowej</string>
     <string name="prefs_oldbackups">Filtruj kopie po czasie</string>
     <string name="prefs_copyselfapk">Skopiuj własne APK</string>
