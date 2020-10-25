@@ -39,7 +39,7 @@
         app:iconSpaceReserved="false" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="killBeforeAction"
         android:summary="@string/prefs_forcekill_summary"
         android:title="@string/prefs_forcekill"

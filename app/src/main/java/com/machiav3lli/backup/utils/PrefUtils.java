@@ -175,7 +175,7 @@ public class PrefUtils {
     }
 
     public static boolean isKillBeforeActionEnabled(Context context) {
-        return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, true);
+        return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, false);
     }
 
     public static class StorageLocationNotConfiguredException extends Exception {
