@@ -417,18 +417,15 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
         // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
         UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
-            try (FileWriter fw = new FileWriter(FileUtils.getDefaultLogFilePath(this.getApplicationContext()), true)) {
-                fw.write(errors);
-                Toast.makeText(
-                        MainActivityX.this,
-                        String.format(this.getString(R.string.logfileSavedAt), FileUtils.getDefaultLogFilePath(this.getApplicationContext())),
+            try {
+                LogUtils logUtils = new LogUtils(this);
+                Uri logFileUri = logUtils.getLogFile();
+                logUtils.writeToLogFile(errors);
+                Toast.makeText(MainActivityX.this,
+                        String.format(this.getString(R.string.logfileSavedAt), logFileUri),
                         Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                new AlertDialog.Builder(MainActivityX.this)
-                        .setTitle(R.string.errorDialogTitle)
-                        .setMessage(e.getLocalizedMessage())
-                        .setPositiveButton(R.string.dialogOK, null)
-                        .show();
+            } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
+                e.printStackTrace();
             }
         });
         this.refresh();

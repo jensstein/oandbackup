@@ -26,18 +26,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.FragmentLogsBinding;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
+
+import java.io.IOException;
 
 public class LogsFragment extends Fragment {
-    String[] textParts;
-    int index;
+    private static final String TAG = Constants.classTag(".LogFragment");
     private FragmentLogsBinding binding;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentLogsBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -46,8 +50,8 @@ public class LogsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupOnClicks();
-        new Thread(new TextLoadRunnable()).start();
+        String logText = this.getLogText();
+        if (logText != null && !logText.isEmpty()) binding.logsText.setText(logText);
     }
 
     @Override
@@ -56,23 +60,14 @@ public class LogsFragment extends Fragment {
         binding = null;
     }
 
-    private void setupOnClicks() {
-        binding.fabShowMore.setOnClickListener(v -> appendNextLines());
-    }
-
-    private void appendNextLines() {
-        for (int i = index; i > index - 20 && i >= 0; i--)
-            binding.logsText.append(textParts[i] + "\n\n");
-        index -= 20;
-        if (index <= 0) binding.fabShowMore.setClickable(false);
-    }
-
-    private class TextLoadRunnable implements Runnable {
-        public void run() {
-            String txt = new LogUtils(FileUtils.getDefaultLogFilePath(requireContext()).toString()).read();
-            textParts = txt.split("\n");
-            index = textParts.length - 1;
-            requireActivity().runOnUiThread(LogsFragment.this::appendNextLines);
+    private String getLogText() {
+        try {
+            LogUtils logUtils = new LogUtils(this.requireContext());
+            return logUtils.readFromLogFile();
+        } catch (FileUtils.BackupLocationInAccessibleException
+                | PrefUtils.StorageLocationNotConfiguredException | IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

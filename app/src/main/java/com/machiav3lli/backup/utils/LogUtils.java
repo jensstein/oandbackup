@@ -18,91 +18,50 @@
 package com.machiav3lli.backup.utils;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.util.Log;
+import android.net.Uri;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.handler.StorageFile;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class LogUtils {
     private static final String TAG = Constants.classTag(".LogUtils");
-    private File file;
+    Uri logFile;
+    Context context;
 
-    public LogUtils(String absolutePath) {
-        this.file = new File(absolutePath);
+    public LogUtils(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+        StorageFile backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context));
+        StorageFile logDocumentFile = backupRootFolder.findFile(FileUtils.LOG_FILE_NAME);
+        if (logDocumentFile == null || !logDocumentFile.exists()) {
+            logDocumentFile = backupRootFolder.createFile("application/octet-stream", FileUtils.LOG_FILE_NAME);
+            assert logDocumentFile != null;
+        }
+        this.logFile = logDocumentFile.getUri();
+        this.context = context;
     }
 
-    public LogUtils(String rootDirectoryPath, String name) {
-        this.file = new File(rootDirectoryPath, name);
+    public Uri getLogFile() {
+        return this.logFile;
     }
 
-    public static void logDeviceInfo(Context context, String tag) {
-        final String abiVersion = Build.SUPPORTED_ABIS[0];
-        try {
-            final String packageName = context.getPackageName();
-            final PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(packageName, 0);
-            final int versionCode = Build.VERSION.SDK_INT >= 28 ? (int) packageInfo.getLongVersionCode() : packageInfo.versionCode;
-            final String versionName = packageInfo.versionName;
-            Log.i(tag, String.format("running version %s/%s on abi %s",
-                    versionCode, versionName, abiVersion));
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.i(tag, String.format(
-                    "unable to determine package version (%s), abi version %s",
-                    e.toString(), abiVersion));
+    public void writeToLogFile(String log) throws IOException {
+        try (BufferedWriter logWriter = FileUtils.openFileForWriting(this.context, this.logFile, "wa")) {
+            logWriter.write(log);
         }
     }
 
-    public File createLogFile(Context context, String path) {
-        File logFile = new File(path);
-        try {
-            try {
-                logFile.createNewFile();
-            } catch (IOException e) {
-                logFile = new File(FileUtils.getDefaultLogFilePath(context).toString());
-                logFile.createNewFile();
-            }
-            return logFile;
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Caught exception when creating log file: %s", e));
-            return null;
-        }
-    }
-
-    public String read() {
-        BufferedReader reader = null;
-        try (FileReader fr = new FileReader(file)) {
-            reader = new BufferedReader(fr);
-            StringBuilder sb = new StringBuilder();
+    public String readFromLogFile() throws IOException {
+        StringBuilder stringBuilder;
+        try (BufferedReader logReader = FileUtils.openFileForReading(this.context, this.logFile)) {
             String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            return sb.toString();
-        } catch (FileNotFoundException e) {
-            return e.toString();
-        } catch (IOException e) {
-            Log.i(TAG, e.toString());
-            return e.toString();
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "error closing reader: " + e.toString());
+            stringBuilder = new StringBuilder();
+            while ((line = logReader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
             }
         }
-    }
-
-    public void delete() {
-        file.delete();
+        return stringBuilder.toString();
     }
 }

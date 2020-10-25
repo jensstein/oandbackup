@@ -221,4 +221,6 @@
     <string name="intro_permission_usageaccess">The app needs this permission to be able to check the stats and sizes of data and cache of your apps.</string>
     <string name="intro_permission_batteryoptimization">The app can face some problems doing scheduled backups on some ROMs that adopt an aggressive battery optimizations e.g. MIUI, but even on vanilla AOSP such a problem can happen.</string>
     <string name="msg_appkill_warning">The selected App(s) will be stopped. Please make sure, that you either restart your device after processing or open apps like your alarm clock or calendar afterwards to avoid missing important notifications. Your keyboard or launcher might be reset to the default app for it.</string>
+    <string name="delete_all_backups">Delete all backups</string>
+    <string name="logs_text_empty">There\'s nothing to show!</string>
 </resources>

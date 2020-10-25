@@ -33,6 +33,5 @@
     <androidx.preference.Preference
         android:key="logViewer"
         android:title="@string/prefs_logviewer"
-        app:isPreferenceVisible="false"
         app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>
