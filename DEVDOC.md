@@ -14,13 +14,11 @@
 
 - [ ] Add Flashable Zip feature: lowest priority for now.
 
-- [ ] Notify of the apps that doesn't have backup apk/data when doing Batch tasks.
-
 - [ ] Reformat Date handling in schedules
 
-- [ ] Customize indicator icons' colors
+- [x] Customize tags icons' colors
 
-- [ ] Columnize preference
+- [x] Columnize batch backup preference
 
 ## Needed Fixes
 
@@ -28,17 +26,17 @@
 
 - [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. NEEDS TESTING
 
-- [ ] Add AlertDialog about disabling "verify apps over USB" when needed.
+- [ ] Handle the error about disabling "verify apps over USB".
 
 - [ ] Replace deprecated Classes/Methods: AsyncTask, ProgressDialog (mostly with kotlin).
 
-- [ ] kil or not kill: all system apps, uids < 10000 or blacklisting...
+- [x] kil or not kill: all system apps, uids < 10000 or blacklisting...
 
 - [ ] TargetSDK 30: storage access problems
 
-- [ ] Improve on performance in aftermath of using SAF
+- [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
 
-- [ ] Enable encryption direct shortcut
+- [x] Enable encryption direct shortcut
 
 ## Planned Restructure
 
