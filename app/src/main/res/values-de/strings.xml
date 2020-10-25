@@ -221,4 +221,6 @@
     <string name="radio_obbdata">OBB Daten</string>
     <string name="radio_deviceprotecteddata">Geschützte Geräte-Daten</string>
     <string name="radio_externaldata">Externe Daten</string>
+    <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
+    <string name="delete_all_backups">Alle Sicherungen löschen</string>
 </resources>
