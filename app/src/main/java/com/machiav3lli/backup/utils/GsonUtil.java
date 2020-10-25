@@ -1,5 +1,7 @@
 package com.machiav3lli.backup.utils;
 
+import android.net.Uri;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -20,6 +22,8 @@ public final class GsonUtil {
         return new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .registerTypeAdapter(Uri.class, new UriSerializer())
+                .registerTypeAdapter(Uri.class, new UriDeserializer())
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
     }
@@ -44,6 +48,20 @@ public final class GsonUtil {
         @Override
         public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
             return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+    }
+
+    static class UriSerializer implements JsonSerializer<Uri> {
+        @Override
+        public JsonElement serialize(Uri src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
+        }
+    }
+
+    static class UriDeserializer implements JsonDeserializer<Uri> {
+        @Override
+        public Uri deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+            return Uri.parse(json.getAsString());
         }
     }
 }

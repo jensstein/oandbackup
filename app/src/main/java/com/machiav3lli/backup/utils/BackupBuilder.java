@@ -24,7 +24,7 @@ public class BackupBuilder {
     private boolean hasExternalData = false;
     private boolean hasObbData = false;
     private String cipherType = null;
-    private String cpuArch = null;
+    private final String cpuArch;
 
     public BackupBuilder(Context context, AppMetaInfo appinfo, Uri backupRoot) {
         this.context = context;
@@ -37,13 +37,9 @@ public class BackupBuilder {
 
     private StorageFile ensureBackupPath(Uri backupRoot) {
         String dateTimeStr = Constants.BACKUP_DATE_TIME_FORMATTER.format(this.backupDate);
-        // root/packageName/userId/dateTimeStr
-        return DocumentHelper.ensureDirectory(
-                DocumentHelper.ensureDirectory(
-                        StorageFile.fromUri(this.context, backupRoot),
-                        String.valueOf(this.appinfo.getProfileId())
-                ),
-                dateTimeStr);
+        // root/packageName/dateTimeStr-user.userId/
+        return DocumentHelper.ensureDirectory(StorageFile.fromUri(this.context, backupRoot),
+                String.format(BackupProperties.BACKUP_INSTANCE_DIR, dateTimeStr, this.appinfo.getProfileId()));
     }
 
     public StorageFile getBackupPath() {

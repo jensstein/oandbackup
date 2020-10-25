@@ -30,35 +30,27 @@ public class BackupItem {
         this.backupInstance = backupInstance;
     }
 
-    public BackupItem(Context context, StorageFile backupInstance) throws BrokenBackupException {
-        this.backupInstance = backupInstance;
-        StorageFile propertiesFile = backupInstance.findFile(BackupProperties.PROPERTIES_FILENAME);
-        if (propertiesFile == null) {
-            throw new BrokenBackupException(
-                    String.format("Missing %s file at URI %s",
-                            BackupProperties.PROPERTIES_FILENAME,
-                            backupInstance.getUri())
-            );
-        }
+    public BackupItem(Context context, StorageFile propertiesFile) throws BrokenBackupException {
         try {
             try (BufferedReader reader = FileUtils.openFileForReading(context, propertiesFile.getUri())) {
-                this.backupProperties = BackupProperties.fromGson(propertiesFile.getUri(), IOUtils.toString(reader));
+                this.backupProperties = BackupProperties.fromGson(IOUtils.toString(reader));
             }
         } catch (FileNotFoundException e) {
             throw new BrokenBackupException(String.format("Cannot open %s at URI %s",
-                    BackupProperties.PROPERTIES_FILENAME,
+                    propertiesFile.getName(),
                     propertiesFile.getUri()), e);
         } catch (IOException e) {
             throw new BrokenBackupException(String.format("Cannot read %s at URI %s",
-                    BackupProperties.PROPERTIES_FILENAME,
+                    propertiesFile.getName(),
                     propertiesFile.getUri()), e);
         } catch (Exception e) {
             throw new BrokenBackupException(String.format(
                     "Unable to process %s at URI %s. [%s] %s",
-                    BackupProperties.PROPERTIES_FILENAME,
+                    propertiesFile.getName(),
                     propertiesFile.getUri(),
                     e.getClass().getCanonicalName(), e));
         }
+        this.backupInstance = StorageFile.fromUri(context, backupProperties.getBackupLocation());
     }
 
     public Uri getBackupLocation() {

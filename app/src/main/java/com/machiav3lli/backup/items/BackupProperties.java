@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 
 public class BackupProperties extends AppMetaInfo implements Parcelable {
 
-    public static final String PROPERTIES_FILENAME = "backup.properties";
+    public static final String BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties";
+    public static final String BACKUP_INSTANCE_DIR = "%s-user_%s";
 
     @SerializedName("backupDate")
     @Expose
@@ -50,7 +51,8 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
     @Expose
     private final String cpuArch;
 
-    @Expose(serialize = false, deserialize = false)
+    @SerializedName("backupLocation")
+    @Expose
     private Uri backupLocation;
 
     public BackupProperties(Uri backupLocation, Context context, PackageInfo pi, LocalDateTime backupDate,
@@ -143,10 +145,8 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
         }
     };
 
-    public static BackupProperties fromGson(Uri backupLocation, String gson) {
-        BackupProperties result = GsonUtil.getInstance().fromJson(gson, BackupProperties.class);
-        result.setBackupLocation(backupLocation);
-        return result;
+    public static BackupProperties fromGson(String gson) {
+        return GsonUtil.getInstance().fromJson(gson, BackupProperties.class);
     }
 
     public String toGson() {
@@ -191,6 +191,10 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
 
     private void setBackupLocation(@NotNull Uri backupLocation) {
         this.backupLocation = backupLocation;
+    }
+
+    public Uri getBackupLocation() {
+        return this.backupLocation;
     }
 
     @NotNull

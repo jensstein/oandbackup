@@ -75,10 +75,10 @@ public class BackupAppAction extends BaseAppAction {
             );
         }
         BackupBuilder backupBuilder = new BackupBuilder(this.getContext(), app.getAppInfo(), appBackupRootUri);
-        StorageFile backupDir = backupBuilder.getBackupPath();
+        StorageFile backupInstanceDir = backupBuilder.getBackupPath();
         boolean stopProcess = PrefUtils.isKillBeforeActionEnabled(this.getContext());
         BackupItem backupItem;
-        
+
         if (stopProcess) {
             Log.d(BackupAppAction.TAG, "preprocess package (to avoid file inconsistencies during backup etc.)");
             this.preprocessPackage(app.getPackageName());
@@ -86,21 +86,21 @@ public class BackupAppAction extends BaseAppAction {
         try {
             if ((backupMode & BaseAppAction.MODE_APK) == BaseAppAction.MODE_APK) {
                 Log.i(BackupAppAction.TAG, String.format("%s: Backing up package", app));
-                this.backupPackage(app, backupDir);
+                this.backupPackage(app, backupInstanceDir);
                 backupBuilder.setHasApk(true);
             }
             if ((backupMode & BaseAppAction.MODE_DATA) == BaseAppAction.MODE_DATA) {
                 Log.i(BackupAppAction.TAG, String.format("%s: Backing up data", app));
-                boolean backupCreated = this.backupData(app, backupDir);
+                boolean backupCreated = this.backupData(app, backupInstanceDir);
                 backupBuilder.setHasAppData(backupCreated);
                 if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-                    backupCreated = this.backupExternalData(app, backupDir);
+                    backupCreated = this.backupExternalData(app, backupInstanceDir);
                     backupBuilder.setHasExternalData(backupCreated);
-                    backupCreated = this.backupObbData(app, backupDir);
+                    backupCreated = this.backupObbData(app, backupInstanceDir);
                     backupBuilder.setHasObbData(backupCreated);
                 }
                 if (PrefUtils.getDefaultSharedPreferences(this.getContext()).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
-                    backupCreated = this.backupDeviceProtectedData(app, backupDir);
+                    backupCreated = this.backupDeviceProtectedData(app, backupInstanceDir);
                     backupBuilder.setHasDevicesProtectedData(backupCreated);
                 }
             }
@@ -108,7 +108,7 @@ public class BackupAppAction extends BaseAppAction {
                 backupBuilder.setCipherType(Crypto.getCipherAlgorithm());
             }
             backupItem = backupBuilder.createBackupItem();
-            this.saveBackupProperties(backupDir, backupItem.getBackupProperties());
+            this.saveBackupProperties(StorageFile.fromUri(this.getContext(), appBackupRootUri), backupItem.getBackupProperties());
             app.addBackup(backupItem);
         } catch (BackupFailedException | Crypto.CryptoSetupException | IOException e) {
             Log.e(BackupAppAction.TAG, String.format("Backup failed due to %s: %s", e.getClass().getSimpleName(), e.getMessage()));
@@ -128,13 +128,13 @@ public class BackupAppAction extends BaseAppAction {
         return new ActionResult(app, backupItem.getBackupProperties(), "", true);
     }
 
-    protected void saveBackupProperties(@NonNull StorageFile backupInstanceDir, @NotNull BackupProperties properties) throws IOException {
-        StorageFile propertiesFile = backupInstanceDir.createFile("application/octet-stream", BackupProperties.PROPERTIES_FILENAME);
+    protected void saveBackupProperties(@NonNull StorageFile packageBackupDir, @NotNull BackupProperties properties) throws IOException {
+        String propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES, Constants.BACKUP_DATE_TIME_FORMATTER.format(properties.getBackupDate()), properties.getProfileId());
+        StorageFile propertiesFile = packageBackupDir.createFile("application/octet-stream", propertiesFileName);
         try (BufferedOutputStream propertiesOut = new BufferedOutputStream(this.getContext().getContentResolver().openOutputStream(propertiesFile.getUri(), "w"))) {
             propertiesOut.write(properties.toGson().getBytes(StandardCharsets.UTF_8));
-            // TODO write it also to parent backup history log
         }
-        Log.i(BackupAppAction.TAG, String.format("Wrote %s file for backup: %s", BackupProperties.PROPERTIES_FILENAME, properties));
+        Log.i(BackupAppAction.TAG, String.format("Wrote %s file for backup: %s", propertiesFile, properties));
     }
 
     protected void createBackupArchive(Uri backupInstanceDir, String what, List<ShellHandler.FileInfo> allFilesToBackup) throws IOException, Crypto.CryptoSetupException {

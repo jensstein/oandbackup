@@ -73,10 +73,10 @@ public class AppInfoX {
         this.refreshStorageStats();
     }
 
-    public AppInfoX(Context context, @NotNull Uri packageBackupRoot) {
+    public AppInfoX(Context context, @NotNull Uri backupRoot) {
         this.context = context;
-        this.backupDir = packageBackupRoot;
-        this.backupHistory = AppInfoX.getBackupHistory(context, packageBackupRoot);
+        this.backupDir = backupRoot;
+        this.backupHistory = AppInfoX.getBackupHistory(context, backupRoot);
         this.packageName = StorageFile.fromUri(context, this.backupDir).getName();
 
         try {
@@ -108,16 +108,14 @@ public class AppInfoX {
     // TODO cause of huge part of cpu time
     // TODO minimize its usage
     private static List<BackupItem> getBackupHistory(Context context, Uri backupDir) {
-        StorageFile backupDoc = StorageFile.fromUri(context, backupDir);
+        StorageFile appBackupDir = StorageFile.fromUri(context, backupDir);
         ArrayList<BackupItem> backupHistory = new ArrayList<>();
         try {
-            for (StorageFile userBackup : backupDoc.listFiles()) {
-                for (StorageFile backupInstance : userBackup.listFiles()) {
-                    try {
-                        backupHistory.add(new BackupItem(context, backupInstance));
-                    } catch (BackupItem.BrokenBackupException e) {
-                        Log.w(AppInfoX.TAG, String.format("Incomplete backup or wrong structure found: %s", e.getMessage()));
-                    }
+            for (StorageFile file : appBackupDir.listFiles()) {
+                if (file.isFile()) try {
+                    backupHistory.add(new BackupItem(context, file));
+                } catch (BackupItem.BrokenBackupException e) {
+                    Log.w(AppInfoX.TAG, String.format("Incomplete backup or wrong structure found: %s", e.getMessage()));
                 }
             }
         } catch (FileNotFoundException e) {

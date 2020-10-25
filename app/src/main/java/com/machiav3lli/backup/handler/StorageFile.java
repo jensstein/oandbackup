@@ -51,7 +51,7 @@ public class StorageFile {
         return (result != null) ? new StorageFile(this, this.context, result) : null;
     }
 
-    private static Uri createFile(Context context, Uri self, String mimeType, String displayName) {
+    public static Uri createFile(Context context, Uri self, String mimeType, String displayName) {
         try {
             return DocumentsContract.createDocument(context.getContentResolver(), self, mimeType, displayName);
         } catch (FileNotFoundException e) {
