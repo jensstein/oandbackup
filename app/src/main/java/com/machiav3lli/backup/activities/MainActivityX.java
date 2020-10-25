@@ -149,7 +149,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     @Override
     public void onResume() {
         super.onResume();
-        handleMessages = new HandleMessages(this);
+        if (handleMessages == null) handleMessages = new HandleMessages(this);
     }
 
     @Override
