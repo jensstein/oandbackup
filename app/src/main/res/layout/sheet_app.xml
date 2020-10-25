@@ -298,6 +298,13 @@
                     android:text="@string/backup" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/deleteAll"
+                    style="@style/Chip.Action.Negative"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_all_backups" />
+
+                <com.google.android.material.chip.Chip
                     android:id="@+id/share"
                     style="@style/Chip.Action"
                     android:layout_width="wrap_content"

@@ -198,6 +198,9 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
         this.binding.versionName.setText(appInfo.getVersionName());
         if (this.app.hasBackups()) {
             ItemUtils.pickSheetVersionName(app, binding);
+            binding.deleteAll.setVisibility(View.VISIBLE);
+        } else {
+            binding.deleteAll.setVisibility(View.GONE);
         }
         ItemUtils.pickSheetAppType(this.app, this.binding.appType);
     }
@@ -234,6 +237,23 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             dialog.setArguments(arguments);
             dialog.show(requireActivity().getSupportFragmentManager(), "backupDialog");
         });
+        binding.deleteAll.setOnClickListener(v -> new AlertDialog.Builder(this.requireContext())
+                .setTitle(this.app.getPackageLabel())
+                .setMessage(R.string.deleteBackupDialogMessage)
+                .setPositiveButton(R.string.dialogYes, (dialog, which) -> new Thread(() -> {
+                    this.handleMessages.showMessage(this.app.getPackageLabel(), getString(R.string.delete_all_backups));
+                    if (!this.app.hasBackups()) {
+                        Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
+                        return;
+                    }
+                    // Latest backup only currently
+                    this.app.deleteAllBackups();
+                    this.handleMessages.endMessage();
+                    this.requireMainActivity().refreshWithAppSheet();
+                }).start())
+                .setNegativeButton(R.string.dialogNo, null)
+                .show()
+        );
         binding.share.setOnClickListener(v -> {
             // Todo: How to share multiple files? Tar them? Zip them? Why sharing?
             /*
@@ -345,8 +365,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                             Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
                             return;
                         }
-                        // Latest backup only currently
-                        AppSheet.this.app.delete(AppSheet.this.requireContext(), item.getBackup());
+                        AppSheet.this.app.delete(item.getBackup());
                         AppSheet.this.handleMessages.endMessage();
                         AppSheet.this.requireMainActivity().refreshWithAppSheet();
                     }).start())

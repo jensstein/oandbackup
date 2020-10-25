@@ -45,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.machiav3lli.backup.Constants.PREFS_HOUSEKEEPING_MOMENT;
 
@@ -164,10 +165,10 @@ public class BackupRestoreHelper {
         int revisionsToDelete = backupHistory.size() - numBackupRevisions;
         Log.i(TAG, String.format("[%s] More backup revisions than configured maximum (%s / %s). Deleting %s backup(s).", app.getPackageName(), backupHistory.size(), numBackupRevisions, revisionsToDelete));
         backupHistory.sort(Comparator.comparing(obj -> obj.getBackupProperties().getBackupDate()));
-        for (int i = 0; i < revisionsToDelete; i++) {
-            BackupItem deleteTarget = backupHistory.get(0);
+        for (int i : IntStream.range(0, revisionsToDelete).toArray()) {
+            BackupItem deleteTarget = backupHistory.get(i);
             Log.i(TAG, String.format("[%s] Deleting backup revision %s", app.getPackageName(), deleteTarget));
-            app.delete(context, deleteTarget);
+            app.delete(deleteTarget);
         }
     }
 

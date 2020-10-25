@@ -160,20 +160,26 @@ public class AppInfoX {
     public void deleteAllBackups() {
         Log.i(AppInfoX.TAG, String.format("Deleting %s backups of %s", this.backupHistory.size(), this));
         for (BackupItem item : this.backupHistory) {
-            this.delete(this.context, item);
+            this.delete(item, false);
         }
         this.backupHistory.clear();
     }
 
-    public void delete(Context context, BackupItem backupItem) {
+    public void delete(BackupItem backupItem) {
+        delete(backupItem, true);
+    }
+
+    public void delete(BackupItem backupItem, boolean directBoolean) {
         if (!backupItem.getBackupProperties().getPackageName().equals(this.packageName)) {
             throw new RuntimeException("Asked to delete a backup of "
                     + backupItem.getBackupProperties().getPackageName()
                     + " but this object is for " + this.getPackageName());
         }
         Log.d(AppInfoX.TAG, String.format("[%s] Deleting backup revision %s", this.getPackageName(), backupItem));
-        DocumentHelper.deleteRecursive(context, backupItem.getBackupLocation());
-        this.backupHistory.remove(backupItem);
+        String propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES, Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.getBackupProperties().getBackupDate()));
+        DocumentHelper.deleteRecursive(this.context, backupItem.getBackupLocation());
+        StorageFile.fromUri(this.context, this.backupDir).findFile(propertiesFileName).delete();
+        if (directBoolean) this.backupHistory.remove(backupItem);
     }
 
     public Uri getBackupDir(boolean create) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
