@@ -126,12 +126,6 @@
         <item name="android:background">@drawable/bg_button_end_navbar</item>
     </style>
 
-    <style name="FAB" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">?colorAccent</item>
-        <item name="tint">?colorControlNormal</item>
-        <item name="borderWidth">0dp</item>
-    </style>
-
     <style name="Chip.Group" parent="Widget.MaterialComponents.ChipGroup">
         <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
         <item name="selectionRequired">true</item>

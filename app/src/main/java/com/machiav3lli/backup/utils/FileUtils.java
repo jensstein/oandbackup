@@ -49,10 +49,6 @@ public final class FileUtils {
         );
     }
 
-    public static BufferedWriter openFileForWriting(Context context, Uri uri) throws FileNotFoundException {
-        return FileUtils.openFileForWriting(context, uri, "w");
-    }
-
     public static BufferedWriter openFileForWriting(Context context, Uri uri, String mode) throws FileNotFoundException {
         return new BufferedWriter(
                 new OutputStreamWriter(context.getContentResolver().openOutputStream(uri, mode), StandardCharsets.UTF_8)

@@ -70,10 +70,6 @@ public class HandleMessages {
         setMessage(title, message);
     }
 
-    public void changeMessage(String title, String message) {
-        setMessage(title, message);
-    }
-
     public void endMessage() {
         Message endMessage = Message.obtain();
         endMessage.what = DISMISS_DIALOG;

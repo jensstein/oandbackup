@@ -72,7 +72,6 @@ public class StorageFile {
     }
 
     @Nullable
-    // TODO cause of huge part of cpu time
     public StorageFile findFile(@NonNull String displayName) {
         try {
             for (StorageFile doc : this.listFiles()) {
@@ -106,10 +105,9 @@ public class StorageFile {
             try {
                 cursor = resolver.query(childrenUri, new String[]{
                         DocumentsContract.Document.COLUMN_DOCUMENT_ID}, null, null, null);
+                Uri documentUri;
                 while (cursor.moveToNext()) {
-                    final String documentId = cursor.getString(0);
-                    final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri,
-                            documentId);
+                    documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0));
                     results.add(documentUri);
                 }
             } catch (Exception e) {
