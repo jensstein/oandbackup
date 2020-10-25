@@ -205,7 +205,7 @@
     <string name="radio_updated">Güncellenen</string>
     <string name="intro_permission_storage_location">Uygulama, yedeklemeleri depolamak için bir yedekleme konumuna ihtiyaç duymaktadır. Uygulama tam bir yedekleme için birkaç gigabayt depolamaya ihtiyaç duyabilir ve dosya sistemine çok fazla sorgulama yapar. Lütfen ağ tabanlı depolama konumlarını seçerken bunu aklınızda bulundurun.</string>
     <string name="help_legend">Açıklamalar:</string>
-    <string name="prefs_unset">Kaldır</string>
+    <string name="prefs_unset">Ayarlanmadı</string>
     <string name="msg_appkill_warning">Seçili uygulamalar durdurulacak. Önemli bildirimleri kaçırmamak için işlemden sonra cihazınızı yeniden başlattığınızdan veya daha sonra çalar saatiniz ya da takviminiz gibi uygulamaları açtığınızdan emin olun. Klavyeniz veya başlatıcınız bunun için öntanımlı uygulamaya sıfırlanabilir.</string>
     <string name="prefs_numBackupRevisions_summary">Sayı aşılırsa yeni bir yedek oluşturulduğunda en eski düzeltme silinecektir. Tüm düzeltmeleri tutmak için sıfıra ayarlayın.</string>
     <string name="prefs_numBackupRevisions">Yedekleme düzeltmelerinin sayısı</string>
@@ -216,4 +216,7 @@
     <string name="prefs_housekeepingmoment">Düzeltme temizleme zamanı</string>
     <string name="prefs_housekeepingmoment_before">Yedeklemeden Önce</string>
     <string name="prefs_housekeepingmoment_after">Yedeklemeden Sonra</string>
+    <string name="radio_obbdata">OBB Verisi</string>
+    <string name="radio_deviceprotecteddata">Cihaz Korumalı Veri</string>
+    <string name="radio_externaldata">Harici Veri</string>
 </resources>

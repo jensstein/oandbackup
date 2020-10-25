@@ -218,4 +218,7 @@
     <string name="prefs_housekeepingmoment_before">Avant la sauvegarde</string>
     <string name="prefs_advanced">Préférences avancées</string>
     <string name="radio_updated">Mis à jour</string>
+    <string name="radio_obbdata">Données OBB</string>
+    <string name="radio_deviceprotecteddata">Données protégées par l’appareil</string>
+    <string name="radio_externaldata">Données externes</string>
 </resources>

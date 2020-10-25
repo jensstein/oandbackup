@@ -3,7 +3,7 @@
     <string name="backup">Varunda</string>
     <string name="restore">Taasta</string>
     <string name="backupConfirmation">Varundad?</string>
-    <string name="restoreConfirmation">Taastad?</string>
+    <string name="restoreConfirmation">Taasta\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Andmed</string>
     <string name="handleBoth">Mõlemad</string>
@@ -192,4 +192,5 @@
     <string name="prefs_passwordconfirmation">Krüpteeringu parooli kinnitus</string>
     <string name="prefs_biometriclock_summary">Turva rakendust seadme biomeetrilise lukuga (nt sõrmejälg, näotuvastus)</string>
     <string name="prefs_biometriclock">Biomeetrialukk</string>
+    <string name="radioUpdated">Uuendatud</string>
 </resources>

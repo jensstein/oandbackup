@@ -217,4 +217,7 @@
     <string name="prefs_housekeepingmoment_after">Pós-backup</string>
     <string name="prefs_advanced">Preferências avançadas</string>
     <string name="radio_updated">Atualizado</string>
+    <string name="radio_obbdata">Dados OBB</string>
+    <string name="radio_deviceprotecteddata">Dados protegidos do dispositivo</string>
+    <string name="radio_externaldata">Dados Externos</string>
 </resources>
