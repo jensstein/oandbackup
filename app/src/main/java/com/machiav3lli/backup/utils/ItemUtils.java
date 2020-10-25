@@ -24,6 +24,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -43,6 +44,9 @@ import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class ItemUtils {
     public static final String TAG = Constants.classTag(".ItemUtils");
@@ -74,6 +78,12 @@ public final class ItemUtils {
 
     public static long calculateID(BackupItem backup) {
         return backup.getBackupProperties().getBackupDate().hashCode();
+    }
+
+    public static <A, B> List<Pair<A, B>> zipTwoLists(List<A> aList, List<B> bList) {
+        return IntStream.range(0, Math.min(aList.size(), bList.size()))
+                .mapToObj(i -> new Pair<>(aList.get(i), bList.get(i)))
+                .collect(Collectors.toList());
     }
 
     public static void pickSheetDataSizes(Context context, AppInfoX app, SheetAppBinding binding, boolean update) {
