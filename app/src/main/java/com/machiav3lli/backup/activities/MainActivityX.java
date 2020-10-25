@@ -21,9 +21,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.machiav3lli.backup.BuildConfig;
@@ -51,7 +54,6 @@ import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
-import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.AppMetaInfo;
@@ -60,14 +62,18 @@ import com.machiav3lli.backup.items.BatchItemX;
 import com.machiav3lli.backup.items.MainItemX;
 import com.machiav3lli.backup.items.SortFilterModel;
 import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil;
+import com.mikepenz.fastadapter.listeners.ClickEventHook;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.FileWriter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,8 +93,10 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 .setTimeout(20));
     }
 
-    private static List<AppInfoX> appsList;
-    public final List<String> checkedList = new ArrayList<>();
+    private List<AppInfoX> appsList;
+    // TODO optimize usage (maybe a map instead?)
+    public final List<String> apkCheckedList = new ArrayList<>();
+    public final List<String> dataCheckedList = new ArrayList<>();
 
 
     private BadgeDrawable updatedBadge;
@@ -176,10 +184,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         return MainActivityX.shellHandler;
     }
 
-    public static List<AppInfoX> getAppsList() {
-        return appsList;
-    }
-
     public ItemAdapter<MainItemX> getMainItemAdapter() {
         return mainItemAdapter;
     }
@@ -239,13 +243,13 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     private void navigateBatch() {
         mainBoolean = false;
-        binding.radioBoth.setChecked(true);
         binding.batchBar.setVisibility(View.VISIBLE);
         binding.modeBar.setVisibility(View.VISIBLE);
         binding.buttonAction.setText(backupBoolean ? R.string.backup : R.string.restore);
         binding.recyclerView.setAdapter(batchFastAdapter);
         binding.buttonAction.setOnClickListener(v -> actionOnClick(backupBoolean));
-        checkedList.clear();
+        apkCheckedList.clear();
+        dataCheckedList.clear();
     }
 
     private void setupOnClicks() {
@@ -264,58 +268,117 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             return false;
         });
         batchFastAdapter.setOnClickListener((view, itemIAdapter, item, integer) -> {
-            item.setChecked(!item.isChecked());
+            boolean oldChecked = item.isChecked();
+            item.setApkChecked(!oldChecked);
+            item.setDataChecked(!oldChecked);
             if (item.isChecked()) {
-                if (!checkedList.contains(item.getApp().getPackageName())) {
-                    checkedList.add(item.getApp().getPackageName());
+                if (!apkCheckedList.contains(item.getApp().getPackageName())) {
+                    apkCheckedList.add(item.getApp().getPackageName());
+                }
+                if (!dataCheckedList.contains(item.getApp().getPackageName())) {
+                    dataCheckedList.add(item.getApp().getPackageName());
                 }
             } else {
-                checkedList.remove(item.getApp().getPackageName());
+                apkCheckedList.remove(item.getApp().getPackageName());
+                dataCheckedList.remove(item.getApp().getPackageName());
             }
             batchFastAdapter.notifyAdapterDataSetChanged();
             updateCheckAll();
             return false;
         });
+        binding.apkBatch.setOnClickListener(v -> {
+            boolean checkBoolean = apkCheckedList.size() != batchItemAdapter.getItemList().size();
+            batchItemAdapter.getAdapterItems().forEach(batchItemX -> {
+                        String packageName = batchItemX.getApp().getPackageName();
+                        batchItemX.setApkChecked(checkBoolean);
+                        if (checkBoolean) apkCheckedList.add(packageName);
+                        else apkCheckedList.remove(packageName);
+                    }
+            );
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            this.updateCheckAll();
+        });
+        binding.dataBatch.setOnClickListener(v -> {
+            boolean checkBoolean = dataCheckedList.size() != batchItemAdapter.getItemList().size();
+            batchItemAdapter.getAdapterItems().forEach(batchItemX -> {
+                        String packageName = batchItemX.getApp().getPackageName();
+                        batchItemX.setDataChecked(checkBoolean);
+                        if (checkBoolean) dataCheckedList.add(packageName);
+                        else dataCheckedList.remove(packageName);
+                    }
+            );
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            this.updateCheckAll();
+        });
+        batchFastAdapter.addEventHook(new OnApkCheckBoxClickHook());
+        batchFastAdapter.addEventHook(new OnDataCheckBoxClickHook());
     }
 
     private void onCheckAllChanged(View v) {
         boolean startIsChecked = ((AppCompatCheckBox) v).isChecked();
         binding.cbAll.setChecked(startIsChecked);
         for (BatchItemX item : batchItemAdapter.getAdapterItems()) {
-            item.setChecked(startIsChecked);
+            item.setApkChecked(startIsChecked);
+            item.setDataChecked(startIsChecked);
             if (startIsChecked) {
-                if (!checkedList.contains(item.getApp().getPackageName())) {
-                    checkedList.add(item.getApp().getPackageName());
+                if (!apkCheckedList.contains(item.getApp().getPackageName())) {
+                    apkCheckedList.add(item.getApp().getPackageName());
+                }
+                if (!dataCheckedList.contains(item.getApp().getPackageName())) {
+                    dataCheckedList.add(item.getApp().getPackageName());
                 }
             } else {
-                checkedList.remove(item.getApp().getPackageName());
+                apkCheckedList.remove(item.getApp().getPackageName());
+                dataCheckedList.remove(item.getApp().getPackageName());
             }
         }
         batchFastAdapter.notifyAdapterDataSetChanged();
     }
 
     private void updateCheckAll() {
-        binding.cbAll.setChecked(checkedList.size() == batchItemAdapter.getItemList().size());
+        binding.cbAll.setChecked(apkCheckedList.size() == batchItemAdapter.getItemList().size() && dataCheckedList.size() == batchItemAdapter.getItemList().size());
     }
 
-    private void actionOnClick(boolean backupBoolean) {
-        ArrayList<AppMetaInfo> selectedList = this.batchItemAdapter.getAdapterItems().stream()
-                .filter(BatchItemX::isChecked)
-                .map(item -> item.getApp().getAppInfo()).collect(Collectors.toCollection(ArrayList::new));
-        Bundle arguments = new Bundle();
-        arguments.putParcelableArrayList("selectedList", selectedList);
-        arguments.putBoolean("backupBoolean", backupBoolean);
-        BatchConfirmDialog dialog = new BatchConfirmDialog();
-        dialog.setArguments(arguments);
-        dialog.show(getSupportFragmentManager(), "DialogFragment");
+    public class OnApkCheckBoxClickHook extends ClickEventHook<BatchItemX> {
+
+        @Nullable
+        @Override
+        public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
+            return viewHolder.itemView.findViewById(R.id.apkCheckBox);
+        }
+
+        @Override
+        public void onClick(@NotNull View view, int i, @NotNull FastAdapter<BatchItemX> fastAdapter, @NotNull BatchItemX item) {
+            item.setApkChecked(!item.isApkChecked());
+            if (item.isApkChecked() && !apkCheckedList.contains(item.getApp().getPackageName())) {
+                apkCheckedList.add(item.getApp().getPackageName());
+            } else {
+                apkCheckedList.remove(item.getApp().getPackageName());
+            }
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            updateCheckAll();
+        }
     }
 
-    private int checkSelectedMode() {
-        if (binding.radioApk.isChecked()) {
-            return BaseAppAction.MODE_APK;
-        } else if (binding.radioData.isChecked()) {
-            return BaseAppAction.MODE_DATA;
-        } else return BaseAppAction.MODE_BOTH;
+    public class OnDataCheckBoxClickHook extends ClickEventHook<BatchItemX> {
+
+        @Nullable
+        @Override
+        public View onBind(@NotNull RecyclerView.ViewHolder viewHolder) {
+            return viewHolder.itemView.findViewById(R.id.dataCheckbox);
+        }
+
+        @Override
+        public void onClick(@NotNull View view, int i, @NotNull FastAdapter<BatchItemX> fastAdapter, @NotNull BatchItemX item) {
+            item.setDataChecked(!item.isDataChecked());
+            if (item.isDataChecked() && !dataCheckedList.contains(item.getApp().getPackageName())) {
+                dataCheckedList.add(item.getApp().getPackageName());
+            } else {
+                dataCheckedList.remove(item.getApp().getPackageName());
+            }
+            batchFastAdapter.notifyAdapterDataSetChanged();
+            updateCheckAll();
+        }
     }
 
     public void moveTo(int position) {
@@ -343,62 +406,79 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
+    private void actionOnClick(boolean backupBoolean) {
+        ArrayList<AppMetaInfo> selectedList = this.batchItemAdapter.getAdapterItems().stream()
+                .filter(BatchItemX::isChecked)
+                .map(item -> item.getApp().getAppInfo())
+                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> selectedListModes = this.batchItemAdapter.getAdapterItems().stream()
+                .filter(BatchItemX::isChecked)
+                .map(BatchItemX::getActionMode)
+                .collect(Collectors.toCollection(ArrayList::new));
+        Bundle arguments = new Bundle();
+        arguments.putIntegerArrayList("selectedListModes", selectedListModes);
+        arguments.putParcelableArrayList("selectedList", selectedList);
+        arguments.putBoolean("backupBoolean", backupBoolean);
+        BatchConfirmDialog dialog = new BatchConfirmDialog();
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "DialogFragment");
+    }
+
     @Override
-    public void onConfirmed(List<AppMetaInfo> selectedList) {
-        Thread thread = new Thread(() -> doAction(selectedList));
+    public void onConfirmed(List<Pair<AppMetaInfo, Integer>> selectedItems) {
+        Thread thread = new Thread(() -> doAction(selectedItems));
         thread.start();
         threadId = thread.getId();
     }
 
-    // TODO 1. implement the new logic with app/data checkboxes, 2. optimize/reduce complexity
-    public void doAction(List<AppMetaInfo> selectedList) {
+    // TODO 1. optimize/reduce complexity
+    public void doAction(List<Pair<AppMetaInfo, Integer>> selectedItems) {
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
         if (this.prefs.getBoolean("acquireWakelock", true)) {
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
             Log.i(MainActivityX.TAG, "wakelock acquired");
         }
         // get the AppInfoX objects again
-        List<AppInfoX> selectedApps = new ArrayList<>(selectedList.size());
-        for (AppMetaInfo appInfo : selectedList) {
+        List<Pair<AppInfoX, Integer>> selectedApps = new ArrayList<>(selectedItems.size());
+        for (Pair<AppMetaInfo, Integer> itemInfo : selectedItems) {
             Optional<BatchItemX> foundItem = this.batchItemAdapter.getAdapterItems().stream()
-                    .filter(item -> item.getApp().getAppInfo().equals(appInfo))
+                    .filter(item -> item.getApp().getPackageName().equals(itemInfo.first.getPackageName()))
                     .findFirst();
             if (foundItem.isPresent()) {
-                selectedApps.add(foundItem.get().getApp());
+                selectedApps.add(new Pair<>(foundItem.get().getApp(), itemInfo.second));
             } else {
                 throw new RuntimeException("Selected item for processing went lost from the item adapter.");
             }
         }
 
         int notificationId = (int) System.currentTimeMillis();
-        int total = selectedList.size();
+        int totalOfActions = selectedItems.size();
         int i = 1;
-        List<ActionResult> results = new ArrayList<>(total);
-        for (AppInfoX app : selectedApps) {
-            String message = "(" + i + '/' + total + ')';
-            String title = (this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress))
-                    + " (" + i + '/' + total + ')';
-            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, app.getPackageLabel(), false);
-            this.handleMessages.setMessage(app.getPackageLabel(), message);
-            int mode = checkSelectedMode();
+        List<ActionResult> results = new ArrayList<>(totalOfActions);
+        String message;
+        String title;
+        for (Pair<AppInfoX, Integer> itemInfo : selectedApps) {
+            message = String.format("(%d/%d)", i, totalOfActions);
+            title = String.format("%s (%d/%d)", this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress), i, totalOfActions);
+            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, itemInfo.first.getPackageLabel(), false);
+            this.handleMessages.showMessage(itemInfo.first.getPackageLabel(), message);
+            int mode = itemInfo.second;
             final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
             ActionResult result;
             if (this.backupBoolean) {
-                result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), app, mode);
+                result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), itemInfo.first, mode);
             } else {
                 // Latest backup for now
-                BackupItem selectedBackup = app.getLatestBackup();
+                BackupItem selectedBackup = itemInfo.first.getLatestBackup();
                 result = backupRestoreHelper.restore(
-                        this, app, selectedBackup.getBackupProperties(),
+                        this, itemInfo.first, selectedBackup.getBackupProperties(),
                         selectedBackup.getBackupLocation(),
                         MainActivityX.getShellHandlerInstance(), mode);
             }
             results.add(result);
             i++;
         }
-        if (this.handleMessages.isShowing()) {
-            this.handleMessages.endMessage();
-        }
+        if (handleMessages.isShowing()) this.handleMessages.endMessage();
         if (wl.isHeld()) {
             wl.release();
             Log.i(MainActivityX.TAG, "wakelock released");
@@ -452,43 +532,45 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     public void refresh() {
         if (mainBoolean) {
-            refresh(true, false, new ArrayList<>());
+            refresh(true, false, new ArrayList<>(), new ArrayList<>());
         } else {
-            refresh(false, backupBoolean, new ArrayList<>());
+            refresh(false, backupBoolean, new ArrayList<>(), new ArrayList<>());
         }
     }
 
     public void refreshWithAppSheet() {
-        refresh(true, true, new ArrayList<>());
+        refresh(true, true, new ArrayList<>(), new ArrayList<>());
     }
 
-    public void resumeRefresh(List<String> checkedList) {
+    public void resumeRefresh(List<String> apkCheckedList, List<String> dataCheckedList) {
         if (mainBoolean) {
-            refresh(true, true, checkedList);
+            refresh(true, true, apkCheckedList, dataCheckedList);
         } else {
-            refresh(false, backupBoolean, checkedList);
+            refresh(false, backupBoolean, apkCheckedList, dataCheckedList);
         }
     }
 
-    public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> checkedList) {
+    public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
         Log.d(MainActivityX.TAG, "refreshing");
         runOnUiThread(() -> {
             binding.refreshLayout.setRefreshing(true);
-            // TODO: hg42 refresh can run in parallel, needs counting or multiple (overlaying?) Spinners
-            // machiav3lli this is used to show refresh animation even on launch
             searchViewController.clean();
         });
         badgeCounter = 0;
-        if (mainBoolean || checkedList.isEmpty()) this.checkedList.clear();
+        if (mainBoolean || apkCheckedList.isEmpty())
+            this.apkCheckedList.clear();
+        if (mainBoolean || dataCheckedList.isEmpty())
+            this.dataCheckedList.clear();
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
         new Thread(() -> {
             try {
                 appsList = BackendController.getApplicationList(this.getApplicationContext());
                 PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
                 List<AppInfoX> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
-                if (mainBoolean) refreshMain(filteredList, backupOrAppSheetBoolean);
-                else refreshBatch(filteredList, backupOrAppSheetBoolean, checkedList);
-
+                if (mainBoolean)
+                    refreshMain(filteredList, backupOrAppSheetBoolean);
+                else
+                    refreshBatch(filteredList, backupOrAppSheetBoolean, apkCheckedList, dataCheckedList);
             } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 Log.e(TAG, "Could not update application list: " + e);
             }
@@ -510,9 +592,8 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             }
             mainFastAdapter.notifyAdapterDataSetChanged();
             binding.refreshLayout.setRefreshing(false);
-            if (appSheetBoolean && sheetApp != null) {
-                refreshAppSheet();
-            }
+            if (appSheetBoolean && sheetApp != null) refreshAppSheet();
+            UIUtils.slideUp(binding.bottomBar);
         });
     }
 
@@ -546,8 +627,8 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
-    private void refreshBatch(List<AppInfoX> filteredList, boolean backupBoolean, List<String> checkedList) {
-        ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean, checkedList);
+    private void refreshBatch(List<AppInfoX> filteredList, boolean backupBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
+        ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean, apkCheckedList, dataCheckedList);
         runOnUiThread(() -> {
             if (filteredList.isEmpty()) {
                 Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
@@ -558,10 +639,11 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             batchFastAdapter.notifyAdapterDataSetChanged();
             updateCheckAll();
             binding.refreshLayout.setRefreshing(false);
+            UIUtils.slideUp(binding.bottomBar);
         });
     }
 
-    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoX> filteredList, boolean backupBoolean, List<String> checkedList) {
+    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoX> filteredList, boolean backupBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
         ArrayList<BatchItemX> list = new ArrayList<>();
         if (filteredList.isEmpty()) {
             for (AppInfoX app : SortFilterManager.applyFilter(appsList, "0000", this)) {
@@ -570,12 +652,16 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         } else {
             for (AppInfoX app : filteredList) {
-                if (!checkedList.isEmpty() && checkedList.contains(app.getPackageName())) {
-                    this.checkedList.add(app.getPackageName());
-                }
+                if (!apkCheckedList.isEmpty() && apkCheckedList.contains(app.getPackageName()))
+                    this.apkCheckedList.add(app.getPackageName());
+                if (!dataCheckedList.isEmpty() && dataCheckedList.contains(app.getPackageName()))
+                    this.dataCheckedList.add(app.getPackageName());
                 if (toAddToBatch(backupBoolean, app)) {
                     BatchItemX item = new BatchItemX(app);
-                    if (checkedList.contains(app.getPackageName())) item.setChecked(true);
+                    if (this.apkCheckedList.contains(app.getPackageName()))
+                        item.setApkChecked(true);
+                    if (this.dataCheckedList.contains(app.getPackageName()))
+                        item.setDataChecked(true);
                     list.add(item);
                 }
             }

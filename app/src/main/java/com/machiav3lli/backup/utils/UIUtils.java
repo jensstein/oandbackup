@@ -24,13 +24,19 @@ import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.items.ActionResult;
 
 public class UIUtils {
+
+    UIUtils() {
+    }
+
     private static final String TAG = Constants.classTag(".UIUtils");
 
     public static void setDayNightTheme(String theme) {
@@ -110,5 +116,9 @@ public class UIUtils {
                         // not relevant
                     }
                 });
+    }
+
+    public static void slideUp(View view) {
+        ((HideBottomViewOnScrollBehavior) ((CoordinatorLayout.LayoutParams) view.getLayoutParams()).getBehavior()).slideUp(view);
     }
 }

@@ -42,14 +42,16 @@ public class BatchFragment extends Fragment implements SearchViewController {
     long threadId = -1;
     private FragmentMainBinding binding;
     private HandleMessages handleMessages;
-    private ArrayList<String> checkedList = new ArrayList<>();
+    private ArrayList<String> apkCheckedList = new ArrayList<>();
+    private ArrayList<String> dataCheckedList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handleMessages = new HandleMessages(requireContext());
         if (savedInstanceState != null) {
-            checkedList = savedInstanceState.getStringArrayList("checkedList");
+            apkCheckedList = savedInstanceState.getStringArrayList("apkCheckedList");
+            dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList");
             threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
             UIUtils.reShowMessage(handleMessages, threadId);
         }
@@ -99,13 +101,16 @@ public class BatchFragment extends Fragment implements SearchViewController {
     @Override
     public void onPause() {
         super.onPause();
-        checkedList.clear();
-        checkedList.addAll(requireMainActivity().checkedList);
+        apkCheckedList.clear();
+        dataCheckedList.clear();
+        apkCheckedList.addAll(requireMainActivity().apkCheckedList);
+        dataCheckedList.addAll(requireMainActivity().dataCheckedList);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putStringArrayList("checkedList", checkedList);
+        outState.putStringArrayList("apkCheckedList", apkCheckedList);
+        outState.putStringArrayList("dataCheckedList", dataCheckedList);
         super.onSaveInstanceState(outState);
     }
 
@@ -114,7 +119,7 @@ public class BatchFragment extends Fragment implements SearchViewController {
         super.onResume();
         handleMessages = new HandleMessages(requireContext());
         requireMainActivity().setSearchViewController(this);
-        requireMainActivity().resumeRefresh(this.checkedList);
+        requireMainActivity().resumeRefresh(this.apkCheckedList, this.dataCheckedList);
     }
 
     @Override

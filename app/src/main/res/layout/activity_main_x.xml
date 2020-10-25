@@ -15,66 +15,71 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainer"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/modeBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/navi_graph_main" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainer"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:navGraph="@navigation/navi_graph_main" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/modeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/cards_spacing"
+        android:paddingVertical="@dimen/buttons_spacing"
+        app:layout_constraintBottom_toTopOf="@id/mainLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragmentContainer">
 
-        <HorizontalScrollView
-            android:id="@+id/modeBar"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/apkBatch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_marginEnd="@dimen/cards_spacing"
+            android:background="@drawable/bg_lower_opacity_ripple_apk"
+            android:paddingHorizontal="@dimen/med_spacing"
+            android:paddingVertical="@dimen/buttons_spacing"
+            android:text="@string/radio_apk"
+            android:textAppearance="@style/TextAppearance.Label" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dataBatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_lower_opacity_ripple_data"
             android:paddingHorizontal="@dimen/cards_spacing"
-            android:scrollbars="none">
+            android:paddingVertical="@dimen/buttons_spacing"
+            android:text="@string/radio_data"
+            android:textAppearance="@style/TextAppearance.Label" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/radios"
-                style="@style/Chip.Group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/radioBoth"
-                    style="@style/Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_both" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/radioApk"
-                    style="@style/Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_apk" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/radioData"
-                    style="@style/Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_data" />
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/modeBar">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -82,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingTop="@dimen/cards_spacing"
+                android:paddingTop="@dimen/buttons_spacing"
                 app:fastScrollEnabled="true"
                 app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
                 app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
@@ -91,101 +96,101 @@
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <FrameLayout
-        android:id="@+id/bottomBar"
-        style="@style/Bar.Bottom"
-        android:background="@drawable/bg_bar_static_round">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <FrameLayout
+            android:id="@+id/bottomBar"
+            style="@style/Bar.Bottom"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_bar_static_round">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/batchBar"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/cards_spacing"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/cbAll"
-                        android:layout_width="wrap_content"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/batchBar"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        android:singleLine="true"
-                        android:text="@string/all" />
+                        android:layout_marginHorizontal="@dimen/cards_spacing"
+                        android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/buttonAction"
-                        android:layout_width="0dp"
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            android:singleLine="true"
+                            android:text="@string/all" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/buttonAction"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginVertical="@dimen/buttons_spacing"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_button_positive_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text=""
+                            android:textColor="?colorAccent" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginVertical="@dimen/buttons_spacing"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_button_positive_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text=""
-                        android:textColor="?colorAccent" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:orientation="horizontal">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/buttonSettings"
+                            style="@style/Button.NavBar.Start"
+                            android:layout_width="52dp"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_settings_32"
+                            android:tooltipText="@string/prefs_title" />
+
+                        <com.google.android.material.bottomnavigation.BottomNavigationView
+                            android:id="@+id/bottom_navigation"
+                            style="@style/Bar.BottomNavigation"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:background="@drawable/bg_button_middle_navbar"
+                            app:itemRippleColor="?colorAccent"
+                            app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                            app:menu="@menu/navi_menu_main" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/buttonScheduler"
+                            style="@style/Button.NavBar.Middle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_scheduler_32"
+                            android:tooltipText="@string/sched_title" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/buttonSortFilter"
+                    style="@style/Button.NavBar.End"
+                    android:layout_width="52dp"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/buttonSettings"
-                        style="@style/Button.NavBar.Start"
-                        android:layout_width="52dp"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_settings_32"
-                        android:tooltipText="@string/prefs_title" />
-
-                    <com.google.android.material.bottomnavigation.BottomNavigationView
-                        android:id="@+id/bottom_navigation"
-                        style="@style/Bar.BottomNavigation"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:background="@drawable/bg_button_middle_navbar"
-                        app:itemRippleColor="?colorAccent"
-                        app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
-                        app:menu="@menu/navi_menu_main" />
-
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/buttonScheduler"
-                        style="@style/Button.NavBar.Middle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_scheduler_32"
-                        android:tooltipText="@string/sched_title" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_filter_list_32"
+                    android:tooltipText="@string/sort_and_filter" />
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/buttonSortFilter"
-                style="@style/Button.NavBar.End"
-                android:layout_width="52dp"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_filter_list_32"
-                android:tooltipText="@string/sort_and_filter" />
-        </LinearLayout>
-    </FrameLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

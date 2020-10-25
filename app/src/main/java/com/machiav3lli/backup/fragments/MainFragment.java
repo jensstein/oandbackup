@@ -103,7 +103,7 @@ public class MainFragment extends Fragment implements SearchViewController {
         super.onResume();
         handleMessages = new HandleMessages(requireContext());
         requireMainActivity().setSearchViewController(this);
-        requireMainActivity().resumeRefresh(new ArrayList<>());
+        requireMainActivity().resumeRefresh(new ArrayList<>(), new ArrayList<>());
     }
 
     @Override

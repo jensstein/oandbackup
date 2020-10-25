@@ -24,6 +24,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.machiav3lli.backup.R;
+import com.machiav3lli.backup.handler.action.BaseAppAction;
 import com.machiav3lli.backup.utils.ItemUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -37,8 +38,8 @@ import static com.machiav3lli.backup.utils.ItemUtils.getFormattedDate;
 
 public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
 
-    private boolean isChecked;
-
+    private boolean apkChecked;
+    private boolean dataChecked;
     AppInfoX app;
 
     public BatchItemX(AppInfoX app) {
@@ -46,15 +47,39 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
     }
 
     public AppInfoX getApp() {
-        return app;
+        return this.app;
     }
 
-    public void setChecked(boolean checked) {
-        this.isChecked = checked;
+    public int getActionMode() {
+        if (apkChecked && dataChecked) {
+            return BaseAppAction.MODE_BOTH;
+        } else if (apkChecked) {
+            return BaseAppAction.MODE_APK;
+        } else if (dataChecked) {
+            return BaseAppAction.MODE_DATA;
+        } else {
+            return BaseAppAction.MODE_UNSET;
+        }
+    }
+
+    public void setApkChecked(boolean checked) {
+        this.apkChecked = checked;
+    }
+
+    public boolean isApkChecked() {
+        return this.apkChecked;
+    }
+
+    public void setDataChecked(boolean checked) {
+        this.dataChecked = checked;
+    }
+
+    public boolean isDataChecked() {
+        return this.dataChecked;
     }
 
     public boolean isChecked() {
-        return this.isChecked;
+        return this.dataChecked || this.apkChecked;
     }
 
     @Override
@@ -79,7 +104,8 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
     }
 
     protected static class ViewHolder extends FastAdapter.ViewHolder<BatchItemX> {
-        AppCompatCheckBox checkbox = this.itemView.findViewById(R.id.enableCheckbox);
+        AppCompatCheckBox apkCheckBox = this.itemView.findViewById(R.id.apkCheckBox);
+        AppCompatCheckBox dataCheckBox = this.itemView.findViewById(R.id.dataCheckbox);
         AppCompatTextView label = this.itemView.findViewById(R.id.label);
         AppCompatTextView packageName = this.itemView.findViewById(R.id.packageName);
         AppCompatTextView lastBackup = this.itemView.findViewById(R.id.lastBackup);
@@ -94,7 +120,8 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
         public void bindView(@NotNull BatchItemX item, @NotNull List<?> list) {
             final AppInfoX app = item.getApp();
 
-            this.checkbox.setChecked(item.isChecked());
+            this.apkCheckBox.setChecked(item.isApkChecked());
+            this.dataCheckBox.setChecked(item.isDataChecked());
             this.label.setText(app.getPackageLabel());
             this.packageName.setText(app.getPackageName());
             if (app.hasBackups()) {
@@ -114,7 +141,6 @@ public class BatchItemX extends AbstractItem<BatchItemX.ViewHolder> {
 
         @Override
         public void unbindView(@NotNull BatchItemX item) {
-            this.checkbox.setText(null);
             this.label.setText(null);
             this.packageName.setText(null);
             this.lastBackup.setText(null);

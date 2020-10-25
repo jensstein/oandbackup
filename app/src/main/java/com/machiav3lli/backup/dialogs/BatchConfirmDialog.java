@@ -20,6 +20,7 @@ package com.machiav3lli.backup.dialogs;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -27,6 +28,7 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.items.AppMetaInfo;
+import com.machiav3lli.backup.utils.ItemUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +44,7 @@ public class BatchConfirmDialog extends DialogFragment {
         Bundle arguments = getArguments();
         assert arguments != null;
         final List<AppMetaInfo> selectedList = arguments.getParcelableArrayList("selectedList");
+        final List<Integer> selectedListModes = arguments.getIntegerArrayList("selectedListModes");
         boolean backupBoolean = arguments.getBoolean("backupBoolean");
         String title = backupBoolean ? getString(R.string.backupConfirmation) : getString(R.string.restoreConfirmation);
         StringBuilder message = new StringBuilder();
@@ -50,15 +53,16 @@ public class BatchConfirmDialog extends DialogFragment {
             message.append(this.getContext().getString(R.string.msg_appkill_warning));
             message.append("\n\n");
         }
-
         for (AppMetaInfo item : selectedList)
             message.append(item.getPackageLabel()).append("\n");
+
+        List<Pair<AppMetaInfo, Integer>> selectedItems = ItemUtils.zipTwoLists(selectedList, selectedListModes);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(title);
         builder.setMessage(message.toString().trim());
         builder.setPositiveButton(R.string.dialogYes, (dialogInterface, id) -> {
             try {
-                ((ConfirmListener) requireActivity()).onConfirmed(selectedList);
+                ((ConfirmListener) requireActivity()).onConfirmed(selectedItems);
             } catch (ClassCastException e) {
                 Log.e(TAG, "BatchConfirmDialog: " + e.toString());
             }
@@ -68,6 +72,6 @@ public class BatchConfirmDialog extends DialogFragment {
     }
 
     public interface ConfirmListener {
-        void onConfirmed(List<AppMetaInfo> selectedList);
+        void onConfirmed(List<Pair<AppMetaInfo, Integer>> selectedList);
     }
 }
