@@ -18,6 +18,8 @@
 package com.machiav3lli.backup.dialogs;
 
 import android.app.Dialog;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,13 +28,14 @@ import androidx.fragment.app.DialogFragment;
 import com.machiav3lli.backup.BlacklistListener;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
-import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.handler.BackendController;
+import com.machiav3lli.backup.schedules.db.Schedule;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlacklistDialogFragment extends DialogFragment {
     private final ArrayList<BlacklistListener> blacklistListeners = new ArrayList<>();
@@ -44,48 +47,46 @@ public class BlacklistDialogFragment extends DialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstance) {
-        final ArrayList<String> selections = new ArrayList<>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        PackageManager pm = requireContext().getPackageManager();
         Bundle args = getArguments();
         assert args != null;
-        int blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID,
-                SchedulerActivityX.GLOBALBLACKLISTID);
-        ArrayList<String> blacklistedPackages = args.getStringArrayList(
-                Constants.BLACKLIST_ARGS_PACKAGES);
-        ArrayList<AppInfoX> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
-        boolean[] checkedPackages = new boolean[appInfoList.size()];
-        ArrayList<String> labels = new ArrayList<>();
-        int i = 0;
-        appInfoList.sort((appInfo1, appInfo2) -> {
+        int blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBALBLACKLISTID);
+        ArrayList<String> blacklistedPackages = args.getStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES);
+        List<PackageInfo> appInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL);
+        appInfoList.sort((pi1, pi2) -> {
             assert blacklistedPackages != null;
-            boolean b1 = blacklistedPackages.contains(appInfo1.getPackageName());
-            boolean b2 = blacklistedPackages.contains(appInfo2.getPackageName());
-            return (b1 != b2) ? (b1 ? -1 : 1) : appInfo1.getPackageLabel().compareToIgnoreCase(appInfo2.getPackageLabel());
+            boolean b1 = blacklistedPackages.contains(pi1.packageName);
+            boolean b2 = blacklistedPackages.contains(pi2.packageName);
+            return (b1 != b2) ? (b1 ? -1 : 1)
+                    : pi1.applicationInfo.loadLabel(pm).toString().compareToIgnoreCase(pi2.applicationInfo.loadLabel(pm).toString());
         });
-        for (AppInfoX appInfo : appInfoList) {
-            labels.add(appInfo.getPackageLabel());
+        ArrayList<String> labels = new ArrayList<>();
+        boolean[] checkedPackages = new boolean[appInfoList.size()];
+        final ArrayList<String> selections = new ArrayList<>();
+        int i = 0;
+        for (PackageInfo packageInfo : appInfoList) {
+            labels.add(packageInfo.applicationInfo.loadLabel(pm).toString());
             assert blacklistedPackages != null;
-            if (blacklistedPackages.contains(appInfo.getPackageName())) {
+            if (blacklistedPackages.contains(packageInfo.packageName)) {
                 checkedPackages[i] = true;
-                selections.add(appInfo.getPackageName());
+                selections.add(packageInfo.packageName);
             }
             i++;
         }
-        builder.setTitle(R.string.sched_blacklist)
+        return new AlertDialog.Builder(requireActivity()).setTitle(R.string.sched_blacklist)
                 .setMultiChoiceItems(labels.toArray(new CharSequence[0]),
                         checkedPackages, (dialogInterface, which, isChecked) -> {
-                            String packageName = appInfoList.get(which).getPackageName();
+                            String packageName = appInfoList.get(which).packageName;
                             if (isChecked)
                                 selections.add(packageName);
                             else selections.remove(packageName);
                         })
                 .setPositiveButton(R.string.dialogOK, (dialogInterface, id) -> {
                     for (BlacklistListener listener : blacklistListeners) {
-                        listener.onBlacklistChanged(
-                                selections.toArray(new CharSequence[0]),
-                                blacklistId);
+                        listener.onBlacklistChanged(selections.toArray(new CharSequence[0]), blacklistId);
                     }
-                });
-        return builder.create();
+                })
+                .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
+                }).create();
     }
 }
