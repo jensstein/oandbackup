@@ -30,12 +30,14 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.activities.PrefsActivity;
+import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellCommands;
 import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class PrefsToolsFragment extends PreferenceFragmentCompat {
     private static final String TAG = Constants.classTag(".PrefsToolsFragment");
     private static final int RESULT_OK = 0;
     private HandleMessages handleMessages;
+    private List<AppInfoX> appInfoList = new ArrayList<>();
 
     Preference pref;
 
@@ -70,6 +73,18 @@ public class PrefsToolsFragment extends PreferenceFragmentCompat {
         pref.setOnPreferenceClickListener(preference -> this.launchFragment(new LogsFragment()));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Thread(() -> {
+            try {
+                appInfoList = BackendController.getApplicationList(requireContext());
+            } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private boolean onClickQuickReboot(ShellCommands shellCommands) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.prefs_quickreboot)
@@ -89,9 +104,8 @@ public class PrefsToolsFragment extends PreferenceFragmentCompat {
     private boolean onClickBatchDelete() {
         final ArrayList<AppInfoX> deleteList = new ArrayList<>();
         StringBuilder message = new StringBuilder();
-        final ArrayList<AppInfoX> appInfoList = new ArrayList<>(MainActivityX.getAppsList());
-        if (!appInfoList.isEmpty()) {
-            for (AppInfoX appInfo : appInfoList) {
+        if (!this.appInfoList.isEmpty()) {
+            for (AppInfoX appInfo : this.appInfoList) {
                 if (!appInfo.isInstalled()) {
                     deleteList.add(appInfo);
                     message.append(appInfo.getPackageLabel()).append("\n");
@@ -132,7 +146,7 @@ public class PrefsToolsFragment extends PreferenceFragmentCompat {
     public void deleteBackups(List<AppInfoX> deleteList) {
         handleMessages.showMessage(getString(R.string.batchDeleteMessage), "");
         for (AppInfoX appInfo : deleteList) {
-            handleMessages.changeMessage(getString(R.string.batchDeleteMessage), appInfo.getPackageLabel());
+            handleMessages.showMessage(getString(R.string.batchDeleteMessage), appInfo.getPackageLabel());
             Log.i(TAG, "deleting backups of " + appInfo.getPackageLabel());
             appInfo.deleteAllBackups();
             appInfo.refreshBackupHistory();
