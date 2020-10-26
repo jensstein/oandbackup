@@ -20,8 +20,10 @@ package com.machiav3lli.backup.schedules;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -34,9 +36,11 @@ import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -108,17 +112,17 @@ public class HandleScheduledBackups {
                 Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
                 PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
                 if (prefs.getBoolean("acquireWakelock", true)) {
-                    wl.acquire(10 * 60 * 1000L /*10 minutes*/);
+                    wl.acquire(60 * 60 * 1000L /*60 minutes*/);
                     Log.i(TAG, "wakelock acquired");
                 }
-                int id = (int) System.currentTimeMillis();
-                int total = backupList.size();
+                int notificationId = (int) System.currentTimeMillis();
+                int totalOfActions = backupList.size();
                 int i = 1;
-                BlacklistsDBHelper blacklistsDBHelper =
-                        new BlacklistsDBHelper(context);
+                BlacklistsDBHelper blacklistsDBHelper = new BlacklistsDBHelper(this.context);
                 SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
                 List<String> blacklistedPackages = blacklistsDBHelper
                         .getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID);
+                List<ActionResult> results = new ArrayList<>(totalOfActions);
                 for (AppInfoX appInfo : backupList) {
                     if (blacklistedPackages.contains(appInfo.getPackageName())) {
                         Log.i(TAG, String.format("%s ignored",
@@ -126,21 +130,40 @@ public class HandleScheduledBackups {
                         i++;
                         continue;
                     }
-                    String title = context.getString(R.string.backupProgress) + " (" + i + "/" + total + ")";
-                    NotificationHelper.showNotification(context, MainActivityX.class, id, title, appInfo.getPackageLabel(), false);
+                    String title = context.getString(R.string.backupProgress) + " (" + i + "/" + totalOfActions + ")";
+                    NotificationHelper.showNotification(this.context, MainActivityX.class, notificationId, title, appInfo.getPackageLabel(), false);
                     final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-                    ActionResult result = backupRestoreHelper.backup(context, MainActivityX.getShellHandlerInstance(), appInfo, subMode);
-
-                    if (i == total) {
-                        String notificationTitle = !result.succeeded ? context.getString(R.string.batchFailure) : context.getString(R.string.batchSuccess);
-                        String notificationMessage = context.getString(R.string.sched_notificationMessage);
-                        NotificationHelper.showNotification(context, MainActivityX.class, id, notificationTitle, notificationMessage, true);
-                    }
+                    ActionResult result = backupRestoreHelper.backup(this.context, MainActivityX.getShellHandlerInstance(), appInfo, subMode);
+                    results.add(result);
                     i++;
                 }
                 if (wl.isHeld()) {
                     wl.release();
                     Log.i(TAG, "wakelock released");
+                }
+                // Calculate the overall result
+                String errors = results.stream()
+                        .map(ActionResult::getMessage)
+                        .filter(msg -> !msg.isEmpty())
+                        .collect(Collectors.joining("\n"));
+                ActionResult overallResult = new ActionResult(null, null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
+
+                // Update the notification
+                String notificationTitle = overallResult.succeeded ? this.context.getString(R.string.batchSuccess) : context.getString(R.string.batchFailure);
+                String notificationMessage = this.context.getString(R.string.sched_notificationMessage);
+                NotificationHelper.showNotification(context, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
+
+                if (!overallResult.succeeded) {
+                    try {
+                        LogUtils logUtils = new LogUtils(this.context);
+                        Uri logFileUri = logUtils.getLogFile();
+                        logUtils.writeToLogFile(errors);
+                        Toast.makeText(this.context,
+                                String.format(this.context.getString(R.string.logfileSavedAt), logFileUri),
+                                Toast.LENGTH_LONG).show();
+                    } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
+                        e.printStackTrace();
+                    }
                 }
                 for (BackupRestoreHelper.OnBackupRestoreListener l : listeners)
                     l.onBackupRestoreDone();
