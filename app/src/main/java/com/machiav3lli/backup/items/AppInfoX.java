@@ -46,10 +46,10 @@ public class AppInfoX {
      *
      * @param context  Context object of the app
      * @param metaInfo Constructed information object that describes the package
-     * @throws FileUtils.BackupLocationInAccessibleException   when the backup location cannot be read for any reason
+     * @throws FileUtils.BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
      * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
      */
-    AppInfoX(Context context, @NotNull AppMetaInfo metaInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    AppInfoX(Context context, @NotNull AppMetaInfo metaInfo) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         this.context = context;
         this.metaInfo = metaInfo;
         this.packageName = metaInfo.getPackageName();
@@ -62,7 +62,7 @@ public class AppInfoX {
         }
     }
 
-    public AppInfoX(Context context, PackageInfo packageInfo) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public AppInfoX(Context context, PackageInfo packageInfo) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         this.context = context;
         this.packageName = packageInfo.packageName;
         this.packageInfo = packageInfo;
@@ -180,7 +180,7 @@ public class AppInfoX {
         if (directBoolean) this.backupHistory.remove(backupItem);
     }
 
-    public Uri getBackupDir(boolean create) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public Uri getBackupDir(boolean create) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         if (create && this.backupDir == null) {
             this.backupDir = DocumentHelper.ensureDirectory(DocumentHelper.getBackupRoot(this.context), this.packageName).getUri();
         }

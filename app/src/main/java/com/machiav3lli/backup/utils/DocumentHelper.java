@@ -24,7 +24,7 @@ public final class DocumentHelper {
     public static final String TAG = Constants.classTag(".DocumentHelper");
 
     public static StorageFile getBackupRoot(Context context)
-            throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+            throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         return StorageFile.fromUri(context, FileUtils.getBackupDir(context));
     }
 

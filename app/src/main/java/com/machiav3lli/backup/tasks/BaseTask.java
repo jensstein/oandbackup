@@ -87,7 +87,7 @@ public abstract class BaseTask extends AsyncTask<Void, Void, ActionResult> {
                     Toast.makeText(mainActivityX,
                             String.format(mainActivityX.getString(R.string.logfileSavedAt), logFileUri),
                             Toast.LENGTH_LONG).show();
-                } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
+                } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
                     e.printStackTrace();
                 }
             });

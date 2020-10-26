@@ -79,7 +79,7 @@ public class PrefsToolsFragment extends PreferenceFragmentCompat {
         new Thread(() -> {
             try {
                 appInfoList = BackendController.getApplicationList(requireContext());
-            } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+            } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 e.printStackTrace();
             }
         }).start();

@@ -491,9 +491,9 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         ActionResult overAllResult = new ActionResult(null, null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
 
         // Update the notification
-        String msg = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
         String notificationTitle = overAllResult.succeeded ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
-        NotificationHelper.showNotification(this, MainActivityX.class, notificationId, notificationTitle, msg, true);
+        String notificationMessage = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
+        NotificationHelper.showNotification(this, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
 
         // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
         UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
@@ -504,7 +504,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 Toast.makeText(MainActivityX.this,
                         String.format(this.getString(R.string.logfileSavedAt), logFileUri),
                         Toast.LENGTH_LONG).show();
-            } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
+            } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
                 e.printStackTrace();
             }
         });
@@ -571,7 +571,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                     refreshMain(filteredList, backupOrAppSheetBoolean);
                 else
                     refreshBatch(filteredList, backupOrAppSheetBoolean, apkCheckedList, dataCheckedList);
-            } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+            } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 Log.e(TAG, "Could not update application list: " + e);
             }
         }).start();

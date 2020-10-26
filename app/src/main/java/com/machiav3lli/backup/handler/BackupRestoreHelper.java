@@ -137,7 +137,7 @@ public class BackupRestoreHelper {
             } catch (ShellHandler.ShellCommandFailedException e) {
                 throw new IOException(String.join(" ", e.getShellResult().getErr()), e);
             }
-        } catch (PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
+        } catch (PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
             Log.e(TAG, e.getClass().getSimpleName() + ": " + e);
             return false;
         }

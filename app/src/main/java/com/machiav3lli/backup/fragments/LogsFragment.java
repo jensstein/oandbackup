@@ -64,7 +64,7 @@ public class LogsFragment extends Fragment {
         try {
             LogUtils logUtils = new LogUtils(this.requireContext());
             return logUtils.readFromLogFile();
-        } catch (FileUtils.BackupLocationInAccessibleException
+        } catch (FileUtils.BackupLocationIsAccessibleException
                 | PrefUtils.StorageLocationNotConfiguredException | IOException e) {
             e.printStackTrace();
             return null;

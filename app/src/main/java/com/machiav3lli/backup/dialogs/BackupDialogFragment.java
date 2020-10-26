@@ -48,7 +48,7 @@ public class BackupDialogFragment extends DialogFragment {
         // Using packageLabel to display something for special backups. pi is null for them!
         final String packageLabel = arguments.getString("packageLabel");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity())
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.requireActivity())
                 .setTitle(this.getContext().getString(R.string.backup) + ' ' + packageLabel);
 
         if (PrefUtils.isKillBeforeActionEnabled(this.getContext())) {

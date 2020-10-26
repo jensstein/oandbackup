@@ -50,8 +50,7 @@ public class ScheduleService extends Service
         int id = intent.getIntExtra(Constants.classAddress(".schedule_id"), -1);
         if (id >= 0) {
             HandleAlarms handleAlarms = new HandleAlarms(this);
-            final HandleScheduledBackups handleScheduledBackups =
-                    getHandleScheduledBackups();
+            final HandleScheduledBackups handleScheduledBackups = getHandleScheduledBackups();
             handleScheduledBackups.setOnBackupListener(this);
 
             final Thread t = new Thread(() -> {
@@ -88,12 +87,9 @@ public class ScheduleService extends Service
         final String channelId = TAG;
         // Do some initialization
         MainActivityX.initShellHandler();
+        final NotificationChannel notificationChannel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_DEFAULT);
+        final NotificationManager notificationManager = getSystemService(NotificationManager.class);
 
-        final NotificationChannel notificationChannel =
-                new NotificationChannel(channelId, channelId,
-                        NotificationManager.IMPORTANCE_DEFAULT);
-        final NotificationManager notificationManager = getSystemService(
-                NotificationManager.class);
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(
                     notificationChannel);

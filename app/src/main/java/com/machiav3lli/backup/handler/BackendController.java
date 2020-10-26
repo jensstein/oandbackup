@@ -58,12 +58,12 @@ public final class BackendController {
                 .collect(Collectors.toList());
     }
 
-    public static List<AppInfoX> getApplicationList(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public static List<AppInfoX> getApplicationList(Context context) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         return BackendController.getApplicationList(context, true);
     }
 
     public static List<AppInfoX> getApplicationList(Context context, boolean includeUninstalled)
-            throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+            throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         StorageFile.invalidateCache();
         boolean includeSpecial = PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
         PackageManager pm = context.getPackageManager();
@@ -109,7 +109,7 @@ public final class BackendController {
         return packageList;
     }
 
-    public static List<StorageFile> getDirectoriesInBackupRoot(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public static List<StorageFile> getDirectoriesInBackupRoot(Context context) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
         try {
             return Arrays.stream(backupRoot.listFiles())

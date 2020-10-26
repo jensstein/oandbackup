@@ -76,7 +76,7 @@ public final class FileUtils {
      * @return URI to OABX storage directory
      */
     public static Uri getBackupDir(Context context)
-            throws StorageLocationNotConfiguredException, BackupLocationInAccessibleException {
+            throws StorageLocationNotConfiguredException, BackupLocationIsAccessibleException {
         if (FileUtils.backupLocation == null) {
             String storageRoot = PrefUtils.getStorageRootDir(context);
             if (storageRoot.isEmpty()) {
@@ -84,7 +84,7 @@ public final class FileUtils {
             }
             DocumentFile storageRootDoc = DocumentFile.fromTreeUri(context, Uri.parse(storageRoot));
             if (storageRootDoc == null || !storageRootDoc.exists()) {
-                throw new BackupLocationInAccessibleException("Cannot access the root location.");
+                throw new BackupLocationIsAccessibleException("Cannot access the root location.");
             }
             DocumentFile backupLocationDoc = storageRootDoc.findFile(FileUtils.BACKUP_SUBDIR_NAME);
             if (backupLocationDoc == null || !backupLocationDoc.exists()) {
@@ -111,16 +111,16 @@ public final class FileUtils {
         return path.substring(path.lastIndexOf(File.separator) + 1);
     }
 
-    public static class BackupLocationInAccessibleException extends Exception {
-        public BackupLocationInAccessibleException() {
+    public static class BackupLocationIsAccessibleException extends Exception {
+        public BackupLocationIsAccessibleException() {
             super();
         }
 
-        public BackupLocationInAccessibleException(String message) {
+        public BackupLocationIsAccessibleException(String message) {
             super(message);
         }
 
-        public BackupLocationInAccessibleException(String message, Throwable cause) {
+        public BackupLocationIsAccessibleException(String message, Throwable cause) {
             super(message, cause);
         }
     }

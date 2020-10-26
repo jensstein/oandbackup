@@ -65,7 +65,7 @@ public class BackupAppAction extends BaseAppAction {
         Uri appBackupRootUri;
         try {
             appBackupRootUri = app.getBackupDir(true);
-        } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+        } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
             // Usually, this should never happen, but just in case...
             Exception realException = new BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e);
             return new ActionResult(app,

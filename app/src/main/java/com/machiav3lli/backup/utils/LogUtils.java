@@ -32,7 +32,7 @@ public class LogUtils {
     Uri logFile;
     Context context;
 
-    public LogUtils(Context context) throws FileUtils.BackupLocationInAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
+    public LogUtils(Context context) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         StorageFile backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context));
         StorageFile logDocumentFile = backupRootFolder.findFile(FileUtils.LOG_FILE_NAME);
         if (logDocumentFile == null || !logDocumentFile.exists()) {

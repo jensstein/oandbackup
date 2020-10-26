@@ -20,4 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# This fixes crash in fragments in builds with minify
 -keep class * extends androidx.fragment.app.Fragment{}

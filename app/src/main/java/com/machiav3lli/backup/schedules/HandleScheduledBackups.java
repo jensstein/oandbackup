@@ -60,13 +60,13 @@ public class HandleScheduledBackups {
 
     public HandleScheduledBackups(Context context) {
         this.context = context;
-        prefs = PrefUtils.getDefaultSharedPreferences(context);
-        powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        listeners = new ArrayList<>();
+        this.prefs = PrefUtils.getDefaultSharedPreferences(context);
+        this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        this.listeners = new ArrayList<>();
     }
 
     public void setOnBackupListener(BackupRestoreHelper.OnBackupRestoreListener listener) {
-        listeners.add(listener);
+        this.listeners.add(listener);
     }
 
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem, final boolean enableCustomList) {
@@ -76,7 +76,7 @@ public class HandleScheduledBackups {
             List<AppInfoX> list;
             try {
                 list = BackendController.getApplicationList(this.context);
-            } catch (FileUtils.BackupLocationInAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
+            } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 Log.e(TAG, String.format("Scheduled backup failed due to %s: %s", e.getClass().getSimpleName(), e));
                 // Todo: Log this failure visible to the user!
                 return;
