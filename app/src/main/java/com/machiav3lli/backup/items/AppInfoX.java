@@ -174,7 +174,7 @@ public class AppInfoX {
                     + " but this object is for " + this.getPackageName());
         }
         Log.d(AppInfoX.TAG, String.format("[%s] Deleting backup revision %s", this.getPackageName(), backupItem));
-        String propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES, Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.getBackupProperties().getBackupDate()));
+        String propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES, Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.getBackupProperties().getBackupDate()), backupItem.getBackupProperties().getProfileId());
         DocumentHelper.deleteRecursive(this.context, backupItem.getBackupLocation());
         StorageFile.fromUri(this.context, this.backupDir).findFile(propertiesFileName).delete();
         if (directBoolean) this.backupHistory.remove(backupItem);
