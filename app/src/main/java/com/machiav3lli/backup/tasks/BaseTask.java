@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.tasks;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
@@ -28,13 +30,17 @@ import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
+import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.LogUtils;
+import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
 // TODO rebase those Tasks, as AsyncTask is deprecated
-public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
+public abstract class BaseTask extends AsyncTask<Void, Void, ActionResult> {
     final BackupRestoreHelper.ActionType actionType;
     final AppInfoX app;
     final WeakReference<HandleMessages> handleMessagesReference;
@@ -66,14 +72,25 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
     }
 
     @Override
-    public void onPostExecute(Integer result) {
+    public void onPostExecute(ActionResult result) {
         final HandleMessages handleMessages = handleMessagesReference.get();
         final MainActivityX mainActivityX = mainActivityXReference.get();
         if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing()) {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);
             NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getPackageLabel(), message, true);
-            UIUtils.showActionResult(mainActivityX, this.result, null);
+            UIUtils.showActionResult(mainActivityX, this.result, this.result.succeeded ? null : (dialog, which) -> {
+                try {
+                    LogUtils logUtils = new LogUtils(mainActivityX);
+                    Uri logFileUri = logUtils.getLogFile();
+                    logUtils.writeToLogFile(result.getMessage());
+                    Toast.makeText(mainActivityX,
+                            String.format(mainActivityX.getString(R.string.logfileSavedAt), logFileUri),
+                            Toast.LENGTH_LONG).show();
+                } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationInAccessibleException e) {
+                    e.printStackTrace();
+                }
+            });
             mainActivityX.refreshWithAppSheet();
         }
         if (signal != null) {
@@ -89,8 +106,8 @@ public abstract class BaseTask extends AsyncTask<Void, Void, Integer> {
         }
     }
 
-    private String getPostExecuteMessage(Context context, BackupRestoreHelper.ActionType actionType, int result) {
-        if (result == 0) {
+    private String getPostExecuteMessage(Context context, BackupRestoreHelper.ActionType actionType, ActionResult result) {
+        if (result.succeeded) {
             if (actionType == BackupRestoreHelper.ActionType.BACKUP) {
                 return context.getString(R.string.backupSuccess);
             } else {

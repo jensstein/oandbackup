@@ -21,24 +21,24 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
-
-import java.io.File;
 
 // TODO rebase those Tasks, as AsyncTask is deprecated
 public class BackupTask extends BaseTask {
     public BackupTask(AppInfoX appInfo, HandleMessages handleMessages, MainActivityX oAndBackupX,
-                      File backupDirectory, ShellHandler shellHandler, int backupMode) {
+                      ShellHandler shellHandler, int backupMode) {
         super(BackupRestoreHelper.ActionType.BACKUP, appInfo, handleMessages,
                 oAndBackupX, shellHandler, backupMode);
     }
 
     @Override
-    public Integer doInBackground(Void... _void) {
+    public ActionResult doInBackground(Void... _void) {
         final MainActivityX mainActivityX = mainActivityXReference.get();
-        if (mainActivityX == null || mainActivityX.isFinishing()) return -1;
+        if (mainActivityX == null || mainActivityX.isFinishing())
+            return new ActionResult(this.app, null, "", false);
         publishProgress();
         this.result = this.backupRestoreHelper.backup(mainActivityX, this.shellHandler, this.app, this.mode);
-        return this.result.succeeded ? 0 : 1;
+        return this.result;
     }
 }

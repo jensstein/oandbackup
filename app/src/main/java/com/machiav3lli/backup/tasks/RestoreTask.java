@@ -23,6 +23,7 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.ShellHandler;
+import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
 
@@ -40,13 +41,14 @@ public class RestoreTask extends BaseTask {
     }
 
     @Override
-    public Integer doInBackground(Void... _void) {
+    public ActionResult doInBackground(Void... _void) {
         final MainActivityX mainActivityX = mainActivityXReference.get();
-        if (mainActivityX == null || mainActivityX.isFinishing()) return -1;
+        if (mainActivityX == null || mainActivityX.isFinishing())
+            return new ActionResult(this.app, this.backupProperties, "", false);
         publishProgress();
         this.result = this.backupRestoreHelper.restore(
                 this.mainActivityXReference.get(), this.app, this.backupProperties,
                 this.backupLocation, this.shellHandler, this.mode);
-        return this.result.succeeded ? 0 : 1;
+        return this.result;
     }
 }
