@@ -39,15 +39,12 @@ import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static com.machiav3lli.backup.utils.FileUtils.getBackupDirectoryPath;
 
 public class HandleScheduledBackups {
     private static final String TAG = Constants.classTag(".HandleScheduledBackups");
@@ -56,7 +53,6 @@ public class HandleScheduledBackups {
     private final PowerManager powerManager;
     private final SharedPreferences prefs;
     private final List<BackupRestoreHelper.OnBackupRestoreListener> listeners;
-    private File backupDir;
 
     public HandleScheduledBackups(Context context) {
         this.context = context;
@@ -71,18 +67,24 @@ public class HandleScheduledBackups {
 
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem, final boolean enableCustomList) {
         new Thread(() -> {
-            String backupDirPath = getBackupDirectoryPath(context);
-            backupDir = new File(backupDirPath);
             List<AppInfoX> list;
             try {
                 list = BackendController.getApplicationList(this.context);
             } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 Log.e(TAG, String.format("Scheduled backup failed due to %s: %s", e.getClass().getSimpleName(), e));
-                // Todo: Log this failure visible to the user!
+                try {
+                    LogUtils logUtils = new LogUtils(this.context);
+                    Uri logFileUri = logUtils.getLogFile();
+                    logUtils.writeToLogFile(e.toString());
+                    Toast.makeText(this.context, String.format(this.context.getString(R.string.logfileSavedAt),
+                            logFileUri), Toast.LENGTH_LONG).show();
+                } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException ex) {
+                    ex.printStackTrace();
+                }
                 return;
             }
             Predicate<AppInfoX> predicate;
-            Set<String> selectedPackages = CustomPackageList.getScheduleCustomList(context, id);
+            Set<String> selectedPackages = CustomPackageList.getScheduleCustomList(this.context, id);
             Predicate<String> inCustomList = packageName -> !enableCustomList || selectedPackages.contains(packageName);
             switch (mode) {
                 case USER:
@@ -107,7 +109,7 @@ public class HandleScheduledBackups {
     }
 
     public void backup(final List<AppInfoX> backupList, final int subMode) {
-        if (backupDir != null) {
+        if (PrefUtils.checkStoragePermissions(this.context)) {
             new Thread(() -> {
                 Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
                 PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -151,7 +153,7 @@ public class HandleScheduledBackups {
                 // Update the notification
                 String notificationTitle = overallResult.succeeded ? this.context.getString(R.string.batchSuccess) : context.getString(R.string.batchFailure);
                 String notificationMessage = this.context.getString(R.string.sched_notificationMessage);
-                NotificationHelper.showNotification(context, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
+                NotificationHelper.showNotification(this.context, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
 
                 if (!overallResult.succeeded) {
                     try {
