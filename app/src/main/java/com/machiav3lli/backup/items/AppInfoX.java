@@ -6,10 +6,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.machiav3lli.backup.Constants;
-import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.utils.DocumentHelper;
@@ -119,15 +117,11 @@ public class AppInfoX {
                 if (file.isFile()) try {
                     backupHistory.add(new BackupItem(context, file));
                 } catch (BackupItem.BrokenBackupException | NullPointerException e) {
-                    String message = String.format("Incomplete backup or wrong structure found in %s: %s", backupDir.getEncodedPath(), e.getMessage());
+                    String message = String.format("Incomplete backup or wrong structure found in %s.", backupDir.getEncodedPath());
                     Log.w(AppInfoX.TAG, message);
                     try {
                         LogUtils logUtils = new LogUtils(context);
-                        Uri logFileUri = logUtils.getLogFile();
                         logUtils.writeToLogFile(message);
-                        Toast.makeText(context,
-                                String.format(context.getString(R.string.logfileSavedAt), logFileUri),
-                                Toast.LENGTH_LONG).show();
                     } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException xe) {
                         e.printStackTrace();
                     }
