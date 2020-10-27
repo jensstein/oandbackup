@@ -56,12 +56,12 @@ public class ScheduleService extends Service
             final Thread t = new Thread(() -> {
                 final ScheduleDao scheduleDao = getScheduleDao();
                 final Schedule schedule = scheduleDao.getSchedule(id);
-                schedule.setPlaced(System.currentTimeMillis());
+                schedule.setTimePlaced(System.currentTimeMillis());
                 scheduleDao.update(schedule);
                 // fix the time at which the alarm will be run the next time.
                 // it can be wrong when scheduled in BootReceiver#onReceive()
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-                handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getHour());
+                handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getTimeHour(), schedule.getTimeMinute());
                 Log.i(TAG, getString(R.string.sched_startingbackup));
                 handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubmode().getValue(), schedule.isExcludeSystem(), schedule.isEnableCustomList());
             });

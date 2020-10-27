@@ -85,11 +85,11 @@ public class BootReceiver extends BroadcastReceiver {
                     .collect(Collectors.toList());
             for (Schedule schedule : schedules) {
                 final long timeLeft = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
-                        schedule.getHour(), schedule.getPlaced(), currentTime);
+                        schedule.getTimeHour(), schedule.getTimeMinute(), schedule.getTimePlaced(), currentTime);
                 if (timeLeft < (5 * 60000)) {
                     handleAlarms.setAlarm((int) schedule.getId(), AlarmManager.INTERVAL_FIFTEEN_MINUTES);
                 } else {
-                    handleAlarms.setAlarm((int) schedule.getId(), schedule.getInterval(), schedule.getHour());
+                    handleAlarms.setAlarm((int) schedule.getId(), schedule.getInterval(), schedule.getTimeHour(), schedule.getTimeMinute());
                 }
             }
         }

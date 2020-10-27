@@ -62,10 +62,9 @@ import java.util.Optional;
 
 public class SchedulerActivityX extends BaseActivity
         implements BlacklistListener {
-    public static final String SCHEDULECUSTOMLIST = "customlist";
+    private static final String TAG = Constants.classTag(".SchedulerActivityX");
     public static final int GLOBALBLACKLISTID = -1;
     public static final String DATABASE_NAME = "schedules.db";
-    private static final String TAG = Constants.classTag(".SchedulerActivityX");
     private ArrayList<SchedulerItemX> list;
     private int totalSchedules;
     private HandleAlarms handleAlarms;
@@ -190,7 +189,7 @@ public class SchedulerActivityX extends BaseActivity
                 if (schedule.isEnabled()) {
                     handleAlarms.cancelAlarm(i);
                     handleAlarms.setAlarm((int) ids[0],
-                            schedule.getInterval(), schedule.getHour());
+                            schedule.getInterval(), schedule.getTimeHour(), schedule.getTimeMinute());
                 }
             } catch (SQLException e) {
                 throw new SchedulingException(
@@ -203,7 +202,8 @@ public class SchedulerActivityX extends BaseActivity
         preferences.edit()
                 .remove(Constants.PREFS_SCHEDULES_ENABLED + number)
                 .remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number)
-                .remove(Constants.PREFS_SCHEDULES_HOUROFDAY + number)
+                .remove(Constants.PREFS_SCHEDULES_TIMEHOUR + number)
+                .remove(Constants.PREFS_SCHEDULES_TIMEMINUTE + number)
                 .remove(Constants.PREFS_SCHEDULES_INTERVAL + number)
                 .remove(Constants.PREFS_SCHEDULES_MODE + number)
                 .remove(Constants.PREFS_SCHEDULES_SUBMODE + number)

@@ -60,7 +60,8 @@ public final class ItemUtils {
     public static long calculateScheduleID(Schedule sched) {
         return sched.getId()
                 + sched.getInterval() * 24
-                + sched.getHour()
+                + sched.getTimeHour()
+                + sched.getTimeMinute()
                 + sched.getMode().getValue()
                 + sched.getSubmode().getValue()
                 + (sched.isEnabled() ? 1 : 0);

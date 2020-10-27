@@ -125,7 +125,7 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
                 timeLeftLine.setVisibility(View.INVISIBLE);
             } else {
                 final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
-                        schedule.getHour(), schedule.getPlaced(), now);
+                        schedule.getTimeHour(), schedule.getTimeMinute(), schedule.getTimePlaced(), now);
                 int sum = (int) (timeDiff / 1000f / 60f);
                 int hours = sum / 60;
                 int minutes = sum % 60;

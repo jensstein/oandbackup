@@ -41,18 +41,18 @@ public class HandleAlarms {
         this.deviceIdleChecker = new DeviceIdleChecker(context);
     }
 
-    public static long timeUntilNextEvent(int interval, int hour, long placed, long now) {
+    public static long timeUntilNextEvent(int interval, int hour, int minute, long timePLaced, long now) {
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(placed);
+        c.setTimeInMillis(timePLaced);
         c.add(Calendar.DAY_OF_MONTH, interval);
         c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MINUTE, minute);
         return c.getTimeInMillis() - now;
     }
 
-    public void setAlarm(int id, int interval, int hour) {
+    public void setAlarm(int id, int interval, int hour, int minute) {
         if (interval > 0) {
-            final long nextEvent = timeUntilNextEvent(interval, hour,
+            final long nextEvent = timeUntilNextEvent(interval, hour, minute,
                     System.currentTimeMillis(), System.currentTimeMillis());
             setAlarm(id, System.currentTimeMillis() + nextEvent);
         }

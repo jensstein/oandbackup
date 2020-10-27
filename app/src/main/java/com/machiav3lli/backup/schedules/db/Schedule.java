@@ -42,9 +42,10 @@ public class Schedule {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private boolean enabled = false;
-    private int hour = 0;
+    private int timeHour = 0;
+    private int timeMinute = 0;
     private int interval = 1;
-    private long placed = System.currentTimeMillis();
+    private long timePlaced = System.currentTimeMillis();
     @TypeConverters(ModeConverter.class)
     private Mode mode;
     @TypeConverters(SubmodeConverter.class)
@@ -71,9 +72,10 @@ public class Schedule {
         final Schedule schedule = new Schedule();
         schedule.id = number;
         schedule.enabled = preferences.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false);
-        schedule.hour = preferences.getInt(Constants.PREFS_SCHEDULES_HOUROFDAY + number, 0);
+        schedule.timeHour = preferences.getInt(Constants.PREFS_SCHEDULES_TIMEHOUR + number, 0);
+        schedule.timeMinute = preferences.getInt(Constants.PREFS_SCHEDULES_TIMEMINUTE + number, 0);
         schedule.interval = preferences.getInt(Constants.PREFS_SCHEDULES_INTERVAL + number, 1);
-        schedule.placed = preferences.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
+        schedule.timePlaced = preferences.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0);
         schedule.mode = Mode.intToMode(preferences.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0));
         schedule.submode = Submode.intToSubmode(preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 0));
         schedule.excludeSystem = preferences.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false);
@@ -97,12 +99,21 @@ public class Schedule {
         this.enabled = enabled;
     }
 
-    public int getHour() {
-        return hour;
+    public int getTimeHour() {
+        return timeHour;
     }
 
-    public void setHour(int hour) {
-        this.hour = hour;
+    public void setTimeHour(int hour) {
+        this.timeHour = hour;
+    }
+
+
+    public int getTimeMinute() {
+        return timeMinute;
+    }
+
+    public void setTimeMinute(int minute) {
+        this.timeMinute = minute;
     }
 
     public int getInterval() {
@@ -113,12 +124,12 @@ public class Schedule {
         this.interval = interval;
     }
 
-    public long getPlaced() {
-        return this.placed;
+    public long getTimePlaced() {
+        return this.timePlaced;
     }
 
-    public void setPlaced(long placed) {
-        this.placed = placed;
+    public void setTimePlaced(long timePlaced) {
+        this.timePlaced = timePlaced;
     }
 
     public Mode getMode() {
@@ -178,9 +189,10 @@ public class Schedule {
     public void persist(SharedPreferences preferences) {
         preferences.edit()
                 .putBoolean(Constants.PREFS_SCHEDULES_ENABLED + id, enabled)
-                .putInt(Constants.PREFS_SCHEDULES_HOUROFDAY + id, hour)
+                .putInt(Constants.PREFS_SCHEDULES_TIMEHOUR + id, timeHour)
+                .putInt(Constants.PREFS_SCHEDULES_TIMEMINUTE + id, timeMinute)
                 .putInt(Constants.PREFS_SCHEDULES_INTERVAL + id, interval)
-                .putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, placed)
+                .putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, timePlaced)
                 .putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value)
                 .putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, submode.value)
                 .putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, excludeSystem)
@@ -197,9 +209,10 @@ public class Schedule {
         Schedule schedule = (Schedule) o;
         return id == schedule.id &&
                 enabled == schedule.enabled &&
-                hour == schedule.hour &&
+                timeHour == schedule.timeHour &&
+                timeMinute == schedule.timeMinute &&
                 interval == schedule.interval &&
-                placed == schedule.placed &&
+                timePlaced == schedule.timePlaced &&
                 excludeSystem == schedule.excludeSystem &&
                 enableCustomList == schedule.enableCustomList &&
                 mode == schedule.mode &&
@@ -212,9 +225,10 @@ public class Schedule {
         int hash = 7;
         hash = 31 * hash + (int) id;
         hash = 31 * hash + (enabled ? 1 : 0);
-        hash = 31 * hash + hour;
+        hash = 31 * hash + timeHour;
+        hash = 31 * hash + timeMinute;
         hash = 31 * hash + interval;
-        hash = 31 * hash + (int) placed;
+        hash = 31 * hash + (int) timePlaced;
         hash = 31 * hash + mode.hashCode();
         hash = 31 * hash + submode.hashCode();
         hash = 31 * hash + (excludeSystem ? 1 : 0);
@@ -229,9 +243,10 @@ public class Schedule {
         return "Schedule{" +
                 "id=" + id +
                 ", enabled=" + enabled +
-                ", hour=" + hour +
+                ", timeHour=" + timeHour +
+                ", timeMinute=" + timeMinute +
                 ", interval=" + interval +
-                ", placed=" + placed +
+                ", timePlaced=" + timePlaced +
                 ", mode=" + mode +
                 ", submode=" + submode +
                 ", excludeSystem=" + excludeSystem +
@@ -257,8 +272,13 @@ public class Schedule {
             return this;
         }
 
-        public Builder withHour(int hour) {
-            schedule.hour = hour;
+        public Builder withTimeHour(int hour) {
+            schedule.timeHour = hour;
+            return this;
+        }
+
+        public Builder withTimeMinute(int minute) {
+            schedule.timeMinute = minute;
             return this;
         }
 
@@ -267,8 +287,8 @@ public class Schedule {
             return this;
         }
 
-        public Builder withPlaced(long placed) {
-            schedule.placed = placed;
+        public Builder withTimePlaced(long time) {
+            schedule.timePlaced = time;
             return this;
         }
 

@@ -35,16 +35,16 @@
                 android:id="@+id/intervalDaysBlock"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/timeOfDayBlock"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dismiss"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/cards_spacing"
+                    android:layout_gravity="bottom"
                     android:text="@string/sched_interval"
                     android:textAppearance="@style/TextAppearance.Title" />
 
@@ -52,7 +52,8 @@
                     android:id="@+id/intervalDays"
                     style="@style/NumberPicker"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
                     app:np_max="30"
                     app:np_min="1" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -72,34 +73,35 @@
                 android:id="@+id/timeOfDayBlock"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cards_spacing"
-                android:orientation="vertical"
+                android:layout_marginVertical="@dimen/cards_spacing"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/schedModeTitle"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dismiss"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/cards_spacing"
                     android:text="@string/sched_hourOfDay"
                     android:textAppearance="@style/TextAppearance.Title" />
 
-                <com.shawnlin.numberpicker.NumberPicker
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/timeOfDay"
-                    style="@style/NumberPicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    app:np_max="23"
-                    app:np_min="0" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    android:textColor="?colorAccent" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/schedModeTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
+                android:layout_marginBottom="@dimen/cards_spacing"
                 android:text="@string/sched_mode"
                 android:textAppearance="@style/TextAppearance.Title"
                 app:layout_constraintBottom_toTopOf="@id/schedMode"

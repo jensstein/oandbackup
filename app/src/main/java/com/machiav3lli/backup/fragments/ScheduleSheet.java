@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.fragments;
 
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,7 +58,7 @@ import java.util.List;
 import java.util.Optional;
 
 // TODO take care of: "Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements"
-public class ScheduleSheet extends BottomSheetDialogFragment {
+public class ScheduleSheet extends BottomSheetDialogFragment implements TimePickerDialog.OnTimeSetListener {
     private static final String TAG = Constants.classTag(".ScheduleSheet");
     private final Schedule sched;
     private HandleAlarms handleAlarms;
@@ -167,8 +169,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
     private void setupSchedInfo() {
         binding.intervalDays.setValue(sched.getInterval());
         binding.intervalDays.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
-        binding.timeOfDay.setValue(sched.getHour());
-        binding.timeOfDay.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
+        binding.timeOfDay.setText(String.format("%s:%s", sched.getTimeHour(),
+                sched.getTimeMinute() < 10 ? "0" + sched.getTimeMinute() : sched.getTimeMinute()));
         binding.enableCheckbox.setChecked(sched.isEnabled());
         binding.enableCustomList.setChecked(sched.isEnableCustomList());
         setTimeLeft(sched, System.currentTimeMillis());
@@ -193,7 +195,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
             binding.timeLeftLine.setVisibility(View.GONE);
         } else {
             final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
-                    schedule.getHour(), schedule.getPlaced(), now);
+                    schedule.getTimeHour(), schedule.getTimeMinute(), schedule.getTimePlaced(), now);
             int sum = (int) (timeDiff / 1000f / 60f);
             int hours = sum / 60;
             int minutes = sum % 60;
@@ -204,6 +206,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
 
     private void setupOnClicks() {
         binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
+        binding.timeOfDay.setOnClickListener(v ->
+                new TimePickerDialog(this.requireContext(), this,
+                        this.sched.getTimeHour(), this.sched.getTimeMinute(), true).show());
         binding.excludeSystem.setOnClickListener(v -> refreshSheet());
         binding.enableCustomList.setOnClickListener(v -> refreshSheet());
         binding.customListUpdate.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), (int) idNumber, idToMode(binding.schedMode.getCheckedChipId())));
@@ -232,6 +237,12 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
                 .show());
     }
 
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        binding.timeOfDay.setText(String.format("%s:%s", hourOfDay, minute < 10 ? "0" + minute : minute));
+        refreshSheet();
+    }
+
     private void changeScheduleMode(Schedule.Mode mode, long id) {
         final ModeChangerRunnable modeChangerRunnable =
                 new ModeChangerRunnable((SchedulerActivityX) requireActivity(), id, mode);
@@ -255,17 +266,20 @@ public class ScheduleSheet extends BottomSheetDialogFragment {
         final boolean enableCustomList = binding.enableCustomList.isChecked();
         final boolean excludeSystemPackages = binding.excludeSystem.isChecked();
         final boolean enabled = binding.enableCheckbox.isChecked();
-        final int hour = binding.timeOfDay.getValue();
+        final String[] time = binding.timeOfDay.getText().toString().split(":");
+        final int timeHour = Integer.parseInt(time[0]);
+        final int timeMinute = Integer.parseInt(time[1]);
         final int interval = binding.intervalDays.getValue();
-        if (enabled) handleAlarms.setAlarm(id, interval, hour);
+        if (enabled) handleAlarms.setAlarm(id, interval, timeHour, timeMinute);
 
         return new Schedule.Builder()
                 .withId(id)
-                .withHour(hour)
+                .withTimeHour(timeHour)
+                .withTimeMinute(timeMinute)
                 .withInterval(interval)
                 .withMode(idToMode(binding.schedMode.getCheckedChipId()))
                 .withSubmode(idToSubmode(binding.schedSubMode.getCheckedChipId()))
-                .withPlaced(System.currentTimeMillis())
+                .withTimePlaced(System.currentTimeMillis())
                 .withEnabled(enabled)
                 .withExcludeSystem(excludeSystemPackages)
                 .withEnableCustomList(enableCustomList)

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e899c7289147a2806f1f28a2d293b21e",
+    "identityHash": "ddcd180082f23c6a8d8a47a0749ceb03",
     "entities": [
       {
         "tableName": "Schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `hour` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `placed` INTEGER NOT NULL, `mode` TEXT, `submode` TEXT, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `enableCustomList` INTEGER NOT NULL, `customList` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `mode` TEXT, `submode` TEXT, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `enableCustomList` INTEGER NOT NULL, `customList` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,8 +21,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "hour",
-            "columnName": "hour",
+            "fieldPath": "timeHour",
+            "columnName": "timeHour",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMinute",
+            "columnName": "timeMinute",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -33,8 +39,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "placed",
-            "columnName": "placed",
+            "fieldPath": "timePlaced",
+            "columnName": "timePlaced",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -88,7 +94,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e899c7289147a2806f1f28a2d293b21e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ddcd180082f23c6a8d8a47a0749ceb03')"
     ]
   }
 }
