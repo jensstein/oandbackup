@@ -100,6 +100,7 @@ public class ScheduleService extends Service
                     Toast.LENGTH_LONG).show();
         }
         final Notification notification = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_app)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
