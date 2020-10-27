@@ -67,7 +67,6 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     AppInfoX app;
     HandleMessages handleMessages;
     ShellCommands shellCommands;
-    File backupDir;
     int position;
     private SheetAppBinding binding;
     private final ItemAdapter<BackupItemX> backupItemAdapter = new ItemAdapter<>();

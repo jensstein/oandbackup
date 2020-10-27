@@ -55,17 +55,9 @@ public final class FileUtils {
         );
     }
 
+    // TODO Change to StorageFile-based
     public static File getExternalStorageDirectory(Context context) {
         return context.getExternalFilesDir(null).getParentFile().getParentFile().getParentFile().getParentFile();
-    }
-
-    // Todo: Remove this. Only used in Scheduling
-    public static String getBackupDirectoryPath(Context context) {
-        return PrefUtils.getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, null);
-    }
-
-    public static File getDefaultLogFilePath(Context context) {
-        return new File(context.getExternalFilesDir(null), FileUtils.LOG_FILE_NAME);
     }
 
     /**

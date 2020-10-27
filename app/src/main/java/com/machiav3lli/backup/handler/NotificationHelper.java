@@ -43,8 +43,7 @@ public class NotificationHelper {
                 new NotificationChannel(TAG, TAG, NotificationManager.IMPORTANCE_LOW);
         final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.createNotificationChannel(notificationChannel);
-        final Notification notification = new NotificationCompat.Builder(
-                context, TAG)
+        final Notification notification = new NotificationCompat.Builder(context, TAG)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(R.drawable.ic_app)
                 .setContentTitle(title)
