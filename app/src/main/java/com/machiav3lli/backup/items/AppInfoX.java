@@ -6,18 +6,22 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.machiav3lli.backup.Constants;
+import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.StorageFile;
 import com.machiav3lli.backup.utils.DocumentHelper;
 import com.machiav3lli.backup.utils.FileUtils;
+import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,8 +118,19 @@ public class AppInfoX {
             for (StorageFile file : appBackupDir.listFiles()) {
                 if (file.isFile()) try {
                     backupHistory.add(new BackupItem(context, file));
-                } catch (BackupItem.BrokenBackupException e) {
-                    Log.w(AppInfoX.TAG, String.format("Incomplete backup or wrong structure found: %s", e.getMessage()));
+                } catch (BackupItem.BrokenBackupException | NullPointerException e) {
+                    String message = String.format("Incomplete backup or wrong structure found in %s: %s", backupDir.getEncodedPath(), e.getMessage());
+                    Log.w(AppInfoX.TAG, message);
+                    try {
+                        LogUtils logUtils = new LogUtils(context);
+                        Uri logFileUri = logUtils.getLogFile();
+                        logUtils.writeToLogFile(message);
+                        Toast.makeText(context,
+                                String.format(context.getString(R.string.logfileSavedAt), logFileUri),
+                                Toast.LENGTH_LONG).show();
+                    } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException xe) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
