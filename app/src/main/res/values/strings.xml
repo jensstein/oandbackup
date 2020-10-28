@@ -223,4 +223,5 @@
     <string name="msg_appkill_warning">The selected App(s) will be stopped. Please make sure, that you either restart your device after processing or open apps like your alarm clock or calendar afterwards to avoid missing important notifications. Your keyboard or launcher might be reset to the default app for it.</string>
     <string name="delete_all_backups">Delete all backups</string>
     <string name="logs_text_empty">There\'s nothing to show!</string>
+    <string name="fetching_backup_list">Fetching apps list for the backup...</string>
 </resources>

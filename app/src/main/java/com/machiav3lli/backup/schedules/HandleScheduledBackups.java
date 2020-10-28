@@ -20,10 +20,8 @@ package com.machiav3lli.backup.schedules;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -67,6 +65,8 @@ public class HandleScheduledBackups {
 
     public void initiateBackup(final int id, final Schedule.Mode mode, final int subMode, final boolean excludeSystem, final boolean enableCustomList) {
         new Thread(() -> {
+            int notificationId = (int) System.currentTimeMillis();
+            NotificationHelper.showNotification(this.context, MainActivityX.class, notificationId, this.context.getString(R.string.fetching_backup_list), "", true);
             List<AppInfoX> list;
             try {
                 list = BackendController.getApplicationList(this.context);
@@ -74,10 +74,7 @@ public class HandleScheduledBackups {
                 Log.e(TAG, String.format("Scheduled backup failed due to %s: %s", e.getClass().getSimpleName(), e));
                 try {
                     LogUtils logUtils = new LogUtils(this.context);
-                    Uri logFileUri = logUtils.getLogFile();
                     logUtils.writeToLogFile(e.toString());
-                    Toast.makeText(this.context, String.format(this.context.getString(R.string.logfileSavedAt),
-                            logFileUri), Toast.LENGTH_LONG).show();
                 } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException ex) {
                     ex.printStackTrace();
                 }
@@ -88,13 +85,13 @@ public class HandleScheduledBackups {
             Predicate<String> inCustomList = packageName -> !enableCustomList || selectedPackages.contains(packageName);
             switch (mode) {
                 case USER:
-                    predicate = appInfoX -> !appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
+                    predicate = appInfoX -> appInfoX.isInstalled() && !appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
                     break;
                 case SYSTEM:
-                    predicate = appInfoX -> appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
+                    predicate = appInfoX -> appInfoX.isInstalled() && appInfoX.isSystem() && inCustomList.test(appInfoX.getPackageName());
                     break;
                 case NEW_UPDATED:
-                    predicate = appInfoX -> (!excludeSystem || !appInfoX.isSystem())
+                    predicate = appInfoX -> appInfoX.isInstalled() && (!excludeSystem || !appInfoX.isSystem())
                             && (!appInfoX.hasBackups() || appInfoX.isUpdated())
                             && inCustomList.test(appInfoX.getPackageName());
                     break;
@@ -104,11 +101,11 @@ public class HandleScheduledBackups {
             List<AppInfoX> listToBackUp = list.stream()
                     .filter(predicate)
                     .collect(Collectors.toList());
-            backup(listToBackUp, subMode);
+            startScheduledBackup(listToBackUp, subMode, notificationId);
         }).start();
     }
 
-    public void backup(final List<AppInfoX> backupList, final int subMode) {
+    public void startScheduledBackup(final List<AppInfoX> backupList, final int subMode, int notificationId) {
         if (PrefUtils.checkStoragePermissions(this.context)) {
             new Thread(() -> {
                 Log.i(TAG, "Starting scheduled backup for " + backupList.size() + " items");
@@ -117,13 +114,11 @@ public class HandleScheduledBackups {
                     wl.acquire(60 * 60 * 1000L /*60 minutes*/);
                     Log.i(TAG, "wakelock acquired");
                 }
-                int notificationId = (int) System.currentTimeMillis();
                 int totalOfActions = backupList.size();
                 int i = 1;
                 BlacklistsDBHelper blacklistsDBHelper = new BlacklistsDBHelper(this.context);
                 SQLiteDatabase db = blacklistsDBHelper.getReadableDatabase();
-                List<String> blacklistedPackages = blacklistsDBHelper
-                        .getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID);
+                List<String> blacklistedPackages = blacklistsDBHelper.getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID);
                 List<ActionResult> results = new ArrayList<>(totalOfActions);
                 for (AppInfoX appInfo : backupList) {
                     if (blacklistedPackages.contains(appInfo.getPackageName())) {
@@ -158,11 +153,7 @@ public class HandleScheduledBackups {
                 if (!overallResult.succeeded) {
                     try {
                         LogUtils logUtils = new LogUtils(this.context);
-                        Uri logFileUri = logUtils.getLogFile();
                         logUtils.writeToLogFile(errors);
-                        Toast.makeText(this.context,
-                                String.format(this.context.getString(R.string.logfileSavedAt), logFileUri),
-                                Toast.LENGTH_LONG).show();
                     } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
                         e.printStackTrace();
                     }
