@@ -219,4 +219,6 @@
     <string name="radio_obbdata">OBB 数据</string>
     <string name="radio_deviceprotecteddata">受保护的设备数据</string>
     <string name="radio_externaldata">外部数据</string>
+    <string name="logs_text_empty">没什么可显示的！</string>
+    <string name="delete_all_backups">删除全部备份</string>
 </resources>

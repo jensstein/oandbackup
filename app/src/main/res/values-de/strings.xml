@@ -122,7 +122,7 @@
     <string name="app_s_icon">App-Icon</string>
     <string name="permission_not_granted">Die Erlaubnis zum Zugriff auf externen Speicher ist erforderlich</string>
     <string name="restart_dialog">App scheint neu gestartet werden zu müssen</string>
-    <string name="error_updating_schedule_mode">App kann aus einer Sicherung ohne Apk nicht wiederhergestellt werden</string>
+    <string name="error_updating_schedule_mode">Fehler beim Aktualisieren von %1$s des Zeitplans %2$d</string>
     <string name="error_creating_notification_channel">Benachrichtigungskanal kann nicht erstellt werden</string>
     <string name="bothBackedUp">APK und Daten</string>
     <string name="all">Alle</string>
