@@ -50,7 +50,6 @@ import com.machiav3lli.backup.fragments.HelpSheet;
 import com.machiav3lli.backup.fragments.SortFilterSheet;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.BackupRestoreHelper;
-import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.handler.SortFilterManager;
@@ -79,6 +78,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MainActivityX extends BaseActivity implements BatchConfirmDialog.ConfirmListener {
     private static final String TAG = Constants.classTag(".MainActivityX");
@@ -101,9 +101,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     private BadgeDrawable updatedBadge;
     private int badgeCounter;
-    private HandleMessages handleMessages;
     private PowerManager powerManager;
-    private long threadId = -1;
     private ActivityMainXBinding binding;
     private final ItemAdapter<MainItemX> mainItemAdapter = new ItemAdapter<>();
     private FastAdapter<MainItemX> mainFastAdapter;
@@ -124,25 +122,18 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         super.onCreate(savedInstanceState);
         binding = ActivityMainXBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        handleMessages = new HandleMessages(this);
         powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         prefs = PrefUtils.getPrivateSharedPrefs(this);
-        runOnUiThread(this::showEncryptionDialog);
-        if (savedInstanceState != null) {
-            threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
-            UIUtils.reShowMessage(handleMessages, threadId);
-        }
         checkUtilBox();
+        setupViews(savedInstanceState);
+        setupNavigation();
+        setupOnClicks();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        runOnUiThread(() -> {
-            setupViews();
-            setupNavigation();
-            setupOnClicks();
-        });
+        runOnUiThread(this::showEncryptionDialog);
         if (getIntent().getExtras() != null) {
             int fragmentNumber = getIntent().getExtras().getInt(Constants.classAddress(".fragmentNumber"));
             moveTo(fragmentNumber);
@@ -155,12 +146,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (handleMessages == null) handleMessages = new HandleMessages(this);
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState = mainFastAdapter.saveInstanceState(outState);
         outState = batchFastAdapter.saveInstanceState(outState);
@@ -168,15 +153,9 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     @Override
-    public void onDestroy() {
-        if (handleMessages != null) handleMessages.endMessage();
-        super.onDestroy();
-    }
-
-    @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        setupViews();
+        setupViews(savedInstanceState);
         setupNavigation();
     }
 
@@ -196,7 +175,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         this.searchViewController = searchViewController;
     }
 
-    private void setupViews() {
+    private void setupViews(Bundle savedInstanceState) {
         binding.refreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_accent, getTheme()));
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.app_primary_base, getTheme()));
         binding.cbAll.setChecked(false);
@@ -204,9 +183,16 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         updatedBadge.setBackgroundColor(getResources().getColor(R.color.app_accent, getTheme()));
         updatedBadge.setVisible(badgeCounter != 0);
         mainFastAdapter = FastAdapter.with(mainItemAdapter);
-        mainFastAdapter.setHasStableIds(true);
         batchFastAdapter = FastAdapter.with(batchItemAdapter);
+        mainFastAdapter.setHasStableIds(true);
         batchFastAdapter.setHasStableIds(true);
+        if (savedInstanceState != null) {
+            if (mainBoolean) {
+                mainFastAdapter = mainFastAdapter.withSavedInstanceState(savedInstanceState);
+            } else {
+                batchFastAdapter = batchFastAdapter.withSavedInstanceState(savedInstanceState);
+            }
+        }
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.refreshLayout.setOnRefreshListener(this::refresh);
     }
@@ -426,13 +412,11 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     @Override
     public void onConfirmed(List<Pair<AppMetaInfo, Integer>> selectedItems) {
-        Thread thread = new Thread(() -> doAction(selectedItems));
-        thread.start();
-        threadId = thread.getId();
+        new Thread(() -> runBatchTask(selectedItems)).start();
     }
 
     // TODO 1. optimize/reduce complexity
-    public void doAction(List<Pair<AppMetaInfo, Integer>> selectedItems) {
+    public void runBatchTask(List<Pair<AppMetaInfo, Integer>> selectedItems) {
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
         if (this.prefs.getBoolean("acquireWakelock", true)) {
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
@@ -455,13 +439,12 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         int totalOfActions = selectedItems.size();
         int i = 1;
         List<ActionResult> results = new ArrayList<>(totalOfActions);
-        String message;
-        String title;
         for (Pair<AppInfoX, Integer> itemInfo : selectedApps) {
-            message = String.format("(%d/%d)", i, totalOfActions);
-            title = String.format("%s (%d/%d)", this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress), i, totalOfActions);
-            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, title, itemInfo.first.getPackageLabel(), false);
-            this.handleMessages.showMessage(itemInfo.first.getPackageLabel(), message);
+            final String message = String.format("%s (%d/%d)", this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress), i, totalOfActions);
+            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, message, itemInfo.first.getPackageLabel(), false);
+            List<Integer> mileStones = IntStream.range(0, 5).map(step -> (step * totalOfActions / 5) + 1).boxed().collect(Collectors.toList());
+            if (mileStones.contains(i))
+                runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
             int mode = itemInfo.second;
             final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
             ActionResult result;
@@ -478,7 +461,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             results.add(result);
             i++;
         }
-        if (handleMessages.isShowing()) this.handleMessages.endMessage();
         if (wl.isHeld()) {
             wl.release();
             Log.i(MainActivityX.TAG, "wakelock released");
@@ -494,6 +476,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         String notificationTitle = overAllResult.succeeded ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
         String notificationMessage = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
         NotificationHelper.showNotification(this, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
+        runOnUiThread(() -> Toast.makeText(this, String.format("%s: %s)", notificationMessage, notificationTitle), Toast.LENGTH_LONG).show());
 
         // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
         UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
@@ -501,9 +484,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 LogUtils logUtils = new LogUtils(this);
                 Uri logFileUri = logUtils.getLogFile();
                 logUtils.writeToLogFile(errors);
-                Toast.makeText(MainActivityX.this,
-                        String.format(this.getString(R.string.logfileSavedAt), logFileUri),
-                        Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toast.makeText(MainActivityX.this, String.format(this.getString(R.string.logfileSavedAt), logFileUri), Toast.LENGTH_LONG).show());
             } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
                 e.printStackTrace();
             }
@@ -522,12 +503,10 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     private void checkUtilBox() {
-        this.handleMessages.showMessage(MainActivityX.TAG, getString(R.string.utilboxCheck));
         // Initialize the ShellHandler for further root checks
         if (!MainActivityX.initShellHandler()) {
             UIUtils.showWarning(this, MainActivityX.TAG, this.getString(R.string.busyboxProblem), (dialog, id) -> this.finishAffinity());
         }
-        this.handleMessages.endMessage();
     }
 
     public void refresh() {
