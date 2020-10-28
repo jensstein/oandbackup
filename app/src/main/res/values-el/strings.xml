@@ -218,4 +218,6 @@
     <string name="radio_obbdata">Δεδομένα OBB</string>
     <string name="radio_deviceprotecteddata">Προστατευμένα από τη Συσκευή Δεδομένα</string>
     <string name="radio_externaldata">Εξωτερικά Δεδομένα</string>
+    <string name="logs_text_empty">Δεν υπάρχει τίποτα για προβολή!</string>
+    <string name="delete_all_backups">Διαγραφή όλων των αντιγράφων</string>
 </resources>
