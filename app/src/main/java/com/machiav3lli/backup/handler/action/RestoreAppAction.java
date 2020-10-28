@@ -81,11 +81,8 @@ public class RestoreAppAction extends BaseAppAction {
                 this.restoreAllData(app, backupProperties, backupLocation);
             }
         } catch (RestoreFailedException | Crypto.CryptoSetupException e) {
-            return new ActionResult(app,
-                    null,
-                    String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
-                    false
-            );
+            return new ActionResult(app, null, String.format("%s: %s",
+                    e.getClass().getSimpleName(), e.getMessage()), false);
         } finally {
             if (stopProcess) {
                 Log.d(RestoreAppAction.TAG, "postprocess package (to set it back to normal operation)");

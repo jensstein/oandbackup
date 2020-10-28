@@ -437,26 +437,28 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
         int notificationId = (int) System.currentTimeMillis();
         int totalOfActions = selectedItems.size();
-        int i = 1;
+        final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
+        List<Integer> mileStones = IntStream.range(0, 5).map(step -> (step * totalOfActions / 5) + 1).boxed().collect(Collectors.toList());
+        ActionResult result;
         List<ActionResult> results = new ArrayList<>(totalOfActions);
+        int i = 1;
         for (Pair<AppInfoX, Integer> itemInfo : selectedApps) {
             final String message = String.format("%s (%d/%d)", this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress), i, totalOfActions);
             NotificationHelper.showNotification(this, MainActivityX.class, notificationId, message, itemInfo.first.getPackageLabel(), false);
-            List<Integer> mileStones = IntStream.range(0, 5).map(step -> (step * totalOfActions / 5) + 1).boxed().collect(Collectors.toList());
-            if (mileStones.contains(i))
+            if (mileStones.contains(i)) {
                 runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
+            }
             int mode = itemInfo.second;
-            final BackupRestoreHelper backupRestoreHelper = new BackupRestoreHelper();
-            ActionResult result;
             if (this.backupBoolean) {
                 result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), itemInfo.first, mode);
             } else {
                 // Latest backup for now
                 BackupItem selectedBackup = itemInfo.first.getLatestBackup();
-                result = backupRestoreHelper.restore(
-                        this, itemInfo.first, selectedBackup.getBackupProperties(),
-                        selectedBackup.getBackupLocation(),
-                        MainActivityX.getShellHandlerInstance(), mode);
+                result = backupRestoreHelper.restore(this, itemInfo.first, selectedBackup.getBackupProperties(),
+                        selectedBackup.getBackupLocation(), MainActivityX.getShellHandlerInstance(), mode);
+            }
+            if (!result.succeeded) {
+                NotificationHelper.showNotification(this, MainActivityX.class, result.hashCode(), itemInfo.first.getPackageLabel(), result.message, false);
             }
             results.add(result);
             i++;
@@ -465,6 +467,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             wl.release();
             Log.i(MainActivityX.TAG, "wakelock released");
         }
+
         // Calculate the overall result
         String errors = results.stream()
                 .map(ActionResult::getMessage)

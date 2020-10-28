@@ -61,9 +61,11 @@ public class ScheduleService extends Service
                 // fix the time at which the alarm will be run the next time.
                 // it can be wrong when scheduled in BootReceiver#onReceive()
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-                handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getTimeHour(), schedule.getTimeMinute());
+                handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getTimeHour(),
+                        schedule.getTimeMinute());
                 Log.i(TAG, getString(R.string.sched_startingbackup));
-                handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubmode().getValue(), schedule.isExcludeSystem(), schedule.isEnableCustomList());
+                handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubmode().getValue(),
+                        schedule.isExcludeSystem(), schedule.isEnableCustomList());
             });
             t.start();
         } else {
@@ -78,7 +80,8 @@ public class ScheduleService extends Service
     }
 
     ScheduleDao getScheduleDao() {
-        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper.getScheduleDatabase(this, SchedulerActivityX.DATABASE_NAME);
+        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper.getScheduleDatabase(this,
+                SchedulerActivityX.DATABASE_NAME);
         return scheduleDatabase.scheduleDao();
     }
 
@@ -87,17 +90,16 @@ public class ScheduleService extends Service
         final String channelId = TAG;
         // Do some initialization
         MainActivityX.initShellHandler();
-        final NotificationChannel notificationChannel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_DEFAULT);
+        final NotificationChannel notificationChannel = new NotificationChannel(channelId, channelId,
+                NotificationManager.IMPORTANCE_DEFAULT);
         final NotificationManager notificationManager = getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
-            notificationManager.createNotificationChannel(
-                    notificationChannel);
+            notificationManager.createNotificationChannel(notificationChannel);
         } else {
             Log.w(TAG, "Unable to create notification channel");
             Toast.makeText(this, getString(
-                    R.string.error_creating_notification_channel),
-                    Toast.LENGTH_LONG).show();
+                    R.string.error_creating_notification_channel), Toast.LENGTH_LONG).show();
         }
         final Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_app)

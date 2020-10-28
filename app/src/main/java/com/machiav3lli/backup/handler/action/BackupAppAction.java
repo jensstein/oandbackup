@@ -113,11 +113,8 @@ public class BackupAppAction extends BaseAppAction {
         } catch (BackupFailedException | Crypto.CryptoSetupException | IOException e) {
             Log.e(BackupAppAction.TAG, String.format("Backup failed due to %s: %s", e.getClass().getSimpleName(), e.getMessage()));
             Log.d(BackupAppAction.TAG, "Backup deleted: " + backupBuilder.getBackupPath().delete());
-            return new ActionResult(app,
-                    null,
-                    String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()),
-                    false
-            );
+            return new ActionResult(app, null, String.format("%s: %s",
+                    e.getClass().getSimpleName(), e.getMessage()), false);
         } finally {
             if (stopProcess) {
                 Log.d(BackupAppAction.TAG, "postprocess package (to set it back to normal operation)");

@@ -177,13 +177,4 @@
         <item name="chipSurfaceColor">@android:color/transparent</item>
         <item name="android:textColor">@color/app_accent</item>
     </style>
-
-    <style name="NumberPicker">
-        <item name="np_dividerColor">@android:color/transparent</item>
-        <item name="np_orientation">horizontal</item>
-        <item name="np_selectedTextColor">?colorAccent</item>
-        <item name="np_textColor">?colorControlNormal</item>
-        <item name="np_textSize">20sp</item>
-        <item name="np_selectedTextSize">24sp</item>
-    </style>
 </resources>
