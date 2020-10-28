@@ -225,5 +225,5 @@
     <string name="msg_appkill_warning">The selected App(s) will be given the signal to stop and after the task is done will continue. Please make sure to check on your processed apps after the task is done and avoid launching them while the process is still running.</string>
     <string name="delete_all_backups">Delete all backups</string>
     <string name="logs_text_empty">There\'s nothing to show!</string>
-    <string name="fetching_backup_list">Fetching apps list for the backup...</string>
+    <string name="fetching_backup_list">Fetching apps list for the backup…</string>
 </resources>
