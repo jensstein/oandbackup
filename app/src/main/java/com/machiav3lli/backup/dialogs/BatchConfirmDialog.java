@@ -37,6 +37,11 @@ import java.util.List;
 
 public class BatchConfirmDialog extends DialogFragment {
     private static final String TAG = Constants.classTag(".BatchConfirmDialog");
+    BatchConfirmDialog.ConfirmListener confirmListener;
+
+    public BatchConfirmDialog(BatchConfirmDialog.ConfirmListener confirmListener) {
+        this.confirmListener = confirmListener;
+    }
 
     @NotNull
     @Override
@@ -62,7 +67,7 @@ public class BatchConfirmDialog extends DialogFragment {
         builder.setMessage(message.toString().trim());
         builder.setPositiveButton(R.string.dialogYes, (dialogInterface, id) -> {
             try {
-                ((ConfirmListener) requireActivity()).onConfirmed(selectedItems);
+                confirmListener.onConfirmed(selectedItems);
             } catch (ClassCastException e) {
                 Log.e(TAG, "BatchConfirmDialog: " + e.toString());
             }

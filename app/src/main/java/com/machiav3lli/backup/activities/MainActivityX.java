@@ -405,7 +405,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         arguments.putIntegerArrayList("selectedListModes", selectedListModes);
         arguments.putParcelableArrayList("selectedList", selectedList);
         arguments.putBoolean("backupBoolean", backupBoolean);
-        BatchConfirmDialog dialog = new BatchConfirmDialog();
+        BatchConfirmDialog dialog = new BatchConfirmDialog(this);
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "DialogFragment");
     }
