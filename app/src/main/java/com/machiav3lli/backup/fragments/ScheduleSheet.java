@@ -42,6 +42,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.databinding.SheetScheduleBinding;
+import com.machiav3lli.backup.dialogs.IntervalInDaysDialog;
 import com.machiav3lli.backup.items.SchedulerItemX;
 import com.machiav3lli.backup.schedules.BlacklistsDBHelper;
 import com.machiav3lli.backup.schedules.CustomPackageList;
@@ -58,7 +59,7 @@ import java.util.List;
 import java.util.Optional;
 
 // TODO take care of: "Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements"
-public class ScheduleSheet extends BottomSheetDialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class ScheduleSheet extends BottomSheetDialogFragment implements TimePickerDialog.OnTimeSetListener, IntervalInDaysDialog.ConfirmListener {
     private static final String TAG = Constants.classTag(".ScheduleSheet");
     private final Schedule sched;
     private HandleAlarms handleAlarms;
@@ -167,10 +168,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
     }
 
     private void setupSchedInfo() {
-        binding.intervalDays.setValue(sched.getInterval());
-        binding.intervalDays.setOnValueChangedListener((picker, oldVal, newVal) -> refreshSheet());
-        binding.timeOfDay.setText(String.format("%s:%s", sched.getTimeHour(),
+        binding.timeOfDay.setText(String.format("%s:%s", sched.getTimeHour() < 10 ? "0" + sched.getTimeHour() : sched.getTimeHour(),
                 sched.getTimeMinute() < 10 ? "0" + sched.getTimeMinute() : sched.getTimeMinute()));
+        binding.intervalDays.setText(String.valueOf(sched.getInterval()));
         binding.enableCheckbox.setChecked(sched.isEnabled());
         binding.enableCustomList.setChecked(sched.isEnableCustomList());
         setTimeLeft(sched, System.currentTimeMillis());
@@ -209,6 +209,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         binding.timeOfDay.setOnClickListener(v ->
                 new TimePickerDialog(this.requireContext(), this,
                         this.sched.getTimeHour(), this.sched.getTimeMinute(), true).show());
+        binding.intervalDays.setOnClickListener(v ->
+                new IntervalInDaysDialog(this, binding.intervalDays.getText()).show(requireActivity().getSupportFragmentManager(), "DialogFragment"));
         binding.excludeSystem.setOnClickListener(v -> refreshSheet());
         binding.enableCustomList.setOnClickListener(v -> refreshSheet());
         binding.customListUpdate.setOnClickListener(v -> CustomPackageList.showList(requireActivity(), (int) idNumber, idToMode(binding.schedMode.getCheckedChipId())));
@@ -240,7 +242,13 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        binding.timeOfDay.setText(String.format("%s:%s", hourOfDay, minute < 10 ? "0" + minute : minute));
+        binding.timeOfDay.setText(String.format("%s:%s", hourOfDay < 10 ? "0" + hourOfDay : hourOfDay, minute < 10 ? "0" + minute : minute));
+        refreshSheet();
+    }
+
+    @Override
+    public void onIntervalConfirmed(int intervalInDays) {
+        binding.intervalDays.setText(String.valueOf(intervalInDays));
         refreshSheet();
     }
 
@@ -270,7 +278,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         final String[] time = binding.timeOfDay.getText().toString().split(":");
         final int timeHour = Integer.parseInt(time[0]);
         final int timeMinute = Integer.parseInt(time[1]);
-        final int interval = binding.intervalDays.getValue();
+        final int interval = Integer.parseInt(binding.intervalDays.getText().toString());
         if (enabled) handleAlarms.setAlarm(id, interval, timeHour, timeMinute);
 
         return new Schedule.Builder()

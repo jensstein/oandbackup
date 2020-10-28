@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/large_spacing"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal"
+                    android:gravity="end"
                     android:textAppearance="@style/TextAppearance.Title"
                     android:textColor="?colorAccent" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -91,17 +91,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.shawnlin.numberpicker.NumberPicker
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/intervalDays"
-                    style="@style/NumberPicker"
                     android:layout_width="0dp"
-                    android:layout_height="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/large_spacing"
+                    android:gravity="end"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    android:textColor="?colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/intervalDaysTitle"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:np_max="30"
-                    app:np_min="1" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
