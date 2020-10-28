@@ -29,7 +29,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
-import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.items.ActionResult;
 
 public class UIUtils {
@@ -81,14 +80,6 @@ public class UIUtils {
                 .setNeutralButton(R.string.dialogOK, callback)
                 .setCancelable(false)
                 .show());
-    }
-
-    public static void reShowMessage(HandleMessages handleMessages, long tid) {
-        // since messages are progressdialogs and not dialogfragments they need to be set again manually
-        if (tid != -1)
-            for (Thread t : Thread.getAllStackTraces().keySet())
-                if (t.getId() == tid && t.isAlive())
-                    handleMessages.reShowMessage();
     }
 
     public static void setVisibility(View view, int visibility, boolean withAnimation) {

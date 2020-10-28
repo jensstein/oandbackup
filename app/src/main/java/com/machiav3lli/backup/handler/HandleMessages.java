@@ -58,14 +58,6 @@ public class HandleMessages {
         message.sendToTarget();
     }
 
-    public void reShowMessage() {
-        setMessage(handler.getTitle(), handler.getMessage());
-    }
-
-    public boolean isShowing() {
-        return handler.isShowing();
-    }
-
     public void showMessage(String title, String message) {
         setMessage(title, message);
     }
@@ -88,13 +80,14 @@ public class HandleMessages {
         public void handleMessage(Message message) {
             title = message.getData().getString("title");
             msg = message.getData().getString("message");
+            Context context;
+            context = mContext.get();
             if (message.what == SHOW_DIALOG) {
-                Context context;
                 if (progress != null && progress.isShowing()) {
                     progress.setCanceledOnTouchOutside(false);
                     progress.setTitle(title);
                     progress.setMessage(msg);
-                } else if ((context = mContext.get()) != null) {
+                } else if (context != null) {
                     // TODO: notice if a BadTokenException might seldomly occur here
                     progress = ProgressDialog.show(context, title, msg, true, false);
                     progress.setCanceledOnTouchOutside(false);
@@ -110,12 +103,6 @@ public class HandleMessages {
                     progress = null;
                 }
             }
-        }
-
-        public boolean isShowing() {
-            if (progress != null)
-                return progress.isShowing();
-            return false;
         }
 
         public String getTitle() {

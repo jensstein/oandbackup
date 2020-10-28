@@ -231,7 +231,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         });
         binding.activateButton.setOnClickListener(v -> new AlertDialog.Builder(requireActivity())
                 .setMessage(getString(R.string.sched_activateButton))
-                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()), idNumber, BlacklistsDBHelper.DATABASE_NAME).execute())
+                .setPositiveButton(R.string.dialogOK, (dialog, id) -> new StartSchedule(requireContext(), new HandleScheduledBackups(requireContext()),
+                        idNumber, BlacklistsDBHelper.DATABASE_NAME).execute())
                 .setNegativeButton(R.string.dialogCancel, (dialog, id) -> {
                 })
                 .show());

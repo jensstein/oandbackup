@@ -74,6 +74,7 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
     public static final String TAG = Constants.classTag(".AppSheet");
     int notificationId = (int) System.currentTimeMillis();
     AppInfoX app;
+    // TODO remove HandleMessages
     HandleMessages handleMessages;
     ShellCommands shellCommands;
     int position;
@@ -240,10 +241,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 .setMessage(R.string.deleteBackupDialogMessage)
                 .setPositiveButton(R.string.dialogYes, (dialog, which) -> new Thread(() -> {
                     this.handleMessages.showMessage(this.app.getPackageLabel(), getString(R.string.delete_all_backups));
-                    if (!this.app.hasBackups()) {
-                        Log.w(AppSheet.TAG, "UI Issue! Tried to delete backups for app without backups.");
-                        return;
-                    }
                     // Latest backup only currently
                     this.app.deleteAllBackups();
                     this.handleMessages.endMessage();

@@ -31,29 +31,22 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.FragmentMainBinding;
-import com.machiav3lli.backup.handler.HandleMessages;
-import com.machiav3lli.backup.utils.UIUtils;
 
 import java.util.ArrayList;
 
 public class BatchFragment extends Fragment implements SearchViewController {
     private static final String TAG = Constants.classTag(".BatchFragment");
 
-    long threadId = -1;
     private FragmentMainBinding binding;
-    private HandleMessages handleMessages;
     private ArrayList<String> apkCheckedList = new ArrayList<>();
     private ArrayList<String> dataCheckedList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleMessages = new HandleMessages(requireContext());
         if (savedInstanceState != null) {
             apkCheckedList = savedInstanceState.getStringArrayList("apkCheckedList");
             dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList");
-            threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
-            UIUtils.reShowMessage(handleMessages, threadId);
         }
     }
 
@@ -117,15 +110,8 @@ public class BatchFragment extends Fragment implements SearchViewController {
     @Override
     public void onResume() {
         super.onResume();
-        handleMessages = new HandleMessages(requireContext());
         requireMainActivity().setSearchViewController(this);
         requireMainActivity().resumeRefresh(this.apkCheckedList, this.dataCheckedList);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (handleMessages != null) handleMessages.endMessage();
-        super.onDestroy();
     }
 
     public MainActivityX requireMainActivity() {

@@ -46,6 +46,7 @@ import java.util.List;
 public class PrefsToolsFragment extends PreferenceFragmentCompat {
     private static final String TAG = Constants.classTag(".PrefsToolsFragment");
     private static final int RESULT_OK = 0;
+    // TODO remove HandleMessages
     private HandleMessages handleMessages;
     private List<AppInfoX> appInfoList = new ArrayList<>();
 

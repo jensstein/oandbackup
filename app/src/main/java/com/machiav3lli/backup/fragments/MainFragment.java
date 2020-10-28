@@ -32,29 +32,20 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.FragmentMainBinding;
-import com.machiav3lli.backup.handler.HandleMessages;
 import com.machiav3lli.backup.utils.PrefUtils;
-import com.machiav3lli.backup.utils.UIUtils;
 
 import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements SearchViewController {
     private static final String TAG = Constants.classTag(".MainFragment");
 
-    long threadId = -1;
-    HandleMessages handleMessages;
     SharedPreferences prefs;
     private FragmentMainBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleMessages = new HandleMessages(requireContext());
         prefs = PrefUtils.getPrivateSharedPrefs(requireContext());
-        if (savedInstanceState != null) {
-            threadId = savedInstanceState.getLong(Constants.BUNDLE_THREADID);
-            UIUtils.reShowMessage(handleMessages, threadId);
-        }
     }
 
     @Nullable
@@ -101,15 +92,8 @@ public class MainFragment extends Fragment implements SearchViewController {
     @Override
     public void onResume() {
         super.onResume();
-        handleMessages = new HandleMessages(requireContext());
         requireMainActivity().setSearchViewController(this);
         requireMainActivity().resumeRefresh(new ArrayList<>(), new ArrayList<>());
-    }
-
-    @Override
-    public void onDestroy() {
-        if (handleMessages != null) handleMessages.endMessage();
-        super.onDestroy();
     }
 
     public MainActivityX requireMainActivity() {

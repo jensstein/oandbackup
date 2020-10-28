@@ -19,7 +19,6 @@ package com.machiav3lli.backup.activities;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.machiav3lli.backup.Constants;
