@@ -95,8 +95,8 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     private List<AppInfoX> appsList;
     // TODO optimize usage (maybe a map instead?)
-    public final List<String> apkCheckedList = new ArrayList<>();
-    public final List<String> dataCheckedList = new ArrayList<>();
+    public List<String> apkCheckedList = new ArrayList<>();
+    public List<String> dataCheckedList = new ArrayList<>();
 
 
     private BadgeDrawable updatedBadge;
@@ -128,16 +128,16 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         setupViews(savedInstanceState);
         setupNavigation();
         setupOnClicks();
+        runOnUiThread(this::showEncryptionDialog);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        runOnUiThread(this::showEncryptionDialog);
-        if (getIntent().getExtras() != null) {
-            int fragmentNumber = getIntent().getExtras().getInt(Constants.classAddress(".fragmentNumber"));
-            moveTo(fragmentNumber);
-        }
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        apkCheckedList = savedInstanceState.getStringArrayList("apkCheckedList");
+        dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList");
+        setupViews(savedInstanceState);
+        setupNavigation();
     }
 
     @Override
@@ -149,14 +149,9 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState = mainFastAdapter.saveInstanceState(outState);
         outState = batchFastAdapter.saveInstanceState(outState);
+        outState.putStringArrayList("apkCheckedList", new ArrayList<>(apkCheckedList));
+        outState.putStringArrayList("dataCheckedList", new ArrayList<>(dataCheckedList));
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        setupViews(savedInstanceState);
-        setupNavigation();
     }
 
     public static ShellHandler getShellHandlerInstance() {
@@ -274,11 +269,11 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         });
         binding.apkBatch.setOnClickListener(v -> {
             boolean checkBoolean = apkCheckedList.size() != batchItemAdapter.getItemList().size();
+            apkCheckedList.clear();
             batchItemAdapter.getAdapterItems().forEach(batchItemX -> {
                         String packageName = batchItemX.getApp().getPackageName();
                         batchItemX.setApkChecked(checkBoolean);
                         if (checkBoolean) apkCheckedList.add(packageName);
-                        else apkCheckedList.remove(packageName);
                     }
             );
             batchFastAdapter.notifyAdapterDataSetChanged();
@@ -286,13 +281,14 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         });
         binding.dataBatch.setOnClickListener(v -> {
             boolean checkBoolean = dataCheckedList.size() != batchItemAdapter.getItemList().size();
+            dataCheckedList.clear();
             batchItemAdapter.getAdapterItems().forEach(batchItemX -> {
                         String packageName = batchItemX.getApp().getPackageName();
                         batchItemX.setDataChecked(checkBoolean);
                         if (checkBoolean) dataCheckedList.add(packageName);
-                        else dataCheckedList.remove(packageName);
                     }
             );
+
             batchFastAdapter.notifyAdapterDataSetChanged();
             this.updateCheckAll();
         });
