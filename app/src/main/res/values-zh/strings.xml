@@ -221,4 +221,5 @@
     <string name="radio_externaldata">外部数据</string>
     <string name="logs_text_empty">没什么可显示的！</string>
     <string name="delete_all_backups">删除全部备份</string>
+    <string name="fetching_backup_list">获取用于备份的应用程序列表…</string>
 </resources>
