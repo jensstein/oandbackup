@@ -32,23 +32,10 @@ import com.machiav3lli.backup.SearchViewController;
 import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.FragmentMainBinding;
 
-import java.util.ArrayList;
-
 public class BatchFragment extends Fragment implements SearchViewController {
     private static final String TAG = Constants.classTag(".BatchFragment");
 
     private FragmentMainBinding binding;
-    private ArrayList<String> apkCheckedList = new ArrayList<>();
-    private ArrayList<String> dataCheckedList = new ArrayList<>();
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            apkCheckedList = savedInstanceState.getStringArrayList("apkCheckedList");
-            dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList");
-        }
-    }
 
     @Nullable
     @Override
@@ -89,22 +76,6 @@ public class BatchFragment extends Fragment implements SearchViewController {
     @Override
     public void clean() {
         binding.searchBar.setQuery("", false);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        apkCheckedList.clear();
-        dataCheckedList.clear();
-        apkCheckedList.addAll(requireMainActivity().apkCheckedList);
-        dataCheckedList.addAll(requireMainActivity().dataCheckedList);
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putStringArrayList("apkCheckedList", apkCheckedList);
-        outState.putStringArrayList("dataCheckedList", dataCheckedList);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
