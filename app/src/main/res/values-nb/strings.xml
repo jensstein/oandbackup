@@ -204,8 +204,8 @@
 \n • Gjenoppretting av systemprogrammer skal være mulig uten omstart etterpå, men det anbefales å ikke gjøre dette.
 \n • Sikkerhetskopier kan planlegges uten begrensning i antall individuelle kjøreplaner, og det er mulighet for opprettelse av unike egendefinerte lister.</string>
     <string name="radio_updated">Oppdatert</string>
-    <string name="prefs_forcekill_summary">Kun for eksperter: Dette kan hjelpe, hvis programmet endrer filer under sikkerhetskopier og sikkerhetskopien feiler.</string>
-    <string name="prefs_forcekill">Drep prosesser med tvang før sikkerhetskopiering/gjenoppretting</string>
+    <string name="prefs_stopcont_summary">Kun for eksperter: Dette kan hjelpe, hvis programmet endrer filer under sikkerhetskopier og sikkerhetskopien feiler.</string>
+    <string name="prefs_stopcont">Drep prosesser med tvang før sikkerhetskopiering/gjenoppretting</string>
     <string name="prefs_advanced">Avanserte innstillinger</string>
     <string name="prefs_housekeepingmoment_after">Etter sikkerhetskopiering</string>
     <string name="prefs_housekeepingmoment_before">Før sikkerhetskopiering</string>

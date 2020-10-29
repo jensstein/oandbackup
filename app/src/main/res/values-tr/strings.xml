@@ -209,8 +209,8 @@
     <string name="msg_appkill_warning">Seçili uygulamalar durdurulacak. Önemli bildirimleri kaçırmamak için işlemden sonra cihazınızı yeniden başlattığınızdan veya daha sonra çalar saatiniz ya da takviminiz gibi uygulamaları açtığınızdan emin olun. Klavyeniz veya başlatıcınız bunun için öntanımlı uygulamaya sıfırlanabilir.</string>
     <string name="prefs_numBackupRevisions_summary">Sayı aşılırsa yeni bir yedek oluşturulduğunda en eski düzeltme silinecektir. Tüm düzeltmeleri tutmak için sıfıra ayarlayın.</string>
     <string name="prefs_numBackupRevisions">Yedekleme düzeltmelerinin sayısı</string>
-    <string name="prefs_forcekill_summary">Yalnızca uzmanlar: Uygulama yedekleme sırasında dosyaları değiştirirse ve yedekleme başarısız olursa bu yardımcı olabilir.</string>
-    <string name="prefs_forcekill">Yedeklemeden/geri yüklemeden önce uygulama işlemini zorla sonlandır</string>
+    <string name="prefs_stopcont_summary">Yalnızca uzmanlar: Uygulama yedekleme sırasında dosyaları değiştirirse ve yedekleme başarısız olursa bu yardımcı olabilir.</string>
+    <string name="prefs_stopcont">Yedeklemeden/geri yüklemeden önce uygulama işlemini zorla sonlandır</string>
     <string name="prefs_advanced">Gelişmiş tercihler</string>
     <string name="prefs_housekeepingmoment_summary">Yedekleme tarafından kullanılan disk alanını boşaltmak için en eski düzeltmenin yeni bir yedekleme oluşturmadan önce mi yoksa sonra mı silineceğini yapılandırır.</string>
     <string name="prefs_housekeepingmoment">Düzeltme temizleme zamanı</string>

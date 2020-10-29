@@ -209,8 +209,8 @@
     <string name="msg_appkill_warning">选中的一个或多个应用将被停止。请确保要么在处理后重启设备，要么在打开闹钟或日历等应用程序，以避免错过重要的通知。你的键盘或启动器可能因此被重置为默认的应用程序。</string>
     <string name="prefs_numBackupRevisions_summary">创建新备份时，如果版本数超过了允许的最大值，则将删除最老的版本。将其设置为0以保留所有修订。</string>
     <string name="prefs_numBackupRevisions">备份修订数</string>
-    <string name="prefs_forcekill_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
-    <string name="prefs_forcekill">备份/恢复之前强制杀死应用程序进程</string>
+    <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
+    <string name="prefs_stopcont">备份/恢复之前强制杀死应用程序进程</string>
     <string name="prefs_advanced">高级设置</string>
     <string name="prefs_housekeepingmoment_summary">配置是否在创建新备份之前或之后删除最早的修订版本以释放备份使用的磁盘空间。</string>
     <string name="prefs_housekeepingmoment">版本清理时间</string>

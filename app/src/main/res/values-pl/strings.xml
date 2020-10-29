@@ -211,7 +211,7 @@
     <string name="prefs_housekeepingmoment">Czas czyszczenia dodatkowych wersji</string>
     <string name="prefs_numBackupRevisions_summary">Najstarsza wersja zostanie usunięta po utworzeniu nowej kopii zapasowej, jeśli liczba zostanie przekroczona. Ustaw na zero, aby zachować wszystkie wersje.</string>
     <string name="prefs_numBackupRevisions">Liczba wersji kopii zapasowych</string>
-    <string name="prefs_forcekill">Wymuś zatrzymanie aplikacji przed tworzeniem/przywracaniem kopii zapasowych</string>
+    <string name="prefs_stopcont">Wymuś zatrzymanie aplikacji przed tworzeniem/przywracaniem kopii zapasowych</string>
     <string name="prefs_housekeepingmoment_before">Przed wykonaniem kopii zapasowej</string>
     <string name="prefs_housekeepingmoment_after">Po wykonaniu kopii zapasowej</string>
     <string name="prefs_advanced">Ustawienia zaawansowane</string>

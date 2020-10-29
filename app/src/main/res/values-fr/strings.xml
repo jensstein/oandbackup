@@ -202,7 +202,7 @@
     <string name="help_appTypeHint">* L\'icône du type d\'application sera grise si l\'application est désinstallée et gris foncé si l\'application est désactivée.</string>
     <string name="help_legend">Légende :</string>
     <string name="prefs_housekeepingmoment_summary">Configure si la révision la plus ancienne est supprimée avant ou après la création d\'une nouvelle sauvegarde afin de libérer l\'espace disque utilisé par la sauvegarde.</string>
-    <string name="prefs_forcekill_summary">Experts uniquement : Cela peut être utile si l\'application modifie des fichiers pendant la sauvegarde et que celle-ci échoue.</string>
+    <string name="prefs_stopcont_summary">Experts uniquement : Cela peut être utile si l\'application modifie des fichiers pendant la sauvegarde et que celle-ci échoue.</string>
     <string name="prefs_housekeepingmoment_after">Après la sauvegarde</string>
     <string name="prefs_password_match_false">Les mots de passe ne correspondent pas</string>
     <string name="prefs_password_match_true">Les mots de passe correspondent</string>
@@ -214,7 +214,7 @@
     <string name="prefs_unset">Non-définie</string>
     <string name="prefs_numBackupRevisions_summary">La dernière version sera supprimée après la création d\'une nouvelle sauvegarde si le nombre est dépassé. Mettez le à zéro pour garder toutes les versions.</string>
     <string name="prefs_numBackupRevisions">Nombres de versions de la sauvegarde</string>
-    <string name="prefs_forcekill">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
+    <string name="prefs_stopcont">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
     <string name="prefs_housekeepingmoment_before">Avant la sauvegarde</string>
     <string name="prefs_advanced">Préférences avancées</string>
     <string name="radio_updated">Mis à jour</string>

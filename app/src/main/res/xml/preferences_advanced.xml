@@ -41,7 +41,7 @@
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
         android:key="killBeforeAction"
-        android:summary="@string/prefs_forcekill_summary"
-        android:title="@string/prefs_forcekill"
+        android:summary="@string/prefs_stopcont_summary"
+        android:title="@string/prefs_stopcont"
         app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>
