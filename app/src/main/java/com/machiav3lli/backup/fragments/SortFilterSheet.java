@@ -92,12 +92,12 @@ public class SortFilterSheet extends BottomSheetDialogFragment {
         binding.dismiss.setOnClickListener(v -> dismissAllowingStateLoss());
         binding.reset.setOnClickListener(v -> {
             SortFilterManager.saveFilterPreferences(requireContext(), new SortFilterModel("0000"));
-            requireMainActivity().refresh();
+            requireMainActivity().cleanRefresh();
             dismissAllowingStateLoss();
         });
         binding.apply.setOnClickListener(v -> {
             SortFilterManager.saveFilterPreferences(requireContext(), sortFilterModel);
-            requireMainActivity().refresh();
+            requireMainActivity().cleanRefresh();
             dismissAllowingStateLoss();
         });
     }

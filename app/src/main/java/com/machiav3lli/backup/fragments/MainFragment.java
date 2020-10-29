@@ -34,8 +34,6 @@ import com.machiav3lli.backup.activities.MainActivityX;
 import com.machiav3lli.backup.databinding.FragmentMainBinding;
 import com.machiav3lli.backup.utils.PrefUtils;
 
-import java.util.ArrayList;
-
 public class MainFragment extends Fragment implements SearchViewController {
     private static final String TAG = Constants.classTag(".MainFragment");
 
@@ -93,7 +91,7 @@ public class MainFragment extends Fragment implements SearchViewController {
     public void onResume() {
         super.onResume();
         requireMainActivity().setSearchViewController(this);
-        requireMainActivity().resumeRefresh(new ArrayList<>(), new ArrayList<>());
+        requireMainActivity().refreshWithAppSheet();
     }
 
     public MainActivityX requireMainActivity() {

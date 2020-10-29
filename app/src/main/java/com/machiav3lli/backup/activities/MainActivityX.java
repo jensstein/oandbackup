@@ -189,7 +189,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             }
         }
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.refreshLayout.setOnRefreshListener(this::refresh);
+        binding.refreshLayout.setOnRefreshListener(this::cleanRefresh);
     }
 
     private void setupNavigation() {
@@ -363,16 +363,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
-    public void moveTo(int position) {
-        if (position == 1) {
-            navController.navigate(R.id.mainFragment);
-        } else if (position == 2) {
-            navController.navigate(R.id.backupFragment);
-        } else if (position == 3) {
-            navController.navigate(R.id.restoreFragment);
-        }
-    }
-
     private void showEncryptionDialog() {
         SharedPreferences defPrefs = PrefUtils.getDefaultSharedPreferences(this);
         boolean dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && !defPrefs.getString(Constants.PREFS_PASSWORD, "").isEmpty();
@@ -488,7 +478,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 e.printStackTrace();
             }
         });
-        this.refresh();
+        this.cleanRefresh();
     }
 
     public static boolean initShellHandler() {
@@ -508,47 +498,40 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
-    public void refresh() {
-        if (mainBoolean) {
-            refresh(true, false, new ArrayList<>(), new ArrayList<>());
-        } else {
-            refresh(false, backupBoolean, new ArrayList<>(), new ArrayList<>());
-        }
+    public void cleanRefresh() {
+        refresh(this.mainBoolean, !this.mainBoolean && backupBoolean, true);
     }
 
     public void refreshWithAppSheet() {
-        refresh(true, true, new ArrayList<>(), new ArrayList<>());
+        refresh(true, true, true);
     }
 
-    public void resumeRefresh(List<String> apkCheckedList, List<String> dataCheckedList) {
-        if (mainBoolean) {
-            refresh(true, true, apkCheckedList, dataCheckedList);
-        } else {
-            refresh(false, backupBoolean, apkCheckedList, dataCheckedList);
-        }
+    public void batchRefresh() {
+        refresh(false, backupBoolean, false);
     }
 
-    public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
+    public void refresh(boolean mainBoolean, boolean backupOrAppSheetBoolean, boolean cleanBoolean) {
         Log.d(MainActivityX.TAG, "refreshing");
         runOnUiThread(() -> {
             binding.refreshLayout.setRefreshing(true);
             searchViewController.clean();
         });
         badgeCounter = 0;
-        if (mainBoolean || apkCheckedList.isEmpty())
+        if (mainBoolean || cleanBoolean) {
             this.apkCheckedList.clear();
-        if (mainBoolean || dataCheckedList.isEmpty())
             this.dataCheckedList.clear();
+        }
         sheetSortFilter = new SortFilterSheet(SortFilterManager.getFilterPreferences(this));
         new Thread(() -> {
             try {
                 appsList = BackendController.getApplicationList(this.getApplicationContext());
                 PrefUtils.getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
-                List<AppInfoX> filteredList = SortFilterManager.applyFilter(appsList, SortFilterManager.getFilterPreferences(this).toString(), this);
+                List<AppInfoX> filteredList = SortFilterManager.applyFilter(appsList,
+                        SortFilterManager.getFilterPreferences(this).toString(), this);
                 if (mainBoolean)
                     refreshMain(filteredList, backupOrAppSheetBoolean);
                 else
-                    refreshBatch(filteredList, backupOrAppSheetBoolean, apkCheckedList, dataCheckedList);
+                    refreshBatch(filteredList, backupOrAppSheetBoolean);
             } catch (FileUtils.BackupLocationIsAccessibleException | PrefUtils.StorageLocationNotConfiguredException e) {
                 Log.e(TAG, "Could not update application list: " + e);
             }
@@ -605,8 +588,8 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
     }
 
-    private void refreshBatch(List<AppInfoX> filteredList, boolean backupBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
-        ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean, apkCheckedList, dataCheckedList);
+    private void refreshBatch(List<AppInfoX> filteredList, boolean backupBoolean) {
+        ArrayList<BatchItemX> batchList = createBatchAppsList(filteredList, backupBoolean);
         runOnUiThread(() -> {
             if (filteredList.isEmpty()) {
                 Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show();
@@ -621,7 +604,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         });
     }
 
-    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoX> filteredList, boolean backupBoolean, List<String> apkCheckedList, List<String> dataCheckedList) {
+    private ArrayList<BatchItemX> createBatchAppsList(List<AppInfoX> filteredList, boolean backupBoolean) {
         ArrayList<BatchItemX> list = new ArrayList<>();
         if (filteredList.isEmpty()) {
             for (AppInfoX app : SortFilterManager.applyFilter(appsList, "0000", this)) {
@@ -630,10 +613,6 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             SortFilterManager.saveFilterPreferences(this, new SortFilterModel());
         } else {
             for (AppInfoX app : filteredList) {
-                if (!apkCheckedList.isEmpty() && apkCheckedList.contains(app.getPackageName()))
-                    this.apkCheckedList.add(app.getPackageName());
-                if (!dataCheckedList.isEmpty() && dataCheckedList.contains(app.getPackageName()))
-                    this.dataCheckedList.add(app.getPackageName());
                 if (toAddToBatch(backupBoolean, app)) {
                     BatchItemX item = new BatchItemX(app);
                     if (this.apkCheckedList.contains(app.getPackageName()))

@@ -111,7 +111,7 @@ public class BatchFragment extends Fragment implements SearchViewController {
     public void onResume() {
         super.onResume();
         requireMainActivity().setSearchViewController(this);
-        requireMainActivity().resumeRefresh(this.apkCheckedList, this.dataCheckedList);
+        requireMainActivity().batchRefresh();
     }
 
     public MainActivityX requireMainActivity() {
