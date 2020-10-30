@@ -255,36 +255,6 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
                 .setNegativeButton(R.string.dialogNo, null)
                 .show()
         );
-        binding.share.setOnClickListener(v -> {
-            // Todo: How to share multiple files? Tar them? Zip them? Why sharing?
-            /*
-            File backupDir = FileUtils.createBackupDir(getActivity(), FileUtils.getDefaultBackupDirPath(requireContext()));
-            File apk = new File(backupDir, app.getPackageName() + "/" + app.getLogInfo().getApk());
-            String dataPath = app.getLogInfo().getDataDir();
-            dataPath = dataPath.substring(dataPath.lastIndexOf("/") + 1);
-            File apk = new File(backupDir, app.getPackageName() + File.separator + app.getLogInfo().getApk());
-            File data = new File(backupDir, app.getPackageName() + File.separator + dataPath + ".zip");
-            Bundle arguments = new Bundle();
-            arguments.putString("label", app.getPackageLabel());
-            switch (app.getBackupMode()) {
-                case AppInfoX.MODE_APK:
-                    arguments.putSerializable("apk", apk);
-                    break;
-                case AppInfoX.MODE_DATA:
-                    arguments.putSerializable("data", data);
-                    break;
-                case AppInfoX.MODE_BOTH:
-                    arguments.putSerializable("apk", data);
-                    arguments.putSerializable("data", data);
-                    break;
-                default:
-                    break;
-            }
-            ShareDialogFragment shareDialog = new ShareDialogFragment();
-            shareDialog.setArguments(arguments);
-            shareDialog.show(requireActivity().getSupportFragmentManager(), "shareDialog");
-             */
-        });
         binding.enablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), true));
         binding.disablePackage.setOnClickListener(v -> displayDialogEnableDisable(app.getPackageName(), false));
         binding.uninstall.setOnClickListener(v -> new AlertDialog.Builder(requireContext())

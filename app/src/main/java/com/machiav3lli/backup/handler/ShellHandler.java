@@ -361,7 +361,8 @@ public class ShellHandler {
             FileType type;
             switch (tokens[0].charAt(0)) {
                 case 'd':
-                    type = FileType.DIRECTORY; break;
+                    type = FileType.DIRECTORY;
+                    break;
                 case 'l':
                     type = FileType.SYMBOLIC_LINK;
                     String[] nameAndLink = FileInfo.PATTERN_LINKSPLIT.split(filepath);
@@ -369,13 +370,17 @@ public class ShellHandler {
                     linkName = nameAndLink[1];
                     break;
                 case 'p':
-                    type = FileType.NAMED_PIPE; break;
+                    type = FileType.NAMED_PIPE;
+                    break;
                 case 's':
-                    type = FileType.SOCKET; break;
+                    type = FileType.SOCKET;
+                    break;
                 case 'b':
-                    type = FileType.BLOCK_DEVICE; break;
+                    type = FileType.BLOCK_DEVICE;
+                    break;
                 case 'c':
-                    type = FileType.CHAR_DEVICE; break;
+                    type = FileType.CHAR_DEVICE;
+                    break;
                 case '-':
                 default:
                     type = FileType.REGULAR_FILE;

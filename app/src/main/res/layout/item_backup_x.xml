@@ -151,16 +151,6 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/deleteBackup" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/share"
-                style="@style/Chip.Action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/shareTitle"
-                android:visibility="gone" />
         </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
