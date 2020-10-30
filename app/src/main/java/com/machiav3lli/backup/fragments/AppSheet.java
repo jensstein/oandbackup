@@ -366,6 +366,12 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             final ArrayList<String> userList = (ArrayList<String>) this.shellCommands.getUsers();
             CharSequence[] users = userList.toArray(new CharSequence[0]);
             final ArrayList<String> selectedUsers = new ArrayList<>();
+            if (userList.size() == 1) {
+                selectedUsers.add(userList.get(0));
+                this.shellCommands.enableDisablePackage(packageName, selectedUsers, enable);
+                this.requireMainActivity().refreshWithAppSheet();
+                return;
+            }
             new AlertDialog.Builder(requireContext())
                     .setTitle(title)
                     .setMultiChoiceItems(users, null, (dialog, chosen, checked) -> {
