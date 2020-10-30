@@ -167,6 +167,9 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(this.binding.disablePackage, this.app.isDisabled() || this.app.isSpecial() ? View.GONE : View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.uninstall, View.VISIBLE, update);
             UIUtils.setVisibility(this.binding.backup, View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.appSizeLine, View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.dataSizeLine, View.VISIBLE, update);
+            UIUtils.setVisibility(this.binding.cacheSizeLine, View.VISIBLE, update);
         } else {
             // Special app is not installed but backup should be possible... maybe a check of the backup is really
             // possible on the device could be an indicator for `isInstalled()` of special packages
@@ -176,6 +179,9 @@ public class AppSheet extends BottomSheetDialogFragment implements ActionListene
             UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
             UIUtils.setVisibility(this.binding.enablePackage, View.GONE, update);
             UIUtils.setVisibility(this.binding.disablePackage, View.GONE, update);
+            UIUtils.setVisibility(this.binding.appSizeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.dataSizeLine, View.GONE, update);
+            UIUtils.setVisibility(this.binding.cacheSizeLine, View.GONE, update);
         }
         if (this.app.isSystem()) {
             UIUtils.setVisibility(this.binding.uninstall, View.GONE, update);
