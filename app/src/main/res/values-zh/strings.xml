@@ -206,7 +206,7 @@
     <string name="help_appTypeHint">* 如果应用程序已卸载，则该应用程序类型的图标将为灰色；如果禁用该应用程序，则该图标将为深灰色。</string>
     <string name="radio_updated">已升级</string>
     <string name="help_legend">图例:</string>
-    <string name="msg_appkill_warning">选中的一个或多个应用将被停止。请确保要么在处理后重启设备，要么在打开闹钟或日历等应用程序，以避免错过重要的通知。你的键盘或启动器可能因此被重置为默认的应用程序。</string>
+    <string name="msg_appkill_warning">所选的应用程序将收到停止运行的信号，它们在任务完成后将恢复运行。请确保在任务完成后检查已处理的应用程序，并避免在任务尚未结束时启动它们。</string>
     <string name="prefs_numBackupRevisions_summary">创建新备份时，如果版本数超过了允许的最大值，则将删除最老的版本。将其设置为0以保留所有修订。</string>
     <string name="prefs_numBackupRevisions">备份修订数</string>
     <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
@@ -221,4 +221,5 @@
     <string name="radio_externaldata">外部数据</string>
     <string name="logs_text_empty">没什么可显示的！</string>
     <string name="delete_all_backups">删除全部备份</string>
+    <string name="fetching_backup_list">获取用于备份的应用程序列表…</string>
 </resources>

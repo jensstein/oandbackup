@@ -209,4 +209,10 @@
     <string name="prefs_advanced">Avanserte innstillinger</string>
     <string name="prefs_housekeepingmoment_after">Etter sikkerhetskopiering</string>
     <string name="prefs_housekeepingmoment_before">Før sikkerhetskopiering</string>
+    <string name="delete_all_backups">Slett alle sikkerhetskopier</string>
+    <string name="fetching_backup_list">Henter programliste for sikkerhetskopiering…</string>
+    <string name="logs_text_empty">Ingenting å vise.</string>
+    <string name="radio_obbdata">OBB-data</string>
+    <string name="radio_deviceprotecteddata">Enhetsbeskyttet data</string>
+    <string name="radio_externaldata">Ekstern data</string>
 </resources>
