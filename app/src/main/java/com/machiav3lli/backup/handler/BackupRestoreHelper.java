@@ -146,13 +146,6 @@ public class BackupRestoreHelper {
 
     protected void housekeepPackageBackups(Context context, AppInfoX app, Constants.HousekeepingMoment housekeepingWhen) {
         int numBackupRevisions = PrefUtils.getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2);
-        // If the backup is going to be created, reduce the number of backup revisions by one.
-        // It's expected that the additional deleted backup will be created in the next moments.
-        // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
-        // 3 should exist and housekeeping will work fine without adjustments
-        if (housekeepingWhen.equals(Constants.HousekeepingMoment.BEFORE)) {
-            numBackupRevisions--;
-        }
         List<BackupItem> backupHistory = app.getBackupHistory();
         if (numBackupRevisions == 0) {
             Log.i(TAG, String.format("[%s] Infinite backup revisions configured. Not deleting any backup. %s (valid) backups available", app.getPackageName(), backupHistory.size()));
@@ -161,6 +154,13 @@ public class BackupRestoreHelper {
         if (numBackupRevisions > backupHistory.size()) {
             Log.i(TAG, String.format("[%s] Less backup revisions (%s) than configured maximum (%s). Not deleting anything.", app.getPackageName(), backupHistory.size(), numBackupRevisions));
             return;
+        }
+        // If the backup is going to be created, reduce the number of backup revisions by one.
+        // It's expected that the additional deleted backup will be created in the next moments.
+        // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
+        // 3 should exist and housekeeping will work fine without adjustments
+        if (housekeepingWhen.equals(Constants.HousekeepingMoment.BEFORE)) {
+            numBackupRevisions--;
         }
         int revisionsToDelete = backupHistory.size() - numBackupRevisions;
         Log.i(TAG, String.format("[%s] More backup revisions than configured maximum (%s / %s). Deleting %s backup(s).", app.getPackageName(), backupHistory.size(), numBackupRevisions, revisionsToDelete));
