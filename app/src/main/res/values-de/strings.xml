@@ -223,4 +223,5 @@
     <string name="radio_externaldata">Externe Daten</string>
     <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
     <string name="delete_all_backups">Alle Sicherungen löschen</string>
+    <string name="fetching_backup_list">Applikationsliste für das Backup abrufen…</string>
 </resources>
