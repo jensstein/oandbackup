@@ -222,4 +222,6 @@
     <string name="logs_text_empty">没什么可显示的！</string>
     <string name="delete_all_backups">删除全部备份</string>
     <string name="fetching_backup_list">获取用于备份的应用程序列表…</string>
+    <string name="prefs_disableverification_summary">还原APKs时禁用这一开发者选项，并在之后重新启用。用以解决错误：INSTALL_FAILED_VERIFICATION_FAILURE。</string>
+    <string name="prefs_disableverification">禁用通过USB验证应用</string>
 </resources>
