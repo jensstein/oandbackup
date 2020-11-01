@@ -32,8 +32,9 @@ public class ScheduleDatabaseHelper {
     // https://developer.android.com/training/data-storage/room/
     public static ScheduleDatabase getScheduleDatabase(Context context, String name) {
         if (scheduleDatabase == null) {
-            scheduleDatabase = Room.databaseBuilder(context,
-                    ScheduleDatabase.class, name).build();
+            scheduleDatabase = Room.databaseBuilder(context, ScheduleDatabase.class, name)
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return scheduleDatabase;
     }
