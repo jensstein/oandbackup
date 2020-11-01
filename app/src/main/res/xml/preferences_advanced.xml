@@ -34,8 +34,9 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
-        android:key="enableSpecialBackups"
-        android:title="@string/prefs_enableSpecialBackups"
+        android:key="disableVerification"
+        android:summary="@string/prefs_disableverification_summary"
+        android:title="@string/prefs_disableverification"
         app:iconSpaceReserved="false" />
 
     <androidx.preference.CheckBoxPreference

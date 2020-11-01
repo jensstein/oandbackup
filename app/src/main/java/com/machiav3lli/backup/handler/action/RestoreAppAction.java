@@ -126,7 +126,9 @@ public class RestoreAppAction extends BaseAppAction {
             Log.i(TAG, "Nothing to remove in " + targetDirectory);
             return;
         }
-        String[] removeTargets = targetContents.stream().map(s -> '"' + new File(targetDirectory, s).getAbsolutePath() + '"').toArray(String[]::new);
+        String[] removeTargets = targetContents.stream()
+                .map(s -> '"' + new File(targetDirectory, s).getAbsolutePath() + '"')
+                .toArray(String[]::new);
         Log.d(RestoreAppAction.TAG, String.format("Removing existing files in %s", targetDirectory));
         String command = this.prependUtilbox(String.format("rm -rf %s", String.join(" ", removeTargets)));
         ShellHandler.runAsRoot(command);
@@ -219,7 +221,8 @@ public class RestoreAppAction extends BaseAppAction {
             for (StorageFile apkDoc : apksToRestore) {
                 // The file must be touched before it can be written for some reason...
                 Log.d(TAG, String.format("[%s] Copying %s to staging dir", packageName, apkDoc.getName()));
-                ShellHandler.runAsRoot("touch '" + new File(stagingApkPath, apkDoc.getName()).getAbsolutePath() + '\'');
+                ShellHandler.runAsRoot("touch '"
+                        + new File(stagingApkPath, apkDoc.getName()).getAbsolutePath() + '\'');
                 DocumentHelper.suCopyFileFromDocument(
                         this.getContext().getContentResolver(),
                         apkDoc.getUri(),
@@ -227,21 +230,30 @@ public class RestoreAppAction extends BaseAppAction {
                 );
             }
             StringBuilder sb = new StringBuilder();
+            boolean disableVerification = PrefUtils.isDisableVerification(this.getContext());
+            // disable verify apps over usb
+            if (disableVerification)
+                sb.append("settings put global verifier_verify_adb_installs 0 && ");
             // Install main package
             sb.append(this.getPackageInstallCommand(new File(stagingApkPath, baseApk.getName())));
             // If split apk resources exist, install them afterwards (order does not matter)
             if (splitApksInBackup.length > 0) {
                 for (StorageFile apk : splitApksInBackup) {
-                    sb.append(" && ").append(
-                            this.getPackageInstallCommand(new File(stagingApkPath, apk.getName()), backupProperties.getPackageName()));
+                    sb.append(" && ").append(this.getPackageInstallCommand(
+                            new File(stagingApkPath, apk.getName()), backupProperties.getPackageName()));
                 }
             }
 
             // append cleanup command
             final File finalStagingApkPath = stagingApkPath;
             sb.append(String.format(" && %s rm %s", this.getShell().getUtilboxPath(),
-                    Arrays.stream(apksToRestore).map(s -> '"' + finalStagingApkPath.getAbsolutePath() + '/' + s.getName() + '"').collect(Collectors.joining(" "))
+                    Arrays.stream(apksToRestore)
+                            .map(s -> '"' + finalStagingApkPath.getAbsolutePath() + '/' + s.getName() + '"')
+                            .collect(Collectors.joining(" "))
             ));
+            // re-enable verify apps over usb
+            if (disableVerification)
+                sb.append(" && settings put global verifier_verify_adb_installs 1");
             String command = sb.toString();
             ShellHandler.runAsRoot(command);
             success = true;
@@ -262,8 +274,7 @@ public class RestoreAppAction extends BaseAppAction {
                 try {
                     ShellHandler.runAsRoot(command);
                 } catch (ShellHandler.ShellCommandFailedException e) {
-                    String error = String.format("[%s] Cleanup after failure failed: %s", packageName, String.join("; ", e.getShellResult().getErr()));
-                    Log.w(TAG, error);
+                    Log.w(TAG, String.format("[%s] Cleanup after failure failed: %s", packageName, String.join("; ", e.getShellResult().getErr())));
                 }
             }
         }
@@ -297,7 +308,8 @@ public class RestoreAppAction extends BaseAppAction {
         return new TarArchiveInputStream(new GzipCompressorInputStream(inputStream));
     }
 
-    private void genericRestoreFromArchive(final Uri archiveUri, final String targetDir, boolean isEncrypted, final File cachePath) throws RestoreFailedException, Crypto.CryptoSetupException {
+    private void genericRestoreFromArchive(final Uri archiveUri, final String targetDir, boolean isEncrypted, final File cachePath)
+            throws RestoreFailedException, Crypto.CryptoSetupException {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
         if (!StorageFile.fromUri(this.getContext(), archiveUri).exists()) {
             throw new RestoreFailedException("Backup archive at " + archiveUri + " is missing");
@@ -341,15 +353,16 @@ public class RestoreAppAction extends BaseAppAction {
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
             dataContents.removeAll(BaseAppAction.DATA_EXCLUDED_DIRS);
             // calculate a list what must be updated
-            String[] chownTargets = dataContents.stream().map(s -> '"' + new File(targetDir, s).getAbsolutePath() + '"').toArray(String[]::new);
+            String[] chownTargets = dataContents.stream()
+                    .map(s -> '"' + new File(targetDir, s).getAbsolutePath() + '"')
+                    .toArray(String[]::new);
             if (chownTargets.length == 0) {
                 // surprise. No data?
                 Log.i(RestoreAppAction.TAG, String.format("No chown targets. Is this an app without any %s ? Doing nothing.", type));
                 return;
             }
             Log.d(RestoreAppAction.TAG, String.format("Changing owner and group of '%s' to %s:%s and restoring selinux context", targetDir, uidgid[0], uidgid[1]));
-            String command = this.prependUtilbox(String.format(
-                    "chown -R %s:%s %s && restorecon -R -v \"%s\"", uidgid[0], uidgid[1],
+            String command = this.prependUtilbox(String.format("chown -R %s:%s %s && restorecon -R -v \"%s\"", uidgid[0], uidgid[1],
                     String.join(" ", chownTargets), targetDir));
             ShellHandler.runAsRoot(command);
         } catch (ShellHandler.ShellCommandFailedException e) {
@@ -363,7 +376,8 @@ public class RestoreAppAction extends BaseAppAction {
         }
     }
 
-    public void restoreData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation)
+            throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DATA, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
@@ -374,7 +388,8 @@ public class RestoreAppAction extends BaseAppAction {
         this.genericRestorePermissions(BaseAppAction.BACKUP_DIR_DATA, new File(app.getDataDir()));
     }
 
-    public void restoreExternalData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreExternalData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation)
+            throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);
@@ -392,11 +407,13 @@ public class RestoreAppAction extends BaseAppAction {
         this.genericRestoreFromArchive(backupArchive.getUri(), app.getExternalDataDir(), backupProperties.isEncrypted(), this.getContext().getExternalCacheDir());
     }
 
-    public void restoreObbData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException {
+    public void restoreObbData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation)
+            throws RestoreFailedException {
         this.genericRestoreDataByCopying(app.getObbFilesDir(), backupLocation.getUri(), BaseAppAction.BACKUP_DIR_OBB_FILES);
     }
 
-    public void restoreDeviceProtectedData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation) throws RestoreFailedException, Crypto.CryptoSetupException {
+    public void restoreDeviceProtectedData(AppInfoX app, BackupProperties backupProperties, StorageFile backupLocation)
+            throws RestoreFailedException, Crypto.CryptoSetupException {
         final String backupFilename = this.getBackupArchiveFilename(BaseAppAction.BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted());
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.getPackageName(), backupFilename));
         StorageFile backupArchive = backupLocation.findFile(backupFilename);

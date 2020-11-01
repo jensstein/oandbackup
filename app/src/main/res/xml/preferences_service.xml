@@ -41,6 +41,12 @@
         app:iconSpaceReserved="false" />
 
     <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enableSpecialBackups"
+        android:title="@string/prefs_enableSpecialBackups"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:key="excludeCache"
         android:summary="@string/prefs_excludecache_summary"

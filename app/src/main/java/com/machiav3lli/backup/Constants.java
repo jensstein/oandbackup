@@ -57,6 +57,7 @@ public class Constants {
     public static final String PREFS_ENCRYPTION = "encryption";
     public static final String PREFS_PASSWORD = "password";
     public static final String PREFS_PASSWORD_CONFIRMATION = "passwordConfirmation";
+    public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
     public static final String PREFS_SALT = "salt";
     public static final String PREFS_EXCLUDECACHE = "excludeCache";
     public static final String PREFS_EXTERNALDATA = "backupExternalData";
@@ -64,7 +65,7 @@ public class Constants {
     public static final String PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions";
     public static final String PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment";
 
-    public static final String PREFS_ENABLESPECIALBACKUPS = "enableSpecialBackups";
+    public static final String PREFS_DISABLEVERIFICATION = "disableVerification";
     public static final String PREFS_KILLBEFOREACTION = "killBeforeAction";
 
     public static final String PREFS_QUICK_REBOOT = "quickReboot";

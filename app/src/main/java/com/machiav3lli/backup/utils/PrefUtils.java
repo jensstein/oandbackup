@@ -178,6 +178,10 @@ public class PrefUtils {
         return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, false);
     }
 
+    public static boolean isDisableVerification(Context context) {
+        return PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DISABLEVERIFICATION, false);
+    }
+
     public static class StorageLocationNotConfiguredException extends Exception {
 
         public StorageLocationNotConfiguredException() {
