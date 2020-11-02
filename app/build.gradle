@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId 'com.machiav3lli.backup'
-        versionCode = 4001
+        versionCode = 4000
         versionName = "4.0.0"
         minSdkVersion 26
         targetSdkVersion 29

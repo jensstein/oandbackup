@@ -33,11 +33,11 @@ Our [Code of Conduct](COC.md) applies to the communication in the community same
 
 ## Encryption
 
-If enabled the data backup will be encrypted with AES 256 based on a password you can set in the settings, which you'll have to use when you want to restore the data. This way you can store your backups more securely, worrying less about their readability.  
+If enabled the data backup will be encrypted with AES256 based on a password you can set in the settings, which you'll have to use when you want to restore the data. This way you can store your backups more securely, worrying less about their readability.
 
 ## Compatibility
 
-Version 3.0.0 marks an overhaul of the backup proces and thus breaks compatibility with previous versions.
+Version 4.0.0 marks a full overhaul of the app structure and thus breaks compatibility with previous versions.
 
 Till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
 
@@ -53,10 +53,9 @@ Till the version 0.9.3 there's been no structural change in how the app handles 
 - [x] Add support for protected data, external data and obb backups
 - [x] Exclude cache from data backups
 - [x] Add in-app backup encryption
-- [ ] Rewrite the logic of Backup/Restore: is a PROCESS (~70% done,WIP)
-- [ ] Switch to Storage Access Framework (WIP)
-  - till it's finished there'll be no support for external storage (e.g. SD-Cards, USB-OTG)
-- [ ] New android Scope Storage permissions compatibility (first: after android 11 release - if forced to)
+- [x] Rewrite the logic of Backup/Restore
+- [x] Switch to Storage Access Framework
+- [ ] New android Scope Storage permissions compatibility (WIP)
 - [ ] Add a Flashable-ZIP feature
 - [ ] You suggest!...
 
@@ -98,7 +97,7 @@ Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/autho
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-[Tiefkuehlpizze](https://github.com/Tiefkuehlpizze) for his active contribution to the project.
+[Nils](https://github.com/Tiefkuehlpizze) & [Harald](https://github.com/hg42) for their active contribution to the project.
 
 Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrite Shellcommands [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 

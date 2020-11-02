@@ -93,6 +93,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 .setTimeout(20));
     }
 
+    // TODO DataModel to lay the ground for more abstraction
     private List<AppInfoX> appsList;
     // TODO optimize usage (maybe a map instead?)
     public List<String> apkCheckedList = new ArrayList<>();

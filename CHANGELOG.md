@@ -1,6 +1,31 @@
 changelog
 =========
 
+4.0.0 (02.11.2020)
+------------------
+
+* Added: Allow parallel batch tasks
+* Added: Disable verification of apps over USB before installing and re-enable it afterwards
+* Added: APK & Data checkboxes in Batch
+* Added: Storage Access Framework support (Credits @tiefkuehlpizze)
+* Added: Symlink/Pipe Support (Credits @hg42 and @tiefkuehlpizze)
+* Added: Multi Backup support (Credits @tiefkuehlpizze)
+* Added: HelpSheet to deliver help easily
+* Added: More clear messages informing user about running processes
+* Added: Arabic, Bosnian and Malayalam
+* Updated: Tags system
+* Updated: Use STOP/CONT to make sure no background processes ruin the backup (Credits @hg42 & @tiefkuehlpizze)
+* Updated: Restructure Schedules
+* Updated: Backups directory is /OABackupX now
+* Updated: Backup Structure (Credits @tiefkuehlpizze)
+* Updated: Whole new layouts for UI elements
+* Updated: Encryption warning leads directly to its preferences
+* Updated: Translations
+* Fixed: Log viewer
+* Fixed: Create Log when errors occur on backups
+* Removed: Annimon stream dependency
+* Too many other improvements, fixes and cleanups
+
 3.2.0 (23.09.2020)
 ------------------
 
