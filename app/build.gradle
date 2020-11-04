@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 30
@@ -94,9 +98,9 @@ ext {
 dependencies {
     // Libs
     implementation "androidx.room:room-runtime:${versions.room}"
-    annotationProcessor "androidx.room:room-compiler:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
     implementation "com.google.code.gson:gson:${versions.gson}"
-    implementation "androidx.lifecycle:lifecycle-livedata:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
     implementation "androidx.biometric:biometric:${versions.biometric}"
     implementation "org.apache.commons:commons-compress:${versions.commons_compress}"
     implementation "commons-io:commons-io:${versions.commons_io}"
@@ -106,12 +110,12 @@ dependencies {
 
     // UI
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "androidx.fragment:fragment:${versions.fragment}"
+    implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
     implementation "com.google.android.material:material:${versions.material}"
-    implementation "androidx.preference:preference:${versions.preference}"
+    implementation "androidx.preference:preference-ktx:${versions.preference}"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swiperefreshlayout}"
-    implementation "androidx.navigation:navigation-fragment:${versions.navigation}"
-    implementation "androidx.navigation:navigation-ui:${versions.navigation}"
+    implementation "androidx.navigation:navigation-fragment-ktx:${versions.navigation}"
+    implementation "androidx.navigation:navigation-ui-ktx:${versions.navigation}"
     implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
 
