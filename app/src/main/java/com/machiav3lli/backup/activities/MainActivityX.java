@@ -398,12 +398,12 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     @Override
-    public void onConfirmed(List<Pair<AppMetaInfo, Integer>> selectedItems) {
-        new Thread(() -> runBatchTask(selectedItems)).start();
+    public void onConfirmed(@NotNull List<? extends Pair<AppMetaInfo, Integer>> selectedList) {
+        new Thread(() -> runBatchTask(selectedList)).start();
     }
 
     // TODO 1. optimize/reduce complexity
-    public void runBatchTask(List<Pair<AppMetaInfo, Integer>> selectedItems) {
+    public void runBatchTask(List<? extends Pair<AppMetaInfo, Integer>> selectedItems) {
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
         if (this.prefs.getBoolean("acquireWakelock", true)) {
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
