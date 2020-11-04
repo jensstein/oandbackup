@@ -37,7 +37,6 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
-import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 
 public class ScheduleService extends Service
         implements BackupRestoreHelper.OnBackupRestoreListener {
@@ -64,8 +63,8 @@ public class ScheduleService extends Service
                 handleAlarms.setAlarm(id, schedule.getInterval(), schedule.getTimeHour(),
                         schedule.getTimeMinute());
                 Log.i(TAG, getString(R.string.sched_startingbackup));
-                handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubmode().getValue(),
-                        schedule.isExcludeSystem(), schedule.isEnableCustomList());
+                handleScheduledBackups.initiateBackup(id, schedule.getMode(), schedule.getSubMode().getValue(),
+                        schedule.getExcludeSystem(), schedule.getEnableCustomList());
             });
             t.start();
         } else {
@@ -80,9 +79,9 @@ public class ScheduleService extends Service
     }
 
     ScheduleDao getScheduleDao() {
-        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper.getScheduleDatabase(this,
-                SchedulerActivityX.DATABASE_NAME);
-        return scheduleDatabase.scheduleDao();
+        return ScheduleDatabase.Companion
+                .getInstance(this, SchedulerActivityX.DATABASE_NAME)
+                .getScheduleDao();
     }
 
     @Override

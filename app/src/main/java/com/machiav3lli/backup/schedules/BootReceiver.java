@@ -29,7 +29,6 @@ import com.machiav3lli.backup.activities.SchedulerActivityX;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
-import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -56,9 +55,9 @@ public class BootReceiver extends BroadcastReceiver {
     }
 
     ScheduleDao getScheduleDao(Context context) {
-        final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                .getScheduleDatabase(context, SchedulerActivityX.DATABASE_NAME);
-        return scheduleDatabase.scheduleDao();
+        return ScheduleDatabase.Companion
+                .getInstance(context, SchedulerActivityX.DATABASE_NAME)
+                .getScheduleDao();
     }
 
     private static class DatabaseRunnable implements Runnable {
@@ -81,7 +80,7 @@ public class BootReceiver extends BroadcastReceiver {
                 return;
             }
             final List<Schedule> schedules = scheduleDao.getAll().stream()
-                    .filter(schedule -> schedule.isEnabled() && schedule.getInterval() > 0)
+                    .filter(schedule -> schedule.getEnabled() && schedule.getInterval() > 0)
                     .collect(Collectors.toList());
             for (Schedule schedule : schedules) {
                 final long timeLeft = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),

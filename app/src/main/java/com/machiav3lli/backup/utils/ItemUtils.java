@@ -63,8 +63,8 @@ public final class ItemUtils {
                 + sched.getTimeHour()
                 + sched.getTimeMinute()
                 + sched.getMode().getValue()
-                + sched.getSubmode().getValue()
-                + (sched.isEnabled() ? 1 : 0);
+                + sched.getSubMode().getValue()
+                + (sched.getEnabled() ? 1 : 0);
     }
 
     public static String getFormattedDate(LocalDateTime lastUpdate, boolean withTime) {

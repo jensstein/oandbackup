@@ -51,7 +51,6 @@ import com.machiav3lli.backup.schedules.HandleScheduledBackups;
 import com.machiav3lli.backup.schedules.db.Schedule;
 import com.machiav3lli.backup.schedules.db.ScheduleDao;
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase;
-import com.machiav3lli.backup.schedules.db.ScheduleDatabaseHelper;
 import com.machiav3lli.backup.utils.CommandUtils;
 
 import java.lang.ref.WeakReference;
@@ -67,7 +66,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
     private SheetScheduleBinding binding;
 
     public ScheduleSheet(SchedulerItemX item) {
-        this.sched = item.getSched();
+        this.sched = item.getSchedule();
     }
 
     @NonNull
@@ -113,7 +112,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
             refreshSheet();
             toggleSecondaryButtons(binding.schedMode, idNumber);
         });
-        binding.schedSubMode.check(submodeToId(sched.getSubmode().getValue()));
+        binding.schedSubMode.check(submodeToId(sched.getSubMode().getValue()));
         binding.schedSubMode.setOnCheckedChangeListener((group, checkedId) -> {
             changeScheduleSubmode(idToSubmode(checkedId), idNumber);
             refreshSheet();
@@ -157,14 +156,14 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         }
     }
 
-    private Schedule.Submode idToSubmode(int subMode) {
+    private Schedule.SubMode idToSubmode(int subMode) {
         switch (subMode) {
             case R.id.schedApk:
-                return Schedule.Submode.APK;
+                return Schedule.SubMode.APK;
             case R.id.schedData:
-                return Schedule.Submode.DATA;
+                return Schedule.SubMode.DATA;
             default:
-                return Schedule.Submode.BOTH;
+                return Schedule.SubMode.BOTH;
         }
     }
 
@@ -172,8 +171,8 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         binding.timeOfDay.setText(String.format("%s:%s", sched.getTimeHour() < 10 ? "0" + sched.getTimeHour() : sched.getTimeHour(),
                 sched.getTimeMinute() < 10 ? "0" + sched.getTimeMinute() : sched.getTimeMinute()));
         binding.intervalDays.setText(String.valueOf(sched.getInterval()));
-        binding.enableCheckbox.setChecked(sched.isEnabled());
-        binding.enableCustomList.setChecked(sched.isEnableCustomList());
+        binding.enableCheckbox.setChecked(sched.getEnabled());
+        binding.enableCustomList.setChecked(sched.getEnableCustomList());
         setTimeLeft(sched, System.currentTimeMillis());
         idNumber = sched.getId();
 
@@ -191,7 +190,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
     }
 
     void setTimeLeft(Schedule schedule, long now) {
-        if (!schedule.isEnabled()) {
+        if (!schedule.getEnabled()) {
             binding.timeLeft.setText("");
             binding.timeLeftLine.setVisibility(View.GONE);
         } else {
@@ -224,7 +223,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
                     new UpdateScheduleRunnable((SchedulerActivityX) requireActivity(),
                             BlacklistsDBHelper.DATABASE_NAME, schedule);
             new Thread(updateScheduleRunnable).start();
-            if (!schedule.isEnabled()) {
+            if (!schedule.getEnabled()) {
                 handleAlarms.cancelAlarm((int) id);
             }
             setTimeLeft(schedule, System.currentTimeMillis());
@@ -263,7 +262,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         new Thread(modeChangerRunnable).start();
     }
 
-    private void changeScheduleSubmode(Schedule.Submode submode, long id) {
+    private void changeScheduleSubmode(Schedule.SubMode submode, long id) {
         final ModeChangerRunnable modeChangerRunnable =
                 new ModeChangerRunnable((SchedulerActivityX) requireActivity(), id, submode);
         new Thread(modeChangerRunnable).start();
@@ -345,14 +344,14 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         private final WeakReference<SchedulerActivityX> activityReference;
         private final long id;
         private final Optional<Schedule.Mode> mode;
-        private final Optional<Schedule.Submode> submode;
+        private final Optional<Schedule.SubMode> submode;
         private final String databasename;
 
         ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Mode mode) {
             this(scheduler, id, mode, BlacklistsDBHelper.DATABASE_NAME);
         }
 
-        ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Submode submode) {
+        ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.SubMode submode) {
             this(scheduler, id, submode, BlacklistsDBHelper.DATABASE_NAME);
         }
 
@@ -364,7 +363,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
             this.databasename = databasename;
         }
 
-        ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.Submode submode, String databasename) {
+        ModeChangerRunnable(SchedulerActivityX scheduler, long id, Schedule.SubMode submode, String databasename) {
             this.activityReference = new WeakReference<>(scheduler);
             this.id = id;
             this.submode = Optional.of(submode);
@@ -376,13 +375,13 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         public void run() {
             final SchedulerActivityX scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
-                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                        .getScheduleDatabase(scheduler, databasename);
-                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabase.Companion
+                        .getInstance(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.getScheduleDao();
                 final Schedule schedule = scheduleDao.getSchedule(id);
                 if (schedule != null) {
                     mode.ifPresent(schedule::setMode);
-                    submode.ifPresent(schedule::setSubmode);
+                    submode.ifPresent(schedule::setSubMode);
                     scheduleDao.update(schedule);
                 } else {
                     final List<Schedule> schedules = scheduleDao.getAll();
@@ -414,9 +413,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         public void run() {
             final SchedulerActivityX scheduler = activityReference.get();
             if (scheduler != null && !scheduler.isFinishing()) {
-                final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                        .getScheduleDatabase(scheduler, databasename);
-                final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                final ScheduleDatabase scheduleDatabase = ScheduleDatabase.Companion
+                        .getInstance(scheduler, databasename);
+                final ScheduleDao scheduleDao = scheduleDatabase.getScheduleDao();
                 scheduleDao.update(schedule);
             }
         }
@@ -439,9 +438,9 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
                         new IllegalStateException("No id supplied to the schedule removing task");
                 return new ResultHolder<>(error);
             }
-            final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                    .getScheduleDatabase(scheduler, BlacklistsDBHelper.DATABASE_NAME);
-            final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+            final ScheduleDatabase scheduleDatabase = ScheduleDatabase.Companion
+                    .getInstance(scheduler, BlacklistsDBHelper.DATABASE_NAME);
+            final ScheduleDao scheduleDao = scheduleDatabase.getScheduleDao();
             scheduleDao.delete(schedules[0]);
             return new ResultHolder<>(schedules[0]);
         }
@@ -487,16 +486,16 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
             final Thread t = new Thread(() -> {
                 final Context context = contextReference.get();
                 if (context != null) {
-                    final ScheduleDatabase scheduleDatabase = ScheduleDatabaseHelper
-                            .getScheduleDatabase(context, databasename);
-                    final ScheduleDao scheduleDao = scheduleDatabase.scheduleDao();
+                    final ScheduleDatabase scheduleDatabase = ScheduleDatabase.Companion
+                            .getInstance(context, databasename);
+                    final ScheduleDao scheduleDao = scheduleDatabase.getScheduleDao();
                     final Schedule schedule = scheduleDao.getSchedule(id);
 
                     final HandleScheduledBackups handleScheduledBackups =
                             handleScheduledBackupsReference.get();
                     if (handleScheduledBackups != null) {
                         handleScheduledBackups.initiateBackup((int) id, schedule.getMode(),
-                                schedule.getSubmode().getValue(), schedule.isExcludeSystem(), schedule.isEnableCustomList());
+                                schedule.getSubMode().getValue(), schedule.getExcludeSystem(), schedule.getEnableCustomList());
                     }
                 }
             });

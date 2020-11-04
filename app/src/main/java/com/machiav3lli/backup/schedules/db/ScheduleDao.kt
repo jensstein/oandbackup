@@ -15,12 +15,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules.db;
+package com.machiav3lli.backup.schedules.db
 
-import androidx.room.Database;
-import androidx.room.RoomDatabase;
+import android.database.SQLException
+import androidx.room.*
 
-@Database(entities = Schedule.class, version = 2)
-public abstract class ScheduleDatabase extends RoomDatabase {
-    public abstract ScheduleDao scheduleDao();
+@Dao
+interface ScheduleDao {
+    @Query("SELECT COUNT(*) FROM schedule")
+    fun count(): Long
+
+    @Insert
+    @Throws(SQLException::class)
+    fun insert(vararg schedules: Schedule?): LongArray?
+
+    @Query("SELECT * FROM schedule WHERE id = :id")
+    fun getSchedule(id: Long): Schedule?
+
+    @get:Query("SELECT * FROM schedule ORDER BY id ASC")
+    val all: List<Schedule?>
+
+    @Update
+    fun update(schedule: Schedule?)
+
+    @Query("DELETE FROM schedule")
+    fun deleteAll()
+
+    @Delete
+    fun delete(schedule: Schedule?)
+
+    @Query("DELETE FROM schedule WHERE id = :id")
+    fun deleteById(id: Long)
 }

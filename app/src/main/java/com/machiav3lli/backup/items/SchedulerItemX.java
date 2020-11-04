@@ -35,14 +35,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
-    Schedule sched;
+    Schedule schedule;
 
-    public SchedulerItemX(Schedule sched) {
-        this.sched = sched;
+    public SchedulerItemX(Schedule schedule) {
+        this.schedule = schedule;
     }
 
-    public Schedule getSched() {
-        return sched;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
 
     @Override
     public long getIdentifier() {
-        return ItemUtils.calculateScheduleID(sched);
+        return ItemUtils.calculateScheduleID(schedule);
     }
 
     @Override
@@ -70,8 +70,8 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
         AppCompatCheckBox checkbox = itemView.findViewById(R.id.enableCheckbox);
         AppCompatTextView timeLeft = itemView.findViewById(R.id.timeLeft);
         LinearLayoutCompat timeLeftLine = itemView.findViewById(R.id.timeLeftLine);
-        AppCompatTextView schedMode = itemView.findViewById(R.id.schedMode);
-        AppCompatTextView schedSubMode = itemView.findViewById(R.id.schedSubMode);
+        AppCompatTextView scheduleMode = itemView.findViewById(R.id.schedMode);
+        AppCompatTextView scheduleSubMode = itemView.findViewById(R.id.schedSubMode);
 
         public ViewHolder(View view) {
             super(view);
@@ -79,48 +79,48 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
 
         @Override
         public void bindView(@NotNull SchedulerItemX item, @NotNull List<?> list) {
-            final Schedule sched = item.getSched();
-            setSchedMode(sched);
-            setSchedSubMode(sched);
-            checkbox.setChecked(sched.isEnabled());
-            setTimeLeft(sched, System.currentTimeMillis());
-            final long tag = sched.getId();
+            final Schedule schedule = item.getSchedule();
+            setScheduleMode(schedule);
+            setScheduleSubMode(schedule);
+            checkbox.setChecked(schedule.getEnabled());
+            setTimeLeft(schedule, System.currentTimeMillis());
+            final long tag = schedule.getId();
             checkbox.setTag(tag);
         }
 
-        void setSchedMode(Schedule schedule) {
+        void setScheduleMode(Schedule schedule) {
             switch (schedule.getMode().getValue()) {
                 case 1:
-                    schedMode.setText(R.string.radio_user);
+                    scheduleMode.setText(R.string.radio_user);
                     break;
                 case 2:
-                    schedMode.setText(R.string.radio_system);
+                    scheduleMode.setText(R.string.radio_system);
                     break;
                 case 3:
-                    schedMode.setText(R.string.showNewAndUpdated);
+                    scheduleMode.setText(R.string.showNewAndUpdated);
                     break;
                 default:
-                    schedMode.setText(R.string.radio_all);
+                    scheduleMode.setText(R.string.radio_all);
                     break;
             }
         }
 
-        void setSchedSubMode(Schedule schedule) {
-            switch (schedule.getSubmode().getValue()) {
+        void setScheduleSubMode(Schedule schedule) {
+            switch (schedule.getSubMode().getValue()) {
                 case 1:
-                    schedSubMode.setText(R.string.radio_apk);
+                    scheduleSubMode.setText(R.string.radio_apk);
                     break;
                 case 2:
-                    schedSubMode.setText(R.string.radio_data);
+                    scheduleSubMode.setText(R.string.radio_data);
                     break;
                 default:
-                    schedSubMode.setText(R.string.radio_both);
+                    scheduleSubMode.setText(R.string.radio_both);
                     break;
             }
         }
 
         void setTimeLeft(Schedule schedule, long now) {
-            if (!schedule.isEnabled()) {
+            if (!schedule.getEnabled()) {
                 timeLeft.setText("");
                 timeLeftLine.setVisibility(View.INVISIBLE);
             } else {
@@ -136,8 +136,8 @@ public class SchedulerItemX extends AbstractItem<SchedulerItemX.ViewHolder> {
 
         @Override
         public void unbindView(@NotNull SchedulerItemX item) {
-            schedMode.setText(null);
-            schedSubMode.setText(null);
+            scheduleMode.setText(null);
+            scheduleSubMode.setText(null);
             timeLeft.setText(null);
         }
     }
