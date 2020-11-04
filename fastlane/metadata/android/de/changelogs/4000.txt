@@ -1,0 +1,10 @@
+**OAndBackupX 4.0.0**
+
+**NEUE HAUPT VERSION**: inkompatibel mit den alten Versionen
+**Leistungsveringerung**: verursacht durch die Verwendung von SAF im Vergleich zum direkten Zugriff und macht die Leistung von Ihrem SOC abhängig
+
+* Hinzugefügt: Unterstützung von Storage Access Framework
+* Hinzugefügt: Symlink/Pipe-Unterstützung
+* Hinzugefügt: Multi-Backup-Unterstützung
+* Hinzugefügt: Parallele Batch-Aufgaben erlauben
+ und vieles mehr ...
