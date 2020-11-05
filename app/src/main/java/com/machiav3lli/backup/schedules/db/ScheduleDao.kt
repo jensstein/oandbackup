@@ -27,22 +27,22 @@ interface ScheduleDao {
 
     @Insert
     @Throws(SQLException::class)
-    fun insert(vararg schedules: Schedule?): LongArray?
+    fun insert(vararg schedules: Schedule): LongArray?
 
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getSchedule(id: Long): Schedule?
 
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
-    val all: List<Schedule?>
+    val all: List<Schedule>
 
     @Update
-    fun update(schedule: Schedule?)
+    fun update(schedule: Schedule)
 
     @Query("DELETE FROM schedule")
     fun deleteAll()
 
     @Delete
-    fun delete(schedule: Schedule?)
+    fun delete(schedule: Schedule)
 
     @Query("DELETE FROM schedule WHERE id = :id")
     fun deleteById(id: Long)

@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules;
+package com.machiav3lli.backup.schedules
 
-public class SchedulingException extends Exception {
-    public SchedulingException(String msg) {
-        super(msg);
-    }
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import com.machiav3lli.backup.Constants.classAddress
 
-    public SchedulingException(String msg, Throwable cause) {
-        super(msg, cause);
+class AlarmReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val id = intent.getIntExtra("id", -1)
+        val serviceIntent = Intent(context, ScheduleService::class.java)
+        serviceIntent.putExtra(classAddress(".schedule_id"), id)
+        context.startService(serviceIntent)
     }
 }

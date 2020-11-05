@@ -15,25 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules;
+package com.machiav3lli.backup.schedules
 
-import android.provider.BaseColumns;
+object BlacklistContract {
 
-public final class BlacklistContract {
-
-    public static final String CREATE_DB = String.format(
+    val CREATE_DB = String.format(
             "create table %s(%s INTEGER PRIMARY KEY, %s TEXT, %s INTEGER)",
             BlacklistEntry.TABLE_NAME, BlacklistEntry._ID,
-            BlacklistEntry.COLUMN_PACKAGENAME, BlacklistEntry.COLUMN_BLACKLISTID);
+            BlacklistEntry.COLUMN_PACKAGENAME, BlacklistEntry.COLUMN_BLACKLISTID)
 
-    public static final String DELETE_ENTRIES = String.format("drop table if exists %s", BlacklistEntry.TABLE_NAME);
+    val DELETE_ENTRIES = String.format("drop table if exists %s", BlacklistEntry.TABLE_NAME)
 
-    private BlacklistContract() {
-    }
-
-    public static class BlacklistEntry implements BaseColumns {
-        public static final String TABLE_NAME = "blacklists";
-        public static final String COLUMN_PACKAGENAME = "packagename";
-        public static final String COLUMN_BLACKLISTID = "blacklistId";
+    object BlacklistEntry {
+        const val _ID = "_id" // BaseColumns implementation
+        const val _COUNT = "_count" // BaseColumns implementation
+        const val TABLE_NAME = "blacklists"
+        const val COLUMN_PACKAGENAME = "packagename"
+        const val COLUMN_BLACKLISTID = "blacklistId"
     }
 }

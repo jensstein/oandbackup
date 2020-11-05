@@ -15,21 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules;
+package com.machiav3lli.backup.schedules
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-
-import com.machiav3lli.backup.Constants;
-
-public class AlarmReceiver extends BroadcastReceiver {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        int id = intent.getIntExtra("id", -1);
-        Intent serviceIntent = new Intent(context, ScheduleService.class);
-        serviceIntent.putExtra(Constants.classAddress(".schedule_id"), id);
-        context.startService(serviceIntent);
-    }
+class SchedulingException : Exception {
+    constructor(msg: String?) : super(msg) {}
+    constructor(msg: String?, cause: Throwable?) : super(msg, cause) {}
 }
