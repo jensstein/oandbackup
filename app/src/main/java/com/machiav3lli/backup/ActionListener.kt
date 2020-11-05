@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup;
+package com.machiav3lli.backup
 
-public interface BlacklistListener {
-    void onBlacklistChanged(CharSequence[] blacklist, int id);
+import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
+
+interface ActionListener {
+    fun onActionCalled(actionType: ActionType?, mode: Int)
 }
