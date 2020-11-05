@@ -71,6 +71,7 @@ android {
 
 ext {
     versions = [
+            kotlin            : "1.4.10",
             room              : "2.2.5",
             gson              : "2.8.6",
             lifecycle         : "2.2.0",
@@ -97,6 +98,7 @@ ext {
 
 dependencies {
     // Libs
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
     implementation "androidx.room:room-runtime:${versions.room}"
     kapt "androidx.room:room-compiler:${versions.room}"
     implementation "com.google.code.gson:gson:${versions.gson}"
