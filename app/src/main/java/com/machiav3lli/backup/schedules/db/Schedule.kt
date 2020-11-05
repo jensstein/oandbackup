@@ -79,10 +79,10 @@ class Schedule {
                 .apply()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val schedule = o as Schedule
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val schedule = other as Schedule
         return id == schedule.id
                 && enabled == schedule.enabled
                 && timeHour == schedule.timeHour

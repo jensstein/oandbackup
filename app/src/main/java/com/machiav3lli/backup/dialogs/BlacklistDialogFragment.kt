@@ -67,7 +67,7 @@ class BlacklistDialogFragment : DialogFragment() {
                 }
                 .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
                     for (listener in blacklistListeners) {
-                        listener.onBlacklistChanged(selections.toTypedArray<CharSequence>(), blacklistId)
+                        listener.onBlacklistChanged(selections.toTypedArray(), blacklistId)
                     }
                 }
                 .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }.create()

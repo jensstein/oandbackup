@@ -18,9 +18,7 @@
 package com.machiav3lli.backup.tasks;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.machiav3lli.backup.R;
 import com.machiav3lli.backup.activities.MainActivityX;
@@ -30,12 +28,9 @@ import com.machiav3lli.backup.handler.NotificationHelper;
 import com.machiav3lli.backup.handler.ShellHandler;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
-import com.machiav3lli.backup.utils.PrefUtils;
 import com.machiav3lli.backup.utils.UIUtils;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
@@ -79,17 +74,8 @@ public abstract class BaseTask extends AsyncTask<Void, Void, ActionResult> {
             handleMessages.endMessage();
             final String message = getPostExecuteMessage(mainActivityX, actionType, result);
             NotificationHelper.showNotification(mainActivityX, MainActivityX.class, (int) System.currentTimeMillis(), this.app.getPackageLabel(), message, true);
-            UIUtils.showActionResult(mainActivityX, this.result, this.result.succeeded ? null : (dialog, which) -> {
-                try {
-                    LogUtils logUtils = new LogUtils(mainActivityX);
-                    Uri logFileUri = logUtils.getLogFile();
-                    logUtils.writeToLogFile(result.getMessage());
-                    Toast.makeText(mainActivityX,
-                            String.format(mainActivityX.getString(R.string.logfileSavedAt), logFileUri),
-                            Toast.LENGTH_LONG).show();
-                } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
-                    e.printStackTrace();
-                }
+            UIUtils.showActionResult(mainActivityX, this.result, this.result.getSucceeded() ? null : (dialog, which) -> {
+                LogUtils.logErrors(mainActivityX, result.getMessage());
             });
             mainActivityX.refreshWithAppSheet();
         }

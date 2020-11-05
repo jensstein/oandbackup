@@ -60,7 +60,7 @@ class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment(
     }
 
     interface ConfirmListener {
-        fun onConfirmed(selectedList: List<Pair<AppMetaInfo, Int>?>)
+        fun onConfirmed(selectedList: List<Pair<AppMetaInfo, Int>>)
     }
 
     companion object {

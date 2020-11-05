@@ -21,17 +21,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -39,6 +38,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.machiav3lli.backup.BuildConfig;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.R;
@@ -399,12 +399,12 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
     }
 
     @Override
-    public void onConfirmed(@NotNull List<? extends Pair<AppMetaInfo, Integer>> selectedList) {
+    public void onConfirmed(@NotNull List<? extends Pair<? extends AppMetaInfo, Integer>> selectedList) {
         new Thread(() -> runBatchTask(selectedList)).start();
     }
 
     // TODO 1. optimize/reduce complexity
-    public void runBatchTask(List<? extends Pair<AppMetaInfo, Integer>> selectedItems) {
+    public void runBatchTask(@NotNull List<? extends Pair<? extends AppMetaInfo, Integer>> selectedItems) {
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = this.powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainActivityX.TAG);
         if (this.prefs.getBoolean("acquireWakelock", true)) {
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/);
@@ -412,12 +412,12 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         }
         // get the AppInfoX objects again
         List<Pair<AppInfoX, Integer>> selectedApps = new ArrayList<>(selectedItems.size());
-        for (Pair<AppMetaInfo, Integer> itemInfo : selectedItems) {
+        for (Pair<? extends AppMetaInfo, Integer> itemInfo : selectedItems) {
             Optional<BatchItemX> foundItem = this.batchItemAdapter.getAdapterItems().stream()
-                    .filter(item -> item.getApp().getPackageName().equals(itemInfo.first.getPackageName()))
+                    .filter(item -> item.getApp().getPackageName().equals(itemInfo.getFirst().getPackageName()))
                     .findFirst();
             if (foundItem.isPresent()) {
-                selectedApps.add(new Pair<>(foundItem.get().getApp(), itemInfo.second));
+                selectedApps.add(new Pair<>(foundItem.get().getApp(), itemInfo.getSecond()));
             } else {
                 throw new RuntimeException("Selected item for processing went lost from the item adapter.");
             }
@@ -432,21 +432,21 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
         int i = 1;
         for (Pair<AppInfoX, Integer> itemInfo : selectedApps) {
             final String message = String.format("%s (%d/%d)", this.backupBoolean ? this.getString(R.string.backupProgress) : this.getString(R.string.restoreProgress), i, totalOfActions);
-            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, message, itemInfo.first.getPackageLabel(), false);
+            NotificationHelper.showNotification(this, MainActivityX.class, notificationId, message, itemInfo.getFirst().getPackageLabel(), false);
             if (mileStones.contains(i)) {
                 runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
             }
-            int mode = itemInfo.second;
+            int mode = itemInfo.getSecond();
             if (this.backupBoolean) {
-                result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), itemInfo.first, mode);
+                result = backupRestoreHelper.backup(this, MainActivityX.getShellHandlerInstance(), itemInfo.getFirst(), mode);
             } else {
                 // Latest backup for now
-                BackupItem selectedBackup = itemInfo.first.getLatestBackup();
-                result = backupRestoreHelper.restore(this, itemInfo.first, selectedBackup.getBackupProperties(),
+                BackupItem selectedBackup = itemInfo.getFirst().getLatestBackup();
+                result = backupRestoreHelper.restore(this, itemInfo.getFirst(), selectedBackup.getBackupProperties(),
                         selectedBackup.getBackupLocation(), MainActivityX.getShellHandlerInstance(), mode);
             }
             if (!result.succeeded) {
-                NotificationHelper.showNotification(this, MainActivityX.class, result.hashCode(), itemInfo.first.getPackageLabel(), result.message, false);
+                NotificationHelper.showNotification(this, MainActivityX.class, result.hashCode(), itemInfo.getFirst().getPackageLabel(), result.getMessage(), false);
             }
             results.add(result);
             i++;
@@ -471,14 +471,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
         // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
         UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
-            try {
-                LogUtils logUtils = new LogUtils(this);
-                Uri logFileUri = logUtils.getLogFile();
-                logUtils.writeToLogFile(errors);
-                runOnUiThread(() -> Toast.makeText(MainActivityX.this, String.format(this.getString(R.string.logfileSavedAt), logFileUri), Toast.LENGTH_LONG).show());
-            } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException e) {
-                e.printStackTrace();
-            }
+            LogUtils.logErrors(this, errors);
         });
         this.cleanRefresh();
     }
@@ -556,7 +549,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             mainFastAdapter.notifyAdapterDataSetChanged();
             binding.refreshLayout.setRefreshing(false);
             if (appSheetBoolean && sheetApp != null) refreshAppSheet();
-            UIUtils.slideUp(binding.bottomBar);
+            MainActivityX.slideUp(binding.bottomBar);
         });
     }
 
@@ -602,7 +595,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
             batchFastAdapter.notifyAdapterDataSetChanged();
             updateCheckAll();
             binding.refreshLayout.setRefreshing(false);
-            UIUtils.slideUp(binding.bottomBar);
+            MainActivityX.slideUp(binding.bottomBar);
         });
     }
 
@@ -630,5 +623,9 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
 
     private boolean toAddToBatch(boolean backupBoolean, AppInfoX app) {
         return backupBoolean ? app.isInstalled() : app.hasBackups();
+    }
+
+    public static void slideUp(View view) {
+        ((HideBottomViewOnScrollBehavior) ((CoordinatorLayout.LayoutParams) view.getLayoutParams()).getBehavior()).slideUp(view);
     }
 }

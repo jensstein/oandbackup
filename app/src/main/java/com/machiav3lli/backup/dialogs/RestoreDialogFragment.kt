@@ -45,14 +45,14 @@ class RestoreDialogFragment(private val listener: ActionListener) : DialogFragme
         builder.setMessage(R.string.restore)
         val actionType = ActionType.RESTORE
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, id: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK) }
+            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK) }
         }
         if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, id: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA) }
+            builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA) }
         }
         if (showBothBtn) {
             val textId = R.string.radio_both
-            builder.setPositiveButton(textId) { _: DialogInterface?, id: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH) }
+            builder.setPositiveButton(textId) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH) }
         }
         return builder.create()
     }
