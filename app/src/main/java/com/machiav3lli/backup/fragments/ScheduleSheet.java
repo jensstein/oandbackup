@@ -22,6 +22,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -196,10 +197,7 @@ public class ScheduleSheet extends BottomSheetDialogFragment implements TimePick
         } else {
             final long timeDiff = HandleAlarms.timeUntilNextEvent(schedule.getInterval(),
                     schedule.getTimeHour(), schedule.getTimeMinute(), schedule.getTimePlaced(), now);
-            int sum = (int) (timeDiff / 1000f / 60f);
-            int hours = sum / 60;
-            int minutes = sum % 60;
-            binding.timeLeft.setText(String.format(" %s:%s", hours, minutes));
+            binding.timeLeft.setText(DateUtils.formatElapsedTime(timeDiff / 1000L));
             binding.timeLeftLine.setVisibility(View.VISIBLE);
         }
     }
