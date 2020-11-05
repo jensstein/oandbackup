@@ -21,13 +21,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import android.util.Pair
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppMetaInfo
-import com.machiav3lli.backup.utils.ItemUtils
 import com.machiav3lli.backup.utils.PrefUtils
 
 class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment() {
@@ -46,7 +44,7 @@ class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment(
         if (selectedList != null) {
             for (item in selectedList) message.append(item.packageLabel).append("\n")
         }
-        val selectedItems = ItemUtils.zipTwoLists(selectedList, selectedListModes)
+        val selectedItems = selectedList!!.zip(selectedListModes!!)
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(title)
         builder.setMessage(message.toString().trim { it <= ' ' })

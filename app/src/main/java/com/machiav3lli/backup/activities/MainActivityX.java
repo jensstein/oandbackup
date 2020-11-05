@@ -73,12 +73,13 @@ import com.topjohnwu.superuser.Shell;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import kotlin.Pair;
 
 public class MainActivityX extends BaseActivity implements BatchConfirmDialog.ConfirmListener {
     private static final String TAG = Constants.classTag(".MainActivityX");

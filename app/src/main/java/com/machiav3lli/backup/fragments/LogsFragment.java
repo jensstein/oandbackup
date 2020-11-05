@@ -28,9 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.databinding.FragmentLogsBinding;
-import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
-import com.machiav3lli.backup.utils.PrefUtils;
 
 import java.io.IOException;
 
@@ -64,8 +62,7 @@ public class LogsFragment extends Fragment {
         try {
             LogUtils logUtils = new LogUtils(this.requireContext());
             return logUtils.readFromLogFile();
-        } catch (FileUtils.BackupLocationIsAccessibleException
-                | PrefUtils.StorageLocationNotConfiguredException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

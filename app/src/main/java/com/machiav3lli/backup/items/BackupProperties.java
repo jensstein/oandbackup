@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.machiav3lli.backup.utils.GsonUtil;
+import com.machiav3lli.backup.utils.GsonUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -146,11 +146,11 @@ public class BackupProperties extends AppMetaInfo implements Parcelable {
     };
 
     public static BackupProperties fromGson(String gson) {
-        return GsonUtil.getInstance().fromJson(gson, BackupProperties.class);
+        return GsonUtils.getInstance().fromJson(gson, BackupProperties.class);
     }
 
     public String toGson() {
-        return GsonUtil.getInstance().toJson(this);
+        return GsonUtils.getInstance().toJson(this);
     }
 
     public LocalDateTime getBackupDate() {

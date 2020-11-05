@@ -35,7 +35,7 @@ import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupItem;
 import com.machiav3lli.backup.items.BackupProperties;
-import com.machiav3lli.backup.utils.DocumentHelper;
+import com.machiav3lli.backup.utils.DocumentUtils;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
@@ -112,7 +112,7 @@ public class BackupRestoreHelper {
     protected boolean copySelfApk(@NotNull Context context, ShellHandler shell) throws IOException {
         final String filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk";
         try {
-            StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
+            StorageFile backupRoot = DocumentUtils.getBackupRoot(context);
             StorageFile apkFile = backupRoot.findFile(filename);
             if (apkFile == null) try {
                 PackageInfo myInfo = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
@@ -120,7 +120,7 @@ public class BackupRestoreHelper {
                 if (fileInfos.size() != 1) {
                     throw new FileNotFoundException("Could not find OAndBackupX's own apk file");
                 }
-                DocumentHelper.suCopyFileToDocument(context.getContentResolver(), fileInfos.get(0), backupRoot);
+                DocumentUtils.suCopyFileToDocument(context.getContentResolver(), fileInfos.get(0), backupRoot);
                 // Invalidating cache, otherwise the next call will fail
                 // Can cost a lot time, but these lines should only run once per installation/update
                 StorageFile.invalidateCache();

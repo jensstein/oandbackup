@@ -10,7 +10,7 @@ import android.util.Log;
 import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.handler.BackendController;
 import com.machiav3lli.backup.handler.StorageFile;
-import com.machiav3lli.backup.utils.DocumentHelper;
+import com.machiav3lli.backup.utils.DocumentUtils;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.LogUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class AppInfoX {
         this.context = context;
         this.metaInfo = metaInfo;
         this.packageName = metaInfo.getPackageName();
-        StorageFile backupDoc = DocumentHelper.getBackupRoot(context).findFile(this.packageName);
+        StorageFile backupDoc = DocumentUtils.getBackupRoot(context).findFile(this.packageName);
         if (backupDoc != null) {
             this.backupDir = backupDoc.getUri();
             this.backupHistory = AppInfoX.getBackupHistory(context, this.backupDir);
@@ -68,7 +67,7 @@ public class AppInfoX {
         this.context = context;
         this.packageName = packageInfo.packageName;
         this.packageInfo = packageInfo;
-        StorageFile backupDoc = DocumentHelper.getBackupRoot(context).findFile(this.packageName);
+        StorageFile backupDoc = DocumentUtils.getBackupRoot(context).findFile(this.packageName);
         if (backupDoc != null) {
             this.backupDir = backupDoc.getUri();
         }
@@ -119,12 +118,7 @@ public class AppInfoX {
                 } catch (BackupItem.BrokenBackupException | NullPointerException e) {
                     String message = String.format("Incomplete backup or wrong structure found in %s.", backupDir.getEncodedPath());
                     Log.w(AppInfoX.TAG, message);
-                    try {
-                        LogUtils logUtils = new LogUtils(context);
-                        logUtils.writeToLogFile(message);
-                    } catch (IOException | PrefUtils.StorageLocationNotConfiguredException | FileUtils.BackupLocationIsAccessibleException xe) {
-                        e.printStackTrace();
-                    }
+                    LogUtils.logErrors(context, message);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -184,14 +178,14 @@ public class AppInfoX {
         }
         Log.d(AppInfoX.TAG, String.format("[%s] Deleting backup revision %s", this.getPackageName(), backupItem));
         String propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES, Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.getBackupProperties().getBackupDate()), backupItem.getBackupProperties().getProfileId());
-        DocumentHelper.deleteRecursive(this.context, backupItem.getBackupLocation());
+        DocumentUtils.deleteRecursive(this.context, backupItem.getBackupLocation());
         StorageFile.fromUri(this.context, this.backupDir).findFile(propertiesFileName).delete();
         if (directBoolean) this.backupHistory.remove(backupItem);
     }
 
     public Uri getBackupDir(boolean create) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
         if (create && this.backupDir == null) {
-            this.backupDir = DocumentHelper.ensureDirectory(DocumentHelper.getBackupRoot(this.context), this.packageName).getUri();
+            this.backupDir = DocumentUtils.ensureDirectory(DocumentUtils.getBackupRoot(this.context), this.packageName).getUri();
         }
         return this.backupDir;
     }

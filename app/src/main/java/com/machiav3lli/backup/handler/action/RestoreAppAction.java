@@ -31,7 +31,7 @@ import com.machiav3lli.backup.handler.TarUtils;
 import com.machiav3lli.backup.items.ActionResult;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.BackupProperties;
-import com.machiav3lli.backup.utils.DocumentHelper;
+import com.machiav3lli.backup.utils.DocumentUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -223,7 +223,7 @@ public class RestoreAppAction extends BaseAppAction {
                 Log.d(TAG, String.format("[%s] Copying %s to staging dir", packageName, apkDoc.getName()));
                 ShellHandler.runAsRoot("touch '"
                         + new File(stagingApkPath, apkDoc.getName()).getAbsolutePath() + '\'');
-                DocumentHelper.suCopyFileFromDocument(
+                DocumentUtils.suCopyFileFromDocument(
                         this.getContext().getContentResolver(),
                         apkDoc.getUri(),
                         new File(stagingApkPath, apkDoc.getName()).getAbsolutePath()
@@ -287,7 +287,7 @@ public class RestoreAppAction extends BaseAppAction {
             if (backupDirToRestore == null) {
                 throw new RestoreFailedException(String.format(LOG_DIR_IS_MISSING_CANNOT_RESTORE, what));
             }
-            DocumentHelper.suRecursiveCopyFileFromDocument(this.getContext(), backupDirToRestore.getUri(), targetPath);
+            DocumentUtils.suRecursiveCopyFileFromDocument(this.getContext(), backupDirToRestore.getUri(), targetPath);
         } catch (IOException e) {
             throw new RestoreFailedException("Could not read the input file due to IOException", e);
         } catch (ShellHandler.ShellCommandFailedException e) {

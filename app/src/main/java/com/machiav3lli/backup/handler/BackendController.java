@@ -14,7 +14,7 @@ import com.machiav3lli.backup.Constants;
 import com.machiav3lli.backup.items.AppInfoX;
 import com.machiav3lli.backup.items.SpecialAppMetaInfo;
 import com.machiav3lli.backup.schedules.db.Schedule;
-import com.machiav3lli.backup.utils.DocumentHelper;
+import com.machiav3lli.backup.utils.DocumentUtils;
 import com.machiav3lli.backup.utils.FileUtils;
 import com.machiav3lli.backup.utils.PrefUtils;
 
@@ -67,7 +67,7 @@ public final class BackendController {
         StorageFile.invalidateCache();
         boolean includeSpecial = PrefUtils.getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false);
         PackageManager pm = context.getPackageManager();
-        StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
+        StorageFile backupRoot = DocumentUtils.getBackupRoot(context);
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
         List<AppInfoX> packageList = packageInfoList.stream()
                 .filter(packageInfo -> !ignoredPackages.contains(packageInfo.packageName))
@@ -110,7 +110,7 @@ public final class BackendController {
     }
 
     public static List<StorageFile> getDirectoriesInBackupRoot(Context context) throws FileUtils.BackupLocationIsAccessibleException, PrefUtils.StorageLocationNotConfiguredException {
-        StorageFile backupRoot = DocumentHelper.getBackupRoot(context);
+        StorageFile backupRoot = DocumentUtils.getBackupRoot(context);
         try {
             return Arrays.stream(backupRoot.listFiles())
                     .filter(StorageFile::isDirectory)
