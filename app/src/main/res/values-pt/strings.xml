@@ -202,7 +202,7 @@
 \n • Tanto o backup como a restauração das apps um por vez ou de lotes são suportados.
 \n • A restauração de apps do sistema deve ser possível sem exigir uma reinicialização posterior, mas mesmo assim não aconselhamos fazê-lo.
 \n • Os backups podem ser programados sem limite no número de programações individuais e há a possibilidade de criar listas personalizadas exclusivas.</string>
-    <string name="msg_appkill_warning">A app selecionado será interrompido. Por favor, tenha certeza que você, ou reiniciar seu dispositivo após o processamento, ou abre apps como seu alarme ou calendário mais tarde para evitar perda de notificações importante. Por isso, seu teclado ou lançador pode ser reinício para a app padrão.</string>
+    <string name="msg_appkill_warning">A(s) aplicações(s) selecionada(s) receberá(ão) o sinal para parar e após a tarefa concluída serão resumidas. Certifique-se de verificar as suas aplicações processadas após a tarefa estar concluída e evite lançá-las enquanto o processo ainda está a decorrer.</string>
     <string name="intro_permission_storage_location">A app precisa de uma local de backup para armazenar os backup. A app pode necessitar de uns pouco Gigabytes de armazenamento para um backup completo e estiver consultando muito o sistema de arquivo. Por favor, manter isso em mente quando escolher locais de armazenamento baseados na rede.</string>
     <string name="help_appTypeHint">* Ícone do tipo de app seria cinza se a app estiver desinstalada e cinza escuro se a app está instalada.</string>
     <string name="help_legend">Legenda:</string>
@@ -220,4 +220,9 @@
     <string name="radio_obbdata">Dados OBB</string>
     <string name="radio_deviceprotecteddata">Dados protegidos do dispositivo</string>
     <string name="radio_externaldata">Dados Externos</string>
+    <string name="fetching_backup_list">A listar aplicações para backup…</string>
+    <string name="logs_text_empty">Não há nada a mostrar!</string>
+    <string name="delete_all_backups">Eliminar todos os backups</string>
+    <string name="prefs_disableverification_summary">Desativa esta opção de programador enquanto restaura APKs e a reativa depois. Resolve o erro: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification">Desativar Verificação de aplicações via USB</string>
 </resources>
