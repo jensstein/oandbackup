@@ -445,7 +445,7 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 result = backupRestoreHelper.restore(this, itemInfo.getFirst(), selectedBackup.getBackupProperties(),
                         selectedBackup.getBackupLocation(), MainActivityX.getShellHandlerInstance(), mode);
             }
-            if (!result.succeeded) {
+            if (!result.getSucceeded()) {
                 NotificationHelper.showNotification(this, MainActivityX.class, result.hashCode(), itemInfo.getFirst().getPackageLabel(), result.getMessage(), false);
             }
             results.add(result);
@@ -461,16 +461,16 @@ public class MainActivityX extends BaseActivity implements BatchConfirmDialog.Co
                 .map(ActionResult::getMessage)
                 .filter(msg -> !msg.isEmpty())
                 .collect(Collectors.joining("\n"));
-        ActionResult overAllResult = new ActionResult(null, null, errors, results.parallelStream().anyMatch(ar -> ar.succeeded));
+        ActionResult overAllResult = new ActionResult(null, null, errors, results.parallelStream().anyMatch(ActionResult::getSucceeded));
 
         // Update the notification
-        String notificationTitle = overAllResult.succeeded ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
+        String notificationTitle = overAllResult.getSucceeded() ? this.getString(R.string.batchSuccess) : this.getString(R.string.batchFailure);
         String notificationMessage = this.backupBoolean ? this.getString(R.string.batchbackup) : this.getString(R.string.batchrestore);
         NotificationHelper.showNotification(this, MainActivityX.class, notificationId, notificationTitle, notificationMessage, true);
         runOnUiThread(() -> Toast.makeText(this, String.format("%s: %s)", notificationMessage, notificationTitle), Toast.LENGTH_LONG).show());
 
         // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
-        UIUtils.showActionResult(this, overAllResult, overAllResult.succeeded ? null : (dialog, which) -> {
+        UIUtils.showActionResult(this, overAllResult, overAllResult.getSucceeded() ? null : (dialog, which) -> {
             LogUtils.logErrors(this, errors);
         });
         this.cleanRefresh();

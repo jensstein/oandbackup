@@ -77,7 +77,7 @@ public class BackupRestoreHelper {
 
         // create the new backup
         ActionResult result = action.run(app, backupMode);
-        Log.i(BackupRestoreHelper.TAG, String.format("%s: Backup succeeded: %s", app, result.succeeded));
+        Log.i(BackupRestoreHelper.TAG, String.format("%s: Backup succeeded: %s", app, result.getSucceeded()));
         if (PrefUtils.getDefaultSharedPreferences(context).getBoolean("copySelfApk", true)) {
             try {
                 this.copySelfApk(context, shell);
@@ -105,7 +105,7 @@ public class BackupRestoreHelper {
             restoreAction = new RestoreAppAction(context, shell);
         }
         ActionResult result = restoreAction.run(app, backupProperties, backupLocation, mode);
-        Log.i(BackupRestoreHelper.TAG, String.format("%s: Restore succeeded: %s", app, result.succeeded));
+        Log.i(BackupRestoreHelper.TAG, String.format("%s: Restore succeeded: %s", app, result.getSucceeded()));
         return result;
     }
 

@@ -102,7 +102,7 @@ object ItemUtils {
     @JvmStatic
     fun pickSheetVersionName(app: AppInfoX, binding: SheetAppBinding) {
         if (app.isUpdated) {
-            val latestBackupVersion = app.latestBackup.backupProperties.versionName
+            val latestBackupVersion = app.latestBackup?.backupProperties?.versionName
             val updatedVersionString = latestBackupVersion + " (" + app.versionName + ")"
             binding.versionName.text = updatedVersionString
             binding.versionName.setTextColor(COLOR_UPDATE)

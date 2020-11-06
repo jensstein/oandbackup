@@ -1,0 +1,54 @@
+package com.machiav3lli.backup.items
+
+import android.content.Context
+import android.net.Uri
+import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.handler.StorageFile
+import com.machiav3lli.backup.utils.FileUtils.openFileForReading
+import org.apache.commons.io.IOUtils
+import java.io.FileNotFoundException
+import java.io.IOException
+
+open class BackupItem {
+    val backupProperties: BackupProperties
+    private val backupInstance: StorageFile
+
+    constructor(properties: BackupProperties, backupInstance: StorageFile) {
+        backupProperties = properties
+        this.backupInstance = backupInstance
+    }
+
+    constructor(context: Context?, propertiesFile: StorageFile) {
+        try {
+            openFileForReading(context!!, propertiesFile.uri).use { reader -> backupProperties = BackupProperties.fromGson(IOUtils.toString(reader)) }
+        } catch (e: FileNotFoundException) {
+            throw BrokenBackupException("Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
+        } catch (e: IOException) {
+            throw BrokenBackupException("Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
+        } catch (e: Exception) {
+            throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
+        }
+        backupInstance = StorageFile.fromUri(context, backupProperties.backupLocation)
+    }
+
+    val backupLocation: Uri
+        get() = backupInstance.uri
+
+    class BrokenBackupException @JvmOverloads internal constructor(message: String?, cause: Throwable? = null) : Exception(message, cause)
+
+    override fun toString(): String {
+        return String.format("BackupItem{ packageName=\"%s\", packageLabel=\"%s\", backupDate=\"%s\" }",
+                backupProperties.packageName,
+                backupProperties.packageLabel,
+                backupProperties.backupDate
+        )
+    }
+
+    companion object {
+        private val TAG = classTag(".BackupItem")
+        const val BACKUP_FILE_DATA = "data"
+        const val BACKUP_FILE_DPD = "protecteddata"
+        const val BACKUP_FILE_EXT_DATA = "extData"
+        const val BACKUP_DIR_OBB = "obb"
+    }
+}
