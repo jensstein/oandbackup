@@ -26,20 +26,26 @@
 
 - [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. NEEDS TESTING
 
-- [ ] Handle the error about disabling "verify apps over USB".
+- [x] Handle the error about disabling "verify apps over USB".
 
 - [ ] Replace deprecated Classes/Methods: AsyncTask, ProgressDialog (mostly with kotlin).
 
-- [x] kil or not kill: all system apps, uids < 10000 or blacklisting...
+- [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
 
-- [ ] TargetSDK 30: storage access problems
+- [ ] TargetSDK 30 & updated StorageManger on SDK29: storage access problems
 
 - [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
 
 - [x] Enable encryption direct shortcut
 
+- [ ] Not responding to clicks after long time in background
+
 ## Planned Restructure
 
-- [ ] Use DataBinding for Items.
+- [ ] Use DataBinding/BindingAdapter where useful
 
-- [ ] Migrate to Kotlin
+- [x] Migrate to Kotlin
+
+- [ ] Use Kotlin style explicitly
+
+- [ ] ViewModel where useful

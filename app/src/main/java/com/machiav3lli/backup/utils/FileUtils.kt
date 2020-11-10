@@ -34,7 +34,6 @@ object FileUtils {
     private var backupLocation: Uri? = null
     private val TAG = classTag(".FileUtils")
 
-    @JvmStatic
     @Throws(FileNotFoundException::class)
     fun openFileForReading(context: Context, uri: Uri?): BufferedReader {
         return BufferedReader(
@@ -51,7 +50,7 @@ object FileUtils {
 
     // TODO Change to StorageFile-based
     fun getExternalStorageDirectory(context: Context): File {
-        return context.getExternalFilesDir(null)!!.parentFile.parentFile.parentFile.parentFile
+        return context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.parentFile!!.parentFile!!
     }
 
     /**
@@ -61,7 +60,6 @@ object FileUtils {
      *
      * @return URI to OABX storage directory
      */
-    @JvmStatic
     @Throws(StorageLocationNotConfiguredException::class, BackupLocationIsAccessibleException::class)
     fun getBackupDir(context: Context?): Uri {
         if (backupLocation == null) {
@@ -92,14 +90,12 @@ object FileUtils {
         backupLocation = null
     }
 
-    @JvmStatic
     fun getName(fullPath: String): String {
         var path = fullPath
         if (path.endsWith(File.separator)) path = path.substring(0, path.length - 1)
         return path.substring(path.lastIndexOf(File.separator) + 1)
     }
 
-    @JvmStatic
     fun translatePosixPermissionToMode(permission: Set<PosixFilePermission?>): Short {
         var mode = 0
         for (action in PosixFilePermission.values()) {

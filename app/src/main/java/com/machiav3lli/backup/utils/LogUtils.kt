@@ -20,7 +20,7 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.handler.StorageFile
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import java.io.IOException
@@ -59,7 +59,6 @@ class LogUtils(context: Context) {
     companion object {
         private val TAG = classTag(".LogUtils")
 
-        @JvmStatic
         fun logErrors(context: Context, errors: String?) {
             try {
                 val logUtils = LogUtils(context)

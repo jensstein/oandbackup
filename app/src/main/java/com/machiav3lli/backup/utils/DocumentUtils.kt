@@ -8,7 +8,7 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.handler.StorageFile
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.FileUtils.getBackupDir
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
@@ -22,13 +22,11 @@ import java.io.IOException
 object DocumentUtils {
     val TAG = classTag(".DocumentHelper")
 
-    @JvmStatic
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getBackupRoot(context: Context?): StorageFile {
         return StorageFile.fromUri(context!!, getBackupDir(context))
     }
 
-    @JvmStatic
     fun ensureDirectory(base: StorageFile, dirName: String?): StorageFile? {
         var dir = base.findFile(dirName!!)
         if (dir == null) {
@@ -37,7 +35,6 @@ object DocumentUtils {
         return dir
     }
 
-    @JvmStatic
     fun deleteRecursive(context: Context, uri: Uri): Boolean {
         val target = StorageFile.fromUri(context, uri)
         return deleteRecursive(target)
@@ -65,17 +62,16 @@ object DocumentUtils {
         return false
     }
 
-    @JvmStatic
     @Throws(IOException::class)
     fun suRecursiveCopyFileToDocument(context: Context, filesToBackup: List<ShellHandler.FileInfo>, targetUri: Uri) {
         val resolver = context.contentResolver
         for (file in filesToBackup) {
             val parentUri = targetUri.buildUpon().appendEncodedPath(File(file.filepath).parent).build()
             val parentFile = StorageFile.fromUri(context, parentUri)
-            when (file.filetype) {
+            when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
                 FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
-                else -> Log.e(TAG, "SAF does not support " + file.filetype)
+                else -> Log.e(TAG, "SAF does not support " + file.fileType)
             }
         }
     }
@@ -90,7 +86,6 @@ object DocumentUtils {
      * @throws IOException on I/O related errors or FileNotFoundException
      */
     @Throws(IOException::class)
-    @JvmStatic
     fun suCopyFileToDocument(resolver: ContentResolver, sourcePath: String, targetDir: StorageFile) {
         SuFileInputStream(sourcePath).use { inputFile ->
             val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)!!
@@ -98,14 +93,12 @@ object DocumentUtils {
         }
     }
 
-    @JvmStatic
     @Throws(IOException::class)
     fun suCopyFileToDocument(resolver: ContentResolver, sourceFile: ShellHandler.FileInfo, targetDir: StorageFile) {
         val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)!!
-        resolver.openOutputStream(newFile.uri).use { outputFile -> ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile) }
+        resolver.openOutputStream(newFile.uri).use { outputFile -> ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!) }
     }
 
-    @JvmStatic
     @Throws(IOException::class, ShellCommandFailedException::class)
     fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri?, targetPath: String?) {
         val resolver = context.contentResolver
@@ -120,7 +113,6 @@ object DocumentUtils {
         }
     }
 
-    @JvmStatic
     @Throws(IOException::class)
     fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri?, targetPath: String?) {
         SuFileOutputStream(targetPath).use { outputFile -> resolver.openInputStream(sourceUri!!).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }

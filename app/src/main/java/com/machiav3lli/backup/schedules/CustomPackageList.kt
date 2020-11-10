@@ -28,15 +28,12 @@ import com.machiav3lli.backup.Constants.customListAddress
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.schedules.db.Schedule
-import java.util.*
-import java.util.stream.Collectors
 
 object CustomPackageList {
-    @JvmStatic
     fun showList(activity: Activity, number: Int, mode: Schedule.Mode?) {
         val packageInfoList = BackendController.getPackageInfoList(activity, mode)
         val selectedList = getScheduleCustomList(activity, number)
-        packageInfoList.sortWith { appInfo1: PackageInfo, appInfo2: PackageInfo ->
+        packageInfoList.sortedWith { appInfo1: PackageInfo, appInfo2: PackageInfo ->
             val b1 = selectedList!!.contains(appInfo1.packageName)
             val b2 = selectedList.contains(appInfo2.packageName)
             if (b1 != b2) if (b1) -1 else 1 else appInfo1.packageName.compareTo(appInfo2.packageName, ignoreCase = true)
@@ -69,7 +66,7 @@ object CustomPackageList {
     }
 
     private fun saveSelcted(context: Context, index: Int, items: Array<CharSequence>, selected: ArrayList<Int>) {
-        val selectedPackages = selected.stream().map { pos: Int? -> items[pos!!].toString() }.collect(Collectors.toSet())
+        val selectedPackages = selected.map { pos: Int? -> items[pos!!].toString() }.toSet()
         setScheduleCustomList(context, index, selectedPackages)
     }
 

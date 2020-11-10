@@ -1,0 +1,119 @@
+/*
+ * OAndBackupX: open-source apps backup and restore app.
+ * Copyright (C) 2020  Antonios Hazim
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.machiav3lli.backup.handler.action
+
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
+import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.handler.action.RestoreAppAction.RestoreFailedException
+import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.SpecialAppMetaInfo
+import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
+import com.machiav3lli.backup.utils.PrefUtils.isEncryptionEnabled
+import com.machiav3lli.backup.utils.TarUtils.suUncompressTo
+import org.apache.commons.io.FileUtils
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
+
+class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
+
+    @Throws(CryptoSetupException::class, RestoreFailedException::class)
+    override fun restoreAllData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: Uri?) {
+        restoreData(app, backupProperties, fromUri(context, backupLocation!!))
+    }
+
+    @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    override fun restoreData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+        Log.i(TAG, String.format("%s: Restore special data", app))
+        val metaInfo = app.appInfo as SpecialAppMetaInfo?
+        val tempPath = File(context.cacheDir, backupProperties.packageName!!)
+        val isEncrypted = isEncryptionEnabled(context)
+        val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
+        val backupArchiveFile = backupLocation.findFile(backupArchiveFilename)
+                ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
+        try {
+            openArchiveFile(backupArchiveFile.uri, isEncrypted).use { archive ->
+                tempPath.mkdir()
+                // Extract the contents to a temporary directory
+                suUncompressTo(archive, tempPath.absolutePath)
+
+                // check if all expected files are there
+                val filesInBackup = tempPath.listFiles()
+                val expectedFiles = metaInfo!!.fileList
+                        .map { pathname: String? -> File(pathname!!) }
+                        .toTypedArray()
+                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
+                    val errorMessage = "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
+                    Log.e(TAG, errorMessage)
+                    throw RestoreFailedException(errorMessage, null)
+                }
+                val commands: MutableList<String> = ArrayList(expectedFiles.size)
+                for (restoreFile in expectedFiles) {
+                    commands.add(prependUtilbox("mv -f \"${File(tempPath, restoreFile.name)}\" \"$restoreFile\""))
+                }
+                val command = commands.joinToString(separator = " && ")
+                runAsRoot(command)
+            }
+        } catch (e: ShellCommandFailedException) {
+            val error = extractErrorMessage(e.shellResult)
+            Log.e(TAG, "$app: Restore $BACKUP_DIR_DATA failed. System might be inconsistent: $error")
+            throw RestoreFailedException(error, e)
+        } catch (e: FileNotFoundException) {
+            throw RestoreFailedException("Could not find backup archive", e)
+        } catch (e: IOException) {
+            Log.e(TAG, "$app: Restore $BACKUP_DIR_DATA failed with IOException. System might be inconsistent: $e")
+            throw RestoreFailedException("IOException", e)
+        } finally {
+            val backupDeleted = FileUtils.deleteQuietly(tempPath)
+            Log.d(TAG, "$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
+        }
+    }
+
+    override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
+        // stub
+    }
+
+    override fun restoreDeviceProtectedData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+        // stub
+    }
+
+    override fun restoreExternalData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+        // stub
+    }
+
+    override fun restoreObbData(app: AppInfoX, backupProperties: BackupProperties?, backupLocation: StorageFile) {
+        // stub
+    }
+
+    companion object {
+        private val TAG = classTag(".RestoreSpecialAction")
+        private fun areBasefilesSubsetOf(set: Array<File>, subsetList: Array<File>): Boolean {
+            val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
+            val subsetCollection: Collection<String> = subsetList.map { obj: File -> obj.name }.toHashSet()
+            return baseCollection.containsAll(subsetCollection)
+        }
+    }
+}

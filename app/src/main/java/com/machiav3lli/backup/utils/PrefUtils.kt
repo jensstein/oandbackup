@@ -36,7 +36,7 @@ import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.Crypto
-import com.machiav3lli.backup.handler.StorageFile
+import com.machiav3lli.backup.items.StorageFile
 import java.nio.charset.StandardCharsets
 
 object PrefUtils {
@@ -45,7 +45,6 @@ object PrefUtils {
     const val WRITE_PERMISSION = 3
     const val BACKUP_DIR = 5
 
-    @JvmStatic
     fun getCryptoSalt(context: Context?): ByteArray {
         val userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "")
         return if (userSalt!!.isNotEmpty()) {
@@ -53,17 +52,14 @@ object PrefUtils {
         } else Crypto.FALLBACK_SALT
     }
 
-    @JvmStatic
     fun isEncryptionEnabled(context: Context?): Boolean {
         return !getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")!!.isEmpty()
     }
 
-    @JvmStatic
     fun isLockEnabled(context: Context?): Boolean {
         return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_BIOMETRICLOCK, false)
     }
 
-    @JvmStatic
     fun isBiometricLockAvailable(context: Context?): Boolean {
         return BiometricManager.from(context!!).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
     }
@@ -76,7 +72,6 @@ object PrefUtils {
      * @return user configured location
      * @throws StorageLocationNotConfiguredException if the value is not set
      */
-    @JvmStatic
     @Throws(StorageLocationNotConfiguredException::class)
     fun getStorageRootDir(context: Context): String? {
         val location = getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, "")
@@ -86,7 +81,6 @@ object PrefUtils {
         return location
     }
 
-    @JvmStatic
     fun setStorageRootDir(context: Context, value: Uri?) {
         val fullUri = DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
         getPrivateSharedPrefs(context)
@@ -96,7 +90,6 @@ object PrefUtils {
         FileUtils.invalidateBackupLocation()
     }
 
-    @JvmStatic
     fun isStorageDirSetAndOk(context: Context): Boolean {
         return try {
             val storageDirPath = getStorageRootDir(context)
@@ -110,17 +103,14 @@ object PrefUtils {
         }
     }
 
-    @JvmStatic
     fun getDefaultSharedPreferences(context: Context?): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    @JvmStatic
     fun getPrivateSharedPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
     }
 
-    @JvmStatic
     fun requireStorageLocation(fragment: Fragment) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
                 .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
@@ -129,7 +119,6 @@ object PrefUtils {
         fragment.startActivityForResult(intent, BACKUP_DIR)
     }
 
-    @JvmStatic
     fun checkStoragePermissions(context: Context): Boolean {
         /* if (PrefUtils.STORAGE_MODE_R) {
             return Environment.isExternalStorageManager();
@@ -140,7 +129,6 @@ object PrefUtils {
         return context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
-    @JvmStatic
     fun getStoragePermission(activity: Activity) {
         requireWriteStoragePermission(activity)
         requireReadStoragePermission(activity)
@@ -154,13 +142,11 @@ object PrefUtils {
         if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
     }
 
-    @JvmStatic
     fun canAccessExternalStorage(context: Context): Boolean {
         val externalStorage = FileUtils.getExternalStorageDirectory(context)
         return externalStorage.canRead() && externalStorage.canWrite()
     }
 
-    @JvmStatic
     fun checkUsageStatsPermission(context: Context): Boolean {
         val appOps = (context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
@@ -174,17 +160,14 @@ object PrefUtils {
         }
     }
 
-    @JvmStatic
     fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerManager: PowerManager): Boolean {
         return prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false) || powerManager.isIgnoringBatteryOptimizations(context.packageName)
     }
 
-    @JvmStatic
     fun isKillBeforeActionEnabled(context: Context?): Boolean {
         return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, false)
     }
 
-    @JvmStatic
     fun isDisableVerification(context: Context?): Boolean {
         return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DISABLEVERIFICATION, false)
     }

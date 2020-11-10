@@ -37,9 +37,6 @@ import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleExceptio
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.PrefUtils
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import java.util.*
-import java.util.function.Predicate
-import java.util.stream.Collectors
 
 class HandleScheduledBackups(private val context: Context) {
     private val powerManager: PowerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -70,22 +67,27 @@ class HandleScheduledBackups(private val context: Context) {
                 LogUtils.logErrors(context, e.toString())
                 return@Runnable
             }
-            val predicate: Predicate<AppInfoX>
             val selectedPackages = getScheduleCustomList(context, id)
-            val inCustomList = Predicate { packageName: String -> !enableCustomList || selectedPackages!!.contains(packageName) }
-            predicate = when (mode) {
-                Schedule.Mode.USER -> Predicate { appInfoX: AppInfoX -> appInfoX.isInstalled && !appInfoX.isSystem && inCustomList.test(appInfoX.packageName) }
-                Schedule.Mode.SYSTEM -> Predicate { appInfoX: AppInfoX -> appInfoX.isInstalled && appInfoX.isSystem && inCustomList.test(appInfoX.packageName) }
-                Schedule.Mode.NEW_UPDATED -> Predicate { appInfoX: AppInfoX ->
+            val inCustomList = { packageName: String -> !enableCustomList || selectedPackages!!.contains(packageName) }
+            val predicate: (AppInfoX) -> Boolean = when (mode) {
+                Schedule.Mode.USER -> { appInfoX: AppInfoX ->
+                    appInfoX.isInstalled &&
+                            !appInfoX.isSystem && inCustomList(appInfoX.packageName)
+                }
+                Schedule.Mode.SYSTEM -> { appInfoX: AppInfoX ->
+                    appInfoX.isInstalled &&
+                            appInfoX.isSystem && inCustomList(appInfoX.packageName)
+                }
+                Schedule.Mode.NEW_UPDATED -> { appInfoX: AppInfoX ->
                     (appInfoX.isInstalled && (!excludeSystem || !appInfoX.isSystem)
                             && (!appInfoX.hasBackups() || appInfoX.isUpdated)
-                            && inCustomList.test(appInfoX.packageName))
+                            && inCustomList(appInfoX.packageName))
                 }
-                else -> Predicate { appInfoX: AppInfoX -> inCustomList.test(appInfoX.packageName) }
+                else -> { appInfoX: AppInfoX -> inCustomList(appInfoX.packageName) }
             }
-            val listToBackUp = list.stream()
+            val listToBackUp = list
                     .filter(predicate)
-                    .collect(Collectors.toList())
+                    .toList()
             startScheduledBackup(listToBackUp, subMode, notificationId)
         }).start()
     }
@@ -104,19 +106,18 @@ class HandleScheduledBackups(private val context: Context) {
                 val blacklistsDBHelper = BlacklistsDBHelper(context)
                 val db = blacklistsDBHelper.readableDatabase
                 val blacklistedPackages = blacklistsDBHelper.getBlacklistedPackages(db, SchedulerActivityX.GLOBALBLACKLISTID)
-                val results: MutableList<ActionResult> = ArrayList(totalOfActions)
-                for (appInfo in backupList) {
+                val results: MutableList<ActionResult> = arrayListOf()
+                backupList.forEach { appInfo ->
                     if (blacklistedPackages.contains(appInfo.packageName)) {
-                        Log.i(TAG, String.format("%s ignored",
-                                appInfo.packageName))
+                        Log.i(TAG, "${appInfo.packageName} ignored")
                         i++
-                        continue
+                        return@forEach
                     }
                     val title = context.getString(R.string.backupProgress) + " (" + i + "/" + totalOfActions + ")"
                     NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId, title, appInfo.packageLabel, false)
                     val backupRestoreHelper = BackupRestoreHelper()
-                    val result = backupRestoreHelper.backup(context, MainActivityX.getShellHandlerInstance(), appInfo, subMode)
-                    results.add(result)
+                    val result = backupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, subMode)
+                    results.plus(result)
                     i++
                 }
                 if (wl.isHeld) {
@@ -124,10 +125,10 @@ class HandleScheduledBackups(private val context: Context) {
                     Log.i(TAG, "wakelock released")
                 }
                 // Calculate the overall result
-                val errors = results.stream()
+                val errors = results
                         .map { obj: ActionResult -> obj.message }
-                        .filter { msg: String -> !msg.isEmpty() }
-                        .collect(Collectors.joining("\n"))
+                        .filter { msg: String -> msg.isNotEmpty() }
+                        .joinToString(separator = "\n")
                 val overallResult = ActionResult(null, null, errors, results.parallelStream().anyMatch { ar: ActionResult -> ar.succeeded })
 
                 // Update the notification

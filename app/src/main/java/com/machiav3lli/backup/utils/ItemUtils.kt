@@ -50,7 +50,6 @@ object ItemUtils {
     const val COLOR_DISABLED = Color.DKGRAY
     const val COLOR_UNINSTALLED = Color.GRAY
 
-    @JvmStatic
     fun calculateScheduleID(schedule: Schedule): Long {
         return (schedule.id
                 + schedule.interval * 24 + schedule.timeHour
@@ -60,25 +59,21 @@ object ItemUtils {
                 + if (schedule.enabled) 1 else 0)
     }
 
-    @JvmStatic
     fun getFormattedDate(lastUpdate: LocalDateTime, withTime: Boolean): String {
         val date = Date.from(lastUpdate.atZone(ZoneId.systemDefault()).toInstant())
         val dateFormat = if (withTime) DateFormat.getDateTimeInstance() else DateFormat.getDateInstance()
         return dateFormat.format(date)
     }
 
-    @JvmStatic
     fun calculateID(app: AppInfoX): Long {
         return app.packageName.hashCode().toLong()
     }
 
-    @JvmStatic
     fun calculateID(backup: BackupItem): Long {
         return backup.backupProperties.backupDate.hashCode().toLong()
     }
 
-    @JvmStatic
-    fun pickSheetDataSizes(context: Context?, app: AppInfoX, binding: SheetAppBinding, update: Boolean) {
+    fun pickSheetDataSizes(context: Context, app: AppInfoX, binding: SheetAppBinding, update: Boolean) {
         if (app.isSpecial) {
             setVisibility(binding.appSizeLine, View.GONE, update)
             setVisibility(binding.dataSizeLine, View.GONE, update)
@@ -86,7 +81,7 @@ object ItemUtils {
             setVisibility(binding.appSplitsLine, View.GONE, update)
         } else {
             try {
-                val storageStats = BackendController.getPackageStorageStats(context, app.packageName)
+                val storageStats = BackendController.getPackageStorageStats(context, app.packageName)!!
                 binding.appSize.text = Formatter.formatFileSize(context, storageStats.appBytes)
                 binding.dataSize.text = Formatter.formatFileSize(context, storageStats.dataBytes)
                 binding.cacheSize.text = Formatter.formatFileSize(context, storageStats.cacheBytes)
@@ -99,7 +94,6 @@ object ItemUtils {
         }
     }
 
-    @JvmStatic
     fun pickSheetVersionName(app: AppInfoX, binding: SheetAppBinding) {
         if (app.isUpdated) {
             val latestBackupVersion = app.latestBackup?.backupProperties?.versionName
@@ -112,7 +106,6 @@ object ItemUtils {
         }
     }
 
-    @JvmStatic
     fun pickSheetAppType(app: AppInfoX, text: AppCompatTextView) {
         var color: Int
         if (app.isInstalled) {
@@ -132,7 +125,6 @@ object ItemUtils {
         text.setTextColor(color)
     }
 
-    @JvmStatic
     fun pickItemAppType(app: AppInfoX, icon: AppCompatImageView) {
         var color: ColorStateList
         if (app.isSpecial) {
@@ -159,7 +151,6 @@ object ItemUtils {
         icon.imageTintList = color
     }
 
-    @JvmStatic
     fun pickBackupBackupMode(backupProps: BackupProperties, view: View) {
         val apk: AppCompatImageView = view.findViewById(R.id.apkMode)
         val appData: AppCompatImageView = view.findViewById(R.id.dataMode)
@@ -173,7 +164,6 @@ object ItemUtils {
         obbData.visibility = if (backupProps.hasObbData()) View.VISIBLE else View.GONE
     }
 
-    @JvmStatic
     fun pickAppBackupMode(app: AppInfoX, view: View) {
         val apk: AppCompatImageView = view.findViewById(R.id.apkMode)
         val appData: AppCompatImageView = view.findViewById(R.id.dataMode)

@@ -29,7 +29,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.schedules.db.Schedule
-import java.util.*
 
 class BlacklistDialogFragment : DialogFragment() {
     private val blacklistListeners = ArrayList<BlacklistListener>()
@@ -44,7 +43,7 @@ class BlacklistDialogFragment : DialogFragment() {
         val blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBALBLACKLISTID)
         val blacklistedPackages = args.getStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES)
         val appInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
-        appInfoList.sortWith { pi1: PackageInfo, pi2: PackageInfo ->
+        appInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = blacklistedPackages!!.contains(pi1.packageName)
             val b2 = blacklistedPackages.contains(pi2.packageName)
             if (b1 != b2) if (b1) -1 else 1 else pi1.applicationInfo.loadLabel(pm).toString().compareTo(pi2.applicationInfo.loadLabel(pm).toString(), ignoreCase = true)

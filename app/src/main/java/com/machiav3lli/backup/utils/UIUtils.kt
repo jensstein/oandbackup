@@ -30,7 +30,6 @@ import com.machiav3lli.backup.items.ActionResult
 object UIUtils {
     private val TAG = classTag(".UIUtils")
 
-    @JvmStatic
     fun setDayNightTheme(theme: String?) {
         when (theme) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -39,7 +38,6 @@ object UIUtils {
         }
     }
 
-    @JvmStatic
     fun showActionResult(activity: Activity, result: ActionResult, saveMethod: DialogInterface.OnClickListener?) {
         activity.runOnUiThread {
             val builder = AlertDialog.Builder(activity)
@@ -55,7 +53,6 @@ object UIUtils {
         }
     }
 
-    @JvmStatic
     fun showError(activity: Activity, message: String?) {
         activity.runOnUiThread {
             AlertDialog.Builder(activity)
@@ -65,7 +62,6 @@ object UIUtils {
         }
     }
 
-    @JvmStatic
     fun showWarning(activity: Activity, title: String?, message: String?, callback: DialogInterface.OnClickListener?) {
         activity.runOnUiThread {
             AlertDialog.Builder(activity)
@@ -77,7 +73,6 @@ object UIUtils {
         }
     }
 
-    @JvmStatic
     fun setVisibility(view: View, visibility: Int, withAnimation: Boolean) {
         view.animate().alpha(if (visibility == View.VISIBLE) 1.0f else 0.0f)
                 .setDuration(if (withAnimation) 600 else 1.toLong())

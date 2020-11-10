@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object GsonUtils {
-    @JvmStatic
     var instance: Gson? = null
         get() {
             if (field == null) {

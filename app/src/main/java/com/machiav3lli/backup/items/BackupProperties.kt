@@ -148,7 +148,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     }
 
     val isEncrypted: Boolean
-        get() = cipherType != null && !cipherType.isEmpty()
+        get() = cipherType != null && cipherType.isNotEmpty()
 
     private fun setBackupLocation(backupLocation: Uri) {
         this.backupLocation = backupLocation

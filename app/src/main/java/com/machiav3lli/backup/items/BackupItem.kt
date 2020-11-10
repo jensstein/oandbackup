@@ -3,7 +3,6 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.handler.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
@@ -12,6 +11,8 @@ import java.io.IOException
 open class BackupItem {
     val backupProperties: BackupProperties
     private val backupInstance: StorageFile
+    val backupLocation: Uri
+        get() = backupInstance.uri
 
     constructor(properties: BackupProperties, backupInstance: StorageFile) {
         backupProperties = properties
@@ -30,9 +31,6 @@ open class BackupItem {
         }
         backupInstance = StorageFile.fromUri(context, backupProperties.backupLocation)
     }
-
-    val backupLocation: Uri
-        get() = backupInstance.uri
 
     class BrokenBackupException @JvmOverloads internal constructor(message: String?, cause: Throwable? = null) : Exception(message, cause)
 

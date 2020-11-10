@@ -287,7 +287,6 @@ class Schedule {
          * @param number      index of schedule to fetch
          * @return scheduling data object
          */
-        @JvmStatic
         @Throws(SchedulingException::class)
         fun fromPreferences(preferences: SharedPreferences, number: Long): Schedule {
             val schedule = Schedule()

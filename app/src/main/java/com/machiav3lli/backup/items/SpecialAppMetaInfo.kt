@@ -59,10 +59,9 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          * @throws FileUtils.BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
          * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
-        @JvmStatic
         @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
         fun getSpecialPackages(context: Context): List<AppInfoX> {
-            val userId = ShellCommands.getCurrentUser()
+            val userId = ShellCommands.currentUser
             val userDir = "/data/system/users/$userId"
             // Careful: It is possible to specify whole directories, but there are two rules:
             // 1. Directories must end with a slash e.g. "/data/system/netstats/"

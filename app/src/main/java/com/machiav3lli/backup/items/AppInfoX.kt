@@ -9,7 +9,6 @@ import android.util.Log
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.handler.StorageFile
 import com.machiav3lli.backup.items.BackupItem.BrokenBackupException
 import com.machiav3lli.backup.utils.DocumentUtils.deleteRecursive
 import com.machiav3lli.backup.utils.DocumentUtils.ensureDirectory
@@ -19,7 +18,6 @@ import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.*
 
 /**
  * Information container for regular and system apps.
@@ -73,7 +71,7 @@ class AppInfoX {
         this.context = context
         backupDir = backupRoot
         backupHistory = getBackupHistory(context, backupRoot)
-        packageName = StorageFile.fromUri(context, backupDir!!).name
+        packageName = StorageFile.fromUri(context, backupRoot).name!!
         try {
             packageInfo = context.packageManager.getPackageInfo(packageName, 0)
             appInfo = AppMetaInfo(context, packageInfo as PackageInfo)
@@ -133,13 +131,11 @@ class AppInfoX {
 
     fun deleteAllBackups() {
         Log.i(TAG, "Deleting ${backupHistory.size} backups of $this")
-        for (item in backupHistory) {
-            delete(item, false)
-        }
+        StorageFile.fromUri(this.context, backupDir!!).delete()
+        backupDir = null
         backupHistory.clear()
     }
 
-    @JvmOverloads
     fun delete(backupItem: BackupItem, directBoolean: Boolean = true) {
         if (backupItem.backupProperties.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backupItem.backupProperties.packageName} but this object is for $packageName")
@@ -205,7 +201,7 @@ class AppInfoX {
             // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
             // Goes to the parent two times to the leave own directory
             // e.g. /storage/emulated/0/Android/data
-            val externalFilesPath = context.getExternalFilesDir(null)!!.parentFile.parentFile.absolutePath
+            val externalFilesPath = context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.absolutePath
             // Add the package name to the path assuming that if the name of dataDir does not equal the
             // package name and has a prefix or a suffix to use it.
             return File(externalFilesPath, File(dataDir).name).absolutePath
@@ -223,7 +219,7 @@ class AppInfoX {
             // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
             // Goes to the parent two times to the leave own directory
             // e.g. /storage/emulated/0/Android/obb
-            val obbFilesPath = context.obbDir.parentFile.absolutePath
+            val obbFilesPath = context.obbDir.parentFile!!.absolutePath
             // Add the package name to the path assuming that if the name of dataDir does not equal the
             // package name and has a prefix or a suffix to use it.
             return File(obbFilesPath, File(dataDir).name).absolutePath
@@ -271,31 +267,31 @@ class AppInfoX {
 
     companion object {
         private val TAG = classTag(".AppInfoX")
-        const val MODE_UNSET = 0
-        const val MODE_APK = 1
-        const val MODE_DATA = 2
-        const val MODE_BOTH = 3
 
         // TODO cause of huge part of cpu time
-        // TODO minimize its usage
         private fun getBackupHistory(context: Context, backupDir: Uri?): MutableList<BackupItem> {
             val appBackupDir = StorageFile.fromUri(context, backupDir!!)
             val backupHistory = ArrayList<BackupItem>()
             try {
                 for (file in appBackupDir.listFiles()) {
-                    if (file.isFile) try {
+                    // TODO FIX: Randomly failing to read properties files of the updated app on refresh
+                    //  but never on start!! Already. One thing to be noticed is that on some random
+                    //  times those calls run on different threads even though they shouldn't and this
+                    //  never happens on first launch
+                    if (file.isPropertyFile) try {
                         backupHistory.add(BackupItem(context, file))
                     } catch (e: BrokenBackupException) {
-                        val message = String.format("Incomplete backup or wrong structure found in %s.", backupDir.encodedPath)
+                        val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                         Log.w(TAG, message)
                         logErrors(context, message)
                     } catch (e: NullPointerException) {
-                        val message = String.format("Incomplete backup or wrong structure found in %s.", backupDir.encodedPath)
+                        val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                         Log.w(TAG, message)
                         logErrors(context, message)
                     }
                 }
             } catch (e: FileNotFoundException) {
+                Log.w(TAG, "Failed getting backup history: $e")
                 return backupHistory
             }
             return backupHistory

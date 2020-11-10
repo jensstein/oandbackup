@@ -23,7 +23,6 @@ import java.util.*
 
 class ContextWraperX(base: Context?) : ContextWrapper(base) {
     companion object {
-        @JvmStatic
         fun wrap(context: Context, langCode: String): ContextWrapper {
             var wrappedContext = context
             var setLanguageCode = langCode

@@ -33,6 +33,7 @@ import com.mikepenz.fastadapter.items.AbstractItem
 class BatchItemX(var app: AppInfoX) : AbstractItem<BatchItemX.ViewHolder>() {
     var isApkChecked = false
     var isDataChecked = false
+
     val actionMode: Int
         get() = if (isApkChecked && isDataChecked) {
             BaseAppAction.MODE_BOTH
@@ -43,13 +44,16 @@ class BatchItemX(var app: AppInfoX) : AbstractItem<BatchItemX.ViewHolder>() {
         } else {
             BaseAppAction.MODE_UNSET
         }
+
     val isChecked: Boolean
         get() = isDataChecked || isApkChecked
+
     override var identifier: Long
         get() = calculateID(app)
         set(identifier) {
             super.identifier = identifier
         }
+
     override val layoutRes: Int
         get() = R.layout.item_batch_x
 

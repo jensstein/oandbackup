@@ -74,7 +74,6 @@ class HandleAlarms(var context: Context) {
     companion object {
         private val TAG = classTag(".HandleAlarms")
 
-        @JvmStatic
         fun timeUntilNextEvent(interval: Int, hour: Int, minute: Int, timePLaced: Long, now: Long): Long {
             val c = Calendar.getInstance()
             c.timeInMillis = timePLaced

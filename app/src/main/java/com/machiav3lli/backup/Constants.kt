@@ -75,25 +75,20 @@ object Constants {
     const val HELP_ELEMENT = "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
     const val HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md"
 
-    @JvmField
     val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
-    @JvmStatic
     fun classAddress(address: String): String {
         return PREFS_SHARED_PRIVATE + address
     }
 
-    @JvmStatic
     fun customListAddress(index: Int): String {
         return PREFS_SCHEDULES_CUSTOMLIST + index
     }
 
-    @JvmStatic
     fun classTag(tag: String): String {
         return TAG_BASE + tag
     }
 
-    @JvmStatic
     fun exodusUrl(app: String): String {
         return "https://reports.exodus-privacy.eu.org/reports/$app/latest"
     }
@@ -102,7 +97,6 @@ object Constants {
         BEFORE("before"), AFTER("after");
 
         companion object {
-            @JvmStatic
             fun fromString(value: String): HousekeepingMoment {
                 for (enumValue in values()) {
                     if (enumValue.value == value) {
