@@ -42,16 +42,22 @@ class BlacklistDialogFragment : DialogFragment() {
         val args = this.requireArguments()
         val blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBALBLACKLISTID)
         val blacklistedPackages = args.getStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES)
-        val appInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
-        appInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
+        var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
+        packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = blacklistedPackages!!.contains(pi1.packageName)
             val b2 = blacklistedPackages.contains(pi2.packageName)
-            if (b1 != b2) if (b1) -1 else 1 else pi1.applicationInfo.loadLabel(pm).toString().compareTo(pi2.applicationInfo.loadLabel(pm).toString(), ignoreCase = true)
+            if (b1 != b2)
+                if (b1) -1 else 1
+            else {
+                val l1 = pi1.applicationInfo.loadLabel(pm).toString()
+                val l2 = pi2.applicationInfo.loadLabel(pm).toString()
+                l1.compareTo(l2, ignoreCase = true)
+            }
         }
         val labels = ArrayList<String>()
-        val checkedPackages = BooleanArray(appInfoList.size)
+        val checkedPackages = BooleanArray(packageInfoList.size)
         val selections = ArrayList<String>()
-        for ((i, packageInfo) in appInfoList.withIndex()) {
+        for ((i, packageInfo) in packageInfoList.withIndex()) {
             labels.add(packageInfo.applicationInfo.loadLabel(pm).toString())
             if (blacklistedPackages!!.contains(packageInfo.packageName)) {
                 checkedPackages[i] = true
@@ -61,7 +67,7 @@ class BlacklistDialogFragment : DialogFragment() {
         return AlertDialog.Builder(requireActivity()).setTitle(R.string.sched_blacklist)
                 .setMultiChoiceItems(labels.toTypedArray<CharSequence>(),
                         checkedPackages) { _: DialogInterface?, which: Int, isChecked: Boolean ->
-                    val packageName = appInfoList[which].packageName
+                    val packageName = packageInfoList[which].packageName
                     if (isChecked) selections.add(packageName) else selections.remove(packageName)
                 }
                 .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
