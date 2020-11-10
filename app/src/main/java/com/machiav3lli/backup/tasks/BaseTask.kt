@@ -20,11 +20,12 @@ package com.machiav3lli.backup.tasks
 import android.content.Context
 import android.content.DialogInterface
 import android.os.AsyncTask
+import android.widget.Toast
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.handler.HandleMessages
 import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
@@ -35,28 +36,24 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
 
 // TODO rebase those Tasks, as AsyncTask is deprecated
-abstract class BaseTask(val actionType: ActionType, val app: AppInfoX, handleMessages: HandleMessages,
-                        oAndBackupX: MainActivityX, val shellHandler: ShellHandler, val mode: Int)
+abstract class BaseTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
+                        val mode: Int, val actionType: ActionType)
     : AsyncTask<Void?, Void?, ActionResult>() {
-    val handleMessagesReference: WeakReference<HandleMessages> = WeakReference(handleMessages)
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
     var backupRestoreHelper: BackupRestoreHelper = BackupRestoreHelper()
     var signal: CountDownLatch? = null
     protected var result: ActionResult? = null
 
     override fun onProgressUpdate(vararg values: Void?) {
-        val handleMessages = handleMessagesReference.get()
         val oAndBackupX = mainActivityXReference.get()
-        if (handleMessages != null && oAndBackupX != null && !oAndBackupX.isFinishing) {
-            handleMessages.showMessage(app.packageLabel, getProgressMessage(oAndBackupX, actionType))
+        if (oAndBackupX != null && !oAndBackupX.isFinishing) {
+            UiThreadStatement.runOnUiThread { Toast.makeText(oAndBackupX, "${app.packageLabel}: ${getProgressMessage(oAndBackupX, actionType)}", Toast.LENGTH_SHORT).show() }
         }
     }
 
     public override fun onPostExecute(result: ActionResult) {
-        val handleMessages = handleMessagesReference.get()
         val mainActivityX = mainActivityXReference.get()
-        if (handleMessages != null && mainActivityX != null && !mainActivityX.isFinishing) {
-            handleMessages.endMessage()
+        if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getPostExecuteMessage(mainActivityX, actionType, result)
             NotificationHelper.showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
@@ -71,9 +68,9 @@ abstract class BaseTask(val actionType: ActionType, val app: AppInfoX, handleMes
 
     private fun getProgressMessage(context: Context, actionType: ActionType): String {
         return if (actionType == ActionType.BACKUP) {
-            context.getString(R.string.backup)
+            context.getString(R.string.backupProgress)
         } else {
-            context.getString(R.string.restore)
+            context.getString(R.string.restoreProgress)
         }
     }
 

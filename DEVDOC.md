@@ -28,7 +28,9 @@
 
 - [x] Handle the error about disabling "verify apps over USB".
 
-- [ ] Replace deprecated Classes/Methods: AsyncTask, ProgressDialog (mostly with kotlin).
+- [ ] Replace deprecated Classes/Methods:
+    - [ ] AsyncTask
+    - [x] ProgressDialog
 
 - [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
 

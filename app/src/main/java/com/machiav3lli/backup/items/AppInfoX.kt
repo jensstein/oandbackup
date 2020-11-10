@@ -132,8 +132,8 @@ class AppInfoX {
     fun deleteAllBackups() {
         Log.i(TAG, "Deleting ${backupHistory.size} backups of $this")
         StorageFile.fromUri(this.context, backupDir!!).delete()
-        backupDir = null
         backupHistory.clear()
+        backupDir = null
     }
 
     fun delete(backupItem: BackupItem, directBoolean: Boolean = true) {

@@ -26,12 +26,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
-import com.machiav3lli.backup.handler.HandleMessages
 import com.machiav3lli.backup.handler.NotificationHelper.showNotification
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellCommands.ShellActionFailedException
@@ -42,8 +42,6 @@ import com.machiav3lli.backup.utils.UIUtils.showError
 import java.util.*
 
 class PrefsToolsFragment : PreferenceFragmentCompat() {
-    // TODO remove HandleMessages
-    private var handleMessages: HandleMessages? = null
     private var appInfoList: List<AppInfoX> = ArrayList()
     var pref: Preference? = null
 
@@ -55,7 +53,6 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         super.onActivityCreated(savedInstanceState)
         val users = requireActivity().intent.getStringArrayListExtra("com.machiav3lli.backup.users")
         val shellCommands = ShellCommands(users)
-        handleMessages = HandleMessages(requireContext())
         pref = findPreference(Constants.PREFS_QUICK_REBOOT)
         pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickQuickReboot(shellCommands) }
         pref = findPreference(Constants.PREFS_BATCH_DELETE)
@@ -136,14 +133,12 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun deleteBackups(deleteList: List<AppInfoX>) {
-        handleMessages!!.showMessage(getString(R.string.batchDeleteMessage), "")
         deleteList.forEach { appInfo ->
-            handleMessages!!.showMessage(getString(R.string.batchDeleteMessage), appInfo.packageLabel)
+            runOnUiThread { Toast.makeText(requireContext(), "${appInfo.packageLabel}: ${getString(R.string.batchDeleteMessage)}", Toast.LENGTH_SHORT).show() }
             Log.i(TAG, "deleting backups of ${appInfo.packageLabel}")
             appInfo.deleteAllBackups()
             appInfo.refreshBackupHistory()
         }
-        handleMessages!!.endMessage()
         showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size, false)
     }
 

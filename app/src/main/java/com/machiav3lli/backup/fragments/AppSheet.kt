@@ -32,6 +32,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -45,7 +46,6 @@ import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.handler.HandleMessages
 import com.machiav3lli.backup.handler.NotificationHelper.showNotification
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellCommands.Companion.wipeCache
@@ -70,7 +70,6 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), ActionListener {
     var notificationId = System.currentTimeMillis().toInt()
     var app: AppInfoX
-    var handleMessages: HandleMessages? = null  // TODO remove HandleMessages
     var shellCommands: ShellCommands? = null
     var position: Int
     private var binding: SheetAppBinding? = null
@@ -93,7 +92,6 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
-        handleMessages = HandleMessages(requireContext())
         val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) else ArrayList()
         shellCommands = ShellCommands(users)
         return sheet
@@ -231,11 +229,13 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                     .setTitle(app.packageLabel)
                     .setMessage(com.machiav3lli.backup.R.string.deleteBackupDialogMessage)
                     .setPositiveButton(com.machiav3lli.backup.R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                        runOnUiThread {
+                            Toast.makeText(requireContext(),
+                                    "${app.packageLabel}: ${getString(com.machiav3lli.backup.R.string.delete_all_backups)}",
+                                    Toast.LENGTH_SHORT).show()
+                        }
                         Thread {
-                            handleMessages!!.showMessage(app.packageLabel, getString(com.machiav3lli.backup.R.string.delete_all_backups))
-                            // Latest backup only currently
                             app.deleteAllBackups()
-                            handleMessages!!.endMessage()
                             requireMainActivity().refreshWithAppSheet()
                         }.start()
                     }
@@ -249,9 +249,13 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                     .setTitle(app.packageLabel)
                     .setMessage(com.machiav3lli.backup.R.string.uninstallDialogMessage)
                     .setPositiveButton(com.machiav3lli.backup.R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        val uninstallThread = Thread {
+                        runOnUiThread {
+                            Toast.makeText(requireContext(),
+                                    "${app.packageLabel}: ${getString(com.machiav3lli.backup.R.string.delete_all_backups)}",
+                                    Toast.LENGTH_SHORT).show()
+                        }
+                        Thread {
                             Log.i(TAG, "uninstalling " + app.packageLabel)
-                            handleMessages!!.showMessage(app.packageLabel, getString(com.machiav3lli.backup.R.string.uninstallProgress))
                             try {
                                 shellCommands!!.uninstall(app.packageName, app.apkPath, app.dataDir, app.isSystem)
                                 showNotification(this.context, MainActivityX::class.java, notificationId++,
@@ -263,11 +267,9 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                                 )
                                 showError(requireActivity(), e.message)
                             } finally {
-                                handleMessages!!.endMessage()
                                 requireMainActivity().refreshWithAppSheet()
                             }
-                        }
-                        uninstallThread.start()
+                        }.start()
                     }
                     .setNegativeButton(com.machiav3lli.backup.R.string.dialogNo, null)
                     .show()
@@ -308,14 +310,17 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                     .setTitle(app.packageLabel)
                     .setMessage(com.machiav3lli.backup.R.string.deleteBackupDialogMessage)
                     .setPositiveButton(com.machiav3lli.backup.R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                        runOnUiThread {
+                            Toast.makeText(requireContext(),
+                                    "${app.packageLabel}: ${getString(com.machiav3lli.backup.R.string.deleteBackup)}",
+                                    Toast.LENGTH_SHORT).show()
+                        }
                         Thread {
-                            handleMessages!!.showMessage(app.packageLabel, getString(com.machiav3lli.backup.R.string.deleteBackup))
                             if (!app.hasBackups()) {
                                 Log.w(TAG, "UI Issue! Tried to delete backups for app without backups.")
                                 dialog!!.dismiss()
                             }
                             app.delete(item.backup)
-                            handleMessages!!.endMessage()
                             requireMainActivity().refreshWithAppSheet()
                         }.start()
                     }
@@ -327,14 +332,13 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
     override fun onActionCalled(actionType: ActionType?, mode: Int) {
         when {
             actionType === ActionType.BACKUP -> {
-                BackupTask(app, handleMessages!!, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
+                BackupTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
             }
             actionType === ActionType.RESTORE -> {
                 // Latest Backup for now
                 val selectedBackup = app.latestBackup
-                RestoreTask(app, handleMessages!!, requireMainActivity(),
-                        selectedBackup!!.backupProperties, selectedBackup.backupLocation,
-                        MainActivityX.shellHandlerInstance!!, mode).execute()
+                RestoreTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                        selectedBackup!!.backupProperties, selectedBackup.backupLocation).execute()
             }
             else -> {
                 Log.e(TAG, "unknown actionType: $actionType")

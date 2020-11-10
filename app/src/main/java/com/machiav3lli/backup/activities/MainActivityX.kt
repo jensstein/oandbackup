@@ -130,6 +130,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList")
         setupViews(savedInstanceState)
         setupNavigation()
+        setupOnClicks()
     }
 
     override fun onBackPressed() {
@@ -335,7 +336,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun showEncryptionDialog() {
         val defPrefs = getDefaultSharedPreferences(this)
-        val dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && !defPrefs.getString(Constants.PREFS_PASSWORD, "")!!.isEmpty()
+        val dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && defPrefs.getString(Constants.PREFS_PASSWORD, "")!!.isNotEmpty()
         if (dontShowAgain) return
         val dontShowCounter = prefs!!.getInt(Constants.PREFS_SKIPPEDENCRYPTION, 0)
         prefs!!.edit().putInt(Constants.PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
