@@ -108,11 +108,10 @@ object SortFilterManager {
     }
 
     private fun applySort(list: List<AppInfoX>, filter: CharSequence): List<AppInfoX> {
-        when (filter[0]) {
+        return when (filter[0]) {
             '1' -> list.sortedWith(APP_INFO_PACKAGE_NAME_COMPARATOR)
             '2' -> list.sortedWith(APP_INFO_DATA_SIZE_COMPARATOR)
             else -> list.sortedWith(APP_INFO_LABEL_COMPARATOR)
         }
-        return list
     }
 }

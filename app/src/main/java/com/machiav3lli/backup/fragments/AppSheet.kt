@@ -135,10 +135,10 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                 binding!!.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 backupFastAdapter!!.addEventHook(OnRestoreClickHook())
                 backupFastAdapter!!.addEventHook(OnDeleteClickHook())
-                val backupList: MutableList<BackupItemX> = ArrayList()
+                val backupList = mutableListOf<BackupItemX>()
                 for (backup in app.getBackupHistory()) backupList.add(BackupItemX(backup))
-                backupList.sortedWith(SortFilterManager.BACKUP_DATE_COMPARATOR)
-                set(backupItemAdapter, backupList)
+                val sortedBackupList = backupList.sortedWith(SortFilterManager.BACKUP_DATE_COMPARATOR)
+                set(backupItemAdapter, sortedBackupList)
             }
             else -> binding!!.recyclerView.visibility = View.GONE
         }
