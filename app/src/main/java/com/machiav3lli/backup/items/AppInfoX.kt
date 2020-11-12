@@ -50,9 +50,9 @@ class AppInfoX {
         val backupDoc = getBackupRoot(context).findFile(packageName)
         if (backupDoc != null) {
             backupDir = backupDoc.uri
-            backupHistory = getBackupHistory(context, backupDir)
+            Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
         } else {
-            backupHistory = ArrayList()
+            backupHistory = arrayListOf()
         }
     }
 
@@ -70,7 +70,7 @@ class AppInfoX {
     constructor(context: Context, backupRoot: Uri) {
         this.context = context
         backupDir = backupRoot
-        backupHistory = getBackupHistory(context, backupRoot)
+        Thread { backupHistory = getBackupHistory(context, backupRoot) }.start()
         packageName = StorageFile.fromUri(context, backupRoot).name!!
         try {
             packageInfo = context.packageManager.getPackageInfo(packageName, 0)
@@ -78,7 +78,7 @@ class AppInfoX {
             refreshStorageStats()
         } catch (e: PackageManager.NameNotFoundException) {
             Log.i(TAG, "$packageName is not installed.")
-            if (backupHistory.isEmpty()) {
+            if (backupHistory.isNullOrEmpty()) {
                 throw AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e)
             }
             appInfo = latestBackup!!.backupProperties
@@ -92,7 +92,7 @@ class AppInfoX {
         val packageBackupRoot = StorageFile.fromUri(context, backupRoot!!).findFile(packageName)
         if (packageBackupRoot != null) {
             backupDir = packageBackupRoot.uri
-            backupHistory = getBackupHistory(context, backupDir)
+            Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
         }
         appInfo = AppMetaInfo(context, packageInfo)
         refreshStorageStats()
