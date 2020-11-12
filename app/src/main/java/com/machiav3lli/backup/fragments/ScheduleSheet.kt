@@ -21,9 +21,7 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.os.AsyncTask
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -168,7 +166,16 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
         } else {
             val timeDiff = timeUntilNextEvent(schedule.interval,
                     schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
-            binding!!.timeLeft.text = DateUtils.formatElapsedTime(timeDiff / 1000L)
+            val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
+            if (days == 0) {
+                binding!!.daysLeft.visibility = View.GONE
+            } else {
+                binding!!.daysLeft.visibility = View.VISIBLE
+                binding!!.daysLeft.text = requireContext().resources.getQuantityString(R.plurals.days_left, days, days)
+            }
+            val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
+            val minutes = (timeDiff / (1000 * 60)).toInt() % 60
+            binding!!.timeLeft.text = LocalTime.of(hours, minutes).toString()
             binding!!.timeLeftLine.visibility = View.VISIBLE
         }
     }
@@ -218,7 +225,7 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        binding!!.timeOfDay.text = "${if (hourOfDay < 10) "0$hourOfDay" else hourOfDay}:${if (minute < 10) "0$minute" else minute}"
+        binding!!.timeOfDay.text = LocalTime.of(hourOfDay, minute).toString()
         refreshSheet()
     }
 
@@ -248,9 +255,12 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
         val enableCustomList = binding!!.enableCustomList.isChecked
         val excludeSystemPackages = binding!!.excludeSystem.isChecked
         val enabled = binding!!.enableCheckbox.isChecked
-        val time = binding!!.timeOfDay.text.toString().split(":").toTypedArray()
-        val timeHour = time[0].toInt()
-        val timeMinute = time[1].toInt()
+        val time = binding!!.timeOfDay.text.toString()
+                .split(":")
+                .map { it.toInt() }
+                .toTypedArray()
+        val timeHour = time[0]
+        val timeMinute = time[1]
         val interval = binding!!.intervalDays.text.toString().toInt()
         if (enabled) handleAlarms!!.setAlarm(id, interval, timeHour, timeMinute)
         return Schedule.Builder()
@@ -369,5 +379,4 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     companion object {
         private val TAG = classTag(".ScheduleSheet")
     }
-
 }

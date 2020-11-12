@@ -27,6 +27,7 @@ import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.utils.ItemUtils.calculateScheduleID
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import java.time.LocalTime
 
 class SchedulerItemX(var schedule: Schedule) : AbstractItem<SchedulerItemX.ViewHolder>() {
     override val layoutRes: Int
@@ -45,11 +46,12 @@ class SchedulerItemX(var schedule: Schedule) : AbstractItem<SchedulerItemX.ViewH
         get() = R.id.fastadapter_item
 
     class ViewHolder(view: View?) : FastAdapter.ViewHolder<SchedulerItemX>(view!!) {
-        var checkbox: AppCompatCheckBox = itemView.findViewById(R.id.enableCheckbox)
-        var timeLeft: AppCompatTextView = itemView.findViewById(R.id.timeLeft)
-        var timeLeftLine: LinearLayoutCompat = itemView.findViewById(R.id.timeLeftLine)
-        var scheduleMode: AppCompatTextView = itemView.findViewById(R.id.schedMode)
-        var scheduleSubMode: AppCompatTextView = itemView.findViewById(R.id.schedSubMode)
+        private var checkbox: AppCompatCheckBox = itemView.findViewById(R.id.enableCheckbox)
+        private var timeLeft: AppCompatTextView = itemView.findViewById(R.id.timeLeft)
+        private var daysLeft: AppCompatTextView = itemView.findViewById(R.id.daysLeft)
+        private var timeLeftLine: LinearLayoutCompat = itemView.findViewById(R.id.timeLeftLine)
+        private var scheduleMode: AppCompatTextView = itemView.findViewById(R.id.schedMode)
+        private var scheduleSubMode: AppCompatTextView = itemView.findViewById(R.id.schedSubMode)
 
         override fun bindView(item: SchedulerItemX, payloads: List<Any>) {
             val schedule = item.schedule
@@ -85,10 +87,16 @@ class SchedulerItemX(var schedule: Schedule) : AbstractItem<SchedulerItemX.ViewH
             } else {
                 val timeDiff = timeUntilNextEvent(schedule.interval,
                         schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
-                val sum = (timeDiff / 1000f / 60f).toInt()
-                val hours = sum / 60
-                val minutes = sum % 60
-                timeLeft.text = String.format(" %s:%s", hours, minutes)
+                val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
+                if (days == 0) {
+                    daysLeft.visibility = View.GONE
+                } else {
+                    daysLeft.visibility = View.VISIBLE
+                    daysLeft.text = this.itemView.context.resources.getQuantityString(R.plurals.days_left, days, days)
+                }
+                val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
+                val minutes = (timeDiff / (1000 * 60)).toInt() % 60
+                timeLeft.text = LocalTime.of(hours, minutes).toString()
                 timeLeftLine.visibility = View.VISIBLE
             }
         }

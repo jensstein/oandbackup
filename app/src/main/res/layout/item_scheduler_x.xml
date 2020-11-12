@@ -82,7 +82,15 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/buttons_spacing"
                 android:text="@string/sched_timeLeft"
+                android:textAppearance="@style/TextAppearance.Secondary" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/daysLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/buttons_spacing"
                 android:textAppearance="@style/TextAppearance.Secondary" />
 
             <androidx.appcompat.widget.AppCompatTextView

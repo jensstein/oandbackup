@@ -226,4 +226,8 @@
     <string name="delete_all_backups">Delete all backups</string>
     <string name="logs_text_empty">There\'s nothing to show!</string>
     <string name="fetching_backup_list">Fetching apps list for the backup…</string>
+    <plurals name="days_left">
+        <item quantity="one">%d day,</item>
+        <item quantity="other">%d days,</item>
+    </plurals>
 </resources>

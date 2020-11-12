@@ -33,7 +33,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -68,9 +67,9 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), ActionListener {
-    var notificationId = System.currentTimeMillis().toInt()
+    private var notificationId = System.currentTimeMillis().toInt()
+    private var shellCommands: ShellCommands? = null
     var app: AppInfoX
-    var shellCommands: ShellCommands? = null
     var position: Int
     private var binding: SheetAppBinding? = null
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -89,7 +88,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
         val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) else ArrayList()
