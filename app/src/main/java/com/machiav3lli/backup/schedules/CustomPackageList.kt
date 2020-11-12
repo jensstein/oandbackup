@@ -31,12 +31,19 @@ import com.machiav3lli.backup.schedules.db.Schedule
 
 object CustomPackageList {
     fun showList(activity: Activity, number: Int, mode: Schedule.Mode?) {
-        val packageInfoList = BackendController.getPackageInfoList(activity, mode)
         val selectedList = getScheduleCustomList(activity, number)
-        packageInfoList.sortedWith { appInfo1: PackageInfo, appInfo2: PackageInfo ->
-            val b1 = selectedList!!.contains(appInfo1.packageName)
-            val b2 = selectedList.contains(appInfo2.packageName)
-            if (b1 != b2) if (b1) -1 else 1 else appInfo1.packageName.compareTo(appInfo2.packageName, ignoreCase = true)
+        var packageInfoList = BackendController.getPackageInfoList(activity, mode)
+        packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
+            val pm = activity.application.applicationContext.packageManager
+            val b1 = selectedList!!.contains(pi1.packageName)
+            val b2 = selectedList.contains(pi2.packageName)
+            if (b1 != b2)
+                if (b1) -1 else 1
+            else {
+                val l1 = pi1.applicationInfo.loadLabel(pm).toString()
+                val l2 = pi2.applicationInfo.loadLabel(pm).toString()
+                l1.compareTo(l2, ignoreCase = true)
+            }
         }
         val labels = ArrayList<String>()
         val packageNames = ArrayList<String>()
