@@ -169,7 +169,7 @@ object PrefUtils {
     }
 
     fun isDisableVerification(context: Context?): Boolean {
-        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DISABLEVERIFICATION, false)
+        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DISABLEVERIFICATION, true)
     }
 
     class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
