@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.tasks
 
 import android.net.Uri
+import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
@@ -25,10 +26,10 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.BackupProperties
 
-// TODO rebase those Tasks, as AsyncTask is deprecated
-class RestoreTask(appInfo: AppInfoX?, oAndBackupX: MainActivityX, shellHandler: ShellHandler,
-                  restoreMode: Int, private val backupProperties: BackupProperties, private val backupLocation: Uri)
-    : BaseTask(appInfo!!, oAndBackupX, shellHandler, restoreMode, BackupRestoreHelper.ActionType.RESTORE) {
+class RestoreActionTask(appInfo: AppInfoX?, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
+                        private val backupProperties: BackupProperties, private val backupLocation: Uri)
+    : BaseActionTask(appInfo!!, oAndBackupX, shellHandler, restoreMode, BackupRestoreHelper.ActionType.RESTORE) {
+    override val TAG = Constants.classTag(".RestoreActionTask")
 
     override fun doInBackground(vararg params: Void?): ActionResult? {
         val mainActivityX = mainActivityXReference.get()

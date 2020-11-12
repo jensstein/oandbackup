@@ -32,15 +32,13 @@ import android.widget.FrameLayout
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.activities.SchedulerActivityX.SystemExcludeCheckboxSetTask
-import com.machiav3lli.backup.activities.SchedulerActivityX.refreshTask
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.items.SchedulerItemX
@@ -53,8 +51,12 @@ import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.schedules.db.Schedule.Mode
 import com.machiav3lli.backup.schedules.db.Schedule.SubMode
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.tasks.RefreshSchedulesTask
+import com.machiav3lli.backup.tasks.RemoveScheduleTask
+import com.machiav3lli.backup.tasks.ScheduleExcludeSystemSetTask
 import com.machiav3lli.backup.utils.CommandUtils.Command
 import java.lang.ref.WeakReference
+import java.time.LocalTime
 
 class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePickerDialog.OnTimeSetListener, IntervalInDaysDialog.ConfirmListener {
     private val schedule: Schedule = item.schedule
@@ -66,7 +68,7 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
         handleAlarms = HandleAlarms(requireContext())
@@ -107,41 +109,40 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
 
     private fun modeToId(mode: Int): Int {
         return when (mode) {
-            1 -> com.machiav3lli.backup.R.id.schedUser
-            2 -> com.machiav3lli.backup.R.id.schedSystem
-            3 -> com.machiav3lli.backup.R.id.schedNewUpdated
-            else -> com.machiav3lli.backup.R.id.schedAll
+            1 -> R.id.schedUser
+            2 -> R.id.schedSystem
+            3 -> R.id.schedNewUpdated
+            else -> R.id.schedAll
         }
     }
 
     private fun idToMode(mode: Int): Mode {
         return when (mode) {
-            com.machiav3lli.backup.R.id.schedUser -> Mode.USER
-            com.machiav3lli.backup.R.id.schedSystem -> Mode.SYSTEM
-            com.machiav3lli.backup.R.id.schedNewUpdated -> Mode.NEW_UPDATED
+            R.id.schedUser -> Mode.USER
+            R.id.schedSystem -> Mode.SYSTEM
+            R.id.schedNewUpdated -> Mode.NEW_UPDATED
             else -> Mode.ALL
         }
     }
 
     private fun subModeToId(subMode: Int): Int {
         return when (subMode) {
-            1 -> com.machiav3lli.backup.R.id.schedApk
-            2 -> com.machiav3lli.backup.R.id.schedData
-            else -> com.machiav3lli.backup.R.id.schedBoth
+            1 -> R.id.schedApk
+            2 -> R.id.schedData
+            else -> R.id.schedBoth
         }
     }
 
     private fun idToSubMode(subMode: Int): SubMode {
         return when (subMode) {
-            com.machiav3lli.backup.R.id.schedApk -> SubMode.APK
-            com.machiav3lli.backup.R.id.schedData -> SubMode.DATA
+            R.id.schedApk -> SubMode.APK
+            R.id.schedData -> SubMode.DATA
             else -> SubMode.BOTH
         }
     }
 
     private fun setupScheduleInfo() {
-        binding!!.timeOfDay.text = String.format("%s:%s", if (schedule.timeHour < 10) "0" + schedule.timeHour else schedule.timeHour,
-                if (schedule.timeMinute < 10) "0" + schedule.timeMinute else schedule.timeMinute)
+        binding!!.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()
         binding!!.intervalDays.text = java.lang.String.valueOf(schedule.interval)
         binding!!.enableCheckbox.isChecked = schedule.enabled
         binding!!.enableCustomList.isChecked = schedule.enableCustomList
@@ -157,7 +158,7 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
 
     private fun refreshSheet() {
         updateScheduleData(getScheduleDataFromView(schedule.id.toInt()))
-        refreshTask(requireActivity() as SchedulerActivityX).execute()
+        RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
     }
 
     private fun setTimeLeft(schedule: Schedule, now: Long) {
@@ -197,11 +198,11 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
                 handleAlarms!!.cancelAlarm(id.toInt())
             }
             setTimeLeft(schedule, System.currentTimeMillis())
-            refreshTask(requireActivity() as SchedulerActivityX).execute()
+            RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
         }
-        binding!!.removeButton.setOnClickListener { v: View? ->
+        binding!!.removeButton.setOnClickListener {
             RemoveScheduleTask(requireActivity() as SchedulerActivityX).execute(schedule)
-            refreshTask(requireActivity() as SchedulerActivityX).execute()
+            RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
             dismissAllowingStateLoss()
         }
         binding!!.activateButton.setOnClickListener {
@@ -267,11 +268,11 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     }
 
     private fun toggleSecondaryButtons(chipGroup: ChipGroup, number: Long) {
-        if (chipGroup.checkedChipId == com.machiav3lli.backup.R.id.schedNewUpdated) {
+        if (chipGroup.checkedChipId == R.id.schedNewUpdated) {
             if (binding!!.excludeSystem.visibility != View.GONE) return
             binding!!.excludeSystem.visibility = View.VISIBLE
             binding!!.excludeSystem.tag = number
-            SystemExcludeCheckboxSetTask(requireActivity() as SchedulerActivityX,
+            ScheduleExcludeSystemSetTask(requireActivity() as SchedulerActivityX,
                     number, binding!!.excludeSystem).execute()
         } else {
             binding!!.excludeSystem.visibility = View.GONE
@@ -341,50 +342,11 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
 
     }
 
-    // TODO rebase those Tasks, as AsyncTask is deprecated
-    class RemoveScheduleTask(scheduler: SchedulerActivityX?) : AsyncTask<Schedule?, Void?, SchedulerActivityX.ResultHolder<Schedule>>() {
-        private val activityReference: WeakReference<SchedulerActivityX?> = WeakReference(scheduler)
-
-        override fun doInBackground(vararg schedules: Schedule?): SchedulerActivityX.ResultHolder<Schedule>? {
-            val scheduler = activityReference.get()
-            if (scheduler == null || scheduler.isFinishing) return SchedulerActivityX.ResultHolder()
-            if (schedules.isEmpty()) {
-                val error = IllegalStateException("No id supplied to the schedule removing task")
-                return SchedulerActivityX.ResultHolder(error)
-            }
-            val scheduleDatabase = getInstance(scheduler, BlacklistsDBHelper.DATABASE_NAME)
-            val scheduleDao = scheduleDatabase.scheduleDao
-            scheduleDao.delete(schedules[0]!!)
-            return SchedulerActivityX.ResultHolder(schedules[0]!!)
-        }
-
-        public override fun onPostExecute(resultHolder: SchedulerActivityX.ResultHolder<Schedule>) {
-            val scheduler = activityReference.get()
-            if (scheduler != null && !scheduler.isFinishing) {
-                if (resultHolder.error != null) {
-                    val message = "Unable to remove schedule: ${resultHolder.error}"
-                    Log.e(TAG, message)
-                    Toast.makeText(scheduler, message, Toast.LENGTH_LONG).show()
-                }
-                if (resultHolder.artifact != null) {
-                    remove(scheduler, resultHolder.artifact)
-                }
-            }
-        }
-
-        companion object {
-            private fun remove(scheduler: SchedulerActivityX, schedule: Schedule) {
-                scheduler.handleAlarms!!.cancelAlarm(schedule.id.toInt())
-                scheduler.schedulerItemAdapter.clear()
-                scheduler.schedulerItemAdapter.add(scheduler.list!!)
-            }
-        }
-    }
-
     // TODO: this class should ideally just implement Runnable but the
     //  confirmation dialog needs to accept those also
-    internal class StartSchedule(context: Context, handleScheduledBackups: HandleScheduledBackups, private val id: Long,
-                                 private val databaseName: String) : Command {
+    internal class StartSchedule(context: Context, handleScheduledBackups: HandleScheduledBackups,
+                                 private val id: Long, private val databaseName: String)
+        : Command {
         private val contextReference: WeakReference<Context> = WeakReference(context)
         private val handleScheduledBackupsReference: WeakReference<HandleScheduledBackups> = WeakReference(handleScheduledBackups)
 

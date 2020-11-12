@@ -19,9 +19,9 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.AsyncTask
 import android.widget.Toast
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -35,13 +35,13 @@ import com.machiav3lli.backup.utils.UIUtils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
 
-// TODO rebase those Tasks, as AsyncTask is deprecated
-abstract class BaseTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
-                        val mode: Int, val actionType: ActionType)
-    : AsyncTask<Void?, Void?, ActionResult>() {
+abstract class BaseActionTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
+                              val mode: Int, private val actionType: ActionType)
+    : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
     var backupRestoreHelper: BackupRestoreHelper = BackupRestoreHelper()
-    var signal: CountDownLatch? = null
+    private var signal: CountDownLatch? = null
+    override val TAG = Constants.classTag(".BaseActionTask")
     protected var result: ActionResult? = null
 
     override fun onProgressUpdate(vararg values: Void?) {
@@ -51,14 +51,14 @@ abstract class BaseTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shell
         }
     }
 
-    public override fun onPostExecute(result: ActionResult) {
+    override fun onPostExecute(result: ActionResult?) {
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getPostExecuteMessage(mainActivityX, actionType, result)
             NotificationHelper.showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
             showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
-            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result.message) })
+            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message) })
             mainActivityX.refreshWithAppSheet()
         }
         if (signal != null) {
@@ -74,18 +74,20 @@ abstract class BaseTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shell
         }
     }
 
-    private fun getPostExecuteMessage(context: Context, actionType: ActionType, result: ActionResult): String {
-        return if (result.succeeded) {
-            if (actionType == ActionType.BACKUP) {
-                context.getString(R.string.backupSuccess)
+    private fun getPostExecuteMessage(context: Context, actionType: ActionType, result: ActionResult?): String? {
+        return result?.let {
+            if (it.succeeded) {
+                if (actionType == ActionType.BACKUP) {
+                    context.getString(R.string.backupSuccess)
+                } else {
+                    context.getString(R.string.restoreSuccess)
+                }
             } else {
-                context.getString(R.string.restoreSuccess)
-            }
-        } else {
-            if (actionType == ActionType.BACKUP) {
-                context.getString(R.string.backupFailure)
-            } else {
-                context.getString(R.string.restoreFailure)
+                if (actionType == ActionType.BACKUP) {
+                    context.getString(R.string.backupFailure)
+                } else {
+                    context.getString(R.string.restoreFailure)
+                }
             }
         }
     }

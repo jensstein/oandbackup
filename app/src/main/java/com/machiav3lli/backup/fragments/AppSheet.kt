@@ -55,8 +55,8 @@ import com.machiav3lli.backup.handler.SortFilterManager
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.MainItemX
-import com.machiav3lli.backup.tasks.BackupTask
-import com.machiav3lli.backup.tasks.RestoreTask
+import com.machiav3lli.backup.tasks.BackupActionTask
+import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.utils.ItemUtils.pickSheetAppType
 import com.machiav3lli.backup.utils.ItemUtils.pickSheetDataSizes
 import com.machiav3lli.backup.utils.ItemUtils.pickSheetVersionName
@@ -332,12 +332,12 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
     override fun onActionCalled(actionType: ActionType?, mode: Int) {
         when {
             actionType === ActionType.BACKUP -> {
-                BackupTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
+                BackupActionTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
             }
             actionType === ActionType.RESTORE -> {
                 // Latest Backup for now
                 val selectedBackup = app.latestBackup
-                RestoreTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                RestoreActionTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
                         selectedBackup!!.backupProperties, selectedBackup.backupLocation).execute()
             }
             else -> {

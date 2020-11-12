@@ -31,7 +31,7 @@ import com.machiav3lli.backup.activities.BaseActivity
 object NotificationHelper {
     private val TAG = classTag(".NotificationHelper")
 
-    fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>?, id: Int, title: String?, text: String, autocancel: Boolean) {
+    fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>?, id: Int, title: String?, text: String?, autoCancel: Boolean) {
         val resultIntent = Intent(context, parentActivity)
         resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         val resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -42,8 +42,8 @@ object NotificationHelper {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(R.drawable.ic_app)
                 .setContentTitle(title)
-                .setContentText(if (text.isEmpty()) null else text)
-                .setAutoCancel(autocancel)
+                .setContentText(if (text.isNullOrEmpty()) null else text)
+                .setAutoCancel(autoCancel)
                 .setContentIntent(resultPendingIntent)
                 .build()
         notificationManager.notify(id, notification)
