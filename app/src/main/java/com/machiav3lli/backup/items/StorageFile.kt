@@ -67,6 +67,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         val uriString = this.uri.toString()
         if (cacheDirty) {
             cacheDirty = false
+            cache.clear()
         }
         if (cache[uriString].isNullOrEmpty()) {
             val resolver = context.contentResolver
