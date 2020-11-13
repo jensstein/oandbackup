@@ -212,6 +212,7 @@
     <string name="prefs_disableverification">Desativar verificação de aplicações via USB</string>
     <plurals name="days_left">
         <item quantity="one">%d dia,</item>
+        <item quantity="many"></item>
         <item quantity="other">%d dias,</item>
     </plurals>
     <string name="stats_apps">Aplicações</string>
