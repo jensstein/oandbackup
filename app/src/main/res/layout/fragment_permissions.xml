@@ -15,174 +15,181 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/small_spacing">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <data>
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/small_spacing">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cards_spacing"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cardStoragePermission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/bg_card_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:padding="@dimen/cards_spacing">
+                android:layout_margin="@dimen/cards_spacing"
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cardStoragePermission"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:orientation="horizontal">
+                    android:background="@drawable/bg_card_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:padding="@dimen/cards_spacing">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_storage_32" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/cards_spacing"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_storage_32" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/storage_access"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/storage_access"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:text="@string/intro_permission_storage" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:text="@string/intro_permission_storage" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cardStorageLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/bg_card_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:padding="@dimen/cards_spacing">
-
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cardStorageLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:orientation="horizontal">
+                    android:background="@drawable/bg_card_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:padding="@dimen/cards_spacing">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_storage_32" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/cards_spacing"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_storage_32" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prefs_pathbackupfolder"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/prefs_pathbackupfolder"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:text="@string/intro_permission_storage_location" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:text="@string/intro_permission_storage_location" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cardUsageAccess"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/cards_spacing"
-                android:background="@drawable/bg_card_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:padding="@dimen/cards_spacing">
-
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cardUsageAccess"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:orientation="horizontal">
+                    android:background="@drawable/bg_card_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:padding="@dimen/cards_spacing">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_perm_usage_access_32" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/cards_spacing"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_perm_usage_access_32" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/grant_usage_access_title"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/grant_usage_access_title"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:text="@string/intro_permission_usageaccess" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:text="@string/intro_permission_usageaccess" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cardBatteryOptimization"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:padding="@dimen/cards_spacing">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cardBatteryOptimization"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/cards_spacing"
-                    android:orientation="horizontal">
+                    android:background="@drawable/bg_card_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:padding="@dimen/cards_spacing">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_battery_optimization_32" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/cards_spacing"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_battery_optimization_32" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ignore_battery_optimization_title"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/ignore_battery_optimization_title"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:text="@string/intro_permission_batteryoptimization" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:text="@string/intro_permission_batteryoptimization" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.core.widget.NestedScrollView>
-</androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -15,92 +15,99 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/appBar"
-        style="@style/Widget.AppBar"
-        android:background="@drawable/bg_bar_static"
-        android:elevation="@dimen/small_spacing">
+    <data>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_ripple_click"
-            android:contentDescription=""
-            android:padding="@dimen/cards_spacing"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_back_32" />
+    </data>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/helpButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_ripple_click"
-            android:contentDescription=""
-            android:padding="@dimen/med_spacing"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_info_24" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/cards_spacing"
-            tools:listitem="@layout/item_scheduler_x" />
-    </FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/appBar"
+            style="@style/Widget.AppBar"
+            android:background="@drawable/bg_bar_static"
+            android:elevation="@dimen/small_spacing">
 
-    <FrameLayout
-        android:id="@+id/bottomBar"
-        style="@style/Bar.Bottom"
-        android:background="@drawable/bg_bar_static_round">
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/blacklistButton"
-                style="@style/Button.NavBar.Start"
-                android:layout_width="52dp"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_blacklist_32"
-                android:tooltipText="@string/sched_blacklist" />
+                android:background="@drawable/bg_ripple_click"
+                android:contentDescription=""
+                android:padding="@dimen/cards_spacing"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_back_32" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/fabAddSchedule"
-                style="@style/Button.NavBar.End"
-                android:layout_width="52dp"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/helpButton"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_add_sched_32"
-                android:tooltipText="@string/sched_add" />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </FrameLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                android:background="@drawable/bg_ripple_click"
+                android:contentDescription=""
+                android:padding="@dimen/med_spacing"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_info_24" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?actionBarSize"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/cards_spacing"
+                tools:listitem="@layout/item_scheduler_x" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/bottomBar"
+            style="@style/Bar.Bottom"
+            android:background="@drawable/bg_bar_static_round">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/blacklistButton"
+                    style="@style/Button.NavBar.Start"
+                    android:layout_width="52dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_blacklist_32"
+                    android:tooltipText="@string/sched_blacklist" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/fabAddSchedule"
+                    style="@style/Button.NavBar.End"
+                    android:layout_width="52dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_add_sched_32"
+                    android:tooltipText="@string/sched_add" />
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
 

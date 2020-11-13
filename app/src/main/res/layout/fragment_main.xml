@@ -15,46 +15,53 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/appBar"
-    style="@style/Widget.AppBar"
-    android:background="@drawable/bg_bar_static"
-    android:elevation="@dimen/small_spacing">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchBar"
-        style="@android:style/Widget.Material.SearchView"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:autofillHints="@string/searchHint"
-        android:clickable="true"
-        android:focusable="true"
-        android:foregroundGravity="center_horizontal"
-        android:imeOptions="flagNoExtractUi|actionSearch"
-        android:inputType="text"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.Title"
-        app:iconifiedByDefault="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/helpButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryBackground="@android:color/transparent"
-        app:queryHint="@string/searchHint"
-        app:searchIcon="@drawable/ic_app_vv" />
+    <data>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/helpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_ripple_click"
-        android:contentDescription=""
-        android:padding="@dimen/med_spacing"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/searchBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_info_24" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/appBar"
+        style="@style/Widget.AppBar"
+        android:background="@drawable/bg_bar_static"
+        android:elevation="@dimen/small_spacing">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchBar"
+            style="@android:style/Widget.Material.SearchView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:autofillHints="@string/searchHint"
+            android:clickable="true"
+            android:focusable="true"
+            android:foregroundGravity="center_horizontal"
+            android:imeOptions="flagNoExtractUi|actionSearch"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Title"
+            app:iconifiedByDefault="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/helpButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryBackground="@android:color/transparent"
+            app:queryHint="@string/searchHint"
+            app:searchIcon="@drawable/ic_app_vv" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/helpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_ripple_click"
+            android:contentDescription=""
+            android:padding="@dimen/med_spacing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/searchBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_info_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
 
