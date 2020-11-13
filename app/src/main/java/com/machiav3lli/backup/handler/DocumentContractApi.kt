@@ -26,17 +26,20 @@ object DocumentContractApi {
         null
     }
 
-    private fun getRawType(context: Context, uri: Uri): String? = try {
-        context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-            cursor.run {
-                val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
-                if (moveToFirst()) mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
-                else null
-            }.also { cursor.close() }
+    private fun getRawType(context: Context, uri: Uri): String? =
+        try {
+            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
+                cursor.run {
+                    val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
+                    if (moveToFirst())
+                        mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
+                    else
+                        null
+                }.also { cursor.close() }
+            }
+        } catch (e: Exception) {
+            null
         }
-    } catch (e: Exception) {
-        null
-    }
 
     fun getFlags(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_FLAGS)
 
@@ -53,9 +56,13 @@ object DocumentContractApi {
 
     fun length(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_SIZE)
 
-    fun canRead(context: Context, self: Uri): Boolean = if (context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
-            != PackageManager.PERMISSION_GRANTED) false
-    else !TextUtils.isEmpty(getRawType(context, self)) // Ignore documents without MIME
+    fun canRead(context: Context, self: Uri):
+            Boolean =
+                if (context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
+                                != PackageManager.PERMISSION_GRANTED)
+                    false
+                else
+                    !TextUtils.isEmpty(getRawType(context, self)) // Ignore documents without MIME
 
     fun canWrite(context: Context, self: Uri): Boolean {
         // Ignore if grant doesn't allow write

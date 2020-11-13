@@ -274,21 +274,22 @@ class AppInfoX {
             val backupHistory = ArrayList<BackupItem>()
             try {
                 for (file in appBackupDir.listFiles()) {
-                    // TODO FIX: Randomly failing to read properties files of the updated app on refresh
-                    //  but never on start!! Already. One thing to be noticed is that on some random
-                    //  times those calls run on different threads even though they shouldn't and this
-                    //  never happens on first launch
-                    if (file.isPropertyFile) try {
-                        backupHistory.add(BackupItem(context, file))
-                    } catch (e: BrokenBackupException) {
-                        val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                        Log.w(TAG, message)
-                        logErrors(context, message)
-                    } catch (e: NullPointerException) {
-                        val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                        Log.w(TAG, message)
-                        logErrors(context, message)
-                    }
+                    if (file.isPropertyFile)
+                        try {
+                            backupHistory.add(BackupItem(context, file))
+                        } catch (e: BrokenBackupException) {
+                            val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
+                            Log.w(TAG, message)
+                            logErrors(context, message)
+                        } catch (e: NullPointerException) {
+                            val message = "(Null) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
+                            Log.w(TAG, message)
+                            logErrors(context, message)
+                        } catch (e: Exception) {
+                            val message = "(catchall) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
+                            Log.w(TAG, message)
+                            logErrors(context, message)
+                        }
                 }
             } catch (e: FileNotFoundException) {
                 Log.w(TAG, "Failed getting backup history: $e")
