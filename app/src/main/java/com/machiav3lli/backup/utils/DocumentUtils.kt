@@ -88,15 +88,21 @@ object DocumentUtils {
     @Throws(IOException::class)
     fun suCopyFileToDocument(resolver: ContentResolver, sourcePath: String, targetDir: StorageFile) {
         SuFileInputStream(sourcePath).use { inputFile ->
-            val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)!!
-            resolver.openOutputStream(newFile.uri).use { outputFile -> IOUtils.copy(inputFile, outputFile) }
+            val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)
+            if (newFile != null)
+                resolver.openOutputStream(newFile.uri).use { outputFile -> IOUtils.copy(inputFile, outputFile) }
+            else
+                throw IOException()
         }
     }
 
     @Throws(IOException::class)
     fun suCopyFileToDocument(resolver: ContentResolver, sourceFile: ShellHandler.FileInfo, targetDir: StorageFile) {
-        val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)!!
-        resolver.openOutputStream(newFile.uri).use { outputFile -> ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!) }
+        val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)
+        if (newFile != null)
+            resolver.openOutputStream(newFile.uri).use { outputFile -> ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!) }
+        else
+            throw IOException()
     }
 
     @Throws(IOException::class, ShellCommandFailedException::class)
