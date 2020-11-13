@@ -12,8 +12,6 @@
 
 - [x] SymLinks and "special" Files backup: fixing errors on some "unique" apps.
 
-- [ ] Add Flashable Zip feature: lowest priority for now.
-
 - [ ] Reformat Date handling in schedules
 
 - [x] Customize tags icons' colors
@@ -28,8 +26,8 @@
 
 - [x] Handle the error about disabling "verify apps over USB".
 
-- [ ] Replace deprecated Classes/Methods:
-    - [ ] AsyncTask
+- [x] Replace deprecated Classes/Methods:
+    - [x] AsyncTask
     - [x] ProgressDialog
 
 - [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
@@ -40,7 +38,7 @@
 
 - [x] Enable encryption direct shortcut
 
-- [ ] Not responding to clicks after long time in background
+- [x] Not responding to clicks after long time in background
 
 ## Planned Restructure
 
@@ -51,3 +49,11 @@
 - [ ] Use Kotlin style explicitly
 
 - [ ] ViewModel where useful
+
+## Low Priority
+
+- [ ] Add Flashable Zip feature: lowest priority for now.
+
+- [ ] (re)add OpenGPG
+
+- [ ] Legacy Backup mode
