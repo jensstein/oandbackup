@@ -30,16 +30,16 @@ import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.BatchItemX
 
 open class BatchFragment : Fragment(), SearchViewController {
-    private var binding: FragmentMainBinding? = null
+    private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun setup() {
-        binding!!.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 requireMainActivity().batchItemAdapter.filter(newText)
                 requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { mainItemX: BatchItemX, charSequence: CharSequence? ->
@@ -58,14 +58,14 @@ open class BatchFragment : Fragment(), SearchViewController {
                 return true
             }
         })
-        binding!!.helpButton.setOnClickListener {
+        binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp = HelpSheet()
             requireMainActivity().sheetHelp!!.showNow(requireActivity().supportFragmentManager, "HELPSHEET")
         }
     }
 
     override fun clean() {
-        binding!!.searchBar.setQuery("", false)
+        binding.searchBar.setQuery("", false)
     }
 
     override fun onResume() {

@@ -38,8 +38,8 @@ import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
 
 class SortFilterSheet : BottomSheetDialogFragment {
-    var sortFilterModel: SortFilterModel
-    private var binding: SheetSortFilterBinding? = null
+    private var sortFilterModel: SortFilterModel
+    private lateinit var binding: SheetSortFilterBinding
 
     constructor() {
         sortFilterModel = SortFilterModel()
@@ -47,11 +47,6 @@ class SortFilterSheet : BottomSheetDialogFragment {
 
     constructor(sortFilterModel: SortFilterModel) {
         this.sortFilterModel = sortFilterModel
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -66,7 +61,7 @@ class SortFilterSheet : BottomSheetDialogFragment {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = SheetSortFilterBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,13 +76,13 @@ class SortFilterSheet : BottomSheetDialogFragment {
     }
 
     private fun setupOnClicks() {
-        binding!!.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding!!.reset.setOnClickListener {
+        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.reset.setOnClickListener {
             saveFilterPreferences(requireContext(), SortFilterModel("0000"))
             requireMainActivity().cleanRefresh()
             dismissAllowingStateLoss()
         }
-        binding!!.apply.setOnClickListener {
+        binding.apply.setOnClickListener {
             saveFilterPreferences(requireContext(), sortFilterModel)
             requireMainActivity().cleanRefresh()
             dismissAllowingStateLoss()
@@ -95,18 +90,18 @@ class SortFilterSheet : BottomSheetDialogFragment {
     }
 
     private fun setupChips() {
-        binding!!.sortBy.check(sortFilterModel.sortById)
-        binding!!.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSortBy(checkedId) }
-        binding!!.filters.check(sortFilterModel.filterId)
-        binding!!.filters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putFilter(checkedId) }
-        binding!!.backupFilters.check(sortFilterModel.backupFilterId)
-        binding!!.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putBackupFilter(checkedId) }
-        binding!!.specialFilters.check(sortFilterModel.specialFilterId)
-        binding!!.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSpecialFilter(checkedId) }
+        binding.sortBy.check(sortFilterModel.sortById)
+        binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSortBy(checkedId) }
+        binding.filters.check(sortFilterModel.filterId)
+        binding.filters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putFilter(checkedId) }
+        binding.backupFilters.check(sortFilterModel.backupFilterId)
+        binding.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putBackupFilter(checkedId) }
+        binding.specialFilters.check(sortFilterModel.specialFilterId)
+        binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSpecialFilter(checkedId) }
         if (getDefaultSharedPreferences(requireContext()).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)) {
-            binding!!.showOnlySpecial.visibility = View.VISIBLE
+            binding.showOnlySpecial.visibility = View.VISIBLE
         } else {
-            binding!!.showOnlySpecial.visibility = View.GONE
+            binding.showOnlySpecial.visibility = View.GONE
         }
     }
 

@@ -28,7 +28,7 @@ import com.machiav3lli.backup.utils.LogUtils
 import java.io.IOException
 
 class LogsFragment : Fragment() {
-    private var binding: FragmentLogsBinding? = null
+    private lateinit var binding: FragmentLogsBinding
 
     private val logText: String?
         get() = try {
@@ -43,18 +43,13 @@ class LogsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentLogsBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val logText = logText
-        if (logText != null && logText.isNotEmpty()) binding!!.logsText.text = logText
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
+        if (logText != null && logText.isNotEmpty()) binding.logsText.text = logText
     }
 
     companion object {

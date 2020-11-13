@@ -49,8 +49,8 @@ import com.machiav3lli.backup.utils.PrefUtils.setStorageRootDir
 
 class PermissionsFragment : Fragment() {
     private var binding: FragmentPermissionsBinding? = null
-    var powerManager: PowerManager? = null
-    var prefs: SharedPreferences? = null
+    private var powerManager: PowerManager? = null
+    private var prefs: SharedPreferences? = null
 
     private val usageStatsPermission: Unit
         get() {
@@ -123,7 +123,7 @@ class PermissionsFragment : Fragment() {
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.ignore_battery_optimization_title)
                 .setMessage(R.string.ignore_battery_optimization_message)
-                .setPositiveButton(R.string.dialog_approve) { dialog: DialogInterface?, which: Int ->
+                .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                     intent.data = Uri.parse("package:" + requireContext().packageName)
                     try {
@@ -160,8 +160,10 @@ class PermissionsFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PrefUtils.BACKUP_DIR) {
-            val uri = data!!.data
+            if (data == null) return
+            val uri = data.data ?: return
             if (resultCode == Activity.RESULT_OK) {
+                requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 setStorageRootDir(this.requireContext(), uri)
             }
         }

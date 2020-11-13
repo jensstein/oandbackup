@@ -33,7 +33,7 @@ import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
 
 class MainFragment : Fragment(), SearchViewController {
     var prefs: SharedPreferences? = null
-    private var binding: FragmentMainBinding? = null
+    private lateinit var binding: FragmentMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +43,11 @@ class MainFragment : Fragment(), SearchViewController {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun setup() {
-        binding!!.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 requireMainActivity().mainItemAdapter.filter(newText)
                 requireMainActivity().mainItemAdapter.itemFilter.filterPredicate = { mainItemX: MainItemX, charSequence: CharSequence? ->
@@ -66,14 +66,14 @@ class MainFragment : Fragment(), SearchViewController {
                 return true
             }
         })
-        binding!!.helpButton.setOnClickListener { v: View? ->
+        binding.helpButton.setOnClickListener { v: View? ->
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp = HelpSheet()
             requireMainActivity().sheetHelp!!.showNow(requireActivity().supportFragmentManager, "HELPSHEET")
         }
     }
 
     override fun clean() {
-        binding!!.searchBar.setQuery("", false)
+        binding.searchBar.setQuery("", false)
     }
 
     override fun onResume() {

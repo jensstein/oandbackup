@@ -28,12 +28,13 @@ import com.machiav3lli.backup.utils.PrefUtils
 import com.machiav3lli.backup.utils.UIUtils
 
 class SplashActivity : BaseActivity() {
-    private var binding: ActivitySplashBinding? = null
+    private lateinit var binding: ActivitySplashBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         UIUtils.setDayNightTheme(PrefUtils.getPrivateSharedPrefs(this).getString(Constants.PREFS_THEME, "system"))
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
         val prefs = PrefUtils.getPrivateSharedPrefs(this)
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)

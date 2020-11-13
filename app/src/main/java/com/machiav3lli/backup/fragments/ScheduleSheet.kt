@@ -49,6 +49,7 @@ import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.schedules.db.Schedule.Mode
 import com.machiav3lli.backup.schedules.db.Schedule.SubMode
 import com.machiav3lli.backup.schedules.db.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.tasks.CoroutinesAsyncTask
 import com.machiav3lli.backup.tasks.RefreshSchedulesTask
 import com.machiav3lli.backup.tasks.RemoveScheduleTask
 import com.machiav3lli.backup.tasks.ScheduleExcludeSystemSetTask
@@ -60,7 +61,7 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     private val schedule: Schedule = item.schedule
     private var handleAlarms: HandleAlarms? = null
     private var idNumber: Long = 0
-    private var binding: SheetScheduleBinding? = null
+    private lateinit var binding: SheetScheduleBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -73,15 +74,10 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
         return sheet
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = SheetScheduleBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,14 +88,14 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     }
 
     private fun setupChips() {
-        binding!!.schedMode.check(modeToId(schedule.mode.value))
-        binding!!.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+        binding.schedMode.check(modeToId(schedule.mode.value))
+        binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             changeScheduleMode(idToMode(checkedId), idNumber)
             refreshSheet()
-            toggleSecondaryButtons(binding!!.schedMode, idNumber)
+            toggleSecondaryButtons(binding.schedMode, idNumber)
         }
-        binding!!.schedSubMode.check(subModeToId(schedule.subMode.value))
-        binding!!.schedSubMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+        binding.schedSubMode.check(subModeToId(schedule.subMode.value))
+        binding.schedSubMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             changeScheduleSubmode(idToSubMode(checkedId), idNumber)
             refreshSheet()
         }
@@ -140,62 +136,65 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
     }
 
     private fun setupScheduleInfo() {
-        binding!!.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()
-        binding!!.intervalDays.text = java.lang.String.valueOf(schedule.interval)
-        binding!!.enableCheckbox.isChecked = schedule.enabled
-        binding!!.enableCustomList.isChecked = schedule.enableCustomList
+        binding.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()
+        binding.intervalDays.text = java.lang.String.valueOf(schedule.interval)
+        binding.enableCheckbox.isChecked = schedule.enabled
+        binding.enableCustomList.isChecked = schedule.enableCustomList
         setTimeLeft(schedule, System.currentTimeMillis())
         idNumber = schedule.id
-        toggleSecondaryButtons(binding!!.schedMode, idNumber)
-        binding!!.removeButton.tag = idNumber
-        binding!!.activateButton.tag = idNumber
-        binding!!.enableCheckbox.tag = idNumber
-        binding!!.enableCustomList.tag = idNumber
-        binding!!.customListUpdate.tag = idNumber
+        toggleSecondaryButtons(binding.schedMode, idNumber)
+        binding.removeButton.tag = idNumber
+        binding.activateButton.tag = idNumber
+        binding.enableCheckbox.tag = idNumber
+        binding.enableCustomList.tag = idNumber
+        binding.customListUpdate.tag = idNumber
     }
 
     private fun refreshSheet() {
-        updateScheduleData(getScheduleDataFromView(schedule.id.toInt()))
+        val updateScheduleRunnable = UpdateScheduleRunnable(requireActivity() as SchedulerActivityX,
+                BlacklistsDBHelper.DATABASE_NAME, schedule)
+        Thread(updateScheduleRunnable).start()
+        setTimeLeft(schedule, System.currentTimeMillis())
         RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
     }
 
     private fun setTimeLeft(schedule: Schedule, now: Long) {
         if (!schedule.enabled) {
-            binding!!.timeLeft.text = ""
-            binding!!.timeLeftLine.visibility = View.GONE
+            binding.timeLeft.text = ""
+            binding.timeLeftLine.visibility = View.GONE
         } else {
             val timeDiff = timeUntilNextEvent(schedule.interval,
                     schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
             val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
             if (days == 0) {
-                binding!!.daysLeft.visibility = View.GONE
+                binding.daysLeft.visibility = View.GONE
             } else {
-                binding!!.daysLeft.visibility = View.VISIBLE
-                binding!!.daysLeft.text = requireContext().resources.getQuantityString(R.plurals.days_left, days, days)
+                binding.daysLeft.visibility = View.VISIBLE
+                binding.daysLeft.text = requireContext().resources.getQuantityString(R.plurals.days_left, days, days)
             }
             val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
             val minutes = (timeDiff / (1000 * 60)).toInt() % 60
-            binding!!.timeLeft.text = LocalTime.of(hours, minutes).toString()
-            binding!!.timeLeftLine.visibility = View.VISIBLE
+            binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
+            binding.timeLeftLine.visibility = View.VISIBLE
         }
     }
 
     private fun setupOnClicks() {
-        binding!!.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding!!.timeOfDay.setOnClickListener {
+        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.timeOfDay.setOnClickListener {
             TimePickerDialog(requireContext(), this,
                     schedule.timeHour, schedule.timeMinute, true).show()
         }
-        binding!!.intervalDays.setOnClickListener {
-            IntervalInDaysDialog(this, binding!!.intervalDays.text)
+        binding.intervalDays.setOnClickListener {
+            IntervalInDaysDialog(this, binding.intervalDays.text)
                     .show(requireActivity().supportFragmentManager, "DialogFragment")
         }
-        binding!!.excludeSystem.setOnClickListener { refreshSheet() }
-        binding!!.enableCustomList.setOnClickListener { refreshSheet() }
-        binding!!.customListUpdate.setOnClickListener {
-            showList(requireActivity(), idNumber.toInt(), idToMode(binding!!.schedMode.checkedChipId))
+        binding.excludeSystem.setOnClickListener { refreshSheet() }
+        binding.enableCustomList.setOnClickListener { refreshSheet() }
+        binding.customListUpdate.setOnClickListener {
+            showList(requireActivity(), idNumber.toInt(), idToMode(binding.schedMode.checkedChipId))
         }
-        binding!!.enableCheckbox.setOnClickListener {
+        binding.enableCheckbox.setOnClickListener {
             val id = schedule.id
             val schedule = getScheduleDataFromView(id.toInt())
             val updateScheduleRunnable = UpdateScheduleRunnable(requireActivity() as SchedulerActivityX,
@@ -207,30 +206,34 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
             setTimeLeft(schedule, System.currentTimeMillis())
             RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
         }
-        binding!!.removeButton.setOnClickListener {
-            RemoveScheduleTask(requireActivity() as SchedulerActivityX).execute(schedule)
+        binding.removeButton.setOnClickListener {
+            val removeTask = RemoveScheduleTask(requireActivity() as SchedulerActivityX)
+            removeTask.execute(schedule)
+            while (removeTask.status != CoroutinesAsyncTask.Status.FINISHED) {
+                Thread.sleep(100)
+            }
             RefreshSchedulesTask(requireActivity() as SchedulerActivityX).execute()
             dismissAllowingStateLoss()
         }
-        binding!!.activateButton.setOnClickListener {
+        binding.activateButton.setOnClickListener {
             AlertDialog.Builder(requireActivity())
-                    .setMessage(getString(com.machiav3lli.backup.R.string.sched_activateButton))
-                    .setPositiveButton(com.machiav3lli.backup.R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                    .setMessage(getString(R.string.sched_activateButton))
+                    .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
                         StartSchedule(requireContext(),
                                 HandleScheduledBackups(requireContext()), idNumber, BlacklistsDBHelper.DATABASE_NAME).execute()
                     }
-                    .setNegativeButton(com.machiav3lli.backup.R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+                    .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
                     .show()
         }
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        binding!!.timeOfDay.text = LocalTime.of(hourOfDay, minute).toString()
+        binding.timeOfDay.text = LocalTime.of(hourOfDay, minute).toString()
         refreshSheet()
     }
 
     override fun onIntervalConfirmed(intervalInDays: Int) {
-        binding!!.intervalDays.text = intervalInDays.toString()
+        binding.intervalDays.text = intervalInDays.toString()
         refreshSheet()
     }
 
@@ -244,32 +247,25 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
         Thread(modeChangerRunnable).start()
     }
 
-    private fun updateScheduleData(schedule: Schedule) {
-        val updateScheduleRunnable = UpdateScheduleRunnable(requireActivity() as SchedulerActivityX,
-                BlacklistsDBHelper.DATABASE_NAME, schedule)
-        Thread(updateScheduleRunnable).start()
-        setTimeLeft(schedule, System.currentTimeMillis())
-    }
-
     private fun getScheduleDataFromView(id: Int): Schedule {
-        val enableCustomList = binding!!.enableCustomList.isChecked
-        val excludeSystemPackages = binding!!.excludeSystem.isChecked
-        val enabled = binding!!.enableCheckbox.isChecked
-        val time = binding!!.timeOfDay.text.toString()
+        val enableCustomList = binding.enableCustomList.isChecked
+        val excludeSystemPackages = binding.excludeSystem.isChecked
+        val enabled = binding.enableCheckbox.isChecked
+        val time = binding.timeOfDay.text.toString()
                 .split(":")
                 .map { it.toInt() }
                 .toTypedArray()
         val timeHour = time[0]
         val timeMinute = time[1]
-        val interval = binding!!.intervalDays.text.toString().toInt()
+        val interval = binding.intervalDays.text.toString().toInt()
         if (enabled) handleAlarms!!.setAlarm(id, interval, timeHour, timeMinute)
         return Schedule.Builder()
                 .withId(id)
                 .withTimeHour(timeHour)
                 .withTimeMinute(timeMinute)
                 .withInterval(interval)
-                .withMode(idToMode(binding!!.schedMode.checkedChipId))
-                .withSubmode(idToSubMode(binding!!.schedSubMode.checkedChipId))
+                .withMode(idToMode(binding.schedMode.checkedChipId))
+                .withSubmode(idToSubMode(binding.schedSubMode.checkedChipId))
                 .withTimePlaced(System.currentTimeMillis())
                 .withEnabled(enabled)
                 .withExcludeSystem(excludeSystemPackages)
@@ -279,13 +275,13 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
 
     private fun toggleSecondaryButtons(chipGroup: ChipGroup, number: Long) {
         if (chipGroup.checkedChipId == R.id.schedNewUpdated) {
-            if (binding!!.excludeSystem.visibility != View.GONE) return
-            binding!!.excludeSystem.visibility = View.VISIBLE
-            binding!!.excludeSystem.tag = number
+            if (binding.excludeSystem.visibility != View.GONE) return
+            binding.excludeSystem.visibility = View.VISIBLE
+            binding.excludeSystem.tag = number
             ScheduleExcludeSystemSetTask(requireActivity() as SchedulerActivityX,
-                    number, binding!!.excludeSystem).execute()
+                    number, binding.excludeSystem).execute()
         } else {
-            binding!!.excludeSystem.visibility = View.GONE
+            binding.excludeSystem.visibility = View.GONE
         }
     }
 
@@ -329,7 +325,7 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
                     scheduler.runOnUiThread(Runnable {
                         val state = if (mode != null) "mode" else "subMode"
                         Toast.makeText(scheduler,
-                                "${scheduler.getString(com.machiav3lli.backup.R.string.error_updating_schedule_mode)}$state$id",
+                                "${scheduler.getString(R.string.error_updating_schedule_mode)}$state$id",
                                 Toast.LENGTH_LONG).show()
                     })
                 }
@@ -349,7 +345,6 @@ class ScheduleSheet(item: SchedulerItemX) : BottomSheetDialogFragment(), TimePic
                 scheduleDao.update(schedule)
             }
         }
-
     }
 
     // TODO: this class should ideally just implement Runnable but the

@@ -97,7 +97,7 @@ object ItemUtils {
     fun pickSheetVersionName(app: AppInfoX, binding: SheetAppBinding) {
         if (app.isUpdated) {
             val latestBackupVersion = app.latestBackup?.backupProperties?.versionName
-            val updatedVersionString = latestBackupVersion + " (" + app.versionName + ")"
+            val updatedVersionString = "$latestBackupVersion (${app.versionName})"
             binding.versionName.text = updatedVersionString
             binding.versionName.setTextColor(COLOR_UPDATE)
         } else {
@@ -109,12 +109,10 @@ object ItemUtils {
     fun pickSheetAppType(app: AppInfoX, text: AppCompatTextView) {
         var color: Int
         if (app.isInstalled) {
-            color = if (app.isSpecial) {
-                COLOR_SPECIAL
-            } else if (app.isSystem) {
-                COLOR_SYSTEM
-            } else {
-                COLOR_USER
+            color = when {
+                app.isSpecial -> COLOR_SPECIAL
+                app.isSystem -> COLOR_SYSTEM
+                else -> COLOR_USER
             }
             if (app.isDisabled) {
                 color = COLOR_DISABLED
@@ -127,18 +125,22 @@ object ItemUtils {
 
     fun pickItemAppType(app: AppInfoX, icon: AppCompatImageView) {
         var color: ColorStateList
-        if (app.isSpecial) {
-            color = ColorStateList.valueOf(COLOR_SPECIAL)
-            icon.visibility = View.VISIBLE
-            icon.setImageResource(R.drawable.ic_special_24)
-        } else if (app.isSystem) {
-            color = ColorStateList.valueOf(COLOR_SYSTEM)
-            icon.visibility = View.VISIBLE
-            icon.setImageResource(R.drawable.ic_system_24)
-        } else {
-            color = ColorStateList.valueOf(COLOR_USER)
-            icon.visibility = View.VISIBLE
-            icon.setImageResource(R.drawable.ic_user_24)
+        when {
+            app.isSpecial -> {
+                color = ColorStateList.valueOf(COLOR_SPECIAL)
+                icon.visibility = View.VISIBLE
+                icon.setImageResource(R.drawable.ic_special_24)
+            }
+            app.isSystem -> {
+                color = ColorStateList.valueOf(COLOR_SYSTEM)
+                icon.visibility = View.VISIBLE
+                icon.setImageResource(R.drawable.ic_system_24)
+            }
+            else -> {
+                color = ColorStateList.valueOf(COLOR_USER)
+                icon.visibility = View.VISIBLE
+                icon.setImageResource(R.drawable.ic_user_24)
+            }
         }
         if (!app.isSpecial) {
             if (app.isDisabled) {

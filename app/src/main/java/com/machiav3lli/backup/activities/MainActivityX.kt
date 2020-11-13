@@ -92,12 +92,12 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private var appsList: List<AppInfoX>? = null
 
     // TODO optimize usage (maybe a map instead?)
-    var apkCheckedList: MutableList<String>? = java.util.ArrayList()
-    var dataCheckedList: MutableList<String>? = java.util.ArrayList()
+    var apkCheckedList: MutableList<String> = java.util.ArrayList()
+    var dataCheckedList: MutableList<String> = java.util.ArrayList()
     private var updatedBadge: BadgeDrawable? = null
     private var badgeCounter = 0
     private var powerManager: PowerManager? = null
-    private var binding: ActivityMainXBinding? = null
+    private lateinit var binding: ActivityMainXBinding
     val mainItemAdapter = ItemAdapter<MainItemX>()
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
     val batchItemAdapter = ItemAdapter<BatchItemX>()
@@ -114,7 +114,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainXBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs(this)
         checkUtilBox()
@@ -126,8 +126,10 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        apkCheckedList = savedInstanceState.getStringArrayList("apkCheckedList")
-        dataCheckedList = savedInstanceState.getStringArrayList("dataCheckedList")
+        apkCheckedList = savedInstanceState
+                .getStringArrayList("apkCheckedList")?.toMutableList() ?: mutableListOf()
+        dataCheckedList = savedInstanceState
+                .getStringArrayList("dataCheckedList")?.toMutableList() ?: mutableListOf()
         setupViews(savedInstanceState)
         setupNavigation()
         setupOnClicks()
@@ -141,8 +143,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         var outState = outState
         outState = mainFastAdapter!!.saveInstanceState(outState)
         outState = batchFastAdapter!!.saveInstanceState(outState)
-        outState.putStringArrayList("apkCheckedList", java.util.ArrayList(apkCheckedList))
-        outState.putStringArrayList("dataCheckedList", java.util.ArrayList(dataCheckedList))
+        outState.putStringArrayList("apkCheckedList", ArrayList(apkCheckedList))
+        outState.putStringArrayList("dataCheckedList", ArrayList(dataCheckedList))
         super.onSaveInstanceState(outState)
     }
 
@@ -151,11 +153,11 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     }
 
     private fun setupViews(savedInstanceState: Bundle?) {
-        binding!!.refreshLayout.setColorSchemeColors(resources.getColor(R.color.app_accent, theme))
-        binding!!.refreshLayout.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.app_primary_base, theme))
-        binding!!.cbAll.isChecked = false
-        binding!!.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
-        updatedBadge = binding!!.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
+        binding.refreshLayout.setColorSchemeColors(resources.getColor(R.color.app_accent, theme))
+        binding.refreshLayout.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.app_primary_base, theme))
+        binding.cbAll.isChecked = false
+        binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
+        updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
         updatedBadge!!.backgroundColor = resources.getColor(R.color.app_accent, theme)
         updatedBadge!!.isVisible = badgeCounter != 0
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
@@ -169,15 +171,15 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 batchFastAdapter = batchFastAdapter!!.withSavedInstanceState(savedInstanceState)
             }
         }
-        binding!!.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding!!.refreshLayout.setOnRefreshListener { cleanRefresh() }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.refreshLayout.setOnRefreshListener { cleanRefresh() }
     }
 
     private fun setupNavigation() {
         val navHostFragment = (supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment?)!!
         navController = navHostFragment.navController
-        binding!!.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
-            if (item.itemId == binding!!.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
+            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
             navController!!.navigate(item.itemId)
             true
         }
@@ -198,27 +200,27 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun navigateMain() {
         mainBoolean = true
-        binding!!.batchBar.visibility = View.GONE
-        binding!!.modeBar.visibility = View.GONE
-        binding!!.recyclerView.adapter = mainFastAdapter
+        binding.batchBar.visibility = View.GONE
+        binding.modeBar.visibility = View.GONE
+        binding.recyclerView.adapter = mainFastAdapter
     }
 
     private fun navigateBatch() {
         mainBoolean = false
-        binding!!.batchBar.visibility = View.VISIBLE
-        binding!!.modeBar.visibility = View.VISIBLE
-        binding!!.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
-        binding!!.recyclerView.adapter = batchFastAdapter
-        binding!!.buttonAction.setOnClickListener { actionOnClick(backupBoolean) }
-        apkCheckedList!!.clear()
-        dataCheckedList!!.clear()
+        binding.batchBar.visibility = View.VISIBLE
+        binding.modeBar.visibility = View.VISIBLE
+        binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
+        binding.recyclerView.adapter = batchFastAdapter
+        binding.buttonAction.setOnClickListener { actionOnClick(backupBoolean) }
+        apkCheckedList.clear()
+        dataCheckedList.clear()
     }
 
     private fun setupOnClicks() {
-        binding!!.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
-        binding!!.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
-        binding!!.cbAll.setOnClickListener { v: View -> onCheckAllChanged(v) }
-        binding!!.buttonSortFilter.setOnClickListener {
+        binding.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
+        binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
+        binding.cbAll.setOnClickListener { v: View -> onCheckAllChanged(v) }
+        binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(getFilterPreferences(this).toString()))
             sheetSortFilter!!.show(supportFragmentManager, "SORTFILTERSHEET")
         }
@@ -233,39 +235,39 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             item.isApkChecked = !oldChecked
             item.isDataChecked = !oldChecked
             if (item.isChecked) {
-                if (!apkCheckedList!!.contains(item.app.packageName)) {
-                    apkCheckedList!!.add(item.app.packageName)
+                if (!apkCheckedList.contains(item.app.packageName)) {
+                    apkCheckedList.add(item.app.packageName)
                 }
-                if (!dataCheckedList!!.contains(item.app.packageName)) {
-                    dataCheckedList!!.add(item.app.packageName)
+                if (!dataCheckedList.contains(item.app.packageName)) {
+                    dataCheckedList.add(item.app.packageName)
                 }
             } else {
-                apkCheckedList!!.remove(item.app.packageName)
-                dataCheckedList!!.remove(item.app.packageName)
+                apkCheckedList.remove(item.app.packageName)
+                dataCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
             false
         }
-        binding!!.apkBatch.setOnClickListener {
-            val checkBoolean = apkCheckedList!!.size != batchItemAdapter.itemList.size()
-            apkCheckedList!!.clear()
+        binding.apkBatch.setOnClickListener {
+            val checkBoolean = apkCheckedList.size != batchItemAdapter.itemList.size()
+            apkCheckedList.clear()
             batchItemAdapter.adapterItems.forEach(Consumer { batchItemX: BatchItemX ->
                 val packageName = batchItemX.app.packageName
                 batchItemX.isApkChecked = checkBoolean
-                if (checkBoolean) apkCheckedList!!.add(packageName)
+                if (checkBoolean) apkCheckedList.add(packageName)
             }
             )
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
         }
-        binding!!.dataBatch.setOnClickListener {
-            val checkBoolean = dataCheckedList!!.size != batchItemAdapter.itemList.size()
-            dataCheckedList!!.clear()
+        binding.dataBatch.setOnClickListener {
+            val checkBoolean = dataCheckedList.size != batchItemAdapter.itemList.size()
+            dataCheckedList.clear()
             batchItemAdapter.adapterItems.forEach(Consumer { batchItemX: BatchItemX ->
                 val packageName = batchItemX.app.packageName
                 batchItemX.isDataChecked = checkBoolean
-                if (checkBoolean) dataCheckedList!!.add(packageName)
+                if (checkBoolean) dataCheckedList.add(packageName)
             }
             )
             batchFastAdapter!!.notifyAdapterDataSetChanged()
@@ -277,27 +279,27 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun onCheckAllChanged(v: View) {
         val startIsChecked = (v as AppCompatCheckBox).isChecked
-        binding!!.cbAll.isChecked = startIsChecked
+        binding.cbAll.isChecked = startIsChecked
         for (item in batchItemAdapter.adapterItems) {
             item.isApkChecked = startIsChecked
             item.isDataChecked = startIsChecked
             if (startIsChecked) {
-                if (!apkCheckedList!!.contains(item.app.packageName)) {
-                    apkCheckedList!!.add(item.app.packageName)
+                if (!apkCheckedList.contains(item.app.packageName)) {
+                    apkCheckedList.add(item.app.packageName)
                 }
-                if (!dataCheckedList!!.contains(item.app.packageName)) {
-                    dataCheckedList!!.add(item.app.packageName)
+                if (!dataCheckedList.contains(item.app.packageName)) {
+                    dataCheckedList.add(item.app.packageName)
                 }
             } else {
-                apkCheckedList!!.remove(item.app.packageName)
-                dataCheckedList!!.remove(item.app.packageName)
+                apkCheckedList.remove(item.app.packageName)
+                dataCheckedList.remove(item.app.packageName)
             }
         }
         batchFastAdapter!!.notifyAdapterDataSetChanged()
     }
 
     private fun updateCheckAll() {
-        binding!!.cbAll.isChecked = apkCheckedList!!.size == batchItemAdapter.itemList.size() && dataCheckedList!!.size == batchItemAdapter.itemList.size()
+        binding.cbAll.isChecked = apkCheckedList.size == batchItemAdapter.itemList.size() && dataCheckedList.size == batchItemAdapter.itemList.size()
     }
 
     inner class OnApkCheckBoxClickHook : ClickEventHook<BatchItemX>() {
@@ -307,10 +309,10 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<BatchItemX>, item: BatchItemX) {
             item.isApkChecked = !item.isApkChecked
-            if (item.isApkChecked && !apkCheckedList!!.contains(item.app.packageName)) {
-                apkCheckedList!!.add(item.app.packageName)
+            if (item.isApkChecked && !apkCheckedList.contains(item.app.packageName)) {
+                apkCheckedList.add(item.app.packageName)
             } else {
-                apkCheckedList!!.remove(item.app.packageName)
+                apkCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
@@ -324,10 +326,10 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<BatchItemX>, item: BatchItemX) {
             item.isDataChecked = !item.isDataChecked
-            if (item.isDataChecked && !dataCheckedList!!.contains(item.app.packageName)) {
-                dataCheckedList!!.add(item.app.packageName)
+            if (item.isDataChecked && !dataCheckedList.contains(item.app.packageName)) {
+                dataCheckedList.add(item.app.packageName)
             } else {
-                dataCheckedList!!.remove(item.app.packageName)
+                dataCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
@@ -393,7 +395,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         val notificationId = System.currentTimeMillis().toInt()
         val totalOfActions = selectedItems.size
         val backupRestoreHelper = BackupRestoreHelper()
-        val mileStones = IntRange(0, 5).map { step: Int -> step * totalOfActions / 5 + 1 }.toList()
+        val mileStones = IntRange(0, 5).map { it * totalOfActions / 5 + 1 }.toList()
         var result: ActionResult?
         val results: MutableList<ActionResult> = java.util.ArrayList(totalOfActions)
         var i = 1
@@ -424,8 +426,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
         // Calculate the overall result
         val errors = results
-                .map { result -> result.message }
-                .filter { msg: String -> msg.isNotEmpty() }
+                .map { it.message }
+                .filter { it.isNotEmpty() }
                 .joinToString(separator = "\n")
         val overAllResult = ActionResult(null, null, errors, results.parallelStream().anyMatch(ActionResult::succeeded))
 
@@ -462,13 +464,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     fun refresh(mainBoolean: Boolean, backupOrAppSheetBoolean: Boolean, cleanBoolean: Boolean) {
         Log.d(TAG, "refreshing")
         runOnUiThread {
-            binding!!.refreshLayout.isRefreshing = true
+            binding.refreshLayout.isRefreshing = true
             searchViewController!!.clean()
         }
         badgeCounter = 0
         if (mainBoolean || cleanBoolean) {
-            apkCheckedList!!.clear()
-            dataCheckedList!!.clear()
+            apkCheckedList.clear()
+            dataCheckedList.clear()
         }
         sheetSortFilter = SortFilterSheet(getFilterPreferences(this))
         Thread {
@@ -500,9 +502,9 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 updatedBadge!!.isVisible = badgeCounter != 0
             }
             mainFastAdapter!!.notifyAdapterDataSetChanged()
-            binding!!.refreshLayout.isRefreshing = false
+            binding.refreshLayout.isRefreshing = false
             if (appSheetBoolean && sheetApp != null) refreshAppSheet()
-            OnlyInJava.slideUp(binding!!.bottomBar)
+            OnlyInJava.slideUp(binding.bottomBar)
         }
     }
 
@@ -547,7 +549,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             searchViewController!!.setup()
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
-            binding!!.refreshLayout.isRefreshing = false
+            binding.refreshLayout.isRefreshing = false
             OnlyInJava.slideUp(binding!!.bottomBar)
         }
     }
@@ -563,8 +565,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             for (app in filteredList) {
                 if (toAddToBatch(backupBoolean, app)) {
                     val item = BatchItemX(app)
-                    if (apkCheckedList!!.contains(app.packageName)) item.isApkChecked = true
-                    if (dataCheckedList!!.contains(app.packageName)) item.isDataChecked = true
+                    if (apkCheckedList.contains(app.packageName)) item.isApkChecked = true
+                    if (dataCheckedList.contains(app.packageName)) item.isDataChecked = true
                     list.add(item)
                 }
             }

@@ -50,7 +50,7 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
             status = Status.FINISHED
             withContext(Dispatchers.Main) {
                 // onPostExecute works on main thread to show output
-                Log.d("Alpha", "after do in back ${status.name}--$isCancelled")
+                Log.d(TAG, "after do in back ${status.name}--$isCancelled")
                 if (!isCancelled) {
                     onPostExecute(result)
                 }
@@ -63,7 +63,7 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
         status = Status.FINISHED
         GlobalScope.launch(Dispatchers.Main) {
             // onPostExecute works on main thread to show output
-            Log.d("Alpha", "after cancel ${status.name}--$isCancelled")
+            Log.d(TAG, "after cancel ${status.name}--$isCancelled")
             onPostExecute(null)
         }
     }

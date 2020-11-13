@@ -71,7 +71,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
     private var shellCommands: ShellCommands? = null
     var app: AppInfoX
     var position: Int
-    private var binding: SheetAppBinding? = null
+    private lateinit var binding: SheetAppBinding
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
     private var backupFastAdapter: FastAdapter<BackupItemX>? = null
 
@@ -96,14 +96,9 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
         return sheet
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = SheetAppBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -116,22 +111,20 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
 
     fun updateApp(item: MainItemX) {
         app = item.app
-        if (binding != null) {
-            setupChips(true)
-            setupAppInfo(true)
-            setupBackupList()
-        }
+        setupChips(true)
+        setupAppInfo(true)
+        setupBackupList()
     }
 
     private fun setupBackupList() {
         backupItemAdapter.clear()
         when {
             app.hasBackups() -> {
-                binding!!.recyclerView.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.VISIBLE
                 backupFastAdapter = FastAdapter.with(backupItemAdapter)
                 backupFastAdapter!!.setHasStableIds(true)
-                binding!!.recyclerView.adapter = backupFastAdapter
-                binding!!.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerView.adapter = backupFastAdapter
+                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 backupFastAdapter!!.addEventHook(OnRestoreClickHook())
                 backupFastAdapter!!.addEventHook(OnDeleteClickHook())
                 val backupList = mutableListOf<BackupItemX>()
@@ -139,68 +132,68 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                 val sortedBackupList = backupList.sortedWith(SortFilterManager.BACKUP_DATE_COMPARATOR)
                 set(backupItemAdapter, sortedBackupList)
             }
-            else -> binding!!.recyclerView.visibility = View.GONE
+            else -> binding.recyclerView.visibility = View.GONE
         }
     }
 
     private fun setupChips(update: Boolean) {
         if (app.isInstalled) {
-            setVisibility(binding!!.enablePackage, if (app.isDisabled) View.VISIBLE else View.GONE, update)
-            setVisibility(binding!!.disablePackage, if (app.isDisabled || app.isSpecial) View.GONE else View.VISIBLE, update)
-            setVisibility(binding!!.uninstall, View.VISIBLE, update)
-            setVisibility(binding!!.backup, View.VISIBLE, update)
-            setVisibility(binding!!.appSizeLine, View.VISIBLE, update)
-            setVisibility(binding!!.dataSizeLine, View.VISIBLE, update)
-            setVisibility(binding!!.cacheSizeLine, View.VISIBLE, update)
+            setVisibility(binding.enablePackage, if (app.isDisabled) View.VISIBLE else View.GONE, update)
+            setVisibility(binding.disablePackage, if (app.isDisabled || app.isSpecial) View.GONE else View.VISIBLE, update)
+            setVisibility(binding.uninstall, View.VISIBLE, update)
+            setVisibility(binding.backup, View.VISIBLE, update)
+            setVisibility(binding.appSizeLine, View.VISIBLE, update)
+            setVisibility(binding.dataSizeLine, View.VISIBLE, update)
+            setVisibility(binding.cacheSizeLine, View.VISIBLE, update)
         } else {
             // Special app is not installed but backup should be possible... maybe a check of the backup is really
             // possible on the device could be an indicator for `isInstalled()` of special packages
             if (!app.isSpecial) {
-                setVisibility(binding!!.backup, View.GONE, update)
+                setVisibility(binding.backup, View.GONE, update)
             }
-            setVisibility(binding!!.uninstall, View.GONE, update)
-            setVisibility(binding!!.enablePackage, View.GONE, update)
-            setVisibility(binding!!.disablePackage, View.GONE, update)
-            setVisibility(binding!!.appSizeLine, View.GONE, update)
-            setVisibility(binding!!.dataSizeLine, View.GONE, update)
-            setVisibility(binding!!.cacheSizeLine, View.GONE, update)
+            setVisibility(binding.uninstall, View.GONE, update)
+            setVisibility(binding.enablePackage, View.GONE, update)
+            setVisibility(binding.disablePackage, View.GONE, update)
+            setVisibility(binding.appSizeLine, View.GONE, update)
+            setVisibility(binding.dataSizeLine, View.GONE, update)
+            setVisibility(binding.cacheSizeLine, View.GONE, update)
         }
         if (app.isSystem) {
-            setVisibility(binding!!.uninstall, View.GONE, update)
+            setVisibility(binding.uninstall, View.GONE, update)
         }
     }
 
     private fun setupAppInfo(update: Boolean) {
         val appInfo = app.appInfo
         if (appInfo!!.applicationIcon != null) {
-            binding!!.icon.setImageDrawable(appInfo.applicationIcon)
+            binding.icon.setImageDrawable(appInfo.applicationIcon)
         } else {
-            binding!!.icon.setImageResource(com.machiav3lli.backup.R.drawable.ic_placeholder)
+            binding.icon.setImageResource(com.machiav3lli.backup.R.drawable.ic_placeholder)
         }
-        binding!!.label.text = appInfo.packageLabel
-        binding!!.packageName.text = app.packageName
-        binding!!.appType.setText(if (appInfo.isSystem) com.machiav3lli.backup.R.string.apptype_system else com.machiav3lli.backup.R.string.apptype_user)
-        pickSheetDataSizes(requireContext(), app, binding!!, update)
-        binding!!.appSplits.setText(if (app.apkSplits != null) com.machiav3lli.backup.R.string.dialogYes else com.machiav3lli.backup.R.string.dialogNo)
-        binding!!.versionName.text = appInfo.versionName
+        binding.label.text = appInfo.packageLabel
+        binding.packageName.text = app.packageName
+        binding.appType.setText(if (appInfo.isSystem) com.machiav3lli.backup.R.string.apptype_system else com.machiav3lli.backup.R.string.apptype_user)
+        pickSheetDataSizes(requireContext(), app, binding, update)
+        binding.appSplits.setText(if (app.apkSplits != null) com.machiav3lli.backup.R.string.dialogYes else com.machiav3lli.backup.R.string.dialogNo)
+        binding.versionName.text = appInfo.versionName
         if (app.hasBackups()) {
-            pickSheetVersionName(app, binding!!)
-            binding!!.deleteAll.visibility = View.VISIBLE
+            pickSheetVersionName(app, binding)
+            binding.deleteAll.visibility = View.VISIBLE
         } else {
-            binding!!.deleteAll.visibility = View.GONE
+            binding.deleteAll.visibility = View.GONE
         }
-        pickSheetAppType(app, binding!!.appType)
+        pickSheetAppType(app, binding.appType)
     }
 
     private fun setupOnClicks(fragment: AppSheet) {
-        binding!!.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding!!.exodusReport.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(exodusUrl(app.packageName)))) }
-        binding!!.appInfo.setOnClickListener {
+        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.exodusReport.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(exodusUrl(app.packageName)))) }
+        binding.appInfo.setOnClickListener {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             intent.data = Uri.fromParts("package", app.packageName, null)
             this.startActivity(intent)
         }
-        binding!!.wipeCache.setOnClickListener {
+        binding.wipeCache.setOnClickListener {
             try {
                 Log.i(TAG, "$app: Wiping cache")
                 wipeCache(requireContext(), app)
@@ -215,7 +208,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                 Log.w(TAG, "Cache couldn't be deleted: $errorMessage")
             }
         }
-        binding!!.backup.setOnClickListener {
+        binding.backup.setOnClickListener {
             val arguments = Bundle()
             arguments.putParcelable("package", app.packageInfo)
             arguments.putString("packageLabel", app.packageLabel)
@@ -223,7 +216,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
             dialog.arguments = arguments
             dialog.show(requireActivity().supportFragmentManager, "backupDialog")
         }
-        binding!!.deleteAll.setOnClickListener {
+        binding.deleteAll.setOnClickListener {
             AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
                     .setMessage(com.machiav3lli.backup.R.string.deleteBackupDialogMessage)
@@ -241,9 +234,9 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                     .setNegativeButton(com.machiav3lli.backup.R.string.dialogNo, null)
                     .show()
         }
-        binding!!.enablePackage.setOnClickListener { displayDialogEnableDisable(app.packageName, true) }
-        binding!!.disablePackage.setOnClickListener { displayDialogEnableDisable(app.packageName, false) }
-        binding!!.uninstall.setOnClickListener {
+        binding.enablePackage.setOnClickListener { displayDialogEnableDisable(app.packageName, true) }
+        binding.disablePackage.setOnClickListener { displayDialogEnableDisable(app.packageName, false) }
+        binding.uninstall.setOnClickListener {
             AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
                     .setMessage(com.machiav3lli.backup.R.string.uninstallDialogMessage)

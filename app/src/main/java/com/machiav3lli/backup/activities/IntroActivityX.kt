@@ -42,13 +42,14 @@ import com.machiav3lli.backup.utils.UIUtils
 import com.scottyab.rootbeer.RootBeer
 
 class IntroActivityX : BaseActivity() {
-    private var binding: ActivityIntroXBinding? = null
-    var prefs: SharedPreferences? = null
-    var navController: NavController? = null
+    private lateinit var binding: ActivityIntroXBinding
+    private var prefs: SharedPreferences? = null
+    private var navController: NavController? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
         prefs = PrefUtils.getPrivateSharedPrefs(this)
         setupNavigation()
         if (intent.extras != null) {
@@ -61,8 +62,8 @@ class IntroActivityX : BaseActivity() {
         navController = Navigation.findNavController(this, R.id.introContainer)
         navController!!.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
             if (destination.id == R.id.welcomeFragment) {
-                binding!!.positiveButton.setText(R.string.dialog_start)
-                binding!!.positiveButton.setOnClickListener {
+                binding.positiveButton.setText(R.string.dialog_start)
+                binding.positiveButton.setOnClickListener {
                     if (checkRootAccess()) {
                         prefs!!.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply()
                         moveTo(2)
@@ -77,11 +78,11 @@ class IntroActivityX : BaseActivity() {
             1 -> navController!!.navigate(R.id.welcomeFragment)
             2 -> {
                 navController!!.navigate(R.id.permissionsFragment)
-                binding!!.positiveButton.visibility = View.GONE
+                binding.positiveButton.visibility = View.GONE
             }
             3 -> {
-                binding!!.positiveButton.visibility = View.VISIBLE
-                binding!!.positiveButton.setOnClickListener { launchMainActivity() }
+                binding.positiveButton.visibility = View.VISIBLE
+                binding.positiveButton.setOnClickListener { launchMainActivity() }
                 launchMainActivity()
             }
         }
@@ -139,10 +140,10 @@ class IntroActivityX : BaseActivity() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
                 if (errorCode == BiometricConstants.ERROR_USER_CANCELED) {
-                    binding!!.positiveButton.setText(R.string.dialog_unlock)
-                    binding!!.positiveButton.visibility = View.VISIBLE
+                    binding.positiveButton.setText(R.string.dialog_unlock)
+                    binding.positiveButton.visibility = View.VISIBLE
                 } else {
-                    binding!!.positiveButton.visibility = View.GONE
+                    binding.positiveButton.visibility = View.GONE
                 }
             }
         })

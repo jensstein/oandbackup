@@ -26,7 +26,7 @@ import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.PrefsServiceFragment
 
 class PrefsActivity : BaseActivity() {
-    private var binding: ActivityPrefsBinding? = null
+    private lateinit var binding: ActivityPrefsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +36,9 @@ class PrefsActivity : BaseActivity() {
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.prefsFragment, PrefsFragment()).commit()
         }
-        binding!!.backButton.setOnClickListener { v: View? -> if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
+        binding.backButton.setOnClickListener { v: View? -> if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
 
-        setContentView(binding!!.root)
+        setContentView(binding.root)
     }
 
     class PrefsFragment : PreferenceFragmentCompat() {

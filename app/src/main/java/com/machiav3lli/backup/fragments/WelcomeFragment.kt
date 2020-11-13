@@ -30,11 +30,11 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
-    private var binding: FragmentWelcomeBinding? = null
+    private lateinit var binding: FragmentWelcomeBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,21 +43,16 @@ class WelcomeFragment : Fragment() {
         setupOnClicks()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     private fun setupOnClicks() {
-        binding!!.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))) }
-        binding!!.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))) }
-        binding!!.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))) }
-        binding!!.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))) }
+        binding.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))) }
+        binding.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))) }
+        binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))) }
+        binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))) }
     }
 
     private fun setupViews() {
         try {
-            binding!!.versionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
+            binding.versionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
     }

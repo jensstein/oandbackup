@@ -41,7 +41,8 @@ import java.io.InputStream
 import java.util.*
 
 class HelpSheet : BottomSheetDialogFragment() {
-    private var binding: SheetHelpBinding? = null
+    private lateinit var binding: SheetHelpBinding
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
@@ -54,7 +55,7 @@ class HelpSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = SheetHelpBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,29 +64,24 @@ class HelpSheet : BottomSheetDialogFragment() {
         setupViews()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     private fun setupOnClicks() {
-        binding!!.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding!!.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))) }
-        binding!!.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))) }
-        binding!!.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))) }
-        binding!!.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))) }
+        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_CHANGELOG))) }
+        binding.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))) }
+        binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))) }
+        binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))) }
     }
 
     private fun setupViews() {
         try {
-            binding!!.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
+            binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
             val stream = resources.openRawResource(com.machiav3lli.backup.R.raw.help)
             val htmlString = convertStreamToString(stream)
             stream.close()
-            binding!!.helpHtml.text = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
-            binding!!.helpHtml.movementMethod = LinkMovementMethod.getInstance()
+            binding.helpHtml.text = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.helpHtml.movementMethod = LinkMovementMethod.getInstance()
         } catch (e: IOException) {
-            binding!!.helpHtml.text = e.toString()
+            binding.helpHtml.text = e.toString()
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
     }
