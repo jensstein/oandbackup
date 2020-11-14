@@ -381,4 +381,5 @@
     <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
     <string name="prefs_cachepackages_summary" translatable="false"></string>
     <string name="sched_exported"></string>
+    <string name="forceKillMessage"></string>
 </resources>
