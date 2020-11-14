@@ -380,9 +380,9 @@
     <string name="prefs_accent_8"></string>
     <string name="home"></string>
     <string name="all_data"></string>
-    <string name="msg_appkill_warning"/>
-    <string name="prefs_acquirewakelock_summary"/>
-    <string name="forceKillMessage"/>
+    <string name="msg_appkill_warning"></string>
+    <string name="prefs_acquirewakelock_summary"></string>
+    <string name="forceKillMessage"></string>
     <string name="sched_exported"/>
     <string name="prefs_nobackupdata"></string>
     <string name="prefs_nobackupdata_summary"></string>
