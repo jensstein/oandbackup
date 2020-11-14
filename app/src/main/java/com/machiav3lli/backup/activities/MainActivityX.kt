@@ -488,7 +488,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         sheetSortFilter = SortFilterSheet(getFilterPreferences(this))
         Thread {
             try {
-                appsList = getApplicationList(this.applicationContext)
+                if (appsList.isNullOrEmpty() || StorageFile.cacheDirty)
+                    appsList = getApplicationList(this.applicationContext)
                 getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)
                 val filteredList = applyFilter(appsList!!,
                         getFilterPreferences(this).toString(), this)
