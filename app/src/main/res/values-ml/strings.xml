@@ -378,4 +378,7 @@
     <string name="batch"></string>
     <string name="enable_encryption_message"></string>
     <string name="sched_exported"></string>
+    <string name="msg_appkill_warning"></string>
+    <string name="forceKillMessage"></string>
+    <string name="prefs_acquirewakelock_summary"></string>
 </resources>
