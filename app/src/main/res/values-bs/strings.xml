@@ -380,4 +380,7 @@
     <string name="prefs_accent_8"></string>
     <string name="home"></string>
     <string name="all_data"></string>
+    <string name="msg_appkill_warning"></string>
+    <string name="prefs_acquirewakelock_summary"></string>
+    <string name="forceKillMessage"></string>
 </resources>
