@@ -505,7 +505,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun refreshMain(filteredList: List<AppInfoX>, appSheetBoolean: Boolean) {
         val mainList = createMainAppsList(filteredList)
         runOnUiThread {
-            if (filteredList.isEmpty()) {
+            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
                 Toast.makeText(baseContext, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 mainItemAdapter.clear()
             }
@@ -524,7 +524,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun createMainAppsList(filteredList: List<AppInfoX>): java.util.ArrayList<MainItemX> {
         val list = java.util.ArrayList<MainItemX>()
-        if (filteredList.isEmpty()) {
+        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
             for (app in applyFilter(appsList!!, "0000", this)) {
                 list.add(MainItemX(app))
                 if (app.isUpdated) badgeCounter += 1
@@ -555,7 +555,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun refreshBatch(filteredList: List<AppInfoX>, backupBoolean: Boolean) {
         val batchList = createBatchAppsList(filteredList, backupBoolean)
         runOnUiThread {
-            if (filteredList.isEmpty()) {
+            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
                 Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 batchItemAdapter.clear()
             }
@@ -570,7 +570,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun createBatchAppsList(filteredList: List<AppInfoX>, backupBoolean: Boolean): java.util.ArrayList<BatchItemX> {
         val list = java.util.ArrayList<BatchItemX>()
-        if (filteredList.isEmpty()) {
+        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
             for (app in applyFilter(appsList!!, "0000", this)) {
                 if (toAddToBatch(backupBoolean, app)) list.add(BatchItemX(app))
             }
