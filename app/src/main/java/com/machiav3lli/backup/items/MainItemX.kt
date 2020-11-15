@@ -17,71 +17,60 @@
  */
 package com.machiav3lli.backup.items
 
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import android.view.ViewGroup
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.databinding.ItemMainXBinding
 import com.machiav3lli.backup.utils.ItemUtils.calculateID
 import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
 import com.machiav3lli.backup.utils.ItemUtils.pickAppBackupMode
 import com.machiav3lli.backup.utils.ItemUtils.pickItemAppType
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.items.AbstractItem
+import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class MainItemX(var app: AppInfoX) : AbstractItem<MainItemX.ViewHolder>() {
-    override val layoutRes: Int
-        get() = R.layout.item_main_x
-
-    override fun getViewHolder(v: View): ViewHolder {
-        return ViewHolder(v)
-    }
+class MainItemX(var app: AppInfoX) : AbstractBindingItem<ItemMainXBinding>() {
 
     override var identifier: Long
         get() = calculateID(app)
         set(identifier) {
             super.identifier = identifier
         }
+
     override val type: Int
         get() = R.id.fastadapter_item
 
-    class ViewHolder(view: View?) : FastAdapter.ViewHolder<MainItemX>(view!!) {
-        var label: AppCompatTextView = itemView.findViewById(R.id.label)
-        var packageName: AppCompatTextView = itemView.findViewById(R.id.packageName)
-        var lastBackup: AppCompatTextView = itemView.findViewById(R.id.lastBackup)
-        var appType: AppCompatImageView = itemView.findViewById(R.id.appType)
-        var update: AppCompatImageView = itemView.findViewById(R.id.update)
-        var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
+    override fun createBinding(inflater: LayoutInflater, parent: ViewGroup?): ItemMainXBinding {
+        return ItemMainXBinding.inflate(inflater, parent, false)
+    }
 
-        override fun bindView(item: MainItemX, payloads: List<Any>) {
-            val app = item.app
-            val meta = app.appInfo
-            if (meta!!.hasIcon()) {
-                icon.setImageDrawable(meta.applicationIcon)
-            } else {
-                icon.setImageResource(R.drawable.ic_placeholder)
-            }
-            label.text = meta.packageLabel
-            packageName.text = app.packageName
-            if (app.hasBackups()) {
-                if (app.isUpdated) {
-                    update.visibility = View.VISIBLE
-                } else {
-                    update.visibility = View.GONE
-                }
-                lastBackup.text = getFormattedDate(app.latestBackup!!.backupProperties.backupDate!!, false)
-            } else {
-                update.visibility = View.GONE
-                lastBackup.text = null
-            }
-            pickAppBackupMode(app, itemView)
-            pickItemAppType(app, appType)
+    override fun bindView(binding: ItemMainXBinding, payloads: List<Any>) {
+        val meta = app.appInfo
+        if (meta!!.hasIcon()) {
+            binding.icon.setImageDrawable(meta.applicationIcon)
+        } else {
+            binding.icon.setImageResource(R.drawable.ic_placeholder)
         }
+        binding.label.text = meta.packageLabel
+        binding.packageName.text = app.packageName
+        if (app.hasBackups()) {
+            if (app.isUpdated) {
+                binding.update.visibility = View.VISIBLE
+            } else {
+                binding.update.visibility = View.GONE
+            }
+            binding.lastBackup.text = getFormattedDate(app.latestBackup!!.backupProperties.backupDate!!, false)
+        } else {
+            binding.update.visibility = View.GONE
+            binding.lastBackup.text = null
+        }
+        pickAppBackupMode(app, binding.root)
+        pickItemAppType(app, binding.appType)
+    }
 
-        override fun unbindView(item: MainItemX) {
-            label.text = null
-            packageName.text = null
-            lastBackup.text = null
-            icon.setImageDrawable(null)
-        }
+    override fun unbindView(binding: ItemMainXBinding) {
+        binding.label.text = null
+        binding.packageName.text = null
+        binding.lastBackup.text = null
+        binding.icon.setImageDrawable(null)
     }
 }

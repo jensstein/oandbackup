@@ -17,94 +17,97 @@
  */
 package com.machiav3lli.backup.items
 
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
+import android.view.ViewGroup
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.schedules.HandleAlarms.Companion.timeUntilNextEvent
 import com.machiav3lli.backup.schedules.db.Schedule
-import com.machiav3lli.backup.utils.ItemUtils.calculateScheduleID
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.items.AbstractItem
+import com.mikepenz.fastadapter.binding.AbstractBindingItem
+import com.mikepenz.fastadapter.diff.DiffCallback
 import java.time.LocalTime
 
-class SchedulerItemX(var schedule: Schedule) : AbstractItem<SchedulerItemX.ViewHolder>() {
-    override val layoutRes: Int
-        get() = R.layout.item_scheduler_x
-
-    override fun getViewHolder(v: View): ViewHolder {
-        return ViewHolder(v)
-    }
+class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemSchedulerXBinding>() {
 
     override var identifier: Long
-        get() = calculateScheduleID(schedule)
+        get() = schedule.id
         set(identifier) {
             super.identifier = identifier
         }
+
     override val type: Int
         get() = R.id.fastadapter_item
 
-    class ViewHolder(view: View?) : FastAdapter.ViewHolder<SchedulerItemX>(view!!) {
-        private var checkbox: AppCompatCheckBox = itemView.findViewById(R.id.enableCheckbox)
-        private var timeLeft: AppCompatTextView = itemView.findViewById(R.id.timeLeft)
-        private var daysLeft: AppCompatTextView = itemView.findViewById(R.id.daysLeft)
-        private var timeLeftLine: LinearLayoutCompat = itemView.findViewById(R.id.timeLeftLine)
-        private var scheduleMode: AppCompatTextView = itemView.findViewById(R.id.schedMode)
-        private var scheduleSubMode: AppCompatTextView = itemView.findViewById(R.id.schedSubMode)
+    override fun createBinding(inflater: LayoutInflater, parent: ViewGroup?): ItemSchedulerXBinding {
+        return ItemSchedulerXBinding.inflate(inflater, parent, false)
+    }
 
-        override fun bindView(item: SchedulerItemX, payloads: List<Any>) {
-            val schedule = item.schedule
-            setScheduleMode(schedule)
-            setScheduleSubMode(schedule)
-            checkbox.isChecked = schedule.enabled
-            setTimeLeft(schedule, System.currentTimeMillis())
-            val tag = schedule.id
-            checkbox.tag = tag
-        }
+    override fun bindView(binding: ItemSchedulerXBinding, payloads: List<Any>) {
+        binding.schedMode.setText(when (schedule.mode.value) {
+            1 -> R.string.radio_user
+            2 -> R.string.radio_system
+            3 -> R.string.showNewAndUpdated
+            else -> R.string.radio_all
+        })
+        binding.schedSubMode.setText(when (schedule.subMode.value) {
+            1 -> R.string.radio_apk
+            2 -> R.string.radio_data
+            else -> R.string.radio_both
+        })
+        binding.enableCheckbox.isChecked = schedule.enabled
+        setTimeLeft(binding)
+    }
 
-        private fun setScheduleMode(schedule: Schedule) {
-            when (schedule.mode.value) {
-                1 -> scheduleMode.setText(R.string.radio_user)
-                2 -> scheduleMode.setText(R.string.radio_system)
-                3 -> scheduleMode.setText(R.string.showNewAndUpdated)
-                else -> scheduleMode.setText(R.string.radio_all)
-            }
-        }
+    override fun unbindView(binding: ItemSchedulerXBinding) {
+        binding.schedMode.text = null
+        binding.schedSubMode.text = null
+        binding.timeLeft.text = null
+    }
 
-        private fun setScheduleSubMode(schedule: Schedule) {
-            when (schedule.subMode.value) {
-                1 -> scheduleSubMode.setText(R.string.radio_apk)
-                2 -> scheduleSubMode.setText(R.string.radio_data)
-                else -> scheduleSubMode.setText(R.string.radio_both)
-            }
-        }
-
-        private fun setTimeLeft(schedule: Schedule, now: Long) {
-            if (!schedule.enabled) {
-                timeLeft.text = ""
-                timeLeftLine.visibility = View.INVISIBLE
+    private fun setTimeLeft(binding: ItemSchedulerXBinding) {
+        if (!schedule.enabled) {
+            binding.timeLeft.text = ""
+            binding.timeLeftLine.visibility = View.INVISIBLE
+        } else {
+            val timeDiff = timeUntilNextEvent(schedule.interval,
+                    schedule.timeHour, schedule.timeMinute, schedule.timePlaced, System.currentTimeMillis())
+            val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
+            if (days == 0) {
+                binding.daysLeft.visibility = View.GONE
             } else {
-                val timeDiff = timeUntilNextEvent(schedule.interval,
-                        schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
-                val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
-                if (days == 0) {
-                    daysLeft.visibility = View.GONE
-                } else {
-                    daysLeft.visibility = View.VISIBLE
-                    daysLeft.text = this.itemView.context.resources.getQuantityString(R.plurals.days_left, days, days)
-                }
-                val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
-                val minutes = (timeDiff / (1000 * 60)).toInt() % 60
-                timeLeft.text = LocalTime.of(hours, minutes).toString()
-                timeLeftLine.visibility = View.VISIBLE
+                binding.daysLeft.visibility = View.VISIBLE
+                binding.daysLeft.text = binding.root.context.resources.getQuantityString(R.plurals.days_left, days, days)
             }
+            val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
+            val minutes = (timeDiff / (1000 * 60)).toInt() % 60
+            binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
+            binding.timeLeftLine.visibility = View.VISIBLE
         }
+    }
 
-        override fun unbindView(item: SchedulerItemX) {
-            scheduleMode.text = null
-            scheduleSubMode.text = null
-            timeLeft.text = null
+    companion object {
+        class SchedulerDiffCallback : DiffCallback<SchedulerItemX> {
+            override fun areContentsTheSame(oldItem: SchedulerItemX, newItem: SchedulerItemX): Boolean {
+                return oldItem.schedule.id == newItem.schedule.id
+            }
+
+            override fun areItemsTheSame(oldItem: SchedulerItemX, newItem: SchedulerItemX): Boolean {
+                return oldItem.schedule.enabled == newItem.schedule.enabled
+                        && oldItem.schedule.timeHour == newItem.schedule.timeHour
+                        && oldItem.schedule.timeMinute == newItem.schedule.timeMinute
+                        && oldItem.schedule.interval == newItem.schedule.interval
+                        && oldItem.schedule.timePlaced == newItem.schedule.timePlaced
+                        && oldItem.schedule.excludeSystem == newItem.schedule.excludeSystem
+                        && oldItem.schedule.enableCustomList == newItem.schedule.enableCustomList
+                        && oldItem.schedule.mode == newItem.schedule.mode
+                        && oldItem.schedule.subMode == newItem.schedule.subMode
+                        && oldItem.schedule.customList == newItem.schedule.customList
+            }
+
+            override fun getChangePayload(oldItem: SchedulerItemX, oldItemPosition: Int, newItem: SchedulerItemX, newItemPosition: Int): Any? {
+                return null
+            }
         }
     }
 }

@@ -15,141 +15,148 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/cards_spacing"
-    android:paddingVertical="4dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/itemLayout"
-        style="@style/ItemLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingHorizontal="@dimen/cards_spacing"
+        android:paddingVertical="4dp">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/apkCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cards_spacing"
-            android:clickable="false"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/dataCheckbox"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/dataCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cards_spacing"
-            android:clickable="false"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/label"
-            app:layout_constraintStart_toEndOf="@id/apkCheckBox"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/label"
-            style="@style/TextViewWrapped"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itemLayout"
+            style="@style/ItemLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Label"
-            app:layout_constraintBottom_toTopOf="@id/packageName"
-            app:layout_constraintEnd_toStartOf="@id/tags"
-            app:layout_constraintStart_toEndOf="@+id/dataCheckbox"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@id/label"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/label"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/update"
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/apkCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_update_24" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cards_spacing"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dataCheckbox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/obbMode"
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/dataCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_obb_data_24" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cards_spacing"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/label"
+                app:layout_constraintStart_toEndOf="@id/apkCheckbox"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/deDataMode"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/label"
+                style="@style/TextViewWrapped"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:layout_constraintBottom_toTopOf="@id/packageName"
+                app:layout_constraintEnd_toStartOf="@id/tags"
+                app:layout_constraintStart_toEndOf="@+id/dataCheckbox"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/tags"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_device_encrypted_data_24" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/label"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/extDataMode"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_update_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/obbMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_obb_data_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/deDataMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_device_encrypted_data_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/extDataMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_external_data_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/dataMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_data_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/apkMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_apk_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/appType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_system_24" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/packageName"
+                style="@style/TextViewWrapped"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.Secondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/lastBackup"
+                app:layout_constraintStart_toStartOf="@id/label"
+                app:layout_constraintTop_toBottomOf="@id/label" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/lastBackup"
+                style="@style/TextViewWrapped"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_external_data_24" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/dataMode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_data_24" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/apkMode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_apk_24" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/appType"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_system_24" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/packageName"
-            style="@style/TextViewWrapped"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.Secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/lastBackup"
-            app:layout_constraintStart_toStartOf="@id/label"
-            app:layout_constraintTop_toBottomOf="@id/label" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/lastBackup"
-            style="@style/TextViewWrapped"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.Secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/packageName"
-            app:layout_constraintTop_toBottomOf="@id/label" />
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.Secondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/packageName"
+                app:layout_constraintTop_toBottomOf="@id/label" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

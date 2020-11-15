@@ -120,6 +120,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:${versions.navigation}"
     implementation "com.mikepenz:fastadapter:${versions.fastadapter}"
     implementation "com.mikepenz:fastadapter-extensions-diff:${versions.fastadapter}"
+    implementation "com.mikepenz:fastadapter-extensions-binding:${versions.fastadapter}"
 
     // Tests
     implementation "androidx.room:room-testing:${versions.room}"

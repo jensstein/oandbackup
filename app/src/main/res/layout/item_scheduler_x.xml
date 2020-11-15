@@ -15,103 +15,110 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/cards_spacing"
-    android:paddingVertical="4dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/itemLayout"
-        style="@style/ItemLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/delete"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingHorizontal="@dimen/cards_spacing"
+        android:paddingVertical="4dp">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/enableCheckbox"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itemLayout"
+            style="@style/ItemLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/enableCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cards_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/schedMode"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/schedMode"
+                style="@style/TextViewWrapped"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
+                app:layout_constraintEnd_toStartOf="@id/schedSubMode"
+                app:layout_constraintStart_toEndOf="@+id/enableCheckbox"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/schedSubMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:layout_constraintBottom_toBottomOf="@id/schedMode"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/schedMode"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/timeLeftLine"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/schedMode"
+                app:layout_constraintTop_toBottomOf="@id/schedMode">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/buttons_spacing"
+                    android:text="@string/sched_timeLeft"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/daysLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/buttons_spacing"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/timeLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Secondary" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/cards_spacing"
+            android:background="@drawable/bg_button_negative_ripple"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/schedMode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/schedMode"
-            style="@style/TextViewWrapped"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Label"
-            app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
-            app:layout_constraintEnd_toStartOf="@id/schedSubMode"
-            app:layout_constraintStart_toEndOf="@+id/enableCheckbox"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/schedSubMode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.Label"
-            app:layout_constraintBottom_toBottomOf="@id/schedMode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/schedMode"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/timeLeftLine"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:src="@drawable/ic_delete_32"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/schedMode"
-            app:layout_constraintTop_toBottomOf="@id/schedMode">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/buttons_spacing"
-                android:text="@string/sched_timeLeft"
-                android:textAppearance="@style/TextAppearance.Secondary" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/daysLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/buttons_spacing"
-                android:textAppearance="@style/TextAppearance.Secondary" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/timeLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Secondary" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            app:layout_constraintStart_toEndOf="@id/itemLayout"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/cards_spacing"
-        android:background="@drawable/bg_button_negative_ripple"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_delete_32"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/itemLayout"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

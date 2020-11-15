@@ -17,51 +17,42 @@
  */
 package com.machiav3lli.backup.items
 
-import android.view.View
-import androidx.appcompat.widget.AppCompatTextView
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.databinding.ItemBackupXBinding
 import com.machiav3lli.backup.utils.ItemUtils.calculateID
 import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
 import com.machiav3lli.backup.utils.ItemUtils.pickBackupBackupMode
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.items.AbstractItem
+import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class BackupItemX(var backup: BackupItem) : AbstractItem<BackupItemX.ViewHolder>() {
-    override val layoutRes: Int
-        get() = R.layout.item_backup_x
-
-    override fun getViewHolder(v: View): ViewHolder {
-        return ViewHolder(v)
-    }
+class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBinding>() {
 
     override var identifier: Long
         get() = calculateID(backup)
         set(identifier) {
             super.identifier = identifier
         }
+
     override val type: Int
         get() = R.id.fastadapter_item
 
-    class ViewHolder(view: View?) : FastAdapter.ViewHolder<BackupItemX>(view!!) {
-        var backupDate: AppCompatTextView = itemView.findViewById(R.id.backupDate)
-        var encrypted: AppCompatTextView = itemView.findViewById(R.id.encrypted)
-        var versionName: AppCompatTextView = itemView.findViewById(R.id.versionName)
-        var cpuArch: AppCompatTextView = itemView.findViewById(R.id.cpuArch)
+    override fun createBinding(inflater: LayoutInflater, parent: ViewGroup?): ItemBackupXBinding {
+        return ItemBackupXBinding.inflate(inflater, parent, false)
+    }
 
-        override fun bindView(item: BackupItemX, payloads: List<Any>) {
-            val backup = item.backup
-            // TODO MAYBE add the user to the info?
-            backupDate.text = getFormattedDate(backup.backupProperties.backupDate!!, true)
-            versionName.text = backup.backupProperties.versionName
-            cpuArch.text = String.format("(%s)", backup.backupProperties.cpuArch)
-            pickBackupBackupMode(backup.backupProperties, itemView)
-            if (backup.backupProperties.isEncrypted) {
-                encrypted.text = backup.backupProperties.cipherType
-            }
+    override fun bindView(binding: ItemBackupXBinding, payloads: List<Any>) {
+        // TODO MAYBE add the user to the info?
+        binding.backupDate.text = getFormattedDate(backup.backupProperties.backupDate!!, true)
+        binding.versionName.text = backup.backupProperties.versionName
+        binding.cpuArch.text = String.format("(%s)", backup.backupProperties.cpuArch)
+        pickBackupBackupMode(backup.backupProperties, binding.root)
+        if (backup.backupProperties.isEncrypted) {
+            binding.encrypted.text = backup.backupProperties.cipherType
         }
+    }
 
-        override fun unbindView(item: BackupItemX) {
-            backupDate.text = null
-        }
+    override fun unbindView(binding: ItemBackupXBinding) {
+        binding.backupDate.text = null
     }
 }
