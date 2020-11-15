@@ -12,7 +12,7 @@
 
 - [x] SymLinks and "special" Files backup: fixing errors on some "unique" apps.
 
-- [ ] Reformat Date handling in schedules
+- [x] Reformat Date handling in schedules
 
 - [x] Customize tags icons' colors
 
@@ -46,9 +46,13 @@
 
 - [x] Migrate to Kotlin
 
-- [ ] Use Kotlin style explicitly
+- [ ] Use Kotlin style explicitly: a process taking place with each class refactored
 
 - [ ] ViewModel where useful
+
+    - [x] Scheduler
+
+    - [ ] Main & Batch
 
 ## Low Priority
 

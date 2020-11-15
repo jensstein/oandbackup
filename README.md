@@ -45,21 +45,9 @@ Till the version 0.9.3 there's been no structural change in how the app handles 
 
 #### [Changelog](https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md)
 
-- [x] Whole new UI and UX (Design improvement proposals are always welcome)
-- [x] Support for latest android versions
-- [x] Add Split Apk Support
-- [x] Modeling Sort/Filter and added some new filters
-- [x] Add App Info and Exodus Report shortcuts to AppSheet
-- [x] Add support for protected data, external data and obb backups
-- [x] Exclude cache from data backups
-- [x] Add in-app backup encryption
-- [x] Rewrite the logic of Backup/Restore
-- [x] Switch to Storage Access Framework
-- [ ] New android Scope Storage permissions compatibility (WIP)
-- [ ] Add a Flashable-ZIP feature
-- [ ] You suggest!...
+if you have some kotlin and android knowledge and like to contribute to the project, see the following [development document](DEVDOC.md) to see what is still need to be done, where a help could be needed or if you'd like to take on one of the fixes.
 
-#### if you have some java and android knowledge and like to contribute to the project see the following [development document](https://github.com/machiav3lli/oandbackupx/blob/master/DEVDOC.md) to see the goals and where a help is needed. Each contribution and communication in the project community should follow our [Code of Conduct](COC.md).
+The communication and each contribution in the project community should follow our [Code of Conduct](COC.md).
 
 ## Screenshots
 
