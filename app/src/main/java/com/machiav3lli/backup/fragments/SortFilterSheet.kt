@@ -79,12 +79,12 @@ class SortFilterSheet : BottomSheetDialogFragment {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         binding.reset.setOnClickListener {
             saveFilterPreferences(requireContext(), SortFilterModel("0000"))
-            requireMainActivity().cleanRefresh()
+            requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
         binding.apply.setOnClickListener {
             saveFilterPreferences(requireContext(), sortFilterModel)
-            requireMainActivity().cleanRefresh()
+            requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
     }

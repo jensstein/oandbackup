@@ -172,7 +172,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             }
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.refreshLayout.setOnRefreshListener { cleanRefresh() }
+        binding.refreshLayout.setOnRefreshListener { refreshStorage() }
     }
 
     private fun setupNavigation() {
@@ -445,7 +445,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
                 // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
                 showActionResult(this, overAllResult, if (overAllResult.succeeded) null else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> logErrors(this, errors) })
-                cleanRefresh()
+                refreshStorage()
             }
         } finally {
             if (wl.isHeld) {
@@ -462,8 +462,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
     }
 
-    fun cleanRefresh() {
+    fun refreshStorage() {
+        StorageFile.invalidateCache()
         refresh(mainBoolean, !mainBoolean && backupBoolean, true)
+    }
+
+    fun refreshView() {
+        refresh(mainBoolean, !mainBoolean && backupBoolean, false)
     }
 
     fun refreshWithAppSheet() {
