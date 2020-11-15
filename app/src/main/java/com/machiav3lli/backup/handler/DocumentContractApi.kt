@@ -23,7 +23,7 @@ object DocumentContractApi {
                 else null
             }.also { cursor.close() }
         }
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         null
     }
 
@@ -39,7 +39,7 @@ object DocumentContractApi {
                         null
                 }.also { cursor.close() }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
 
@@ -102,7 +102,7 @@ object DocumentContractApi {
             cursor = resolver.query(self!!, arrayOf(
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
             cursor!!.count > 0
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.w(TAG, "Failed query: $e")
             false
         } finally {
@@ -118,7 +118,7 @@ object DocumentContractApi {
             if (cursor!!.moveToFirst() && !cursor.isNull(0)) {
                 cursor.getLong(0)
             } else 0
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.w(TAG, "Failed query: $e")
             0
         } finally {
@@ -132,7 +132,7 @@ object DocumentContractApi {
                 closeable.close()
             } catch (rethrown: RuntimeException) {
                 throw rethrown
-            } catch (ignored: Exception) {
+            } catch (ignored: Throwable) {
             }
         }
     }

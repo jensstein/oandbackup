@@ -26,7 +26,7 @@ open class BackupItem {
             throw BrokenBackupException("Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
         } catch (e: IOException) {
             throw BrokenBackupException("Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
         backupInstance = StorageFile.fromUri(context, backupProperties.backupLocation)

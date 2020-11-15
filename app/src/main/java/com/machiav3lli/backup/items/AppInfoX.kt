@@ -288,7 +288,7 @@ class AppInfoX {
                             val message = "(Null) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                             Log.w(TAG, message)
                             logErrors(context, message)
-                        } catch (e: Exception) {
+                        } catch (e: Throwable) {
                             val message = "(catchall) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                             Log.w(TAG, message)
                             logErrors(context, message)

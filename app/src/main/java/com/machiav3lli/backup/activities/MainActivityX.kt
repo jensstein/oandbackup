@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.badge.BadgeDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog
 import com.machiav3lli.backup.fragments.AppSheet
@@ -409,15 +408,15 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     var result: ActionResult? = null
                     try {
                         result =
-                                if (backupBoolean) {
-                                    backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
-                                } else {
-                                    // Latest backup for now
-                                    val selectedBackup = first.latestBackup
-                                    backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
-                                            selectedBackup.backupLocation, shellHandlerInstance, mode)
-                                }
-                    } catch (e: Exception) {
+                            if (backupBoolean) {
+                                backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
+                            } else {
+                                // Latest backup for now
+                                val selectedBackup = first.latestBackup
+                                backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
+                                        selectedBackup.backupLocation, shellHandlerInstance, mode)
+                            }
+                    } catch (e: Throwable) {
                         result = ActionResult(first, null, "not processed: $e", false)
                         Log.w(TAG, "package: ${first.packageLabel} result: $e")
                     } finally {
@@ -427,7 +426,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     results.add(result)
                     i++
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 Log.w(TAG, "runBatchTask: $e")
             } finally {
                 // Calculate the overall result

@@ -106,6 +106,8 @@ object BackendController {
                     .toList()
         } catch (e: FileNotFoundException) {
             Log.e(TAG, e.javaClass.simpleName + ": " + e.message)
+        } catch (e: Throwable) {
+            Log.e(TAG, e.javaClass.simpleName + ": (null) " + e.message)
         }
         return ArrayList()
     }
