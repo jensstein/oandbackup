@@ -18,11 +18,10 @@
 package com.machiav3lli.backup.activities
 
 import android.content.ContentValues
-import android.content.SharedPreferences
-import android.database.SQLException
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.BlacklistListener
@@ -37,63 +36,76 @@ import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.schedules.BlacklistContract
 import com.machiav3lli.backup.schedules.BlacklistsDBHelper
 import com.machiav3lli.backup.schedules.HandleAlarms
-import com.machiav3lli.backup.schedules.SchedulingException
-import com.machiav3lli.backup.schedules.db.Schedule
-import com.machiav3lli.backup.schedules.db.ScheduleDatabase.Companion.getInstance
-import com.machiav3lli.backup.tasks.AddScheduleTask
-import com.machiav3lli.backup.tasks.CoroutinesAsyncTask
-import com.machiav3lli.backup.tasks.RefreshSchedulesTask
-import com.machiav3lli.backup.tasks.RemoveScheduleTask
+import com.machiav3lli.backup.schedules.db.ScheduleDatabase
+import com.machiav3lli.backup.viewmodels.SchedulerViewModel
+import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class SchedulerActivityX : BaseActivity(), BlacklistListener {
-    var list: ArrayList<SchedulerItemX> = arrayListOf()
-    var totalSchedules = 0
-    var handleAlarms: HandleAlarms? = null
-        private set
+    lateinit var handleAlarms: HandleAlarms
     private var sheetSchedule: ScheduleSheet? = null
-    val schedulerItemAdapter: ItemAdapter<SchedulerItemX> = ItemAdapter()
-    private var schedulerFastAdapter: FastAdapter<SchedulerItemX>? = null
+    private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
+    private var schedulerFastAdapter: FastAdapter<SchedulerItemX> = FastAdapter.with(schedulerItemAdapter)
+    private lateinit var viewModel: SchedulerViewModel
     private lateinit var binding: ActivitySchedulerXBinding
-    private var blacklistsDBHelper: BlacklistsDBHelper? = null
+    private lateinit var blacklistsDBHelper: BlacklistsDBHelper
     private var sheetHelp: HelpSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySchedulerXBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding.lifecycleOwner = this
         handleAlarms = HandleAlarms(this)
-        list = ArrayList()
         blacklistsDBHelper = BlacklistsDBHelper(this)
-        setupViews()
-        setupOnClicks()
-    }
+        val dataSource = ScheduleDatabase.getInstance(this, DATABASE_NAME).scheduleDao
+        val viewModelFactory = SchedulerViewModelFactory(dataSource, application)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(SchedulerViewModel::class.java)
 
-    private fun setupViews() {
-        schedulerFastAdapter = FastAdapter.with(schedulerItemAdapter)
-        schedulerFastAdapter!!.setHasStableIds(true)
+        viewModel.schedules.observe(this, {
+            it?.let {
+                val diffResult = calculateDiff(schedulerItemAdapter, viewModel.schedulesItems, SchedulerItemX.Companion.SchedulerDiffCallback())
+                set(schedulerItemAdapter, diffResult)
+            }
+        })
+
+        viewModel.activeSchedule.observe(this, {
+            val diffResult = calculateDiff(schedulerItemAdapter, viewModel.schedulesItems)
+            set(schedulerItemAdapter, diffResult)
+        })
+
+
+        schedulerFastAdapter.setHasStableIds(false)
         binding.recyclerView.adapter = schedulerFastAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        schedulerItemAdapter.add(list)
+        FastAdapterDiffUtil[schedulerItemAdapter] = viewModel.schedulesItems
+        setupOnClicks()
+
+        setContentView(binding.root)
     }
 
     private fun setupOnClicks() {
         binding.backButton.setOnClickListener { finish() }
-        schedulerFastAdapter!!.onClickListener = { _: View?, _: IAdapter<SchedulerItemX>, item: SchedulerItemX?, _: Int? ->
-            if (sheetSchedule != null) sheetSchedule!!.dismissAllowingStateLoss()
-            sheetSchedule = ScheduleSheet(item!!)
-            sheetSchedule!!.showNow(supportFragmentManager, "SCHEDULESHEET")
+        schedulerFastAdapter.onClickListener = { _: View?, _: IAdapter<SchedulerItemX>, item: SchedulerItemX?, _: Int? ->
+            sheetSchedule?.dismissAllowingStateLoss()
+            item?.let {
+                sheetSchedule = ScheduleSheet(it.schedule.id)
+                viewModel.setActiveSchedule(it.schedule.id)
+                sheetSchedule!!.showNow(supportFragmentManager, "SCHEDULESHEET")
+            }
             false
         }
         binding.blacklistButton.setOnClickListener {
             Thread {
                 val args = Bundle()
                 args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID)
-                val db = blacklistsDBHelper!!.readableDatabase
-                val blacklistedPackages = blacklistsDBHelper!!
+                val db = blacklistsDBHelper.readableDatabase
+                val blacklistedPackages = blacklistsDBHelper
                         .getBlacklistedPackages(db, GLOBALBLACKLISTID) as ArrayList<String>
                 args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
                         blacklistedPackages)
@@ -103,20 +115,15 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
                 blacklistDialogFragment.show(supportFragmentManager, "blacklistDialog")
             }.start()
         }
-        binding.fabAddSchedule.setOnClickListener {
-            val addTask = AddScheduleTask(this)
-            addTask.execute()
-            while (addTask.status != CoroutinesAsyncTask.Status.FINISHED) {
-                Thread.sleep(100)
-            }
-            RefreshSchedulesTask(this).execute()
+        binding.addSchedule.setOnClickListener {
+            viewModel.addSchedule()
         }
         binding.helpButton.setOnClickListener {
             if (sheetHelp == null) sheetHelp = HelpSheet()
             sheetHelp!!.showNow(this@SchedulerActivityX.supportFragmentManager, "SCHEDULESHEET")
         }
-        schedulerFastAdapter!!.addEventHook(OnDeleteClickHook())
-        schedulerFastAdapter!!.addEventHook(OnEnableClickHook())
+        schedulerFastAdapter.addEventHook(OnDeleteClickHook())
+        schedulerFastAdapter.addEventHook(OnEnableClickHook())
     }
 
     override fun onPause() {
@@ -124,20 +131,15 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         if (sheetSchedule != null) sheetSchedule!!.dismissAllowingStateLoss()
     }
 
-    public override fun onResume() {
-        super.onResume()
-        RefreshSchedulesTask(this).execute()
-    }
-
     public override fun onDestroy() {
-        blacklistsDBHelper!!.close()
+        blacklistsDBHelper.close()
         super.onDestroy()
     }
 
     override fun onBlacklistChanged(blacklist: Array<CharSequence>, id: Int) {
         Thread {
-            val db = blacklistsDBHelper!!.writableDatabase
-            blacklistsDBHelper!!.deleteBlacklistFromId(db, id)
+            val db = blacklistsDBHelper.writableDatabase
+            blacklistsDBHelper.deleteBlacklistFromId(db, id)
             for (packageName in blacklist) {
                 val values = ContentValues()
                 values.put(BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME, packageName as String)
@@ -147,70 +149,14 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         }.start()
     }
 
-    fun getList(): List<SchedulerItemX> {
-        return list
-    }
-
-    @Throws(SchedulingException::class)
-    fun migrateSchedulesToDatabase(preferences: SharedPreferences) {
-        val scheduleDao = getInstance(this, DATABASE_NAME).scheduleDao
-        for (i in 0 until totalSchedules) {
-            val schedule = Schedule.fromPreferences(preferences, i.toLong())
-            // The database is one-indexed so in order to preserve the
-            // order of the inserted schedules we have to increment the id.
-            schedule.id = i + 1L
-            try {
-                val ids = scheduleDao.insert(schedule)
-                // TODO: throw an exception if renaming failed. This requires
-                //  the renaming logic to propagate errors properly.
-                removePreferenceEntries(preferences, i)
-                if (schedule.enabled) {
-                    handleAlarms!!.cancelAlarm(i)
-                    handleAlarms!!.setAlarm(ids!![0].toInt(),
-                            schedule.interval, schedule.timeHour, schedule.timeMinute)
-                }
-            } catch (e: SQLException) {
-                throw SchedulingException(
-                        "Unable to migrate schedules to database", e)
-            }
-        }
-    }
-
-    private fun removePreferenceEntries(preferences: SharedPreferences, number: Int) {
-        preferences.edit()
-                .remove(Constants.PREFS_SCHEDULES_ENABLED + number)
-                .remove(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number)
-                .remove(Constants.PREFS_SCHEDULES_TIMEHOUR + number)
-                .remove(Constants.PREFS_SCHEDULES_TIMEMINUTE + number)
-                .remove(Constants.PREFS_SCHEDULES_INTERVAL + number)
-                .remove(Constants.PREFS_SCHEDULES_MODE + number)
-                .remove(Constants.PREFS_SCHEDULES_SUBMODE + number)
-                .remove(Constants.PREFS_SCHEDULES_TIMEPLACED + number)
-                .remove(Constants.PREFS_SCHEDULES_TIMEUNTILNEXTEVENT + number)
-                .remove(Constants.PREFS_SCHEDULES_ENABLECUSTOMLIST + number)
-                .remove(Constants.PREFS_SCHEDULES_CUSTOMLIST + number)
-                .apply()
-    }
-
-    fun refresh(schedules: List<Schedule>) {
-        list = ArrayList()
-        if (schedules.isNotEmpty()) for (schedule in schedules) list.add(SchedulerItemX(schedule))
-        schedulerItemAdapter.clear()
-        schedulerItemAdapter.add(list)
-    }
-
     inner class OnDeleteClickHook : ClickEventHook<SchedulerItemX>() {
         override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
             return viewHolder.itemView.findViewById(R.id.delete)
         }
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
-            val removeTask = RemoveScheduleTask(this@SchedulerActivityX)
-            removeTask.execute(item.schedule)
-            while (removeTask.status != CoroutinesAsyncTask.Status.FINISHED) {
-                Thread.sleep(100)
-            }
-            RefreshSchedulesTask(this@SchedulerActivityX).execute()
+            viewModel.removeSchedule(item.schedule.id)
+            handleAlarms.cancelAlarm(item.schedule.id.toInt())
         }
     }
 
@@ -220,34 +166,16 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         }
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
-            item.schedule.enabled = (v as AppCompatCheckBox).isChecked
-            val updateScheduleRunnable = ScheduleSheet.UpdateScheduleRunnable(this@SchedulerActivityX, BlacklistsDBHelper.DATABASE_NAME, item.schedule)
-            Thread(updateScheduleRunnable).start()
+            viewModel.getActiveSchedule(item.schedule.id)?.enabled = (v as AppCompatCheckBox).isChecked
             if (!item.schedule.enabled) {
-                handleAlarms!!.cancelAlarm(item.schedule.id.toInt())
+                handleAlarms.cancelAlarm(item.schedule.id.toInt())
             }
-            schedulerFastAdapter!!.notifyAdapterDataSetChanged()
+            refresh()
         }
     }
 
-    class ResultHolder<T> {
-        val artifact: T?
-        val error: Throwable?
-
-        internal constructor() {
-            artifact = null
-            error = null
-        }
-
-        internal constructor(artifact: T) {
-            this.artifact = artifact
-            error = null
-        }
-
-        internal constructor(error: Throwable) {
-            this.error = error
-            artifact = null
-        }
+    private fun refresh() {
+        Thread(ScheduleSheet.UpdateRunnable(viewModel.activeSchedule.value, BlacklistsDBHelper.DATABASE_NAME, this@SchedulerActivityX)).start()
     }
 
     companion object {

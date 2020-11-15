@@ -97,7 +97,7 @@
                     android:tooltipText="@string/sched_blacklist" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/fabAddSchedule"
+                    android:id="@+id/addSchedule"
                     style="@style/Button.NavBar.End"
                     android:layout_width="52dp"
                     android:layout_height="match_parent"

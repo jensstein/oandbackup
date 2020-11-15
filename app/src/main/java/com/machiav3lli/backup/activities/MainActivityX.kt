@@ -304,7 +304,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     inner class OnApkCheckBoxClickHook : ClickEventHook<BatchItemX>() {
         override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-            return viewHolder.itemView.findViewById(R.id.apkCheckBox)
+            return viewHolder.itemView.findViewById(R.id.apkCheckbox)
         }
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<BatchItemX>, item: BatchItemX) {

@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.schedules.db
 
 import android.database.SQLException
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -32,11 +33,17 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getSchedule(id: Long): Schedule?
 
+    @Query("SELECT * FROM schedule WHERE id = :id")
+    fun getLiveSchedule(id: Long): LiveData<Schedule?>
+
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
     val all: List<Schedule>
 
+    @get:Query("SELECT * FROM schedule ORDER BY id ASC")
+    val liveAll: LiveData<List<Schedule>>
+
     @Update
-    fun update(schedule: Schedule)
+    fun update(schedule: Schedule?)
 
     @Query("DELETE FROM schedule")
     fun deleteAll()

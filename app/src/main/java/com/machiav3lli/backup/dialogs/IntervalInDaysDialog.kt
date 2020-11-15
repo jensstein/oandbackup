@@ -25,7 +25,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 
-class IntervalInDaysDialog(var confirmListener: ConfirmListener, intervalInDays: CharSequence) : DialogFragment() {
+class IntervalInDaysDialog(intervalInDays: CharSequence, var confirmListener: (Int) -> Unit) : DialogFragment() {
     var intervalInDays: Int = intervalInDays.toString().toInt()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -36,12 +36,8 @@ class IntervalInDaysDialog(var confirmListener: ConfirmListener, intervalInDays:
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(requireContext().getString(R.string.sched_interval))
         builder.setView(numberPicker)
-        builder.setPositiveButton(requireContext().getString(R.string.dialogOK)) { _: DialogInterface?, _: Int -> confirmListener.onIntervalConfirmed(numberPicker.value) }
+        builder.setPositiveButton(requireContext().getString(R.string.dialogOK)) { _: DialogInterface?, _: Int -> confirmListener(numberPicker.value) }
         builder.setNegativeButton(requireContext().getString(R.string.dialogCancel)) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
         return builder.create()
-    }
-
-    interface ConfirmListener {
-        fun onIntervalConfirmed(intervalInDays: Int)
     }
 }
