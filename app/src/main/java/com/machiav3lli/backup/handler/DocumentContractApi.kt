@@ -13,7 +13,8 @@ import com.machiav3lli.backup.Constants.classTag
 
 object DocumentContractApi {
     val TAG = classTag(".DocumentContractApi")
-    private const val MIME_TYPE_PROPERTY_FILE = "bin"
+    //private const val MIME_TYPE_PROPERTY_FILE = "bin"
+    //private const val MIME_TYPE_PROPERTY_FILE = "application/octet-stream"
 
     fun getName(context: Context, uri: Uri): String? = try {
         context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
@@ -22,7 +23,7 @@ object DocumentContractApi {
                 else null
             }.also { cursor.close() }
         }
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         null
     }
 
@@ -32,12 +33,13 @@ object DocumentContractApi {
                 cursor.run {
                     val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
                     if (moveToFirst())
-                        mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
+                        //mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
+                        context.contentResolver.getType(uri)
                     else
                         null
                 }.also { cursor.close() }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
 
@@ -50,7 +52,12 @@ object DocumentContractApi {
         return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
     }
 
-    fun isPropertyFile(context: Context, self: Uri): Boolean = MIME_TYPE_PROPERTY_FILE == getRawType(context, self)
+    fun isPropertyFile(context: Context, self: Uri): Boolean {
+        //MIME_TYPE_PROPERTY_FILE == getRawType(context, self)
+        val type = getRawType(context, self)
+        return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
+                && self.toString().endsWith(".properties")
+    }
 
     fun lastModified(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
@@ -95,7 +102,7 @@ object DocumentContractApi {
             cursor = resolver.query(self!!, arrayOf(
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
             cursor!!.count > 0
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.w(TAG, "Failed query: $e")
             false
         } finally {
@@ -111,7 +118,7 @@ object DocumentContractApi {
             if (cursor!!.moveToFirst() && !cursor.isNull(0)) {
                 cursor.getLong(0)
             } else 0
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.w(TAG, "Failed query: $e")
             0
         } finally {
@@ -125,7 +132,7 @@ object DocumentContractApi {
                 closeable.close()
             } catch (rethrown: RuntimeException) {
                 throw rethrown
-            } catch (ignored: Exception) {
+            } catch (ignored: Throwable) {
             }
         }
     }

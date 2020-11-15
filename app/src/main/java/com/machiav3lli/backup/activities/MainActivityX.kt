@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.badge.BadgeDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dialogs.BatchConfirmDialog
 import com.machiav3lli.backup.fragments.AppSheet
@@ -172,7 +171,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             }
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.refreshLayout.setOnRefreshListener { cleanRefresh() }
+        binding.refreshLayout.setOnRefreshListener { refreshStorage() }
     }
 
     private fun setupNavigation() {
@@ -409,15 +408,15 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     var result: ActionResult? = null
                     try {
                         result =
-                                if (backupBoolean) {
-                                    backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
-                                } else {
-                                    // Latest backup for now
-                                    val selectedBackup = first.latestBackup
-                                    backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
-                                            selectedBackup.backupLocation, shellHandlerInstance, mode)
-                                }
-                    } catch (e: Exception) {
+                            if (backupBoolean) {
+                                backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
+                            } else {
+                                // Latest backup for now
+                                val selectedBackup = first.latestBackup
+                                backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
+                                        selectedBackup.backupLocation, shellHandlerInstance, mode)
+                            }
+                    } catch (e: Throwable) {
                         result = ActionResult(first, null, "not processed: $e", false)
                         Log.w(TAG, "package: ${first.packageLabel} result: $e")
                     } finally {
@@ -427,7 +426,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     results.add(result)
                     i++
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 Log.w(TAG, "runBatchTask: $e")
             } finally {
                 // Calculate the overall result
@@ -445,7 +444,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
                 // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
                 showActionResult(this, overAllResult, if (overAllResult.succeeded) null else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> logErrors(this, errors) })
-                cleanRefresh()
+                refreshStorage()
             }
         } finally {
             if (wl.isHeld) {
@@ -462,8 +461,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
     }
 
-    fun cleanRefresh() {
+    fun refreshStorage() {
+        StorageFile.invalidateCache()
         refresh(mainBoolean, !mainBoolean && backupBoolean, true)
+    }
+
+    fun refreshView() {
+        refresh(mainBoolean, !mainBoolean && backupBoolean, false)
     }
 
     fun refreshWithAppSheet() {
@@ -505,7 +509,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun refreshMain(filteredList: List<AppInfoX>, appSheetBoolean: Boolean) {
         val mainList = createMainAppsList(filteredList)
         runOnUiThread {
-            if (filteredList.isEmpty()) {
+            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
                 Toast.makeText(baseContext, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 mainItemAdapter.clear()
             }
@@ -524,7 +528,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun createMainAppsList(filteredList: List<AppInfoX>): java.util.ArrayList<MainItemX> {
         val list = java.util.ArrayList<MainItemX>()
-        if (filteredList.isEmpty()) {
+        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
             for (app in applyFilter(appsList!!, "0000", this)) {
                 list.add(MainItemX(app))
                 if (app.isUpdated) badgeCounter += 1
@@ -555,7 +559,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun refreshBatch(filteredList: List<AppInfoX>, backupBoolean: Boolean) {
         val batchList = createBatchAppsList(filteredList, backupBoolean)
         runOnUiThread {
-            if (filteredList.isEmpty()) {
+            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
                 Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 batchItemAdapter.clear()
             }
@@ -570,7 +574,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     private fun createBatchAppsList(filteredList: List<AppInfoX>, backupBoolean: Boolean): java.util.ArrayList<BatchItemX> {
         val list = java.util.ArrayList<BatchItemX>()
-        if (filteredList.isEmpty()) {
+        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
             for (app in applyFilter(appsList!!, "0000", this)) {
                 if (toAddToBatch(backupBoolean, app)) list.add(BatchItemX(app))
             }

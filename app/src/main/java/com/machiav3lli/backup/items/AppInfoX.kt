@@ -50,7 +50,8 @@ class AppInfoX {
         val backupDoc = getBackupRoot(context).findFile(packageName)
         if (backupDoc != null) {
             backupDir = backupDoc.uri
-            Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
+            //Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
+            backupHistory = getBackupHistory(context, backupDir)
         } else {
             backupHistory = arrayListOf()
         }
@@ -70,7 +71,8 @@ class AppInfoX {
     constructor(context: Context, backupRoot: Uri) {
         this.context = context
         backupDir = backupRoot
-        Thread { backupHistory = getBackupHistory(context, backupRoot) }.start()
+        //Thread { backupHistory = getBackupHistory(context, backupRoot) }.start()
+        backupHistory = getBackupHistory(context, backupRoot)
         packageName = StorageFile.fromUri(context, backupRoot).name!!
         try {
             packageInfo = context.packageManager.getPackageInfo(packageName, 0)
@@ -92,7 +94,8 @@ class AppInfoX {
         val packageBackupRoot = StorageFile.fromUri(context, backupRoot!!).findFile(packageName)
         if (packageBackupRoot != null) {
             backupDir = packageBackupRoot.uri
-            Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
+            //Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
+            backupHistory = getBackupHistory(context, backupDir)
         }
         appInfo = AppMetaInfo(context, packageInfo)
         refreshStorageStats()
@@ -271,7 +274,7 @@ class AppInfoX {
         // TODO cause of huge part of cpu time
         private fun getBackupHistory(context: Context, backupDir: Uri?): MutableList<BackupItem> {
             val appBackupDir = StorageFile.fromUri(context, backupDir!!)
-            val backupHistory = ArrayList<BackupItem>()
+            var backupHistory = ArrayList<BackupItem>()
             try {
                 for (file in appBackupDir.listFiles()) {
                     if (file.isPropertyFile)
@@ -285,7 +288,7 @@ class AppInfoX {
                             val message = "(Null) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                             Log.w(TAG, message)
                             logErrors(context, message)
-                        } catch (e: Exception) {
+                        } catch (e: Throwable) {
                             val message = "(catchall) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
                             Log.w(TAG, message)
                             logErrors(context, message)

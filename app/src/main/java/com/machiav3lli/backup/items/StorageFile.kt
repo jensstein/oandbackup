@@ -83,7 +83,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                     documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0))
                     results.add(documentUri)
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 Log.w(TAG, "Failed query: $e")
             } finally {
                 closeQuietly(cursor)
@@ -105,7 +105,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                 return true
             }
             false
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             false
         }
     }
@@ -147,7 +147,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                 } catch (rethrown: RuntimeException) {
                     // noinspection ProhibitedExceptionThrown
                     throw rethrown
-                } catch (ignored: Exception) {
+                } catch (ignored: Throwable) {
                 }
             }
         }

@@ -64,33 +64,35 @@ object BackendController {
         val packageList = packageInfoList
                 .filter { packageInfo: PackageInfo -> !ignoredPackages.contains(packageInfo.packageName) } // Get AppInfoX objects with history etc
                 .map { pi: PackageInfo? -> AppInfoX(context, pi!!, backupRoot.uri) }
-                .toList()
+                .toMutableList()
         // Special Backups must added before the uninstalled packages, because otherwise it would
         // discover the backup directory and run in a special case where no the directory is empty.
         // This would mean, that no package info is available – neither from backup.properties
         // nor from PackageManager.
         if (includeSpecial) {
-            packageList.plus(getSpecialPackages(context))
+            packageList.addAll(getSpecialPackages(context))
         }
         if (includeUninstalled) {
             val installedPackageNames = packageList
                     .map(AppInfoX::packageName)
                     .toList()
             val directoriesInBackupRoot = getDirectoriesInBackupRoot(context)
-            val missingAppsWithBackup: List<AppInfoX> = // Try to create AppInfoX objects
-            // if it fails, null the object for filtering in the next step to avoid crashes
-                    // filter out previously failed backups
-                    directoriesInBackupRoot
-                            .filter { backupDir: StorageFile -> !installedPackageNames.contains(backupDir.name) }.mapNotNull { backupDir: StorageFile ->
-                                try {
-                                    AppInfoX(context, backupDir.uri)
-                                } catch (e: AssertionError) {
-                                    Log.e(TAG, "Could not process backup folder for uninstalled application in " + backupDir.name + ": " + e)
-                                    null
-                                }
-                            }
-                            .toList()
-            packageList.plus(missingAppsWithBackup)
+            val missingAppsWithBackup: List<AppInfoX> =
+                // Try to create AppInfoX objects
+                // if it fails, null the object for filtering in the next step to avoid crashes
+                // filter out previously failed backups
+                directoriesInBackupRoot
+                    .filter { !installedPackageNames.contains(it.name) }
+                    .mapNotNull {
+                        try {
+                            AppInfoX(context, it.uri)
+                        } catch (e: AssertionError) {
+                            Log.e(TAG, "Could not process backup folder for uninstalled application in " + it.name + ": " + e)
+                            null
+                        }
+                    }
+                    .toList()
+            packageList.addAll(missingAppsWithBackup)
         }
         return packageList
     }
@@ -104,6 +106,8 @@ object BackendController {
                     .toList()
         } catch (e: FileNotFoundException) {
             Log.e(TAG, e.javaClass.simpleName + ": " + e.message)
+        } catch (e: Throwable) {
+            Log.e(TAG, e.javaClass.simpleName + ": (null) " + e.message)
         }
         return ArrayList()
     }
