@@ -13,7 +13,8 @@ import com.machiav3lli.backup.Constants.classTag
 
 object DocumentContractApi {
     val TAG = classTag(".DocumentContractApi")
-    private const val MIME_TYPE_PROPERTY_FILE = "bin"
+    //private const val MIME_TYPE_PROPERTY_FILE = "bin"
+    //private const val MIME_TYPE_PROPERTY_FILE = "application/octet-stream"
 
     fun getName(context: Context, uri: Uri): String? = try {
         context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
@@ -32,7 +33,8 @@ object DocumentContractApi {
                 cursor.run {
                     val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
                     if (moveToFirst())
-                        mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
+                        //mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
+                        context.contentResolver.getType(uri)
                     else
                         null
                 }.also { cursor.close() }
@@ -50,7 +52,12 @@ object DocumentContractApi {
         return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
     }
 
-    fun isPropertyFile(context: Context, self: Uri): Boolean = MIME_TYPE_PROPERTY_FILE == getRawType(context, self)
+    fun isPropertyFile(context: Context, self: Uri): Boolean {
+        //MIME_TYPE_PROPERTY_FILE == getRawType(context, self)
+        val type = getRawType(context, self)
+        return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
+                && self.toString().endsWith(".properties")
+    }
 
     fun lastModified(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
