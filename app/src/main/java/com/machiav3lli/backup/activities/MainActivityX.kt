@@ -409,14 +409,14 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     var result: ActionResult? = null
                     try {
                         result =
-                            if (backupBoolean) {
-                                backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
-                            } else {
-                                // Latest backup for now
-                                val selectedBackup = first.latestBackup
-                                backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
-                                        selectedBackup.backupLocation, shellHandlerInstance, mode)
-                            }
+                                if (backupBoolean) {
+                                    backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
+                                } else {
+                                    // Latest backup for now
+                                    val selectedBackup = first.latestBackup
+                                    backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
+                                            selectedBackup.backupLocation, shellHandlerInstance, mode)
+                                }
                     } catch (e: Exception) {
                         result = ActionResult(first, null, "not processed: $e", false)
                         Log.w(TAG, "package: ${first.packageLabel} result: $e")
@@ -564,7 +564,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
             binding.refreshLayout.isRefreshing = false
-            OnlyInJava.slideUp(binding!!.bottomBar)
+            OnlyInJava.slideUp(binding.bottomBar)
         }
     }
 

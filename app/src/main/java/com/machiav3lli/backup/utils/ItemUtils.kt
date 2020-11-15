@@ -34,7 +34,6 @@ import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.utils.UIUtils.setVisibility
 import java.text.DateFormat
 import java.time.LocalDateTime
@@ -49,15 +48,6 @@ object ItemUtils {
     val COLOR_SPECIAL = Color.rgb(144, 69, 254)
     const val COLOR_DISABLED = Color.DKGRAY
     const val COLOR_UNINSTALLED = Color.GRAY
-
-    fun calculateScheduleID(schedule: Schedule): Long {
-        return (schedule.id
-                + schedule.interval * 24 + schedule.timeHour
-                + schedule.timeMinute
-                + schedule.mode.value
-                + schedule.subMode.value
-                + if (schedule.enabled) 1 else 0)
-    }
 
     fun getFormattedDate(lastUpdate: LocalDateTime, withTime: Boolean): String {
         val date = Date.from(lastUpdate.atZone(ZoneId.systemDefault()).toInstant())

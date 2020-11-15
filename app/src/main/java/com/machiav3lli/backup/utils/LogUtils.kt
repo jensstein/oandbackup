@@ -25,6 +25,7 @@ import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleExceptio
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import java.io.IOException
 
+// TODO Improve Log: seperation into reports(items)
 class LogUtils(context: Context) {
     private var logFile: Uri
     var context = context
