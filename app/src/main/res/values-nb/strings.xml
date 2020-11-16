@@ -82,7 +82,7 @@
     <string name="disablePackageTitle">Deaktiver for brukere</string>
     <string name="prefs_title">Innstillinger</string>
     <string name="prefs_acquirewakelock">Hindre dvalemodus</string>
-    <string name="prefs_acquirewakelock_summary">Få en en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Det vil gjøre gjenoppretting og lagring av sikkerhetskopier mye fortere men bruker mer energi.</string>
+    <string name="prefs_acquirewakelock_summary">Få en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Gjør gjenoppretting og lagring av sikkerhetskopier mye raskere, men bruker mer energi.</string>
     <string name="prefs_pathbackupfolder">Mappe for sikkerhetskopier</string>
     <string name="prefs_oldbackups">Filtrer sikkerhetskopier etter alderen</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -215,4 +215,19 @@
     <string name="radio_obbdata">OBB-data</string>
     <string name="radio_deviceprotecteddata">Enhetsbeskyttet data</string>
     <string name="radio_externaldata">Ekstern data</string>
+    <string name="msg_appkill_warning">Valgt(e) program(mer) vil bli gitt stoppsignal, og vil fortsette etter at oppgaven er utført. Sjekk dine behandlede programmer etterpå (og unngå å kjøre dem mens prosessen fremdeles kjører).</string>
+    <string name="help_legend">Symbolbruk:</string>
+    <string name="intro_permission_storage_location">Programmet trenger en sikkerhetskopiplassering å lagre sikkerhetskopiene. Programmet trenger et par gigabyte for lagring av full sikkerhetskopi, og utfører mange spørringer til filsystemet. Husk dette hvis du velger noe nettverksbasert.</string>
+    <string name="help_appTypeHint">* Programmets typeikon ville vært grått hvis programmet er avinstallert og mørkegrått hvis avskrudd.</string>
+    <string name="prefs_unset">Usatt</string>
+    <string name="prefs_disableverification_summary">Skrur av utviklervalget under gjenoppretting av APK-er, og skrur dem på igjen etterpå. Fikser problemet: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_housekeepingmoment_summary">Setter opp hvorvidt eldste revisjon slettes før eller etter opprettelse av ny sikkerhetskopi for å frigjøre plass brukt av sikkerhetskopien.</string>
+    <string name="prefs_disableverification">Skru av «Bekreft programmer over USB»</string>
+    <string name="prefs_housekeepingmoment">Revisjonstømmingstid</string>
+    <string name="prefs_numBackupRevisions_summary">Den eldste revisjonen vil bli slettet når en ny opprettes, sett at nummeret overstiges. Sett det til null for å beholde alle.</string>
+    <string name="prefs_numBackupRevisions">Antall sikkeretskopi-revisjoner</string>
+    <plurals name="days_left">
+        <item quantity="one">%d dag,</item>
+        <item quantity="other">%d dager,</item>
+    </plurals>
 </resources>

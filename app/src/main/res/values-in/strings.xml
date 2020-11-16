@@ -14,7 +14,7 @@
     <string name="radio_apk">APK</string>
     <string name="radio_data">Data</string>
     <string name="radio_special">Backup khusus</string>
-    <string name="de_selectAll">De/pilih semua</string>
+    <string name="de_selectAll">Tidak/pilih semua</string>
     <string name="onlyApkBackedUp">Hanya APK</string>
     <string name="onlyDataBackedUp">Hanya data</string>
     <string name="refresh">Menyegarkan</string>
@@ -174,4 +174,54 @@
     <string name="prefs_stopcont">Tutup paksa aplikasi sebelum backup/dikembalikan</string>
     <string name="prefs_password_match_false">Kata Sandi Tidak Sesuai</string>
     <string name="prefs_passwordconfirmation">Konfirmasi enkripsi katasandi</string>
+    <string name="fetching_backup_list">Mengambil daftar aplikasi untuk cadangan…</string>
+    <string name="logs_text_empty">Tidak ada yang bisa ditampilkan!</string>
+    <string name="delete_all_backups">Hapus semua cadangan</string>
+    <string name="msg_appkill_warning">Aplikasi yang dipilih akan diberi sinyal untuk berhenti dan setelah tugas selesai akan dilanjutkan. Harap pastikan untuk memeriksa aplikasi Anda yang diproses setelah tugas selesai dan hindari meluncurkannya saat proses masih berjalan.</string>
+    <string name="intro_permission_batteryoptimization">Aplikasi ini dapat menghadapi beberapa masalah melakukan pencadangan terjadwal pada beberapa ROM yang mengadopsi pengoptimalan baterai yang agresif misalnya MIUI, tetapi bahkan pada vanilla AOSP masalah seperti itu dapat terjadi.</string>
+    <string name="intro_permission_storage_location">Aplikasi ini membutuhkan lokasi cadangan untuk menyimpan cadangan. Aplikasi ini mungkin membutuhkan beberapa gigabyte penyimpanan untuk cadangan lengkap dan banyak mengkueri sistem file. Harap diingat ketika memilih lokasi penyimpanan berbasis jaringan.</string>
+    <string name="intro_permission_usageaccess">Aplikasi ini memerlukan izin ini untuk dapat memeriksa statistik dan ukuran data dan cache aplikasi Anda.</string>
+    <string name="intro_permission_storage">Aplikasi ini menggunakan izin baca/tulis penyimpanan untuk dapat mengakses penyimpanan eksternal dan memberikan kemungkinan untuk pencadangan data/obb eksternal aplikasi lain.</string>
+    <string name="intro_welcome_message">OAndBackupX adalah cabang dari OAndBackup yang terkenal dengan tujuan membawanya ke tahun 2020 dan selanjutnya. Untuk saat ini sebagian besar fungsionalitas dan UI aplikasi ditulis ulang dan beberapa ditambahkan.
+\n Aplikasi ini masih dalam tahap beta dan banyak rebasing yang sering dilakukan. Jadi, harap baca log perubahan dengan cermat pada setiap rilis baru.
+\n Semua jenis kontribusi diterima baik itu terjemahan, ide, pelaporan bug, atau pekerjaan kode.
+\n
+\n Sekarang tentang fungsionalitas Aplikasi kami:
+\n • Ini membutuhkan root dan memungkinkan Anda untuk mencadangkan aplikasi individu dan datanya.
+\n • Baik mencadangkan dan memulihkan program satu per satu dan mendukung pencadangan dan pemulihan banyak program.
+\n • Mengembalikan aplikasi sistem semestinya dapat dilakukan tanpa memerlukan reboot setelahnya, tetapi kami tetap tidak menyarankan untuk melakukannya.
+\n • Pencadangan dapat dijadwalkan tanpa batasan jumlah jadwal individu dan ada kemungkinan membuat daftar kustom yang unik.</string>
+    <string name="welcome_to_oabx">Selamat datang di OABX!</string>
+    <string name="storage_access">Akses Penyimpanan</string>
+    <string name="sort_and_filter">Urutkan &amp; Saring</string>
+    <string name="enable_encryption_message">Tidak aman menyimpan data Anda di perangkat Anda yang tidak dienkripsi. Untuk keamanan data Anda, aktifkan enkripsi dan setel kata sandi.</string>
+    <string name="enable_encryption_title">Enkripsi data</string>
+    <string name="help_appTypeHint">* Ikon jenis aplikasi akan berwarna abu-abu jika aplikasi dicopot dan abu-abu tua jika aplikasi dinonaktifkan.</string>
+    <string name="help_legend">Legenda:</string>
+    <string name="help_group">Grup Kami</string>
+    <string name="help_license">Lisensi</string>
+    <string name="apptype_special">Pencadangan khusus</string>
+    <string name="sortDataSize">Ukuran data</string>
+    <string name="dialog_unlock">Buka kunci</string>
+    <string name="dialog_start">Ayo!</string>
+    <string name="dialogSave">Simpan</string>
+    <string name="sched_submode">Sub-mode pencadangan:</string>
+    <string name="sched_add">Tambah Jadwal</string>
+    <string name="prefs_unset">Tidak disetel</string>
+    <string name="prefs_stopcont_summary">Hanya ahli: Ini dapat membantu, jika aplikasi mengubah file selama pencadangan dan pencadangan gagal.</string>
+    <string name="prefs_disableverification_summary">Menonaktifkan opsi pengembang ini saat memulihkan APK dan mengaktifkannya kembali setelahnya. Memecahkan kesalahan: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification">Nonaktifkan Verifikasi aplikasi melalui USB</string>
+    <string name="prefs_housekeepingmoment_summary">Mengonfigurasi apakah revisi terlama dihapus sebelum atau setelah membuat cadangan baru untuk mengosongkan ruang disk yang digunakan oleh cadangan.</string>
+    <string name="prefs_housekeepingmoment">Waktu pembersihan revisi</string>
+    <string name="prefs_numBackupRevisions_summary">Revisi terlama akan dihapus saat membuat cadangan baru jika jumlahnya terlampaui. Setel ke nol untuk menyimpan semua revisi.</string>
+    <string name="prefs_numBackupRevisions">Jumlah revisi cadangan</string>
+    <string name="prefs_biometriclock_summary">Amankan aplikasi dengan kunci biometrik perangkat (misalnya sidik jari, buka kunci wajah)</string>
+    <string name="prefs_biometriclock">Kunci biometrik</string>
+    <string name="prefs_housekeepingmoment_before">Sebelum Pencadangan</string>
+    <string name="prefs_housekeepingmoment_after">Setelah Pencadangan</string>
+    <string name="prefs_advanced">Preferensi lanjutan</string>
+    <string name="radio_obbdata">Data OBB</string>
+    <string name="radio_deviceprotecteddata">Data yang Dilindungi Perangkat</string>
+    <string name="radio_externaldata">Data Eksternal</string>
+    <string name="radio_updated">Diperbarui</string>
 </resources>

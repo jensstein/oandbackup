@@ -208,7 +208,7 @@
     <string name="help_appTypeHint">* Das Symbol des Anwendungstyps wäre grau, wenn die Anwendung deinstalliert ist, und dunkelgrau, wenn die Anwendung deaktiviert ist.</string>
     <string name="intro_permission_storage_location">Die App benötigt ein Verzeichnis Speichern der Backups. Die App benötigt möglicherweise einige Gigabyte Speicherplatz für ein vollständiges Backup und fragt das Dateisystem häufig ab. Bitte bedenken Sie dies bei der Auswahl netzwerkbasierter Speicherorte.</string>
     <string name="prefs_unset">Nicht aktiviert</string>
-    <string name="msg_appkill_warning">Die ausgewählte(n) App(s) wird(werden) gestoppt. Bitte stellen Sie sicher, dass Sie entweder Ihr Gerät nach der Aktion neu starten oder Apps wie Ihren Wecker oder Kalender danach öffnen, um zu vermeiden, dass Sie wichtige Benachrichtigungen verpassen. Möglicherweise wird Ihre Tastatur oder Ihr \'Launcher\' auf die Standard-App zurückgesetzt.</string>
+    <string name="msg_appkill_warning">Die ausgewählte(n) App(s) erhält (erhalten) das Signal zum Anhalten und wird (werden) nach Erledigung der Aufgabe fortgesetzt. Bitte stellen Sie sicher, dass Sie diese Apps nach Abschluss der Aufgabe überprüfen und vermeiden Sie es, sie zu starten, während der Prozess noch läuft.</string>
     <string name="prefs_numBackupRevisions_summary">Die älteste Sicherung wird bei der Erstellung einer neuen gelöscht, wenn die Anzahl überschritten wird. Setzen Sie sie auf Null, um alle Sicherungen zu behalten.</string>
     <string name="prefs_numBackupRevisions">Anzahl der Sicherungen, die aufbewahrt werden</string>
     <string name="prefs_stopcont_summary">Nur für Fortgeschrittene: Das Aktivieren dieser Option kann helfen, wenn die Anwendung Dateien während des Sicherung ändert und die Sicherung fehlschlägt.</string>
@@ -223,4 +223,7 @@
     <string name="radio_externaldata">Externe Daten</string>
     <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
     <string name="delete_all_backups">Alle Sicherungen löschen</string>
+    <string name="fetching_backup_list">Applikationsliste für das Backup abrufen…</string>
+    <string name="prefs_disableverification_summary">Deaktiviert diese Entwickleroption beim Wiederherstellen von APKs und aktiviert sie danach wieder. Behebt den Fehler: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification">App Überprüfung via USB deaktivieren</string>
 </resources>
