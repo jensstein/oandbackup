@@ -121,7 +121,7 @@
     <string name="prefs_copyselfapk">Copy own APK</string>
     <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder when backed up</string>
     <string name="prefs_acquirewakelock">Prevent sleep</string>
-    <string name="prefs_acquirewakelock_summary">Acquire a wakelock while batch operations are running to prevent sleep. Will speed up backups and restorations considerably but will consume more energy.</string>
+    <string name="prefs_acquirewakelock_summary">Acquire a wakelock during batch operations to prevent sleep. Speeds up backups and restorations considerably, but consumes more energy.</string>
     <string name="prefs_disableverification">Disable "Verify apps over USB"</string>
     <string name="prefs_disableverification_summary">Disables this developer option while restoring APKs and re-enables it afterwards. Solves the error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_stopcont">STOP-CONT pre- and postprocessing of apps on backup/restore</string>
@@ -222,7 +222,7 @@
     <string name="intro_permission_storage_location">The app needs a backup location to store the backups. The app may need a few gigabytes of storage for a full backup and is querying the filesystem a lot. Please keep that in mind when choosing network based storage locations.</string>
     <string name="intro_permission_usageaccess">The app needs this permission to be able to check the stats and sizes of data and cache of your apps.</string>
     <string name="intro_permission_batteryoptimization">The app can face some problems doing scheduled backups on some ROMs that adopt an aggressive battery optimizations e.g. MIUI, but even on vanilla AOSP such a problem can happen.</string>
-    <string name="msg_appkill_warning">The selected App(s) will be given the signal to stop and after the task is done will continue. Please make sure to check on your processed apps after the task is done and avoid launching them while the process is still running.</string>
+    <string name="msg_appkill_warning">The selected app(s) will be given the stop signal, and continue after the task is done. Check on your processed apps afterwards (and avoid launching them while the process is still running).</string>
     <string name="delete_all_backups">Delete all backups</string>
     <string name="logs_text_empty">There\'s nothing to show!</string>
     <string name="fetching_backup_list">Fetching apps list for the backup…</string>
