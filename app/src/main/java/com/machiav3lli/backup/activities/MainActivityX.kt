@@ -375,6 +375,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     // TODO 1. optimize/reduce complexity
     fun runBatchTask(selectedItems: List<Pair<AppMetaInfo, Int>>) {
+        val backupRunning = backupBoolean  // use a copy because the variable can change while running this task
         @SuppressLint("InvalidWakeLockTag") val wl = powerManager!!.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG)
         if (prefs!!.getBoolean("acquireWakelock", true)) {
             wl.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/)
@@ -382,7 +383,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
         try {
             // get the AppInfoX objects again
-            val selectedApps: MutableList<Pair<AppInfoX, Int>> = java.util.ArrayList(selectedItems.size)
+            val selectedApps: MutableList<Pair<AppInfoX, Int>> = mutableListOf()
             for ((first, second) in selectedItems) {
                 val foundItem = batchItemAdapter.adapterItems.stream()
                         .filter { item: BatchItemX -> item.app.packageName == first.packageName }
@@ -397,32 +398,34 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
             val totalOfActions = selectedItems.size
             val backupRestoreHelper = BackupRestoreHelper()
             val mileStones = IntRange(0, 5).map { it * totalOfActions / 5 + 1 }.toList()
-            val results: MutableList<ActionResult> = java.util.ArrayList(totalOfActions)
+            val results: MutableList<ActionResult> = mutableListOf()
             var i = 1
+            var packageLabel = "NONE"
             try {
-                for ((first, mode) in selectedApps) {
-                    val message = String.format("%s (%d/%d)", if (backupBoolean) this.getString(R.string.backupProgress) else this.getString(R.string.restoreProgress), i, totalOfActions)
-                    showNotification(this, MainActivityX::class.java, notificationId, message, first.packageLabel, false)
+                for ((appInfo, mode) in selectedApps) {
+                    packageLabel = appInfo.packageLabel
+                    val message = (if (backupRunning) this.getString(R.string.backupProgress) else this.getString(R.string.restoreProgress)) + " (" + i + "/" + totalOfActions + ")"
+                    showNotification(this, MainActivityX::class.java, notificationId, message, appInfo.packageLabel, false)
                     if (mileStones.contains(i)) {
                         runOnUiThread { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
                     }
                     var result: ActionResult? = null
                     try {
                         result =
-                            if (backupBoolean) {
-                                backupRestoreHelper.backup(this, shellHandlerInstance!!, first, mode)
+                            if (backupRunning) {
+                                backupRestoreHelper.backup(this, shellHandlerInstance!!, appInfo, mode)
                             } else {
                                 // Latest backup for now
-                                val selectedBackup = first.latestBackup
-                                backupRestoreHelper.restore(this, first, selectedBackup!!.backupProperties,
+                                val selectedBackup = appInfo.latestBackup
+                                backupRestoreHelper.restore(this, appInfo, selectedBackup!!.backupProperties,
                                         selectedBackup.backupLocation, shellHandlerInstance, mode)
                             }
                     } catch (e: Throwable) {
-                        result = ActionResult(first, null, "not processed: $e", false)
-                        Log.w(TAG, "package: ${first.packageLabel} result: $e")
+                        result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
+                        Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
                     } finally {
                         if (!result!!.succeeded)
-                            showNotification(this, MainActivityX::class.java, result!!.hashCode(), first.packageLabel, result!!.message, false)
+                            showNotification(this, MainActivityX::class.java, result!!.hashCode(), appInfo.packageLabel, result!!.message, false)
                     }
                     results.add(result)
                     i++
@@ -439,7 +442,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
                 // Update the notification
                 val notificationTitle = if (overAllResult.succeeded) this.getString(R.string.batchSuccess) else this.getString(R.string.batchFailure)
-                val notificationMessage = if (backupBoolean) this.getString(R.string.batchbackup) else this.getString(R.string.batchrestore)
+                val notificationMessage = if (backupRunning) this.getString(R.string.batchbackup) else this.getString(R.string.batchrestore)
                 showNotification(this, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
                 runOnUiThread { Toast.makeText(this, String.format("%s: %s)", notificationMessage, notificationTitle), Toast.LENGTH_LONG).show() }
 
