@@ -51,6 +51,7 @@ import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.handler.SortFilterManager.saveFilterPreferences
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
@@ -427,7 +428,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     i++
                 }
             } catch (e: Throwable) {
-                Log.w(TAG, "runBatchTask: $e")
+                LogUtils.unhandledException(e, packageLabel)
             } finally {
                 // Calculate the overall result
                 val errors = results
@@ -446,6 +447,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 showActionResult(this, overAllResult, if (overAllResult.succeeded) null else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> logErrors(this, errors) })
                 refreshStorage()
             }
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e)
         } finally {
             if (wl.isHeld) {
                 wl.release()
@@ -495,13 +498,17 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 if (appsList.isNullOrEmpty() || StorageFile.cacheDirty)
                     appsList = getApplicationList(this.applicationContext)
                 getPrivateSharedPrefs(this).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)
-                val filteredList = applyFilter(appsList!!,
-                        getFilterPreferences(this).toString(), this)
-                if (mainBoolean) refreshMain(filteredList, backupOrAppSheetBoolean) else refreshBatch(filteredList, backupOrAppSheetBoolean)
+                val filteredList = applyFilter(appsList!!, getFilterPreferences(this).toString(), this)
+                if (mainBoolean)
+                    refreshMain(filteredList, backupOrAppSheetBoolean)
+                else
+                    refreshBatch(filteredList, backupOrAppSheetBoolean)
             } catch (e: BackupLocationIsAccessibleException) {
                 Log.e(TAG, "Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
                 Log.e(TAG, "Could not update application list: $e")
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e)
             }
         }.start()
     }
@@ -509,20 +516,23 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun refreshMain(filteredList: List<AppInfoX>, appSheetBoolean: Boolean) {
         val mainList = createMainAppsList(filteredList)
         runOnUiThread {
-            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-                Toast.makeText(baseContext, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                mainItemAdapter.clear()
+            try {
+                if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
+                    Toast.makeText(baseContext, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
+                    mainItemAdapter.clear()
+                }
+                set(mainItemAdapter, mainList)
+                searchViewController!!.setup()
+                if (updatedBadge != null) {
+                    updatedBadge!!.number = badgeCounter
+                    updatedBadge!!.isVisible = badgeCounter != 0
+                }
+                mainFastAdapter!!.notifyAdapterDataSetChanged()
+                binding.refreshLayout.isRefreshing = false
+                if (appSheetBoolean && sheetApp != null) refreshAppSheet()
+                OnlyInJava.slideUp(binding.bottomBar)
+            } catch (ignore: Throwable) {
             }
-            set(mainItemAdapter, mainList)
-            searchViewController!!.setup()
-            if (updatedBadge != null) {
-                updatedBadge!!.number = badgeCounter
-                updatedBadge!!.isVisible = badgeCounter != 0
-            }
-            mainFastAdapter!!.notifyAdapterDataSetChanged()
-            binding.refreshLayout.isRefreshing = false
-            if (appSheetBoolean && sheetApp != null) refreshAppSheet()
-            OnlyInJava.slideUp(binding.bottomBar)
         }
     }
 
@@ -544,31 +554,37 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     }
 
     private fun refreshAppSheet() {
-        val position = sheetApp!!.position
-        if (mainItemAdapter.itemList.size() > position) {
-            if (sheetApp!!.packageName == mainFastAdapter!!.getItem(position)!!.app.packageName) {
-                sheetApp!!.updateApp(mainFastAdapter!!.getItem(position)!!)
+        try {
+            val position = sheetApp!!.position
+            if (mainItemAdapter.itemList.size() > position) {
+                if (sheetApp!!.packageName == mainFastAdapter!!.getItem(position)!!.app.packageName) {
+                    sheetApp!!.updateApp(mainFastAdapter!!.getItem(position)!!)
+                } else {
+                    sheetApp!!.dismissAllowingStateLoss()
+                }
             } else {
                 sheetApp!!.dismissAllowingStateLoss()
             }
-        } else {
-            sheetApp!!.dismissAllowingStateLoss()
+        } catch (ignore: Throwable) {
         }
     }
 
     private fun refreshBatch(filteredList: List<AppInfoX>, backupBoolean: Boolean) {
         val batchList = createBatchAppsList(filteredList, backupBoolean)
         runOnUiThread {
-            if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-                Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                batchItemAdapter.clear()
+            try {
+                if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
+                    batchItemAdapter.clear()
+                }
+                set(batchItemAdapter, batchList)
+                searchViewController!!.setup()
+                batchFastAdapter!!.notifyAdapterDataSetChanged()
+                updateCheckAll()
+                binding.refreshLayout.isRefreshing = false
+                OnlyInJava.slideUp(binding.bottomBar)
+            } catch (ignore: Throwable) {
             }
-            set(batchItemAdapter, batchList)
-            searchViewController!!.setup()
-            batchFastAdapter!!.notifyAdapterDataSetChanged()
-            updateCheckAll()
-            binding.refreshLayout.isRefreshing = false
-            OnlyInJava.slideUp(binding.bottomBar)
         }
     }
 

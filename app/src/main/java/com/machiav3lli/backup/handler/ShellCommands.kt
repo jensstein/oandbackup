@@ -27,6 +27,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.utils.FileUtils.getName
+import com.machiav3lli.backup.utils.LogUtils
 import java.io.File
 import java.util.*
 import java.util.stream.Collectors
@@ -44,6 +45,9 @@ class ShellCommands(private var users: List<String>?) {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, command)
+                throw ShellActionFailedException(command, "unhandled exception", e)
             }
             // don't care for the result here, it likely fails due to file not found
             try {
@@ -51,6 +55,8 @@ class ShellCommands(private var users: List<String>?) {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 Log.d(TAG, "Command '" + command + "' failed: " + java.lang.String.join(" ", e.shellResult.err))
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, command)
             }
         } else {
             // Deleting while system app
@@ -73,6 +79,9 @@ class ShellCommands(private var users: List<String>?) {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, command)
+                throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
     }
@@ -89,6 +98,9 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
+                throw ShellActionFailedException(command, "Could not $option package $packageName", e)
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "Could not $option package $packageName", e)
             }
         }
@@ -108,6 +120,9 @@ class ShellCommands(private var users: List<String>?) {
                     .collect(Collectors.toList())
         } catch (e: ShellCommandFailedException) {
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, command)
+            throw ShellActionFailedException(command, "Could not fetch list of users", e)
         }
     }
 
@@ -117,6 +132,9 @@ class ShellCommands(private var users: List<String>?) {
         try {
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
+            throw ShellActionFailedException(command, "Could not kill system_server", e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, command)
             throw ShellActionFailedException(command, "Could not kill system_server", e)
         }
     }
@@ -155,6 +173,9 @@ class ShellCommands(private var users: List<String>?) {
                             .collect(Collectors.toList())
                 } catch (e: ShellCommandFailedException) {
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
+                } catch (e: Throwable) {
+                    LogUtils.unhandledException(e, command)
+                    throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 }
             }
 
@@ -185,6 +206,9 @@ class ShellCommands(private var users: List<String>?) {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, command)
+                throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
     }

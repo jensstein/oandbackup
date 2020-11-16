@@ -34,6 +34,7 @@ import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
 import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.PrefUtils.getCryptoSalt
 import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
@@ -60,6 +61,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         } catch (e: StorageLocationNotConfiguredException) {
+            val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
+            return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, app)
+            // Usually, this should never happen, but just in case...
             val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         }
@@ -109,6 +115,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (e: IOException) {
             Log.e(TAG, "Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath!!.delete()}")
+            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, app)
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
             if (stopProcess) {
@@ -179,6 +188,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (e: IOException) {
             Log.e(TAG, "$app: Backup APKs failed: $e")
             throw BackupFailedException("Could not backup apk", e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, app)
+            throw BackupFailedException("Could not backup apk", e)
         }
     }
 
@@ -198,6 +210,10 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (e: IOException) {
             val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
             Log.e(TAG, message)
+            throw BackupFailedException(message, e)
+        } catch (e: Throwable) {
+            val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
+            LogUtils.unhandledException(e, message)
             throw BackupFailedException(message, e)
         }
         return true
@@ -237,10 +253,15 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                     if (isFileNotFoundException(e)) {
                         Log.w(TAG, "Directory has been deleted during processing: $dir")
                     }
+                } catch (e: Throwable) {
+                    LogUtils.unhandledException(e, dir)
                 }
             }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
+            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, sourceDirectory)
             throw BackupFailedException("Could not list contents of $sourceDirectory", e)
         }
     }

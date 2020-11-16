@@ -333,7 +333,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                         selectedBackup!!.backupProperties, selectedBackup.backupLocation).execute()
             }
             else -> {
-                Log.e(TAG, "unknown actionType: $actionType")
+                Log.e(TAG, "unhandled actionType: $actionType")
             }
         }
     }

@@ -19,6 +19,7 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
@@ -71,6 +72,19 @@ class LogUtils(context: Context) {
             } catch (e: BackupLocationIsAccessibleException) {
                 e.printStackTrace()
             }
+        }
+
+        fun unhandledException(e: Throwable, what: Any? = null) {
+            var whatStr = ""
+            if (what != null) {
+                whatStr = what.toString()
+                if (whatStr.contains("\n"))
+                    whatStr = " (\n" + whatStr + "\n)"
+                else
+                    whatStr = " (" + whatStr + ")"
+            }
+            Log.e("unhandledException", e.toString() + whatStr + "\n" + e.stackTrace.toString())
+            e.printStackTrace()
         }
     }
 }

@@ -80,6 +80,8 @@ object ItemUtils {
                 }
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e(AppSheet.TAG, String.format("Package %s is not installed? Exception: %s", app.packageName, e))
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, app)
             }
         }
     }

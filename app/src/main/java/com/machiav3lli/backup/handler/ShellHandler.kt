@@ -23,6 +23,7 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.CommandUtils
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.TarUtils
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
@@ -208,6 +209,8 @@ class ShellHandler {
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
                                 tokens[0], filemode, filepath, absoluteParent))
                     }
+                } catch (e: Throwable) {
+                    LogUtils.unhandledException(e, filepath)
                 }
                 var linkName: String? = null
                 var fileSize: Long = 0

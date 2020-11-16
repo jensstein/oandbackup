@@ -62,6 +62,8 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
             Log.w(TAG, "$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
             e.printStackTrace()
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
