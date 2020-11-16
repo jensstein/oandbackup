@@ -3,13 +3,13 @@
         <h2>使用说明</h2>
         <p><strong>备份模式</strong>:应用可仅备份apk或仅备份数据或apk与数据同时备份.仅当存在apk时,才能还原当前未安装的应用程序.
         </p>
-        <p><strong>删除备份</strong>:为已选中的app删除备份.
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
         </p>
-        <p><strong>卸载</strong>:比正常卸载更彻底.除了通过android命令进行常规卸载之外,从 OAndBackupX 卸载还会删除应用程序可能遗留在 /data/app-lib/ 中的文件.
+        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
         </p>
-        <p><strong>启用/禁用</strong>:使用Android命令`pm`来启用或禁用app.禁用会将其从用户界面移除而无需卸载但仍会占用存储空间.可用于同时为多个用户启用或禁用app(若设备启用了多用户).用户以ID为标识,用户0为初始用户.
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
         </p>
-        <p><strong>多用户</strong>:多用户仍处于试验阶段,但应该可以使用.在多用户方案中进行还原时,将调用`pm install -r $ apk`,随后,对于在/data/system/user/$user/package-restrictions.xml中列出该应用程序的每个用户,该应用程序都将被禁用(除非该应用程序被列出为enabled ="1").<br>这可能会给以后安装同一应用程序的用户带来问题,但是对于防止同时向所有用户安装该应用程序而言,这是必需的.上下文菜单具有启用或禁用应用程序的选项,如果其他用户由于禁用还原而无法使用特定应用程序,则可以使用该选项.<br>启用和禁用功能仅在初次安装(不一定从OAndBackupx)或应用程序还原后才能生效.
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
         </p>
     </body>
 </html>
