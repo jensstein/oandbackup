@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules.db
+package com.machiav3lli.backup.dbs
 
 import android.content.SharedPreferences
 import android.util.ArraySet
@@ -130,60 +130,15 @@ class Schedule {
 
     class Builder {
         val schedule: Schedule = Schedule()
+
         fun withId(id: Int): Builder {
             schedule.id = id.toLong()
-            return this
-        }
-
-        fun withEnabled(enabled: Boolean): Builder {
-            schedule.enabled = enabled
-            return this
-        }
-
-        fun withTimeHour(hour: Int): Builder {
-            schedule.timeHour = hour
-            return this
-        }
-
-        fun withTimeMinute(minute: Int): Builder {
-            schedule.timeMinute = minute
-            return this
-        }
-
-        fun withInterval(interval: Int): Builder {
-            schedule.interval = interval
-            return this
-        }
-
-        fun withTimePlaced(time: Long): Builder {
-            schedule.timePlaced = time
-            return this
-        }
-
-        fun withMode(mode: Mode): Builder {
-            schedule.mode = mode
-            return this
-        }
-
-        fun withSubmode(subMode: SubMode): Builder {
-            schedule.subMode = subMode
-            return this
-        }
-
-        fun withExcludeSystem(excludeSystem: Boolean): Builder {
-            schedule.excludeSystem = excludeSystem
-            return this
-        }
-
-        fun withEnableCustomList(enableCustomList: Boolean): Builder {
-            schedule.enableCustomList = enableCustomList
             return this
         }
 
         fun build(): Schedule {
             return schedule
         }
-
     }
 
     /**

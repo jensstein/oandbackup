@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules.db
+package com.machiav3lli.backup.dbs
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.machiav3lli.backup.schedules.db.Schedule
 
 @Database(entities = [Schedule::class], version = 2)
 abstract class ScheduleDatabase : RoomDatabase() {

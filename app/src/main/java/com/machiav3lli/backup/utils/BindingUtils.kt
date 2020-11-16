@@ -1,8 +1,15 @@
 package com.machiav3lli.backup.utils
 
+import android.content.res.ColorStateList
+import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.schedules.db.Schedule.Mode
-import com.machiav3lli.backup.schedules.db.Schedule.SubMode
+import com.machiav3lli.backup.dbs.Schedule.Mode
+import com.machiav3lli.backup.dbs.Schedule.SubMode
+import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppMetaInfo
+import java.time.LocalDateTime
 
 fun modeToId(mode: Int): Int {
     return when (mode) {

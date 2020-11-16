@@ -22,8 +22,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
+import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.schedules.HandleAlarms.Companion.timeUntilNextEvent
-import com.machiav3lli.backup.schedules.db.Schedule
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import com.mikepenz.fastadapter.diff.DiffCallback
 import java.time.LocalTime

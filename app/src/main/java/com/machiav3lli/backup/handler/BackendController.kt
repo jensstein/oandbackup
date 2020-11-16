@@ -15,7 +15,7 @@ import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.schedules.db.Schedule
+import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.LogUtils

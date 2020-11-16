@@ -28,7 +28,7 @@ import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.schedules.db.Schedule
+import com.machiav3lli.backup.dbs.Schedule
 
 class BlacklistDialogFragment : DialogFragment() {
     private val blacklistListeners = ArrayList<BlacklistListener>()

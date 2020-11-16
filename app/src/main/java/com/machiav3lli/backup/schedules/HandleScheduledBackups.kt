@@ -25,6 +25,7 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
+import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
@@ -32,7 +33,6 @@ import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.schedules.CustomPackageList.getScheduleCustomList
-import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.PrefUtils

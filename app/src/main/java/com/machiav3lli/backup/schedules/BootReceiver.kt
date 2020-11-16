@@ -25,9 +25,9 @@ import android.content.Intent
 import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.schedules.db.Schedule
-import com.machiav3lli.backup.schedules.db.ScheduleDao
-import com.machiav3lli.backup.schedules.db.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
 import java.lang.ref.WeakReference
 import java.util.stream.Collectors
 

@@ -31,8 +31,8 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
-import com.machiav3lli.backup.schedules.db.ScheduleDao
-import com.machiav3lli.backup.schedules.db.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
 
 class ScheduleService : Service(), OnBackupRestoreListener {
 

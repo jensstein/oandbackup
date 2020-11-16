@@ -27,7 +27,7 @@ import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.customListAddress
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.schedules.db.Schedule
+import com.machiav3lli.backup.dbs.Schedule
 
 object CustomPackageList {
     fun showList(activity: Activity, number: Int, mode: Schedule.Mode?) {

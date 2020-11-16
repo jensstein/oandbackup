@@ -29,6 +29,7 @@ import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
+import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
@@ -36,7 +37,6 @@ import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.schedules.BlacklistContract
 import com.machiav3lli.backup.schedules.BlacklistsDBHelper
 import com.machiav3lli.backup.schedules.HandleAlarms
-import com.machiav3lli.backup.schedules.db.ScheduleDatabase
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter

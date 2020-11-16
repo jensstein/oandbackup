@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.schedules.db.Schedule
-import com.machiav3lli.backup.schedules.db.ScheduleDao
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.ScheduleDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -42,8 +42,8 @@ import com.machiav3lli.backup.schedules.CustomPackageList.showList
 import com.machiav3lli.backup.schedules.HandleAlarms
 import com.machiav3lli.backup.schedules.HandleAlarms.Companion.timeUntilNextEvent
 import com.machiav3lli.backup.schedules.HandleScheduledBackups
-import com.machiav3lli.backup.schedules.db.Schedule
-import com.machiav3lli.backup.schedules.db.ScheduleDatabase
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.utils.CommandUtils.Command
 import com.machiav3lli.backup.utils.idToMode
 import com.machiav3lli.backup.utils.idToSubMode
