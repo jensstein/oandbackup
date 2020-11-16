@@ -135,7 +135,7 @@ open class BackupRestoreHelper {
 
     private fun housekeepingPackageBackups(context: Context?, app: AppInfoX, housekeepingWhen: HousekeepingMoment) {
         var numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
-        var backupHistory = app.getBackupHistory()
+        var backupHistory = app.backupHistory
         if (numBackupRevisions == 0) {
             Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backupHistory.size} (valid) backups available")
             return
@@ -153,7 +153,9 @@ open class BackupRestoreHelper {
         }
         val revisionsToDelete = backupHistory.size - numBackupRevisions
         Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backupHistory.size} / $numBackupRevisions). Deleting $revisionsToDelete backup(s).")
-        backupHistory = backupHistory.sortedWith { bi1: BackupItem, bi2: BackupItem -> bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate) }
+        backupHistory = backupHistory
+                .sortedWith { bi1: BackupItem, bi2: BackupItem -> bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate) }
+                .toMutableList()
         for (i in 0 until revisionsToDelete) {
             val deleteTarget = backupHistory[i]
             Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")

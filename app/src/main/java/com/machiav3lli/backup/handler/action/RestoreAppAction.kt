@@ -84,20 +84,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val backupDir = fromUri(context, backupLocation!!)
         restoreData(app, backupProperties, backupDir)
         val prefs = getDefaultSharedPreferences(context)
-        if (backupProperties.hasExternalData() && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+        if (backupProperties.hasExternalData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's external data")
             restoreExternalData(app, backupProperties, backupDir)
         } else {
             Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or disabled")
         }
         // Careful! This is again external data! It's the same configuration parameter!
-        if (backupProperties.hasObbData() && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+        if (backupProperties.hasObbData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's obb data")
             restoreObbData(app, backupProperties, backupDir)
         } else {
             Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's obb data; not part of the backup or disabled")
         }
-        if (backupProperties.hasDevicesProtectedData() && prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+        if (backupProperties.hasDevicesProtectedData && prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's protected data")
             restoreDeviceProtectedData(app, backupProperties, backupDir)
         } else {
@@ -176,7 +176,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
          * https://issuetracker.google.com/issues/80270303#comment14 this
          * could potentially be unwise to use.
          */
-        var stagingApkPath: File? = null
+        val stagingApkPath: File?
         if (PACKAGE_STAGING_DIRECTORY.exists()) {
             // It's expected, that all SDK 24+ version of Android go this way.
             stagingApkPath = PACKAGE_STAGING_DIRECTORY
@@ -412,9 +412,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
      * @param apkPath path to the apk to be installed (should be in the staging dir)
      * @return a complete shell command
      */
-    fun getPackageInstallCommand(apkPath: File?): String {
-        return this.getPackageInstallCommand(apkPath, null)
-    }
+    private fun getPackageInstallCommand(apkPath: File?): String = this.getPackageInstallCommand(apkPath, null)
 
     /**
      * Returns an installation command for abd/shell installation.
@@ -424,7 +422,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
      * @param basePackageName null, if it's a base package otherwise the name of the base package
      * @return a complete shell command
      */
-    fun getPackageInstallCommand(apkPath: File?, basePackageName: String?): String {
+    private fun getPackageInstallCommand(apkPath: File?, basePackageName: String?): String {
         return String.format("%s%s -r \"%s\"",
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) "cmd package install" else "pm install",
                 if (basePackageName != null) " -p $basePackageName" else "",

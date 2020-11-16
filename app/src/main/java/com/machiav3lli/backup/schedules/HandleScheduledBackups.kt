@@ -80,7 +80,7 @@ class HandleScheduledBackups(private val context: Context) {
                 }
                 Schedule.Mode.NEW_UPDATED -> { appInfoX: AppInfoX ->
                     (appInfoX.isInstalled && (!excludeSystem || !appInfoX.isSystem)
-                            && (!appInfoX.hasBackups() || appInfoX.isUpdated)
+                            && (!appInfoX.hasBackups || appInfoX.isUpdated)
                             && inCustomList(appInfoX.packageName))
                 }
                 else -> { appInfoX: AppInfoX -> inCustomList(appInfoX.packageName) }

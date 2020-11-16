@@ -18,23 +18,23 @@ open class BackupProperties : AppMetaInfo, Parcelable {
 
     @SerializedName("hasApk")
     @Expose
-    private val hasApk: Boolean
+    val hasApk: Boolean
 
     @SerializedName("hasAppData")
     @Expose
-    private val hasAppData: Boolean
+    val hasAppData: Boolean
 
     @SerializedName("hasDevicesProtectedData")
     @Expose
-    private val hasDevicesProtectedData: Boolean
+    val hasDevicesProtectedData: Boolean
 
     @SerializedName("hasExternalData")
     @Expose
-    private val hasExternalData: Boolean
+    val hasExternalData: Boolean
 
     @SerializedName("hasObbData")
     @Expose
-    private val hasObbData: Boolean
+    val hasObbData: Boolean
 
     @SerializedName("cipherType")
     @Expose
@@ -127,32 +127,8 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         return instance!!.toJson(this)
     }
 
-    fun hasApk(): Boolean {
-        return hasApk
-    }
-
-    fun hasAppData(): Boolean {
-        return hasAppData
-    }
-
-    fun hasDevicesProtectedData(): Boolean {
-        return hasDevicesProtectedData
-    }
-
-    fun hasExternalData(): Boolean {
-        return hasExternalData
-    }
-
-    fun hasObbData(): Boolean {
-        return hasObbData
-    }
-
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType.isNotEmpty()
-
-    private fun setBackupLocation(backupLocation: Uri) {
-        this.backupLocation = backupLocation
-    }
 
     override fun toString(): String {
         return "BackupProperties{" +

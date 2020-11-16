@@ -42,18 +42,18 @@ open class BatchFragment : Fragment(), SearchViewController {
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 requireMainActivity().batchItemAdapter.filter(newText)
-                requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { mainItemX: BatchItemX, charSequence: CharSequence? ->
-                    (mainItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || mainItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { batchItemX: BatchItemX, charSequence: CharSequence? ->
+                    (batchItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
+                            || batchItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
                 }
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 requireMainActivity().batchItemAdapter.filter(query)
-                requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { mainItemX: BatchItemX, charSequence: CharSequence? ->
-                    (mainItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || mainItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { batchItemX: BatchItemX, charSequence: CharSequence? ->
+                    (batchItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
+                            || batchItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
                 }
                 return true
             }

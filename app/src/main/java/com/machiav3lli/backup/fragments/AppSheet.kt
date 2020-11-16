@@ -119,7 +119,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
     private fun setupBackupList() {
         backupItemAdapter.clear()
         when {
-            app.hasBackups() -> {
+            app.hasBackups -> {
                 binding.recyclerView.visibility = View.VISIBLE
                 backupFastAdapter = FastAdapter.with(backupItemAdapter)
                 backupFastAdapter!!.setHasStableIds(true)
@@ -128,7 +128,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                 backupFastAdapter!!.addEventHook(OnRestoreClickHook())
                 backupFastAdapter!!.addEventHook(OnDeleteClickHook())
                 val backupList = mutableListOf<BackupItemX>()
-                for (backup in app.getBackupHistory()) backupList.add(BackupItemX(backup))
+                for (backup in app.backupHistory) backupList.add(BackupItemX(backup))
                 val sortedBackupList = backupList.sortedWith(SortFilterManager.BACKUP_DATE_COMPARATOR)
                 set(backupItemAdapter, sortedBackupList)
             }
@@ -176,7 +176,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
         pickSheetDataSizes(requireContext(), app, binding, update)
         binding.appSplits.setText(if (app.apkSplits != null) com.machiav3lli.backup.R.string.dialogYes else com.machiav3lli.backup.R.string.dialogNo)
         binding.versionName.text = appInfo.versionName
-        if (app.hasBackups()) {
+        if (app.hasBackups) {
             pickSheetVersionName(app, binding)
             binding.deleteAll.visibility = View.VISIBLE
         } else {
@@ -277,8 +277,8 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
             val properties = item.backup.backupProperties
             if (!app.isSpecial
                     && !app.isInstalled
-                    && !properties.hasApk()
-                    && properties.hasAppData()) {
+                    && !properties.hasApk
+                    && properties.hasAppData) {
                 Toast.makeText(context, getString(com.machiav3lli.backup.R.string.notInstalledModeDataWarning), Toast.LENGTH_LONG).show()
             } else {
                 val arguments = Bundle()
@@ -308,7 +308,7 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
                                     Toast.LENGTH_SHORT).show()
                         }
                         Thread {
-                            if (!app.hasBackups()) {
+                            if (!app.hasBackups) {
                                 Log.w(TAG, "UI Issue! Tried to delete backups for app without backups.")
                                 dialog!!.dismiss()
                             }

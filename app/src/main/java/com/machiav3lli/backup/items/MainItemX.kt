@@ -18,14 +18,14 @@
 package com.machiav3lli.backup.items
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemMainXBinding
 import com.machiav3lli.backup.utils.ItemUtils.calculateID
 import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
-import com.machiav3lli.backup.utils.ItemUtils.pickAppBackupMode
-import com.machiav3lli.backup.utils.ItemUtils.pickItemAppType
+import com.machiav3lli.backup.utils.setAppType
+import com.machiav3lli.backup.utils.setExists
+import com.machiav3lli.backup.utils.setIcon
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
 class MainItemX(var app: AppInfoX) : AbstractBindingItem<ItemMainXBinding>() {
@@ -44,30 +44,21 @@ class MainItemX(var app: AppInfoX) : AbstractBindingItem<ItemMainXBinding>() {
     }
 
     override fun bindView(binding: ItemMainXBinding, payloads: List<Any>) {
-        val meta = app.appInfo
-        if (meta!!.hasIcon()) {
-            binding.icon.setImageDrawable(meta.applicationIcon)
-        } else {
-            binding.icon.setImageResource(R.drawable.ic_placeholder)
-        }
-        binding.label.text = meta.packageLabel
+        binding.icon.setIcon(app.appInfo)
+        binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
-        if (app.hasBackups()) {
-            if (app.isUpdated) {
-                binding.update.visibility = View.VISIBLE
-            } else {
-                binding.update.visibility = View.GONE
-            }
-            binding.lastBackup.text = getFormattedDate(app.latestBackup!!.backupProperties.backupDate!!, false)
-        } else {
-            binding.update.visibility = View.GONE
-            binding.lastBackup.text = null
-        }
-        pickAppBackupMode(app, binding.root)
-        pickItemAppType(app, binding.appType)
+        binding.lastBackup.text = getFormattedDate(app.latestBackup?.backupProperties?.backupDate, false)
+        binding.update.setExists(app.hasBackups && app.isUpdated)
+        binding.apkMode.setExists(app.hasApk)
+        binding.dataMode.setExists(app.hasAppData)
+        binding.extDataMode.setExists(app.hasExternalData)
+        binding.deDataMode.setExists(app.hasDevicesProtectedData)
+        binding.obbMode.setExists(app.hasObbData)
+        binding.appType.setAppType(app)
     }
 
     override fun unbindView(binding: ItemMainXBinding) {
+        binding.icon.setIcon(null)
         binding.label.text = null
         binding.packageName.text = null
         binding.lastBackup.text = null

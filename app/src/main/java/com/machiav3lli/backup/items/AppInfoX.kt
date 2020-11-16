@@ -29,7 +29,8 @@ class AppInfoX {
     val packageName: String
     var appInfo: AppMetaInfo? = null
         private set
-    private var backupHistory: MutableList<BackupItem> = ArrayList()
+    var backupHistory: MutableList<BackupItem> = arrayListOf()
+        private set
     private var backupDir: Uri? = null
     private var storageStats: StorageStats? = null
     var packageInfo: PackageInfo? = null
@@ -41,8 +42,6 @@ class AppInfoX {
      *
      * @param context  Context object of the app
      * @param metaInfo Constructed information object that describes the package
-     * @throws FileUtils.BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
-     * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
      */
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         this.context = context
@@ -179,18 +178,13 @@ class AppInfoX {
     val versionName: String?
         get() = appInfo!!.versionName
 
-    fun hasBackups(): Boolean {
-        return backupHistory.isNotEmpty()
-    }
+    val hasBackups: Boolean
+        get() = backupHistory.isNotEmpty()
 
     val latestBackup: BackupItem?
-        get() = if (hasBackups()) {
+        get() = if (backupHistory.isNotEmpty()) {
             backupHistory[backupHistory.size - 1]
         } else null
-
-    fun getBackupHistory(): List<BackupItem> {
-        return backupHistory
-    }
 
     val dataDir: String
         get() = packageInfo!!.applicationInfo.dataDir
@@ -246,28 +240,23 @@ class AppInfoX {
     val apkSplits: Array<String>?
         get() = appInfo!!.splitSourceDirs
     val isUpdated: Boolean
-        get() = (hasBackups()
+        get() = (backupHistory.isNotEmpty()
                 && latestBackup!!.backupProperties.versionCode < versionCode)
 
-    fun hasApk(): Boolean {
-        return this.getBackupHistory().stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasApk() }
-    }
+    val hasApk: Boolean
+        get() = backupHistory.stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasApk }
 
-    fun hasAppData(): Boolean {
-        return this.getBackupHistory().stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasAppData() }
-    }
+    val hasAppData: Boolean
+        get() = backupHistory.stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasAppData }
 
-    fun hasExternalData(): Boolean {
-        return this.getBackupHistory().stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasExternalData() }
-    }
+    val hasExternalData: Boolean
+        get() = backupHistory.stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasExternalData }
 
-    fun hasDeviceProtectedData(): Boolean {
-        return this.getBackupHistory().stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasDevicesProtectedData() }
-    }
+    val hasDevicesProtectedData: Boolean
+        get() = backupHistory.stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasDevicesProtectedData }
 
-    fun hasObbData(): Boolean {
-        return this.getBackupHistory().stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasObbData() }
-    }
+    val hasObbData: Boolean
+        get() = backupHistory.stream().anyMatch { backupItem: BackupItem -> backupItem.backupProperties.hasObbData }
 
     override fun toString(): String {
         return packageName
@@ -279,7 +268,7 @@ class AppInfoX {
         // TODO cause of huge part of cpu time
         private fun getBackupHistory(context: Context, backupDir: Uri?): MutableList<BackupItem> {
             val appBackupDir = StorageFile.fromUri(context, backupDir!!)
-            var backupHistory : MutableList<BackupItem> = mutableListOf()
+            val backupHistory: MutableList<BackupItem> = mutableListOf()
             try {
                 for (file in appBackupDir.listFiles()) {
                     if (file.isPropertyFile)

@@ -23,7 +23,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemBackupXBinding
 import com.machiav3lli.backup.utils.ItemUtils.calculateID
 import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
-import com.machiav3lli.backup.utils.ItemUtils.pickBackupBackupMode
+import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
 class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBinding>() {
@@ -43,10 +43,14 @@ class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBindi
 
     override fun bindView(binding: ItemBackupXBinding, payloads: List<Any>) {
         // TODO MAYBE add the user to the info?
-        binding.backupDate.text = getFormattedDate(backup.backupProperties.backupDate!!, true)
+        binding.backupDate.text = getFormattedDate(backup.backupProperties.backupDate, true)
         binding.versionName.text = backup.backupProperties.versionName
         binding.cpuArch.text = String.format("(%s)", backup.backupProperties.cpuArch)
-        pickBackupBackupMode(backup.backupProperties, binding.root)
+        binding.apkMode.setExists(backup.backupProperties.hasApk)
+        binding.dataMode.setExists(backup.backupProperties.hasAppData)
+        binding.extDataMode.setExists(backup.backupProperties.hasExternalData)
+        binding.deDataMode.setExists(backup.backupProperties.hasDevicesProtectedData)
+        binding.obbMode.setExists(backup.backupProperties.hasObbData)
         if (backup.backupProperties.isEncrypted) {
             binding.encrypted.text = backup.backupProperties.cipherType
         }
@@ -54,5 +58,8 @@ class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBindi
 
     override fun unbindView(binding: ItemBackupXBinding) {
         binding.backupDate.text = null
+        binding.versionName.text = null
+        binding.cpuArch.text = null
+        binding.encrypted.text = null
     }
 }

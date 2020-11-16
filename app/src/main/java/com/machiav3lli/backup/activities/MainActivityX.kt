@@ -48,7 +48,6 @@ import com.machiav3lli.backup.handler.NotificationHelper.showNotification
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
-import com.machiav3lli.backup.handler.SortFilterManager.saveFilterPreferences
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.LogUtils
@@ -61,10 +60,9 @@ import com.machiav3lli.backup.utils.UIUtils.showWarning
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.topjohnwu.superuser.Shell
-import java.util.function.Consumer
 
 class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
@@ -92,8 +90,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private var appsList: List<AppInfoX>? = null
 
     // TODO optimize usage (maybe a map instead?)
-    var apkCheckedList: MutableList<String> = java.util.ArrayList()
-    var dataCheckedList: MutableList<String> = java.util.ArrayList()
+    var apkCheckedList: MutableList<String> = mutableListOf()
+    var dataCheckedList: MutableList<String> = mutableListOf()
     private var updatedBadge: BadgeDrawable? = null
     private var badgeCounter = 0
     private var powerManager: PowerManager? = null
@@ -232,13 +230,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
         batchFastAdapter!!.onClickListener = { _: View?, _: IAdapter<BatchItemX>?, item: BatchItemX, _: Int? ->
             val oldChecked = item.isChecked
-            item.isApkChecked = !oldChecked
-            item.isDataChecked = !oldChecked
+            item.isApkChecked = !oldChecked && (item.app.hasApk || item.backupBoolean)
+            item.isDataChecked = !oldChecked && (item.app.hasAppData || item.backupBoolean)
             if (item.isChecked) {
-                if (!apkCheckedList.contains(item.app.packageName)) {
+                if (!apkCheckedList.contains(item.app.packageName) && (item.app.hasApk || item.backupBoolean)) {
                     apkCheckedList.add(item.app.packageName)
                 }
-                if (!dataCheckedList.contains(item.app.packageName)) {
+                if (!dataCheckedList.contains(item.app.packageName) && (item.app.hasAppData || item.backupBoolean)) {
                     dataCheckedList.add(item.app.packageName)
                 }
             } else {
@@ -252,24 +250,22 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         binding.apkBatch.setOnClickListener {
             val checkBoolean = apkCheckedList.size != batchItemAdapter.itemList.size()
             apkCheckedList.clear()
-            batchItemAdapter.adapterItems.forEach(Consumer { batchItemX: BatchItemX ->
-                val packageName = batchItemX.app.packageName
-                batchItemX.isApkChecked = checkBoolean
+            batchItemAdapter.adapterItems.forEach {
+                val packageName = it.app.packageName
+                it.isApkChecked = checkBoolean
                 if (checkBoolean) apkCheckedList.add(packageName)
             }
-            )
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
         }
         binding.dataBatch.setOnClickListener {
             val checkBoolean = dataCheckedList.size != batchItemAdapter.itemList.size()
             dataCheckedList.clear()
-            batchItemAdapter.adapterItems.forEach(Consumer { batchItemX: BatchItemX ->
-                val packageName = batchItemX.app.packageName
-                batchItemX.isDataChecked = checkBoolean
+            batchItemAdapter.adapterItems.forEach {
+                val packageName = it.app.packageName
+                it.isDataChecked = checkBoolean
                 if (checkBoolean) dataCheckedList.add(packageName)
             }
-            )
             batchFastAdapter!!.notifyAdapterDataSetChanged()
             updateCheckAll()
         }
@@ -352,17 +348,17 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     }
 
     private fun actionOnClick(backupBoolean: Boolean) {
+        val arguments = Bundle()
         val selectedList = batchItemAdapter.adapterItems
                 .filter(BatchItemX::isChecked)
                 .map { item: BatchItemX -> item.app.appInfo }
                 .toCollection(ArrayList())
+        arguments.putParcelableArrayList("selectedList", selectedList)
         val selectedListModes = batchItemAdapter.adapterItems
                 .filter(BatchItemX::isChecked)
                 .map(BatchItemX::actionMode)
                 .toCollection(ArrayList())
-        val arguments = Bundle()
         arguments.putIntegerArrayList("selectedListModes", selectedListModes)
-        arguments.putParcelableArrayList("selectedList", selectedList)
         arguments.putBoolean("backupBoolean", backupBoolean)
         val dialog = BatchConfirmDialog(this)
         dialog.arguments = arguments
@@ -411,21 +407,20 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                     }
                     var result: ActionResult? = null
                     try {
-                        result =
-                            if (backupRunning) {
-                                backupRestoreHelper.backup(this, shellHandlerInstance!!, appInfo, mode)
-                            } else {
-                                // Latest backup for now
-                                val selectedBackup = appInfo.latestBackup
-                                backupRestoreHelper.restore(this, appInfo, selectedBackup!!.backupProperties,
-                                        selectedBackup.backupLocation, shellHandlerInstance, mode)
-                            }
+                        result = if (backupRunning) {
+                            backupRestoreHelper.backup(this, shellHandlerInstance!!, appInfo, mode)
+                        } else {
+                            // Latest backup for now
+                            val selectedBackup = appInfo.latestBackup
+                            backupRestoreHelper.restore(this, appInfo, selectedBackup!!.backupProperties,
+                                    selectedBackup.backupLocation, shellHandlerInstance, mode)
+                        }
                     } catch (e: Throwable) {
                         result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
                         Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
                     } finally {
                         if (!result!!.succeeded)
-                            showNotification(this, MainActivityX::class.java, result!!.hashCode(), appInfo.packageLabel, result!!.message, false)
+                            showNotification(this, MainActivityX::class.java, result.hashCode(), appInfo.packageLabel, result.message, false)
                     }
                     results.add(result)
                     i++
@@ -520,11 +515,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         val mainList = createMainAppsList(filteredList)
         runOnUiThread {
             try {
-                if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-                    Toast.makeText(baseContext, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                    mainItemAdapter.clear()
-                }
-                set(mainItemAdapter, mainList)
+                FastAdapterDiffUtil[mainItemAdapter] = mainList
                 searchViewController!!.setup()
                 if (updatedBadge != null) {
                     updatedBadge!!.number = badgeCounter
@@ -539,19 +530,11 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
     }
 
-    private fun createMainAppsList(filteredList: List<AppInfoX>): java.util.ArrayList<MainItemX> {
-        val list = java.util.ArrayList<MainItemX>()
-        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-            for (app in applyFilter(appsList!!, "0000", this)) {
-                list.add(MainItemX(app))
-                if (app.isUpdated) badgeCounter += 1
-            }
-            saveFilterPreferences(this, SortFilterModel())
-        } else {
-            for (app in filteredList) {
-                list.add(MainItemX(app))
-                if (app.isUpdated) badgeCounter += 1
-            }
+    private fun createMainAppsList(filteredList: List<AppInfoX>): MutableList<MainItemX> {
+        val list = mutableListOf<MainItemX>()
+        filteredList.forEach {
+            list.add(MainItemX(it))
+            if (it.isUpdated) badgeCounter += 1
         }
         return list
     }
@@ -576,11 +559,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         val batchList = createBatchAppsList(filteredList, backupBoolean)
         runOnUiThread {
             try {
-                if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
-                    batchItemAdapter.clear()
-                }
-                set(batchItemAdapter, batchList)
+                FastAdapterDiffUtil[batchItemAdapter] = batchList
                 searchViewController!!.setup()
                 batchFastAdapter!!.notifyAdapterDataSetChanged()
                 updateCheckAll()
@@ -591,27 +570,20 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
     }
 
-    private fun createBatchAppsList(filteredList: List<AppInfoX>, backupBoolean: Boolean): java.util.ArrayList<BatchItemX> {
-        val list = java.util.ArrayList<BatchItemX>()
-        if (false && filteredList.isEmpty()) { //TODO empty_filtered_list should be shown as empty, otherwise inconsistent, also being empty is information we want to know (all apps backuped = empty)
-            for (app in applyFilter(appsList!!, "0000", this)) {
-                if (toAddToBatch(backupBoolean, app)) list.add(BatchItemX(app))
-            }
-            saveFilterPreferences(this, SortFilterModel())
-        } else {
-            for (app in filteredList) {
-                if (toAddToBatch(backupBoolean, app)) {
-                    val item = BatchItemX(app)
-                    if (apkCheckedList.contains(app.packageName)) item.isApkChecked = true
-                    if (dataCheckedList.contains(app.packageName)) item.isDataChecked = true
-                    list.add(item)
-                }
+    private fun createBatchAppsList(filteredList: List<AppInfoX>, backupBoolean: Boolean): MutableList<BatchItemX> {
+        val list = mutableListOf<BatchItemX>()
+        filteredList.forEach {
+            if (toAddToBatch(backupBoolean, it)) {
+                val item = BatchItemX(it, backupBoolean)
+                if (apkCheckedList.contains(it.packageName)) item.isApkChecked = true
+                if (dataCheckedList.contains(it.packageName)) item.isDataChecked = true
+                list.add(item)
             }
         }
         return list
     }
 
     private fun toAddToBatch(backupBoolean: Boolean, app: AppInfoX): Boolean {
-        return if (backupBoolean) app.isInstalled else app.hasBackups()
+        return if (backupBoolean) app.isInstalled else app.hasBackups
     }
 }

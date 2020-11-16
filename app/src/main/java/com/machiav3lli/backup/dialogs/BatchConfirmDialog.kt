@@ -25,6 +25,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.PrefUtils
 
@@ -38,11 +39,13 @@ class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment(
         val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
         if (PrefUtils.isKillBeforeActionEnabled(this.context)) {
-            message.append(this.context?.getString(R.string.msg_appkill_warning))
+            message.append(requireContext().getString(R.string.msg_appkill_warning))
             message.append("\n\n")
         }
-        if (selectedList != null) {
-            for (item in selectedList) message.append(item.packageLabel).append("\n")
+        selectedList?.forEachIndexed { i, item ->
+            message.append("${item.packageLabel}")
+            selectedListModes?.get(i)?.let { message.append(": ${getModeString(it)}") }
+            message.append("\n")
         }
         val selectedItems = selectedList!!.zip(selectedListModes!!)
         val builder = AlertDialog.Builder(requireActivity())
@@ -61,6 +64,15 @@ class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment(
 
     interface ConfirmListener {
         fun onConfirmed(selectedList: List<Pair<AppMetaInfo, Int>>)
+    }
+
+    private fun getModeString(mode: Int): String {
+        return when (mode) {
+            BaseAppAction.MODE_APK -> requireContext().resources.getString(R.string.handleApk)
+            BaseAppAction.MODE_DATA -> requireContext().resources.getString(R.string.handleData)
+            BaseAppAction.MODE_BOTH -> requireContext().resources.getString(R.string.handleBoth)
+            else -> ""
+        }
     }
 
     companion object {

@@ -18,18 +18,18 @@
 package com.machiav3lli.backup.items
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
 import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.utils.ItemUtils.calculateID
 import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
-import com.machiav3lli.backup.utils.ItemUtils.pickAppBackupMode
-import com.machiav3lli.backup.utils.ItemUtils.pickItemAppType
+import com.machiav3lli.backup.utils.setAppType
+import com.machiav3lli.backup.utils.setExists
+import com.machiav3lli.backup.utils.setVisible
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class BatchItemX(var app: AppInfoX) : AbstractBindingItem<ItemBatchXBinding>() {
+class BatchItemX(var app: AppInfoX, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
     var isApkChecked = false
     var isDataChecked = false
 
@@ -63,21 +63,18 @@ class BatchItemX(var app: AppInfoX) : AbstractBindingItem<ItemBatchXBinding>() {
     override fun bindView(binding: ItemBatchXBinding, payloads: List<Any>) {
         binding.apkCheckbox.isChecked = isApkChecked
         binding.dataCheckbox.isChecked = isDataChecked
+        binding.apkCheckbox.setVisible(app.hasApk || backupBoolean)
+        binding.dataCheckbox.setVisible(app.hasAppData || backupBoolean)
         binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
-        if (app.hasBackups()) {
-            if (app.isUpdated) {
-                binding.update.visibility = View.VISIBLE
-            } else {
-                binding.update.visibility = View.GONE
-            }
-            binding.lastBackup.text = getFormattedDate(app.latestBackup!!.backupProperties.backupDate!!, false)
-        } else {
-            binding.update.visibility = View.GONE
-            binding.lastBackup.text = null
-        }
-        pickAppBackupMode(app, binding.root)
-        pickItemAppType(app, binding.appType)
+        binding.lastBackup.text = getFormattedDate(app.latestBackup?.backupProperties?.backupDate, false)
+        binding.update.setExists(app.hasBackups && app.isUpdated)
+        binding.apkMode.setExists(app.hasApk)
+        binding.dataMode.setExists(app.hasAppData)
+        binding.extDataMode.setExists(app.hasExternalData)
+        binding.deDataMode.setExists(app.hasDevicesProtectedData)
+        binding.obbMode.setExists(app.hasObbData)
+        binding.appType.setAppType(app)
     }
 
     override fun unbindView(binding: ItemBatchXBinding) {

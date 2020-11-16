@@ -19,21 +19,17 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.format.Formatter
 import android.util.Log
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.utils.UIUtils.setVisibility
 import java.text.DateFormat
 import java.time.LocalDateTime
@@ -49,10 +45,13 @@ object ItemUtils {
     const val COLOR_DISABLED = Color.DKGRAY
     const val COLOR_UNINSTALLED = Color.GRAY
 
-    fun getFormattedDate(lastUpdate: LocalDateTime, withTime: Boolean): String {
-        val date = Date.from(lastUpdate.atZone(ZoneId.systemDefault()).toInstant())
-        val dateFormat = if (withTime) DateFormat.getDateTimeInstance() else DateFormat.getDateInstance()
-        return dateFormat.format(date)
+    fun getFormattedDate(lastUpdate: LocalDateTime?, withTime: Boolean): String? {
+        lastUpdate?.let {
+            val date = Date.from(lastUpdate?.atZone(ZoneId.systemDefault())?.toInstant())
+            val dateFormat = if (withTime) DateFormat.getDateTimeInstance() else DateFormat.getDateInstance()
+            return dateFormat.format(date)
+        }
+        return null
     }
 
     fun calculateID(app: AppInfoX): Long {
@@ -113,61 +112,5 @@ object ItemUtils {
             color = COLOR_UNINSTALLED
         }
         text.setTextColor(color)
-    }
-
-    fun pickItemAppType(app: AppInfoX, icon: AppCompatImageView) {
-        var color: ColorStateList
-        when {
-            app.isSpecial -> {
-                color = ColorStateList.valueOf(COLOR_SPECIAL)
-                icon.visibility = View.VISIBLE
-                icon.setImageResource(R.drawable.ic_special_24)
-            }
-            app.isSystem -> {
-                color = ColorStateList.valueOf(COLOR_SYSTEM)
-                icon.visibility = View.VISIBLE
-                icon.setImageResource(R.drawable.ic_system_24)
-            }
-            else -> {
-                color = ColorStateList.valueOf(COLOR_USER)
-                icon.visibility = View.VISIBLE
-                icon.setImageResource(R.drawable.ic_user_24)
-            }
-        }
-        if (!app.isSpecial) {
-            if (app.isDisabled) {
-                color = ColorStateList.valueOf(COLOR_DISABLED)
-            }
-            if (!app.isInstalled) {
-                color = ColorStateList.valueOf(COLOR_UNINSTALLED)
-            }
-        }
-        icon.imageTintList = color
-    }
-
-    fun pickBackupBackupMode(backupProps: BackupProperties, view: View) {
-        val apk: AppCompatImageView = view.findViewById(R.id.apkMode)
-        val appData: AppCompatImageView = view.findViewById(R.id.dataMode)
-        val extData: AppCompatImageView = view.findViewById(R.id.extDataMode)
-        val obbData: AppCompatImageView = view.findViewById(R.id.obbMode)
-        val deData: AppCompatImageView = view.findViewById(R.id.deDataMode)
-        apk.visibility = if (backupProps.hasApk()) View.VISIBLE else View.GONE
-        appData.visibility = if (backupProps.hasAppData()) View.VISIBLE else View.GONE
-        extData.visibility = if (backupProps.hasExternalData()) View.VISIBLE else View.GONE
-        deData.visibility = if (backupProps.hasDevicesProtectedData()) View.VISIBLE else View.GONE
-        obbData.visibility = if (backupProps.hasObbData()) View.VISIBLE else View.GONE
-    }
-
-    fun pickAppBackupMode(app: AppInfoX, view: View) {
-        val apk: AppCompatImageView = view.findViewById(R.id.apkMode)
-        val appData: AppCompatImageView = view.findViewById(R.id.dataMode)
-        val extData: AppCompatImageView = view.findViewById(R.id.extDataMode)
-        val obbData: AppCompatImageView = view.findViewById(R.id.obbMode)
-        val deData: AppCompatImageView = view.findViewById(R.id.deDataMode)
-        apk.visibility = if (app.hasApk()) View.VISIBLE else View.GONE
-        appData.visibility = if (app.hasAppData()) View.VISIBLE else View.GONE
-        extData.visibility = if (app.hasExternalData()) View.VISIBLE else View.GONE
-        deData.visibility = if (app.hasDeviceProtectedData()) View.VISIBLE else View.GONE
-        obbData.visibility = if (app.hasObbData()) View.VISIBLE else View.GONE
     }
 }

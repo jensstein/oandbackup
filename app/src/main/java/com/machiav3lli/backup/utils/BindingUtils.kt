@@ -44,3 +44,57 @@ fun idToSubMode(subMode: Int): SubMode {
         else -> SubMode.BOTH
     }
 }
+
+fun View.setExists(rightMode: Boolean) {
+    visibility = if (rightMode) {
+        View.VISIBLE
+    } else {
+        View.GONE
+    }
+}
+
+fun View.setVisible(rightMode: Boolean) {
+    visibility = if (rightMode) {
+        View.VISIBLE
+    } else {
+        View.INVISIBLE
+    }
+}
+
+fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) {
+    if (metaInfo?.hasIcon() == true) {
+        setImageDrawable(metaInfo.applicationIcon)
+    } else {
+        setImageResource(R.drawable.ic_placeholder)
+    }
+}
+
+fun AppCompatImageView.setAppType(appInfo: AppInfoX) {
+    var color: ColorStateList
+    when {
+        appInfo.isSpecial -> {
+            color = ColorStateList.valueOf(ItemUtils.COLOR_SPECIAL)
+            visibility = View.VISIBLE
+            setImageResource(R.drawable.ic_special_24)
+        }
+        appInfo.isSystem -> {
+            color = ColorStateList.valueOf(ItemUtils.COLOR_SYSTEM)
+            visibility = View.VISIBLE
+            setImageResource(R.drawable.ic_system_24)
+        }
+        else -> {
+            color = ColorStateList.valueOf(ItemUtils.COLOR_USER)
+            visibility = View.VISIBLE
+            setImageResource(R.drawable.ic_user_24)
+        }
+    }
+    if (!appInfo.isSpecial) {
+        if (appInfo.isDisabled) {
+            color = ColorStateList.valueOf(ItemUtils.COLOR_DISABLED)
+        }
+        if (!appInfo.isInstalled) {
+            color = ColorStateList.valueOf(ItemUtils.COLOR_UNINSTALLED)
+        }
+    }
+    imageTintList = color
+}

@@ -26,8 +26,6 @@ import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.function.Predicate
-import java.util.stream.Collectors
 
 object SortFilterManager {
     private val APP_INFO_LABEL_COMPARATOR = java.util.Comparator { m1: AppInfoX, m2: AppInfoX -> m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true) }
@@ -52,44 +50,44 @@ object SortFilterManager {
     }
 
     fun applyFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: Predicate<AppInfoX>
+        val predicate: (AppInfoX) -> Boolean
         predicate = when (filter[1]) {
-            '1' -> Predicate { appInfox: AppInfoX -> appInfox.isSystem }
-            '2' -> Predicate { appInfoX: AppInfoX -> !appInfoX.isSystem }
-            '3' -> Predicate { appInfox: AppInfoX -> appInfox.isSpecial }
-            else -> Predicate { true }
+            '1' -> { appInfox: AppInfoX -> appInfox.isSystem }
+            '2' -> { appInfoX: AppInfoX -> !appInfoX.isSystem }
+            '3' -> { appInfox: AppInfoX -> appInfox.isSpecial }
+            else -> { _: AppInfoX -> true }
         }
-        val filteredList = list.stream()
+        val filteredList = list
                 .filter(predicate)
-                .collect(Collectors.toList())
+                .toList()
         return applyBackupFilter(filteredList, filter, context)
     }
 
     private fun applyBackupFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: Predicate<AppInfoX>
+        val predicate: (AppInfoX) -> Boolean
         predicate = when (filter[2]) {
-            '1' -> Predicate { appInfoX: AppInfoX -> appInfoX.hasApk() && appInfoX.hasAppData() }
-            '2' -> Predicate { obj: AppInfoX -> obj.hasApk() }
-            '3' -> Predicate { obj: AppInfoX -> obj.hasAppData() }
-            '4' -> Predicate { appInfoX: AppInfoX -> !appInfoX.hasBackups() }
-            else -> Predicate { true }
+            '1' -> { appInfoX: AppInfoX -> appInfoX.hasApk && appInfoX.hasAppData }
+            '2' -> { obj: AppInfoX -> obj.hasApk }
+            '3' -> { obj: AppInfoX -> obj.hasAppData }
+            '4' -> { appInfoX: AppInfoX -> !appInfoX.hasBackups }
+            else -> { _: AppInfoX -> true }
         }
-        val filteredList = list.stream()
+        val filteredList = list
                 .filter(predicate)
-                .collect(Collectors.toList())
+                .toList()
         return applySpecialFilter(filteredList, filter, context)
     }
 
     private fun applySpecialFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: Predicate<AppInfoX>
+        val predicate: (AppInfoX) -> Boolean
+        val days = getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7")!!.toInt()
         predicate = when (filter[3]) {
-            '1' -> Predicate { appInfoX: AppInfoX -> !appInfoX.hasBackups() || appInfoX.isUpdated }
-            '2' -> Predicate { appInfoX: AppInfoX -> !appInfoX.isInstalled }
+            '1' -> { appInfoX: AppInfoX -> !appInfoX.hasBackups || appInfoX.isUpdated }
+            '2' -> { appInfoX: AppInfoX -> !appInfoX.isInstalled }
             '3' -> {
-                val days = getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7")!!.toInt()
-                Predicate { appInfoX: AppInfoX ->
+                { appInfoX: AppInfoX ->
                     when {
-                        appInfoX.hasBackups() -> {
+                        appInfoX.hasBackups -> {
                             val lastBackup = appInfoX.latestBackup!!.backupProperties.backupDate
                             val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
                             diff >= days
@@ -98,12 +96,12 @@ object SortFilterManager {
                     }
                 }
             }
-            '4' -> Predicate { appInfoX: AppInfoX -> appInfoX.apkSplits != null && appInfoX.apkSplits!!.isNotEmpty() }
-            else -> Predicate { true }
+            '4' -> { appInfoX: AppInfoX -> appInfoX.apkSplits != null && appInfoX.apkSplits!!.isNotEmpty() }
+            else -> { _: AppInfoX -> true }
         }
-        val filteredList = list.stream()
+        val filteredList = list
                 .filter(predicate)
-                .collect(Collectors.toList())
+                .toList()
         return applySort(filteredList, filter)
     }
 
