@@ -192,7 +192,6 @@
     <string name="prefs_passwordconfirmation">Krüpteeringu parooli kinnitus</string>
     <string name="prefs_biometriclock_summary">Turva rakendust seadme biomeetrilise lukuga (nt sõrmejälg, näotuvastus)</string>
     <string name="prefs_biometriclock">Biomeetrialukk</string>
-    <string name="radioUpdated">Uuendatud</string>
     <string name="prefs_stopcont_summary">Ainult ekspertidele: see võib aidata kui rakendus muudab faile varundamise ajal ning varundamine ebaõnnestub.</string>
     <string name="prefs_disableverification_summary">Keelab APKide taastamisel selle arendusvaliku ning lubab hiljem uuesti. Parandab vea INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_housekeepingmoment_summary">Määrab, kas vanim varundus kustutatakse enne või pärast uue varunduse loomist, et vabastada varunduseks kasutatavat kettaruumi.</string>
