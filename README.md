@@ -75,7 +75,7 @@ OAndBackupX is built with gradle, for that you need the android sdk.
 
 ## Licenses <img align="right" src="agplv3.png" width="64" />
 
-OAndBackupX is licensed under the [GNU's Aferro GPL v3](LICENSE.txt).
+OAndBackupX is licensed under the [GNU's Affero GPL v3](LICENSE.md).
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
