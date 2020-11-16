@@ -183,10 +183,9 @@ class ShellHandler {
                 } else {
                     parentPath + '/' + tokens[7]
                 }
-                var filemode: Short
+                var filemode: Short = 0b110110000
                 try {
-                    val posixFilePermissions = PosixFilePermissions.fromString(tokens[0]!!.substring(1))
-                    filemode = translatePosixPermissionToMode(posixFilePermissions)
+                    filemode = translatePosixPermissionToMode(tokens[0]!!.substring(1))
                 } catch (e: IllegalArgumentException) {
                     // Happens on cache and code_cache dir because of sticky bits
                     // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
@@ -197,14 +196,15 @@ class ShellHandler {
                     // make any sense.
                     if (filepath == "cache" || filepath == "code_cache") {
                         // Fall back to the known value of these directories
-                        filemode = 505
+                        filemode = translatePosixPermissionToMode("rwxrws--x")
                     } else {
-                        // For all other directories use 0600 and for files 0700
-                        filemode = if (tokens[0]!![0] == 'd') {
-                            432
-                        } else {
-                            448
-                        }
+                        // For all other directories use 0600 and for files 0700 (TODO hg42: directories need x)
+                        filemode =
+                            if (tokens[0]!![0] == 'd') {
+                                translatePosixPermissionToMode("rwxrwx--x")
+                            } else {
+                                translatePosixPermissionToMode("rw-rw----")
+                            }
                         Log.w(TAG, String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
                                 tokens[0], filemode, filepath, absoluteParent))

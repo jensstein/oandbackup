@@ -27,6 +27,7 @@ import com.machiav3lli.backup.utils.PrefUtils.getStorageRootDir
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.attribute.PosixFilePermission
+import java.nio.file.attribute.PosixFilePermissions
 
 object FileUtils {
     const val BACKUP_SUBDIR_NAME = "OABackupX"
@@ -96,11 +97,19 @@ object FileUtils {
         return path.substring(path.lastIndexOf(File.separator) + 1)
     }
 
-    fun translatePosixPermissionToMode(permission: Set<PosixFilePermission?>): Short {
+    fun translatePosixPermissionToMode(permissions: String): Short {
+        var str = permissions.takeLast(9)
+        str = str.replace('s', 'x', false)
+        str = str.replace('S', '-', false)
+        val set = PosixFilePermissions.fromString(str)
+        return translatePosixPermissionToMode(set)
+    }
+
+    fun translatePosixPermissionToMode(permissions: Set<PosixFilePermission?>): Short {
         var mode = 0
         for (action in PosixFilePermission.values()) {
             mode = mode shl 1
-            mode += if (permission.contains(action)) 1 else 0
+            mode += if (permissions.contains(action)) 1 else 0
         }
         return mode.toShort()
     }
