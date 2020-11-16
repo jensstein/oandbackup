@@ -63,6 +63,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
         fun getSpecialPackages(context: Context): List<AppInfoX> {
             val userId = ShellCommands.currentUser
             val userDir = "/data/system/users/$userId"
+            val specPrefix = "$ "
             // Careful: It is possible to specify whole directories, but there are two rules:
             // 1. Directories must end with a slash e.g. "/data/system/netstats/"
             // 2. The name of the directory must be unique:
@@ -74,28 +75,28 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
             val result = arrayOf(
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.accounts",
-                            context.getString(R.string.spec_accounts),
+                            specPrefix + context.getString(R.string.spec_accounts),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "/data/system_ce/$userId/accounts_ce.db"
                     ))),
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.appwidgets",
-                            context.getString(R.string.spec_appwidgets),
+                            specPrefix + context.getString(R.string.spec_appwidgets),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "$userDir/appwidgets.xml"
                     ))),
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.bluetooth",
-                            context.getString(R.string.spec_bluetooth),
+                            specPrefix + context.getString(R.string.spec_bluetooth),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "/data/misc/bluedroid/"
                     ))),
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.data.usage.policy",
-                            context.getString(R.string.spec_data),
+                            specPrefix + context.getString(R.string.spec_data),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "/data/system/netpolicy.xml",
@@ -103,7 +104,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                     ))),
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.wallpaper",
-                            context.getString(R.string.spec_wallpaper),
+                            specPrefix + context.getString(R.string.spec_wallpaper),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "$userDir/wallpaper",
@@ -111,10 +112,12 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                     ))),
                     AppInfoX(context, SpecialAppMetaInfo(
                             "special.wifi.access.points",
-                            context.getString(R.string.spec_wifiAccessPoints),
+                            specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
-                            "/data/misc/wifi/WifiConfigStore.xml"))))
+                            "/data/misc/wifi/WifiConfigStore.xml"
+                    )))
+            )
             return Arrays.asList(*result)
         }
     }
