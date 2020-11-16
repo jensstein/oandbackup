@@ -192,5 +192,5 @@
     <string name="prefs_passwordconfirmation">Krüpteeringu parooli kinnitus</string>
     <string name="prefs_biometriclock_summary">Turva rakendust seadme biomeetrilise lukuga (nt sõrmejälg, näotuvastus)</string>
     <string name="prefs_biometriclock">Biomeetrialukk</string>
-    <string name="radioUpdated">Uuendatud</string>
+    <!-- <string name="radioUpdated">Uuendatud</string> -->
 </resources>
