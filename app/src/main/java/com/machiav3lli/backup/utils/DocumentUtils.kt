@@ -57,6 +57,9 @@ object DocumentUtils {
                 }
             } catch (e: FileNotFoundException) {
                 return false
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, target.uri)
+                return false
             }
         }
         return false

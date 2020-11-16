@@ -27,6 +27,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.utils.LogUtils
 import java.io.File
 
 class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppAction(context, shell) {
@@ -66,6 +67,9 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
             val error = extractErrorMessage(e.shellResult)
             Log.e(TAG, "$app: Backup Special Data failed: $error")
             throw BackupFailedException(error, e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, app)
+            throw BackupFailedException("unhandled exception", e)
         }
         return true
     }

@@ -7,6 +7,7 @@ import android.provider.DocumentsContract
 import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.DocumentContractApi
+import com.machiav3lli.backup.utils.LogUtils
 import java.io.FileNotFoundException
 import java.util.*
 
@@ -42,6 +43,9 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             DocumentsContract.deleteDocument(context.contentResolver, uri)
         } catch (e: FileNotFoundException) {
             false
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, uri)
+            false
         }
     }
 
@@ -53,7 +57,8 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                 }
             }
         } catch (e: FileNotFoundException) {
-            return null
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, uri)
         }
         return null
     }
@@ -84,7 +89,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                     results.add(documentUri)
                 }
             } catch (e: Throwable) {
-                Log.w(TAG, "Failed query: $e")
+                LogUtils.unhandledException(e, uri)
             } finally {
                 closeQuietly(cursor)
             }
@@ -106,6 +111,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             }
             false
         } catch (e: Throwable) {
+            LogUtils.unhandledException(e, uri)
             false
         }
     }
@@ -128,10 +134,13 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             return StorageFile(null, context, uri)
         }
 
-        fun createFile(context: Context, self: Uri?, mimeType: String?, displayName: String?): Uri? {
+        fun createFile(context: Context, uri: Uri?, mimeType: String?, displayName: String?): Uri? {
             return try {
-                DocumentsContract.createDocument(context.contentResolver, self!!, mimeType!!, displayName!!)
+                DocumentsContract.createDocument(context.contentResolver, uri!!, mimeType!!, displayName!!)
             } catch (e: FileNotFoundException) {
+                null
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, uri)
                 null
             }
         }
@@ -147,7 +156,8 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                 } catch (rethrown: RuntimeException) {
                     // noinspection ProhibitedExceptionThrown
                     throw rethrown
-                } catch (ignored: Throwable) {
+                } catch (e: Throwable) {
+                    LogUtils.unhandledException(e)
                 }
             }
         }

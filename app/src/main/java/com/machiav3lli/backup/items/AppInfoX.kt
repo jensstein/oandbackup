@@ -14,6 +14,7 @@ import com.machiav3lli.backup.utils.DocumentUtils.deleteRecursive
 import com.machiav3lli.backup.utils.DocumentUtils.ensureDirectory
 import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import java.io.File
@@ -146,8 +147,12 @@ class AppInfoX {
         Log.d(TAG, "[$packageName] Deleting backup revision $backupItem")
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
                 Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
-        deleteRecursive(context, backupItem.backupLocation)
-        StorageFile.fromUri(context, backupDir!!).findFile(propertiesFileName)!!.delete()
+        try {
+            deleteRecursive(context, backupItem.backupLocation)
+            StorageFile.fromUri(context, backupDir!!).findFile(propertiesFileName)!!.delete()
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, backupItem.backupProperties.packageName)
+        }
         if (directBoolean) backupHistory.remove(backupItem)
     }
 
@@ -274,7 +279,7 @@ class AppInfoX {
         // TODO cause of huge part of cpu time
         private fun getBackupHistory(context: Context, backupDir: Uri?): MutableList<BackupItem> {
             val appBackupDir = StorageFile.fromUri(context, backupDir!!)
-            var backupHistory = ArrayList<BackupItem>()
+            var backupHistory : MutableList<BackupItem> = mutableListOf()
             try {
                 for (file in appBackupDir.listFiles()) {
                     if (file.isPropertyFile)
@@ -290,12 +295,15 @@ class AppInfoX {
                             logErrors(context, message)
                         } catch (e: Throwable) {
                             val message = "(catchall) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                            Log.w(TAG, message)
+                            LogUtils.unhandledException(e, file.uri)
                             logErrors(context, message)
                         }
                 }
             } catch (e: FileNotFoundException) {
                 Log.w(TAG, "Failed getting backup history: $e")
+                return backupHistory
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, backupDir.encodedPath)
                 return backupHistory
             }
             return backupHistory

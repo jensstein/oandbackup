@@ -7,25 +7,27 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.TextUtils
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.utils.LogUtils
 
 object DocumentContractApi {
     val TAG = classTag(".DocumentContractApi")
     //private const val MIME_TYPE_PROPERTY_FILE = "bin"
     //private const val MIME_TYPE_PROPERTY_FILE = "application/octet-stream"
 
-    fun getName(context: Context, uri: Uri): String? = try {
-        context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-            cursor.run {
-                if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                else null
-            }.also { cursor.close() }
+    fun getName(context: Context, uri: Uri): String? =
+        try {
+            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
+                cursor.run {
+                    if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+                    else null
+                }.also { cursor.close() }
+            }
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, uri)
+            null
         }
-    } catch (e: Throwable) {
-        null
-    }
 
     private fun getRawType(context: Context, uri: Uri): String? =
         try {
@@ -40,6 +42,7 @@ object DocumentContractApi {
                 }.also { cursor.close() }
             }
         } catch (e: Throwable) {
+            LogUtils.unhandledException(e, uri)
             null
         }
 
@@ -95,31 +98,31 @@ object DocumentContractApi {
         // Writable normal files considered writable
     }
 
-    fun exists(context: Context, self: Uri?): Boolean {
+    fun exists(context: Context, uri: Uri?): Boolean {
         val resolver = context.contentResolver
         var cursor: Cursor? = null
         return try {
-            cursor = resolver.query(self!!, arrayOf(
+            cursor = resolver.query(uri!!, arrayOf(
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
             cursor!!.count > 0
         } catch (e: Throwable) {
-            Log.w(TAG, "Failed query: $e")
+            LogUtils.unhandledException(e, uri)
             false
         } finally {
             closeQuietly(cursor)
         }
     }
 
-    private fun queryForLong(context: Context, self: Uri, column: String): Long {
+    private fun queryForLong(context: Context, uri: Uri, column: String): Long {
         val resolver = context.contentResolver
         var cursor: Cursor? = null
         return try {
-            cursor = resolver.query(self, arrayOf(column), null, null, null)
+            cursor = resolver.query(uri, arrayOf(column), null, null, null)
             if (cursor!!.moveToFirst() && !cursor.isNull(0)) {
                 cursor.getLong(0)
             } else 0
         } catch (e: Throwable) {
-            Log.w(TAG, "Failed query: $e")
+            LogUtils.unhandledException(e, uri.toString() + " column: " + column)
             0
         } finally {
             closeQuietly(cursor)
@@ -132,7 +135,8 @@ object DocumentContractApi {
                 closeable.close()
             } catch (rethrown: RuntimeException) {
                 throw rethrown
-            } catch (ignored: Throwable) {
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e)
             }
         }
     }

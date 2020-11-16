@@ -18,6 +18,7 @@ import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.schedules.db.Schedule
 import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
 import java.io.FileNotFoundException
@@ -89,6 +90,9 @@ object BackendController {
                         } catch (e: AssertionError) {
                             Log.e(TAG, "Could not process backup folder for uninstalled application in " + it.name + ": " + e)
                             null
+                        } catch (e: Throwable) {
+                            LogUtils.unhandledException(e, it.name)
+                            null
                         }
                     }
                     .toList()
@@ -107,7 +111,7 @@ object BackendController {
         } catch (e: FileNotFoundException) {
             Log.e(TAG, e.javaClass.simpleName + ": " + e.message)
         } catch (e: Throwable) {
-            Log.e(TAG, e.javaClass.simpleName + ": (null) " + e.message)
+            LogUtils.unhandledException(e)
         }
         return ArrayList()
     }
@@ -125,6 +129,9 @@ object BackendController {
             storageStatsManager.queryStatsForPackage(storageUuid!!, packageName, Process.myUserHandle())
         } catch (e: IOException) {
             Log.e(TAG, "Could not retrieve storage stats of $packageName: $e")
+            null
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e, packageName)
             null
         }
     }

@@ -18,11 +18,13 @@
 package com.machiav3lli.backup.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentLogsBinding
 import com.machiav3lli.backup.utils.LogUtils
 import java.io.IOException
@@ -35,6 +37,9 @@ class LogsFragment : Fragment() {
             val logUtils = LogUtils(requireContext())
             logUtils.readFromLogFile()
         } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        } catch (e: Throwable) {
             e.printStackTrace()
             null
         }
