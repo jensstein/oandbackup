@@ -123,8 +123,7 @@ object TarUtils {
 
     @Throws(IOException::class, ShellCommandFailedException::class)
     fun suUncompressTo(archive: TarArchiveInputStream, targetDir: String?) {
-        var tarEntry: TarArchiveEntry
-        while (archive.nextTarEntry.also { tarEntry = it } != null) {
+        generateSequence {archive.nextTarEntry} .forEach { tarEntry ->
             val file = File(targetDir, tarEntry.name)
             Log.d(TAG, "Extracting ${tarEntry.name}")
             if (tarEntry.isDirectory) {
@@ -144,8 +143,7 @@ object TarUtils {
 
     @Throws(IOException::class)
     fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
-        var tarEntry: TarArchiveEntry
-        while (archive.nextTarEntry.also { tarEntry = it } != null) {
+        generateSequence {archive.nextTarEntry} .forEach { tarEntry ->
             val targetPath = File(targetDir, tarEntry.name)
             Log.d(TAG, String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
             var doChmod = true
