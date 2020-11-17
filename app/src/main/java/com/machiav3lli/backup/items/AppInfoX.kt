@@ -48,13 +48,16 @@ class AppInfoX {
         appInfo = metaInfo
         packageName = metaInfo.packageName.toString()
         val backupDoc = getBackupRoot(context).findFile(packageName)
+        var getHistory = Thread()
         if (backupDoc != null) {
             backupDir = backupDoc.uri
-            //Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
-            backupHistory = getBackupHistory(context, backupDir)
+            getHistory = Thread { backupHistory = getBackupHistory(context, backupDir) }
+            getHistory.start()
+            // backupHistory = getBackupHistory(context, backupDir)
         } else {
             backupHistory = arrayListOf()
         }
+        getHistory.join()
     }
 
     constructor(context: Context, packageInfo: PackageInfo) {
@@ -71,7 +74,6 @@ class AppInfoX {
     constructor(context: Context, backupRoot: Uri) {
         this.context = context
         backupDir = backupRoot
-        //Thread { backupHistory = getBackupHistory(context, backupRoot) }.start()
         backupHistory = getBackupHistory(context, backupRoot)
         packageName = StorageFile.fromUri(context, backupRoot).name!!
         try {
@@ -92,11 +94,14 @@ class AppInfoX {
         packageName = packageInfo.packageName
         this.packageInfo = packageInfo
         val packageBackupRoot = StorageFile.fromUri(context, backupRoot!!).findFile(packageName)
+        var getHistory = Thread()
         if (packageBackupRoot != null) {
             backupDir = packageBackupRoot.uri
-            //Thread { backupHistory = getBackupHistory(context, backupDir) }.start()
-            backupHistory = getBackupHistory(context, backupDir)
+            getHistory = Thread { backupHistory = getBackupHistory(context, backupDir) }
+            getHistory.start()
+            // backupHistory = getBackupHistory(context, backupDir)
         }
+        getHistory.join()
         appInfo = AppMetaInfo(context, packageInfo)
         refreshStorageStats()
     }
