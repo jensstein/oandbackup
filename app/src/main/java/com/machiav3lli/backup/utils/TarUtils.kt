@@ -144,8 +144,9 @@ object TarUtils {
 
     @Throws(IOException::class)
     fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
-        var tarEntry: TarArchiveEntry
+        var tarEntry: TarArchiveEntry? = null
         while (archive.nextTarEntry.also { tarEntry = it } != null) {
+            val tarEntry = tarEntry!!
             val targetPath = File(targetDir, tarEntry.name)
             Log.d(TAG, String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
             var doChmod = true

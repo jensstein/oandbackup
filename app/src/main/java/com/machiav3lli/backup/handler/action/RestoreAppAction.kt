@@ -36,6 +36,7 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileFromDocument
 import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileFromDocument
+import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.PrefUtils.getCryptoSalt
 import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.PrefUtils.isDisableVerification
@@ -273,21 +274,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(CryptoSetupException::class, IOException::class)
     protected fun openArchiveFile(archiveUri: Uri?, isEncrypted: Boolean): TarArchiveInputStream {
-        BufferedInputStream(context.contentResolver.openInputStream(archiveUri!!)).use { inputStream ->
-            if (isEncrypted) {
-                val password = getDefaultSharedPreferences(context)
-                        .getString(Constants.PREFS_PASSWORD, "")
-                if (password!!.isNotEmpty()) {
-                    Log.d(TAG, "Decryption enabled")
-                    return TarArchiveInputStream(
-                            GzipCompressorInputStream(
-                                    decryptStream(inputStream, password, getCryptoSalt(context))
-                            )
-                    )
-                }
+        val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri!!))
+        if (isEncrypted) {
+            val password = getDefaultSharedPreferences(context)
+                    .getString(Constants.PREFS_PASSWORD, "")
+            if (password!!.isNotEmpty()) {
+                Log.d(TAG, "Decryption enabled")
+                return TarArchiveInputStream(
+                        GzipCompressorInputStream(
+                                decryptStream(inputStream, password, getCryptoSalt(context))
+                        )
+                )
             }
-            return TarArchiveInputStream(GzipCompressorInputStream(inputStream))
         }
+        return TarArchiveInputStream(GzipCompressorInputStream(inputStream))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
@@ -315,6 +315,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException("Could not restore a file due to a failed root command: $error", e)
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e)
+            throw RestoreFailedException("Could not restore a file due to a failed root command", e)
         } finally {
             // Clean up the temporary directory if it was initialized
             if (tempDir != null) {
