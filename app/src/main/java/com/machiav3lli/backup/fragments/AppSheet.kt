@@ -53,6 +53,7 @@ import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.SortFilterManager
 import com.machiav3lli.backup.items.AppInfoX
 import com.machiav3lli.backup.items.BackupItemX
+import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.MainItemX
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
@@ -321,16 +322,16 @@ class AppSheet(item: MainItemX, position: Int) : BottomSheetDialogFragment(), Ac
         }
     }
 
-    override fun onActionCalled(actionType: ActionType?, mode: Int) {
+    override fun onActionCalled(actionType: ActionType?, mode: Int, backupProps: BackupProperties?) {
         when {
             actionType === ActionType.BACKUP -> {
                 BackupActionTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
             }
             actionType === ActionType.RESTORE -> {
-                // Latest Backup for now
-                val selectedBackup = app.latestBackup
-                RestoreActionTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
-                        selectedBackup!!.backupProperties, selectedBackup.backupLocation).execute()
+                backupProps?.let {
+                    RestoreActionTask(app, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                            backupProps, backupProps.backupLocation).execute()
+                }
             }
             else -> {
                 Log.e(TAG, "unhandled actionType: $actionType")

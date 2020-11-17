@@ -44,11 +44,11 @@ class BackupDialogFragment(private val listener: ActionListener) : DialogFragmen
         val showApkBtn = pi != null && !pi.applicationInfo.sourceDir.isEmpty()
         val actionType = ActionType.BACKUP
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK) }
-            builder.setPositiveButton(R.string.handleBoth) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH) }
+            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK, null) }
+            builder.setPositiveButton(R.string.handleBoth) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH, null) }
         }
         // Data button (always visible)
-        builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA) }
+        builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA, null) }
         return builder.create()
     }
 }
