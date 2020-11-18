@@ -401,7 +401,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.deviceProtectedDataDir, backupProperties.isEncrypted, context.cacheDir)
+        genericRestoreFromArchive(backupArchive.uri, app.deviceProtectedDataDir, backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
         genericRestorePermissions(
                 BACKUP_DIR_DEVICE_PROTECTED_FILES,
                 File(app.deviceProtectedDataDir)

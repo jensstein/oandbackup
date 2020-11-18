@@ -29,6 +29,8 @@ import com.topjohnwu.superuser.Shell
 
 abstract class BaseAppAction protected constructor(protected val context: Context, protected val shell: ShellHandler) {
 
+    protected val deviceProtectedStorageContext: Context = context.createDeviceProtectedStorageContext()
+
     fun getBackupArchiveFilename(what: String, isEncrypted: Boolean): String {
         return "$what.tar.gz${if (isEncrypted) ".enc" else ""}"
     }
