@@ -129,6 +129,10 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         dataCheckedList = savedInstanceState
                 .getStringArrayList("dataCheckedList")?.toMutableList() ?: mutableListOf()
         setupViews(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
         setupNavigation()
         setupOnClicks()
     }
@@ -210,8 +214,6 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
         binding.buttonAction.setOnClickListener { actionOnClick(backupBoolean) }
-        apkCheckedList.clear()
-        dataCheckedList.clear()
     }
 
     private fun setupOnClicks() {
@@ -277,13 +279,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         val startIsChecked = (v as AppCompatCheckBox).isChecked
         binding.cbAll.isChecked = startIsChecked
         for (item in batchItemAdapter.adapterItems) {
-            item.isApkChecked = startIsChecked
-            item.isDataChecked = startIsChecked
+            if (item.app.hasApk || item.backupBoolean) item.isApkChecked = startIsChecked
+            if (item.app.hasAppData || item.backupBoolean) item.isDataChecked = startIsChecked
             if (startIsChecked) {
-                if (!apkCheckedList.contains(item.app.packageName)) {
+                if (!apkCheckedList.contains(item.app.packageName) && (item.app.hasApk || item.backupBoolean)) {
                     apkCheckedList.add(item.app.packageName)
                 }
-                if (!dataCheckedList.contains(item.app.packageName)) {
+                if (!dataCheckedList.contains(item.app.packageName) && (item.app.hasAppData || item.backupBoolean)) {
                     dataCheckedList.add(item.app.packageName)
                 }
             } else {
@@ -295,7 +297,9 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     }
 
     private fun updateCheckAll() {
-        binding.cbAll.isChecked = apkCheckedList.size == batchItemAdapter.itemList.size() && dataCheckedList.size == batchItemAdapter.itemList.size()
+        val possibleApkChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasApk }.size
+        val possibleDataChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasAppData }.size
+        binding.cbAll.isChecked = viewModel.apkCheckedList.size == possibleApkChecked && viewModel.dataCheckedList.size == possibleDataChecked
     }
 
     inner class OnApkCheckBoxClickHook : ClickEventHook<BatchItemX>() {
@@ -464,15 +468,16 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
 
     fun refreshStorage() {
         StorageFile.invalidateCache()
-        refresh(mainBoolean, !mainBoolean && backupBoolean, true)
+        refresh(mainBoolean, (!mainBoolean && backupBoolean) || (mainBoolean && sheetApp != null), true)
     }
 
     fun refreshView() {
-        refresh(mainBoolean, !mainBoolean && backupBoolean, false)
+        refresh(mainBoolean, (!mainBoolean && backupBoolean) || (mainBoolean && sheetApp != null), false)
     }
 
     fun refreshWithAppSheet() {
-        refresh(true, true, true)
+        StorageFile.invalidateCache()
+        refresh(true, sheetApp != null, true)
     }
 
     fun batchRefresh() {

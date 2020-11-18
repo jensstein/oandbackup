@@ -79,7 +79,7 @@ class MainFragment : Fragment(), SearchViewController {
     override fun onResume() {
         super.onResume()
         requireMainActivity().setSearchViewController(this)
-        requireMainActivity().refreshWithAppSheet()
+        requireMainActivity().refreshView()
     }
 
     fun requireMainActivity(): MainActivityX {
