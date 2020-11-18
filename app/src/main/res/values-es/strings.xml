@@ -226,4 +226,8 @@
     <string name="radio_deviceprotecteddata">Datos protegidos del dispositivo</string>
     <string name="radio_externaldata">Datos externos</string>
     <string name="prefs_disableverification_summary">Desactiva esta opción de desarrolladores mientras se restauran APKs y lo reactiva al acabar. Soluciona el error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <plurals name="days_left">
+        <item quantity="one">%d día,</item>
+        <item quantity="other">%d días,</item>
+    </plurals>
 </resources>
