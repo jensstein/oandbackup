@@ -30,17 +30,10 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
-import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
 import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.PrefUtils.getCryptoSalt
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.PrefUtils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.PrefUtils.isKillBeforeActionEnabled
-import com.machiav3lli.backup.utils.TarUtils.suAddFiles
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import java.io.BufferedOutputStream
@@ -102,19 +95,19 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 backupBuilder.setCipherType(Crypto.CIPHER_ALGORITHM)
             }
             backupItem = backupBuilder.createBackupItem()
-            saveBackupProperties(fromUri(context, appBackupRootUri), backupItem.backupProperties)
-            app.addBackup(backupItem)
+            saveBackupProperties(StorageFile.fromUri(context, appBackupRootUri), backupItem.backupProperties)
+            app.backupHistory.plus(backupItem)
         } catch (e: BackupFailedException) {
             Log.e(TAG, "Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath!!.delete()}")
+            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: CryptoSetupException) {
             Log.e(TAG, "Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath!!.delete()}")
+            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: IOException) {
             Log.e(TAG, "Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath!!.delete()}")
+            Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, app)
@@ -134,7 +127,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
                 Constants.BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId)
         val propertiesFile = packageBackupDir.createFile("application/octet-stream", propertiesFileName)
-        BufferedOutputStream(context.contentResolver.openOutputStream(propertiesFile!!.uri, "w"))
+        BufferedOutputStream(context.contentResolver.openOutputStream(propertiesFile?.uri
+                ?: Uri.EMPTY, "w"))
                 .use { propertiesOut -> propertiesOut.write(properties.toGson().toByteArray(StandardCharsets.UTF_8)) }
         Log.i(TAG, "Wrote $propertiesFile file for backup: $properties")
     }
@@ -142,12 +136,13 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     @Throws(IOException::class, CryptoSetupException::class)
     protected fun createBackupArchive(backupInstanceDir: Uri?, what: String?, allFilesToBackup: List<ShellHandler.FileInfo>) {
         Log.i(TAG, "Creating $what backup")
-        val backupDir = fromUri(context, backupInstanceDir!!)
+        val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupFilename = getBackupArchiveFilename(what!!, isEncryptionEnabled(context))
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
         val password = getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")
-        var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile!!.uri, "w"))
-        if (password!!.isNotEmpty()) {
+        var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
+                ?: Uri.EMPTY, "w"))
+        if (!password.isNullOrEmpty()) {
             outStream = encryptStream(outStream, password, getCryptoSalt(context))
         }
         try {
@@ -221,7 +216,6 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(BackupFailedException::class)
     private fun assembleFileList(sourceDirectory: String): List<ShellHandler.FileInfo> {
-
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         return try {
             // Get a list of directories in the directory to backup

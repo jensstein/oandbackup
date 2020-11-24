@@ -21,18 +21,16 @@ import android.util.Log
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
-import com.machiav3lli.backup.utils.CommandUtils
+import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.TarUtils
+import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
-import java.nio.file.attribute.PosixFilePermissions
 import java.util.regex.Pattern
-import java.util.stream.Collectors
 import kotlin.math.min
 
 class ShellHandler {
@@ -51,14 +49,14 @@ class ShellHandler {
         // "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
         // Special case:
         // "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
-        val shellResult = runAsRoot(String.format("%s ls -Al \"%s\"", utilboxPath, path))
+        val shellResult = runAsRoot("$utilboxPath ls -Al \"$path\"")
         val relativeParent = parent ?: ""
-        val result = shellResult.out.stream()
+        val result = shellResult.out
                 .filter { line: String -> line.isNotEmpty() }
                 .filter { line: String -> !line.startsWith("total") }
                 .filter { line: String -> splitWithoutEmptyValues(line, " ", 0).size > 7 }
                 .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
-                .collect(Collectors.toCollection { ArrayList() })
+                .toMutableList()
         if (recursive) {
             val directories: Array<FileInfo> = result
                     .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
@@ -101,7 +99,7 @@ class ShellHandler {
             val shellResult = runAsUser("$utilboxPath --version")
             var utilBoxVersion: String? = "Not returned"
             if (shellResult.out.isNotEmpty()) {
-                utilBoxVersion = CommandUtils.iterableToString(shellResult.out)
+                utilBoxVersion = iterableToString(shellResult.out)
             }
             Log.i(TAG, "Using Utilbox `$utilboxPath`: $utilBoxVersion")
         } catch (e: ShellCommandFailedException) {
@@ -145,7 +143,7 @@ class ShellHandler {
             return "FileInfo{" +
                     "filepath='" + filepath + '\'' +
                     ", filetype=" + fileType +
-                    ", filemode=" + Integer.toOctalString(fileMode.toInt()) +
+                    ", filemode=" + fileMode.toInt().toString(8) +
                     ", filesize=" + fileSize +
                     ", absolutePath='" + absolutePath + '\'' +
                     ", linkName='" + linkName + '\'' +
@@ -200,11 +198,11 @@ class ShellHandler {
                     } else {
                         // For all other directories use 0600 and for files 0700 (TODO hg42: directories need x)
                         filemode =
-                            if (tokens[0]!![0] == 'd') {
-                                translatePosixPermissionToMode("rwxrwx--x")
-                            } else {
-                                translatePosixPermissionToMode("rw-rw----")
-                            }
+                                if (tokens[0]!![0] == 'd') {
+                                    translatePosixPermissionToMode("rwxrwx--x")
+                                } else {
+                                    translatePosixPermissionToMode("rw-rw----")
+                                }
                         Log.w(TAG, String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
                                 tokens[0], filemode, filepath, absoluteParent))
@@ -283,9 +281,9 @@ class ShellHandler {
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
             // stderr is used for logging, so it's better not to call an application that does that
             // and keeps quiet
-            Log.d(TAG, "Running Command: ${CommandUtils.iterableToString("; ", commands.toList())}")
-            val stdout: List<String> = java.util.ArrayList()
-            val stderr: List<String> = java.util.ArrayList()
+            Log.d(TAG, "Running Command: ${iterableToString("; ", commands.toList())}")
+            val stdout: List<String> = arrayListOf()
+            val stderr: List<String> = arrayListOf()
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
             Log.d(TAG, String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
             if (!result.isSuccess) {
@@ -320,7 +318,7 @@ class ShellHandler {
         fun quirkLibsuReadFileWorkaround(filepath: String?, filesize: Long, output: OutputStream) {
             val maxRetries: Short = 10
             var stream = SuRandomAccessFile.open(filepath, "r")
-            val buf = ByteArray(TarUtils.BUFFER_SIZE)
+            val buf = ByteArray(BUFFER_SIZE)
             var readOverall: Long = 0
             var retriesLeft = maxRetries.toInt()
             while (true) {

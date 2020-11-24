@@ -39,7 +39,7 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
     @Throws(RestoreFailedException::class)
     override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
         val backupDir = fromUri(context, backupLocation)
-        val apkTargetPath = File(backupProperties.sourceDir)
+        val apkTargetPath = File(backupProperties.sourceDir ?: "")
         val apkLocation = backupDir.findFile(apkTargetPath.name)
         // Writing the apk to a temporary location to get it out of the magic storage to a local location
         // that can be accessed with shell commands.
@@ -57,7 +57,7 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
             // Android versions prior Android 10 use /system
             mountPoint = "/system"
         }
-        val appDir = apkTargetPath.parentFile.absoluteFile
+        val appDir = apkTargetPath.parentFile?.absoluteFile
         val command = "(mount -o remount,rw $mountPoint" + " && " +
                 "mkdir -p $appDir" + " && " +  // chmod might be obsolete
                 prependUtilbox("chmod 755 $appDir") + " && " +  // for some reason a permissions error is thrown if the apk path is not created first

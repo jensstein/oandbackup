@@ -106,9 +106,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(ShellCommandFailedException::class)
-    protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>?) {
+    protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
         val targetContents: MutableList<String> = ArrayList(listOf(*shell.suGetDirectoryContents(File(targetDirectory))))
-        targetContents.removeAll(excludeDirs!!)
+        targetContents.removeAll(excludeDirs)
         if (targetContents.isEmpty()) {
             Log.i(TAG, "Nothing to remove in $targetDirectory")
             return
@@ -127,7 +127,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         Log.d(TAG, "Opening file for expansion: $inputFilename")
         val password = getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")
         var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
-        if (password!!.isNotEmpty()) {
+        if (!password.isNullOrEmpty()) {
             Log.d(TAG, "Encryption enabled")
             stream = decryptStream(stream, password, getCryptoSalt(context))
         }
@@ -149,9 +149,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val splitApksInBackup: Array<StorageFile>
         splitApksInBackup = try {
             backupDir.listFiles()
-                    .filter { dir: StorageFile -> !dir.isDirectory } // Forget about dictionaries immediately
-                    .filter { dir: StorageFile -> dir.name!!.endsWith(".apk") } // Only apks are relevant
-                    .filter { dir: StorageFile -> dir.name != BASE_APK_FILENAME } // Base apk is a special case
+                    .filter { !it.isDirectory } // Forget about dictionaries immediately
+                    .filter { it.name?.endsWith(".apk") == true } // Only apks are relevant
+                    .filter { it.name != BASE_APK_FILENAME } // Base apk is a special case
                     .toTypedArray()
         } catch (e: FileNotFoundException) {
             val message = String.format("Restore APKs failed: %s", e.message)
@@ -204,9 +204,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             for (apkDoc in apksToRestore) {
                 // The file must be touched before it can be written for some reason...
                 Log.d(TAG, "[$packageName] Copying ${apkDoc.name} to staging dir")
-                runAsRoot("touch '${File(stagingApkPath, apkDoc.name!!).absolutePath}'")
+                runAsRoot("touch '${File(stagingApkPath, apkDoc.name ?: "").absolutePath}'")
                 suCopyFileFromDocument(context.contentResolver, apkDoc.uri,
-                        File(stagingApkPath, apkDoc.name!!).absolutePath
+                        File(stagingApkPath, apkDoc.name ?: "").absolutePath
                 )
             }
             val sb = StringBuilder()
@@ -214,11 +214,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // disable verify apps over usb
             if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
             // Install main package
-            sb.append(this.getPackageInstallCommand(File(stagingApkPath, baseApk.name!!)))
+            sb.append(this.getPackageInstallCommand(File(stagingApkPath, baseApk.name ?: "")))
             // If split apk resources exist, install them afterwards (order does not matter)
             if (splitApksInBackup.isNotEmpty()) {
                 for (apk in splitApksInBackup) {
-                    sb.append(" && ").append(this.getPackageInstallCommand(File(stagingApkPath, apk.name!!),
+                    sb.append(" && ").append(this.getPackageInstallCommand(File(stagingApkPath, apk.name
+                            ?: ""),
                             backupProperties.packageName))
                 }
             }
@@ -246,11 +247,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 Log.i(TAG, "[$packageName] Restore unsuccessful. Removing possible leftovers in staging directory")
                 val stagingPath = stagingApkPath
                 val command = apksToRestore
-                        .joinToString(separator = "; ") { apkDoc: StorageFile -> "rm '${File(stagingPath, apkDoc.name!!).absolutePath}'" }
+                        .joinToString(separator = "; ") { apkDoc: StorageFile -> "rm '${File(stagingPath, apkDoc.name ?: "").absolutePath}'" }
                 try {
                     runAsRoot(command)
                 } catch (e: ShellCommandFailedException) {
-                    Log.w(TAG, "[$packageName] Cleanup after failure failed: ${java.lang.String.join("; ", e.shellResult.err)}")
+                    Log.w(TAG, "[$packageName] Cleanup after failure failed: ${e.shellResult.err.joinToString(separator = "; ")}")
                 }
             }
         }
@@ -272,12 +273,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, IOException::class)
-    protected fun openArchiveFile(archiveUri: Uri?, isEncrypted: Boolean): TarArchiveInputStream {
-        val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri!!))
+    protected fun openArchiveFile(archiveUri: Uri, isEncrypted: Boolean): TarArchiveInputStream {
+        val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
         if (isEncrypted) {
             val password = getDefaultSharedPreferences(context)
                     .getString(Constants.PREFS_PASSWORD, "")
-            if (password!!.isNotEmpty()) {
+            if (!password.isNullOrEmpty()) {
                 Log.d(TAG, "Decryption enabled")
                 return TarArchiveInputStream(
                         GzipCompressorInputStream(
@@ -321,7 +322,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // Clean up the temporary directory if it was initialized
             if (tempDir != null) {
                 try {
-                    FileUtils.forceDelete(tempDir!!.toFile())
+                    FileUtils.forceDelete(tempDir?.toFile())
                 } catch (e: IOException) {
                     Log.e(TAG, "Could not delete temporary directory. Cache Size might be growing. Reason: $e")
                 }
@@ -440,8 +441,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     class RestoreFailedException : AppActionFailedException {
-        constructor(message: String?) : super(message) {}
-        constructor(message: String?, cause: Throwable?) : super(message, cause) {}
+        constructor(message: String?) : super(message)
+        constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
     companion object {

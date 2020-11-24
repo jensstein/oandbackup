@@ -67,7 +67,7 @@ open class BackupRestoreHelper {
 
         // create the new backup
         val result = action.run(app, backupMode)
-        Log.i(TAG, "$app: Backup succeeded: ${result!!.succeeded}")
+        Log.i(TAG, "$app: Backup succeeded: ${result.succeeded}")
         if (getDefaultSharedPreferences(context).getBoolean("copySelfApk", true)) {
             try {
                 copySelfApk(context, shell)
@@ -122,7 +122,7 @@ open class BackupRestoreHelper {
                 Log.wtf(TAG, "${e.javaClass.canonicalName}! This should never happen! Message: $e")
                 return false
             } catch (e: ShellCommandFailedException) {
-                throw IOException(java.lang.String.join(" ", e.shellResult.err), e)
+                throw IOException(e.shellResult.err.joinToString(separator = " "), e)
             }
         } catch (e: StorageLocationNotConfiguredException) {
             Log.e(TAG, e.javaClass.simpleName + ": " + e)
@@ -149,18 +149,20 @@ open class BackupRestoreHelper {
         // It's expected that the additional deleted backup will be created in the next moments.
         // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
         // 3 should exist and housekeeping will work fine without adjustments
-        if (housekeepingWhen == HousekeepingMoment.BEFORE) {
-            numBackupRevisions--
-        }
+        // if (housekeepingWhen == HousekeepingMoment.BEFORE)
+        //    numBackupRevisions--
+
         val revisionsToDelete = backupHistory.size - numBackupRevisions
         Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backupHistory.size} / $numBackupRevisions). Deleting $revisionsToDelete backup(s).")
         backupHistory = backupHistory
-                .sortedWith { bi1: BackupItem, bi2: BackupItem -> bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate) }
+                .sortedWith { bi1: BackupItem, bi2: BackupItem ->
+                    bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+                }
                 .toMutableList()
-        for (i in 0 until revisionsToDelete) {
-            val deleteTarget = backupHistory[i]
+        (0..revisionsToDelete).forEach {
+            val deleteTarget = backupHistory[it]
             Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")
-            app.delete(deleteTarget)
+            app.delete(context, deleteTarget)
         }
     }
 

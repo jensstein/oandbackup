@@ -19,32 +19,23 @@ package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.R
 
-class SortFilterModel {
-    private var code: CharSequence? = null
-
-    constructor() {
-        code = "0000"
-    }
-
-    constructor(code: String) {
-        if (code.length < 4) this.code = "0000" else this.code = code
-    }
+class SortFilterModel(private var code: CharSequence = "0000") {
 
     val sortById: Int
-        get() = when (code!![0]) {
+        get() = when (code[0]) {
             '1' -> R.id.sortByPackageName
             '2' -> R.id.sortByDataSize
             else -> R.id.sortByLabel
         }
     val filterId: Int
-        get() = when (code!![1]) {
+        get() = when (code[1]) {
             '1' -> R.id.showOnlySystem
             '2' -> R.id.showOnlyUser
             '3' -> R.id.showOnlySpecial
             else -> R.id.showAll
         }
     val backupFilterId: Int
-        get() = when (code!![2]) {
+        get() = when (code[2]) {
             '1' -> R.id.backupBoth
             '2' -> R.id.backupApk
             '3' -> R.id.backupData
@@ -52,7 +43,7 @@ class SortFilterModel {
             else -> R.id.backupAll
         }
     val specialFilterId: Int
-        get() = when (code!![3]) {
+        get() = when (code[3]) {
             '1' -> R.id.specialNewAndUpdated
             '2' -> R.id.specialNotInstalled
             '3' -> R.id.specialOld
@@ -66,7 +57,7 @@ class SortFilterModel {
             R.id.sortByDataSize -> '2'
             else -> '0'
         }
-        code = sortBy.toString() + code!![1] + code!![2] + code!![3]
+        code = sortBy.toString() + code[1] + code[2] + code[3]
     }
 
     fun putFilter(id: Int) {
@@ -76,7 +67,7 @@ class SortFilterModel {
             R.id.showOnlySpecial -> '3'
             else -> '0'
         }
-        code = code!![0].toString() + filter + code!![2] + code!![3]
+        code = code[0].toString() + filter + code[2] + code[3]
     }
 
     fun putBackupFilter(id: Int) {
@@ -87,7 +78,7 @@ class SortFilterModel {
             R.id.backupNone -> '4'
             else -> '0'
         }
-        code = code!![0].toString() + code!![1] + backupFilter + code!![3]
+        code = code[0].toString() + code[1] + backupFilter + code[3]
     }
 
     fun putSpecialFilter(id: Int) {
@@ -98,7 +89,7 @@ class SortFilterModel {
             R.id.specialSplit -> '4'
             else -> '0'
         }
-        code = code!![0].toString() + code!![1] + code!![2] + specialFilter
+        code = code[0].toString() + code[1] + code[2] + specialFilter
     }
 
     override fun toString(): String {

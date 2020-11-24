@@ -3,7 +3,7 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.utils.FileUtils.openFileForReading
+import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
@@ -12,7 +12,7 @@ import java.io.IOException
 open class BackupItem {
     val backupProperties: BackupProperties
     private val backupInstance: StorageFile
-    val backupLocation: Uri
+    val backupInstanceDirUri: Uri
         get() = backupInstance.uri
 
     constructor(properties: BackupProperties, backupInstance: StorageFile) {
@@ -20,9 +20,9 @@ open class BackupItem {
         this.backupInstance = backupInstance
     }
 
-    constructor(context: Context?, propertiesFile: StorageFile) {
+    constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            openFileForReading(context!!, propertiesFile.uri).use { reader -> backupProperties = BackupProperties.fromGson(IOUtils.toString(reader)) }
+            FileUtils.openFileForReading(context, propertiesFile.uri).use { reader -> backupProperties = BackupProperties.fromGson(IOUtils.toString(reader)) }
         } catch (e: FileNotFoundException) {
             throw BrokenBackupException("Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
         } catch (e: IOException) {

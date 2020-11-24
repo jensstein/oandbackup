@@ -59,7 +59,7 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
             showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
             else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message) })
-            mainActivityX.refreshWithAppSheet()
+            mainActivityX.updatePackage(app.packageName)
         }
         if (signal != null) {
             signal!!.countDown()

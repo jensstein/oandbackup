@@ -7,44 +7,39 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.TextUtils
-import android.webkit.MimeTypeMap
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.utils.LogUtils
 
 object DocumentContractApi {
     val TAG = classTag(".DocumentContractApi")
-    //private const val MIME_TYPE_PROPERTY_FILE = "bin"
-    //private const val MIME_TYPE_PROPERTY_FILE = "application/octet-stream"
 
     fun getName(context: Context, uri: Uri): String? =
-        try {
-            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-                cursor.run {
-                    if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                    else null
-                }.also { cursor.close() }
+            try {
+                context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
+                    cursor.run {
+                        if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+                        else null
+                    }.also { cursor.close() }
+                }
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, uri)
+                null
             }
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri)
-            null
-        }
 
     private fun getRawType(context: Context, uri: Uri): String? =
-        try {
-            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-                cursor.run {
-                    val mimeTypeMap: MimeTypeMap = MimeTypeMap.getSingleton()
-                    if (moveToFirst())
-                        //mimeTypeMap.getExtensionFromMimeType(context.contentResolver.getType(uri))
-                        context.contentResolver.getType(uri)
-                    else
-                        null
-                }.also { cursor.close() }
+            try {
+                context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
+                    cursor.run {
+                        if (moveToFirst())
+                            context.contentResolver.getType(uri)
+                        else
+                            null
+                    }.also { cursor.close() }
+                }
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e, uri)
+                null
             }
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri)
-            null
-        }
 
     fun getFlags(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_FLAGS)
 
@@ -56,7 +51,6 @@ object DocumentContractApi {
     }
 
     fun isPropertyFile(context: Context, self: Uri): Boolean {
-        //MIME_TYPE_PROPERTY_FILE == getRawType(context, self)
         val type = getRawType(context, self)
         return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
                 && self.toString().endsWith(".properties")
@@ -66,13 +60,11 @@ object DocumentContractApi {
 
     fun length(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_SIZE)
 
-    fun canRead(context: Context, self: Uri):
-            Boolean =
-                if (context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
-                                != PackageManager.PERMISSION_GRANTED)
-                    false
-                else
-                    !TextUtils.isEmpty(getRawType(context, self)) // Ignore documents without MIME
+    fun canRead(context: Context, self: Uri): Boolean = when {
+        context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
+                != PackageManager.PERMISSION_GRANTED -> false
+        else -> !TextUtils.isEmpty(getRawType(context, self))
+    } // Ignore documents without MIME
 
     fun canWrite(context: Context, self: Uri): Boolean {
         // Ignore if grant doesn't allow write
@@ -104,7 +96,7 @@ object DocumentContractApi {
         return try {
             cursor = resolver.query(uri!!, arrayOf(
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
-            cursor!!.count > 0
+            cursor?.count ?: 0 > 0
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, uri)
             false
@@ -122,7 +114,7 @@ object DocumentContractApi {
                 cursor.getLong(0)
             } else 0
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri.toString() + " column: " + column)
+            LogUtils.unhandledException(e, "$uri column: $column")
             0
         } finally {
             closeQuietly(cursor)

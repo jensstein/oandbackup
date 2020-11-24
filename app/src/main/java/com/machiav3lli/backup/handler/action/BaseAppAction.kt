@@ -73,11 +73,14 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -CONT \$pid ; done", applicationInfo.uid))
+            runAsRoot(String.format(
+                    "ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -CONT \$pid ; done",
+                    applicationInfo.uid
+            ))
         } catch (e: PackageManager.NameNotFoundException) {
             Log.w(TAG, "$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Log.w(TAG, "Could not kill package " + packageName + ": " + java.lang.String.join(" ", e.shellResult.err))
+            Log.w(TAG, "Could not kill package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
         }
     }
 

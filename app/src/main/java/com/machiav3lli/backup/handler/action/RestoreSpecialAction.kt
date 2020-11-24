@@ -62,8 +62,8 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
-                val expectedFiles = metaInfo!!.fileList
-                        .map { pathname: String? -> File(pathname!!) }
+                val expectedFiles = metaInfo.fileList
+                        .map { pathname: String? -> File(pathname ?: "") }
                         .toTypedArray()
                 if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
                     val errorMessage = "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"

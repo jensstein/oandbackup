@@ -10,7 +10,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.File
-import java.util.*
 
 open class AppMetaInfo : Parcelable {
     @SerializedName("packageName")
@@ -45,7 +44,7 @@ open class AppMetaInfo : Parcelable {
 
     @SerializedName("splitSourceDirs")
     @Expose
-    var splitSourceDirs: Array<String>? = null
+    var splitSourceDirs: Array<String> = arrayOf()
         private set
 
     @SerializedName("isSystem")
@@ -57,32 +56,31 @@ open class AppMetaInfo : Parcelable {
     @Expose
     var applicationIcon: Drawable? = null
 
-    constructor() {
-    }
+    constructor()
 
     constructor(context: Context, pi: PackageInfo) {
-        packageName = pi.packageName
-        packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString()
-        versionName = pi.versionName
-        versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
+        this.packageName = pi.packageName
+        this.packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString()
+        this.versionName = pi.versionName
+        this.versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
         else pi.versionCode
         // Don't have access to UserManager service; using a cheap workaround to figure out
         // who is running by parsing it from the data path: /data/user/0/org.example.app
         try {
-            profileId = Objects.requireNonNull(File(pi.applicationInfo.dataDir).parentFile).name.toInt()
+            this.profileId = File(pi.applicationInfo.dataDir).parentFile?.name?.toInt() ?: -1
         } catch (e: NumberFormatException) {
             // Android System "App" points to /data/system
-            profileId = -1
+            this.profileId = -1
         }
-        sourceDir = pi.applicationInfo.sourceDir
-        splitSourceDirs = pi.applicationInfo.splitSourceDirs
+        this.sourceDir = pi.applicationInfo.sourceDir
+        this.splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf()
         // Boolean arithmetic to check if FLAG_SYSTEM is set
-        isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-        applicationIcon = context.packageManager.getApplicationIcon(pi.applicationInfo)
+        this.isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
+        this.applicationIcon = context.packageManager.getApplicationIcon(pi.applicationInfo)
     }
 
     constructor(packageName: String?, packageLabel: String?, versionName: String?, versionCode: Int,
-                profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>?, isSystem: Boolean) {
+                profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean) {
         this.packageName = packageName
         this.packageLabel = packageLabel
         this.versionName = versionName
@@ -94,14 +92,14 @@ open class AppMetaInfo : Parcelable {
     }
 
     protected constructor(source: Parcel) {
-        packageName = source.readString()
-        packageLabel = source.readString()
-        versionName = source.readString()
-        versionCode = source.readInt()
-        profileId = source.readInt()
-        sourceDir = source.readString()
-        splitSourceDirs = source.createStringArray()
-        isSystem = source.readByte().toInt() != 0
+        this.packageName = source.readString()
+        this.packageLabel = source.readString()
+        this.versionName = source.readString()
+        this.versionCode = source.readInt()
+        this.profileId = source.readInt()
+        this.sourceDir = source.readString()
+        this.splitSourceDirs = source.createStringArray() ?: arrayOf()
+        this.isSystem = source.readByte().toInt() != 0
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

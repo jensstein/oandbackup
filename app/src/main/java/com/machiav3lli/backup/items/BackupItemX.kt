@@ -21,8 +21,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemBackupXBinding
-import com.machiav3lli.backup.utils.ItemUtils.calculateID
-import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
+import com.machiav3lli.backup.utils.calculateID
+import com.machiav3lli.backup.utils.getFormattedDate
 import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 

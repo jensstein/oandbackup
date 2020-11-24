@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.DocumentContractApi
 import com.machiav3lli.backup.utils.LogUtils
@@ -66,7 +65,9 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
     // TODO cause of huge part of cpu time
     @Throws(FileNotFoundException::class)
     fun listFiles(): Array<StorageFile> {
-        if (!exists()) {
+        try {
+            exists()
+        } catch (e: Throwable) {
             throw FileNotFoundException("File $uri does not exist")
         }
         val uriString = this.uri.toString()
@@ -76,15 +77,19 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         }
         if (cache[uriString].isNullOrEmpty()) {
             val resolver = context.contentResolver
-            val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(this.uri,
-                    DocumentsContract.getDocumentId(this.uri))
+            val childrenUri = try {
+                DocumentsContract.buildChildDocumentsUriUsingTree(this.uri,
+                        DocumentsContract.getDocumentId(this.uri))
+            } catch (e: IllegalArgumentException) {
+                return arrayOf()
+            }
             val results = ArrayList<Uri>()
             var cursor: Cursor? = null
             try {
                 cursor = resolver.query(childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
                         null, null, null)
                 var documentUri: Uri
-                while (cursor!!.moveToNext()) {
+                while (cursor?.moveToNext() == true) {
                     documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0))
                     results.add(documentUri)
                 }
@@ -100,11 +105,11 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         return cache[uriString] ?: arrayOf()
     }
 
-    fun renameTo(displayName: String?): Boolean {
+    fun renameTo(displayName: String): Boolean {
         // noinspection OverlyBroadCatchBlock
         return try {
             val result = DocumentsContract.renameDocument(
-                    context.contentResolver, uri, displayName!!)
+                    context.contentResolver, uri, displayName)
             if (result != null) {
                 uri = result
                 return true
@@ -134,9 +139,9 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             return StorageFile(null, context, uri)
         }
 
-        fun createFile(context: Context, uri: Uri?, mimeType: String?, displayName: String?): Uri? {
+        fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
             return try {
-                DocumentsContract.createDocument(context.contentResolver, uri!!, mimeType!!, displayName!!)
+                DocumentsContract.createDocument(context.contentResolver, uri, mimeType, displayName)
             } catch (e: FileNotFoundException) {
                 null
             } catch (e: Throwable) {

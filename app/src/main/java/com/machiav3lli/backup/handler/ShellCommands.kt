@@ -58,7 +58,7 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
@@ -68,14 +68,14 @@ class ShellCommands(private var users: List<String>?) {
                 command = String.format("%s rm -r /data/lib/%s/*", Constants.UTILBOX_PATH, packageName)
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                Log.d(TAG, "Command '" + command + "' failed: " + java.lang.String.join(" ", e.shellResult.err))
+                Log.d(TAG, "Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
             }
         } else {
             // Deleting while system app
             // it seems that busybox mount sometimes fails silently so use toolbox instead
-            var apkSubDir = getName(sourceDir!!)
+            var apkSubDir = FileUtils.getName(sourceDir!!)
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf('.'))
             if (apkSubDir.isEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
@@ -92,7 +92,7 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
@@ -128,10 +128,10 @@ class ShellCommands(private var users: List<String>?) {
         val command = "pm list users | ${Constants.UTILBOX_PATH} sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
         return try {
             val result = runAsRoot(command)
-            result.out.stream()
+            result.out
                     .map { obj: String -> obj.trim { it <= ' ' } }
-                    .filter { s: String -> s.isNotEmpty() }
-                    .collect(Collectors.toList())
+                    .filter { it.isNotEmpty() }
+                    .toList()
         } catch (e: ShellCommandFailedException) {
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
         } catch (e: Throwable) {
@@ -181,10 +181,10 @@ class ShellCommands(private var users: List<String>?) {
                 val command = "pm list packages -d"
                 return try {
                     val result = runAsUser(command)
-                    result.out.stream()
+                    result.out
                             .filter { line: String -> line.contains("s") }
                             .map { line: String -> line.substring(line.indexOf(':') + 1).trim { it <= ' ' } }
-                            .collect(Collectors.toList())
+                            .toList()
                 } catch (e: ShellCommandFailedException) {
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 } catch (e: Throwable) {
@@ -212,34 +212,18 @@ class ShellCommands(private var users: List<String>?) {
             // external cache dirs are added dynamically, the bash if-else will handle the logic
             for (myCacheDir in context.externalCacheDirs) {
                 val cacheDirName = myCacheDir.name
-                val appsCacheDir = File(File(myCacheDir.parentFile.parentFile, app.packageName), cacheDirName)
+                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName)
                 commandBuilder.append(String.format(conditionalDeleteTemplate, appsCacheDir, appsCacheDir))
             }
             val command = commandBuilder.toString()
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, java.lang.String.join("\n", e.shellResult.err), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
-    }
-
-    init {
-        try {
-            users = getUsers()
-        } catch (e: ShellActionFailedException) {
-            users = null
-            var error: String? = null
-            // instanceof returns false for nulls, so need to chack if null
-            if (e.cause is ShellCommandFailedException) {
-                error = java.lang.String.join(" ", (e.cause as ShellCommandFailedException?)!!.shellResult.err)
-            }
-            Log.e(TAG, "Could not load list of users: " + e +
-                    if (error != null) " ; $error" else "")
-        }
-        multiuserEnabled = !users.isNullOrEmpty() && users!!.size > 1
     }
 }

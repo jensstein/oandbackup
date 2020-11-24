@@ -120,10 +120,10 @@ object BackendController {
     }
 
     @Throws(PackageManager.NameNotFoundException::class)
-    fun getPackageStorageStats(context: Context, packageName: String, storageUuid: UUID?): StorageStats? {
+    fun getPackageStorageStats(context: Context, packageName: String, storageUuid: UUID): StorageStats? {
         val storageStatsManager = context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
         return try {
-            storageStatsManager.queryStatsForPackage(storageUuid!!, packageName, Process.myUserHandle())
+            storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
         } catch (e: IOException) {
             Log.e(TAG, "Could not retrieve storage stats of $packageName: $e")
             null
