@@ -23,13 +23,12 @@ import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import java.io.IOException
 
 // TODO Improve Log: seperation into reports(items)
-class LogUtils(context: Context) {
+class LogUtils(var context: Context) {
+    private val TAG = classTag(".LogUtils")
     private var logFile: Uri
-    var context = context
 
     init {
         val backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context))
@@ -59,8 +58,6 @@ class LogUtils(context: Context) {
     }
 
     companion object {
-        private val TAG = classTag(".LogUtils")
-
         fun logErrors(context: Context, errors: String?) {
             try {
                 val logUtils = LogUtils(context)
@@ -78,10 +75,10 @@ class LogUtils(context: Context) {
             var whatStr = ""
             if (what != null) {
                 whatStr = what.toString()
-                if (whatStr.contains("\n"))
-                    whatStr = " (\n" + whatStr + "\n)"
-                else
-                    whatStr = " (" + whatStr + ")"
+                whatStr = when {
+                    whatStr.contains("\n") -> " (\n$whatStr\n)"
+                    else -> " ($whatStr)"
+                }
             }
             Log.e("unhandledException", e.toString() + whatStr + "\n" + e.stackTrace.toString())
             e.printStackTrace()

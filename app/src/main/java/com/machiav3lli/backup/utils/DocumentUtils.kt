@@ -11,7 +11,6 @@ import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.FileUtils.getBackupDir
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.io.IOUtils
@@ -23,12 +22,12 @@ object DocumentUtils {
     val TAG = classTag(".DocumentHelper")
 
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getBackupRoot(context: Context?): StorageFile {
-        return StorageFile.fromUri(context!!, getBackupDir(context))
+    fun getBackupRoot(context: Context): StorageFile {
+        return StorageFile.fromUri(context, getBackupDir(context))
     }
 
-    fun ensureDirectory(base: StorageFile, dirName: String?): StorageFile? {
-        var dir = base.findFile(dirName!!)
+    fun ensureDirectory(base: StorageFile, dirName: String): StorageFile? {
+        var dir = base.findFile(dirName)
         if (dir == null) {
             dir = base.createDirectory(dirName)
         }
@@ -109,21 +108,21 @@ object DocumentUtils {
     }
 
     @Throws(IOException::class, ShellCommandFailedException::class)
-    fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri?, targetPath: String?) {
+    fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri, targetPath: String?) {
         val resolver = context.contentResolver
-        val rootDir = StorageFile.fromUri(context, sourceDir!!)
+        val rootDir = StorageFile.fromUri(context, sourceDir)
         for (sourceDoc in rootDir.listFiles()) {
             if (sourceDoc.isDirectory) {
-                ShellHandler.runAsRoot(String.format("mkdir \"%s\"", File(targetPath, sourceDoc.name)))
+                ShellHandler.runAsRoot("mkdir \"${File(targetPath, sourceDoc.name!!)}\"")
             } else if (sourceDoc.isFile) {
                 suCopyFileFromDocument(
-                        resolver, sourceDoc.uri, File(targetPath, sourceDoc.name).absolutePath)
+                        resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath)
             }
         }
     }
 
     @Throws(IOException::class)
-    fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri?, targetPath: String?) {
-        SuFileOutputStream(targetPath).use { outputFile -> resolver.openInputStream(sourceUri!!).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }
+    fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri, targetPath: String?) {
+        SuFileOutputStream(targetPath).use { outputFile -> resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }
     }
 }

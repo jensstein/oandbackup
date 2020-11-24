@@ -22,8 +22,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.PrefUtils.getStorageRootDir
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.attribute.PosixFilePermission
@@ -36,16 +34,16 @@ object FileUtils {
     private val TAG = classTag(".FileUtils")
 
     @Throws(FileNotFoundException::class)
-    fun openFileForReading(context: Context, uri: Uri?): BufferedReader {
+    fun openFileForReading(context: Context, uri: Uri): BufferedReader {
         return BufferedReader(
-                InputStreamReader(context.contentResolver.openInputStream(uri!!), StandardCharsets.UTF_8)
+                InputStreamReader(context.contentResolver.openInputStream(uri), StandardCharsets.UTF_8)
         )
     }
 
     @Throws(FileNotFoundException::class)
-    fun openFileForWriting(context: Context, uri: Uri?, mode: String?): BufferedWriter {
+    fun openFileForWriting(context: Context, uri: Uri, mode: String?): BufferedWriter {
         return BufferedWriter(
-                OutputStreamWriter(context.contentResolver.openOutputStream(uri!!, mode!!), StandardCharsets.UTF_8)
+                OutputStreamWriter(context.contentResolver.openOutputStream(uri, mode!!), StandardCharsets.UTF_8)
         )
     }
 
@@ -62,9 +60,9 @@ object FileUtils {
      * @return URI to OABX storage directory
      */
     @Throws(StorageLocationNotConfiguredException::class, BackupLocationIsAccessibleException::class)
-    fun getBackupDir(context: Context?): Uri {
+    fun getBackupDir(context: Context): Uri {
         if (backupLocation == null) {
-            val storageRoot = getStorageRootDir(context!!)
+            val storageRoot = getStorageRootDir(context)
             if (storageRoot!!.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
             }
