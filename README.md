@@ -23,13 +23,13 @@ A combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  
 
 ## Community
 
-There's a new room on Matrix and a group on Telegram to discuss the development of the App and test new versions:
+In those groups we discuss the development of the App and test new versions:
 
-[OAndBackupX:Matrix.ORG](https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org)
+##### On Matrix: [OAndBackupX:Matrix.ORG](https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org)
 
-[t.me/OAndBackupX](https://t.me/OAndBackupX)
+##### On Telegram: [t.me/OAndBackupX](https://t.me/OAndBackupX)
 
-Our [Code of Conduct](COC.md) applies to the communication in the community same as for all contributers.
+Our **[Code of Conduct](COC.md)** applies to the communication in the community same as for all contributers.
 
 ## Encryption
 
@@ -43,11 +43,11 @@ Till the version 0.9.3 there's been no structural change in how the app handles 
 
 ## Changes & TODOs
 
-#### [Changelog](https://github.com/machiav3lli/oandbackupx/blob/master/changelog.md)
+#### [Changelog](changelog.md)  &  [Known Issues](ISSUES.md)
 
-if you have some kotlin and android knowledge and like to contribute to the project, see the following [development document](DEVDOC.md) to see what is still need to be done, where a help could be needed or if you'd like to take on one of the fixes.
+if you have some kotlin and android knowledge and like to contribute to the project, see the following **[development document](DEVDOC.md)** to see what is still need to be done, where a help could be needed or if you'd like to take on one of the fixes.
 
-The communication and each contribution in the project community should follow our [Code of Conduct](COC.md).
+The communication and each contribution in the project community should follow our **[Code of Conduct](COC.md)**.
 
 ## Screenshots
 
@@ -86,8 +86,6 @@ Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/autho
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
 [Nils](https://github.com/Tiefkuehlpizze) & [Harald](https://github.com/hg42) for their active contribution to the project.
-
-Features: Split-APK: [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze), Rewrite Shellcommands [Tiefkuehlpizze](https://github.com/Tiefkuehlpizze).
 
 Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
