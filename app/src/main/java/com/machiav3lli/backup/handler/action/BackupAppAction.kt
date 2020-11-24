@@ -51,25 +51,25 @@ import java.nio.charset.StandardCharsets
 
 open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
 
-    open fun run(app: AppInfoX, backupMode: Int): ActionResult? {
+    open fun run(app: AppInfo, backupMode: Int): ActionResult {
         Log.i(TAG, "Backing up: ${app.packageName} [${app.packageLabel}]")
         val appBackupRootUri: Uri?
         appBackupRootUri = try {
-            app.getBackupDir(true)
+            app.getAppUri(context, true)
         } catch (e: BackupLocationIsAccessibleException) {
             // Usually, this should never happen, but just in case...
-            val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
+            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         } catch (e: StorageLocationNotConfiguredException) {
-            val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
+            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, app)
             // Usually, this should never happen, but just in case...
-            val realException: Exception = BackupFailedException("Cannot backup data. Storage location not set or inaccessible", e)
+            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         }
-        val backupBuilder = BackupBuilder(context, app.appInfo!!, appBackupRootUri!!)
+        val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRootUri!!)
         val backupInstanceDir = backupBuilder.backupPath
         val stopProcess = isKillBeforeActionEnabled(context)
         val backupItem: BackupItem
@@ -163,19 +163,19 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class)
     protected fun copyToBackupArchive(backupInstanceDir: Uri?, what: String?, allFilesToBackup: List<ShellHandler.FileInfo>) {
-        val backupInstance = fromUri(context, backupInstanceDir!!)
+        val backupInstance = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupDir = backupInstance.createDirectory(what!!)
-        suRecursiveCopyFileToDocument(context, allFilesToBackup, backupDir!!.uri)
+        suRecursiveCopyFileToDocument(context, allFilesToBackup, backupDir?.uri ?: Uri.EMPTY)
     }
 
     @Throws(BackupFailedException::class)
-    protected open fun backupPackage(app: AppInfoX, backupInstanceDir: StorageFile?) {
+    protected open fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile?) {
         Log.i(TAG, "[${app.packageName}] Backup package apks")
-        var apksToBackup = arrayOf(app.apkPath)
-        if (app.apkSplits == null) {
+        var apksToBackup = arrayOf(app.getApkPath())
+        if (app.apkSplits.isEmpty()) {
             Log.d(TAG, "[${app.packageName}] The app is a normal apk")
         } else {
-            apksToBackup += app.apkSplits!!.drop(0)
+            apksToBackup += app.apkSplits.drop(0)
             Log.d(TAG, String.format("[${app.packageName}] Package is splitted into %d apks", apksToBackup.size))
         }
         Log.d(TAG, String.format("[${app.packageName}] Backing up package (%d apks: %s)", apksToBackup.size,
@@ -267,20 +267,20 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         val backupType = BACKUP_DIR_DATA
         Log.i(TAG, String.format(LOG_START_BACKUP, app.packageName, backupType))
-        val filesToBackup = assembleFileList(app.dataDir)
-        return genericBackupData(backupType, backupInstanceDir!!.uri, filesToBackup, true)
+        val filesToBackup = assembleFileList(app.getDataPath())
+        return genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupExternalData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         val backupType = BACKUP_DIR_EXTERNAL_FILES
         Log.i(TAG, String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
-            val filesToBackup = assembleFileList(app.externalDataDir)
-            genericBackupData(backupType, backupInstanceDir!!.uri, filesToBackup, true)
+            val filesToBackup = assembleFileList(app.getExternalDataPath(context))
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
@@ -292,12 +292,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupObbData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         val backupType = BACKUP_DIR_OBB_FILES
         Log.i(TAG, String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
-            val filesToBackup = assembleFileList(app.obbFilesDir)
-            genericBackupData(backupType, backupInstanceDir!!.uri, filesToBackup, false)
+            val filesToBackup = assembleFileList(app.getObbFilesPath(context))
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, false)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
@@ -309,12 +309,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupDeviceProtectedData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         val backupType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Log.i(TAG, String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
-            val filesToBackup = assembleFileList(app.deviceProtectedDataDir)
-            genericBackupData(backupType, backupInstanceDir!!.uri, filesToBackup, true)
+            val filesToBackup = assembleFileList(app.getDevicesProtectedDataPath())
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
@@ -330,5 +330,6 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         private val TAG = classTag(".BackupAppAction")
         const val LOG_START_BACKUP = "[%s] Starting %s backup"
         const val LOG_NO_THING_TO_BACKUP = "[%s] No %s to backup available"
+        const val STORAGE_LOCATION_INACCESSIBLE = "Cannot backup data. Storage location not set or inaccessible"
     }
 }

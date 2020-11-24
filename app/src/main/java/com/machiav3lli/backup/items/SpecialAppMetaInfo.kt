@@ -8,8 +8,7 @@ import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import java.util.*
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 
 /**
  * This class is used to describe special backup files that use a hardcoded list of file paths
@@ -19,7 +18,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
     var fileList: Array<String?>
 
     constructor(packageName: String?, label: String?, versionName: String?, versionCode: Int, fileList: Array<String?>)
-            : super(packageName, label, versionName, versionCode, 0, null, null, true) {
+            : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
         this.fileList = fileList
     }
 
@@ -60,7 +59,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
         @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-        fun getSpecialPackages(context: Context): List<AppInfoX> {
+        fun getSpecialPackages(context: Context): List<AppInfo> {
             val userId = ShellCommands.currentUser
             val userDir = "/data/system/users/$userId"
             val specPrefix = "$ "
@@ -72,29 +71,29 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
             //      the same directory in the archive and the restore would do the same but in reverse.
             // Documentation note: This could be outdated, make sure the logic in BackupSpecialAction and
             // RestoreSpecialAction hasn't changed!
-            val result = arrayOf(
-                    AppInfoX(context, SpecialAppMetaInfo(
+            return listOf(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.accounts",
                             specPrefix + context.getString(R.string.spec_accounts),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "/data/system_ce/$userId/accounts_ce.db"
                     ))),
-                    AppInfoX(context, SpecialAppMetaInfo(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.appwidgets",
                             specPrefix + context.getString(R.string.spec_appwidgets),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "$userDir/appwidgets.xml"
                     ))),
-                    AppInfoX(context, SpecialAppMetaInfo(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.bluetooth",
                             specPrefix + context.getString(R.string.spec_bluetooth),
                             Build.VERSION.RELEASE,
                             Build.VERSION.SDK_INT, arrayOf(
                             "/data/misc/bluedroid/"
                     ))),
-                    AppInfoX(context, SpecialAppMetaInfo(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.data.usage.policy",
                             specPrefix + context.getString(R.string.spec_data),
                             Build.VERSION.RELEASE,
@@ -102,7 +101,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                             "/data/system/netpolicy.xml",
                             "/data/system/netstats/"
                     ))),
-                    AppInfoX(context, SpecialAppMetaInfo(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.wallpaper",
                             specPrefix + context.getString(R.string.spec_wallpaper),
                             Build.VERSION.RELEASE,
@@ -110,7 +109,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                             "$userDir/wallpaper",
                             "$userDir/wallpaper_info.xml"
                     ))),
-                    AppInfoX(context, SpecialAppMetaInfo(
+                    AppInfo(context, SpecialAppMetaInfo(
                             "special.wifi.access.points",
                             specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                             Build.VERSION.RELEASE,
@@ -118,7 +117,6 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                             "/data/misc/wifi/WifiConfigStore.xml"
                     )))
             )
-            return Arrays.asList(*result)
         }
     }
 }

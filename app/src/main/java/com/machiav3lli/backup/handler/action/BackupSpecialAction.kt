@@ -24,7 +24,7 @@ import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LogUtils
@@ -32,7 +32,7 @@ import java.io.File
 
 class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppAction(context, shell) {
 
-    override fun run(app: AppInfoX, backupMode: Int): ActionResult? {
+    override fun run(app: AppInfo, backupMode: Int): ActionResult {
         if (backupMode and MODE_APK == MODE_APK) {
             Log.e(TAG, "Special contents don't have APKs to backup. Ignoring")
         }
@@ -42,27 +42,27 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    override fun backupData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         Log.i(TAG, "$app: Backup special data")
-        require(app.appInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
-        val appInfo = app.appInfo as SpecialAppMetaInfo?
+        require(app.appMetaInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
+        val appInfo = app.appMetaInfo as SpecialAppMetaInfo
         // Get file list
         // This can be optimized, because it's known, that special backups won't meet any symlinks
         // since the list of files is fixed
         // It would make sense to implement something like TarUtils.addFilepath with SuFileInputStream and
-        val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo!!.fileList.size)
+        val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
         try {
             for (filepath in appInfo.fileList) {
-                val isDirSource = filepath!!.endsWith("/")
+                val isDirSource = filepath?.endsWith("/") ?: false
                 val parent = if (isDirSource) File(filepath).name else null
-                val fileInfos = shell.suGetDetailedDirectoryContents(filepath, false, parent)
+                val fileInfos = shell.suGetDetailedDirectoryContents(filepath!!, false, parent)
                 if (isDirSource) {
                     filesToBackup.add(ShellHandler.FileInfo(parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
                             File(filepath).parent!!, "system", "system", 504.toShort(), 0))
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir!!.uri, filesToBackup, true)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Log.e(TAG, "$app: Backup Special Data failed: $error")
@@ -75,21 +75,21 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
     }
 
     // Stubbing some functions, to avoid executing them with potentially dangerous results
-    override fun backupPackage(app: AppInfoX, backupInstanceDir: StorageFile?) {
+    override fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile?) {
         // stub
     }
 
-    override fun backupDeviceProtectedData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
-        // stub
-        return false
-    }
-
-    override fun backupExternalData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         // stub
         return false
     }
 
-    override fun backupObbData(app: AppInfoX, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+        // stub
+        return false
+    }
+
+    override fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         // stub
         return false
     }

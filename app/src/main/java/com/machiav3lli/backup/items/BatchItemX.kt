@@ -22,14 +22,10 @@ import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
 import com.machiav3lli.backup.handler.action.BaseAppAction
-import com.machiav3lli.backup.utils.ItemUtils.calculateID
-import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
-import com.machiav3lli.backup.utils.setAppType
-import com.machiav3lli.backup.utils.setExists
-import com.machiav3lli.backup.utils.setVisible
+import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class BatchItemX(var app: AppInfoX, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
+class BatchItemX(var app: AppInfo, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
     var isApkChecked = false
     var isDataChecked = false
 

@@ -21,14 +21,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemMainXBinding
-import com.machiav3lli.backup.utils.ItemUtils.calculateID
-import com.machiav3lli.backup.utils.ItemUtils.getFormattedDate
-import com.machiav3lli.backup.utils.setAppType
-import com.machiav3lli.backup.utils.setExists
-import com.machiav3lli.backup.utils.setIcon
+import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class MainItemX(var app: AppInfoX) : AbstractBindingItem<ItemMainXBinding>() {
+class MainItemX(var app: AppInfo) : AbstractBindingItem<ItemMainXBinding>() {
 
     override var identifier: Long
         get() = calculateID(app)
@@ -44,7 +40,7 @@ class MainItemX(var app: AppInfoX) : AbstractBindingItem<ItemMainXBinding>() {
     }
 
     override fun bindView(binding: ItemMainXBinding, payloads: List<Any>) {
-        binding.icon.setIcon(app.appInfo)
+        binding.icon.setIcon(app.appMetaInfo)
         binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
         binding.lastBackup.text = getFormattedDate(app.latestBackup?.backupProperties?.backupDate, false)

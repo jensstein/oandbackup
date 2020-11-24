@@ -25,15 +25,29 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.AppInfoX
-import com.machiav3lli.backup.utils.FileUtils.getName
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
 import java.io.File
-import java.util.*
-import java.util.stream.Collectors
 
 class ShellCommands(private var users: List<String>?) {
     var multiuserEnabled: Boolean
+
+    init {
+        try {
+            users = getUsers()
+        } catch (e: ShellActionFailedException) {
+            users = null
+            var error: String? = null
+            // instanceOf returns false for nulls, so need to check if null
+            if (e.cause is ShellCommandFailedException) {
+                error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
+            }
+            Log.e(TAG, "Could not load list of users: " + e +
+                    if (error != null) " ; $error" else "")
+        }
+        multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
+    }
 
     @Throws(ShellActionFailedException::class)
     fun uninstall(packageName: String?, sourceDir: String?, dataDir: String?, isSystem: Boolean) {
@@ -180,17 +194,17 @@ class ShellCommands(private var users: List<String>?) {
             }
 
         @Throws(ShellActionFailedException::class)
-        fun wipeCache(context: Context, app: AppInfoX) {
+        fun wipeCache(context: Context, app: AppInfo) {
             Log.i(TAG, "${app.packageName}: Wiping cache")
             val commandBuilder = StringBuilder()
             // Normal app cache always exists
-            commandBuilder.append("rm -rf \"${app.dataDir}/cache/\"* \"${app.dataDir}/code_cache/\"*")
+            commandBuilder.append("rm -rf \"${app.getDataPath()}/cache/\"* \"${app.getDataPath()}/code_cache/\"*")
 
             // device protected data cache, might exist or not
             val conditionalDeleteTemplate = "\\\n && if [ -d \"%s\" ]; then rm -rf \"%s/\"* ; fi"
-            if (app.deviceProtectedDataDir.isNotEmpty()) {
-                val cacheDir = File(app.deviceProtectedDataDir, "cache").absolutePath
-                val codeCacheDir = File(app.deviceProtectedDataDir, "code_cache").absolutePath
+            if (app.getDevicesProtectedDataPath().isNotEmpty()) {
+                val cacheDir = File(app.getDevicesProtectedDataPath(), "cache").absolutePath
+                val codeCacheDir = File(app.getDevicesProtectedDataPath(), "code_cache").absolutePath
                 commandBuilder.append(String.format(conditionalDeleteTemplate, cacheDir, cacheDir))
                 commandBuilder.append(String.format(conditionalDeleteTemplate, codeCacheDir, codeCacheDir))
             }

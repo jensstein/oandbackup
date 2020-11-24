@@ -11,20 +11,19 @@ import android.util.Log
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 object BackendController {
     private val TAG = classTag(".BackendController")
@@ -53,18 +52,19 @@ object BackendController {
     }
 
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context): List<AppInfoX> = getApplicationList(context, true)
+    fun getApplicationList(context: Context): MutableList<AppInfo> = getApplicationList(context, true)
 
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context, includeUninstalled: Boolean): List<AppInfoX> {
+    fun getApplicationList(context: Context, includeUninstalled: Boolean): MutableList<AppInfo> {
         invalidateCache()
         val includeSpecial = getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)
         val pm = context.packageManager
         val backupRoot = getBackupRoot(context)
         val packageInfoList = pm.getInstalledPackages(0)
         val packageList = packageInfoList
-                .filter { packageInfo: PackageInfo -> !ignoredPackages.contains(packageInfo.packageName) } // Get AppInfoX objects with history etc
-                .map { pi: PackageInfo? -> AppInfoX(context, pi!!, backupRoot.uri) }
+                .filterNotNull()
+                .filter { !ignoredPackages.contains(it.packageName) }
+                .map { AppInfo(context, it, backupRoot.uri) }
                 .toMutableList()
         // Special Backups must added before the uninstalled packages, because otherwise it would
         // discover the backup directory and run in a special case where no the directory is empty.
@@ -75,34 +75,31 @@ object BackendController {
         }
         if (includeUninstalled) {
             val installedPackageNames = packageList
-                    .map(AppInfoX::packageName)
+                    .map(AppInfo::packageName)
                     .toList()
             val directoriesInBackupRoot = getDirectoriesInBackupRoot(context)
-            val missingAppsWithBackup: List<AppInfoX> =
-                // Try to create AppInfoX objects
-                // if it fails, null the object for filtering in the next step to avoid crashes
-                // filter out previously failed backups
-                directoriesInBackupRoot
-                    .filter { !installedPackageNames.contains(it.name) }
-                    .mapNotNull {
-                        try {
-                            AppInfoX(context, it.uri)
-                        } catch (e: AssertionError) {
-                            Log.e(TAG, "Could not process backup folder for uninstalled application in " + it.name + ": " + e)
-                            null
-                        } catch (e: Throwable) {
-                            LogUtils.unhandledException(e, it.name)
-                            null
-                        }
-                    }
-                    .toList()
+            val missingAppsWithBackup: List<AppInfo> =
+            // Try to create AppInfoX objects
+            // if it fails, null the object for filtering in the next step to avoid crashes
+                    // filter out previously failed backups
+                    directoriesInBackupRoot
+                            .filter { !installedPackageNames.contains(it.name) }
+                            .mapNotNull {
+                                try {
+                                    AppInfo(context, it.uri, it.name)
+                                } catch (e: AssertionError) {
+                                    Log.e(TAG, "Could not process backup folder for uninstalled application in " + it.name + ": " + e)
+                                    null
+                                }
+                            }
+                            .toList()
             packageList.addAll(missingAppsWithBackup)
         }
         return packageList
     }
 
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getDirectoriesInBackupRoot(context: Context?): List<StorageFile> {
+    fun getDirectoriesInBackupRoot(context: Context): List<StorageFile> {
         val backupRoot = getBackupRoot(context)
         try {
             return backupRoot.listFiles()
@@ -113,7 +110,7 @@ object BackendController {
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
-        return ArrayList()
+        return arrayListOf()
     }
 
     @Throws(PackageManager.NameNotFoundException::class)

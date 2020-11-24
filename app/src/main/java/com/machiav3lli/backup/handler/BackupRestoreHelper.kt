@@ -29,26 +29,27 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.action.*
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import java.io.FileNotFoundException
 import java.io.IOException
 
 open class BackupRestoreHelper {
 
-    fun backup(context: Context, shell: ShellHandler, app: AppInfoX, backupMode: Int): ActionResult? {
+    fun backup(context: Context, shell: ShellHandler, app: AppInfo, backupMode: Int): ActionResult {
         var backupMode = backupMode
         val housekeepingWhen = fromString(getDefaultSharedPreferences(context)
-                .getString(Constants.PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)!!)
+                .getString(Constants.PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
+                ?: HousekeepingMoment.AFTER.value)
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
-            housekeepingPackageBackups(context, app, housekeepingWhen)
+            housekeepingPackageBackups(context, app)
         }
         // Select and prepare the action to use
         val action: BackupAppAction
@@ -77,19 +78,19 @@ open class BackupRestoreHelper {
             }
         }
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
-            housekeepingPackageBackups(context, app, housekeepingWhen)
+            housekeepingPackageBackups(context, app)
         }
         return result
     }
 
-    fun restore(context: Context?, app: AppInfoX, backupProperties: BackupProperties?,
-                backupLocation: Uri?, shell: ShellHandler?, mode: Int): ActionResult {
+    fun restore(context: Context, app: AppInfo, backupProperties: BackupProperties,
+                backupLocation: Uri, shellHandler: ShellHandler?, mode: Int): ActionResult {
         val restoreAction: RestoreAppAction = when {
-            app.isSpecial -> RestoreSpecialAction(context!!, shell!!)
-            app.isSystem -> RestoreSystemAppAction(context!!, shell!!)
-            else -> RestoreAppAction(context!!, shell!!)
+            app.isSpecial -> RestoreSpecialAction(context, shellHandler!!)
+            app.isSystem -> RestoreSystemAppAction(context, shellHandler!!)
+            else -> RestoreAppAction(context, shellHandler!!)
         }
-        val result = restoreAction.run(app, backupProperties!!, backupLocation!!, mode)
+        val result = restoreAction.run(app, backupProperties, backupLocation, mode)
         Log.i(TAG, "$app: Restore succeeded: ${result.succeeded}")
         return result
     }
@@ -133,8 +134,8 @@ open class BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(context: Context?, app: AppInfoX, housekeepingWhen: HousekeepingMoment) {
-        var numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
+    private fun housekeepingPackageBackups(context: Context, app: AppInfo) {
+        val numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
         var backupHistory = app.backupHistory
         if (numBackupRevisions == 0) {
             Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backupHistory.size} (valid) backups available")

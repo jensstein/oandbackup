@@ -54,14 +54,13 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
 
     fun createBackupItem(): BackupItem {
         return BackupItem(
-                BackupProperties(backupPath!!.uri, appInfo, backupDate, hasApk, hasAppData,
-                        hasDevicesProtectedData, hasExternalData, hasObbData, cipherType, cpuArch),
-                backupPath)
+                BackupProperties(appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
+                        hasExternalData, hasObbData, cipherType, cpuArch),
+                backupPath!!)
     }
 
     fun createBackupProperties(): BackupProperties {
-        return BackupProperties(backupPath!!.uri,
-                appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData, hasExternalData,
-                hasObbData, cipherType, cpuArch)
+        return BackupProperties(appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
+                hasExternalData, hasObbData, cipherType, cpuArch)
     }
 }

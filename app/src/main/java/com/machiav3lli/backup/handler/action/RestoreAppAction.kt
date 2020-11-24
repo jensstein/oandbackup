@@ -30,18 +30,17 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileFromDocument
 import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileFromDocument
 import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.PrefUtils.getCryptoSalt
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.PrefUtils.isDisableVerification
-import com.machiav3lli.backup.utils.PrefUtils.isKillBeforeActionEnabled
-import com.machiav3lli.backup.utils.TarUtils.uncompressTo
+import com.machiav3lli.backup.utils.getCryptoSalt
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.isDisableVerification
+import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
+import com.machiav3lli.backup.utils.uncompressTo
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
@@ -50,7 +49,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
-    fun run(app: AppInfoX, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int): ActionResult {
+    fun run(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int): ActionResult {
         Log.i(TAG, "Restoring up: ${app.packageName} [${app.packageLabel}]")
         val stopProcess = isKillBeforeActionEnabled(context)
         if (stopProcess) {
@@ -80,9 +79,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    protected open fun restoreAllData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: Uri?) {
+    protected open fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri) {
         Log.i(TAG, "[${backupProperties.packageName}] Restoring app's data")
-        val backupDir = fromUri(context, backupLocation!!)
+        val backupDir = StorageFile.fromUri(context, backupLocation)
         restoreData(app, backupProperties, backupDir)
         val prefs = getDefaultSharedPreferences(context)
         if (backupProperties.hasExternalData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
@@ -141,7 +140,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     open fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
         val packageName = backupProperties.packageName
         Log.i(TAG, "[$packageName] Restoring from ${backupLocation.encodedPath}")
-        val backupDir = fromUri(context, backupLocation)
+        val backupDir = StorageFile.fromUri(context, backupLocation)
         val baseApk = backupDir.findFile(BASE_APK_FILENAME)
         Log.d(TAG, "[$packageName] Found $BASE_APK_FILENAME in backup archive")
         if (baseApk == null) {
@@ -260,7 +259,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     @Throws(RestoreFailedException::class)
     private fun genericRestoreDataByCopying(targetPath: String, backupInstanceRoot: Uri, what: String) {
         try {
-            val backupDirFile = fromUri(context, backupInstanceRoot)
+            val backupDirFile = StorageFile.fromUri(context, backupInstanceRoot)
             val backupDirToRestore = backupDirFile.findFile(what)
                     ?: throw RestoreFailedException(String.format(LOG_DIR_IS_MISSING_CANNOT_RESTORE, what))
             suRecursiveCopyFileFromDocument(context, backupDirToRestore.uri, targetPath)
@@ -293,15 +292,15 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     private fun genericRestoreFromArchive(archiveUri: Uri, targetDir: String, isEncrypted: Boolean, cachePath: File?) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
-        if (!fromUri(context, archiveUri).exists()) {
+        if (!StorageFile.fromUri(context, archiveUri).exists()) {
             throw RestoreFailedException("Backup archive at $archiveUri is missing")
         }
         var tempDir: Path? = null
         try {
             openArchiveFile(archiveUri, isEncrypted).use { inputStream ->
                 // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                tempDir = Files.createTempDirectory(cachePath!!.toPath(), "restore_")
-                uncompressTo(inputStream, tempDir!!.toFile())
+                tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
+                uncompressTo(inputStream, tempDir?.toFile())
                 // clear the data from the final directory
                 wipeDirectory(targetDir, DATA_EXCLUDED_DIRS)
                 // Move all the extracted data into the target directory
@@ -364,22 +363,22 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    open fun restoreData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    open fun restoreData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         val backupFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, backupProperties.isEncrypted)
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.dataDir, backupProperties.isEncrypted, context.cacheDir)
-        genericRestorePermissions(BACKUP_DIR_DATA, File(app.dataDir))
+        genericRestoreFromArchive(backupArchive.uri, app.getDataPath(), backupProperties.isEncrypted, context.cacheDir)
+        genericRestorePermissions(BACKUP_DIR_DATA, File(app.getDataPath()))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    open fun restoreExternalData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    open fun restoreExternalData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         val backupFilename = getBackupArchiveFilename(BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted)
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        val externalDataDir = File(app.externalDataDir)
+        val externalDataDir = File(app.getExternalDataPath(context))
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
         if (!externalDataDir.exists()) {
             val mkdirResult = externalDataDir.mkdir()
@@ -387,24 +386,24 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 throw RestoreFailedException("Could not create external data directory at $externalDataDir")
             }
         }
-        genericRestoreFromArchive(backupArchive.uri, app.externalDataDir, backupProperties.isEncrypted, context.externalCacheDir)
+        genericRestoreFromArchive(backupArchive.uri, app.getExternalDataPath(context), backupProperties.isEncrypted, context.externalCacheDir)
     }
 
     @Throws(RestoreFailedException::class)
-    open fun restoreObbData(app: AppInfoX, backupProperties: BackupProperties?, backupLocation: StorageFile) {
-        genericRestoreDataByCopying(app.obbFilesDir, backupLocation.uri, BACKUP_DIR_OBB_FILES)
+    open fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) {
+        genericRestoreDataByCopying(app.getObbFilesPath(context), backupLocation.uri, BACKUP_DIR_OBB_FILES)
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    open fun restoreDeviceProtectedData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    open fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         val backupFilename = getBackupArchiveFilename(BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted)
         Log.d(TAG, String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.deviceProtectedDataDir, backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
+        genericRestoreFromArchive(backupArchive.uri, app.getDevicesProtectedDataPath(), backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
         genericRestorePermissions(
                 BACKUP_DIR_DEVICE_PROTECTED_FILES,
-                File(app.deviceProtectedDataDir)
+                File(app.getDevicesProtectedDataPath())
         )
     }
 

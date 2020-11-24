@@ -26,13 +26,13 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.action.RestoreAppAction.RestoreFailedException
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
-import com.machiav3lli.backup.utils.PrefUtils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.TarUtils.suUncompressTo
+import com.machiav3lli.backup.utils.isEncryptionEnabled
+import com.machiav3lli.backup.utils.suUncompressTo
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.FileNotFoundException
@@ -41,15 +41,15 @@ import java.io.IOException
 class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    override fun restoreAllData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: Uri?) {
-        restoreData(app, backupProperties, fromUri(context, backupLocation!!))
+    override fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri) {
+        restoreData(app, backupProperties, fromUri(context, backupLocation))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    override fun restoreData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         Log.i(TAG, String.format("%s: Restore special data", app))
-        val metaInfo = app.appInfo as SpecialAppMetaInfo?
-        val tempPath = File(context.cacheDir, backupProperties.packageName!!)
+        val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
+        val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = isEncryptionEnabled(context)
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
         val backupArchiveFile = backupLocation.findFile(backupArchiveFilename)
@@ -96,15 +96,15 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
         // stub
     }
 
-    override fun restoreDeviceProtectedData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         // stub
     }
 
-    override fun restoreExternalData(app: AppInfoX, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreExternalData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
         // stub
     }
 
-    override fun restoreObbData(app: AppInfoX, backupProperties: BackupProperties?, backupLocation: StorageFile) {
+    override fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) {
         // stub
     }
 

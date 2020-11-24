@@ -19,43 +19,43 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 object SortFilterManager {
-    private val APP_INFO_LABEL_COMPARATOR = java.util.Comparator { m1: AppInfoX, m2: AppInfoX -> m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true) }
-    private val APP_INFO_PACKAGE_NAME_COMPARATOR = java.util.Comparator { m1: AppInfoX, m2: AppInfoX -> m1.packageName.compareTo(m2.packageName, ignoreCase = true) }
-    private val APP_INFO_DATA_SIZE_COMPARATOR = java.util.Comparator { m1: AppInfoX, m2: AppInfoX -> m1.dataBytes.compareTo(m2.dataBytes) }
+    private val APP_INFO_LABEL_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true) }
+    private val APP_INFO_PACKAGE_NAME_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.packageName.compareTo(m2.packageName, ignoreCase = true) }
+    private val APP_INFO_DATA_SIZE_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.dataBytes.compareTo(m2.dataBytes) }
 
     val BACKUP_DATE_COMPARATOR = java.util.Comparator { m1: BackupItemX, m2: BackupItemX -> m2.backup.backupProperties.backupDate!!.compareTo(m1.backup.backupProperties.backupDate) }
 
-    fun getFilterPreferences(context: Context?): SortFilterModel {
+    fun getFilterPreferences(context: Context): SortFilterModel {
         val sortFilterModel: SortFilterModel
-        val sortFilterPref = getPrivateSharedPrefs(context!!).getString(Constants.PREFS_SORT_FILTER, "")
-        sortFilterModel = if (sortFilterPref!!.isNotEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
+        val sortFilterPref = getPrivateSharedPrefs(context).getString(Constants.PREFS_SORT_FILTER, "")
+        sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
         return sortFilterModel
     }
 
-    fun saveFilterPreferences(context: Context?, filterModel: SortFilterModel) {
-        getPrivateSharedPrefs(context!!).edit().putString(Constants.PREFS_SORT_FILTER, filterModel.toString()).apply()
+    fun saveFilterPreferences(context: Context, filterModel: SortFilterModel) {
+        getPrivateSharedPrefs(context).edit().putString(Constants.PREFS_SORT_FILTER, filterModel.toString()).apply()
     }
 
-    fun getRememberFiltering(context: Context?): Boolean {
+    fun getRememberFiltering(context: Context): Boolean {
         return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true)
     }
 
-    fun applyFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: (AppInfoX) -> Boolean
+    fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
+        val predicate: (AppInfo) -> Boolean
         predicate = when (filter[1]) {
-            '1' -> { appInfox: AppInfoX -> appInfox.isSystem }
-            '2' -> { appInfoX: AppInfoX -> !appInfoX.isSystem }
-            '3' -> { appInfox: AppInfoX -> appInfox.isSpecial }
-            else -> { _: AppInfoX -> true }
+            '1' -> { appInfo: AppInfo -> appInfo.isSystem }
+            '2' -> { appInfo: AppInfo -> !appInfo.isSystem }
+            '3' -> { appInfo: AppInfo -> appInfo.isSpecial }
+            else -> { _: AppInfo -> true }
         }
         val filteredList = list
                 .filter(predicate)
@@ -63,14 +63,14 @@ object SortFilterManager {
         return applyBackupFilter(filteredList, filter, context)
     }
 
-    private fun applyBackupFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: (AppInfoX) -> Boolean
+    private fun applyBackupFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
+        val predicate: (AppInfo) -> Boolean
         predicate = when (filter[2]) {
-            '1' -> { appInfoX: AppInfoX -> appInfoX.hasApk && appInfoX.hasAppData }
-            '2' -> { obj: AppInfoX -> obj.hasApk }
-            '3' -> { obj: AppInfoX -> obj.hasAppData }
-            '4' -> { appInfoX: AppInfoX -> !appInfoX.hasBackups }
-            else -> { _: AppInfoX -> true }
+            '1' -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
+            '2' -> { appInfo: AppInfo -> appInfo.hasApk }
+            '3' -> { appInfo: AppInfo -> appInfo.hasAppData }
+            '4' -> { appInfo: AppInfo -> !appInfo.hasBackups }
+            else -> { _: AppInfo -> true }
         }
         val filteredList = list
                 .filter(predicate)
@@ -78,17 +78,18 @@ object SortFilterManager {
         return applySpecialFilter(filteredList, filter, context)
     }
 
-    private fun applySpecialFilter(list: List<AppInfoX>, filter: CharSequence, context: Context): List<AppInfoX> {
-        val predicate: (AppInfoX) -> Boolean
-        val days = getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7")!!.toInt()
+    private fun applySpecialFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
+        val predicate: (AppInfo) -> Boolean
+        val days = getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7")?.toInt()
+                ?: 7
         predicate = when (filter[3]) {
-            '1' -> { appInfoX: AppInfoX -> !appInfoX.hasBackups || appInfoX.isUpdated }
-            '2' -> { appInfoX: AppInfoX -> !appInfoX.isInstalled }
+            '1' -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
+            '2' -> { appInfo: AppInfo -> !appInfo.isInstalled }
             '3' -> {
-                { appInfoX: AppInfoX ->
+                { appInfo: AppInfo ->
                     when {
-                        appInfoX.hasBackups -> {
-                            val lastBackup = appInfoX.latestBackup!!.backupProperties.backupDate
+                        appInfo.hasBackups -> {
+                            val lastBackup = appInfo.latestBackup?.backupProperties?.backupDate
                             val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
                             diff >= days
                         }
@@ -96,8 +97,8 @@ object SortFilterManager {
                     }
                 }
             }
-            '4' -> { appInfoX: AppInfoX -> appInfoX.apkSplits != null && appInfoX.apkSplits!!.isNotEmpty() }
-            else -> { _: AppInfoX -> true }
+            '4' -> { appInfo: AppInfo -> appInfo.apkSplits.isNotEmpty() }
+            else -> { _: AppInfo -> true }
         }
         val filteredList = list
                 .filter(predicate)
@@ -105,7 +106,7 @@ object SortFilterManager {
         return applySort(filteredList, filter)
     }
 
-    private fun applySort(list: List<AppInfoX>, filter: CharSequence): List<AppInfoX> {
+    private fun applySort(list: List<AppInfo>, filter: CharSequence): List<AppInfo> {
         return when (filter[0]) {
             '1' -> list.sortedWith(APP_INFO_PACKAGE_NAME_COMPARATOR)
             '2' -> list.sortedWith(APP_INFO_DATA_SIZE_COMPARATOR)

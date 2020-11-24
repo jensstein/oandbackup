@@ -31,7 +31,7 @@ open class BackupItem {
             LogUtils.unhandledException(e, propertiesFile.uri)
             throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
-        backupInstance = StorageFile.fromUri(context, backupProperties.backupLocation)
+        backupInstance = StorageFile.fromUri(context, backupProperties.getBackupLocation(propertiesFile.parentFile))
     }
 
     class BrokenBackupException @JvmOverloads internal constructor(message: String?, cause: Throwable? = null) : Exception(message, cause)

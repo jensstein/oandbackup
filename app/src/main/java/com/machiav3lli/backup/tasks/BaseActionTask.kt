@@ -29,13 +29,13 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
-import com.machiav3lli.backup.utils.UIUtils.showActionResult
+import com.machiav3lli.backup.utils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
 
-abstract class BaseActionTask(val app: AppInfoX, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
+abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
                               val mode: Int, private val actionType: ActionType)
     : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
