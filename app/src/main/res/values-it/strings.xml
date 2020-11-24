@@ -82,7 +82,7 @@
     <string name="disablePackageTitle">Disabilita per gli utenti</string>
     <string name="prefs_title">Opzioni</string>
     <string name="prefs_acquirewakelock">Impedisci la modalità sleep</string>
-    <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
+    <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. Aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
     <string name="prefs_pathbackupfolder">Cartella di backup</string>
     <string name="prefs_oldbackups">Filtra i backup per obsolescenza</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -155,9 +155,9 @@
     <string name="prefs_theme_light">Chiaro</string>
     <string name="prefs_theme_dark">Scuro</string>
     <string name="prefs_theme_system">Tema di sistema</string>
-    <string name="empty_filtered_list">La lista filtrata è vuota, perciò i filtri ritornano ai valori predefiniti</string>
+    <string name="empty_filtered_list">La lista filtrata è vuota, perciò i filtri ritornaneranno ai valori predefiniti</string>
     <string name="dialog_refuse">Non lo farò</string>
-    <string name="dialog_approve">Facciamolo</string>
+    <string name="dialog_approve">Facciamolo!</string>
     <string name="ignore_battery_optimization_title">Ottimizzazione batteria</string>
     <string name="ignore_battery_optimization_message">I backup potrebbero interrompersi a volte. Per evitare questo, dovresti disattivare l\'ottimizzazione batteria</string>
     <string name="ignore_battery_optimization_not_supported">Questo dispositivo purtroppo non supporta l\'opzione per ignorare l\'ottimizzazione batteria!</string>
@@ -189,4 +189,32 @@
     <string name="prefs_passwordconfirmation">Conferma password di criptazione</string>
     <string name="prefs_advanced">Preferenze avanzate</string>
     <string name="radio_updated">Aggiornato</string>
+    <string name="intro_welcome_message">OAndBackupX è un fork della famigerata app OAndBackup con lo scopo di portarla nel 2020 ed oltre. Per ora la maggior parte delle funzionalità e dell\'interfaccia sono state riscritte ed alcune sono state aggiunte.
+\nL\'app è ancora nella fase beta e cambi del codice principale avvengono frequentemente. Quindi è importnate leggere attentamente il registro dei cambiamenti con ogni nuovo rilascio.
+\nTutti i tipi di contributo sono benvenuti, che siano idee, traduzioni, riscontri di bug o codice.
+\n
+\nOra, riguardo alle funzionalità dell\'app:
+\n• L\'app richiede permessi di root e permette di fare il backup di app singole e dei loro dati.
+\n• Sia il salvataggio che il ripristino di app singole una alla volta o contemporaneamente che il ripristino di app molteplici è supportato.
+\n• Il ripristino di app di sistema dovrebbe essere possibile senza richiedere un riavvio successivamente, anche se non consigliamo comunque di farlo.
+\n• I salvataggi possono essere programmati senza limiti di numero ed è presente la possibilità di creare liste personalizzate di app.</string>
+    <string name="welcome_to_oabx">Benvenuto in OABX!</string>
+    <string name="storage_access">Accesso alla memoria</string>
+    <string name="help_appTypeHint">* L\'icona del tipo di app sarebbe grigia se l\'app è disinstallata e grigia scura se l\'app è disabilitata.</string>
+    <string name="help_legend">Legenda:</string>
+    <string name="dialog_unlock">Sblocca</string>
+    <string name="dialog_start">Partiamo!</string>
+    <string name="prefs_unset">Non impostato</string>
+    <string name="prefs_stopcont_summary">Solo per utenti avanzati: Questo può aiutare se l\'app cambia i file durante il backup e esso fallisce.</string>
+    <string name="prefs_disableverification_summary">Disattiva questa opzione sviluppatore mentre ripristina gli APK e la riattiva successivamente. Risolve l\'errore: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification">Disattiva la verifica delle app via USB</string>
+    <string name="prefs_housekeepingmoment_summary">Imposta se la revisione più vecchia è cancellata prima o dopo la creazione di un nuovo backup per liberare spazio sul disco usato dal backup.</string>
+    <string name="prefs_housekeepingmoment">Tempo di pulizia delle revisioni</string>
+    <string name="prefs_numBackupRevisions_summary">La revisione più vecchia sarà eliminata alla creazione di un nuovo backup se il numero è superato. Imposta su zero per mantenere tutte le revisioni.</string>
+    <string name="prefs_numBackupRevisions">Numero di revisioni del backup</string>
+    <string name="prefs_housekeepingmoment_before">Prima del backup</string>
+    <string name="prefs_housekeepingmoment_after">Dopo il backup</string>
+    <string name="radio_obbdata">Dati OBB</string>
+    <string name="radio_deviceprotecteddata">Dati protetti del dispositivo</string>
+    <string name="radio_externaldata">Dati Esterni</string>
 </resources>
