@@ -71,7 +71,7 @@ android {
 
 ext {
     versions = [
-            kotlin            : "1.4.10",
+            kotlin            : "1.4.20",
             room              : "2.2.5",
             gson              : "2.8.6",
             lifecycle         : "2.2.0",
