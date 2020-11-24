@@ -145,8 +145,8 @@ class HandleScheduledBackups(private val context: Context) {
                         val overAllResult = ActionResult(null, null, errors, results.parallelStream().anyMatch(ActionResult::succeeded))
 
                         // Update the notification
-                        val notificationTitle = if (overAllResult.succeeded) context.getString(R.string.batchSuccess) else context.getString(R.string.batchFailure)
-                        val notificationMessage = context.getString(R.string.sched_notificationMessage)
+                        val notificationMessage = if (overAllResult.succeeded || appsList.isEmpty()) context.getString(R.string.batchSuccess) else context.getString(R.string.batchFailure)
+                        val notificationTitle = context.getString(R.string.sched_notificationMessage)
                         NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
                         if (!overAllResult.succeeded) {
                             LogUtils.logErrors(context, errors)
