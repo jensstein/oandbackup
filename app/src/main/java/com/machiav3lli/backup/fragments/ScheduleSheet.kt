@@ -174,6 +174,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment() {
 
     private fun toggleSecondaryButtons(chipGroup: ChipGroup) {
         if (chipGroup.checkedChipId == R.id.schedNewUpdated) {
+            binding.excludeSystem.isChecked = viewModel.schedule.value?.excludeSystem ?: false
             if (binding.excludeSystem.visibility != View.GONE) return
             binding.excludeSystem.visibility = View.VISIBLE
         } else {
