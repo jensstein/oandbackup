@@ -18,22 +18,12 @@
 package com.machiav3lli.backup.activities
 
 import android.content.Context
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.ContextWraperX.Companion.wrap
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val prefs = getDefaultSharedPreferences(this)
-        val langCode = prefs.getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)!!
-    }
-
     override fun attachBaseContext(newBase: Context) {
-        val newLang = getDefaultSharedPreferences(newBase).getString(Constants.PREFS_LANGUAGES, Constants.PREFS_LANGUAGES_DEFAULT)
-        super.attachBaseContext(wrap(newBase, newLang!!))
+        super.attachBaseContext(wrap(newBase))
     }
 }
