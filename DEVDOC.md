@@ -27,12 +27,13 @@
 - [x] Handle the error about disabling "verify apps over USB".
 
 - [x] Replace deprecated Classes/Methods:
-    - [x] AsyncTask
-    - [x] ProgressDialog
+  
+  - [x] AsyncTask
+  - [x] ProgressDialog
 
 - [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
 
-- [ ] TargetSDK 30 & updated StorageManger on SDK29: storage access problems
+- [ ] TargetSDK 30 & updated StorageManger on SDK29: on test
 
 - [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
 
@@ -44,19 +45,23 @@
 
 - [ ] Use DataBinding/BindingAdapter where useful
 
+- [ ] Refactore Batch & Schedules handling
+
 - [x] Migrate to Kotlin
 
-- [ ] Use Kotlin style explicitly: a process taking place with each class refactored
+- [x] Use Kotlin style explicitly: a process taking place with each class refactored
 
-- [ ] ViewModel where useful
-
-    - [x] Scheduler
-
-    - [ ] Main & Batch
+- [x] ViewModel where useful
+  
+  - [x] Scheduler
+  
+  - [x] Main & Batch
+  
+  - [x] AppSheet
 
 ## Low Priority
 
-- [ ] Add Flashable Zip feature: lowest priority for now.
+- [ ] Add Flashable Zip feature
 
 - [ ] (re)add OpenGPG
 
