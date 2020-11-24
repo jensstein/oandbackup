@@ -190,15 +190,23 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment() {
     }
 
     private fun startSchedule() {
-        AlertDialog.Builder(requireActivity())
-                .setMessage(getString(R.string.sched_activateButton))
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                    StartSchedule(requireContext(), HandleScheduledBackups(requireContext()),
-                            id, BlacklistsDBHelper.DATABASE_NAME)
-                            .execute()
-                }
-                .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
-                .show()
+        viewModel.schedule.value?.let {
+            val message = StringBuilder()
+            message.append("\n${getSubModeString(it.subMode, requireContext())}")
+            message.append("\n${getModeString(it.mode, requireContext())}")
+            if (it.mode == Schedule.Mode.NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
+            message.append("\n${getString(R.string.customListTitle)}: ${it.enableCustomList}")
+            AlertDialog.Builder(requireActivity())
+                    .setTitle("${getString(R.string.sched_activateButton)}?")
+                    .setMessage(message)
+                    .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                        StartSchedule(requireContext(), HandleScheduledBackups(requireContext()),
+                                id, BlacklistsDBHelper.DATABASE_NAME)
+                                .execute()
+                    }
+                    .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+                    .show()
+        }
     }
 
     class UpdateRunnable(private val schedule: Schedule?, private val databaseName: String,
@@ -240,5 +248,22 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment() {
 
     companion object {
         private val TAG = classTag(".ScheduleSheet")
+
+        private fun getSubModeString(mode: Schedule.SubMode, context: Context): String {
+            return when (mode) {
+                Schedule.SubMode.APK -> context.getString(R.string.handleApk)
+                Schedule.SubMode.DATA -> context.getString(R.string.handleData)
+                Schedule.SubMode.BOTH -> context.getString(R.string.handleBoth)
+            }
+        }
+
+        private fun getModeString(mode: Schedule.Mode, context: Context): String {
+            return when (mode) {
+                Schedule.Mode.ALL -> context.getString(R.string.radio_all)
+                Schedule.Mode.SYSTEM -> context.getString(R.string.radio_system)
+                Schedule.Mode.USER -> context.getString(R.string.radio_user)
+                Schedule.Mode.NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+            }
+        }
     }
 }
