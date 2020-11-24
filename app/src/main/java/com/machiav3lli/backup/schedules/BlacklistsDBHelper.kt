@@ -22,11 +22,11 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.util.*
 
+// TODO Migrate to Room
 class BlacklistsDBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     fun deleteBlacklistFromId(db: SQLiteDatabase, id: Int) {
-        val selection = String.format("%s = ?",
-                BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID)
+        val selection = "${BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID} = ?"
         val selectionArgs = arrayOf(id.toString())
         db.delete(BlacklistContract.BlacklistEntry.TABLE_NAME, selection,
                 selectionArgs)
@@ -34,8 +34,7 @@ class BlacklistsDBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE
 
     fun getBlacklistedPackages(db: SQLiteDatabase, id: Int): List<String> {
         val projection = arrayOf(BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME)
-        val selection = String.format("%s = ?",
-                BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID)
+        val selection = "${BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID} = ?"
         val selectionArgs = arrayOf(id.toString())
         val cursor = db.query(BlacklistContract.BlacklistEntry.TABLE_NAME,
                 projection, selection, selectionArgs, null, null, null)

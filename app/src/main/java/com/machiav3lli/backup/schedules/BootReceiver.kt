@@ -27,9 +27,8 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
-import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.dbs.ScheduleDatabase
 import java.lang.ref.WeakReference
-import java.util.stream.Collectors
 
 class BootReceiver : BroadcastReceiver() {
 
@@ -48,7 +47,7 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     private fun getScheduleDao(context: Context?): ScheduleDao {
-        return getInstance(context!!, SchedulerActivityX.DATABASE_NAME).scheduleDao
+        return ScheduleDatabase.getInstance(context!!, SchedulerActivityX.DATABASE_NAME).scheduleDao
     }
 
     private class DatabaseRunnable(scheduleDao: ScheduleDao, handleAlarms: HandleAlarms, private val currentTime: Long) : Runnable {
@@ -62,9 +61,9 @@ class BootReceiver : BroadcastReceiver() {
                 Log.w(TAG, "Bootreceiver database thread resources was null")
                 return
             }
-            val schedules: List<Schedule> = scheduleDao.all.stream()
+            val schedules: List<Schedule> = scheduleDao.all
                     .filter { schedule: Schedule -> schedule.enabled && schedule.interval > 0 }
-                    .collect(Collectors.toList())
+                    .toList()
             for (schedule in schedules) {
                 val timeLeft = HandleAlarms.timeUntilNextEvent(schedule.interval,
                         schedule.timeHour, schedule.timeMinute, schedule.timePlaced, currentTime)

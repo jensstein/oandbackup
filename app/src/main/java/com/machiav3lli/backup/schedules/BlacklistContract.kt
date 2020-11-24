@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.schedules
 
+// TODO Migrate to Room
 object BlacklistContract {
 
     val CREATE_DB = String.format(
@@ -24,7 +25,7 @@ object BlacklistContract {
             BlacklistEntry.TABLE_NAME, BlacklistEntry._ID,
             BlacklistEntry.COLUMN_PACKAGENAME, BlacklistEntry.COLUMN_BLACKLISTID)
 
-    val DELETE_ENTRIES = String.format("drop table if exists %s", BlacklistEntry.TABLE_NAME)
+    val DELETE_ENTRIES = "drop table if exists ${BlacklistEntry.TABLE_NAME}"
 
     object BlacklistEntry {
         const val _ID = "_id" // BaseColumns implementation

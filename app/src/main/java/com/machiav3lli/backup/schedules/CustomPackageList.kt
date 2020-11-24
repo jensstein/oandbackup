@@ -21,21 +21,21 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageInfo
-import android.util.ArraySet
 import androidx.appcompat.app.AlertDialog
+import androidx.collection.arraySetOf
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.customListAddress
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.handler.BackendController
 
 object CustomPackageList {
-    fun showList(activity: Activity, number: Int, mode: Schedule.Mode?) {
+    fun showList(activity: Activity, number: Int, mode: Schedule.Mode) {
         val selectedList = getScheduleCustomList(activity, number)
         var packageInfoList = BackendController.getPackageInfoList(activity, mode)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val pm = activity.application.applicationContext.packageManager
-            val b1 = selectedList!!.contains(pi1.packageName)
+            val b1 = selectedList.contains(pi1.packageName)
             val b2 = selectedList.contains(pi2.packageName)
             if (b1 != b2)
                 if (b1) -1 else 1
@@ -52,7 +52,7 @@ object CustomPackageList {
         for ((i, packageInfo) in packageInfoList.withIndex()) {
             labels.add(packageInfo.applicationInfo.loadLabel(activity.packageManager).toString())
             packageNames.add(packageInfo.packageName)
-            if (selectedList!!.contains(packageInfo.packageName)) {
+            if (selectedList.contains(packageInfo.packageName)) {
                 checkedBooleanArray[i] = true
                 selected.add(i)
             }
@@ -68,17 +68,20 @@ object CustomPackageList {
                     }
                 }
                 .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelcted(activity, number, packageNames.toTypedArray(), selected) }
-                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog!!.cancel() }
+                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .show()
     }
 
     private fun saveSelcted(context: Context, index: Int, items: Array<CharSequence>, selected: ArrayList<Int>) {
-        val selectedPackages = selected.map { pos: Int? -> items[pos!!].toString() }.toSet()
+        val selectedPackages = selected
+                .map { pos: Int -> items[pos].toString() }
+                .toSet()
         setScheduleCustomList(context, index, selectedPackages)
     }
 
-    fun getScheduleCustomList(context: Context, index: Int): Set<String>? {
-        return context.getSharedPreferences(Constants.PREFS_SCHEDULES, Context.MODE_PRIVATE).getStringSet(customListAddress(index), ArraySet())
+    fun getScheduleCustomList(context: Context, index: Int): Set<String> {
+        return context.getSharedPreferences(Constants.PREFS_SCHEDULES, Context.MODE_PRIVATE).getStringSet(customListAddress(index), arraySetOf())
+                ?: arraySetOf()
     }
 
     fun setScheduleCustomList(context: Context, index: Int, packagesList: Set<String>?) {

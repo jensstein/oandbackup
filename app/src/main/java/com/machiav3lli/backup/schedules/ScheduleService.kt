@@ -30,9 +30,9 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
+import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
 
 class ScheduleService : Service(), OnBackupRestoreListener {
 
@@ -53,7 +53,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
                 handleAlarms.setAlarm(id, schedule.interval, schedule.timeHour,
                         schedule.timeMinute)
                 Log.i(TAG, getString(R.string.sched_startingbackup))
-                handleScheduledBackups.initiateBackup(id, schedule.mode, schedule.subMode.value,
+                handleScheduledBackups.initiateBackup(id, schedule.mode, schedule.subMode,
                         schedule.excludeSystem, schedule.enableCustomList)
             }
             t.start()
@@ -65,6 +65,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
 
     private val handleScheduledBackups: HandleScheduledBackups
         get() = HandleScheduledBackups(this)
+
     private val scheduleDao: ScheduleDao
         get() = getInstance(this, SchedulerActivityX.DATABASE_NAME).scheduleDao
 
