@@ -31,6 +31,7 @@ import com.machiav3lli.backup.items.BatchItemX
 
 open class BatchFragment : Fragment(), SearchViewController {
     private lateinit var binding: FragmentMainBinding
+    private val TAG = classTag(".BatchFragment")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
@@ -71,14 +72,8 @@ open class BatchFragment : Fragment(), SearchViewController {
     override fun onResume() {
         super.onResume()
         requireMainActivity().setSearchViewController(this)
-        requireMainActivity().batchRefresh()
+        requireMainActivity().onResumeFragment()
     }
 
-    fun requireMainActivity(): MainActivityX {
-        return super.requireActivity() as MainActivityX
-    }
-
-    companion object {
-        private val TAG = classTag(".BatchFragment")
-    }
+    fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

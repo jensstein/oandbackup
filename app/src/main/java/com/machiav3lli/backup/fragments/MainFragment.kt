@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,16 +28,10 @@ import com.machiav3lli.backup.SearchViewController
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.MainItemX
-import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
 
 class MainFragment : Fragment(), SearchViewController {
-    var prefs: SharedPreferences? = null
     private lateinit var binding: FragmentMainBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        prefs = getPrivateSharedPrefs(requireContext())
-    }
+    private val TAG = classTag(".MainFragment")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
@@ -66,7 +59,7 @@ class MainFragment : Fragment(), SearchViewController {
                 return true
             }
         })
-        binding.helpButton.setOnClickListener { v: View? ->
+        binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp = HelpSheet()
             requireMainActivity().sheetHelp!!.showNow(requireActivity().supportFragmentManager, "HELPSHEET")
         }
@@ -79,14 +72,8 @@ class MainFragment : Fragment(), SearchViewController {
     override fun onResume() {
         super.onResume()
         requireMainActivity().setSearchViewController(this)
-        requireMainActivity().refreshView()
+        requireMainActivity().onResumeFragment()
     }
 
-    fun requireMainActivity(): MainActivityX {
-        return super.requireActivity() as MainActivityX
-    }
-
-    companion object {
-        private val TAG = classTag(".MainFragment")
-    }
+    fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }
