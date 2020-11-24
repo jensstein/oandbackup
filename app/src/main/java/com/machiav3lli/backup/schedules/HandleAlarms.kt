@@ -21,10 +21,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.PowerManager
 import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
-import java.util.*
+import kotlin.math.abs
 
 class HandleAlarms(var context: Context) {
     private val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -80,7 +81,7 @@ class HandleAlarms(var context: Context) {
             c.add(Calendar.DAY_OF_MONTH, interval)
             c[Calendar.HOUR_OF_DAY] = hour
             c[Calendar.MINUTE] = minute
-            return c.timeInMillis - now
+            return abs(c.timeInMillis - now)
         }
     }
 }
