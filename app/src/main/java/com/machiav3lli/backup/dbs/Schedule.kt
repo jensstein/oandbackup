@@ -17,18 +17,12 @@
  */
 package com.machiav3lli.backup.dbs
 
-import android.content.SharedPreferences
 import android.util.ArraySet
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.schedules.SchedulingException
 
-/**
- * Holds scheduling data
- */
 @Entity
 class Schedule {
     @PrimaryKey(autoGenerate = true)
@@ -58,26 +52,6 @@ class Schedule {
 
     @TypeConverters(CustomListConverter::class)
     var customList: Set<String>? = ArraySet()
-
-    /**
-     * Persist the scheduling data.
-     *
-     * @param preferences shared preferences object
-     */
-    fun persist(preferences: SharedPreferences) {
-        preferences.edit()
-                .putBoolean(Constants.PREFS_SCHEDULES_ENABLED + id, enabled)
-                .putInt(Constants.PREFS_SCHEDULES_TIMEHOUR + id, timeHour)
-                .putInt(Constants.PREFS_SCHEDULES_TIMEMINUTE + id, timeMinute)
-                .putInt(Constants.PREFS_SCHEDULES_INTERVAL + id, interval)
-                .putLong(Constants.PREFS_SCHEDULES_TIMEPLACED + id, timePlaced)
-                .putInt(Constants.PREFS_SCHEDULES_MODE + id, mode.value)
-                .putInt(Constants.PREFS_SCHEDULES_SUBMODE + id, subMode.value)
-                .putBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + id, excludeSystem)
-                .putBoolean(Constants.PREFS_SCHEDULES_ENABLECUSTOMLIST + id, enableCustomList)
-                .putStringSet(Constants.PREFS_SCHEDULES_CUSTOMLIST, customList)
-                .apply()
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -141,61 +115,12 @@ class Schedule {
         }
     }
 
-    /**
-     * Scheduling mode, which packages to include in the scheduled backup
-     */
     enum class Mode(val value: Int) {
         ALL(0), USER(1), SYSTEM(2), NEW_UPDATED(3);
-
-        companion object {
-            /**
-             * Convert from int to mode. This method exists to handle the
-             * transition from storing having mode stored as integers to
-             * representing it as an enum.
-             *
-             * @param mode number written to disk
-             * @return corresponding mode
-             */
-            @Throws(SchedulingException::class)
-            fun intToMode(mode: Int): Mode {
-                return when (mode) {
-                    0 -> ALL
-                    1 -> USER
-                    2 -> SYSTEM
-                    3 -> NEW_UPDATED
-                    else -> throw SchedulingException(String.format(
-                            "Unknown mode %s", mode))
-                }
-            }
-        }
     }
 
-    /**
-     * Scheduling submode, whether to include apk, data or both in the backup
-     */
     enum class SubMode(val value: Int) {
         APK(1), DATA(2), BOTH(3);
-
-        companion object {
-            /**
-             * Convert from int to submode. This method exists to handle the
-             * transition from storing having submode stored as integers to
-             * representing it as an enum.
-             *
-             * @param subMode number written to disk
-             * @return corresponding submode
-             */
-            @Throws(SchedulingException::class)
-            fun intToSubMode(subMode: Int): SubMode {
-                return when (subMode) {
-                    1 -> APK
-                    2 -> DATA
-                    3 -> BOTH
-                    else -> throw SchedulingException(String.format(
-                            "Unknown submode %s", subMode))
-                }
-            }
-        }
     }
 
     class ModeConverter {
@@ -231,31 +156,6 @@ class Schedule {
         @TypeConverter
         fun toString(customList: Set<String?>?): String {
             return customList!!.joinToString(separator = ",")
-        }
-    }
-
-    companion object {
-        /**
-         * Get scheduling data from a preferences file.
-         *
-         * @param preferences preferences object
-         * @param number      index of schedule to fetch
-         * @return scheduling data object
-         */
-        @Throws(SchedulingException::class)
-        fun fromPreferences(preferences: SharedPreferences, number: Long): Schedule {
-            val schedule = Schedule()
-            schedule.id = number
-            schedule.enabled = preferences.getBoolean(Constants.PREFS_SCHEDULES_ENABLED + number, false)
-            schedule.timeHour = preferences.getInt(Constants.PREFS_SCHEDULES_TIMEHOUR + number, 0)
-            schedule.timeMinute = preferences.getInt(Constants.PREFS_SCHEDULES_TIMEMINUTE + number, 0)
-            schedule.interval = preferences.getInt(Constants.PREFS_SCHEDULES_INTERVAL + number, 1)
-            schedule.timePlaced = preferences.getLong(Constants.PREFS_SCHEDULES_TIMEPLACED + number, 0)
-            schedule.mode = Mode.intToMode(preferences.getInt(Constants.PREFS_SCHEDULES_MODE + number, 0))
-            schedule.subMode = SubMode.intToSubMode(preferences.getInt(Constants.PREFS_SCHEDULES_SUBMODE + number, 0))
-            schedule.excludeSystem = preferences.getBoolean(Constants.PREFS_SCHEDULES_EXCLUDESYSTEM + number, false)
-            schedule.customList = preferences.getStringSet(Constants.PREFS_SCHEDULES_CUSTOMLIST + number, ArraySet())
-            return schedule
         }
     }
 

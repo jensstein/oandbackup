@@ -35,19 +35,10 @@ import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.handler.SortFilterManager.saveFilterPreferences
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.utils.PrefUtils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 
-class SortFilterSheet : BottomSheetDialogFragment {
-    private var sortFilterModel: SortFilterModel
+class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterModel()) : BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding
-
-    constructor() {
-        sortFilterModel = SortFilterModel()
-    }
-
-    constructor(sortFilterModel: SortFilterModel) {
-        this.sortFilterModel = sortFilterModel
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -105,7 +96,5 @@ class SortFilterSheet : BottomSheetDialogFragment {
         }
     }
 
-    private fun requireMainActivity(): MainActivityX {
-        return super.requireActivity() as MainActivityX
-    }
+    private fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

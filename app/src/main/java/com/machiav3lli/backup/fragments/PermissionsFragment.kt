@@ -36,21 +36,13 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
 import com.machiav3lli.backup.databinding.FragmentPermissionsBinding
-import com.machiav3lli.backup.utils.PrefUtils
-import com.machiav3lli.backup.utils.PrefUtils.canAccessExternalStorage
-import com.machiav3lli.backup.utils.PrefUtils.checkBatteryOptimization
-import com.machiav3lli.backup.utils.PrefUtils.checkStoragePermissions
-import com.machiav3lli.backup.utils.PrefUtils.checkUsageStatsPermission
-import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.PrefUtils.getStoragePermission
-import com.machiav3lli.backup.utils.PrefUtils.isStorageDirSetAndOk
-import com.machiav3lli.backup.utils.PrefUtils.requireStorageLocation
-import com.machiav3lli.backup.utils.PrefUtils.setStorageRootDir
+import com.machiav3lli.backup.utils.*
+
 
 class PermissionsFragment : Fragment() {
-    private var binding: FragmentPermissionsBinding? = null
-    private var powerManager: PowerManager? = null
-    private var prefs: SharedPreferences? = null
+    private lateinit var binding: FragmentPermissionsBinding
+    private lateinit var powerManager: PowerManager
+    private lateinit var prefs: SharedPreferences
 
     private val usageStatsPermission: Unit
         get() {
@@ -68,7 +60,7 @@ class PermissionsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentPermissionsBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,31 +80,26 @@ class PermissionsFragment : Fragment() {
         updateState()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     private fun setupViews() {
-        binding!!.cardStoragePermission.visibility = if (checkStoragePermissions(requireContext())) View.GONE else View.VISIBLE
-        binding!!.cardStorageLocation.visibility = if (isStorageDirSetAndOk(requireContext())) View.GONE else View.VISIBLE
-        binding!!.cardUsageAccess.visibility = if (checkUsageStatsPermission(requireContext())) View.GONE else View.VISIBLE
-        binding!!.cardBatteryOptimization.visibility = if (checkBatteryOptimization(requireContext(), prefs!!, powerManager!!)) View.GONE else View.VISIBLE
+        binding.cardStoragePermission.visibility = if (checkStoragePermissions(requireContext())) View.GONE else View.VISIBLE
+        binding.cardStorageLocation.visibility = if (isStorageDirSetAndOk(requireContext())) View.GONE else View.VISIBLE
+        binding.cardUsageAccess.visibility = if (checkUsageStatsPermission(requireContext())) View.GONE else View.VISIBLE
+        binding.cardBatteryOptimization.visibility = if (checkBatteryOptimization(requireContext(), prefs, powerManager)) View.GONE else View.VISIBLE
     }
 
     private fun setupOnClicks() {
-        binding!!.cardStoragePermission.setOnClickListener { getStoragePermission(requireActivity()) }
-        binding!!.cardStorageLocation.setOnClickListener { requireStorageLocation(this) }
-        binding!!.cardUsageAccess.setOnClickListener { usageStatsPermission }
-        binding!!.cardBatteryOptimization.setOnClickListener { showBatteryOptimizationDialog(powerManager) }
+        binding.cardStoragePermission.setOnClickListener { getStoragePermission(requireActivity()) }
+        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(this) }
+        binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
+        binding.cardBatteryOptimization.setOnClickListener { showBatteryOptimizationDialog(powerManager) }
     }
 
     private fun updateState() {
         if (checkStoragePermissions(requireContext()) &&
                 isStorageDirSetAndOk(requireContext()) &&
                 checkUsageStatsPermission(requireContext()) &&
-                (prefs!!.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
-                        || powerManager!!.isIgnoringBatteryOptimizations(requireContext().packageName))) {
+                (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+                        || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))) {
             (requireActivity() as IntroActivityX).moveTo(3)
         } else {
             setupViews()
@@ -128,20 +115,24 @@ class PermissionsFragment : Fragment() {
                     intent.data = Uri.parse("package:" + requireContext().packageName)
                     try {
                         startActivity(intent)
-                        prefs!!.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, powerManager!!.isIgnoringBatteryOptimizations(requireContext().packageName)).apply()
+                        prefs.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION,
+                                powerManager?.isIgnoringBatteryOptimizations(requireContext().packageName) == true).apply()
                     } catch (e: ActivityNotFoundException) {
                         Log.w(TAG, "Ignore battery optimizations not supported", e)
                         Toast.makeText(requireContext(), R.string.ignore_battery_optimization_not_supported, Toast.LENGTH_LONG).show()
-                        prefs!!.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
+                        prefs.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
                     }
                 }
-                .setNeutralButton(R.string.dialog_refuse) { _: DialogInterface?, _: Int -> prefs!!.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply() }
+                .setNeutralButton(R.string.dialog_refuse) { _: DialogInterface?, _: Int ->
+                    prefs.edit()
+                            ?.putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true)?.apply()
+                }
                 .setCancelable(false)
                 .show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == PrefUtils.WRITE_PERMISSION) {
+        if (requestCode == WRITE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.w(TAG, "Permissions were granted: $permissions -> $grantResults")
                 if (!canAccessExternalStorage(requireContext())) {
@@ -159,11 +150,13 @@ class PermissionsFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PrefUtils.BACKUP_DIR) {
+        if (requestCode == BACKUP_DIR) {
             if (data == null) return
-            val uri = data.data ?: return
             if (resultCode == Activity.RESULT_OK) {
-                requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val uri = data.data ?: return
+                val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                requireContext().contentResolver.takePersistableUriPermission(uri, flags)
                 setStorageRootDir(this.requireContext(), uri)
             }
         }

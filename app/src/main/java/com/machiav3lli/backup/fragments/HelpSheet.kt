@@ -88,6 +88,7 @@ class HelpSheet : BottomSheetDialogFragment() {
 
     companion object {
         private val TAG = classTag(".HelpSheet")
+
         fun convertStreamToString(stream: InputStream?): String {
             val s = Scanner(stream, "utf-8").useDelimiter("\\A")
             return if (s.hasNext()) s.next() else ""

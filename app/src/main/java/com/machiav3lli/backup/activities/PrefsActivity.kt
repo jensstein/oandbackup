@@ -36,7 +36,7 @@ class PrefsActivity : BaseActivity() {
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.prefsFragment, PrefsFragment()).commit()
         }
-        binding.backButton.setOnClickListener { v: View? -> if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
+        binding.backButton.setOnClickListener { if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
 
         setContentView(binding.root)
     }

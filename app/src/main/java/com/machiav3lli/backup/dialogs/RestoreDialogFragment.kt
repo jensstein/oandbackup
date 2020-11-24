@@ -36,12 +36,11 @@ class RestoreDialogFragment(private val listener: ActionListener) : DialogFragme
         val app = arguments.getParcelable<AppMetaInfo>("appinfo")
         val isInstalled = arguments.getBoolean("isInstalled", false)
         val properties = arguments.getParcelable<BackupProperties>("backup")
-
-        val showApkBtn = properties!!.hasApk
-        val showDataBtn = (isInstalled || app!!.isSpecial) && properties.hasAppData
-        val showBothBtn = showApkBtn && properties.hasAppData
+        val showApkBtn = properties?.hasApk ?: false
+        val showDataBtn = (isInstalled || app!!.isSpecial) && properties?.hasAppData ?: false
+        val showBothBtn = showApkBtn && properties?.hasAppData ?: false
         val builder = AlertDialog.Builder(this.requireActivity())
-        builder.setTitle(app!!.packageLabel)
+        builder.setTitle(app?.packageLabel)
         builder.setMessage(R.string.restore)
         val actionType = ActionType.RESTORE
         if (showApkBtn) {

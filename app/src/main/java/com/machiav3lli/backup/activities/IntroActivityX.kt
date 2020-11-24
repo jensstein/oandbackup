@@ -37,20 +37,22 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.utils.PrefUtils
-import com.machiav3lli.backup.utils.UIUtils
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isLockEnabled
+import com.machiav3lli.backup.utils.showWarning
 import com.scottyab.rootbeer.RootBeer
 
 class IntroActivityX : BaseActivity() {
     private lateinit var binding: ActivityIntroXBinding
-    private var prefs: SharedPreferences? = null
+    private lateinit var prefs: SharedPreferences
     private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = PrefUtils.getPrivateSharedPrefs(this)
+        prefs = getPrivateSharedPrefs(this)
         setupNavigation()
         if (intent.extras != null) {
             val fragmentNumber = intent.extras!!.getInt(classAddress(".fragmentNumber"))
@@ -65,7 +67,7 @@ class IntroActivityX : BaseActivity() {
                 binding.positiveButton.setText(R.string.dialog_start)
                 binding.positiveButton.setOnClickListener {
                     if (checkRootAccess()) {
-                        prefs!!.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply()
+                        prefs.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply()
                         moveTo(2)
                     }
                 }
@@ -75,9 +77,9 @@ class IntroActivityX : BaseActivity() {
 
     fun moveTo(position: Int) {
         when (position) {
-            1 -> navController!!.navigate(R.id.welcomeFragment)
+            1 -> navController?.navigate(R.id.welcomeFragment)
             2 -> {
-                navController!!.navigate(R.id.permissionsFragment)
+                navController?.navigate(R.id.permissionsFragment)
                 binding.positiveButton.visibility = View.GONE
             }
             3 -> {
@@ -108,11 +110,11 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun showFatalUiWarning(message: String) {
-        UIUtils.showWarning(this, TAG, message) { _: DialogInterface?, _: Int -> finishAffinity() }
+        showWarning(this, TAG, message) { _: DialogInterface?, _: Int -> finishAffinity() }
     }
 
     private fun launchMainActivity() {
-        if (PrefUtils.isBiometricLockAvailable(this) && PrefUtils.isLockEnabled(this)) {
+        if (isBiometricLockAvailable(this) && isLockEnabled(this)) {
             launchBiometricPrompt()
         } else {
             startActivity(Intent(this, MainActivityX::class.java))

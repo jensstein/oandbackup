@@ -27,8 +27,8 @@ import com.machiav3lli.backup.BlacklistListener
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.handler.BackendController
 
 class BlacklistDialogFragment : DialogFragment() {
     private val blacklistListeners = ArrayList<BlacklistListener>()
@@ -54,19 +54,19 @@ class BlacklistDialogFragment : DialogFragment() {
                 l1.compareTo(l2, ignoreCase = true)
             }
         }
-        val labels = ArrayList<String>()
+        val labels = mutableSetOf<String>()
         val checkedPackages = BooleanArray(packageInfoList.size)
-        val selections = ArrayList<String>()
-        for ((i, packageInfo) in packageInfoList.withIndex()) {
+        val selections = mutableListOf<String>()
+        packageInfoList.forEachIndexed { i, packageInfo ->
             labels.add(packageInfo.applicationInfo.loadLabel(pm).toString())
             if (blacklistedPackages!!.contains(packageInfo.packageName)) {
                 checkedPackages[i] = true
                 selections.add(packageInfo.packageName)
             }
         }
-        return AlertDialog.Builder(requireActivity()).setTitle(R.string.sched_blacklist)
-                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(),
-                        checkedPackages) { _: DialogInterface?, which: Int, isChecked: Boolean ->
+        return AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.sched_blacklist)
+                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedPackages) { _: DialogInterface?, which: Int, isChecked: Boolean ->
                     val packageName = packageInfoList[which].packageName
                     if (isChecked) selections.add(packageName) else selections.remove(packageName)
                 }

@@ -23,12 +23,9 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 
 class PrefsAdvancedFragment : PreferenceFragmentCompat() {
+    private val TAG = classTag(".PrefsAdvancedFragment")
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_advanced, rootKey)
-    }
-
-    companion object {
-        private val TAG = classTag(".PrefsAdvancedFragment")
     }
 }

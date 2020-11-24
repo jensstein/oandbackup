@@ -19,7 +19,6 @@ package com.machiav3lli.backup.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -27,7 +26,8 @@ import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.action.BaseAppAction
-import com.machiav3lli.backup.utils.PrefUtils
+import com.machiav3lli.backup.items.PackageInfo
+import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 
 class BackupDialogFragment(private val listener: ActionListener) : DialogFragment() {
 
@@ -38,10 +38,10 @@ class BackupDialogFragment(private val listener: ActionListener) : DialogFragmen
         val packageLabel = args.getString("packageLabel")
         val builder = AlertDialog.Builder(requireActivity())
                 .setTitle(this.context?.getString(R.string.backup) + ' ' + packageLabel)
-        if (PrefUtils.isKillBeforeActionEnabled(this.context)) {
+        if (isKillBeforeActionEnabled(requireContext())) {
             builder.setMessage(R.string.msg_appkill_warning)
         }
-        val showApkBtn = pi != null && !pi.applicationInfo.sourceDir.isEmpty()
+        val showApkBtn = pi != null && pi.apkDir.isNotEmpty()
         val actionType = ActionType.BACKUP
         if (showApkBtn) {
             builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK, null) }

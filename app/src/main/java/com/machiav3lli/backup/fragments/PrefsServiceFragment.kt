@@ -19,7 +19,6 @@ package com.machiav3lli.backup.fragments
 
 import android.os.Bundle
 import android.text.InputType
-import android.widget.EditText
 import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -29,45 +28,53 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 
 class PrefsServiceFragment : PreferenceFragmentCompat() {
-    var encryptPref: CheckBoxPreference? = null
-    var passwordPref: EditTextPreference? = null
-    var passwordConfirmationPref: EditTextPreference? = null
+    private val TAG = classTag(".PrefsServiceFragment")
+    private lateinit var encryptPref: CheckBoxPreference
+    private lateinit var passwordPref: EditTextPreference
+    private lateinit var passwordConfirmationPref: EditTextPreference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_service, rootKey)
-        encryptPref = findPreference(Constants.PREFS_ENCRYPTION)
-        passwordPref = findPreference(Constants.PREFS_PASSWORD)
-        passwordConfirmationPref = findPreference(Constants.PREFS_PASSWORD_CONFIRMATION)
-        passwordPref!!.isVisible = encryptPref!!.isChecked
-        passwordConfirmationPref!!.isVisible = encryptPref!!.isChecked
+        encryptPref = findPreference(Constants.PREFS_ENCRYPTION)!!
+        passwordPref = findPreference(Constants.PREFS_PASSWORD)!!
+        passwordConfirmationPref = findPreference(Constants.PREFS_PASSWORD_CONFIRMATION)!!
+        passwordPref.isVisible = encryptPref.isChecked
+        passwordConfirmationPref.isVisible = encryptPref.isChecked
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        passwordConfirmationPref!!.summary = if (passwordPref!!.text == passwordConfirmationPref!!.text) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
-        passwordPref!!.setOnBindEditTextListener { editText: EditText -> editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD }
-        passwordConfirmationPref!!.setOnBindEditTextListener { editText: EditText -> editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD }
-        encryptPref!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? -> onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref) }
-        passwordPref!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangePassword(passwordConfirmationPref, newValue as String, passwordConfirmationPref!!.text) }
-        passwordConfirmationPref!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangePassword(passwordConfirmationPref, passwordPref!!.text, newValue as String) }
-    }
-
-    private fun onPrefChangeEncryption(encryption: CheckBoxPreference?, password: EditTextPreference?, passwordConfirmation: EditTextPreference?): Boolean {
-        if (encryption!!.isChecked) {
-            password!!.text = ""
-            passwordConfirmation!!.text = ""
+        passwordConfirmationPref.summary = if (passwordPref.text == passwordConfirmationPref.text) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
+        passwordPref.setOnBindEditTextListener {
+            it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
-        password!!.isVisible = !encryption.isChecked
-        passwordConfirmation!!.isVisible = !encryption.isChecked
+        passwordConfirmationPref.setOnBindEditTextListener {
+            it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        encryptPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
+            onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref)
+        }
+        passwordPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+            onPrefChangePassword(passwordConfirmationPref, newValue as String, passwordConfirmationPref.text)
+        }
+        passwordConfirmationPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+            onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue as String)
+        }
+    }
+
+    private fun onPrefChangeEncryption(encryption: CheckBoxPreference, password: EditTextPreference, passwordConfirmation: EditTextPreference): Boolean {
+        if (encryption.isChecked) {
+            password.text = ""
+            passwordConfirmation.text = ""
+        }
+        password.isVisible = !encryption.isChecked
+        passwordConfirmation.isVisible = !encryption.isChecked
         return true
     }
 
-    private fun onPrefChangePassword(passwordConfirmation: EditTextPreference?, password: String, passwordCheck: String): Boolean {
-        passwordConfirmation!!.summary = if (password == passwordCheck) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
+    private fun onPrefChangePassword(passwordConfirmation: EditTextPreference, password: String, passwordCheck: String): Boolean {
+        passwordConfirmation.summary = if (password == passwordCheck) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
         return true
-    }
-
-    companion object {
-        private val TAG = classTag(".PrefsServiceFragment")
     }
 }

@@ -30,7 +30,9 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
+    private val TAG = classTag(".WelcomeFragment")
     private lateinit var binding: FragmentWelcomeBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
@@ -55,9 +57,5 @@ class WelcomeFragment : Fragment() {
             binding.versionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
-    }
-
-    companion object {
-        private val TAG = classTag(".WelcomeFragment")
     }
 }

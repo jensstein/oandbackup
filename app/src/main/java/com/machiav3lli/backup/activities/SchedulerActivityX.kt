@@ -96,7 +96,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
             item?.let {
                 sheetSchedule = ScheduleSheet(it.schedule.id)
                 viewModel.setActiveSchedule(it.schedule.id)
-                sheetSchedule!!.showNow(supportFragmentManager, "SCHEDULESHEET")
+                sheetSchedule?.showNow(supportFragmentManager, "SCHEDULESHEET")
             }
             false
         }
@@ -120,7 +120,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         }
         binding.helpButton.setOnClickListener {
             if (sheetHelp == null) sheetHelp = HelpSheet()
-            sheetHelp!!.showNow(this@SchedulerActivityX.supportFragmentManager, "SCHEDULESHEET")
+            sheetHelp?.showNow(this@SchedulerActivityX.supportFragmentManager, "SCHEDULESHEET")
         }
         schedulerFastAdapter.addEventHook(OnDeleteClickHook())
         schedulerFastAdapter.addEventHook(OnEnableClickHook())
@@ -128,7 +128,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
 
     override fun onPause() {
         super.onPause()
-        if (sheetSchedule != null) sheetSchedule!!.dismissAllowingStateLoss()
+        if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
     }
 
     public override fun onDestroy() {

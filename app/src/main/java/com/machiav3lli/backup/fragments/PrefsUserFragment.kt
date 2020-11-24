@@ -31,14 +31,10 @@ import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.PrefUtils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.PrefUtils.getStorageRootDir
-import com.machiav3lli.backup.utils.PrefUtils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.PrefUtils.setStorageRootDir
+import com.machiav3lli.backup.utils.*
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
-    var pref: Preference? = null
+    private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
@@ -46,20 +42,20 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pref = findPreference(Constants.PREFS_THEME)
-        pref!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeTheme(newValue.toString()) }
-        pref = findPreference(Constants.PREFS_LANGUAGES)
+        pref = findPreference(Constants.PREFS_THEME)!!
+        pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeTheme(newValue.toString()) }
+        pref = findPreference(Constants.PREFS_LANGUAGES)!!
         val oldLang = (findPreference<Preference>(Constants.PREFS_LANGUAGES) as ListPreference?)!!.value
-        pref!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
-        pref = findPreference(Constants.PREFS_BIOMETRICLOCK)
-        pref!!.isVisible = isBiometricLockAvailable(requireContext())
-        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)
+        pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
+        pref = findPreference(Constants.PREFS_BIOMETRICLOCK)!!
+        pref.isVisible = isBiometricLockAvailable(requireContext())
+        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
-            pref!!.summary = getStorageRootDir(requireContext())
+            pref.summary = getStorageRootDir(requireContext())
         } catch (e: StorageLocationNotConfiguredException) {
-            pref!!.summary = getString(R.string.prefs_unset)
+            pref.summary = getString(R.string.prefs_unset)
         }
-        pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBackupDirectory() }
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBackupDirectory() }
     }
 
     private fun onPrefChangeTheme(newValue: String): Boolean {
@@ -89,8 +85,8 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun setDefaultDir(context: Context, dir: Uri) {
         setStorageRootDir(context, dir)
-        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)
-        pref!!.summary = dir.toString()
+        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)!!
+        pref.summary = dir.toString()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

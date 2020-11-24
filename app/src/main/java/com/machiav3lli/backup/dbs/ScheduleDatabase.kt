@@ -24,7 +24,6 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Schedule::class], version = 2)
 abstract class ScheduleDatabase : RoomDatabase() {
-
     abstract val scheduleDao: ScheduleDao
 
     companion object {

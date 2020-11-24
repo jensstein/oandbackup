@@ -36,19 +36,15 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.schedules.BlacklistsDBHelper
 import com.machiav3lli.backup.schedules.CustomPackageList.showList
 import com.machiav3lli.backup.schedules.HandleAlarms
 import com.machiav3lli.backup.schedules.HandleAlarms.Companion.timeUntilNextEvent
 import com.machiav3lli.backup.schedules.HandleScheduledBackups
-import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDatabase
-import com.machiav3lli.backup.utils.CommandUtils.Command
-import com.machiav3lli.backup.utils.idToMode
-import com.machiav3lli.backup.utils.idToSubMode
-import com.machiav3lli.backup.utils.modeToId
-import com.machiav3lli.backup.utils.subModeToId
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
 import java.lang.ref.WeakReference
@@ -238,8 +234,8 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment() {
                     val scheduleDao = scheduleDatabase.scheduleDao
                     val schedule = scheduleDao.getSchedule(id)
                     val handleScheduledBackups = handleScheduledBackupsReference.get()
-                    handleScheduledBackups?.initiateBackup(id.toInt(), schedule!!.mode,
-                            schedule.subMode.value, schedule.excludeSystem, schedule.enableCustomList)
+                    handleScheduledBackups?.initiateBackup(id.toInt(), schedule?.mode,
+                            schedule?.subMode, schedule?.excludeSystem == true, schedule?.enableCustomList == true)
                 }
             }
             t.start()

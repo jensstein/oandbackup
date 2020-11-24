@@ -27,27 +27,29 @@ import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
-import com.machiav3lli.backup.utils.PrefUtils
+import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 
-class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment() {
+class BatchConfirmDialog(private var confirmListener: ConfirmListener) : DialogFragment() {
+    private val TAG = Constants.classTag(".BatchConfirmDialog")
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = this.requireArguments()
         val selectedList = args.getParcelableArrayList<AppMetaInfo>("selectedList")
+                ?: arrayListOf()
         val selectedListModes = args.getIntegerArrayList("selectedListModes")
+                ?: arrayListOf()
         val backupBoolean = args.getBoolean("backupBoolean")
         val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
-        if (PrefUtils.isKillBeforeActionEnabled(this.context)) {
+        if (isKillBeforeActionEnabled(requireContext())) {
             message.append(requireContext().getString(R.string.msg_appkill_warning))
             message.append("\n\n")
         }
-        selectedList?.forEachIndexed { i, item ->
+        selectedList.forEachIndexed { i, item ->
             message.append("${item.packageLabel}")
-            selectedListModes?.get(i)?.let { message.append(": ${getModeString(it)}") }
-            message.append("\n")
+            selectedListModes[i]?.let { message.append(": ${getModeString(it)}\n") }
         }
-        val selectedItems = selectedList!!.zip(selectedListModes!!)
+        val selectedItems = selectedList.zip(selectedListModes)
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(title)
         builder.setMessage(message.toString().trim { it <= ' ' })
@@ -73,9 +75,5 @@ class BatchConfirmDialog(var confirmListener: ConfirmListener) : DialogFragment(
             BaseAppAction.MODE_BOTH -> requireContext().resources.getString(R.string.handleBoth)
             else -> ""
         }
-    }
-
-    companion object {
-        private val TAG = Constants.classTag(".BatchConfirmDialog")
     }
 }

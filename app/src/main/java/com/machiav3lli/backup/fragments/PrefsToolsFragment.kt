@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.fragments
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -33,17 +32,15 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.NotificationHelper.showNotification
-import com.machiav3lli.backup.handler.ShellCommands
-import com.machiav3lli.backup.handler.ShellCommands.ShellActionFailedException
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.PrefUtils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.UIUtils.showError
-import java.util.*
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 
 class PrefsToolsFragment : PreferenceFragmentCompat() {
-    private var appInfoList: List<AppInfoX> = ArrayList()
-    var pref: Preference? = null
+    private val TAG = classTag(".PrefsToolsFragment")
+    private var appInfoList: List<AppInfo> = ArrayList()
+
+    private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_tools, rootKey)
@@ -51,10 +48,10 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pref = findPreference(Constants.PREFS_BATCH_DELETE)
-        pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
-        pref = findPreference(Constants.PREFS_LOGVIEWER)
-        pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
+        pref = findPreference(Constants.PREFS_BATCH_DELETE)!!
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
+        pref = findPreference(Constants.PREFS_LOGVIEWER)!!
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
 
     override fun onResume() {
@@ -71,7 +68,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onClickBatchDelete(): Boolean {
-        val deleteList = ArrayList<AppInfoX>()
+        val deleteList = ArrayList<AppInfo>()
         val message = StringBuilder()
         if (appInfoList.isNotEmpty()) {
             for (appInfo in appInfoList) {
@@ -86,7 +83,6 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.prefs_batchdelete)
                     .setMessage(message.toString().trim { it <= ' ' })
                     .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        changesMade()
                         Thread { deleteBackups(deleteList) }.start()
                     }
                     .setNegativeButton(R.string.dialogNo, null)
@@ -106,24 +102,12 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun changesMade() {
-        val result = Intent()
-        result.putExtra("changesMade", true)
-        requireActivity().setResult(RESULT_OK, result)
-    }
-
-    private fun deleteBackups(deleteList: List<AppInfoX>) {
-        deleteList.forEach { appInfo ->
-            runOnUiThread { Toast.makeText(requireContext(), "${appInfo.packageLabel}: ${getString(R.string.batchDeleteMessage)}", Toast.LENGTH_SHORT).show() }
-            Log.i(TAG, "deleting backups of ${appInfo.packageLabel}")
-            appInfo.deleteAllBackups()
-            appInfo.refreshBackupHistory()
+    private fun deleteBackups(deleteList: List<AppInfo>) {
+        deleteList.forEach {
+            runOnUiThread { Toast.makeText(requireContext(), "${it.packageLabel}: ${getString(R.string.batchDeleteMessage)}", Toast.LENGTH_SHORT).show() }
+            Log.i(TAG, "deleting backups of ${it.packageLabel}")
+            it.deleteAllBackups(requireContext())
         }
         showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size, false)
-    }
-
-    companion object {
-        private val TAG = classTag(".PrefsToolsFragment")
-        private const val RESULT_OK = 0
     }
 }
