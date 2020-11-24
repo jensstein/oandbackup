@@ -17,20 +17,14 @@
  */
 package com.machiav3lli.backup.utils
 
-import com.machiav3lli.backup.Constants.classTag
+fun iterableToString(iterable: Iterable<String>): String {
+    return iterableToString("", iterable)
+}
 
-object CommandUtils {
-    private val TAG = classTag(".CommandUtils")
+fun iterableToString(delimiter: CharSequence, iterable: Iterable<String>): String {
+    return iterable.joinToString(separator = delimiter)
+}
 
-    fun iterableToString(iterable: Iterable<String>): String {
-        return iterableToString("", iterable)
-    }
-
-    fun iterableToString(delimiter: CharSequence, iterable: Iterable<String>): String {
-        return iterable.joinToString(separator = delimiter)
-    }
-
-    interface Command {
-        fun execute()
-    }
+interface Command {
+    fun execute()
 }

@@ -3,13 +3,15 @@ package com.machiav3lli.backup.utils
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.BindingAdapter
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.Schedule.Mode
 import com.machiav3lli.backup.dbs.Schedule.SubMode
-import com.machiav3lli.backup.items.AppInfoX
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.AppMetaInfo
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 fun modeToId(mode: Int): Int {
     return when (mode) {
@@ -45,6 +47,7 @@ fun idToSubMode(subMode: Int): SubMode {
     }
 }
 
+@BindingAdapter("exists")
 fun View.setExists(rightMode: Boolean) {
     visibility = if (rightMode) {
         View.VISIBLE
@@ -53,6 +56,7 @@ fun View.setExists(rightMode: Boolean) {
     }
 }
 
+@BindingAdapter("visible")
 fun View.setVisible(rightMode: Boolean) {
     visibility = if (rightMode) {
         View.VISIBLE
@@ -69,32 +73,40 @@ fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) {
     }
 }
 
-fun AppCompatImageView.setAppType(appInfo: AppInfoX) {
+fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     var color: ColorStateList
     when {
         appInfo.isSpecial -> {
-            color = ColorStateList.valueOf(ItemUtils.COLOR_SPECIAL)
+            color = ColorStateList.valueOf(COLOR_SPECIAL)
             visibility = View.VISIBLE
             setImageResource(R.drawable.ic_special_24)
         }
         appInfo.isSystem -> {
-            color = ColorStateList.valueOf(ItemUtils.COLOR_SYSTEM)
+            color = ColorStateList.valueOf(COLOR_SYSTEM)
             visibility = View.VISIBLE
             setImageResource(R.drawable.ic_system_24)
         }
         else -> {
-            color = ColorStateList.valueOf(ItemUtils.COLOR_USER)
+            color = ColorStateList.valueOf(COLOR_USER)
             visibility = View.VISIBLE
             setImageResource(R.drawable.ic_user_24)
         }
     }
     if (!appInfo.isSpecial) {
         if (appInfo.isDisabled) {
-            color = ColorStateList.valueOf(ItemUtils.COLOR_DISABLED)
+            color = ColorStateList.valueOf(COLOR_DISABLED)
         }
         if (!appInfo.isInstalled) {
-            color = ColorStateList.valueOf(ItemUtils.COLOR_UNINSTALLED)
+            color = ColorStateList.valueOf(COLOR_UNINSTALLED)
         }
     }
     imageTintList = color
+}
+
+fun getFormattedDate(lastUpdate: LocalDateTime?, withTime: Boolean): String? {
+    lastUpdate?.let {
+        val dtf = if (withTime) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) else DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+        return lastUpdate.format(dtf)
+    }
+    return null
 }
