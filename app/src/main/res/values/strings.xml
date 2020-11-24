@@ -126,8 +126,6 @@
     <string name="prefs_disableverification_summary">Disables this developer option while restoring APKs and re-enables it afterwards. Solves the error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_stopcont">STOP-CONT pre- and postprocessing of apps on backup/restore</string>
     <string name="prefs_stopcont_summary">Experts only: This can help, if the app is changing files during backup and the backup fails.</string>
-    <string name="prefs_quickreboot">Quick reboot</string>
-    <string name="prefs_quickreboot_summary">Kills the system_server process to force a restart of user space</string>
     <string name="prefs_batchdelete">Delete backups\?</string>
     <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
     <string name="prefs_logviewer">View the log</string>
@@ -206,7 +204,6 @@
     <string name="enable_encryption_title">Data Encryption</string>
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
-    <string name="quickRebootMessage">Do you wish to restart userspace?</string>
     <string name="storage_access">Storage Access</string>
     <string name="welcome_to_oabx">Welcome to OABX!</string>
     <string name="intro_welcome_message"> OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.

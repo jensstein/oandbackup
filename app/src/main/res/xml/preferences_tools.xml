@@ -19,12 +19,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.preference.Preference
-        android:key="quickReboot"
-        android:summary="@string/prefs_quickreboot_summary"
-        android:title="@string/prefs_quickreboot"
-        app:iconSpaceReserved="false" />
-
-    <androidx.preference.Preference
         android:key="batchDelete"
         android:summary="@string/prefs_batchdelete_summary"
         android:title="@string/prefs_batchdelete"

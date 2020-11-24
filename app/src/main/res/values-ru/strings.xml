@@ -63,8 +63,6 @@
     <string name="uninstallFailure">Ошибка деинсталляции</string>
     <string name="errorDialogTitle">Произошла ошибка</string>
     <string name="customListTitle">Настраиваемый список</string>
-    <string name="prefs_quickreboot">Быстрая перезагрузка</string>
-    <string name="quickRebootMessage">Вы хотите перезапустить интерфейс?</string>
     <string name="notInstalledModeDataWarning">Приложение не может быть восстановлено из р.к. без apk</string>
     <string name="shareTitle">Отправить</string>
     <string name="prefs_tools">Инструменты</string>
@@ -183,7 +181,6 @@
     <string name="prefs_unset">Снять</string>
     <string name="prefs_logviewer">Просмотреть лог</string>
     <string name="prefs_batchdelete_summary">Удалить р.к. всех приложений, не установленных в настоящий момент.</string>
-    <string name="prefs_quickreboot_summary">Убить процесс system_server для принудительного перезапуска пользовательского пространства</string>
     <string name="prefs_deviceprotecteddata_summary">Резервное копирование и восстановление данных, расположенных в data/user_de</string>
     <string name="prefs_externaldata_summary">Резервное копирование и восстановление данных, расположенных на внешнем носителе (напр., /storage/emulated/0/Android/data/)</string>
     <string name="prefs_excludecache_summary">Исключить кэш приложений из р.к. данных</string>

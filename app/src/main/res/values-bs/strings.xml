@@ -94,7 +94,6 @@
     <string name="sched_activateButton">Započni izradu sigurnosne kopije sada</string>
     <string name="sched_interval">Interval u danima:</string>
     <string name="sched_add">Dodaj raspored</string>
-    <string name="prefs_quickreboot">Brzi restart</string>
     <string name="prefs_user">Korisničke postavke</string>
     <string name="prefs_title">Postavke</string>
     <string name="batchDeleteNotificationTitle">Brisanje sigurnosnih kopija</string>

@@ -64,8 +64,6 @@
     <string name="uninstallFailure">Fehler bei der Deinstallation</string>
     <string name="errorDialogTitle">Fehler sind aufgetreten</string>
     <string name="customListTitle">Eigene Liste</string>
-    <string name="prefs_quickreboot">Gerät neustarten</string>
-    <string name="quickRebootMessage">Schnellneustart des Geräts jetzt durchführen?</string>
     <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
     <string name="shareTitle">Teilen</string>
     <string name="prefs_tools">Hilfsmittel</string>
@@ -130,7 +128,6 @@
     <string name="prefs_user">Benutzerdefinierte Einstellungen</string>
     <string name="prefs_logviewer">Protokoll anzeigen</string>
     <string name="prefs_batchdelete_summary">Löscht die Sicherungen von allen derzeit nicht installierten Anwendungen.</string>
-    <string name="prefs_quickreboot_summary">Beendet den System_Server-Dienst, um den User-Space dann erzwungen neu zu starten</string>
     <string name="apptype_system">System-App</string>
     <string name="apptype_user">Benutzer-App</string>
     <string name="resetFilter">Zurücksetzen</string>

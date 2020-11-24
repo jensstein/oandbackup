@@ -66,8 +66,6 @@
     <string name="uninstallFailure">Błąd przy odinstalowywaniu</string>
     <string name="errorDialogTitle">Wystąpiły błędy</string>
     <string name="customListTitle">Lista niestandardowa</string>
-    <string name="prefs_quickreboot">Szybki restart</string>
-    <string name="quickRebootMessage">Czy chcesz zrestartować przestrzeń użytkownika?</string>
     <string name="notInstalledModeDataWarning">Nie można przywrócić aplikacji z kopii zapasowej bez APK</string>
     <string name="shareTitle">Udostępnij</string>
     <string name="prefs_tools">Narzędzia</string>
@@ -108,7 +106,6 @@
     <string name="prefs_oldbackups_summary">Filtrowanie kopii zapasowych starszych niż wartość w dniach, używany z filtrem „pokaż stare kopie zapasowe”.</string>
     <string name="prefs_copyselfapk_summary">Umieść kopię zapasową OAndBackupX w najwyższym poziomie katalogu kopii zapasowej podczas tworzenia kopii</string>
     <string name="prefs_rememberfiltering_summary">Zapisuje wybraną metodę sortowania i filtrowania. Rozpatrywane są tylko te zaznaczone zaznaczeniem w menu.</string>
-    <string name="prefs_quickreboot_summary">Zabija proces system_server aby wymusić restart przestrzeni użytkownika</string>
     <string name="prefs_batchdelete_summary">Usuń kopie zapasowe aplikacji, które nie są obecnie zainstalowane.</string>
     <string name="sched_title">Harmonogram</string>
     <string name="sched_notificationMessage">Planowana kopia zapasowa</string>

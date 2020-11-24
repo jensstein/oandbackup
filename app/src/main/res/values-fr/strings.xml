@@ -63,8 +63,6 @@
     <string name="uninstallFailure">Erreur lors de la désinstallation</string>
     <string name="errorDialogTitle">Présence d\'erreurs</string>
     <string name="customListTitle">Liste personnalisée</string>
-    <string name="prefs_quickreboot">Redémarrage rapide</string>
-    <string name="quickRebootMessage">Voulez-vous redémarrer l\'environnement utilisateur \?</string>
     <string name="notInstalledModeDataWarning">l\'application ne peut être restaurer sans apk</string>
     <string name="shareTitle">partager</string>
     <string name="prefs_tools">Outils</string>
@@ -159,7 +157,6 @@
     <string name="sched_activateButton">Démarrer la sauvegarde maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>
-    <string name="prefs_quickreboot_summary">Tue le processus system_server pour forcer un redémarrage de l’espace utilisateur</string>
     <string name="prefs_enableSpecialBackups">Activer les sauvegardes spéciales</string>
     <string name="prefs_deviceprotecteddata_summary">Sauvegarde et restaure les données placées dans data/user_de</string>
     <string name="prefs_deviceprotecteddata">Sauvegarder les données protégées par l\'appareil</string>

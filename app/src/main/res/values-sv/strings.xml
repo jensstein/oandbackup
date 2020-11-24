@@ -63,8 +63,6 @@
     <string name="uninstallFailure">fel vid avinstallationen</string>
     <string name="errorDialogTitle">fel uppstod</string>
     <string name="customListTitle">anpassad lista</string>
-    <string name="prefs_quickreboot">snabb omstart</string>
-    <string name="quickRebootMessage">vill du starta om användarrymden?</string>
     <string name="notInstalledModeDataWarning">appen kan inte återställas från en säkerhetskopia som saknar apk-filen</string>
     <string name="shareTitle">dela</string>
     <string name="prefs_tools">verktyg</string>

@@ -63,8 +63,6 @@
     <string name="uninstallFailure">Erro ao desinstalar</string>
     <string name="errorDialogTitle">Ocorreram erros</string>
     <string name="customListTitle">Lista personalizada</string>
-    <string name="prefs_quickreboot">Reinicio rápido</string>
-    <string name="quickRebootMessage">Quer reiniciar o \'userspace\'\?</string>
     <string name="notInstalledModeDataWarning">A aplicação não pode ser restaurada de um backup sem o ficheiro APK</string>
     <string name="shareTitle">Partilhar</string>
     <string name="prefs_tools">Ferramentas</string>
@@ -131,7 +129,6 @@
     <string name="prefs_excludecache">Excluir cache da aplicação</string>
     <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são colocados no armazenamento externo (Ex: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata_summary">Fazer backup e restaura os dados que são colocados em data/user_de</string>
-    <string name="prefs_quickreboot_summary">Termina o processo system_server para forçar um reinício do espaço do utilizador</string>
     <string name="prefs_batchdelete_summary">Eliminar backups de todas as aplicações não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver registo</string>
     <string name="sched_add">Adicionar Agenda</string>

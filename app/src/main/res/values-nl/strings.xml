@@ -63,8 +63,6 @@
     <string name="uninstallFailure">Fout opgetreden tijdens deïnstallatie</string>
     <string name="errorDialogTitle">Er zijn fouten voorgevallen</string>
     <string name="customListTitle">Aangepaste lijst</string>
-    <string name="prefs_quickreboot">Snelle herstart</string>
-    <string name="quickRebootMessage">Wilt u de userspace herstarten?</string>
     <string name="notInstalledModeDataWarning">App kan niet teruggezet worden vanuit een back-up zonder een APK</string>
     <string name="shareTitle">Delen</string>
     <string name="prefs_tools">Hulpmiddelen</string>
@@ -180,7 +178,6 @@
     <string name="sched_add">Voeg planning toe</string>
     <string name="prefs_logviewer">Bekijk de log</string>
     <string name="prefs_batchdelete_summary">Verwijder back-ups van alle apps die op het moment niet geïnstalleerd zijn.</string>
-    <string name="prefs_quickreboot_summary">Sluit het proces system_server af om een herstart van de gebruikers ruimte af te dwingen</string>
     <string name="prefs_deviceprotecteddata_summary">Maakt back-up en herstelt data die geplaatst is in data/user_de</string>
     <string name="prefs_deviceprotecteddata">Back-up toestel beveiligde data</string>
     <string name="prefs_externaldata_summary">Maakt back-up en herstelt data die geplaatst is op externe opslag (bijv /storage/emulated/0/Android/data/</string>

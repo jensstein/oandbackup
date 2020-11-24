@@ -63,8 +63,6 @@
     <string name="uninstallFailure">アンインストール中にエラー</string>
     <string name="errorDialogTitle">エラーが発生しました</string>
     <string name="customListTitle">カスタムリスト</string>
-    <string name="prefs_quickreboot">クイック再起動</string>
-    <string name="quickRebootMessage">ユーザースペースを再起動しますか?</string>
     <string name="notInstalledModeDataWarning">apkがないためバックアップからアプリを復元できません</string>
     <string name="shareTitle">共有</string>
     <string name="prefs_tools">ツール</string>

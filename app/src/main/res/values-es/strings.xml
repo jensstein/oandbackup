@@ -112,8 +112,6 @@
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Adquiere un wakelock mientras se ejecutan las operaciones en lote para prevenir la suspensión. Acelera la creación de respaldos y las restauraciones, pero incrementa el consumo de memoria.</string>
     <string name="prefs_enableSpecialBackups">Activar respaldos especiales</string>
-    <string name="prefs_quickreboot">Reinicio rápido</string>
-    <string name="prefs_quickreboot_summary">Mata el proceso system_server para forzar un reinicio del espacio del usuario</string>
     <string name="prefs_batchdelete">¿Eliminar respaldos\?</string>
     <string name="prefs_batchdelete_summary">Elimina los respaldos de todas las aplicaciones que no están instaladas actualmente.</string>
     <string name="prefs_logviewer">Ver historial</string>
@@ -192,7 +190,6 @@
     <string name="enable_encryption_title">Cifrado de datos</string>
     <string name="enable_encryption_message">No es seguro guardar las copias de datos sin cifrar. Por su seguridad, activa el cifrado de datos e indica una contraseña.</string>
     <string name="sort_and_filter">Ordenar y filtrar</string>
-    <string name="quickRebootMessage">¿Deseas reinciar el espacio de usuario\?</string>
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="welcome_to_oabx">¡Bienvenido a OABX!</string>
     <string name="intro_welcome_message">OAndBackupX es un fork del infame OAndBackup con el objetivo de traerlo al 2020 y más allá. Por ahora, la mayor parte de las funcionalidades y la interfaz de usuario han sido reescritos y algunas han sido añadidas.

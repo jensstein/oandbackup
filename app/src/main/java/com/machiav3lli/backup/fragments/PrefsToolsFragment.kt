@@ -51,10 +51,6 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val users = requireActivity().intent.getStringArrayListExtra("com.machiav3lli.backup.users")
-        val shellCommands = ShellCommands(users)
-        pref = findPreference(Constants.PREFS_QUICK_REBOOT)
-        pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickQuickReboot(shellCommands) }
         pref = findPreference(Constants.PREFS_BATCH_DELETE)
         pref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
         pref = findPreference(Constants.PREFS_LOGVIEWER)
@@ -72,22 +68,6 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 e.printStackTrace()
             }
         }.start()
-    }
-
-    private fun onClickQuickReboot(shellCommands: ShellCommands): Boolean {
-        AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.prefs_quickreboot)
-                .setMessage(R.string.quickRebootMessage)
-                .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                    try {
-                        shellCommands.quickReboot()
-                    } catch (e: ShellActionFailedException) {
-                        showError(requireActivity(), e.message)
-                    }
-                }
-                .setNegativeButton(R.string.dialogNo, null)
-                .show()
-        return true
     }
 
     private fun onClickBatchDelete(): Boolean {

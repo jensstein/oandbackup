@@ -66,8 +66,6 @@
     <string name="uninstallFailure">Kaldırmada hata</string>
     <string name="errorDialogTitle">Hatalar meydana geldi</string>
     <string name="customListTitle">Özel liste</string>
-    <string name="prefs_quickreboot">Hızlı yeniden başlat</string>
-    <string name="quickRebootMessage">Kullanıcı alanını yeniden başlatmak istiyor musunuz\?</string>
     <string name="notInstalledModeDataWarning">APK olmadan uygulama yedekten geri yüklenemez</string>
     <string name="shareTitle">Paylaş</string>
     <string name="prefs_tools">Araçlar</string>
@@ -108,7 +106,6 @@
     <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtrele. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
     <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedekleme klasörüne OAndBackupX\'in bir kopyasını yerleştirir</string>
     <string name="prefs_rememberfiltering_summary">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
-    <string name="prefs_quickreboot_summary">Kullanıcı alanını yeniden başlatmaya zorlamak için system_server işlemini sonlandırır</string>
     <string name="prefs_batchdelete_summary">Kurulu olmayan uygulamarın yedeklerini sil.</string>
     <string name="sched_title">Zamanlama</string>
     <string name="sched_notificationMessage">Zamanlanmış yedekleme</string>

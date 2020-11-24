@@ -66,8 +66,6 @@
     <string name="uninstallFailure">卸载时出错</string>
     <string name="errorDialogTitle">发生错误</string>
     <string name="customListTitle">自定义列表</string>
-    <string name="prefs_quickreboot">快速重启</string>
-    <string name="quickRebootMessage">您想重启用户空间吗？</string>
     <string name="notInstalledModeDataWarning">应用无法从一个无 APK 的备份中还原</string>
     <string name="shareTitle">分享</string>
     <string name="prefs_tools">工具</string>
@@ -108,7 +106,6 @@
     <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用.</string>
     <string name="prefs_copyselfapk_summary">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
     <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些被菜单复选框标记的。</string>
-    <string name="prefs_quickreboot_summary">终止 system_server 进程以强制重启用户空间</string>
     <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份。</string>
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>

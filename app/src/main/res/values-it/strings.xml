@@ -64,8 +64,6 @@
     <string name="uninstallFailure">Errore nella disinstallazione</string>
     <string name="errorDialogTitle">Si sono verificati degli errori</string>
     <string name="customListTitle">Elenco personalizzato</string>
-    <string name="prefs_quickreboot">Riavvio veloce</string>
-    <string name="quickRebootMessage">Si desidera riavviare l\'ambiente utente?</string>
     <string name="notInstalledModeDataWarning">Impossibile ripristinare l\'applicazione da un backup senza apk</string>
     <string name="shareTitle">Condividi</string>
     <string name="prefs_tools">Strumenti</string>
@@ -124,7 +122,6 @@
     <string name="prefs_password_summary">Lascia vuoto per disattivare la crittografia</string>
     <string name="prefs_encryption_summary">Attiva per criptare i dati dei backup</string>
     <string name="prefs_excludecache_summary">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
-    <string name="prefs_quickreboot_summary">Chiude il processo system_server per forzare un riavvio dello spazio utente</string>
     <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment.</string>
     <string name="sched_activateButton">Inizia backup ora</string>
     <string name="sched_blacklist">Lista nera</string>
