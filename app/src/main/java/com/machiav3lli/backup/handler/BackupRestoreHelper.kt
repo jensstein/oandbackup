@@ -78,7 +78,7 @@ open class BackupRestoreHelper {
             }
         }
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
-            housekeepingPackageBackups(context, app)
+            housekeepingPackageBackups(context, appInfo, false)
         }
         return result
     }
@@ -134,15 +134,17 @@ open class BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(context: Context, app: AppInfo) {
-        val numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
-        var backupHistory = app.backupHistory
+    private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
+        var numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
+        var backups = app.backupHistory
         if (numBackupRevisions == 0) {
-            Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backupHistory.size} (valid) backups available")
+            Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
             return
         }
-        if (numBackupRevisions > backupHistory.size) {
-            Log.i(TAG, "[${app.packageName}] Less backup revisions (${backupHistory.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
+        if (before)
+            numBackupRevisions--
+        if (numBackupRevisions >= backups.size) {
+            Log.i(TAG, "[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
             return
         }
         // If the backup is going to be created, reduce the number of backup revisions by one.
@@ -152,15 +154,15 @@ open class BackupRestoreHelper {
         // if (housekeepingWhen == HousekeepingMoment.BEFORE)
         //    numBackupRevisions--
 
-        val revisionsToDelete = backupHistory.size - numBackupRevisions
-        Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backupHistory.size} / $numBackupRevisions). Deleting $revisionsToDelete backup(s).")
-        backupHistory = backupHistory
+        val revisionsToDelete = backups.size - numBackupRevisions
+        Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if(before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
+        backups = backups
                 .sortedWith { bi1: BackupItem, bi2: BackupItem ->
                     bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
                 }
                 .toMutableList()
-        (0..revisionsToDelete).forEach {
-            val deleteTarget = backupHistory[it]
+        (0..revisionsToDelete-1).forEach {
+            val deleteTarget = backups[it]
             Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")
             app.delete(context, deleteTarget)
         }

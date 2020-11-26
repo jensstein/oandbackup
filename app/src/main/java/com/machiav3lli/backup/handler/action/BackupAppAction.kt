@@ -96,7 +96,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             }
             backupItem = backupBuilder.createBackupItem()
             saveBackupProperties(StorageFile.fromUri(context, appBackupRootUri), backupItem.backupProperties)
-            app.backupHistory.plus(backupItem)
+            app.backupHistory.add(backupItem)
         } catch (e: BackupFailedException) {
             Log.e(TAG, "Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Log.d(TAG, "Backup deleted: ${backupBuilder.backupPath?.delete()}")

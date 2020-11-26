@@ -49,7 +49,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 return arrayOfNulls(size)
             }
         }
-
+        val specialPackages: MutableList<AppInfo> = mutableListOf()
         /**
          * Returns the list of special (virtual) packages
          *
@@ -60,9 +60,6 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          */
         @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
         fun getSpecialPackages(context: Context): List<AppInfo> {
-            val userId = ShellCommands.currentUser
-            val userDir = "/data/system/users/$userId"
-            val specPrefix = "$ "
             // Careful: It is possible to specify whole directories, but there are two rules:
             // 1. Directories must end with a slash e.g. "/data/system/netstats/"
             // 2. The name of the directory must be unique:
@@ -71,52 +68,64 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
             //      the same directory in the archive and the restore would do the same but in reverse.
             // Documentation note: This could be outdated, make sure the logic in BackupSpecialAction and
             // RestoreSpecialAction hasn't changed!
-            return listOf(
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.accounts",
-                            specPrefix + context.getString(R.string.spec_accounts),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "/data/system_ce/$userId/accounts_ce.db"
-                    ))),
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.appwidgets",
-                            specPrefix + context.getString(R.string.spec_appwidgets),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "$userDir/appwidgets.xml"
-                    ))),
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.bluetooth",
-                            specPrefix + context.getString(R.string.spec_bluetooth),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "/data/misc/bluedroid/"
-                    ))),
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.data.usage.policy",
-                            specPrefix + context.getString(R.string.spec_data),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "/data/system/netpolicy.xml",
-                            "/data/system/netstats/"
-                    ))),
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.wallpaper",
-                            specPrefix + context.getString(R.string.spec_wallpaper),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "$userDir/wallpaper",
-                            "$userDir/wallpaper_info.xml"
-                    ))),
-                    AppInfo(context, SpecialAppMetaInfo(
-                            "special.wifi.access.points",
-                            specPrefix + context.getString(R.string.spec_wifiAccessPoints),
-                            Build.VERSION.RELEASE,
-                            Build.VERSION.SDK_INT, arrayOf(
-                            "/data/misc/wifi/WifiConfigStore.xml"
-                    )))
-            )
+            if (specialPackages.size == 0) {
+                // caching this prevents recreating AppInfo-objects all the time and at wrong times
+                val userId = ShellCommands.currentUser
+                val userDir = "/data/system/users/$userId"
+                val specPrefix = "$ "
+
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.accounts",
+                                specPrefix + context.getString(R.string.spec_accounts),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "/data/system_ce/$userId/accounts_ce.db"
+                        ))))
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.appwidgets",
+                                specPrefix + context.getString(R.string.spec_appwidgets),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "$userDir/appwidgets.xml"
+                        ))))
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.bluetooth",
+                                specPrefix + context.getString(R.string.spec_bluetooth),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "/data/misc/bluedroid/"
+                        ))))
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.data.usage.policy",
+                                specPrefix + context.getString(R.string.spec_data),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "/data/system/netpolicy.xml",
+                                "/data/system/netstats/"
+                        ))))
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.wallpaper",
+                                specPrefix + context.getString(R.string.spec_wallpaper),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "$userDir/wallpaper",
+                                "$userDir/wallpaper_info.xml"
+                        ))))
+                specialPackages
+                        .add(AppInfo(context, SpecialAppMetaInfo(
+                                "special.wifi.access.points",
+                                specPrefix + context.getString(R.string.spec_wifiAccessPoints),
+                                Build.VERSION.RELEASE,
+                                Build.VERSION.SDK_INT, arrayOf(
+                                "/data/misc/wifi/WifiConfigStore.xml"
+                        ))))
+            }
+            return specialPackages
         }
     }
 }
