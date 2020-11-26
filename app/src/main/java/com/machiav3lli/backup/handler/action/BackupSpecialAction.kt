@@ -29,6 +29,10 @@ import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LogUtils
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.LinkOption
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppAction(context, shell) {
 
@@ -52,13 +56,21 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
         // It would make sense to implement something like TarUtils.addFilepath with SuFileInputStream and
         val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
         try {
-            for (filepath in appInfo.fileList) {
-                val isDirSource = filepath?.endsWith("/") ?: false
-                val parent = if (isDirSource) File(filepath).name else null
-                val fileInfos = shell.suGetDetailedDirectoryContents(filepath!!, false, parent)
+            for (filePath in appInfo.fileList) {
+                val file = File(filePath!!)
+                val isDirSource = filePath.endsWith("/") ?: false
+                val parent = if (isDirSource) file.name else null
+                val fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
                 if (isDirSource) {
-                    filesToBackup.add(ShellHandler.FileInfo(parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
-                            File(filepath).parent!!, "system", "system", 504.toShort(), 0))
+                    // also add directory
+                    filesToBackup.add(
+                            ShellHandler.FileInfo(
+                                    parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
+                                    file.parent!!,
+                                    Files.getAttribute(file.toPath(), "unix:owner", LinkOption.NOFOLLOW_LINKS).toString(),
+                                    Files.getAttribute(file.toPath(), "unix:group", LinkOption.NOFOLLOW_LINKS).toString(),
+                                    Files.getAttribute(file.toPath(), "unix:mode",  LinkOption.NOFOLLOW_LINKS) as Int,
+                                    0, Date(file.lastModified())))
                 }
                 filesToBackup.addAll(fileInfos)
             }

@@ -95,7 +95,7 @@ object FileUtils {
         return path.substring(path.lastIndexOf(File.separator) + 1)
     }
 
-    fun translatePosixPermissionToMode(permissions: String): Short {
+    fun translatePosixPermissionToMode(permissions: String): Int {
         var str = permissions.takeLast(9)
         str = str.replace('s', 'x', false)
         str = str.replace('S', '-', false)
@@ -103,13 +103,13 @@ object FileUtils {
         return translatePosixPermissionToMode(set)
     }
 
-    fun translatePosixPermissionToMode(permissions: Set<PosixFilePermission?>): Short {
+    fun translatePosixPermissionToMode(permissions: Set<PosixFilePermission?>): Int {
         var mode = 0
         for (action in PosixFilePermission.values()) {
             mode = mode shl 1
             mode += if (permissions.contains(action)) 1 else 0
         }
-        return mode.toShort()
+        return mode
     }
 
     class BackupLocationIsAccessibleException : Exception {
