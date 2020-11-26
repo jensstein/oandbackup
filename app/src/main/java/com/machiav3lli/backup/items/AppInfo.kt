@@ -47,24 +47,25 @@ class AppInfo {
     var packageInfo: com.machiav3lli.backup.items.PackageInfo? = null
 
     private var backupHistoryCache: Pair<MutableList<BackupItem>?, Context>? = null
+
     val backupHistory: MutableList<BackupItem>
         get() {
             if (backupHistoryCache?.first == null) {
-                if (getHistory != null) {
-                    getHistory?.join()
-                    Log.i(TAG, "thread $getHistory / ${Thread.activeCount()} joined")
+                if (historyCollectorThread != null) {
+                    historyCollectorThread?.join()
+                    Log.i(TAG, "thread $historyCollectorThread / ${Thread.activeCount()} joined")
                 }
                 if (backupHistoryCache?.first == null) {
                     Log.i(TAG, "refreshBackupHistory")
                     backupHistoryCache?.second?.let { refreshBackupHistory(it) }
-                    getHistory?.join()
-                    Log.i(TAG, "thread $getHistory / ${Thread.activeCount()} joined")
+                    historyCollectorThread?.join()
+                    Log.i(TAG, "thread $historyCollectorThread / ${Thread.activeCount()} joined")
                 }
             }
             return backupHistoryCache?.first ?: mutableListOf()
         }
 
-    private var getHistory: Thread? = null
+    private var historyCollectorThread: Thread? = null
 
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
@@ -94,11 +95,18 @@ class AppInfo {
             this.appMetaInfo = AppMetaInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.i(TAG, "$packageName is not installed.")
-            if (this.backupHistory.isNullOrEmpty()) {
-                throw AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e)
+            try {
+                this.packageInfo = null
+                this.appMetaInfo = SpecialAppMetaInfo.getSpecialPackages(context)
+                        .find { it.packageName == this.packageName }!!
+                        .appMetaInfo
+            } catch(e: Throwable) {
+                Log.i(TAG, "$packageName is not installed")
+                if (this.backupHistory.isNullOrEmpty()) {
+                    throw AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e)
+                }
+                this.appMetaInfo = latestBackup!!.backupProperties
             }
-            this.appMetaInfo = latestBackup!!.backupProperties
         }
     }
 
@@ -143,8 +151,8 @@ class AppInfo {
 
     fun refreshBackupHistory(context: Context) {
         backupDirUri.let { backupDir ->
-            getHistory?.interrupt()
-            getHistory = Thread {
+            historyCollectorThread?.interrupt()
+            historyCollectorThread = Thread {
                 val appBackupDir = StorageFile.fromUri(context, backupDir)
                 val backups: MutableList<BackupItem> = mutableListOf()
                 try {
@@ -175,9 +183,9 @@ class AppInfo {
                 }
                 backupHistoryCache = Pair(backups, context)
                 //Log.i(TAG, "thread ${Thread.currentThread()} / ${Thread.activeCount()} end")
-                getHistory = null
+                historyCollectorThread = null
             }
-            getHistory?.start()
+            historyCollectorThread?.start()
         }
     }
 
