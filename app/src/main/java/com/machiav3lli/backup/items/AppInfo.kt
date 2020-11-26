@@ -77,6 +77,7 @@ class AppInfo {
     constructor(context: Context, packageInfo: PackageInfo) {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
+        this.appMetaInfo = AppMetaInfo(context, packageInfo)
         val backupDoc = DocumentUtils.getBackupRoot(context).findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
