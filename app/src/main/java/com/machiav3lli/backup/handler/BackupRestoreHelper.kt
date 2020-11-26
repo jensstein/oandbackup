@@ -43,31 +43,31 @@ import java.io.IOException
 
 open class BackupRestoreHelper {
 
-    fun backup(context: Context, shell: ShellHandler, app: AppInfo, backupMode: Int): ActionResult {
+    fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
         var backupMode = backupMode
         val housekeepingWhen = fromString(getDefaultSharedPreferences(context)
                 .getString(Constants.PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
                 ?: HousekeepingMoment.AFTER.value)
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
-            housekeepingPackageBackups(context, app)
+            housekeepingPackageBackups(context, appInfo, true)
         }
         // Select and prepare the action to use
         val action: BackupAppAction
-        if (app.isSpecial) {
+        if (appInfo.isSpecial) {
             if (backupMode and BaseAppAction.MODE_APK == BaseAppAction.MODE_APK) {
-                Log.e(TAG, "$app: Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                Log.e(TAG, "[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
                 backupMode = backupMode and BaseAppAction.MODE_DATA
-                Log.d(TAG, String.format("$app: New backup mode: %d", backupMode))
+                Log.d(TAG, "[${appInfo.packageName}] New backup mode: $backupMode")
             }
             action = BackupSpecialAction(context, shell)
         } else {
             action = BackupAppAction(context, shell)
         }
-        Log.d(TAG, "$app: Using ${action.javaClass.simpleName} class")
+        Log.d(TAG, "[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
 
         // create the new backup
-        val result = action.run(app, backupMode)
-        Log.i(TAG, "$app: Backup succeeded: ${result.succeeded}")
+        val result = action.run(appInfo, backupMode)
+        Log.i(TAG, "[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
         if (getDefaultSharedPreferences(context).getBoolean("copySelfApk", true)) {
             try {
                 copySelfApk(context, shell)

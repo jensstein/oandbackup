@@ -171,9 +171,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             Log.d(TAG, "[${app.packageName}] The app is a normal apk")
         } else {
             apksToBackup += app.apkSplits.drop(0)
-            Log.d(TAG, String.format("[${app.packageName}] Package is splitted into %d apks", apksToBackup.size))
+            Log.d(TAG, "[${app.packageName}] Package is splitted into ${apksToBackup.size} apks")
         }
-        Log.d(TAG, String.format("[${app.packageName}] Backing up package (%d apks: %s)", apksToBackup.size,
+        Log.d(TAG, String.format("[%s] Backing up package (%d apks: %s)", app.packageName, apksToBackup.size,
                 apksToBackup.joinToString(separator = " ") { s: String -> File(s).name }
         ))
         try {

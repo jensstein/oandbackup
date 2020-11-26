@@ -411,7 +411,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                             }
                         }
                     } catch (e: Throwable) {
-                        result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
+                        result = ActionResult(appInfo, null, "not processed: $packageLabel: $e\n${e.stackTrace}", false)
                         Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
                     } finally {
                         if (result?.succeeded == false) {
