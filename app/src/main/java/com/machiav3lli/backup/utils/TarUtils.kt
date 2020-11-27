@@ -182,5 +182,10 @@ fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
                 throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
             }
         }
+        try {
+            targetPath.setLastModified(tarEntry.modTime.time)
+        } catch (e: ErrnoException) {
+            throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+        }
     }
 }
