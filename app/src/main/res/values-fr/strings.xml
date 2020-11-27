@@ -208,7 +208,7 @@
     <string name="radio_externaldata">Données externes</string>
     <plurals name="days_left">
         <item quantity="one">%d jour,</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">%d jours,</item>
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à afficher !</string>
