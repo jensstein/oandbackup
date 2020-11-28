@@ -89,7 +89,7 @@
     <string name="prefs_languages">Idioma</string>
     <string name="prefs_language_system">Idioma de sistema</string>
     <string name="prefs_rememberfiltering">Memorizar ordem e filtro</string>
-    <string name="prefs_rememberfiltering_summary">Guarda o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
+    <string name="prefs_rememberfiltering_summary">Grava o método de ordenação e de filtragem. Apenas os itens assinalados no menu serão considerados.</string>
     <string name="prefs_enableSpecialBackups">Ativar backups especiais</string>
     <string name="sched_title">Agendamento</string>
     <string name="sched_notificationMessage">Backup agendado</string>
@@ -199,7 +199,7 @@
 \n • Tanto o backup como a restauração das aplicações um por vez ou de lotes são suportados.
 \n • A restauração de aplicações de sistema deve ser possível sem exigir uma reinicialização posterior, mas mesmo assim não aconselhamos fazê-lo.
 \n • Os backups podem ser programados sem limite no número de programações individuais e há a possibilidade de criar listas personalizadas exclusivas.</string>
-    <string name="msg_appkill_warning">As aplicações selecionadas receberão o sinal para terminar e após a tarefa concluída serão resumidas. Certifique-se de verificar as suas aplicações processadas após a tarefa estar concluída e evite lançá-las enquanto o processo ainda está a decorrer.</string>
+    <string name="msg_appkill_warning">A(s) app(s) selecionada(s) receberá(ão) o sinal de parada e continuará(ão) após a tarefa estar concluída. Verifique as suas apps processadas depois (e evite lançá-las enquanto o processo ainda está a decorrer).</string>
     <string name="intro_permission_storage_location">A aplicação precisa de uma local de backup para armazenar os backup. A aplicações pode necessitar de uns poucos giga-bytes de armazenamento para um backup completo e estiver a consultar o sistema de ficheiros. Por favor, manter isso em mente quando escolher locais de armazenamento baseados na rede.</string>
     <string name="help_appTypeHint">* Ícone do tipo de aplicação seria cinza se a aplicação estiver desinstalada e cinza escuro se a aplicação está desativada.</string>
     <string name="help_legend">Legenda:</string>
