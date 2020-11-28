@@ -6,7 +6,9 @@
 
 * Some system apps aren't meant to be backup/restored just be careful not breaking the system when you play with those
 
-* 
+* MIUI optimizations (and some other OSes) don't allow the restore in most scenarios
+
+*
 
 ## OABX specific:
 

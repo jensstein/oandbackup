@@ -59,6 +59,8 @@
   
   - [x] AppSheet
 
+- [ ] Rewrite Help text
+
 ## Low Priority
 
 - [ ] Add Flashable Zip feature
