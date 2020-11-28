@@ -11,7 +11,7 @@ import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.utils.LogUtils
 
 object DocumentContractApi {
-    val TAG = classTag(".DocumentContractApi")
+    private val TAG = classTag(".DocumentContractApi")
 
     fun getName(context: Context, uri: Uri): String? =
             try {

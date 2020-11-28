@@ -43,7 +43,6 @@ import java.nio.charset.StandardCharsets
 const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
 const val BACKUP_DIR = 5
-val STORAGE_MODE_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
 
 fun getCryptoSalt(context: Context): ByteArray {
     val userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "")
@@ -85,11 +84,10 @@ fun getStorageRootDir(context: Context): String? {
 }
 
 fun setStorageRootDir(context: Context, value: Uri) {
-    val fullUri = DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
-    getPrivateSharedPrefs(context)
-            .edit()
-            .putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString())
-            .apply()
+    val fullUri = DocumentsContract
+            .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
+    getPrivateSharedPrefs(context).edit()
+            .putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
     FileUtils.invalidateBackupLocation()
 }
 
@@ -123,15 +121,11 @@ fun requireStorageLocation(fragment: Fragment) {
     fragment.startActivityForResult(intent, BACKUP_DIR)
 }
 
-fun checkStoragePermissions(context: Context): Boolean {
-    return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            Environment.isExternalStorageManager()
-        }
-        else -> {
-            (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        }
-    }
+fun checkStoragePermissions(context: Context): Boolean = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+        Environment.isExternalStorageManager()
+    else ->
+        context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 }
 
 fun getStoragePermission(activity: Activity) {
@@ -149,11 +143,13 @@ fun getStoragePermission(activity: Activity) {
 }
 
 private fun requireReadStoragePermission(activity: Activity) {
-    if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION)
+    if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION)
 }
 
 private fun requireWriteStoragePermission(activity: Activity) {
-    if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
+    if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
 }
 
 fun canAccessExternalStorage(context: Context): Boolean {
@@ -164,8 +160,10 @@ fun canAccessExternalStorage(context: Context): Boolean {
 fun checkUsageStatsPermission(context: Context): Boolean {
     val appOps = (context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
     val mode = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
-        else -> appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        else ->
+            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
     }
     return if (mode == AppOpsManager.MODE_DEFAULT) {
         context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
@@ -174,9 +172,9 @@ fun checkUsageStatsPermission(context: Context): Boolean {
     }
 }
 
-fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerManager: PowerManager): Boolean {
-    return prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false) || powerManager.isIgnoringBatteryOptimizations(context.packageName)
-}
+fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerManager: PowerManager)
+        : Boolean = prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+        || powerManager.isIgnoringBatteryOptimizations(context.packageName)
 
 fun isKillBeforeActionEnabled(context: Context): Boolean {
     return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, false)

@@ -42,7 +42,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
             val handleAlarms = HandleAlarms(this)
             val handleScheduledBackups = handleScheduledBackups
             handleScheduledBackups.setOnBackupListener(this)
-            val t = Thread {
+            Thread {
                 val scheduleDao = scheduleDao
                 val schedule = scheduleDao.getSchedule(id.toLong())
                 schedule!!.timePlaced = System.currentTimeMillis()
@@ -50,13 +50,11 @@ class ScheduleService : Service(), OnBackupRestoreListener {
                 // fix the time at which the alarm will be run the next time.
                 // it can be wrong when scheduled in BootReceiver#onReceive()
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
-                handleAlarms.setAlarm(id, schedule.interval, schedule.timeHour,
-                        schedule.timeMinute)
+                handleAlarms.setAlarm(id, schedule.interval, schedule.timeHour, schedule.timeMinute)
                 Log.i(TAG, getString(R.string.sched_startingbackup))
                 handleScheduledBackups.initiateBackup(id, schedule.mode, schedule.subMode,
-                        schedule.excludeSystem, schedule.enableCustomList)
-            }
-            t.start()
+                        schedule.excludeSystem, schedule.customList)
+            }.start()
         } else {
             Log.e(TAG, "got id: $id from $intent")
         }

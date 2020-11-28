@@ -31,20 +31,6 @@ object Constants {
     const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"
     const val UTILBOX_PATH = "toybox"
 
-    const val PREFS_SCHEDULES = "schedules"
-    const val PREFS_SCHEDULES_TOTAL = "total"
-    const val PREFS_SCHEDULES_ENABLED = "enabled"
-    const val PREFS_SCHEDULES_TIMEHOUR = "hourTime"
-    const val PREFS_SCHEDULES_TIMEMINUTE = "minuteTime"
-    const val PREFS_SCHEDULES_INTERVAL = "repeatTime"
-    const val PREFS_SCHEDULES_TIMEPLACED = "timePlaced"
-    const val PREFS_SCHEDULES_MODE = "scheduleMode"
-    const val PREFS_SCHEDULES_SUBMODE = "scheduleSubMode"
-    const val PREFS_SCHEDULES_TIMEUNTILNEXTEVENT = "timeUntilNextEvent"
-    const val PREFS_SCHEDULES_EXCLUDESYSTEM = "excludeSystem"
-    const val PREFS_SCHEDULES_ENABLECUSTOMLIST = "enableCustomList"
-    const val PREFS_SCHEDULES_CUSTOMLIST = "customList"
-
     const val PREFS_THEME = "themes"
     const val PREFS_LANGUAGES = "languages"
     const val PREFS_LANGUAGES_DEFAULT = "system"
@@ -79,10 +65,6 @@ object Constants {
 
     fun classAddress(address: String): String {
         return PREFS_SHARED_PRIVATE + address
-    }
-
-    fun customListAddress(index: Int): String {
-        return PREFS_SCHEDULES_CUSTOMLIST + index
     }
 
     fun classTag(tag: String): String {

@@ -44,8 +44,8 @@ open class BatchFragment : Fragment(), SearchViewController {
             override fun onQueryTextChange(newText: String): Boolean {
                 requireMainActivity().batchItemAdapter.filter(newText)
                 requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                    (batchItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || batchItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                    (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
+                            || batchItemX.app.packageName.contains(charSequence.toString(), true))
                 }
                 return true
             }
@@ -53,8 +53,8 @@ open class BatchFragment : Fragment(), SearchViewController {
             override fun onQueryTextSubmit(query: String): Boolean {
                 requireMainActivity().batchItemAdapter.filter(query)
                 requireMainActivity().batchItemAdapter.itemFilter.filterPredicate = { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                    (batchItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || batchItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                    (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
+                            || batchItemX.app.packageName.contains(charSequence.toString(), true))
                 }
                 return true
             }

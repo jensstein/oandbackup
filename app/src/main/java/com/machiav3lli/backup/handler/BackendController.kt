@@ -31,7 +31,7 @@ object BackendController {
     /*
     List of packages ignored for any reason
      */
-    private val ignoredPackages = listOf(
+    val ignoredPackages = listOf(
             "android",  // virtual package. Data directory is /data -> not a good idea to backup
             BuildConfig.APPLICATION_ID // ignore own package, it would send a SIGTERM to itself on backup/restore
     )

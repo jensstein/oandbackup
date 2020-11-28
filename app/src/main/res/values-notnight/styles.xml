@@ -137,15 +137,6 @@
         <item name="selectable">false</item>
     </style>
 
-    <style name="Chip.Tag" parent="Widget.MaterialComponents.Chip.Choice">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:clickable">false</item>
-        <item name="android:focusable">false</item>
-    </style>
-
     <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>

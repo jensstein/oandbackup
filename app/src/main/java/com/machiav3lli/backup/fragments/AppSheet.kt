@@ -78,7 +78,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
         return sheet
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = SheetAppBinding.inflate(inflater, container, false)
         val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)

@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.activities
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -26,7 +25,6 @@ import android.os.PowerManager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.ViewModelProvider
@@ -76,9 +74,11 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         }
 
         init {
-            /* Shell.Config methods shall be called before any shell is created
-         * This is the why in this example we call it in a static block
-         * The followings are some examples, check Javadoc for more details */
+            /*
+            * Shell.Config methods shall be called before any shell is created
+            * This is the why in this example we call it in a static block
+            * The followings are some examples, check Javadoc for more details
+            */
             Shell.enableVerboseLogging = BuildConfig.DEBUG
             Shell.setDefaultBuilder(Shell.Builder.create()
                     .setTimeout(20))
@@ -213,13 +213,13 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         binding.cbAll.setOnClickListener { v: View -> onCheckAllChanged(v) }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(getFilterPreferences(this).toString()))
-            sheetSortFilter?.show(supportFragmentManager, "SORTFILTERSHEET")
+            sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
         }
         mainFastAdapter?.onClickListener = { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
             if (sheetApp != null) sheetApp?.dismissAllowingStateLoss()
             item?.let {
                 sheetApp = AppSheet(item, position ?: -1)
-                sheetApp?.showNow(supportFragmentManager, "APPSHEET")
+                sheetApp?.showNow(supportFragmentManager, "APP_SHEET")
             }
             false
         }
@@ -271,7 +271,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
     private fun onCheckAllChanged(v: View) {
         val startIsChecked = (v as AppCompatCheckBox).isChecked
         binding.cbAll.isChecked = startIsChecked
-        for (item in batchItemAdapter.adapterItems) {
+        batchItemAdapter.adapterItems.forEach { item ->
             if (item.app.hasApk || item.backupBoolean) item.isApkChecked = startIsChecked
             if (item.app.hasAppData || item.backupBoolean) item.isDataChecked = startIsChecked
             if (startIsChecked) {
@@ -453,7 +453,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 if (appSheetBoolean) refreshAppSheet()
                 OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
-            } catch (ignore: Throwable) {
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e)
             }
         }
     }
@@ -478,7 +479,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 }
             } else
                 sheetApp?.dismissAllowingStateLoss()
-        } catch (ignore: Throwable) {
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e)
         }
     }
 
@@ -492,7 +494,8 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 updateCheckAll()
                 OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
-            } catch (ignore: Throwable) {
+            } catch (e: Throwable) {
+                LogUtils.unhandledException(e)
             }
         }
     }
