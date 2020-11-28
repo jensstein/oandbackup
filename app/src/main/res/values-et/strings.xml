@@ -192,7 +192,7 @@
     <string name="prefs_stopcont_summary">Ainult ekspertidele: see võib aidata kui rakendus muudab faile varundamise ajal ning varundamine ebaõnnestub.</string>
     <string name="prefs_disableverification_summary">Keelab APKide taastamisel selle arendusvaliku ning lubab hiljem uuesti. Parandab vea INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_housekeepingmoment_summary">Määrab, kas vanim varundus kustutatakse enne või pärast uue varunduse loomist, et vabastada varunduseks kasutatavat kettaruumi.</string>
-    <string name="fetching_backup_list">Varundamiseks rakenduste nimekirja hankimine…</string>
+    <string name="fetching_action_list">Varundamiseks rakenduste nimekirja hankimine…</string>
     <string name="msg_appkill_warning">Valitud rakendus(t)el palutakse töötamine lõpetada ning peale ülesande täitmist uuesti jätkata. Palun veendu, et kontrollid rakendusi peale ülesande täitmist ning väldi nende käivitamist protsessi toimimise ajal.</string>
     <string name="intro_permission_storage_location">See rakendus vajab kohta, kus varundusi hoida. Rakendus võib vajada paar gigabaiti täisvarunduse jaoks ning teeb failisüsteemi palju päringuid. Pea seda meeles, kui valid võrgupõhise salvestuskoha.</string>
     <string name="help_appTypeHint">* Rakenduse liigi ikoon muutub halliks, kui rakendus on eemaldatud ning tumehalliks, kui rakendus on keelatud.</string>

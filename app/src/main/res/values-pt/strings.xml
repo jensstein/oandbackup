@@ -217,7 +217,7 @@
     <string name="radio_obbdata">Dados OBB</string>
     <string name="radio_deviceprotecteddata">Dados Protegidos do Dispositivo</string>
     <string name="radio_externaldata">Dados Externos</string>
-    <string name="fetching_backup_list">A obter aplicações para backup…</string>
+    <string name="fetching_action_list">A obter aplicações para backup…</string>
     <string name="logs_text_empty">Não há nada a mostrar!</string>
     <string name="delete_all_backups">Eliminar todos os backups</string>
     <string name="prefs_disableverification_summary">Desativa esta opção de programador enquanto restaura APKs e a reativa depois. Resolve o erro: INSTALL_FAILED_VERIFICATION_FAILURE.</string>

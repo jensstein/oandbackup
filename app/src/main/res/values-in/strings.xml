@@ -171,7 +171,7 @@
     <string name="prefs_stopcont">Tutup paksa aplikasi sebelum backup/dikembalikan</string>
     <string name="prefs_password_match_false">Kata Sandi Tidak Sesuai</string>
     <string name="prefs_passwordconfirmation">Konfirmasi enkripsi katasandi</string>
-    <string name="fetching_backup_list">Mengambil daftar aplikasi untuk cadangan…</string>
+    <string name="fetching_action_list">Mengambil daftar aplikasi untuk cadangan…</string>
     <string name="logs_text_empty">Tidak ada yang bisa ditampilkan!</string>
     <string name="delete_all_backups">Hapus semua cadangan</string>
     <string name="msg_appkill_warning">Aplikasi yang dipilih akan diberi sinyal untuk berhenti dan setelah tugas selesai akan dilanjutkan. Harap pastikan untuk memeriksa aplikasi Anda yang diproses setelah tugas selesai dan hindari meluncurkannya saat proses masih berjalan.</string>

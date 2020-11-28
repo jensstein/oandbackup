@@ -41,7 +41,8 @@ import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import java.io.FileNotFoundException
 import java.io.IOException
 
-open class BackupRestoreHelper {
+object BackupRestoreHelper {
+    private val TAG = classTag(".BackupRestoreHelper")
 
     fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
         var backupMode = backupMode
@@ -83,8 +84,8 @@ open class BackupRestoreHelper {
         return result
     }
 
-    fun restore(context: Context, app: AppInfo, backupProperties: BackupProperties,
-                backupLocation: Uri, shellHandler: ShellHandler?, mode: Int): ActionResult {
+    fun restore(context: Context, shellHandler: ShellHandler?, app: AppInfo,
+                backupProperties: BackupProperties, backupLocation: Uri, mode: Int): ActionResult {
         val restoreAction: RestoreAppAction = when {
             app.isSpecial -> RestoreSpecialAction(context, shellHandler!!)
             app.isSystem -> RestoreSystemAppAction(context, shellHandler!!)
@@ -96,7 +97,7 @@ open class BackupRestoreHelper {
     }
 
     @Throws(IOException::class)
-    protected fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
+    fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
         val filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk"
         try {
             val backupRoot = getBackupRoot(context)
@@ -141,30 +142,29 @@ open class BackupRestoreHelper {
             Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
             return
         }
-        if (before)
-            numBackupRevisions--
-        if (numBackupRevisions >= backups.size) {
-            Log.i(TAG, "[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
-            return
-        }
         // If the backup is going to be created, reduce the number of backup revisions by one.
         // It's expected that the additional deleted backup will be created in the next moments.
         // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
         // 3 should exist and housekeeping will work fine without adjustments
-        // if (housekeepingWhen == HousekeepingMoment.BEFORE)
-        //    numBackupRevisions--
+        if (before) numBackupRevisions--
 
-        val revisionsToDelete = backups.size - numBackupRevisions
-        Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if(before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
-        backups = backups
-                .sortedWith { bi1: BackupItem, bi2: BackupItem ->
-                    bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+        when {
+            numBackupRevisions >= backups.size ->
+                Log.i(TAG, "[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
+            else -> {
+                val revisionsToDelete = backups.size - numBackupRevisions
+                Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
+                backups = backups
+                        .sortedWith { bi1: BackupItem, bi2: BackupItem ->
+                            bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+                        }
+                        .toMutableList()
+                (0 until revisionsToDelete).forEach {
+                    val deleteTarget = backups[it]
+                    Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")
+                    app.delete(context, deleteTarget)
                 }
-                .toMutableList()
-        (0..revisionsToDelete-1).forEach {
-            val deleteTarget = backups[it]
-            Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")
-            app.delete(context, deleteTarget)
+            }
         }
     }
 
@@ -174,9 +174,5 @@ open class BackupRestoreHelper {
 
     interface OnBackupRestoreListener {
         fun onBackupRestoreDone()
-    }
-
-    companion object {
-        private val TAG = classTag(".BackupRestoreHelper")
     }
 }

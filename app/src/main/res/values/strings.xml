@@ -222,7 +222,8 @@
     <string name="msg_appkill_warning">The selected app(s) will be given the stop signal, and continue after the task is done. Check on your processed apps afterwards (and avoid launching them while the process is still running).</string>
     <string name="delete_all_backups">Delete all backups</string>
     <string name="logs_text_empty">There\'s nothing to show!</string>
-    <string name="fetching_backup_list">Fetching apps list for the backup…</string>
+    <string name="fetching_action_list">Fetching apps list for the %1$s…</string>
+    <string name="help_issues">Known issues</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

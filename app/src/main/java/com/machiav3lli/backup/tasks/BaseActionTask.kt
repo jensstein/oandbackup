@@ -24,7 +24,6 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.handler.ShellHandler
@@ -39,7 +38,6 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
                               val mode: Int, private val actionType: ActionType)
     : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
-    var backupRestoreHelper: BackupRestoreHelper = BackupRestoreHelper()
     private var signal: CountDownLatch? = null
     override val TAG = Constants.classTag(".BaseActionTask")
     protected var result: ActionResult? = null

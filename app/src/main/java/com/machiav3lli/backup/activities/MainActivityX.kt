@@ -35,6 +35,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.google.android.material.badge.BadgeDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.Constants.classTag
@@ -43,12 +47,11 @@ import com.machiav3lli.backup.dialogs.BatchConfirmDialog
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
-import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.BatchWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.viewmodels.MainViewModel
@@ -360,96 +363,37 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
         dialog.show(supportFragmentManager, "DialogFragment")
     }
 
-    override fun onConfirmed(selectedList: List<Pair<AppMetaInfo, Int>>) {
-        Thread { runBatchTask(selectedList) }.start()
-    }
+    override fun onConfirmed(selectedPackages: List<String>, selectedModes: List<Int>) {
+        val notificationId = System.currentTimeMillis().toInt()
+        val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
+        val data: Data = Data.Builder()
+                .putStringArray("selectedPackages", selectedPackages.toTypedArray())
+                .putIntArray("selectedModes", selectedModes.toIntArray())
+                .putBoolean("backupBoolean", backupBoolean)
+                .putInt("notificationId", notificationId)
+                .build()
 
-    // TODO 1. optimize/reduce complexity
-    fun runBatchTask(selectedItems: List<Pair<AppMetaInfo, Int>>) {
-        val backupRunning = backupBoolean  // use a copy because the variable can change while running this task
-        @SuppressLint("InvalidWakeLockTag") val wl = powerManager?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG)
-        if (prefs.getBoolean("acquireWakelock", true)) {
-            wl?.acquire(60 * 60 * 1000L /*60 minutes to cope with slower devices*/)
-            Log.i(TAG, "wakelock acquired")
-        }
-        try {
-            // get the AppInfoX objects again
-            val selectedApps: MutableList<Pair<AppInfo, Int>> = mutableListOf()
-            selectedItems.forEach { (appMetaInfo, mode) ->
-                val foundItem = batchItemAdapter.adapterItems.find { item: BatchItemX -> item.app.packageName == appMetaInfo.packageName }
-                if (foundItem != null) {
-                    selectedApps.add(Pair(foundItem.app, mode))
-                } else {
-                    throw RuntimeException("Selected item for processing went lost from the item adapter.")
-                }
-            }
-            val notificationId = System.currentTimeMillis().toInt()
-            val totalOfActions = selectedItems.size
-            val backupRestoreHelper = BackupRestoreHelper()
-            val mileStones = IntRange(0, 5).map { it * totalOfActions / 5 + 1 }.toList()
-            val results: MutableList<ActionResult> = mutableListOf()
-            var i = 1
-            var packageLabel = "NONE"
-            try {
-                selectedApps.forEach { (appInfo, mode) ->
-                    packageLabel = appInfo.packageLabel
-                    val message = (if (backupRunning) this.getString(R.string.backupProgress) else this.getString(R.string.restoreProgress)) + " (" + i + "/" + totalOfActions + ")"
-                    NotificationHelper.showNotification(this, MainActivityX::class.java, notificationId, message, appInfo.packageLabel, false)
-                    if (mileStones.contains(i)) {
-                        runOnUiThread { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(BatchWork::class.java)
+                .setInputData(data)
+                .build()
+
+        WorkManager.getInstance(this)
+                .enqueue(oneTimeWorkRequest)
+
+        WorkManager.getInstance(this)
+                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id).observe(this, {
+                    if (it.state == WorkInfo.State.SUCCEEDED) {
+                        val resultsSuccess = it.outputData.getBoolean("resultsSuccess", false)
+                        val errors = it.outputData.getString("errors")
+                                ?: ""
+                        val overAllResult = ActionResult(null, null, errors, resultsSuccess)
+
+                        // runOnUiThread { Toast.makeText(this, "$notificationMessage: $notificationTitle)", Toast.LENGTH_LONG).show() }
+                        // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
+                        showActionResult(this, overAllResult, if (overAllResult.succeeded) null else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> LogUtils.logErrors(this, errors) })
+                        viewModel.refreshList()
                     }
-                    var result: ActionResult? = null
-                    try {
-                        result = if (backupRunning) {
-                            backupRestoreHelper.backup(this, shellHandlerInstance!!, appInfo, mode)
-                        } else {
-                            // Latest backup for now
-                            val selectedBackup = appInfo.latestBackup
-                            selectedBackup?.let {
-                                backupRestoreHelper.restore(this, appInfo, selectedBackup.backupProperties,
-                                        selectedBackup.backupInstanceDirUri, shellHandlerInstance, mode)
-                            }
-                        }
-                    } catch (e: Throwable) {
-                        result = ActionResult(appInfo, null, "not processed: $packageLabel: $e\n${e.stackTrace}", false)
-                        Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
-                    } finally {
-                        if (result?.succeeded == false) {
-                            NotificationHelper.showNotification(this, MainActivityX::class.java, result.hashCode(), appInfo.packageLabel, result.message, false)
-                            LogUtils.logErrors(this, "${appInfo.packageLabel}: ${result.message}")
-                        }
-                    }
-                    result?.let { results.add(result) }
-                    i++
-                }
-            } catch (e: Throwable) {
-                LogUtils.unhandledException(e, packageLabel)
-            } finally {
-                // Calculate the overall result
-                val errors = results
-                        .map { it.message }
-                        .filter { it.isNotEmpty() }
-                        .joinToString(separator = "\n")
-                val overAllResult = ActionResult(null, null, errors, results.parallelStream().anyMatch(ActionResult::succeeded))
-
-                // Update the notification
-                val notificationMessage = if (overAllResult.succeeded) this.getString(R.string.batchSuccess) else this.getString(R.string.batchFailure)
-                val notificationTitle = if (backupRunning) this.getString(R.string.batchbackup) else this.getString(R.string.batchrestore)
-                NotificationHelper.showNotification(this, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
-                runOnUiThread { Toast.makeText(this, String.format("%s: %s)", notificationMessage, notificationTitle), Toast.LENGTH_LONG).show() }
-
-                // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
-                showActionResult(this, overAllResult, if (overAllResult.succeeded) null else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> LogUtils.logErrors(this, errors) })
-                viewModel.refreshList() // viewModel.updatePackages(selectedItems.map { it.first.packageName ?: "" }.toList())
-            }
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
-        } finally {
-            if (wl?.isHeld == true) {
-                wl.release()
-                Log.i(TAG, "wakelock released")
-            }
-        }
+                })
     }
 
     private fun checkUtilBox() {

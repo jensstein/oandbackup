@@ -49,13 +49,13 @@ class BatchConfirmDialog(private var confirmListener: ConfirmListener) : DialogF
             message.append("${item.packageLabel}")
             selectedListModes[i]?.let { message.append(": ${getModeString(it)}\n") }
         }
-        val selectedItems = selectedList.zip(selectedListModes)
+        val selectedPackages = selectedList.map { it.packageName }.toList().filterNotNull()
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(title)
         builder.setMessage(message.toString().trim { it <= ' ' })
         builder.setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
             try {
-                confirmListener.onConfirmed(selectedItems)
+                confirmListener.onConfirmed(selectedPackages, selectedListModes)
             } catch (e: ClassCastException) {
                 Log.e(TAG, "BatchConfirmDialog: $e")
             }
@@ -65,7 +65,7 @@ class BatchConfirmDialog(private var confirmListener: ConfirmListener) : DialogF
     }
 
     interface ConfirmListener {
-        fun onConfirmed(selectedList: List<Pair<AppMetaInfo, Int>>)
+        fun onConfirmed(selectedPackages: List<String>, selectedModes: List<Int>)
     }
 
     private fun getModeString(mode: Int): String {

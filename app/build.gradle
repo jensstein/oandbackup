@@ -60,6 +60,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     dependenciesInfo {
         includeInApk false
         includeInBundle false
@@ -73,6 +76,7 @@ ext {
     versions = [
             kotlin            : "1.4.20",
             room              : "2.2.5",
+            work              : "2.4.0",
             gson              : "2.8.6",
             lifecycle         : "2.2.0",
             biometric         : "1.0.1",
@@ -100,8 +104,9 @@ dependencies {
     // Libs
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
     implementation "androidx.room:room-runtime:${versions.room}"
-    kapt "androidx.room:room-compiler:${versions.room}"
     implementation "androidx.room:room-ktx:${versions.room}"
+    implementation "androidx.work:work-runtime-ktx:${versions.work}"
+    kapt "androidx.room:room-compiler:${versions.room}"
     implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
     implementation "androidx.biometric:biometric:${versions.biometric}"

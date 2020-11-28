@@ -34,7 +34,7 @@ class BackupActionTask(appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandle
             return ActionResult(app, null, "", false)
         }
         publishProgress()
-        result = backupRestoreHelper.backup(mainActivityX, shellHandler, app, mode)
+        result = BackupRestoreHelper.backup(mainActivityX, shellHandler, app, mode)
         return result
     }
 }
