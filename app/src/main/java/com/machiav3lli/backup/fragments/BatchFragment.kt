@@ -75,5 +75,13 @@ open class BatchFragment : Fragment(), SearchViewController {
         requireMainActivity().onResumeFragment()
     }
 
+    class BackupFragment : BatchFragment() {
+        private val TAG = classTag(".BackupFragment")
+    }
+
+    class RestoreFragment : BatchFragment() {
+        private val TAG = classTag(".RestoreFragment")
+    }
+
     fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

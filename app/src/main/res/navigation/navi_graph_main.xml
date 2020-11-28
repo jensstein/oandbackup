@@ -11,11 +11,11 @@
 
     <fragment
         android:id="@+id/backupFragment"
-        android:name="com.machiav3lli.backup.fragments.BackupFragment"
+        android:name="com.machiav3lli.backup.fragments.BatchFragment$BackupFragment"
         tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/restoreFragment"
-        android:name="com.machiav3lli.backup.fragments.RestoreFragment"
+        android:name="com.machiav3lli.backup.fragments.BatchFragment$RestoreFragment"
         tools:layout="@layout/fragment_main" />
 </navigation>
