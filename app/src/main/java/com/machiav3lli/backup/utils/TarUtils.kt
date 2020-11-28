@@ -75,14 +75,15 @@ fun addFilepath(archive: TarArchiveOutputStream, inputFilepath: File, parent: St
 @Throws(IOException::class)
 fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.FileInfo>) {
     for (file in allFiles) {
-        Log.d(TAG, String.format("Adding %s to archive (filesize: %d)", file.filepath, file.fileSize))
+        Log.d(TAG, String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
         var entry: TarArchiveEntry
         when (file.fileType) {
             FileType.REGULAR_FILE -> {
-                entry = TarArchiveEntry(file.filepath)
+                entry = TarArchiveEntry(file.filePath)
                 entry.size = file.fileSize
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
+                entry.modTime = file.fileModTime
                 archive.putArchiveEntry(entry)
                 try {
                     ShellHandler.quirkLibsuReadFileWorkaround(file, archive)
@@ -93,14 +94,14 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
             FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur")
             FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur")
             FileType.DIRECTORY -> {
-                entry = TarArchiveEntry(file.filepath, TarConstants.LF_DIR)
+                entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
                 entry.mode = DIR_MODE_OR_MASK or file.fileMode.toInt()
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
             FileType.SYMBOLIC_LINK -> {
-                entry = TarArchiveEntry(file.filepath, TarConstants.LF_LINK)
+                entry = TarArchiveEntry(file.filePath, TarConstants.LF_LINK)
                 entry.linkName = file.linkName
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
@@ -108,7 +109,7 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 archive.closeArchiveEntry()
             }
             FileType.NAMED_PIPE -> {
-                entry = TarArchiveEntry(file.filepath, TarConstants.LF_FIFO)
+                entry = TarArchiveEntry(file.filePath, TarConstants.LF_FIFO)
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
                 archive.putArchiveEntry(entry)
@@ -180,6 +181,11 @@ fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
             } catch (e: ErrnoException) {
                 throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
             }
+        }
+        try {
+            targetPath.setLastModified(tarEntry.modTime.time)
+        } catch (e: ErrnoException) {
+            throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
         }
     }
 }

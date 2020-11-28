@@ -30,6 +30,8 @@ import com.topjohnwu.superuser.io.SuRandomAccessFile
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.min
 
@@ -45,16 +47,19 @@ class ShellHandler {
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDetailedDirectoryContents(path: String, recursive: Boolean, parent: String? = null): List<FileInfo> {
+        // was incomplete time, without seconds and without time zone:
+        //// -Al : "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
+        //// -Al : "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
         // Expecting something like this (with whitespace)
-        // "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
+        // "drwxrwx--x 4 u0_a627 u0_a627 4096 2020-11-26 04:35:21.543772855 +0100 files"
         // Special case:
-        // "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
-        val shellResult = runAsRoot("$utilboxPath ls -Al \"$path\"")
+        // "lrwxrwxrwx 1 root    root      64 2020-11-24 19:41:09.569333987 +0100 lib -> /data/app/com.almalence.opencam-SekQMXi3UuGHZ_CVtPxhCA==/lib/arm"
+        val shellResult = runAsRoot("$utilboxPath ls -All \"$path\"")
         val relativeParent = parent ?: ""
         val result = shellResult.out
                 .filter { line: String -> line.isNotEmpty() }
                 .filter { line: String -> !line.startsWith("total") }
-                .filter { line: String -> splitWithoutEmptyValues(line, " ", 0).size > 7 }
+                .filter { line: String -> splitWithoutEmptyValues(line, " ", 0).size > 8 }
                 .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
                 .toMutableList()
         if (recursive) {
@@ -120,31 +125,38 @@ class ShellHandler {
              *
              * @return relative filepath
              */
-            val filepath: String,
+            val filePath: String,
             val fileType: FileType,
             absoluteParent: String,
             val owner: String,
             val group: String,
-            fileMode: Short,
-            fileSize: Long) {
+            var fileMode: Int,
+            var fileSize: Long,
+            var fileModTime: Date
+            ) {
+
         enum class FileType {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
         }
 
-        val absolutePath: String = absoluteParent + '/' + File(filepath).name
-        val fileMode: Short = fileMode
-        val fileSize: Long
+        val absolutePath: String = absoluteParent + '/' + File(filePath).name
+        //val fileMode = fileMode
+        //val fileSize = fileSize
+        //val fileModTime = fileModTime
         var linkName: String? = null
             private set
         val filename: String
-            get() = File(filepath).name
+            get() = File(filePath).name
 
         override fun toString(): String {
             return "FileInfo{" +
-                    "filepath='" + filepath + '\'' +
-                    ", filetype=" + fileType +
-                    ", filemode=" + fileMode.toInt().toString(8) +
-                    ", filesize=" + fileSize +
+                    "filePath='" + filePath + '\'' +
+                    ", fileType=" + fileType +
+                    ", owner=" + owner +
+                    ", group=" + group +
+                    ", fileMode=" + fileMode.toString(8) +
+                    ", fileSize=" + fileSize +
+                    ", fileModTime=" + fileModTime +
                     ", absolutePath='" + absolutePath + '\'' +
                     ", linkName='" + linkName + '\'' +
                     '}'
@@ -152,6 +164,8 @@ class ShellHandler {
 
         companion object {
             private val PATTERN_LINKSPLIT = Pattern.compile(" -> ")
+            val FALLBACK_MODE_FOR_DIR  = translatePosixPermissionToMode("rwxrwx--x")
+            val FALLBACK_MODE_FOR_FILE =  translatePosixPermissionToMode("rw-rw----")
 
             /**
              * Create an instance of FileInfo from a line of the output from
@@ -163,27 +177,32 @@ class ShellHandler {
             fun fromLsOOutput(lsLine: String, parentPath: String?, absoluteParent: String): FileInfo {
                 // Format
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
-                // [5] mdate, [6] mtime, [7] filename
+                // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
+                //var absoluteParent = absoluteParent
                 var absoluteParent = absoluteParent
-                val tokens = splitWithoutEmptyValues(lsLine, " ", 7)
-                var filepath: String?
+                val tokens = splitWithoutEmptyValues(lsLine, " ", 8)
+                var filePath: String?
                 val owner = tokens[2]
                 val group = tokens[3]
+                // 2020-11-26 04:35:21.543772855 +0100
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+                val fileModTime = formatter.parse("${tokens[5]} ${tokens[6]!!.split(".")[0]} ${tokens[7]}")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
-                if (tokens[7]!!.startsWith(absoluteParent)) {
+                if (tokens[8]!!.startsWith(absoluteParent)) {
                     absoluteParent = File(absoluteParent).parent!!
-                    tokens[7] = tokens[7]!!.substring(absoluteParent.length + 1)
+                    tokens[8] = tokens[8]!!.substring(absoluteParent.length + 1)
                 }
-                filepath = if (parentPath == null || parentPath.isEmpty()) {
-                    tokens[7]
-                } else {
-                    parentPath + '/' + tokens[7]
-                }
-                var filemode: Short = 0b110110000
+                filePath =
+                        if (parentPath == null || parentPath.isEmpty()) {
+                            tokens[8]
+                        } else {
+                            parentPath + '/' + tokens[8]
+                        }
+                var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
-                    filemode = translatePosixPermissionToMode(tokens[0]!!.substring(1))
+                    fileMode = translatePosixPermissionToMode(tokens[0]!!.substring(1))
                 } catch (e: IllegalArgumentException) {
                     // Happens on cache and code_cache dir because of sticky bits
                     // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
@@ -192,23 +211,22 @@ class ShellHandler {
                     // Downside: For all other directories with these names, the warning is also hidden
                     // This can be problematic for system packages, but for apps these bits do not
                     // make any sense.
-                    if (filepath == "cache" || filepath == "code_cache") {
+                    if (filePath == "cache" || filePath == "code_cache") {
                         // Fall back to the known value of these directories
-                        filemode = translatePosixPermissionToMode("rwxrws--x")
+                        fileMode = translatePosixPermissionToMode("rwxrws--x")
                     } else {
-                        // For all other directories use 0600 and for files 0700 (TODO hg42: directories need x)
-                        filemode =
+                        fileMode =
                                 if (tokens[0]!![0] == 'd') {
-                                    translatePosixPermissionToMode("rwxrwx--x")
+                                    FALLBACK_MODE_FOR_DIR
                                 } else {
-                                    translatePosixPermissionToMode("rw-rw----")
+                                    FALLBACK_MODE_FOR_FILE
                                 }
                         Log.w(TAG, String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
-                                tokens[0], filemode, filepath, absoluteParent))
+                                tokens[0], fileMode, filePath, absoluteParent))
                     }
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, filepath)
+                    LogUtils.unhandledException(e, filePath)
                 }
                 var linkName: String? = null
                 var fileSize: Long = 0
@@ -217,8 +235,8 @@ class ShellHandler {
                     'd' -> type = FileType.DIRECTORY
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
-                        val nameAndLink = PATTERN_LINKSPLIT.split(filepath)
-                        filepath = nameAndLink[0]
+                        val nameAndLink = PATTERN_LINKSPLIT.split(filePath)
+                        filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
                     }
                     'p' -> type = FileType.NAMED_PIPE
@@ -230,7 +248,7 @@ class ShellHandler {
                         fileSize = tokens[4]!!.toLong()
                     }
                 }
-                val result = FileInfo(filepath!!, type, absoluteParent, owner!!, group!!, filemode, fileSize)
+                val result = FileInfo(filePath!!, type, absoluteParent, owner!!, group!!, fileMode, fileSize, fileModTime!!)
                 result.linkName = linkName
                 return result
             }

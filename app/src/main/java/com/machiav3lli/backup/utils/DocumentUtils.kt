@@ -68,7 +68,7 @@ object DocumentUtils {
     fun suRecursiveCopyFileToDocument(context: Context, filesToBackup: List<ShellHandler.FileInfo>, targetUri: Uri) {
         val resolver = context.contentResolver
         for (file in filesToBackup) {
-            val parentUri = targetUri.buildUpon().appendEncodedPath(File(file.filepath).parent).build()
+            val parentUri = targetUri.buildUpon().appendEncodedPath(File(file.filePath).parent).build()
             val parentFile = StorageFile.fromUri(context, parentUri)
             when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
