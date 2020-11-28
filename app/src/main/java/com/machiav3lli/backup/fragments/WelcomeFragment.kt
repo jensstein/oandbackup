@@ -50,6 +50,7 @@ class WelcomeFragment : Fragment() {
         binding.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_TELEGRAM))) }
         binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ELEMENT))) }
         binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_LICENSE))) }
+        binding.issues.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.HELP_ISSUES))) }
     }
 
     private fun setupViews() {
