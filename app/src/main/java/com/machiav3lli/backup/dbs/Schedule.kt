@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.dbs
 
-import android.util.ArraySet
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -48,10 +47,11 @@ class Schedule {
 
     var excludeSystem = false
 
-    var enableCustomList = false
+    val enableCustomList: Boolean
+        get() = customList.isNotEmpty()
 
     @TypeConverters(CustomListConverter::class)
-    var customList: Set<String>? = ArraySet()
+    var customList: Set<String> = setOf()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -150,12 +150,14 @@ class Schedule {
     class CustomListConverter {
         @TypeConverter
         fun toCustomList(stringCustomList: String): Set<String> {
-            return stringCustomList.split(",").toHashSet()
+            return if (stringCustomList == "") setOf()
+            else stringCustomList.split(",").toHashSet()
         }
 
         @TypeConverter
         fun toString(customList: Set<String?>?): String {
-            return customList!!.joinToString(separator = ",")
+            return if (customList?.isNotEmpty() == true) customList.joinToString(separator = ",")
+            else ""
         }
     }
 

@@ -223,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cards_spacing"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@id/actionsLine"
+                    app:layout_constraintBottom_toTopOf="@id/customListButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/schedSubMode">
@@ -246,60 +246,38 @@
                         android:layout_height="wrap_content" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/actionsLine"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/customListButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/cards_spacing"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
+                    android:background="@drawable/bg_button_neutral_ripple"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_blacklist_32"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/cards_spacing"
+                    android:text="@string/customListTitle"
                     app:layout_constraintBottom_toTopOf="@id/activateButton"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/blacklistButton"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/timeLeftLine">
-
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/enableCheckbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:text="@string/sched_checkbox" />
-
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/enableCustomList"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginEnd="@dimen/cards_spacing"
-                        android:layout_weight="1"
-                        android:singleLine="true"
-                        android:text="@string/customListTitle" />
-
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/customListUpdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_button_neutral_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_blacklist_32"
-                        android:tooltipText="@string/sched_customListUpdateButton" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    app:layout_constraintTop_toBottomOf="@id/timeLeftLine" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/activateButton"
+                    android:id="@+id/blacklistButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/cards_spacing"
-                    android:background="@drawable/bg_button_positive_ripple"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:background="@drawable/bg_button_neutral_ripple"
                     android:clickable="true"
+                    android:drawableStart="@drawable/ic_blacklist_32"
                     android:focusable="true"
-                    android:text="@string/sched_activateButton"
-                    android:textColor="?colorAccent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:paddingHorizontal="@dimen/cards_spacing"
+                    android:text="@string/sched_blacklist"
+                    android:tooltipText="@string/sched_customListUpdateButton"
+                    app:layout_constraintBottom_toBottomOf="@id/customListButton"
                     app:layout_constraintEnd_toStartOf="@id/removeButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/actionsLine" />
+                    app:layout_constraintStart_toEndOf="@id/customListButton"
+                    app:layout_constraintTop_toTopOf="@id/customListButton" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/removeButton"
@@ -309,10 +287,36 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/ic_delete_32"
+                    app:layout_constraintBottom_toBottomOf="@id/customListButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/blacklistButton"
+                    app:layout_constraintTop_toTopOf="@id/customListButton" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/enableCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:singleLine="true"
+                    android:text="@string/sched_checkbox"
+                    app:layout_constraintBottom_toBottomOf="@id/activateButton"
+                    app:layout_constraintEnd_toStartOf="@id/activateButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/activateButton" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/activateButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/cards_spacing"
+                    android:background="@drawable/bg_button_positive_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/sched_activateButton"
+                    android:textColor="?colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/activateButton"
-                    app:layout_constraintTop_toTopOf="@id/activateButton" />
+                    app:layout_constraintStart_toEndOf="@id/enableCheckbox"
+                    app:layout_constraintTop_toBottomOf="@id/customListButton" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>

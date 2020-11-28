@@ -17,25 +17,21 @@
  */
 package com.machiav3lli.backup.activities
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.machiav3lli.backup.BlacklistListener
 import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.items.SchedulerItemX
-import com.machiav3lli.backup.schedules.BlacklistContract
-import com.machiav3lli.backup.schedules.BlacklistsDBHelper
 import com.machiav3lli.backup.schedules.HandleAlarms
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
@@ -47,14 +43,14 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
-class SchedulerActivityX : BaseActivity(), BlacklistListener {
+class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistListener {
     lateinit var handleAlarms: HandleAlarms
     private var sheetSchedule: ScheduleSheet? = null
     private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
     private var schedulerFastAdapter: FastAdapter<SchedulerItemX> = FastAdapter.with(schedulerItemAdapter)
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var binding: ActivitySchedulerXBinding
-    private lateinit var blacklistsDBHelper: BlacklistsDBHelper
+    private lateinit var blacklistDao: BlacklistDao
     private var sheetHelp: HelpSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +58,8 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         binding = ActivitySchedulerXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         handleAlarms = HandleAlarms(this)
-        blacklistsDBHelper = BlacklistsDBHelper(this)
-        val dataSource = ScheduleDatabase.getInstance(this, DATABASE_NAME).scheduleDao
+        blacklistDao = BlacklistDatabase.getInstance(this).blacklistDao
+        val dataSource = ScheduleDatabase.getInstance(this, SCHEDULES_DB_NAME).scheduleDao
         val viewModelFactory = SchedulerViewModelFactory(dataSource, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SchedulerViewModel::class.java)
 
@@ -103,16 +99,15 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         binding.blacklistButton.setOnClickListener {
             Thread {
                 val args = Bundle()
-                args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBALBLACKLISTID)
-                val db = blacklistsDBHelper.readableDatabase
-                val blacklistedPackages = blacklistsDBHelper
-                        .getBlacklistedPackages(db, GLOBALBLACKLISTID) as ArrayList<String>
+                args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBAL_ID)
+
+                val blacklistedPackages = blacklistDao
+                        .getBlacklistedPackages(GLOBAL_ID) as ArrayList<String>
                 args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
                         blacklistedPackages)
-                val blacklistDialogFragment = BlacklistDialogFragment()
+                val blacklistDialogFragment = BlacklistDialogFragment(this)
                 blacklistDialogFragment.arguments = args
-                blacklistDialogFragment.addBlacklistListener(this)
-                blacklistDialogFragment.show(supportFragmentManager, "blacklistDialog")
+                blacklistDialogFragment.show(supportFragmentManager, "BLACKLIST_DIALOG")
             }.start()
         }
         binding.addSchedule.setOnClickListener {
@@ -126,26 +121,9 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
         schedulerFastAdapter.addEventHook(OnEnableClickHook())
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
-    }
-
-    public override fun onDestroy() {
-        blacklistsDBHelper.close()
-        super.onDestroy()
-    }
-
-    override fun onBlacklistChanged(blacklist: Array<CharSequence>, id: Int) {
+    override fun onBlacklistChanged(newList: Set<String>, blacklistId: Int) {
         Thread {
-            val db = blacklistsDBHelper.writableDatabase
-            blacklistsDBHelper.deleteBlacklistFromId(db, id)
-            for (packageName in blacklist) {
-                val values = ContentValues()
-                values.put(BlacklistContract.BlacklistEntry.COLUMN_PACKAGENAME, packageName as String)
-                values.put(BlacklistContract.BlacklistEntry.COLUMN_BLACKLISTID, id.toString())
-                db.insert(BlacklistContract.BlacklistEntry.TABLE_NAME, null, values)
-            }
+            blacklistDao.updateList(blacklistId, newList)
         }.start()
     }
 
@@ -175,12 +153,13 @@ class SchedulerActivityX : BaseActivity(), BlacklistListener {
     }
 
     private fun refresh() {
-        Thread(ScheduleSheet.UpdateRunnable(viewModel.activeSchedule.value, BlacklistsDBHelper.DATABASE_NAME, this@SchedulerActivityX)).start()
+        Thread(ScheduleSheet.UpdateRunnable(viewModel.activeSchedule.value, BLACKLIST_DB_NAME, this@SchedulerActivityX)).start()
     }
 
     companion object {
         val TAG = classTag(".SchedulerActivityX")
-        const val GLOBALBLACKLISTID = -1
-        const val DATABASE_NAME = "schedules.db"
+        const val GLOBAL_ID = -1
+        const val SCHEDULES_DB_NAME = "schedules.db"
+        const val BLACKLIST_DB_NAME = "blacklists.db"
     }
 }

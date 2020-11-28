@@ -21,20 +21,22 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.machiav3lli.backup.activities.SchedulerActivityX
 
-@Database(entities = [Schedule::class], version = 2)
-abstract class ScheduleDatabase : RoomDatabase() {
-    abstract val scheduleDao: ScheduleDao
+@Database(entities = [Blacklist::class], version = 1)
+abstract class BlacklistDatabase : RoomDatabase() {
+    abstract val blacklistDao: BlacklistDao
 
     companion object {
         @Volatile
-        private var INSTANCE: ScheduleDatabase? = null
+        private var INSTANCE: BlacklistDatabase? = null
 
-        fun getInstance(context: Context, name: String?): ScheduleDatabase {
+        fun getInstance(context: Context): BlacklistDatabase {
             synchronized(this) {
                 if (INSTANCE == null) {
                     INSTANCE = Room
-                            .databaseBuilder(context.applicationContext, ScheduleDatabase::class.java, name!!)
+                            .databaseBuilder(context.applicationContext, BlacklistDatabase::class.java,
+                                    SchedulerActivityX.BLACKLIST_DB_NAME)
                             .fallbackToDestructiveMigration()
                             .build()
                 }

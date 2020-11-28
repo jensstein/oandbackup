@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "a7f1ca4430b9bc498c42637d56dc8196",
+    "identityHash": "7c9facea6d64e15df4080e8b70eca6b0",
     "entities": [
       {
         "tableName": "Schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `mode` TEXT NOT NULL, `subMode` TEXT NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `enableCustomList` INTEGER NOT NULL, `customList` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `mode` TEXT NOT NULL, `subMode` TEXT NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `customList` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -69,16 +69,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "enableCustomList",
-            "columnName": "enableCustomList",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "customList",
             "columnName": "customList",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -94,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a7f1ca4430b9bc498c42637d56dc8196')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c9facea6d64e15df4080e8b70eca6b0')"
     ]
   }
 }

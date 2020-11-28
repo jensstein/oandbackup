@@ -18,28 +18,28 @@
 package com.machiav3lli.backup.dialogs
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 
-class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) : DialogFragment() {
+class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomListListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
-        val pm = requireContext().packageManager
+        val pm = requireActivity().application.applicationContext.packageManager
         val args = this.requireArguments()
-        val blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
-        val selectedPackages = args.getStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES)
+        val listId = args.getInt("listId", SchedulerActivityX.GLOBAL_ID)
+        val selectedPackages = args.getStringArrayList("selectedPackages") ?: arrayListOf()
 
-        var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
+        var packageInfoList = BackendController.getPackageInfoList(requireContext(), mode)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
-            val b1 = selectedPackages!!.contains(pi1.packageName)
+            val b1 = selectedPackages.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)
             if (b1 != b2)
                 if (b1) -1 else 1
@@ -50,37 +50,36 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
             }
         }
         val labels = mutableListOf<String>()
-        val packagesNames = mutableListOf<String>()
+        val packageNames = mutableListOf<String>()
         val checkedIndexes = BooleanArray(packageInfoList.size)
         val selections = mutableListOf<Int>()
         packageInfoList.forEachIndexed { i, packageInfo ->
             labels.add(packageInfo.applicationInfo.loadLabel(pm).toString())
-            packagesNames.add(packageInfo.packageName)
-            if (selectedPackages?.contains(packageInfo.packageName) == true) {
+            packageNames.add(packageInfo.packageName)
+            if (selectedPackages.contains(packageInfo.packageName)) {
                 checkedIndexes[i] = true
                 selections.add(i)
             }
         }
         return AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.sched_blacklist)
+                .setTitle(R.string.customListTitle)
                 .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedIndexes) { _: DialogInterface?, index: Int, isChecked: Boolean ->
-                    if (isChecked) selections.add(index) else selections.remove(index)
+                    if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
                 }
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                    saveSelected(blacklistId, packagesNames, selections)
-                }
-                .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(requireContext(), listId, packageNames, selections) }
+                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .create()
     }
 
-    private fun saveSelected(listId: Int, packagesNames: List<String>, selections: List<Int>) {
+    private fun saveSelected(context: Context, listId: Int, packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
                 .map { packagesNames[it] }
                 .toSet()
-        blacklistListener.onBlacklistChanged(selectedPackages, listId)
+        // setScheduleCustomList(context, listId, selectedPackages)
+        listener.onCustomListChanged(selectedPackages, id)
     }
 
-    interface BlacklistListener {
-        fun onBlacklistChanged(newList: Set<String>, blacklistId: Int)
+    interface CustomListListener {
+        fun onCustomListChanged(newList: Set<String>, blacklistId: Int)
     }
 }

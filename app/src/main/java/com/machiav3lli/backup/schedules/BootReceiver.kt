@@ -47,7 +47,7 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     private fun getScheduleDao(context: Context?): ScheduleDao {
-        return ScheduleDatabase.getInstance(context!!, SchedulerActivityX.DATABASE_NAME).scheduleDao
+        return ScheduleDatabase.getInstance(context!!, SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao
     }
 
     private class DatabaseRunnable(scheduleDao: ScheduleDao, handleAlarms: HandleAlarms, private val currentTime: Long) : Runnable {

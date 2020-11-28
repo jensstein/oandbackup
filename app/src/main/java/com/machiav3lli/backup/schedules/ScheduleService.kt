@@ -67,7 +67,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
         get() = HandleScheduledBackups(this)
 
     private val scheduleDao: ScheduleDao
-        get() = getInstance(this, SchedulerActivityX.DATABASE_NAME).scheduleDao
+        get() = getInstance(this, SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao
 
     override fun onCreate() {
         val channelId = TAG
