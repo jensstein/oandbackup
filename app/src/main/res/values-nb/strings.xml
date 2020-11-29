@@ -126,7 +126,7 @@
     <string name="backup_filters">Sikkerhetskopifilter:</string>
     <string name="split_apks">Delte APK-er:</string>
     <string name="ignore_battery_optimization_title">Batterioptimisering</string>
-    <string name="dialog_approve">Ønsker å gjøre det</string>
+    <string name="dialog_approve">Ønsker å gjøre det.</string>
     <string name="dialog_refuse">Vil ikke gjøre det</string>
     <string name="empty_filtered_list">Den filtrerte listen er tom, derfor settes filterne tilbake til forvalg</string>
     <string name="deleted_backup">Slettet sikkerhetskopien</string>
@@ -227,4 +227,5 @@
         <item quantity="one">%d dag,</item>
         <item quantity="other">%d dager,</item>
     </plurals>
+    <string name="help_issues">Kjente feil</string>
 </resources>
