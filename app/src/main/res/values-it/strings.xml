@@ -127,7 +127,7 @@
     <string name="sched_blacklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
     <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
-    <string name="restart_dialog">Sembra che sia necessario riavviare l\\\'applicazione</string>
+    <string name="restart_dialog">Sembra che sia necessario riavviare l\'applicazione</string>
     <string name="filter_options">Filtri:</string>
     <string name="sort_options">Filtra per:</string>
     <string name="sortLabel">Etichetta</string>
