@@ -220,4 +220,5 @@
     </plurals>
     <string name="delete_all_backups">Удалить все резервные копии</string>
     <string name="radio_externaldata">Внешние данные</string>
+    <string name="prefs_advanced">Расширенные возможности</string>
 </resources>
