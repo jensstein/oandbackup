@@ -220,11 +220,12 @@
     <string name="radio_externaldata">Externe Daten</string>
     <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
     <string name="delete_all_backups">Alle Sicherungen löschen</string>
-    <string name="fetching_action_list">Applikationsliste für das Backup abrufen…</string>
+    <string name="fetching_action_list">%1$sApp-Liste für %1$s abrufen…</string>
     <string name="prefs_disableverification_summary">Deaktiviert diese Entwickleroption beim Wiederherstellen von APKs und aktiviert sie danach wieder. Behebt den Fehler: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">App Überprüfung via USB deaktivieren</string>
     <plurals name="days_left">
         <item quantity="one">%d Tag,</item>
         <item quantity="other">%d Tage,</item>
     </plurals>
+    <string name="help_issues">Bekannte Probleme</string>
 </resources>
