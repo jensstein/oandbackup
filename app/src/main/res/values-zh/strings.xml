@@ -224,4 +224,5 @@
     <plurals name="days_left">
         <item quantity="other">%d 天,</item>
     </plurals>
+    <string name="help_issues">已知问题</string>
 </resources>
