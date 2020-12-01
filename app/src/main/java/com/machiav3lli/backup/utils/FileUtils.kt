@@ -19,7 +19,6 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.machiav3lli.backup.Constants.classTag
 import java.io.*
@@ -28,7 +27,6 @@ import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
 
 object FileUtils {
-    const val BACKUP_SUBDIR_NAME = "OABackupX"
     const val LOG_FILE_NAME = "OAndBackupX.log"
     private var backupLocation: Uri? = null
     private val TAG = classTag(".FileUtils")
@@ -53,9 +51,7 @@ object FileUtils {
     }
 
     /**
-     * Returns the backup directory URI. It's not the root path but the subdirectory, because
-     * user tend to just select their storage's root directory and expect the app to create a
-     * directory in it.
+     * Returns the backup directory URI. Users have to select it themselves to avoid SAF headache.
      *
      * @return URI to OABX storage directory
      */
@@ -70,12 +66,7 @@ object FileUtils {
             if (storageRootDoc == null || !storageRootDoc.exists()) {
                 throw BackupLocationIsAccessibleException("Cannot access the root location.")
             }
-            var backupLocationDoc = storageRootDoc.findFile(BACKUP_SUBDIR_NAME)
-            if (backupLocationDoc == null || !backupLocationDoc.exists()) {
-                Log.i(TAG, "Backup directory does not exist. Creating it")
-                backupLocationDoc = storageRootDoc.createDirectory(BACKUP_SUBDIR_NAME)
-            }
-            backupLocation = backupLocationDoc!!.uri
+            backupLocation = storageRootDoc.uri
         }
         return backupLocation as Uri
 
