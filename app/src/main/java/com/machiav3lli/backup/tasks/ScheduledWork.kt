@@ -58,8 +58,10 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
                     Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
                 } finally {
                     result?.let {
-                        if (it.succeeded)
+                        if (!it.succeeded) {
                             NotificationHelper.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message, false)
+                            LogUtils.logErrors(context, "${appInfo.packageLabel}: ${it.message}")
+                        }
                         results.add(it)
                     }
                     i++
