@@ -41,7 +41,7 @@ import com.google.android.material.badge.BadgeDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
-import com.machiav3lli.backup.dialogs.BatchConfirmDialog
+import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
@@ -61,7 +61,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.topjohnwu.superuser.Shell
 
-class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
+class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     companion object {
         private val TAG = classTag(".MainActivityX")
@@ -358,7 +358,7 @@ class MainActivityX : BaseActivity(), BatchConfirmDialog.ConfirmListener {
                 .toCollection(ArrayList())
         arguments.putIntegerArrayList("selectedListModes", selectedListModes)
         arguments.putBoolean("backupBoolean", backupBoolean)
-        val dialog = BatchConfirmDialog(this)
+        val dialog = BatchDialogFragment(this)
         dialog.arguments = arguments
         dialog.show(supportFragmentManager, "DialogFragment")
     }

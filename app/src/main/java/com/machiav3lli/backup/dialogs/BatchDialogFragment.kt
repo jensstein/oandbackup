@@ -29,7 +29,7 @@ import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 
-class BatchConfirmDialog(private var confirmListener: ConfirmListener) : DialogFragment() {
+class BatchDialogFragment(private var confirmListener: ConfirmListener) : DialogFragment() {
     private val TAG = Constants.classTag(".BatchConfirmDialog")
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
