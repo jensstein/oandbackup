@@ -3,7 +3,9 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
+import com.machiav3lli.backup.fragments.AppSheet.Companion.TAG
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
@@ -70,9 +72,13 @@ class MainViewModel(val context: Context, application: Application)
         return withContext(Dispatchers.IO) {
             val dataList = appInfoList.value
             var appInfo = dataList?.find { it.packageName == packageName }
-            appInfo = AppInfo(context, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
             dataList?.removeIf { it.packageName == packageName }
-            dataList?.add(appInfo)
+            try {
+                appInfo = AppInfo(context, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+                dataList?.add(appInfo)
+            } catch (e: AssertionError) {
+                Log.w(TAG, e.message ?: "")
+            }
             dataList
         }
     }
