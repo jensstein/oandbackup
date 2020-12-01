@@ -53,7 +53,6 @@ object DocumentContractApi {
     fun isPropertyFile(context: Context, self: Uri): Boolean {
         val type = getRawType(context, self)
         return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
-                && self.toString().endsWith(".properties")
     }
 
     fun lastModified(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
