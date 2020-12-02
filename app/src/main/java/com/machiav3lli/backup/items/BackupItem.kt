@@ -22,7 +22,9 @@ open class BackupItem {
 
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            FileUtils.openFileForReading(context, propertiesFile.uri).use { reader -> backupProperties = BackupProperties.fromGson(IOUtils.toString(reader)) }
+            FileUtils.openFileForReading(context, propertiesFile.uri).use {
+                reader -> backupProperties = BackupProperties.fromGson(IOUtils.toString(reader))
+            }
         } catch (e: FileNotFoundException) {
             throw BrokenBackupException("Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
         } catch (e: IOException) {

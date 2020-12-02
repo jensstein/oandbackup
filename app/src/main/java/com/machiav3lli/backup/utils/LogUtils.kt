@@ -90,17 +90,20 @@ class LogUtils(var context: Context) {
             }
         }
 
+        fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
+        fun message(e: Throwable) = e.toString() + "\n" + stackTrace(e)
+
         fun unhandledException(e: Throwable, what: Any? = null) {
             var whatStr = ""
             if (what != null) {
                 whatStr = what.toString()
-                whatStr = when {
-                    whatStr.contains("\n") -> " (\n$whatStr\n)"
-                    else -> " ($whatStr)"
-                }
+                if (whatStr.contains("\n") || whatStr.length > 20)
+                    whatStr = "{\n$whatStr\n}\n"
+                else
+                    whatStr = "$whatStr : "
             }
-            Timber.e("unhandledException: $e$whatStr\n${e.stackTrace}")
-            e.printStackTrace()
+            var msg = "unexpected: " + e.toString() + whatStr + "\n" + message(e)
+            Timber.e(msg)
         }
     }
 }
