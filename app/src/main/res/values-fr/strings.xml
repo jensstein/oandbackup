@@ -79,7 +79,7 @@
     <string name="disablePackageTitle">Désactiver pour les utilisateurs</string>
     <string name="prefs_title">Paramètres</string>
     <string name="prefs_acquirewakelock">Empêcher la mise en veille</string>
-    <string name="prefs_acquirewakelock_summary">Acquérir un wakelock pendant les opérations par lot pour empêcher la mise en veille. Cela accélèrera les sauvegardes et restauration au prix d\'une plus grande consommation énergétique.</string>
+    <string name="prefs_acquirewakelock_summary">Vérouiller l\'éveil pendant les opérations par lot empêche la mise en veille. Accélère considérablement les sauvegardes et les restaurations, mais consomme plus d\'énergie.</string>
     <string name="prefs_pathbackupfolder">Dossier de sauvegarde</string>
     <string name="prefs_oldbackups">Filtrer les sauvegarde par ancienneté</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -182,7 +182,7 @@
     <string name="radio_system">Applis système</string>
     <string name="radio_user">Applis utilisateur</string>
     <string name="prefs_housekeepingmoment">Temps de nettoyage des révisions</string>
-    <string name="msg_appkill_warning">La ou les applications sélectionnées seront arrêtées. Veuillez vous assurer que vous redémarrez votre appareil après le traitement ou que vous ouvrez les applications comme votre réveil ou votre calendrier après coup pour éviter de manquer des notifications importantes. Il se peut que votre clavier ou votre lanceur soit réinitialisé à l\'application par défaut.</string>
+    <string name="msg_appkill_warning">La ou les applications sélectionnées recevront le signal d\'arrêt et continueront après la fin de la tâche. Vérifiez ensuite les applications traitées (et évitez de les lancer alors que le processus est toujours en cours).</string>
     <string name="intro_permission_batteryoptimization">L\'application peut rencontrer des problèmes pour effectuer des sauvegardes programmées sur certaines ROM qui adoptent une optimisation agressive de la batterie, par exemple MIUI, mais même sur AOSP vanilla un tel problème peut se produire.</string>
     <string name="intro_permission_usageaccess">L\'application a besoin de cette autorisation pour pouvoir vérifier les statistiques, la taille des données et du cache de vos applications.</string>
     <string name="intro_permission_storage_location">L\'application a besoin d\'un emplacement de sauvegarde pour stocker les sauvegardes. L\'application peut avoir besoin de quelques gigaoctets de stockage pour une sauvegarde complète et utilise beaucoup le système de fichiers. Veuillez garder cela à l\'esprit lorsque vous choisissez des emplacements de stockage en réseau.</string>
@@ -227,4 +227,6 @@
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>
     <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APKs et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
+    <string name="help_issues">Problèmes connus</string>
+    <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>
 </resources>
