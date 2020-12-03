@@ -15,4 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-include ':app'
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:4.1.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${System.getProperty("kotlin")}")
+        classpath("android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven(url = "https://jitpack.io")
+    }
+}
+
+tasks.register("clean", Delete::class) {
+    delete(rootProject.buildDir)
+}
