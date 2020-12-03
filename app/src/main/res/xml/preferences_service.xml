@@ -55,6 +55,13 @@
         app:iconSpaceReserved="false" />
 
     <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="backupObbData"
+        android:summary="@string/prefs_obbdata_summary"
+        android:title="@string/prefs_obbdata"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:key="backupDeviceProtectedData"
         android:summary="@string/prefs_deviceprotecteddata_summary"

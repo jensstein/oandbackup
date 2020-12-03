@@ -80,13 +80,18 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 Log.i(TAG, "$app: Backing up data")
                 var backupCreated = backupData(app, backupInstanceDir)
                 backupBuilder.setHasAppData(backupCreated)
-                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_EXTERNALDATA, false)) {
+                    Log.i(TAG, "$app: Backing up external data")
                     backupCreated = backupExternalData(app, backupInstanceDir)
                     backupBuilder.setHasExternalData(backupCreated)
+                }
+                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_OBBDATA, false)) {
+                    Log.i(TAG, "$app: Backing up obb files")
                     backupCreated = backupObbData(app, backupInstanceDir)
                     backupBuilder.setHasObbData(backupCreated)
                 }
                 if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+                    Log.i(TAG, "$app: Backing up device's protected data")
                     backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
                     backupBuilder.setHasDevicesProtectedData(backupCreated)
                 }

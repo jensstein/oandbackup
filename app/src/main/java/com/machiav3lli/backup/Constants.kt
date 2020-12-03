@@ -45,6 +45,7 @@ object Constants {
     const val PREFS_SALT = "salt"
     const val PREFS_EXCLUDECACHE = "excludeCache"
     const val PREFS_EXTERNALDATA = "backupExternalData"
+    const val PREFS_OBBDATA = "backupObbData"
     const val PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData"
     const val PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions"
     const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"

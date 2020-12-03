@@ -84,18 +84,17 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val backupDir = StorageFile.fromUri(context, backupLocation)
         restoreData(app, backupProperties, backupDir)
         val prefs = getDefaultSharedPreferences(context)
-        if (backupProperties.hasExternalData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
+        if (backupProperties.hasExternalData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, false)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's external data")
             restoreExternalData(app, backupProperties, backupDir)
         } else {
             Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or disabled")
         }
-        // Careful! This is again external data! It's the same configuration parameter!
-        if (backupProperties.hasObbData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, true)) {
-            Log.i(TAG, "[${backupProperties.packageName}] Restoring app's obb data")
+        if (backupProperties.hasObbData && prefs.getBoolean(Constants.PREFS_OBBDATA, false)) {
+            Log.i(TAG, "[${backupProperties.packageName}] Restoring app's obb files")
             restoreObbData(app, backupProperties, backupDir)
         } else {
-            Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's obb data; not part of the backup or disabled")
+            Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or disabled")
         }
         if (backupProperties.hasDevicesProtectedData && prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's protected data")

@@ -112,6 +112,8 @@
     <string name="prefs_excludecache_summary">Exclude app\'s cache from data backup</string>
     <string name="prefs_externaldata">Back up external data</string>
     <string name="prefs_externaldata_summary">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_obbdata">Back up obb files</string>
+    <string name="prefs_obbdata_summary">Backs up and restores the app\'s obb files that is placed on the external storage (e.g. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_deviceprotecteddata">Back up device-protected data</string>
     <string name="prefs_deviceprotecteddata_summary">Backs up and restores data that is placed in data/user_de</string>
     <string name="prefs_numBackupRevisions">Number of backup revisions</string>
