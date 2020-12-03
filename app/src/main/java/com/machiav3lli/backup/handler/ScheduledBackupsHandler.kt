@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules
+package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.util.Log
@@ -28,9 +28,6 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.BlacklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHelper
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.tasks.ScheduledWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
@@ -38,7 +35,7 @@ import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.checkStoragePermissions
 
-class HandleScheduledBackups(private val context: Context) {
+class ScheduledBackupsHandler(private val context: Context) {
     private val listeners: MutableList<BackupRestoreHelper.OnBackupRestoreListener> = mutableListOf()
 
     fun setOnBackupListener(listener: BackupRestoreHelper.OnBackupRestoreListener) {
@@ -50,7 +47,7 @@ class HandleScheduledBackups(private val context: Context) {
         Thread {
             Runnable {
                 val notificationId = System.currentTimeMillis().toInt()
-                NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId,
+                NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId,
                         String.format(context.getString(R.string.fetching_action_list),
                                 context.getString(R.string.backup)), "", true)
                 val list: List<AppInfo>
@@ -115,7 +112,7 @@ class HandleScheduledBackups(private val context: Context) {
         } else {
             val notificationTitle = context.getString(R.string.sched_notificationMessage)
             val notificationMessage = context.getString(R.string.permission_not_granted)
-            NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId,
+            NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId,
                     notificationTitle, notificationMessage, true)
         }
     }

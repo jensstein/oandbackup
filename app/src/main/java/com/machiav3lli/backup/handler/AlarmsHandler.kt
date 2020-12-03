@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules
+package com.machiav3lli.backup.handler
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -25,9 +25,10 @@ import android.icu.util.Calendar
 import android.os.PowerManager
 import android.util.Log
 import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.services.AlarmReceiver
 import kotlin.math.abs
 
-class HandleAlarms(var context: Context) {
+class AlarmsHandler(var context: Context) {
     private val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val deviceIdleChecker: DeviceIdleChecker = DeviceIdleChecker(context)
 

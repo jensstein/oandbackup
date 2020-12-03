@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules
+package com.machiav3lli.backup.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -33,14 +33,17 @@ import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
 import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
+import com.machiav3lli.backup.handler.AlarmsHandler
+import com.machiav3lli.backup.handler.ScheduledBackupsHandler
 
+// TODO Migrate to libsu's RootService?
 class ScheduleService : Service(), OnBackupRestoreListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val id = intent.getIntExtra(classAddress(".schedule_id"), -1)
         if (id >= 0) {
-            val handleAlarms = HandleAlarms(this)
-            val handleScheduledBackups = handleScheduledBackups
+            val handleAlarms = AlarmsHandler(this)
+            val handleScheduledBackups = scheduledBackupsHandler
             handleScheduledBackups.setOnBackupListener(this)
             Thread {
                 val scheduleDao = scheduleDao
@@ -61,8 +64,9 @@ class ScheduleService : Service(), OnBackupRestoreListener {
         return START_NOT_STICKY
     }
 
-    private val handleScheduledBackups: HandleScheduledBackups
-        get() = HandleScheduledBackups(this)
+
+    private val scheduledBackupsHandler: ScheduledBackupsHandler
+        get() = ScheduledBackupsHandler(this)
 
     private val scheduleDao: ScheduleDao
         get() = getInstance(this, SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao

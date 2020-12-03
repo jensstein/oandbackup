@@ -1,14 +1,17 @@
 package com.machiav3lli.backup.tasks
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.PowerManager.WakeLock
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.impl.utils.WakeLocks
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHelper
+import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
@@ -49,7 +52,7 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
                     return@forEach
                 }
                 val title = "${context.getString(R.string.backupProgress)} ($i/$totalOfActions)"
-                NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId, title, appInfo.packageLabel, false)
+                NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId, title, appInfo.packageLabel, false)
                 var result: ActionResult? = null
                 try {
                     result = BackupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, selectedMode)
@@ -59,7 +62,7 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
-                            NotificationHelper.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message, false)
+                            NotificationHandler.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message , it.message, false)
                             LogUtils.logErrors(context, "${appInfo.packageLabel}: ${it.message}")
                         }
                         results.add(it)
@@ -82,7 +85,7 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
                 else -> context.getString(R.string.batchFailure)
             }
             val notificationTitle = context.getString(R.string.sched_notificationMessage)
-            NotificationHelper.showNotification(context, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
+            NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
             if (!overAllResult.succeeded) {
                 LogUtils.logErrors(context, errors)
             }

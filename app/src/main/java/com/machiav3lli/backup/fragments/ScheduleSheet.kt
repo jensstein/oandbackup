@@ -43,9 +43,8 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.dialogs.CustomListDialogFragment
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
-import com.machiav3lli.backup.schedules.HandleAlarms
-import com.machiav3lli.backup.schedules.HandleAlarms.Companion.timeUntilNextEvent
-import com.machiav3lli.backup.schedules.HandleScheduledBackups
+import com.machiav3lli.backup.handler.AlarmsHandler
+import com.machiav3lli.backup.handler.ScheduledBackupsHandler
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
@@ -55,7 +54,7 @@ import java.time.LocalTime
 class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
     private val TAG = classTag(".ScheduleSheet")
-    private lateinit var handleAlarms: HandleAlarms
+    private lateinit var alarmsHandler: AlarmsHandler
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding
 
@@ -66,7 +65,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
-        handleAlarms = HandleAlarms(requireContext())
+        alarmsHandler = AlarmsHandler(requireContext())
         return sheet
     }
 
@@ -161,12 +160,12 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         }
         binding.enableCheckbox.setOnCheckedChangeListener { _, isChecked ->
             viewModel.schedule.value?.enabled = isChecked
-            if (!isChecked) handleAlarms.cancelAlarm(id.toInt())
+            if (!isChecked) alarmsHandler.cancelAlarm(id.toInt())
             refresh()
         }
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
-            handleAlarms.cancelAlarm(id.toInt())
+            alarmsHandler.cancelAlarm(id.toInt())
             viewModel.deleteBlacklist()
             dismissAllowingStateLoss()
         }
@@ -180,7 +179,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.GONE
         } else {
-            val timeDiff = timeUntilNextEvent(schedule.interval,
+            val timeDiff = AlarmsHandler.timeUntilNextEvent(schedule.interval,
                     schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
             val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
             if (days == 0) {
@@ -233,7 +232,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
                     .setTitle("${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)
                     .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                        StartSchedule(requireContext(), HandleScheduledBackups(requireContext()),
+                        StartSchedule(requireContext(), ScheduledBackupsHandler(requireContext()),
                                 id, SchedulerActivityX.BLACKLIST_DB_NAME)
                                 .execute()
                     }
@@ -257,11 +256,11 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         }
     }
 
-    internal class StartSchedule(context: Context, handleScheduledBackups: HandleScheduledBackups,
+    internal class StartSchedule(context: Context, scheduledBackupsHandler: ScheduledBackupsHandler,
                                  private val id: Long, private val databaseName: String)
         : Command {
         private val contextReference = WeakReference(context)
-        private val handleScheduledBackupsReference = WeakReference(handleScheduledBackups)
+        private val handleScheduledBackupsReference = WeakReference(scheduledBackupsHandler)
 
         override fun execute() {
             val t = Thread {

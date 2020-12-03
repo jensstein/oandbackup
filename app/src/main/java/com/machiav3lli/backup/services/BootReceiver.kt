@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.schedules
+package com.machiav3lli.backup.services
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -28,6 +28,7 @@ import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.handler.AlarmsHandler
 import java.lang.ref.WeakReference
 
 class BootReceiver : BroadcastReceiver() {
@@ -42,21 +43,21 @@ class BootReceiver : BroadcastReceiver() {
     private val currentTime: Long
         get() = System.currentTimeMillis()
 
-    private fun getHandleAlarms(context: Context): HandleAlarms {
-        return HandleAlarms(context)
+    private fun getHandleAlarms(context: Context): AlarmsHandler {
+        return AlarmsHandler(context)
     }
 
     private fun getScheduleDao(context: Context?): ScheduleDao {
         return ScheduleDatabase.getInstance(context!!, SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao
     }
 
-    private class DatabaseRunnable(scheduleDao: ScheduleDao, handleAlarms: HandleAlarms, private val currentTime: Long) : Runnable {
+    private class DatabaseRunnable(scheduleDao: ScheduleDao, alarmsHandler: AlarmsHandler, private val currentTime: Long) : Runnable {
         private val scheduleDaoReference: WeakReference<ScheduleDao> = WeakReference(scheduleDao)
-        private val handleAlarmsReference: WeakReference<HandleAlarms> = WeakReference(handleAlarms)
+        private val alarmsHandlerReference: WeakReference<AlarmsHandler> = WeakReference(alarmsHandler)
 
         override fun run() {
             val scheduleDao = scheduleDaoReference.get()
-            val handleAlarms = handleAlarmsReference.get()
+            val handleAlarms = alarmsHandlerReference.get()
             if (scheduleDao == null || handleAlarms == null) {
                 Log.w(TAG, "Bootreceiver database thread resources was null")
                 return
@@ -65,7 +66,7 @@ class BootReceiver : BroadcastReceiver() {
                     .filter { schedule: Schedule -> schedule.enabled && schedule.interval > 0 }
                     .toList()
             for (schedule in schedules) {
-                val timeLeft = HandleAlarms.timeUntilNextEvent(schedule.interval,
+                val timeLeft = AlarmsHandler.timeUntilNextEvent(schedule.interval,
                         schedule.timeHour, schedule.timeMinute, schedule.timePlaced, currentTime)
                 if (timeLeft < 5 * 60000) {
                     handleAlarms.setAlarm(schedule.id.toInt(), AlarmManager.INTERVAL_FIFTEEN_MINUTES)

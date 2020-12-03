@@ -32,7 +32,7 @@ import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.items.SchedulerItemX
-import com.machiav3lli.backup.schedules.HandleAlarms
+import com.machiav3lli.backup.handler.AlarmsHandler
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
@@ -44,7 +44,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistListener {
-    lateinit var handleAlarms: HandleAlarms
+    lateinit var alarmsHandler: AlarmsHandler
     private var sheetSchedule: ScheduleSheet? = null
     private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
     private var schedulerFastAdapter: FastAdapter<SchedulerItemX> = FastAdapter.with(schedulerItemAdapter)
@@ -57,7 +57,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         super.onCreate(savedInstanceState)
         binding = ActivitySchedulerXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        handleAlarms = HandleAlarms(this)
+        alarmsHandler = AlarmsHandler(this)
         blacklistDao = BlacklistDatabase.getInstance(this).blacklistDao
         val dataSource = ScheduleDatabase.getInstance(this, SCHEDULES_DB_NAME).scheduleDao
         val viewModelFactory = SchedulerViewModelFactory(dataSource, application)
@@ -134,7 +134,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
             viewModel.removeSchedule(item.schedule.id)
-            handleAlarms.cancelAlarm(item.schedule.id.toInt())
+            alarmsHandler.cancelAlarm(item.schedule.id.toInt())
         }
     }
 
@@ -146,7 +146,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
             viewModel.getActiveSchedule(item.schedule.id)?.enabled = (v as AppCompatCheckBox).isChecked
             if (!item.schedule.enabled) {
-                handleAlarms.cancelAlarm(item.schedule.id.toInt())
+                alarmsHandler.cancelAlarm(item.schedule.id.toInt())
             }
             refresh()
         }
