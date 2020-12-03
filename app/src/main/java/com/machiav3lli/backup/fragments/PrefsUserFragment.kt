@@ -28,12 +28,12 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.*
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
+    private val TAG = Constants.classTag("PrefsUserFragment")
     private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

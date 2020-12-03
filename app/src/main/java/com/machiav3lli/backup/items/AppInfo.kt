@@ -100,7 +100,7 @@ class AppInfo {
                 this.appMetaInfo = SpecialAppMetaInfo.getSpecialPackages(context)
                         .find { it.packageName == this.packageName }!!
                         .appMetaInfo
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 Log.i(TAG, "$packageName is not installed")
                 if (this.backupHistory.isNullOrEmpty()) {
                     throw AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e)

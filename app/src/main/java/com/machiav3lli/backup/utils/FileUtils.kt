@@ -69,7 +69,6 @@ object FileUtils {
             backupLocation = storageRootDoc.uri
         }
         return backupLocation as Uri
-
     }
 
     /**

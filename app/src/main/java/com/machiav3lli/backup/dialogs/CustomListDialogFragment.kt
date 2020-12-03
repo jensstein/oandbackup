@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.dialogs
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageInfo
 import android.os.Bundle
@@ -66,17 +65,16 @@ class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomList
                 .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedIndexes) { _: DialogInterface?, index: Int, isChecked: Boolean ->
                     if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
                 }
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(requireContext(), listId, packageNames, selections) }
+                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(listId, packageNames, selections) }
                 .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .create()
     }
 
-    private fun saveSelected(context: Context, listId: Int, packagesNames: List<String>, selections: List<Int>) {
+    private fun saveSelected(listId: Int, packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
                 .map { packagesNames[it] }
                 .toSet()
-        // setScheduleCustomList(context, listId, selectedPackages)
-        listener.onCustomListChanged(selectedPackages, id)
+        listener.onCustomListChanged(selectedPackages, listId)
     }
 
     interface CustomListListener {

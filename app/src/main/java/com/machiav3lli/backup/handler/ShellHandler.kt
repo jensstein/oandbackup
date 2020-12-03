@@ -56,7 +56,7 @@ class ShellHandler {
         // "lrwxrwxrwx 1 root    root      64 2020-11-24 19:41:09.569333987 +0100 lib -> /data/app/com.almalence.opencam-SekQMXi3UuGHZ_CVtPxhCA==/lib/arm"
         val shellResult = runAsRoot("$utilboxPath ls -All \"$path\"")
         val relativeParent = parent ?: ""
-        val result = shellResult.out
+        val result = shellResult.out.asSequence()
                 .filter { line: String -> line.isNotEmpty() }
                 .filter { line: String -> !line.startsWith("total") }
                 .filter { line: String -> splitWithoutEmptyValues(line, " ", 0).size > 8 }
@@ -134,7 +134,6 @@ class ShellHandler {
             var fileSize: Long,
             var fileModTime: Date
             ) {
-
         enum class FileType {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
         }
@@ -256,10 +255,6 @@ class ShellHandler {
             fun fromLsOOutput(lsLine: String, absoluteParent: String): FileInfo {
                 return fromLsOOutput(lsLine, "", absoluteParent)
             }
-        }
-
-        init {
-            this.fileSize = fileSize
         }
     }
 

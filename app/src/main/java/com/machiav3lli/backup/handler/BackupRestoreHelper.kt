@@ -84,12 +84,12 @@ object BackupRestoreHelper {
         return result
     }
 
-    fun restore(context: Context, shellHandler: ShellHandler?, app: AppInfo,
-                backupProperties: BackupProperties, backupLocation: Uri, mode: Int): ActionResult {
+    fun restore(context: Context, shellHandler: ShellHandler, app: AppInfo, mode: Int,
+                backupProperties: BackupProperties, backupLocation: Uri): ActionResult {
         val restoreAction: RestoreAppAction = when {
-            app.isSpecial -> RestoreSpecialAction(context, shellHandler!!)
-            app.isSystem -> RestoreSystemAppAction(context, shellHandler!!)
-            else -> RestoreAppAction(context, shellHandler!!)
+            app.isSpecial -> RestoreSpecialAction(context, shellHandler)
+            app.isSystem -> RestoreSystemAppAction(context, shellHandler)
+            else -> RestoreAppAction(context, shellHandler)
         }
         val result = restoreAction.run(app, backupProperties, backupLocation, mode)
         Log.i(TAG, "$app: Restore succeeded: ${result.succeeded}")

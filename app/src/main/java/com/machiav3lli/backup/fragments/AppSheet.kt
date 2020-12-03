@@ -45,8 +45,7 @@ import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
-import com.machiav3lli.backup.handler.ShellCommands.ShellActionFailedException
-import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.BackupActionTask
@@ -85,8 +84,8 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
         val viewModelFactory = AppSheetViewModelFactory(item.app, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
-        viewModel.refreshNow.observe(viewLifecycleOwner, {
-            if (it) {
+        viewModel.refreshNow.observe(viewLifecycleOwner, { refreshBoolean ->
+            if (refreshBoolean) {
                 requireMainActivity().updatePackage(viewModel.appInfo.value?.packageName ?: "")
                 viewModel.refreshNow.value = false
             }
@@ -199,11 +198,11 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                     Log.i(TAG, "$it: Wiping cache")
                     ShellCommands.wipeCache(requireContext(), app)
                     viewModel.refreshNow.value = true
-                } catch (e: ShellActionFailedException) {
+                } catch (e: ShellCommands.ShellActionFailedException) {
                     // Not a critical issue
                     val errorMessage: String? = when (e.cause) {
-                        is ShellCommandFailedException -> {
-                            (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
+                        is ShellHandler.ShellCommandFailedException -> {
+                            (e.cause as ShellHandler.ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
                         }
                         else -> {
                             e.cause?.message
@@ -337,13 +336,13 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                     .setPositiveButton(com.machiav3lli.backup.R.string.dialogOK) { _: DialogInterface?, _: Int ->
                         try {
                             viewModel.enableDisableApp(selectedUsers, enable)
-                        } catch (e: ShellActionFailedException) {
+                        } catch (e: ShellCommands.ShellActionFailedException) {
                             showError(requireActivity(), e.message)
                         }
                     }
                     .setNegativeButton(com.machiav3lli.backup.R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
                     .show()
-        } catch (e: ShellActionFailedException) {
+        } catch (e: ShellCommands.ShellActionFailedException) {
             showError(requireActivity(), e.message)
         }
     }

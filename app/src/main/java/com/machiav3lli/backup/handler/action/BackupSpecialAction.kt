@@ -58,7 +58,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
         try {
             for (filePath in appInfo.fileList) {
                 val file = File(filePath!!)
-                val isDirSource = filePath.endsWith("/") ?: false
+                val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
                 val fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
                 if (isDirSource) {
@@ -69,7 +69,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                                     file.parent!!,
                                     Files.getAttribute(file.toPath(), "unix:owner", LinkOption.NOFOLLOW_LINKS).toString(),
                                     Files.getAttribute(file.toPath(), "unix:group", LinkOption.NOFOLLOW_LINKS).toString(),
-                                    Files.getAttribute(file.toPath(), "unix:mode",  LinkOption.NOFOLLOW_LINKS) as Int,
+                                    Files.getAttribute(file.toPath(), "unix:mode", LinkOption.NOFOLLOW_LINKS) as Int,
                                     0, Date(file.lastModified())))
                 }
                 filesToBackup.addAll(fileInfos)

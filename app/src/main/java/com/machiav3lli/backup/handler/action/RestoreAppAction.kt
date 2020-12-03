@@ -106,7 +106,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(ShellCommandFailedException::class)
     protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        val targetContents: MutableList<String> = ArrayList(listOf(*shell.suGetDirectoryContents(File(targetDirectory))))
+        val targetContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
         targetContents.removeAll(excludeDirs)
         if (targetContents.isEmpty()) {
             Log.i(TAG, "Nothing to remove in $targetDirectory")
