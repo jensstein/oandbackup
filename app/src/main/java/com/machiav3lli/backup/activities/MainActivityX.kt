@@ -205,12 +205,17 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
         binding.buttonAction.setOnClickListener { actionOnClick(backupBoolean) }
+        viewModel.dataCheckedList.clear()
+        viewModel.apkCheckedList.clear()
     }
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
-        binding.cbAll.setOnClickListener { v: View -> onCheckAllChanged(v) }
+        binding.cbAll.setOnClickListener {
+            binding.cbAll.isChecked = (it as AppCompatCheckBox).isChecked
+            onCheckAllChanged()
+        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(getFilterPreferences(this).toString()))
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
@@ -242,56 +247,63 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             updateCheckAll()
             false
         }
-        binding.apkBatch.setOnClickListener {
-            val checkBoolean = viewModel.apkCheckedList.size != batchItemAdapter.itemList.size()
-            viewModel.apkCheckedList.clear()
-            batchItemAdapter.adapterItems.forEach {
-                val packageName = it.app.packageName
-                it.isApkChecked = checkBoolean
-                if (checkBoolean) viewModel.apkCheckedList.add(packageName)
-            }
-            batchFastAdapter?.notifyAdapterDataSetChanged()
-            updateCheckAll()
-        }
-        binding.dataBatch.setOnClickListener {
-            val checkBoolean = viewModel.dataCheckedList.size != batchItemAdapter.itemList.size()
-            viewModel.dataCheckedList.clear()
-            batchItemAdapter.adapterItems.forEach {
-                val packageName = it.app.packageName
-                it.isDataChecked = checkBoolean
-                if (checkBoolean) viewModel.dataCheckedList.add(packageName)
-            }
-            batchFastAdapter?.notifyAdapterDataSetChanged()
-            updateCheckAll()
-        }
+        binding.apkBatch.setOnClickListener { onCheckedApkClicked() }
+        binding.dataBatch.setOnClickListener { onCheckedDataClicked() }
         batchFastAdapter?.addEventHook(OnApkCheckBoxClickHook())
         batchFastAdapter?.addEventHook(OnDataCheckBoxClickHook())
     }
 
-    private fun onCheckAllChanged(v: View) {
-        val startIsChecked = (v as AppCompatCheckBox).isChecked
-        binding.cbAll.isChecked = startIsChecked
+    private fun onCheckAllChanged() {
         batchItemAdapter.adapterItems.forEach { item ->
-            if (item.app.hasApk || item.backupBoolean) item.isApkChecked = startIsChecked
-            if (item.app.hasAppData || item.backupBoolean) item.isDataChecked = startIsChecked
-            if (startIsChecked) {
-                if (!viewModel.apkCheckedList.contains(item.app.packageName) && (item.app.hasApk || item.backupBoolean)) {
-                    viewModel.apkCheckedList.add(item.app.packageName)
+            val apbEligible = item.app.hasApk || backupBoolean
+            val dataEligible = item.app.hasAppData || backupBoolean
+            if (apbEligible) item.isApkChecked = binding.cbAll.isChecked
+            if (dataEligible) item.isDataChecked = binding.cbAll.isChecked
+            when {
+                binding.cbAll.isChecked -> {
+                    if (!viewModel.apkCheckedList.contains(item.app.packageName) && apbEligible)
+                        viewModel.apkCheckedList.add(item.app.packageName)
+                    if (!viewModel.dataCheckedList.contains(item.app.packageName) && dataEligible)
+                        viewModel.dataCheckedList.add(item.app.packageName)
                 }
-                if (!viewModel.dataCheckedList.contains(item.app.packageName) && (item.app.hasAppData || item.backupBoolean)) {
-                    viewModel.dataCheckedList.add(item.app.packageName)
+                else -> {
+                    viewModel.apkCheckedList.remove(item.app.packageName)
+                    viewModel.dataCheckedList.remove(item.app.packageName)
                 }
-            } else {
-                viewModel.apkCheckedList.remove(item.app.packageName)
-                viewModel.dataCheckedList.remove(item.app.packageName)
             }
         }
         batchFastAdapter?.notifyAdapterDataSetChanged()
     }
 
+    private fun onCheckedApkClicked() {
+        val possibleApkCheckedList = batchItemAdapter.adapterItems.filter { it.app.hasApk || backupBoolean }
+        val checkBoolean = viewModel.apkCheckedList.size != possibleApkCheckedList.size
+        viewModel.apkCheckedList.clear()
+        possibleApkCheckedList.forEach {
+            val packageName = it.app.packageName
+            it.isApkChecked = checkBoolean
+            if (checkBoolean) viewModel.apkCheckedList.add(packageName)
+        }
+        batchFastAdapter?.notifyAdapterDataSetChanged()
+        updateCheckAll()
+    }
+
+    private fun onCheckedDataClicked() {
+        val possibleDataCheckedList = batchItemAdapter.itemList.items.filter { it.app.hasAppData || backupBoolean }
+        val checkBoolean = viewModel.dataCheckedList.size != possibleDataCheckedList.size
+        viewModel.dataCheckedList.clear()
+        possibleDataCheckedList.forEach {
+            val packageName = it.app.packageName
+            it.isDataChecked = checkBoolean
+            if (checkBoolean) viewModel.dataCheckedList.add(packageName)
+        }
+        batchFastAdapter?.notifyAdapterDataSetChanged()
+        updateCheckAll()
+    }
+
     private fun updateCheckAll() {
-        val possibleApkChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasApk }.size
-        val possibleDataChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasAppData }.size
+        val possibleApkChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasApk || backupBoolean }.size
+        val possibleDataChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasAppData || backupBoolean }.size
         binding.cbAll.isChecked = viewModel.apkCheckedList.size == possibleApkChecked && viewModel.dataCheckedList.size == possibleDataChecked
     }
 
