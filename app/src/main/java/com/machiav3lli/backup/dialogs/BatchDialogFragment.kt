@@ -49,7 +49,7 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
             message.append("${item.packageLabel}")
             selectedListModes[i]?.let { message.append(": ${getModeString(it)}\n") }
         }
-        val selectedPackages = selectedList.map { it.packageName }.toList().filterNotNull()
+        val selectedPackages = selectedList.map { it.packageName }.toList()
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(title)
         builder.setMessage(message.toString().trim { it <= ' ' })
@@ -65,7 +65,7 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
     }
 
     interface ConfirmListener {
-        fun onConfirmed(selectedPackages: List<String>, selectedModes: List<Int>)
+        fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>)
     }
 
     private fun getModeString(mode: Int): String {

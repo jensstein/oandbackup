@@ -32,11 +32,22 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/modeBar"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/navi_graph_main" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/large_spacing"
+            android:layout_margin="@dimen/cards_spacing"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/modeBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragmentContainer" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/modeBar"
@@ -48,28 +59,30 @@
             app:layout_constraintBottom_toTopOf="@id/mainLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragmentContainer">
+            app:layout_constraintTop_toBottomOf="@id/progressBar">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/apkBatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/cards_spacing"
+                android:layout_marginEnd="@dimen/buttons_spacing"
                 android:background="@drawable/bg_lower_opacity_ripple_apk"
-                android:paddingHorizontal="@dimen/med_spacing"
-                android:paddingVertical="@dimen/buttons_spacing"
+                android:gravity="center_horizontal"
+                android:minWidth="@dimen/app_icon_size"
+                android:padding="@dimen/buttons_spacing"
                 android:text="@string/radio_apk"
-                android:textAppearance="@style/TextAppearance.Label" />
+                android:textAppearance="@style/TextAppearance.Lines" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/dataBatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_lower_opacity_ripple_data"
-                android:paddingHorizontal="@dimen/cards_spacing"
-                android:paddingVertical="@dimen/buttons_spacing"
+                android:gravity="center_horizontal"
+                android:minWidth="@dimen/app_icon_size"
+                android:padding="@dimen/buttons_spacing"
                 android:text="@string/radio_data"
-                android:textAppearance="@style/TextAppearance.Label" />
+                android:textAppearance="@style/TextAppearance.Lines" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
