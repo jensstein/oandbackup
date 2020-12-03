@@ -150,15 +150,12 @@ class PermissionsFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BACKUP_DIR) {
-            if (data == null) return
-            if (resultCode == Activity.RESULT_OK) {
-                val uri = data.data ?: return
-                val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                setStorageRootDir(this.requireContext(), uri)
-            }
+        if (requestCode == BACKUP_DIR && data != null && resultCode == Activity.RESULT_OK) {
+            val uri = data.data ?: return
+            val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+            setStorageRootDir(this.requireContext(), uri)
         }
     }
 

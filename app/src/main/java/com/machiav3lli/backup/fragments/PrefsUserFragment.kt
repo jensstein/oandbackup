@@ -79,7 +79,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun onClickBackupDirectory(): Boolean {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        startActivityForResult(intent, DEFAULT_DIR_CODE)
+        startActivityForResult(intent, BACKUP_DIR)
         return true
     }
 
@@ -91,25 +91,22 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == DEFAULT_DIR_CODE && data != null) {
-            val newPath = data.data
-            if (resultCode == Activity.RESULT_OK && newPath != null) {
-                val oldDir: String? = try {
-                    getStorageRootDir(requireContext())
-                } catch (e: StorageLocationNotConfiguredException) {
-                    // Can be ignored, this is about to set the path
-                    ""
-                }
-                if (oldDir != newPath.toString()) {
-                    Log.i(TAG, "setting uri $newPath")
-                    setDefaultDir(requireContext(), newPath)
-                }
+        if (requestCode == BACKUP_DIR && data != null && resultCode == Activity.RESULT_OK) {
+            val uri = data.data ?: return
+            val oldDir: String? = try {
+                getStorageRootDir(requireContext())
+            } catch (e: StorageLocationNotConfiguredException) {
+                // Can be ignored, this is about to set the path
+                ""
+            }
+            if (oldDir != uri.toString()) {
+                val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+                Log.i(TAG, "setting uri $uri")
+                setDefaultDir(requireContext(), uri)
             }
         }
     }
 
-    companion object {
-        private val TAG = classTag(".PrefsUserFragment")
-        private const val DEFAULT_DIR_CODE = 0
-    }
 }
