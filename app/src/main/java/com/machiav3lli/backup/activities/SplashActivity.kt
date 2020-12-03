@@ -20,9 +20,7 @@ package com.machiav3lli.backup.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classAddress
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
 import com.machiav3lli.backup.utils.*
 
@@ -31,19 +29,19 @@ class SplashActivity : BaseActivity() {
     private val TAG = classTag(".SplashActivity")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setDayNightTheme(getPrivateSharedPrefs(this).getString(Constants.PREFS_THEME, "system"))
+        setDayNightTheme(getPrivateSharedPrefs(this).getString(PREFS_THEME, "system"))
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val prefs = getPrivateSharedPrefs(this)
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)
-        if (prefs.getBoolean(Constants.PREFS_FIRST_LAUNCH, true)) {
+        if (prefs.getBoolean(PREFS_FIRST_LAUNCH, true)) {
             startActivity(introIntent)
         } else if (checkStoragePermissions(this) &&
                 isStorageDirSetAndOk(this) &&
                 checkUsageStatsPermission(this) &&
-                (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+                (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(packageName))) {
             introIntent.putExtra(classAddress(".fragmentNumber"), 3)
             startActivity(introIntent)

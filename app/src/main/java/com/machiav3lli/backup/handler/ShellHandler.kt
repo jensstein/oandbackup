@@ -18,8 +18,8 @@
 package com.machiav3lli.backup.handler
 
 import android.util.Log
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.UTILBOX_PATH
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -133,12 +133,13 @@ class ShellHandler {
             var fileMode: Int,
             var fileSize: Long,
             var fileModTime: Date
-            ) {
+    ) {
         enum class FileType {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
         }
 
         val absolutePath: String = absoluteParent + '/' + File(filePath).name
+
         //val fileMode = fileMode
         //val fileSize = fileSize
         //val fileModTime = fileModTime
@@ -163,8 +164,8 @@ class ShellHandler {
 
         companion object {
             private val PATTERN_LINKSPLIT = Pattern.compile(" -> ")
-            val FALLBACK_MODE_FOR_DIR  = translatePosixPermissionToMode("rwxrwx--x")
-            val FALLBACK_MODE_FOR_FILE =  translatePosixPermissionToMode("rw-rw----")
+            val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
+            val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
 
             /**
              * Create an instance of FileInfo from a line of the output from
@@ -372,13 +373,13 @@ class ShellHandler {
 
     init {
         try {
-            setUtilboxPath(Constants.UTILBOX_PATH)
+            setUtilboxPath(UTILBOX_PATH)
         } catch (e: UtilboxNotAvailableException) {
-            Log.d(TAG, "Tried utilbox path `${Constants.UTILBOX_PATH}`. Not available.")
+            Log.d(TAG, "Tried utilbox path `${UTILBOX_PATH}`. Not available.")
         }
         if (utilboxPath == null) {
             Log.d(TAG, "No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(Constants.UTILBOX_PATH, null)
+            throw UtilboxNotAvailableException(UTILBOX_PATH, null)
         }
     }
 }

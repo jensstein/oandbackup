@@ -32,10 +32,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.BLACKLIST_ARGS_ID
+import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.BlacklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
@@ -150,9 +151,9 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         }
         binding.blacklistButton.setOnClickListener {
             val args = Bundle()
-            args.putInt(Constants.BLACKLIST_ARGS_ID, viewModel.id.toInt())
+            args.putInt(BLACKLIST_ARGS_ID, viewModel.id.toInt())
             val blacklistedPackages = viewModel.blacklist.value ?: arrayListOf()
-            args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES, blacklistedPackages as ArrayList<String>)
+            args.putStringArrayList(BLACKLIST_ARGS_PACKAGES, blacklistedPackages as ArrayList<String>)
 
             val blacklistDialogFragment = BlacklistDialogFragment(this)
             blacklistDialogFragment.arguments = args

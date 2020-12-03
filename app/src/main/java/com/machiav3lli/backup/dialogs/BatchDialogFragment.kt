@@ -23,14 +23,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.Constants
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 
 class BatchDialogFragment(private var confirmListener: ConfirmListener) : DialogFragment() {
-    private val TAG = Constants.classTag(".BatchConfirmDialog")
+    private val TAG = classTag(".BatchConfirmDialog")
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = this.requireArguments()

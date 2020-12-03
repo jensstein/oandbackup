@@ -21,11 +21,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
-import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.HousekeepingMoment
-import com.machiav3lli.backup.Constants.HousekeepingMoment.Companion.fromString
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.*
+import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.action.*
 import com.machiav3lli.backup.items.ActionResult
@@ -47,7 +44,7 @@ object BackupRestoreHelper {
     fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
         var backupMode = backupMode
         val housekeepingWhen = fromString(getDefaultSharedPreferences(context)
-                .getString(Constants.PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
+                .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
                 ?: HousekeepingMoment.AFTER.value)
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
             housekeepingPackageBackups(context, appInfo, true)
@@ -136,7 +133,7 @@ object BackupRestoreHelper {
     }
 
     private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
-        var numBackupRevisions = getDefaultSharedPreferences(context).getInt(Constants.PREFS_NUM_BACKUP_REVISIONS, 2)
+        var numBackupRevisions = getDefaultSharedPreferences(context).getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
         if (numBackupRevisions == 0) {
             Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")

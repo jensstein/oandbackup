@@ -2,7 +2,7 @@ package com.machiav3lli.backup.items
 
 import android.content.Context
 import android.net.Uri
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
 import org.apache.commons.io.IOUtils

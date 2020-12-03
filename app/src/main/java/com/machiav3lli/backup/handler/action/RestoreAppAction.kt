@@ -21,8 +21,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.Crypto.decryptStream
 import com.machiav3lli.backup.handler.ShellHandler
@@ -84,19 +83,19 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val backupDir = StorageFile.fromUri(context, backupLocation)
         restoreData(app, backupProperties, backupDir)
         val prefs = getDefaultSharedPreferences(context)
-        if (backupProperties.hasExternalData && prefs.getBoolean(Constants.PREFS_EXTERNALDATA, false)) {
+        if (backupProperties.hasExternalData && prefs.getBoolean(PREFS_EXTERNALDATA, false)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's external data")
             restoreExternalData(app, backupProperties, backupDir)
         } else {
             Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or disabled")
         }
-        if (backupProperties.hasObbData && prefs.getBoolean(Constants.PREFS_OBBDATA, false)) {
+        if (backupProperties.hasObbData && prefs.getBoolean(PREFS_OBBDATA, false)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's obb files")
             restoreObbData(app, backupProperties, backupDir)
         } else {
             Log.i(TAG, "[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or disabled")
         }
-        if (backupProperties.hasDevicesProtectedData && prefs.getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+        if (backupProperties.hasDevicesProtectedData && prefs.getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) {
             Log.i(TAG, "[${backupProperties.packageName}] Restoring app's protected data")
             restoreDeviceProtectedData(app, backupProperties, backupDir)
         } else {
@@ -124,7 +123,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     protected fun uncompress(filepath: File, targetDir: File?) {
         val inputFilename = filepath.absolutePath
         Log.d(TAG, "Opening file for expansion: $inputFilename")
-        val password = getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")
+        val password = getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")
         var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
         if (!password.isNullOrEmpty()) {
             Log.d(TAG, "Encryption enabled")
@@ -276,7 +275,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
         if (isEncrypted) {
             val password = getDefaultSharedPreferences(context)
-                    .getString(Constants.PREFS_PASSWORD, "")
+                    .getString(PREFS_PASSWORD, "")
             if (!password.isNullOrEmpty()) {
                 Log.d(TAG, "Decryption enabled")
                 return TarArchiveInputStream(
@@ -431,7 +430,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 apkPath)
     }
 
-    enum class RestoreCommand(val command: String) {
+    enum class RestoreCommand(private val command: String) {
         MOVE("mv"), COPY("cp -r");
 
         override fun toString(): String {

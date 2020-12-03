@@ -20,8 +20,7 @@ package com.machiav3lli.backup.handler.action
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.Crypto
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
@@ -80,17 +79,17 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 Log.i(TAG, "$app: Backing up data")
                 var backupCreated = backupData(app, backupInstanceDir)
                 backupBuilder.setHasAppData(backupCreated)
-                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_EXTERNALDATA, false)) {
+                if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXTERNALDATA, false)) {
                     Log.i(TAG, "$app: Backing up external data")
                     backupCreated = backupExternalData(app, backupInstanceDir)
                     backupBuilder.setHasExternalData(backupCreated)
                 }
-                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_OBBDATA, false)) {
+                if (getDefaultSharedPreferences(context).getBoolean(PREFS_OBBDATA, false)) {
                     Log.i(TAG, "$app: Backing up obb files")
                     backupCreated = backupObbData(app, backupInstanceDir)
                     backupBuilder.setHasObbData(backupCreated)
                 }
-                if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DEVICEPROTECTEDDATA, true)) {
+                if (getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) {
                     Log.i(TAG, "$app: Backing up device's protected data")
                     backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
                     backupBuilder.setHasDevicesProtectedData(backupCreated)
@@ -130,7 +129,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     @Throws(IOException::class)
     protected fun saveBackupProperties(packageBackupDir: StorageFile, properties: BackupProperties) {
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
-                Constants.BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId)
+                BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId)
         val propertiesFile = packageBackupDir.createFile("application/octet-stream", propertiesFileName)
         BufferedOutputStream(context.contentResolver.openOutputStream(propertiesFile?.uri
                 ?: Uri.EMPTY, "w"))
@@ -144,7 +143,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupFilename = getBackupArchiveFilename(what!!, isEncryptionEnabled(context))
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
-        val password = getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")
+        val password = getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")
         var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
                 ?: Uri.EMPTY, "w"))
         if (!password.isNullOrEmpty()) {
@@ -230,7 +229,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                     null
             )
             // Excludes cache and libs, when we don't want to backup'em
-            if (getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_EXCLUDECACHE, true)) {
+            if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXCLUDECACHE, true)) {
                 dirsInSource = dirsInSource
                         .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
                         .toList()

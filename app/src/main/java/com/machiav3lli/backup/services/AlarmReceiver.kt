@@ -20,7 +20,7 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.Constants.classAddress
+import com.machiav3lli.backup.classAddress
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

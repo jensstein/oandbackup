@@ -1,13 +1,13 @@
 package com.machiav3lli.backup.tasks
 
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/* adapted from with small changes to fit usage:
+/* adapted from with small changes to fit our usage:
  * https://github.com/ladrahul25/CoroutineAsyncTask/blob/master/app/src/main/java/com/example/background/CoroutinesAsyncTask.kt
  */
 abstract class CoroutinesAsyncTask<Params, Progress, Result> {
@@ -28,16 +28,12 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
     private var isCancelled = false
 
     fun execute(vararg params: Params) {
-
-        if (status != Status.PENDING) {
-            when (status) {
-                Status.RUNNING -> throw IllegalStateException("Cannot execute task:$TAG the task is already running.")
-                Status.FINISHED -> throw IllegalStateException("Cannot execute task: $TAG"
-                        + " the task has already been executed (a task can be executed only once)")
-            }
+        when (status) {
+            Status.RUNNING -> throw IllegalStateException("Cannot execute task:$TAG the task is already running.")
+            Status.FINISHED -> throw IllegalStateException("Cannot execute task: $TAG"
+                    + " the task has already been executed (a task can be executed only once)")
+            Status.PENDING -> status = Status.RUNNING
         }
-
-        status = Status.RUNNING
 
         // it can be used to setup UI - it should have access to Main Thread
         GlobalScope.launch(Dispatchers.Main) {

@@ -23,9 +23,7 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 
 class PrefsServiceFragment : PreferenceFragmentCompat() {
     private val TAG = classTag(".PrefsServiceFragment")
@@ -35,9 +33,9 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_service, rootKey)
-        encryptPref = findPreference(Constants.PREFS_ENCRYPTION)!!
-        passwordPref = findPreference(Constants.PREFS_PASSWORD)!!
-        passwordConfirmationPref = findPreference(Constants.PREFS_PASSWORD_CONFIRMATION)!!
+        encryptPref = findPreference(PREFS_ENCRYPTION)!!
+        passwordPref = findPreference(PREFS_PASSWORD)!!
+        passwordConfirmationPref = findPreference(PREFS_PASSWORD_CONFIRMATION)!!
         passwordPref.isVisible = encryptPref.isChecked
         passwordConfirmationPref.isVisible = encryptPref.isChecked
     }

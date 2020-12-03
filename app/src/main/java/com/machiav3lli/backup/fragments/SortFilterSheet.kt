@@ -29,7 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
@@ -89,7 +89,7 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
         binding.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putBackupFilter(checkedId) }
         binding.specialFilters.check(sortFilterModel.specialFilterId)
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSpecialFilter(checkedId) }
-        if (getDefaultSharedPreferences(requireContext()).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)) {
+        if (getDefaultSharedPreferences(requireContext()).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
             binding.showOnlySpecial.visibility = View.VISIBLE
         } else {
             binding.showOnlySpecial.visibility = View.GONE

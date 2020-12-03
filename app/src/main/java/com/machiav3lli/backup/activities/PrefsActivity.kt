@@ -18,10 +18,9 @@
 package com.machiav3lli.backup.activities
 
 import android.os.Bundle
-import android.view.View
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.PrefsServiceFragment
 

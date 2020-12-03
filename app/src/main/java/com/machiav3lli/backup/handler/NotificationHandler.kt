@@ -24,9 +24,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.BaseActivity
+import com.machiav3lli.backup.classTag
 
 object NotificationHandler {
     private val TAG = classTag(".NotificationHelper")

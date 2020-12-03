@@ -19,7 +19,7 @@ package com.machiav3lli.backup.handler.action
 
 import android.content.Context
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException

@@ -35,7 +35,7 @@ import androidx.biometric.BiometricManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.Crypto
 import com.machiav3lli.backup.items.StorageFile
 import java.nio.charset.StandardCharsets
@@ -45,7 +45,7 @@ const val WRITE_PERMISSION = 3
 const val BACKUP_DIR = 5
 
 fun getCryptoSalt(context: Context): ByteArray {
-    val userSalt = getDefaultSharedPreferences(context).getString(Constants.PREFS_SALT, "")
+    val userSalt = getDefaultSharedPreferences(context).getString(PREFS_SALT, "")
             ?: ""
     return if (userSalt.isNotEmpty()) {
         userSalt.toByteArray(StandardCharsets.UTF_8)
@@ -53,12 +53,12 @@ fun getCryptoSalt(context: Context): ByteArray {
 }
 
 fun isEncryptionEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getString(Constants.PREFS_PASSWORD, "")?.isNotEmpty()
+    return getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
             ?: false
 }
 
 fun isLockEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_BIOMETRICLOCK, false)
+    return getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)
 }
 
 fun isBiometricLockAvailable(context: Context): Boolean {
@@ -75,7 +75,7 @@ fun isBiometricLockAvailable(context: Context): Boolean {
  */
 @Throws(StorageLocationNotConfiguredException::class)
 fun getStorageRootDir(context: Context): String? {
-    val location = getPrivateSharedPrefs(context).getString(Constants.PREFS_PATH_BACKUP_DIRECTORY, "")
+    val location = getPrivateSharedPrefs(context).getString(PREFS_PATH_BACKUP_DIRECTORY, "")
             ?: ""
     if (location.isEmpty()) {
         throw StorageLocationNotConfiguredException()
@@ -87,7 +87,7 @@ fun setStorageRootDir(context: Context, value: Uri) {
     val fullUri = DocumentsContract
             .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     getPrivateSharedPrefs(context).edit()
-            .putString(Constants.PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
+            .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
     FileUtils.invalidateBackupLocation()
 }
 
@@ -109,7 +109,7 @@ fun getDefaultSharedPreferences(context: Context): SharedPreferences {
 }
 
 fun getPrivateSharedPrefs(context: Context): SharedPreferences {
-    return context.getSharedPreferences(Constants.PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
+    return context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
 }
 
 fun requireStorageLocation(fragment: Fragment) {
@@ -173,15 +173,15 @@ fun checkUsageStatsPermission(context: Context): Boolean {
 }
 
 fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerManager: PowerManager)
-        : Boolean = prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+        : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(context.packageName)
 
 fun isKillBeforeActionEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_KILLBEFOREACTION, false)
+    return getDefaultSharedPreferences(context).getBoolean(PREFS_KILLBEFOREACTION, false)
 }
 
 fun isDisableVerification(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_DISABLEVERIFICATION, true)
+    return getDefaultSharedPreferences(context).getBoolean(PREFS_DISABLEVERIFICATION, true)
 }
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")

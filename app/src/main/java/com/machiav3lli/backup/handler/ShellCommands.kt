@@ -20,8 +20,8 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.os.Binder
 import android.util.Log
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.UTILBOX_PATH
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -65,7 +65,7 @@ class ShellCommands(private var users: List<String>?) {
             }
             // don't care for the result here, it likely fails due to file not found
             try {
-                command = String.format("%s rm -r /data/lib/%s/*", Constants.UTILBOX_PATH, packageName)
+                command = String.format("%s rm -r /data/lib/%s/*", UTILBOX_PATH, packageName)
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 Log.d(TAG, "Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
@@ -84,10 +84,10 @@ class ShellCommands(private var users: List<String>?) {
                 throw IllegalArgumentException(error)
             }
             command = "(mount -o remount,rw /system && " +
-                    "${Constants.UTILBOX_PATH} rm $sourceDir ; " +
+                    "$UTILBOX_PATH rm $sourceDir ; " +
                     "rm -r /system/app/$apkSubDir ; " +
-                    "${Constants.UTILBOX_PATH} rm -r $dataDir ; " +
-                    "${Constants.UTILBOX_PATH} rm -r /data/app-lib/$packageName*); " +
+                    "$UTILBOX_PATH rm -r $dataDir ; " +
+                    "$UTILBOX_PATH rm -r /data/app-lib/$packageName*); " +
                     "mount -o remount,ro /system"
             try {
                 runAsRoot(command)
@@ -125,7 +125,7 @@ class ShellCommands(private var users: List<String>?) {
         if (!users.isNullOrEmpty()) {
             return users
         }
-        val command = "pm list users | ${Constants.UTILBOX_PATH} sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
+        val command = "pm list users | $UTILBOX_PATH sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
         return try {
             val result = runAsRoot(command)
             result.out
@@ -142,7 +142,7 @@ class ShellCommands(private var users: List<String>?) {
 
     @Throws(ShellActionFailedException::class)
     fun quickReboot() {
-        val command = "${Constants.UTILBOX_PATH} pkill system_server"
+        val command = "$UTILBOX_PATH pkill system_server"
         try {
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {

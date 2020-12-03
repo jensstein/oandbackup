@@ -3,7 +3,7 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
@@ -23,7 +23,7 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
     val backupPath = ensureBackupPath(backupRoot)
 
     private fun ensureBackupPath(backupRoot: Uri): StorageFile? {
-        val dateTimeStr = Constants.BACKUP_DATE_TIME_FORMATTER.format(backupDate)
+        val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
         return ensureDirectory(StorageFile.fromUri(context, backupRoot), String.format(BackupProperties.BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
     }

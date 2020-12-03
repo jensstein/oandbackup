@@ -24,7 +24,7 @@ import android.content.Intent
 import android.icu.util.Calendar
 import android.os.PowerManager
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.services.AlarmReceiver
 import kotlin.math.abs
 

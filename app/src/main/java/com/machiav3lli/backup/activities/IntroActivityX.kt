@@ -30,10 +30,10 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classAddress
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -67,7 +67,7 @@ class IntroActivityX : BaseActivity() {
                 binding.positiveButton.setText(R.string.dialog_start)
                 binding.positiveButton.setOnClickListener {
                     if (checkRootAccess()) {
-                        prefs.edit().putBoolean(Constants.PREFS_FIRST_LAUNCH, false).apply()
+                        prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
                         moveTo(2)
                     }
                 }

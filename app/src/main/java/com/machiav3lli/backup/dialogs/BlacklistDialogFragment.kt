@@ -23,7 +23,8 @@ import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.BLACKLIST_ARGS_ID
+import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.Schedule
@@ -34,8 +35,8 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
         val args = this.requireArguments()
-        val blacklistId = args.getInt(Constants.BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
-        val selectedPackages = args.getStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES)
+        val blacklistId = args.getInt(BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
+        val selectedPackages = args.getStringArrayList(BLACKLIST_ARGS_PACKAGES)
 
         var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->

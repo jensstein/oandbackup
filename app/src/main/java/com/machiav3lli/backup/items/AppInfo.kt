@@ -23,7 +23,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.utils.DocumentUtils
 import com.machiav3lli.backup.utils.FileUtils
@@ -34,11 +34,11 @@ import java.io.File
 import java.io.FileNotFoundException
 
 class AppInfo {
-    private val TAG = Constants.classTag(".AppInfo")
+    private val TAG = classTag(".AppInfo")
 
     var packageName: String = ""
 
-    lateinit var appMetaInfo: AppMetaInfo
+    var appMetaInfo: AppMetaInfo
 
     var backupDirUri: Uri = Uri.EMPTY
 
@@ -190,7 +190,7 @@ class AppInfo {
     }
 
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getAppUri(context: Context, create: Boolean): Uri? {
+    fun getAppUri(context: Context, create: Boolean): Uri {
         if (create && backupDirUri == Uri.EMPTY) {
             backupDirUri = DocumentUtils.ensureDirectory(DocumentUtils.getBackupRoot(context), packageName)!!.uri
         }
@@ -210,7 +210,7 @@ class AppInfo {
         }
         Log.d(TAG, "[$packageName] Deleting backup revision $backupItem")
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
-                Constants.BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
+                BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
         try {
             DocumentUtils.deleteRecursive(context, backupItem.backupInstanceDirUri)
             StorageFile.fromUri(context, backupDirUri).findFile(propertiesFileName)!!.delete()

@@ -18,7 +18,7 @@
 package com.machiav3lli.backup.handler
 
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream

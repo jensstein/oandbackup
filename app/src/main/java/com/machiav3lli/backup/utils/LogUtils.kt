@@ -20,7 +20,7 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import java.io.IOException

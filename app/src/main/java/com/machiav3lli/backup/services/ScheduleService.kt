@@ -25,15 +25,15 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.machiav3lli.backup.Constants.classAddress
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
+import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
-import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
 import com.machiav3lli.backup.handler.AlarmsHandler
+import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
 import com.machiav3lli.backup.handler.ScheduledBackupsHandler
 
 // TODO Migrate to libsu's RootService?

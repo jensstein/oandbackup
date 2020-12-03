@@ -19,8 +19,8 @@ package com.machiav3lli.backup.fragments
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classTag
 
 class PrefsAdvancedFragment : PreferenceFragmentCompat() {
     private val TAG = classTag(".PrefsAdvancedFragment")

@@ -7,7 +7,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.utils.GsonUtils.instance
 import java.time.LocalDateTime
 
@@ -49,8 +49,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
             ?: Uri.EMPTY
 
     private val backupFolderName
-        get() = String.format(BACKUP_INSTANCE_DIR,
-                Constants.BACKUP_DATE_TIME_FORMATTER.format(backupDate), profileId)
+        get() = String.format(BACKUP_INSTANCE_DIR, BACKUP_DATE_TIME_FORMATTER.format(backupDate), profileId)
 
     constructor(context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
                 hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,

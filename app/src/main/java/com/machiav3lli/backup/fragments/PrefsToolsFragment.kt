@@ -26,10 +26,11 @@ import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.PREFS_BATCH_DELETE
+import com.machiav3lli.backup.PREFS_LOGVIEWER
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.NotificationHandler.showNotification
 import com.machiav3lli.backup.items.AppInfo
@@ -48,9 +49,9 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pref = findPreference(Constants.PREFS_BATCH_DELETE)!!
+        pref = findPreference(PREFS_BATCH_DELETE)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
-        pref = findPreference(Constants.PREFS_LOGVIEWER)!!
+        pref = findPreference(PREFS_LOGVIEWER)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
 

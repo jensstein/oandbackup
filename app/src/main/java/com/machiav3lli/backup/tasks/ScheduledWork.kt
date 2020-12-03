@@ -20,7 +20,10 @@ import com.machiav3lli.backup.utils.LogUtils
 class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     private val TAG = ScheduledWork::class.java.simpleName
 
+    @SuppressLint("RestrictedApi")
     override fun doWork(): Result {
+        val wl: WakeLock = WakeLocks.newWakeLock(context, TAG)
+        wl.acquire()
         val selectedPackages = inputData.getStringArray("selectedPackages")?.toList()
                 ?: listOf()
         val blackList = inputData.getStringArray("blackList")?.toList()
@@ -91,7 +94,7 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
             }
 
             // for (l in listeners) l.onBackupRestoreDone()
-
+            wl.release()
             return Result.success()
         }
     }

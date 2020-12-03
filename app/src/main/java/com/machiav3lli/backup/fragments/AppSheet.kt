@@ -36,13 +36,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.machiav3lli.backup.ActionListener
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
-import com.machiav3lli.backup.Constants.exodusUrl
+import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
+import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -79,7 +79,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = SheetAppBinding.inflate(inflater, container, false)
-        val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(Constants.BUNDLE_USERS) else ArrayList()
+        val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
         val viewModelFactory = AppSheetViewModelFactory(item.app, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)

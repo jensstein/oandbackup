@@ -23,16 +23,17 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.BLACKLIST_ARGS_ID
+import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
 import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
-import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.handler.AlarmsHandler
+import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
@@ -99,11 +100,11 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         binding.blacklistButton.setOnClickListener {
             Thread {
                 val args = Bundle()
-                args.putInt(Constants.BLACKLIST_ARGS_ID, GLOBAL_ID)
+                args.putInt(BLACKLIST_ARGS_ID, GLOBAL_ID)
 
                 val blacklistedPackages = blacklistDao
                         .getBlacklistedPackages(GLOBAL_ID) as ArrayList<String>
-                args.putStringArrayList(Constants.BLACKLIST_ARGS_PACKAGES,
+                args.putStringArrayList(BLACKLIST_ARGS_PACKAGES,
                         blacklistedPackages)
                 val blacklistDialogFragment = BlacklistDialogFragment(this)
                 blacklistDialogFragment.arguments = args

@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.google.android.material.badge.BadgeDrawable
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
@@ -343,11 +342,11 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     private fun showEncryptionDialog() {
         val defPrefs = getDefaultSharedPreferences(this)
-        val dontShowAgain = defPrefs.getBoolean(Constants.PREFS_ENCRYPTION, false) && (defPrefs.getString(Constants.PREFS_PASSWORD, "")
+        val dontShowAgain = defPrefs.getBoolean(PREFS_ENCRYPTION, false) && (defPrefs.getString(PREFS_PASSWORD, "")
                 ?: "").isNotEmpty()
         if (dontShowAgain) return
-        val dontShowCounter = prefs.getInt(Constants.PREFS_SKIPPEDENCRYPTION, 0)
-        prefs.edit().putInt(Constants.PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
+        val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
+        prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
         if (dontShowCounter % 10 == 0) {
             AlertDialog.Builder(this)
                     .setTitle(R.string.enable_encryption_title)

@@ -27,13 +27,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.*
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
-    private val TAG = Constants.classTag("PrefsUserFragment")
+    private val TAG = classTag("PrefsUserFragment")
     private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -42,14 +41,14 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pref = findPreference(Constants.PREFS_THEME)!!
+        pref = findPreference(PREFS_THEME)!!
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeTheme(newValue.toString()) }
-        pref = findPreference(Constants.PREFS_LANGUAGES)!!
-        val oldLang = (findPreference<Preference>(Constants.PREFS_LANGUAGES) as ListPreference?)!!.value
+        pref = findPreference(PREFS_LANGUAGES)!!
+        val oldLang = (findPreference<Preference>(PREFS_LANGUAGES) as ListPreference?)!!.value
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
-        pref = findPreference(Constants.PREFS_BIOMETRICLOCK)!!
+        pref = findPreference(PREFS_BIOMETRICLOCK)!!
         pref.isVisible = isBiometricLockAvailable(requireContext())
-        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)!!
+        pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
             pref.summary = getStorageRootDir(requireContext())
         } catch (e: StorageLocationNotConfiguredException) {
@@ -59,7 +58,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     }
 
     private fun onPrefChangeTheme(newValue: String): Boolean {
-        getPrivateSharedPrefs(requireContext()).edit().putString(Constants.PREFS_THEME, newValue).apply()
+        getPrivateSharedPrefs(requireContext()).edit().putString(PREFS_THEME, newValue).apply()
         when (newValue) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -85,7 +84,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun setDefaultDir(context: Context, dir: Uri) {
         setStorageRootDir(context, dir)
-        pref = findPreference(Constants.PREFS_PATH_BACKUP_DIRECTORY)!!
+        pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         pref.summary = dir.toString()
     }
 

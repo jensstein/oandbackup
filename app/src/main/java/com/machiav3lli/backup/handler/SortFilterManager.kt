@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
-import com.machiav3lli.backup.Constants
+import com.machiav3lli.backup.PREFS_OLDBACKUPS
+import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
+import com.machiav3lli.backup.PREFS_SORT_FILTER
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.SortFilterModel
@@ -36,17 +38,17 @@ object SortFilterManager {
 
     fun getFilterPreferences(context: Context): SortFilterModel {
         val sortFilterModel: SortFilterModel
-        val sortFilterPref = getPrivateSharedPrefs(context).getString(Constants.PREFS_SORT_FILTER, "")
+        val sortFilterPref = getPrivateSharedPrefs(context).getString(PREFS_SORT_FILTER, "")
         sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
         return sortFilterModel
     }
 
     fun saveFilterPreferences(context: Context, filterModel: SortFilterModel) {
-        getPrivateSharedPrefs(context).edit().putString(Constants.PREFS_SORT_FILTER, filterModel.toString()).apply()
+        getPrivateSharedPrefs(context).edit().putString(PREFS_SORT_FILTER, filterModel.toString()).apply()
     }
 
     fun getRememberFiltering(context: Context): Boolean {
-        return getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_REMEMBERFILTERING, true)
+        return getDefaultSharedPreferences(context).getBoolean(PREFS_REMEMBERFILTERING, true)
     }
 
     fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
@@ -80,7 +82,7 @@ object SortFilterManager {
 
     private fun applySpecialFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
         val predicate: (AppInfo) -> Boolean
-        val days = getDefaultSharedPreferences(context).getString(Constants.PREFS_OLDBACKUPS, "7")?.toInt()
+        val days = getDefaultSharedPreferences(context).getString(PREFS_OLDBACKUPS, "7")?.toInt()
                 ?: 7
         predicate = when (filter[3]) {
             '1' -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }

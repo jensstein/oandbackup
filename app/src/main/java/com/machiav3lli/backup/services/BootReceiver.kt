@@ -23,8 +23,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.activities.SchedulerActivityX
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase

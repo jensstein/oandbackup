@@ -23,9 +23,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import com.machiav3lli.backup.Constants.classTag
 import com.machiav3lli.backup.SearchViewController
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.BatchItemX
 

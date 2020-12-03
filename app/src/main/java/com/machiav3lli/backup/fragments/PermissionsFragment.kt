@@ -31,10 +31,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.FragmentPermissionsBinding
 import com.machiav3lli.backup.utils.*
 
@@ -98,7 +98,7 @@ class PermissionsFragment : Fragment() {
         if (checkStoragePermissions(requireContext()) &&
                 isStorageDirSetAndOk(requireContext()) &&
                 checkUsageStatsPermission(requireContext()) &&
-                (prefs.getBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+                (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))) {
             (requireActivity() as IntroActivityX).moveTo(3)
         } else {
@@ -115,17 +115,17 @@ class PermissionsFragment : Fragment() {
                     intent.data = Uri.parse("package:" + requireContext().packageName)
                     try {
                         startActivity(intent)
-                        prefs.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION,
+                        prefs.edit().putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION,
                                 powerManager?.isIgnoringBatteryOptimizations(requireContext().packageName) == true).apply()
                     } catch (e: ActivityNotFoundException) {
                         Log.w(TAG, "Ignore battery optimizations not supported", e)
                         Toast.makeText(requireContext(), R.string.ignore_battery_optimization_not_supported, Toast.LENGTH_LONG).show()
-                        prefs.edit().putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
+                        prefs.edit().putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
                     }
                 }
                 .setNeutralButton(R.string.dialog_refuse) { _: DialogInterface?, _: Int ->
                     prefs.edit()
-                            ?.putBoolean(Constants.PREFS_IGNORE_BATTERY_OPTIMIZATION, true)?.apply()
+                            ?.putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)?.apply()
                 }
                 .setCancelable(false)
                 .show()

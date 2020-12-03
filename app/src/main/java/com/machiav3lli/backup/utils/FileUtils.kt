@@ -20,7 +20,7 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.attribute.PosixFilePermission

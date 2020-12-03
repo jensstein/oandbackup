@@ -9,8 +9,8 @@ import android.content.pm.PackageManager
 import android.os.Process
 import android.util.Log
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.Constants
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
@@ -57,7 +57,7 @@ object BackendController {
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getApplicationList(context: Context, includeUninstalled: Boolean): MutableList<AppInfo> {
         invalidateCache()
-        val includeSpecial = getDefaultSharedPreferences(context).getBoolean(Constants.PREFS_ENABLESPECIALBACKUPS, false)
+        val includeSpecial = getDefaultSharedPreferences(context).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
         val pm = context.packageManager
         val backupRoot = getBackupRoot(context)
         val packageInfoList = pm.getInstalledPackages(0)

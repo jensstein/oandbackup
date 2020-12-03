@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import com.machiav3lli.backup.Constants.classTag
+import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.DocumentContractApi
 import com.machiav3lli.backup.utils.LogUtils
 import java.io.FileNotFoundException
