@@ -227,4 +227,5 @@
         <item quantity="one">%d día,</item>
         <item quantity="other">%d días,</item>
     </plurals>
+    <string name="help_issues">Errores conocidos</string>
 </resources>
