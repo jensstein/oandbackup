@@ -56,7 +56,7 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
             NotificationHandler.showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
             showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
-            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message) })
+            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message ?: "") })
             mainActivityX.updatePackage(app.packageName)
         }
         if (signal != null) {

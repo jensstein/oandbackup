@@ -20,45 +20,66 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.classTag
+import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import java.io.BufferedOutputStream
 import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 
-// TODO Improve Log: seperation into reports(items)
 class LogUtils(var context: Context) {
     private val TAG = classTag(".LogUtils")
-    private var logFile: Uri
+    private val LOG_FOLDER_NAME = "LOGS"
+    var logsDirectory: StorageFile?
 
     init {
         val backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context))
-        var logDocumentFile = backupRootFolder.findFile(FileUtils.LOG_FILE_NAME)
-        if (logDocumentFile == null || !logDocumentFile.exists()) {
-            logDocumentFile = backupRootFolder.createFile("application/octet-stream", FileUtils.LOG_FILE_NAME)
-        }
-        logFile = logDocumentFile!!.uri
+        logsDirectory = DocumentUtils.ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
     }
 
     @Throws(IOException::class)
-    fun writeToLogFile(log: String?) {
-        FileUtils.openFileForWriting(context, logFile, "wa").use { logWriter -> logWriter.write(log) }
+    fun writeToLogFile(logText: String) {
+        val date = LocalDateTime.now()
+        val logItem = LogItem(logText, date)
+        val logFileName = String.format(LogItem.LOG_INSTANCE,
+                BACKUP_DATE_TIME_FORMATTER.format(date))
+        val logFile = logsDirectory?.createFile("application/octet-stream", logFileName)
+        BufferedOutputStream(context.contentResolver.openOutputStream(logFile?.uri
+                ?: Uri.EMPTY, "w"))
+                .use { logOut -> logOut.write(logItem.toGson().toByteArray(StandardCharsets.UTF_8)) }
+        Log.i(TAG, "Wrote $logFile file for $logItem")
     }
 
     @Throws(IOException::class)
-    fun readFromLogFile(): String {
-        var stringBuilder: StringBuilder
-        FileUtils.openFileForReading(context, logFile).use { logReader ->
-            var line: String?
-            stringBuilder = StringBuilder()
-            while (logReader.readLine().also { line = it } != null) {
-                stringBuilder.append(line).append("\n")
+    fun readLogs(): MutableList<LogItem> {
+        val logs = mutableListOf<LogItem>()
+        logsDirectory?.listFiles()?.forEach {
+            if (it.isFile) try {
+                logs.add(LogItem(context, it))
+            } catch (e: NullPointerException) {
+                val message = "(Null) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
+                Log.w(TAG, message)
+                logErrors(context, message)
+            } catch (e: Throwable) {
+                val message = "(catchall) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
+                unhandledException(e, it.uri)
+                logErrors(context, message)
             }
         }
-        return stringBuilder.toString()
+        return logs
+    }
+
+    fun getLogFile(date: LocalDateTime): StorageFile? {
+        val logFileName = String.format(LogItem.LOG_INSTANCE,
+                BACKUP_DATE_TIME_FORMATTER.format(date))
+        return logsDirectory?.findFile(logFileName)
     }
 
     companion object {
-        fun logErrors(context: Context, errors: String?) {
+        fun logErrors(context: Context, errors: String) {
             try {
                 val logUtils = LogUtils(context)
                 logUtils.writeToLogFile(errors)
