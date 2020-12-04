@@ -71,7 +71,6 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(c
                     result?.let {
                         if (!it.succeeded) {
                             NotificationHandler.showNotification(context, MainActivityX::class.java, result.hashCode(), ai.packageLabel, it.message, it.message, false)
-                            LogUtils.logErrors(context, "${ai.packageLabel}: ${it.message}")
                         }
                     }
                 }

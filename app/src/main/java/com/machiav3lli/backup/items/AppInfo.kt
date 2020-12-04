@@ -28,7 +28,6 @@ import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.utils.DocumentUtils
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import java.io.File
 import java.io.FileNotFoundException
@@ -156,24 +155,22 @@ class AppInfo {
                 val appBackupDir = StorageFile.fromUri(context, backupDir)
                 val backups: MutableList<BackupItem> = mutableListOf()
                 try {
-                    for (file in appBackupDir.listFiles()) {
-                        if (file.isPropertyFile)
-                            try {
-                                backups.add(BackupItem(context, file))
-                            } catch (e: BackupItem.BrokenBackupException) {
-                                val message = "Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                                Log.w(TAG, message)
-                                logErrors(context, message)
-                            } catch (e: NullPointerException) {
-                                val message = "(Null) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                                Log.w(TAG, message)
-                                logErrors(context, message)
-                            } catch (e: Throwable) {
-                                val message = "(catchall) Incomplete backup or wrong structure found in ${backupDir.encodedPath}."
-                                LogUtils.unhandledException(e, file.uri)
-                                logErrors(context, message)
+                    appBackupDir.listFiles()
+                            .filter { it.isPropertyFile }
+                            .forEach {
+                                try {
+                                    backups.add(BackupItem(context, it))
+                                } catch (e: BackupItem.BrokenBackupException) {
+                                    val message = "Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    Log.w(TAG, message)
+                                } catch (e: NullPointerException) {
+                                    val message = "(Null) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    Log.w(TAG, message)
+                                } catch (e: Throwable) {
+                                    val message = "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    LogUtils.unhandledException(e, it.uri)
+                                }
                             }
-                    }
                 } catch (e: FileNotFoundException) {
                     Log.w(TAG, "Failed getting backup history: $e")
                 } catch (e: InterruptedException) {

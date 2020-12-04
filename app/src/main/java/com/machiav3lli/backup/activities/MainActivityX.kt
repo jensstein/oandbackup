@@ -414,7 +414,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                                     ?: ""
                             val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
                             NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId, message, packageLabel, false)
-                            if (error.isNotEmpty()) errors = "$errors\n$error"
+                            if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
                             resultsSuccess = resultsSuccess && succeeded
                             binding.progressBar.progress = counter
                         }
@@ -437,12 +437,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                                 ?: ""
                         NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId, title, message, true)
 
-                        // runOnUiThread { Toast.makeText(this, "$notificationMessage: $notificationTitle)", Toast.LENGTH_LONG).show() }
-                        // show results to the user. Add a save button, if logs should be saved to the application log (in case it's too much)
                         val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                         showActionResult(this, overAllResult,
                                 if (overAllResult.succeeded) null
-                                else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> LogUtils.logErrors(this, errors) }
+                                else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> LogUtils.logErrors(this, errors.dropLast(2)) }
                         )
                         binding.progressBar.visibility = View.GONE
                         viewModel.refreshList()
