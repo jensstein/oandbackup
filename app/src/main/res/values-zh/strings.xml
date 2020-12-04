@@ -225,4 +225,6 @@
         <item quantity="other">%d 天,</item>
     </plurals>
     <string name="help_issues">已知问题</string>
+    <string name="prefs_obbdata_summary">备份和恢复放置在外部存储中的应用程序的obb文件（如 /storage/emulated/0/Android/obb/）</string>
+    <string name="prefs_obbdata">备份 obb 文件</string>
 </resources>
