@@ -27,7 +27,6 @@ import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
 
 object FileUtils {
-    const val LOG_FILE_NAME = "OAndBackupX.log"
     private var backupLocation: Uri? = null
     private val TAG = classTag(".FileUtils")
 

@@ -22,21 +22,16 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/cards_spacing"
         android:paddingVertical="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/itemLayout"
             style="@style/ItemLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/apkCheckbox"
@@ -156,5 +151,5 @@
                 app:layout_constraintStart_toEndOf="@id/packageName"
                 app:layout_constraintTop_toBottomOf="@id/label" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

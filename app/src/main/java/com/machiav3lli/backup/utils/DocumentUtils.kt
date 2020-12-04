@@ -26,13 +26,8 @@ object DocumentUtils {
         return StorageFile.fromUri(context, getBackupDir(context))
     }
 
-    fun ensureDirectory(base: StorageFile, dirName: String): StorageFile? {
-        var dir = base.findFile(dirName)
-        if (dir == null) {
-            dir = base.createDirectory(dirName)
-        }
-        return dir
-    }
+    fun ensureDirectory(base: StorageFile, dirName: String): StorageFile? = base.findFile(dirName)
+            ?: base.createDirectory(dirName)
 
     fun deleteRecursive(context: Context, uri: Uri): Boolean {
         val target = StorageFile.fromUri(context, uri)

@@ -179,7 +179,6 @@ class AppInfo {
                     LogUtils.unhandledException(e, backupDir.encodedPath)
                 }
                 backupHistoryCache = Pair(backups, context)
-                //Log.i(TAG, "thread ${Thread.currentThread()} / ${Thread.activeCount()} end")
                 historyCollectorThread = null
             }
             historyCollectorThread?.start()

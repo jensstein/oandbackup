@@ -153,7 +153,7 @@ class ShellCommands(private var users: List<String>?) {
         }
     }
 
-    class ShellActionFailedException(val command: String, message: String?, cause: Throwable?) : Exception(message, cause)
+    class ShellActionFailedException(val command: String, message: String, cause: Throwable?) : Exception(message, cause)
     companion object {
         private val TAG = classTag(".ShellCommands")
 

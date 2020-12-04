@@ -144,7 +144,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
         const val BACKUP_INSTANCE_DIR = "%s-user_%s"
         val CREATOR: Parcelable.Creator<BackupProperties?> = object : Parcelable.Creator<BackupProperties?> {
-            override fun createFromParcel(source: Parcel): BackupProperties? {
+            override fun createFromParcel(source: Parcel): BackupProperties {
                 return BackupProperties(source)
             }
 
