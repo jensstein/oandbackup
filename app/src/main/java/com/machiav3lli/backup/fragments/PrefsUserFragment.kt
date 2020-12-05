@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -30,9 +29,9 @@ import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.*
+import timber.log.Timber
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
-    private val TAG = classTag("PrefsUserFragment")
     private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -102,7 +101,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
                 val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                Log.i(TAG, "setting uri $uri")
+                Timber.i("setting uri $uri")
                 setDefaultDir(requireContext(), uri)
             }
         }

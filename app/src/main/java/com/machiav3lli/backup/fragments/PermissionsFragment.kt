@@ -24,7 +24,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +33,9 @@ import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.FragmentPermissionsBinding
 import com.machiav3lli.backup.utils.*
+import timber.log.Timber
 
 
 class PermissionsFragment : Fragment() {
@@ -118,7 +117,7 @@ class PermissionsFragment : Fragment() {
                         prefs.edit().putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION,
                                 powerManager?.isIgnoringBatteryOptimizations(requireContext().packageName) == true).apply()
                     } catch (e: ActivityNotFoundException) {
-                        Log.w(TAG, "Ignore battery optimizations not supported", e)
+                        Timber.w(e, "Ignore battery optimizations not supported")
                         Toast.makeText(requireContext(), R.string.ignore_battery_optimization_not_supported, Toast.LENGTH_LONG).show()
                         prefs.edit().putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
                     }
@@ -134,17 +133,17 @@ class PermissionsFragment : Fragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == WRITE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.w(TAG, "Permissions were granted: $permissions -> $grantResults")
+                Timber.w("Permissions were granted: $permissions -> $grantResults")
                 if (!canAccessExternalStorage(requireContext())) {
                     Toast.makeText(requireContext(), "Permissions were granted but because of an android bug you have to restart your phone",
                             Toast.LENGTH_LONG).show()
                 }
             } else {
-                Log.w(TAG, "Permissions were not granted: $permissions -> $grantResults")
+                Timber.w("Permissions were not granted: $permissions -> $grantResults")
                 Toast.makeText(requireContext(), getString(R.string.permission_not_granted), Toast.LENGTH_LONG).show()
             }
         } else {
-            Log.w(TAG, "Unknown permissions request code: $requestCode")
+            Timber.w("Unknown permissions request code: $requestCode")
         }
     }
 
@@ -157,9 +156,5 @@ class PermissionsFragment : Fragment() {
             requireContext().contentResolver.takePersistableUriPermission(uri, flags)
             setStorageRootDir(this.requireContext(), uri)
         }
-    }
-
-    companion object {
-        private val TAG = classTag(".PermissionsFragment")
     }
 }

@@ -25,13 +25,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.SearchViewController
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.MainItemX
 
 class MainFragment : Fragment(), SearchViewController {
     private lateinit var binding: FragmentMainBinding
-    private val TAG = classTag(".MainFragment")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreate(savedInstanceState)

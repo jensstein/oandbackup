@@ -23,7 +23,6 @@ import android.widget.Toast
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -39,7 +38,6 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
     : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
     private var signal: CountDownLatch? = null
-    override val TAG = classTag(".BaseActionTask")
     protected var result: ActionResult? = null
 
     override fun onProgressUpdate(vararg values: Void?) {

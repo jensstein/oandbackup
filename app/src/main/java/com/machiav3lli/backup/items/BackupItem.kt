@@ -45,7 +45,6 @@ open class BackupItem {
     }
 
     companion object {
-        private val TAG = classTag(".BackupItem")
         const val BACKUP_FILE_DATA = "data"
         const val BACKUP_FILE_DPD = "protecteddata"
         const val BACKUP_FILE_EXT_DATA = "extData"

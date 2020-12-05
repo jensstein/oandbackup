@@ -20,7 +20,6 @@ package com.machiav3lli.backup.activities
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.PrefsServiceFragment
 
@@ -44,13 +43,5 @@ class PrefsActivity : BaseActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
         }
-
-        companion object {
-            private val TAG = classTag(".PrefsFragment")
-        }
-    }
-
-    companion object {
-        private val TAG = classTag(".PrefsActivity")
     }
 }

@@ -18,8 +18,6 @@
 package com.machiav3lli.backup.handler.action
 
 import android.content.Context
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -28,6 +26,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LogUtils
+import timber.log.Timber
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.LinkOption
@@ -38,7 +37,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
 
     override fun run(app: AppInfo, backupMode: Int): ActionResult {
         if (backupMode and MODE_APK == MODE_APK) {
-            Log.e(TAG, "Special contents don't have APKs to backup. Ignoring")
+            Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
         return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
         else ActionResult(app, null,
@@ -47,7 +46,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     override fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
-        Log.i(TAG, "$app: Backup special data")
+        Timber.i("$app: Backup special data")
         require(app.appMetaInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
         val appInfo = app.appMetaInfo as SpecialAppMetaInfo
         // Get file list
@@ -77,7 +76,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
             genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
-            Log.e(TAG, "$app: Backup Special Data failed: $error")
+            Timber.e("$app: Backup Special Data failed: $error")
             throw BackupFailedException(error, e)
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, app)
@@ -112,9 +111,5 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
 
     override fun postprocessPackage(packageName: String) {
         // stub
-    }
-
-    companion object {
-        private val TAG = classTag(".BackupSpecialAction")
     }
 }

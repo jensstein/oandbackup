@@ -19,19 +19,17 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
 class LogUtils(var context: Context) {
-    private val TAG = classTag(".LogUtils")
     private val LOG_FOLDER_NAME = "LOGS"
     var logsDirectory: StorageFile?
 
@@ -50,7 +48,7 @@ class LogUtils(var context: Context) {
         BufferedOutputStream(context.contentResolver.openOutputStream(logFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { logOut -> logOut.write(logItem.toGson().toByteArray(StandardCharsets.UTF_8)) }
-        Log.i(TAG, "Wrote $logFile file for $logItem")
+        Timber.i("Wrote $logFile file for $logItem")
     }
 
     @Throws(IOException::class)
@@ -61,7 +59,7 @@ class LogUtils(var context: Context) {
                 logs.add(LogItem(context, it))
             } catch (e: NullPointerException) {
                 val message = "(Null) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
-                Log.w(TAG, message)
+                Timber.w(message)
                 logErrors(context, message)
             } catch (e: Throwable) {
                 val message = "(catchall) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
@@ -101,7 +99,7 @@ class LogUtils(var context: Context) {
                     else -> " ($whatStr)"
                 }
             }
-            Log.e("unhandledException", e.toString() + whatStr + "\n" + e.stackTrace.toString())
+            Timber.e("unhandledException: $e$whatStr\n${e.stackTrace}")
             e.printStackTrace()
         }
     }

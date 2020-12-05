@@ -7,11 +7,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.TextUtils
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.utils.LogUtils
 
 object DocumentContractApi {
-    private val TAG = classTag(".DocumentContractApi")
 
     fun getName(context: Context, uri: Uri): String? =
             try {

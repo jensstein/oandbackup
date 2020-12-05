@@ -23,10 +23,12 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.PREFS_ENCRYPTION
+import com.machiav3lli.backup.PREFS_PASSWORD
+import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
+import com.machiav3lli.backup.R
 
 class PrefsServiceFragment : PreferenceFragmentCompat() {
-    private val TAG = classTag(".PrefsServiceFragment")
     private lateinit var encryptPref: CheckBoxPreference
     private lateinit var passwordPref: EditTextPreference
     private lateinit var passwordConfirmationPref: EditTextPreference

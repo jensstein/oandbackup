@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -35,11 +34,11 @@ import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
 
 object BackupRestoreHelper {
-    private val TAG = classTag(".BackupRestoreHelper")
 
     fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
         var backupMode = backupMode
@@ -53,26 +52,26 @@ object BackupRestoreHelper {
         val action: BackupAppAction
         if (appInfo.isSpecial) {
             if (backupMode and BaseAppAction.MODE_APK == BaseAppAction.MODE_APK) {
-                Log.e(TAG, "[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
                 backupMode = backupMode and BaseAppAction.MODE_DATA
-                Log.d(TAG, "[${appInfo.packageName}] New backup mode: $backupMode")
+                Timber.d("[${appInfo.packageName}] New backup mode: $backupMode")
             }
             action = BackupSpecialAction(context, shell)
         } else {
             action = BackupAppAction(context, shell)
         }
-        Log.d(TAG, "[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
+        Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
 
         // create the new backup
         val result = action.run(appInfo, backupMode)
-        Log.i(TAG, "[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+        Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
         if (getDefaultSharedPreferences(context).getBoolean("copySelfApk", true)) {
             try {
                 copySelfApk(context, shell)
             } catch (e: IOException) {
                 // This is not critical, but the user should be informed about this problem
                 // in some low priority way
-                Log.e(TAG, "OABX apk was not copied to the backup dir: $e")
+                Timber.e("OABX apk was not copied to the backup dir: $e")
             }
         }
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
@@ -89,7 +88,7 @@ object BackupRestoreHelper {
             else -> RestoreAppAction(context, shellHandler)
         }
         val result = restoreAction.run(app, backupProperties, backupLocation, mode)
-        Log.i(TAG, "$app: Restore succeeded: ${result.succeeded}")
+        Timber.i("$app: Restore succeeded: ${result.succeeded}")
         return result
     }
 
@@ -113,20 +112,20 @@ object BackupRestoreHelper {
                 if (baseApkFile != null) {
                     baseApkFile.renameTo(filename)
                 } else {
-                    Log.e(TAG, "Cannot find just created file '${fileInfos[0].filename}' in backup dir for renaming. Skipping")
+                    Timber.e("Cannot find just created file '${fileInfos[0].filename}' in backup dir for renaming. Skipping")
                     return false
                 }
             } catch (e: PackageManager.NameNotFoundException) {
-                Log.wtf(TAG, "${e.javaClass.canonicalName}! This should never happen! Message: $e")
+                Timber.wtf("${e.javaClass.canonicalName}! This should never happen! Message: $e")
                 return false
             } catch (e: ShellCommandFailedException) {
                 throw IOException(e.shellResult.err.joinToString(separator = " "), e)
             }
         } catch (e: StorageLocationNotConfiguredException) {
-            Log.e(TAG, e.javaClass.simpleName + ": " + e)
+            Timber.e(e.javaClass.simpleName + ": " + e)
             return false
         } catch (e: BackupLocationIsAccessibleException) {
-            Log.e(TAG, e.javaClass.simpleName + ": " + e)
+            Timber.e(e.javaClass.simpleName + ": " + e)
             return false
         }
         return true
@@ -136,7 +135,7 @@ object BackupRestoreHelper {
         var numBackupRevisions = getDefaultSharedPreferences(context).getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
         if (numBackupRevisions == 0) {
-            Log.i(TAG, "[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
+            Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
             return
         }
         // If the backup is going to be created, reduce the number of backup revisions by one.
@@ -147,10 +146,10 @@ object BackupRestoreHelper {
 
         when {
             numBackupRevisions >= backups.size ->
-                Log.i(TAG, "[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
+                Timber.i("[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
             else -> {
                 val revisionsToDelete = backups.size - numBackupRevisions
-                Log.i(TAG, "[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
+                Timber.i("[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
                 backups = backups
                         .sortedWith { bi1: BackupItem, bi2: BackupItem ->
                             bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
@@ -158,7 +157,7 @@ object BackupRestoreHelper {
                         .toMutableList()
                 (0 until revisionsToDelete).forEach {
                     val deleteTarget = backups[it]
-                    Log.i(TAG, "[${app.packageName}] Deleting backup revision $deleteTarget")
+                    Timber.i("[${app.packageName}] Deleting backup revision $deleteTarget")
                     app.delete(context, deleteTarget)
                 }
             }

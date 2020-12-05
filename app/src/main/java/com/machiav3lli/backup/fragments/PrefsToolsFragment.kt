@@ -19,7 +19,6 @@ package com.machiav3lli.backup.fragments
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -30,15 +29,14 @@ import com.machiav3lli.backup.PREFS_BATCH_DELETE
 import com.machiav3lli.backup.PREFS_LOGVIEWER
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.NotificationHandler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import timber.log.Timber
 
 class PrefsToolsFragment : PreferenceFragmentCompat() {
-    private val TAG = classTag(".PrefsToolsFragment")
     private var appInfoList: List<AppInfo> = ArrayList()
 
     private lateinit var pref: Preference
@@ -106,7 +104,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     private fun deleteBackups(deleteList: List<AppInfo>) {
         deleteList.forEach {
             runOnUiThread { Toast.makeText(requireContext(), "${it.packageLabel}: ${getString(R.string.batchDeleteMessage)}", Toast.LENGTH_SHORT).show() }
-            Log.i(TAG, "deleting backups of ${it.packageLabel}")
+            Timber.i("deleting backups of ${it.packageLabel}")
             it.deleteAllBackups(requireContext())
         }
         showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size, false)

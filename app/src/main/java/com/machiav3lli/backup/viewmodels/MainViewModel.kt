@@ -3,14 +3,13 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
-import com.machiav3lli.backup.fragments.AppSheet.Companion.TAG
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MainViewModel(val context: Context, application: Application)
     : AndroidViewModel(application) {
@@ -77,7 +76,7 @@ class MainViewModel(val context: Context, application: Application)
                 appInfo = AppInfo(context, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
                 dataList?.add(appInfo)
             } catch (e: AssertionError) {
-                Log.w(TAG, e.message ?: "")
+                Timber.w(e.message ?: "")
             }
             dataList
         }

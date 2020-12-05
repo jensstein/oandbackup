@@ -20,12 +20,12 @@ package com.machiav3lli.backup.handler.action
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.topjohnwu.superuser.Shell
+import timber.log.Timber
 
 abstract class BaseAppAction protected constructor(protected val context: Context, protected val shell: ShellHandler) {
 
@@ -48,9 +48,9 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            Log.i(TAG, String.format("package %s uid %d", packageName, applicationInfo.uid))
+            Timber.i(String.format("package %s uid %d", packageName, applicationInfo.uid))
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Log.w(TAG, "Requested to kill processes of UID 1000. Refusing to kill system's processes!")
+                Timber.w("Requested to kill processes of UID 1000. Refusing to kill system's processes!")
                 return
             }
             if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist
@@ -61,7 +61,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
                 runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -STOP \$pid ; done", applicationInfo.uid))
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.w(TAG, "$packageName does not exist. Cannot preprocess!")
+            Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
             e.printStackTrace()
         } catch (e: Throwable) {
@@ -78,9 +78,9 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
                     applicationInfo.uid
             ))
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.w(TAG, "$packageName does not exist. Cannot preprocess!")
+            Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Log.w(TAG, "Could not kill package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
+            Timber.w("Could not kill package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
         }
     }
 

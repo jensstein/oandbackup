@@ -2,7 +2,6 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -13,9 +12,9 @@ import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
+import timber.log.Timber
 
 class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
-    private val TAG = BatchWork::class.java.simpleName
 
     override fun doWork(): Result {
         // val wl: WakeLock = WakeLocks.newWakeLock(context, TAG)
@@ -40,7 +39,7 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(c
                     try {
                         appInfo = AppInfo(context, it.uri, it.name)
                     } catch (e: AssertionError) {
-                        Log.e(TAG, "Could not process backup folder for uninstalled application in ${it.name}: $e")
+                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         result = ActionResult(null, null, "Could not process backup folder for uninstalled application in ${it.name}: $e", false)
                     }
                 }
@@ -66,7 +65,7 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(c
                     }
                 } catch (e: Throwable) {
                     result = ActionResult(ai, null, "not processed: $packageLabel: $e\n${e.stackTrace}", false)
-                    Log.w(TAG, "package: ${ai.packageLabel} result: $e")
+                    Timber.w("package: ${ai.packageLabel} result: $e")
                 } finally {
                     result?.let {
                         if (!it.succeeded) {

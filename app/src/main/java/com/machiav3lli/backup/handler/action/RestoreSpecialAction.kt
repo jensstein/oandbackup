@@ -19,8 +19,6 @@ package com.machiav3lli.backup.handler.action
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -34,6 +32,7 @@ import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.suUncompressTo
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -47,7 +46,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
-        Log.i(TAG, String.format("%s: Restore special data", app))
+        Timber.i(String.format("%s: Restore special data", app))
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = isEncryptionEnabled(context)
@@ -67,7 +66,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
                         .toTypedArray()
                 if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
                     val errorMessage = "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
-                    Log.e(TAG, errorMessage)
+                    Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
                 val commands: MutableList<String> = ArrayList(expectedFiles.size)
@@ -79,16 +78,16 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
             }
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
-            Log.e(TAG, "$app: Restore $BACKUP_DIR_DATA failed. System might be inconsistent: $error")
+            Timber.e("$app: Restore $BACKUP_DIR_DATA failed. System might be inconsistent: $error")
             throw RestoreFailedException(error, e)
         } catch (e: FileNotFoundException) {
             throw RestoreFailedException("Could not find backup archive", e)
         } catch (e: IOException) {
-            Log.e(TAG, "$app: Restore $BACKUP_DIR_DATA failed with IOException. System might be inconsistent: $e")
+            Timber.e("$app: Restore $BACKUP_DIR_DATA failed with IOException. System might be inconsistent: $e")
             throw RestoreFailedException("IOException", e)
         } finally {
             val backupDeleted = FileUtils.deleteQuietly(tempPath)
-            Log.d(TAG, "$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
+            Timber.d("$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
         }
     }
 
@@ -109,7 +108,6 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
     }
 
     companion object {
-        private val TAG = classTag(".RestoreSpecialAction")
         private fun areBasefilesSubsetOf(set: Array<File>, subsetList: Array<File>): Boolean {
             val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
             val subsetCollection: Collection<String> = subsetList.map { obj: File -> obj.name }.toHashSet()

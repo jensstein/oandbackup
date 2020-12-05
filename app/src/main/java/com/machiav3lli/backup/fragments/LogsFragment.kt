@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.FragmentLogsBinding
 import com.machiav3lli.backup.items.LogItemX
 import com.machiav3lli.backup.viewmodels.LogViewModel
@@ -37,7 +36,6 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class LogsFragment : Fragment() {
-    private val TAG = classTag(".LogsFragment")
     private lateinit var binding: FragmentLogsBinding
     private val logItemAdapter = ItemAdapter<LogItemX>()
     private var logFastAdapter: FastAdapter<LogItemX>? = null

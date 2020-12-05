@@ -19,15 +19,14 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.os.Binder
-import android.util.Log
 import com.machiav3lli.backup.UTILBOX_PATH
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
+import timber.log.Timber
 import java.io.File
 
 class ShellCommands(private var users: List<String>?) {
@@ -43,8 +42,7 @@ class ShellCommands(private var users: List<String>?) {
             if (e.cause is ShellCommandFailedException) {
                 error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
             }
-            Log.e(TAG, "Could not load list of users: " + e +
-                    if (error != null) " ; $error" else "")
+            Timber.e("Could not load list of users: $e${if (error != null) " ; $error" else ""}")
         }
         multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
     }
@@ -68,7 +66,7 @@ class ShellCommands(private var users: List<String>?) {
                 command = String.format("%s rm -r /data/lib/%s/*", UTILBOX_PATH, packageName)
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                Log.d(TAG, "Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
+                Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
             }
@@ -80,7 +78,7 @@ class ShellCommands(private var users: List<String>?) {
             if (apkSubDir.isEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
                         + "in a recursive rm call and would cause catastrophic damage!")
-                Log.wtf(TAG, error)
+                Timber.wtf(error)
                 throw IllegalArgumentException(error)
             }
             command = "(mount -o remount,rw /system && " +
@@ -155,7 +153,6 @@ class ShellCommands(private var users: List<String>?) {
 
     class ShellActionFailedException(val command: String, message: String, cause: Throwable?) : Exception(message, cause)
     companion object {
-        private val TAG = classTag(".ShellCommands")
 
         // using reflection to get id of calling user since method getCallingUserId of UserHandle is hidden
         // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/os/UserHandle.java#L123
@@ -195,7 +192,7 @@ class ShellCommands(private var users: List<String>?) {
 
         @Throws(ShellActionFailedException::class)
         fun wipeCache(context: Context, app: AppInfo) {
-            Log.i(TAG, "${app.packageName}: Wiping cache")
+            Timber.i("${app.packageName}: Wiping cache")
             val commandBuilder = StringBuilder()
             // Normal app cache always exists
             commandBuilder.append("rm -rf \"${app.getDataPath()}/cache/\"* \"${app.getDataPath()}/code_cache/\"*")

@@ -23,7 +23,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
@@ -57,6 +55,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
+import timber.log.Timber
 
 class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragment(), ActionListener {
     private lateinit var binding: SheetAppBinding
@@ -195,7 +194,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
             }
             binding.wipeCache.setOnClickListener {
                 try {
-                    Log.i(TAG, "$it: Wiping cache")
+                    Timber.i("$it: Wiping cache")
                     ShellCommands.wipeCache(requireContext(), app)
                     viewModel.refreshNow.value = true
                 } catch (e: ShellCommands.ShellActionFailedException) {
@@ -208,7 +207,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                             e.cause?.message
                         }
                     }
-                    Log.w(TAG, "Cache couldn't be deleted: $errorMessage")
+                    Timber.w("Cache couldn't be deleted: $errorMessage")
                 }
             }
             binding.backup.setOnClickListener {
@@ -284,7 +283,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                         .setPositiveButton(com.machiav3lli.backup.R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
                             showToast(requireActivity(), "${it.packageLabel}: ${getString(com.machiav3lli.backup.R.string.deleteBackup)}")
                             if (!it.hasBackups) {
-                                Log.w(TAG, "UI Issue! Tried to delete backups for app without backups.")
+                                Timber.w("UI Issue! Tried to delete backups for app without backups.")
                                 dialog?.dismiss()
                             }
                             viewModel.deleteBackup(item.backup)
@@ -310,7 +309,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                     }
                 }
                 else -> {
-                    Log.e(TAG, "unhandled actionType: $actionType")
+                    Timber.e("unhandled actionType: $actionType")
                 }
             }
         }
@@ -349,9 +348,5 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
 
     private fun requireMainActivity(): MainActivityX {
         return requireActivity() as MainActivityX
-    }
-
-    companion object {
-        val TAG = classTag(".AppSheet")
     }
 }

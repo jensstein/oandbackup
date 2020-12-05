@@ -3,8 +3,6 @@ package com.machiav3lli.backup.utils
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -14,12 +12,12 @@ import com.machiav3lli.backup.utils.FileUtils.getBackupDir
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.io.IOUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
 object DocumentUtils {
-    val TAG = classTag(".DocumentHelper")
 
     @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getBackupRoot(context: Context): StorageFile {
@@ -68,7 +66,7 @@ object DocumentUtils {
             when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
                 FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
-                else -> Log.e(TAG, "SAF does not support " + file.fileType)
+                else -> Timber.e("SAF does not support ${file.fileType}")
             }
         }
     }

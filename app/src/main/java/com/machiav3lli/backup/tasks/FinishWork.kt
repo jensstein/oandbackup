@@ -5,8 +5,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.NotificationHandler
 
 class FinishWork(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     override fun doWork(): Result {

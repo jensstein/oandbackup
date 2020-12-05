@@ -22,13 +22,12 @@ import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.AlarmsHandler
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class BootReceiver : BroadcastReceiver() {
@@ -59,7 +58,7 @@ class BootReceiver : BroadcastReceiver() {
             val scheduleDao = scheduleDaoReference.get()
             val handleAlarms = alarmsHandlerReference.get()
             if (scheduleDao == null || handleAlarms == null) {
-                Log.w(TAG, "Bootreceiver database thread resources was null")
+                Timber.w("Bootreceiver database thread resources was null")
                 return
             }
             val schedules: List<Schedule> = scheduleDao.all
@@ -75,9 +74,5 @@ class BootReceiver : BroadcastReceiver() {
                 }
             }
         }
-    }
-
-    companion object {
-        private val TAG = classTag(".BootReceiver")
     }
 }

@@ -20,17 +20,15 @@ package com.machiav3lli.backup.dialogs
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
+import timber.log.Timber
 
 class BatchDialogFragment(private var confirmListener: ConfirmListener) : DialogFragment() {
-    private val TAG = classTag(".BatchConfirmDialog")
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = this.requireArguments()
@@ -57,7 +55,7 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
             try {
                 confirmListener.onConfirmed(selectedPackages, selectedListModes)
             } catch (e: ClassCastException) {
-                Log.e(TAG, "BatchConfirmDialog: $e")
+                Timber.e("BatchConfirmDialog: $e")
             }
         }
         builder.setNegativeButton(R.string.dialogNo, null)

@@ -96,6 +96,7 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:${versions["libsu"]}")
     implementation("com.github.topjohnwu.libsu:io:${versions["libsu"]}")
     implementation("com.scottyab:rootbeer-lib:${versions["rootBeer"]}")
+    implementation("com.jakewharton.timber:timber:${versions["timber"]}")
 
     // UI
     implementation("androidx.appcompat:appcompat:${versions["appcompat"]}")

@@ -20,8 +20,6 @@ package com.machiav3lli.backup.handler.action
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -29,6 +27,7 @@ import com.machiav3lli.backup.handler.action.RestoreAppAction.RestoreFailedExcep
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
 import org.apache.commons.io.IOUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -68,7 +67,7 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
-            Log.e(TAG, "Restore System apk failed: $error")
+            Timber.e("Restore System apk failed: $error")
             throw RestoreFailedException(error, e)
         } finally {
             tempPath.delete()
@@ -81,9 +80,5 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
 
     override fun postprocessPackage(packageName: String) {
         // stub
-    }
-
-    companion object {
-        private val TAG = classTag(".SystemRestoreAppAction")
     }
 }

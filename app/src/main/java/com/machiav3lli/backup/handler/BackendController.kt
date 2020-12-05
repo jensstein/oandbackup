@@ -7,10 +7,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import android.util.Log
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
@@ -21,12 +19,12 @@ import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleExceptio
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 
 object BackendController {
-    private val TAG = classTag(".BackendController")
 
     /*
     List of packages ignored for any reason
@@ -88,7 +86,7 @@ object BackendController {
                                 try {
                                     AppInfo(context, it.uri, it.name)
                                 } catch (e: AssertionError) {
-                                    Log.e(TAG, "Could not process backup folder for uninstalled application in " + it.name + ": " + e)
+                                    Timber.e("Could not process backup folder for uninstalled application in " + it.name + ": " + e)
                                     null
                                 }
                             }
@@ -106,7 +104,7 @@ object BackendController {
                     .filter(StorageFile::isDirectory)
                     .toList()
         } catch (e: FileNotFoundException) {
-            Log.e(TAG, e.javaClass.simpleName + ": " + e.message)
+            Timber.e(e.javaClass.simpleName + ": " + e.message)
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
@@ -125,7 +123,7 @@ object BackendController {
         return try {
             storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
         } catch (e: IOException) {
-            Log.e(TAG, "Could not retrieve storage stats of $packageName: $e")
+            Timber.e("Could not retrieve storage stats of $packageName: $e")
             null
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, packageName)

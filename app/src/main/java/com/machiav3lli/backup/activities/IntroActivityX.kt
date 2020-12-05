@@ -110,7 +110,7 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun showFatalUiWarning(message: String) {
-        showWarning(this, TAG, message) { _: DialogInterface?, _: Int -> finishAffinity() }
+        showWarning(this, classTag("IntroActivityX"), message) { _: DialogInterface?, _: Int -> finishAffinity() }
     }
 
     private fun launchMainActivity() {
@@ -149,9 +149,5 @@ class IntroActivityX : BaseActivity() {
                 }
             }
         })
-    }
-
-    companion object {
-        private val TAG = classTag(".IntroActivityX")
     }
 }

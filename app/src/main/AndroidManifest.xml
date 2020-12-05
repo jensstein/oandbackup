@@ -27,6 +27,7 @@
         android:required="false" />
 
     <application
+        android:name=".OABX"
         android:allowBackup="true"
         android:allowClearUserData="true"
         android:banner="@mipmap/ic_launcher"

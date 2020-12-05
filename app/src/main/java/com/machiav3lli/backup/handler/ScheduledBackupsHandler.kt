@@ -18,14 +18,12 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.BlacklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.items.AppInfo
@@ -34,6 +32,7 @@ import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleExceptio
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.checkStoragePermissions
+import timber.log.Timber
 
 class ScheduledBackupsHandler(private val context: Context) {
     private val listeners: MutableList<BackupRestoreHelper.OnBackupRestoreListener> = mutableListOf()
@@ -54,11 +53,11 @@ class ScheduledBackupsHandler(private val context: Context) {
                 list = try {
                     BackendController.getApplicationList(context)
                 } catch (e: BackupLocationIsAccessibleException) {
-                    Log.e(TAG, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+                    Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
                     LogUtils.logErrors(context, e.toString())
                     return@Runnable
                 } catch (e: StorageLocationNotConfiguredException) {
-                    Log.e(TAG, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+                    Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
                     LogUtils.logErrors(context, e.toString())
                     return@Runnable
                 }
@@ -115,9 +114,5 @@ class ScheduledBackupsHandler(private val context: Context) {
             NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId,
                     notificationTitle, notificationMessage, true)
         }
-    }
-
-    companion object {
-        private val TAG = classTag(".HandleScheduledBackups")
     }
 }

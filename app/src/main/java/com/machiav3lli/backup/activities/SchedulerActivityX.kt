@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.BLACKLIST_ARGS_ID
 import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
 import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
@@ -158,7 +157,6 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
     }
 
     companion object {
-        val TAG = classTag(".SchedulerActivityX")
         const val GLOBAL_ID = -1
         const val SCHEDULES_DB_NAME = "schedules.db"
         const val BLACKLIST_DB_NAME = "blacklists.db"

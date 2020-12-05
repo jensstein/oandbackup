@@ -22,19 +22,18 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase.Companion.getInstance
 import com.machiav3lli.backup.handler.AlarmsHandler
 import com.machiav3lli.backup.handler.BackupRestoreHelper.OnBackupRestoreListener
 import com.machiav3lli.backup.handler.ScheduledBackupsHandler
+import timber.log.Timber
 
 // TODO Migrate to libsu's RootService?
 class ScheduleService : Service(), OnBackupRestoreListener {
@@ -54,12 +53,12 @@ class ScheduleService : Service(), OnBackupRestoreListener {
                 // it can be wrong when scheduled in BootReceiver#onReceive()
                 // to be run after AlarmManager.INTERVAL_FIFTEEN_MINUTES
                 handleAlarms.setAlarm(id, schedule.interval, schedule.timeHour, schedule.timeMinute)
-                Log.i(TAG, getString(R.string.sched_startingbackup))
+                Timber.i(getString(R.string.sched_startingbackup))
                 handleScheduledBackups.initiateBackup(id, schedule.mode, schedule.subMode,
                         schedule.excludeSystem, schedule.customList)
             }.start()
         } else {
-            Log.e(TAG, "got id: $id from $intent")
+            Timber.e("got id: $id from $intent")
         }
         return START_NOT_STICKY
     }
@@ -72,7 +71,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
         get() = getInstance(this, SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao
 
     override fun onCreate() {
-        val channelId = TAG
+        val channelId = classAddress("ScheduleService")
         // Do some initialization
         MainActivityX.initShellHandler()
         val notificationChannel = NotificationChannel(channelId, channelId,
@@ -81,7 +80,7 @@ class ScheduleService : Service(), OnBackupRestoreListener {
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel)
         } else {
-            Log.w(TAG, "Unable to create notification channel")
+            Timber.w("Unable to create notification channel")
             Toast.makeText(this, getString(
                     R.string.error_creating_notification_channel), Toast.LENGTH_LONG).show()
         }
@@ -107,7 +106,6 @@ class ScheduleService : Service(), OnBackupRestoreListener {
     }
 
     companion object {
-        private val TAG = classTag(".ScheduleService")
         private const val ID = 2
     }
 }

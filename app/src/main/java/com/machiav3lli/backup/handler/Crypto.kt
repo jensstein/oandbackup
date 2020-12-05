@@ -17,8 +17,7 @@
  */
 package com.machiav3lli.backup.handler
 
-import android.util.Log
-import com.machiav3lli.backup.classTag
+import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -52,7 +51,6 @@ object Crypto {
      * Better a constant salt for the app that using no salt.
      */
     val FALLBACK_SALT = "oandbackupx".toByteArray(StandardCharsets.UTF_8)
-    private val TAG = classTag(".Crypto")
     private const val ENCRYPTION_SETUP_FAILED = "Could not setup encryption"
 
     /**
@@ -88,10 +86,10 @@ object Crypto {
             val secret = generateKeyFromPassword(password, salt)
             encryptStream(os, secret)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidKeySpecException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         }
     }
@@ -107,16 +105,16 @@ object Crypto {
             cipher.init(Cipher.ENCRYPT_MODE, secret, iv)
             CipherOutputStream(os, cipher)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidKeyException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidAlgorithmParameterException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: NoSuchPaddingException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         }
     }
@@ -127,10 +125,10 @@ object Crypto {
             val secret = generateKeyFromPassword(password, salt)
             decryptStream(stream, secret)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidKeySpecException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         }
     }
@@ -146,16 +144,16 @@ object Crypto {
             cipher.init(Cipher.DECRYPT_MODE, secret, iv)
             CipherInputStream(stream, cipher)
         } catch (e: NoSuchPaddingException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidAlgorithmParameterException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         } catch (e: InvalidKeyException) {
-            Log.e(TAG, "Could not setup encryption: ${e.message}")
+            Timber.e("Could not setup encryption: ${e.message}")
             throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
         }
     }

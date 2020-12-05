@@ -29,7 +29,6 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
-    private val TAG = classTag(".WelcomeFragment")
     private lateinit var binding: FragmentWelcomeBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -2,13 +2,11 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.NotificationHandler.showNotification
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.items.AppInfo
@@ -17,6 +15,7 @@ import com.machiav3lli.backup.utils.LogUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: ShellCommands?, application: Application)
     : AndroidViewModel(application) {
@@ -42,7 +41,7 @@ class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: S
     private suspend fun uninstall() {
         withContext(Dispatchers.IO) {
             appInfo.value?.let {
-                Log.i(AppSheet.TAG, "uninstalling " + appInfo.value?.packageLabel)
+                Timber.i("uninstalling: ${appInfo.value?.packageLabel}")
                 try {
                     shellCommands?.uninstall(appInfo.value?.packageName, appInfo.value?.getApkPath(),
                             appInfo.value?.getDataPath(), appInfo.value?.isSystem == true)

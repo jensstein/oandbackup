@@ -3,7 +3,6 @@ package com.machiav3lli.backup.tasks
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.PowerManager.WakeLock
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.impl.utils.WakeLocks
@@ -15,14 +14,14 @@ import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
+import timber.log.Timber
 
 
 class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
-    private val TAG = ScheduledWork::class.java.simpleName
 
     @SuppressLint("RestrictedApi")
     override fun doWork(): Result {
-        val wl: WakeLock = WakeLocks.newWakeLock(context, TAG)
+        val wl: WakeLock = WakeLocks.newWakeLock(context, this.javaClass.name)
         wl.acquire()
         val selectedPackages = inputData.getStringArray("selectedPackages")?.toList()
                 ?: listOf()
@@ -50,7 +49,7 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
             selectedApps.forEach { appInfo ->
                 packageLabel = appInfo.packageLabel
                 if (blackList.contains(appInfo.packageName)) {
-                    Log.i(TAG, "${appInfo.packageName} ignored")
+                    Timber.i("${appInfo.packageName} ignored")
                     i++
                     return@forEach
                 }
@@ -61,11 +60,11 @@ class ScheduledWork(val context: Context, workerParams: WorkerParameters) : Work
                     result = BackupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, selectedMode)
                 } catch (e: Throwable) {
                     result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
-                    Log.w(TAG, "package: ${appInfo.packageLabel} result: $e")
+                    Timber.w("package: ${appInfo.packageLabel} result: $e")
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
-                            NotificationHandler.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message , it.message, false)
+                            NotificationHandler.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message, it.message, false)
                             LogUtils.logErrors(context, "${appInfo.packageLabel}: ${it.message}")
                         }
                         results.add(it)

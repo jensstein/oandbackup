@@ -19,8 +19,6 @@ package com.machiav3lli.backup.utils
 
 import android.system.ErrnoException
 import android.system.Os
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -32,10 +30,10 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.archivers.tar.TarConstants
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.*
 import java.util.*
 
-private val TAG = classTag(".TarUtils")
 const val BUFFER_SIZE = 8 * 1024 * 1024
 private const val FILE_MODE_OR_MASK = 32768
 private const val DIR_MODE_OR_MASK = 16384
@@ -75,7 +73,7 @@ fun addFilepath(archive: TarArchiveOutputStream, inputFilepath: File, parent: St
 @Throws(IOException::class)
 fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.FileInfo>) {
     for (file in allFiles) {
-        Log.d(TAG, String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
+        Timber.d(String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
         var entry: TarArchiveEntry
         when (file.fileType) {
             FileType.REGULAR_FILE -> {
@@ -124,7 +122,7 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
 fun suUncompressTo(archive: TarArchiveInputStream, targetDir: String?) {
     generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
         val file = File(targetDir, tarEntry.name)
-        Log.d(TAG, "Extracting ${tarEntry.name}")
+        Timber.d("Extracting ${tarEntry.name}")
         if (tarEntry.isDirectory) {
             ShellHandler.runAsRoot("mkdir \"${file.absolutePath}\"")
             suUncompressTo(archive, targetDir)
@@ -144,7 +142,7 @@ fun suUncompressTo(archive: TarArchiveInputStream, targetDir: String?) {
 fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
     generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
         val targetPath = File(targetDir, tarEntry.name)
-        Log.d(TAG, String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
+        Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
         var doChmod = true
         when {
             tarEntry.isDirectory -> {

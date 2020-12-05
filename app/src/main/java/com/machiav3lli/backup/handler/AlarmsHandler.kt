@@ -23,9 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.PowerManager
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.services.AlarmReceiver
+import timber.log.Timber
 import kotlin.math.abs
 
 class AlarmsHandler(var context: Context) {
@@ -50,7 +49,7 @@ class AlarmsHandler(var context: Context) {
         } else {
             alarmManager[AlarmManager.RTC_WAKEUP, start] = pendingIntent
         }
-        Log.i(TAG, "backup starting in: " +
+        Timber.i("backup starting in: " +
                 (start - System.currentTimeMillis()) / 1000f / 60 / 60f)
     }
 
@@ -74,8 +73,6 @@ class AlarmsHandler(var context: Context) {
     }
 
     companion object {
-        private val TAG = classTag(".HandleAlarms")
-
         fun timeUntilNextEvent(interval: Int, hour: Int, minute: Int, timePLaced: Long, now: Long): Long {
             val c = Calendar.getInstance()
             c.timeInMillis = timePLaced

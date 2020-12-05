@@ -17,9 +17,7 @@
  */
 package com.machiav3lli.backup.handler
 
-import android.util.Log
 import com.machiav3lli.backup.UTILBOX_PATH
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -27,6 +25,7 @@ import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -106,7 +105,7 @@ class ShellHandler {
             if (shellResult.out.isNotEmpty()) {
                 utilBoxVersion = iterableToString(shellResult.out)
             }
-            Log.i(TAG, "Using Utilbox `$utilboxPath`: $utilBoxVersion")
+            Timber.i("Using Utilbox `$utilboxPath`: $utilBoxVersion")
         } catch (e: ShellCommandFailedException) {
             throw UtilboxNotAvailableException(utilboxPath, e)
         }
@@ -221,7 +220,7 @@ class ShellHandler {
                                 } else {
                                     FALLBACK_MODE_FOR_FILE
                                 }
-                        Log.w(TAG, String.format(
+                        Timber.w(String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
                                 tokens[0], fileMode, filePath, absoluteParent))
                     }
@@ -260,8 +259,6 @@ class ShellHandler {
     }
 
     companion object {
-        private val TAG = classTag(".ShellHandler")
-
         interface RunnableShellCommand {
             fun runCommand(vararg commands: String?): Shell.Job
         }
@@ -295,11 +292,11 @@ class ShellHandler {
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
             // stderr is used for logging, so it's better not to call an application that does that
             // and keeps quiet
-            Log.d(TAG, "Running Command: ${iterableToString("; ", commands.toList())}")
+            Timber.d("Running Command: ${iterableToString("; ", commands.toList())}")
             val stdout: List<String> = arrayListOf()
             val stderr: List<String> = arrayListOf()
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
-            Log.d(TAG, String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
+            Timber.d(String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
             if (!result.isSuccess) {
                 throw ShellCommandFailedException(result)
             }
@@ -343,13 +340,13 @@ class ShellHandler {
                     // the written amount of bytes, too because it needs to match the header)
                     // As side effect the archives slightly differ in size because of the flushing mechanism.
                     if (0 >= retriesLeft) {
-                        Log.e(TAG, String.format("Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?",
+                        Timber.e(String.format("Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?",
                                 maxRetries))
                         throw IOException(String.format("Could not read expected amount of input bytes %d; stopped after %d tries at %d",
                                 filesize, maxRetries, readOverall
                         ))
                     }
-                    Log.w(TAG, String.format("SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
+                    Timber.w(String.format("SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
                             readOverall, filesize - readOverall, retriesLeft
                     ))
                     // Reopen the file to reset eof flag
@@ -375,10 +372,10 @@ class ShellHandler {
         try {
             setUtilboxPath(UTILBOX_PATH)
         } catch (e: UtilboxNotAvailableException) {
-            Log.d(TAG, "Tried utilbox path `${UTILBOX_PATH}`. Not available.")
+            Timber.d("Tried utilbox path `${UTILBOX_PATH}`. Not available.")
         }
         if (utilboxPath == null) {
-            Log.d(TAG, "No more options for utilbox. Bailing out.")
+            Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(UTILBOX_PATH, null)
         }
     }

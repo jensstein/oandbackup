@@ -20,13 +20,15 @@ package com.machiav3lli.backup.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
+import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
 import com.machiav3lli.backup.utils.*
 
 class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashBinding
-    private val TAG = classTag(".SplashActivity")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setDayNightTheme(getPrivateSharedPrefs(this).getString(PREFS_THEME, "system"))

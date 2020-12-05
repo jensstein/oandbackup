@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.DocumentContractApi
 import com.machiav3lli.backup.utils.LogUtils
 import java.io.FileNotFoundException
@@ -130,7 +129,6 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
     }
 
     companion object {
-        val TAG = classTag(".StorageFile")
         val cache: MutableMap<String, Array<StorageFile>> = mutableMapOf()
         var cacheDirty = true
 

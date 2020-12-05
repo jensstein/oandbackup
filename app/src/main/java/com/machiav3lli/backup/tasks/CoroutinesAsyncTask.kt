@@ -1,11 +1,10 @@
 package com.machiav3lli.backup.tasks
 
-import android.util.Log
-import com.machiav3lli.backup.classTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /* adapted from with small changes to fit our usage:
  * https://github.com/ladrahul25/CoroutineAsyncTask/blob/master/app/src/main/java/com/example/background/CoroutinesAsyncTask.kt
@@ -19,7 +18,6 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
     }
 
     var status: Status = Status.PENDING
-    open val TAG = classTag(".CoroutinesAsyncTask")
     abstract fun doInBackground(vararg params: Params?): Result?
     open fun onProgressUpdate(vararg values: Progress?) {}
     open fun onPostExecute(result: Result?) {}
@@ -29,8 +27,8 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
 
     fun execute(vararg params: Params) {
         when (status) {
-            Status.RUNNING -> throw IllegalStateException("Cannot execute task:$TAG the task is already running.")
-            Status.FINISHED -> throw IllegalStateException("Cannot execute task: $TAG"
+            Status.RUNNING -> throw IllegalStateException("Cannot execute task:${this.javaClass.name} the task is already running.")
+            Status.FINISHED -> throw IllegalStateException("Cannot execute task: ${this.javaClass.name}"
                     + " the task has already been executed (a task can be executed only once)")
             Status.PENDING -> status = Status.RUNNING
         }
@@ -46,7 +44,7 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
             status = Status.FINISHED
             withContext(Dispatchers.Main) {
                 // onPostExecute works on main thread to show output
-                Log.d(TAG, "after do in back ${status.name}--$isCancelled")
+                Timber.d("after do in back ${status.name}--$isCancelled")
                 if (!isCancelled) {
                     onPostExecute(result)
                 }
@@ -59,7 +57,7 @@ abstract class CoroutinesAsyncTask<Params, Progress, Result> {
         status = Status.FINISHED
         GlobalScope.launch(Dispatchers.Main) {
             // onPostExecute works on main thread to show output
-            Log.d(TAG, "after cancel ${status.name}--$isCancelled")
+            Timber.d("after cancel ${status.name}--$isCancelled")
             onPostExecute(null)
         }
     }

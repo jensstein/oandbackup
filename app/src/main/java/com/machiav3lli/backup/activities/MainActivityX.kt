@@ -22,7 +22,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.PowerManager
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -59,11 +58,11 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.topjohnwu.superuser.Shell
+import timber.log.Timber
 
 class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     companion object {
-        private val TAG = classTag(".MainActivityX")
         var shellHandlerInstance: ShellHandler? = null
             private set
 
@@ -457,7 +456,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     private fun checkUtilBox() {
         // Initialize the ShellHandler for further root checks
         if (!initShellHandler()) {
-            showWarning(this, TAG, this.getString(R.string.busyboxProblem)) { _: DialogInterface?, _: Int -> finishAffinity() }
+            showWarning(this, classTag("MainActivityX"), this.getString(R.string.busyboxProblem)) { _: DialogInterface?, _: Int -> finishAffinity() }
         }
     }
 
@@ -472,7 +471,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     // Most functionality could be added to the view model
     fun refresh(mainBoolean: Boolean, backupOrAppSheetBoolean: Boolean) {
-        Log.d(TAG, "refreshing")
+        Timber.d("refreshing")
         badgeCounter = 0
         if (mainBoolean) {
             viewModel.apkCheckedList.clear()
@@ -488,9 +487,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                     else -> refreshBatch(filteredList, backupOrAppSheetBoolean)
                 }
             } catch (e: BackupLocationIsAccessibleException) {
-                Log.e(TAG, "Could not update application list: $e")
+                Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
-                Log.e(TAG, "Could not update application list: $e")
+                Timber.e("Could not update application list: $e")
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e)
             }

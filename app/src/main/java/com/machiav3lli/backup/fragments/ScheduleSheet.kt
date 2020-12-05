@@ -36,7 +36,6 @@ import com.machiav3lli.backup.BLACKLIST_ARGS_ID
 import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.BlacklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
@@ -54,7 +53,6 @@ import java.time.LocalTime
 
 class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
-    private val TAG = classTag(".ScheduleSheet")
     private lateinit var alarmsHandler: AlarmsHandler
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding

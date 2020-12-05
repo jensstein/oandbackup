@@ -22,19 +22,17 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.utils.DocumentUtils
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 
 class AppInfo {
-    private val TAG = classTag(".AppInfo")
-
     var packageName: String = ""
 
     var appMetaInfo: AppMetaInfo
@@ -52,13 +50,13 @@ class AppInfo {
             if (backupHistoryCache?.first == null) {
                 if (historyCollectorThread != null) {
                     historyCollectorThread?.join()
-                    Log.i(TAG, "thread $historyCollectorThread / ${Thread.activeCount()} joined")
+                    Timber.i("thread $historyCollectorThread / ${Thread.activeCount()} joined")
                 }
                 if (backupHistoryCache?.first == null) {
-                    Log.i(TAG, "refreshBackupHistory")
+                    Timber.i("refreshBackupHistory")
                     backupHistoryCache?.second?.let { refreshBackupHistory(it) }
                     historyCollectorThread?.join()
-                    Log.i(TAG, "thread $historyCollectorThread / ${Thread.activeCount()} joined")
+                    Timber.i("thread $historyCollectorThread / ${Thread.activeCount()} joined")
                 }
             }
             return backupHistoryCache?.first ?: mutableListOf()
@@ -100,7 +98,7 @@ class AppInfo {
                         .find { it.packageName == this.packageName }!!
                         .appMetaInfo
             } catch (e: Throwable) {
-                Log.i(TAG, "$packageName is not installed")
+                Timber.i("$packageName is not installed")
                 if (this.backupHistory.isNullOrEmpty()) {
                     throw AssertionError("Backup History is empty and package is not installed. The package is completely unknown?", e)
                 }
@@ -129,20 +127,20 @@ class AppInfo {
             storageStats = BackendController.getPackageStorageStats(context, packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.e(TAG, "Could not refresh StorageStats. Package was not found: " + e.message)
+            Timber.e("Could not refresh StorageStats. Package was not found: " + e.message)
             false
         }
     }
 
     fun refreshFromPackageManager(context: Context): Boolean {
-        Log.d(TAG, "Trying to refresh package information for $packageName from PackageManager")
+        Timber.d("Trying to refresh package information for $packageName from PackageManager")
         try {
             val pi = context.packageManager.getPackageInfo(packageName, 0)
             packageInfo = PackageInfo(pi)
             appMetaInfo = AppMetaInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.i(TAG, "$packageName is not installed. Refresh failed")
+            Timber.i("$packageName is not installed. Refresh failed")
             return false
         }
         return true
@@ -162,17 +160,17 @@ class AppInfo {
                                     backups.add(BackupItem(context, it))
                                 } catch (e: BackupItem.BrokenBackupException) {
                                     val message = "Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
-                                    Log.w(TAG, message)
+                                    Timber.w(message)
                                 } catch (e: NullPointerException) {
                                     val message = "(Null) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
-                                    Log.w(TAG, message)
+                                    Timber.w(message)
                                 } catch (e: Throwable) {
                                     val message = "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
                                     LogUtils.unhandledException(e, it.uri)
                                 }
                             }
                 } catch (e: FileNotFoundException) {
-                    Log.w(TAG, "Failed getting backup history: $e")
+                    Timber.w("Failed getting backup history: $e")
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
@@ -194,7 +192,7 @@ class AppInfo {
     }
 
     fun deleteAllBackups(context: Context) {
-        Log.i(TAG, "Deleting ${backupHistory.size} backups of $this")
+        Timber.i("Deleting ${backupHistory.size} backups of $this")
         StorageFile.fromUri(context, backupDirUri).delete()
         backupHistory.clear()
         backupDirUri = Uri.EMPTY
@@ -204,7 +202,7 @@ class AppInfo {
         if (backupItem.backupProperties.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backupItem.backupProperties.packageName} but this object is for $packageName")
         }
-        Log.d(TAG, "[$packageName] Deleting backup revision $backupItem")
+        Timber.d("[$packageName] Deleting backup revision $backupItem")
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
         try {

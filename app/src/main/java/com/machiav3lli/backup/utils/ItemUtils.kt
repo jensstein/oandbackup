@@ -21,13 +21,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.text.format.Formatter
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.databinding.SheetAppBinding
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
+import timber.log.Timber
 
 val COLOR_UPDATE = Color.rgb(244, 51, 69)
 val COLOR_SYSTEM = Color.rgb(69, 144, 254)
@@ -62,7 +61,7 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
                 changeVisibility(binding.wipeCache, View.GONE, update)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.e(AppSheet.TAG, String.format("Package %s is not installed? Exception: %s", app.packageName, e))
+            Timber.e(String.format("Package %s is not installed? Exception: %s", app.packageName, e))
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, app)
         }
