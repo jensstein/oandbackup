@@ -37,7 +37,7 @@ import com.machiav3lli.backup.handler.SortFilterManager.saveFilterPreferences
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 
-class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterModel()) : BottomSheetDialogFragment() {
+class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -78,6 +78,9 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
             requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
+        binding.appsNum.text = stats.first.toString()
+        binding.backupsNum.text = stats.second.toString()
+        binding.updatedNum.text = stats.third.toString()
     }
 
     private fun setupChips() {

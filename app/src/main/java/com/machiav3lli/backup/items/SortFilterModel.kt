@@ -27,13 +27,16 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             '2' -> R.id.sortByDataSize
             else -> R.id.sortByLabel
         }
+
     val filterId: Int
         get() = when (code[1]) {
             '1' -> R.id.showOnlySystem
             '2' -> R.id.showOnlyUser
             '3' -> R.id.showOnlySpecial
+            '4' -> R.id.showOnlyLaunchable
             else -> R.id.showAll
         }
+
     val backupFilterId: Int
         get() = when (code[2]) {
             '1' -> R.id.backupBoth
@@ -42,6 +45,7 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             '4' -> R.id.backupNone
             else -> R.id.backupAll
         }
+
     val specialFilterId: Int
         get() = when (code[3]) {
             '1' -> R.id.specialNewAndUpdated
@@ -65,6 +69,7 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             R.id.showOnlySystem -> '1'
             R.id.showOnlyUser -> '2'
             R.id.showOnlySpecial -> '3'
+            R.id.showOnlyLaunchable -> '4'
             else -> '0'
         }
         code = code[0].toString() + filter + code[2] + code[3]

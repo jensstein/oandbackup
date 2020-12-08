@@ -96,3 +96,15 @@ fun pickSheetAppType(app: AppInfo, text: AppCompatTextView) {
     }
     text.setTextColor(color)
 }
+
+fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {
+    var backupsNumber = 0
+    var updatedNumber = 0
+    appsList.forEach {
+        if (it.hasBackups) {
+            backupsNumber += it.backupHistory.size
+            if (it.isUpdated) updatedNumber += 1
+        }
+    }
+    return Triple(appsList.size, backupsNumber, updatedNumber)
+}

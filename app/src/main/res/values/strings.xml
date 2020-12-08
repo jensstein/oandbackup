@@ -226,6 +226,10 @@
     <string name="logs_text_empty">There\'s nothing to show!</string>
     <string name="fetching_action_list">Fetching apps list for the %1$s…</string>
     <string name="help_issues">Known issues</string>
+    <string name="radio_launchable">Launchable Apps</string>
+    <string name="stats_updated">Updated</string>
+    <string name="stats_backups">Backups</string>
+    <string name="stats_apps">Apps</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

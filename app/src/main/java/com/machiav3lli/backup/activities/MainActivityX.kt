@@ -219,7 +219,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             onCheckAllChanged()
         }
         binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(getFilterPreferences(this).toString()))
+            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
+                    getFilterPreferences(this).toString()),
+                    getStats(viewModel.appInfoList.value ?: mutableListOf())
+            )
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
         }
         mainFastAdapter?.onClickListener = { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
@@ -476,12 +479,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     // Most functionality could be added to the view model
     fun refresh(mainBoolean: Boolean, backupOrAppSheetBoolean: Boolean) {
         Timber.d("refreshing")
-        badgeCounter = 0
+        viewModel.badgeCounter.value = 0
         if (mainBoolean) {
             viewModel.apkCheckedList.clear()
             viewModel.dataCheckedList.clear()
         }
-        sheetSortFilter = SortFilterSheet(getFilterPreferences(this))
+        sheetSortFilter = SortFilterSheet(getFilterPreferences(this), getStats(viewModel.appInfoList.value
+                ?: mutableListOf()))
         Thread {
             try {
                 val filteredList = applyFilter(viewModel.appInfoList.value

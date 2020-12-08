@@ -51,10 +51,17 @@ object SortFilterManager {
 
     fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
         val predicate: (AppInfo) -> Boolean
+        var launchableAppsList = listOf<String>()
+        if (filter[1] == '4') {
+            val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+            launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
+                    .map { it.activityInfo.packageName }
+        }
         predicate = when (filter[1]) {
             '1' -> { appInfo: AppInfo -> appInfo.isSystem }
             '2' -> { appInfo: AppInfo -> !appInfo.isSystem }
             '3' -> { appInfo: AppInfo -> appInfo.isSpecial }
+            '4' -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
             else -> { _: AppInfo -> true }
         }
         val filteredList = list
