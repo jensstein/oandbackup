@@ -284,7 +284,7 @@ class AppInfo {
         get() = appMetaInfo.splitSourceDirs
 
     val isUpdated: Boolean
-        get() = latestBackup?.let { backupHistory.isNotEmpty() && it.backupProperties.versionCode > versionCode }
+        get() = latestBackup?.let { backupHistory.isNotEmpty() && it.backupProperties.versionCode < versionCode }
                 ?: false
 
     val hasApk: Boolean
