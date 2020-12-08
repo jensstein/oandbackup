@@ -115,26 +115,31 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         viewModel.refreshActive.observe(this, {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()
+            else if (mainBoolean) {
+                mainItemAdapter.adapterItems.forEach {
+                    if (it.app.hasBackups && it.app.isUpdated)
+                        viewModel.badgeCounter.value = viewModel.badgeCounter.value?.plus(1)
+                }
+            }
         })
         viewModel.refreshNow.observe(this, {
             if (it) {
                 refreshView()
             }
         })
-        setupViews()
+        viewModel.badgeCounter.observe(this, {
+            updatedBadge?.isVisible = it != 0
+            updatedBadge?.number = it
+        })
         checkUtilBox()
         runOnUiThread { showEncryptionDialog() }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
         setupViews()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupNavigation()
+    override fun onStart() {
+        super.onStart()
         setupOnClicks()
+        setupNavigation()
     }
 
     override fun onBackPressed() {
@@ -159,7 +164,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
         updatedBadge?.backgroundColor = resources.getColor(R.color.app_accent, theme)
-        updatedBadge?.isVisible = badgeCounter != 0
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         mainFastAdapter?.setHasStableIds(true)
@@ -502,10 +506,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             try {
                 FastAdapterDiffUtil[mainItemAdapter] = mainList
                 searchViewController?.setup()
-                if (updatedBadge != null) {
-                    updatedBadge?.number = badgeCounter
-                    updatedBadge?.isVisible = badgeCounter != 0
-                }
                 mainFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
                 OnlyInJava.slideUp(binding.bottomBar)
@@ -517,10 +517,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     }
 
     private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<MainItemX> = filteredList
-            .map {
-                if (it.isUpdated) badgeCounter += 1
-                return@map MainItemX(it)
-            }.toMutableList()
+            .map { MainItemX(it) }.toMutableList()
 
 
     private fun refreshAppSheet() {

@@ -31,8 +31,11 @@ class MainViewModel(val context: Context, application: Application)
 
     val refreshNow = MutableLiveData<Boolean>()
 
+    val badgeCounter = MutableLiveData<Int>()
+
     init {
         _initial.value = true
+        badgeCounter.value = 0
     }
 
     fun refreshList() {
