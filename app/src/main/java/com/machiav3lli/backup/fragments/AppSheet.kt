@@ -44,7 +44,6 @@ import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.SortFilterManager
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
@@ -122,8 +121,8 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                     backupFastAdapter?.addEventHook(OnDeleteClickHook())
                     val backupList = mutableListOf<BackupItemX>()
                     for (backup in it.backupHistory) backupList.add(BackupItemX(backup))
-                    val sortedBackupList = backupList.sortedWith(SortFilterManager.BACKUP_DATE_COMPARATOR)
-                    set(backupItemAdapter, sortedBackupList)
+                    backupList.sortBy { it.backup.backupProperties.backupDate }
+                    set(backupItemAdapter, backupList.asReversed())
                 }
                 else -> binding.recyclerView.visibility = View.GONE
             }

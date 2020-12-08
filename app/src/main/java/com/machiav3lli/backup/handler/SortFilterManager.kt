@@ -18,11 +18,11 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
+import android.content.Intent
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
 import com.machiav3lli.backup.PREFS_SORT_FILTER
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
@@ -33,8 +33,6 @@ object SortFilterManager {
     private val APP_INFO_LABEL_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true) }
     private val APP_INFO_PACKAGE_NAME_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.packageName.compareTo(m2.packageName, ignoreCase = true) }
     private val APP_INFO_DATA_SIZE_COMPARATOR = { m1: AppInfo, m2: AppInfo -> m1.dataBytes.compareTo(m2.dataBytes) }
-
-    val BACKUP_DATE_COMPARATOR = java.util.Comparator { m1: BackupItemX, m2: BackupItemX -> m2.backup.backupProperties.backupDate!!.compareTo(m1.backup.backupProperties.backupDate) }
 
     fun getFilterPreferences(context: Context): SortFilterModel {
         val sortFilterModel: SortFilterModel

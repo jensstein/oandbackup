@@ -119,6 +119,7 @@ class AppInfo {
 
     val latestBackup: BackupItem?
         get() = if (backupHistory.isNotEmpty()) {
+            backupHistory.sortBy { it.backupProperties.backupDate }
             backupHistory.last()
         } else null
 
