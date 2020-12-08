@@ -101,10 +101,10 @@ object BackendController {
         val backupRoot = getBackupRoot(context)
         try {
             return backupRoot.listFiles()
-                    .filter(StorageFile::isDirectory)
+                    .filter { it.isDirectory && it.name != LogUtils.LOG_FOLDER_NAME }
                     .toList()
         } catch (e: FileNotFoundException) {
-            Timber.e(e.javaClass.simpleName + ": " + e.message)
+            Timber.e("${e.javaClass.simpleName}: ${e.message}")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
