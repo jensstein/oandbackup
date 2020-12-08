@@ -54,20 +54,18 @@ object Crypto {
     private const val ENCRYPTION_SETUP_FAILED = "Could not setup encryption"
 
     /**
-     * TODO migrate to one of the newer algorithms
-     * Taken from here. Chosen because of API Level 24+ compatibility. Newer algorithms are available
-     * with API Level 26+.
-     * https://developer.android.com/guide/topics/security/cryptography#SupportedSecretKeyFactory
+     * https://developer.android.com/guide/topics/security/cryptography#Cipher
+     * Starting SDK28 ChaCha20 is supported, which is far more faster than standard AES
+     * Maybe will implement it in the future as an option AES/ChaCha20
      *
-     *
-     * The actual choice was inspired by this blog post:
+     * The original choice was inspired by this blog post:
      * https://www.raywenderlich.com/778533-encryption-tutorial-for-android-getting-started
      */
-    private const val DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1"
-    const val CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding"
-    private const val DEFAULT_IV_BLOCK_SIZE = 16 // 128 bit
-    private const val ITERATION_COUNT = 1000
-    private const val KEY_LENGTH = 128
+    private const val DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2withHmacSHA256"
+    const val CIPHER_ALGORITHM = "AES/GCM/NoPadding"
+    private const val DEFAULT_IV_BLOCK_SIZE = 32 // 256 bit
+    private const val ITERATION_COUNT = 2020
+    private const val KEY_LENGTH = 256
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
     fun generateKeyFromPassword(password: String, salt: ByteArray?): SecretKey = generateKeyFromPassword(password, salt, DEFAULT_SECRET_KEY_FACTORY_ALGORITHM, CIPHER_ALGORITHM)
