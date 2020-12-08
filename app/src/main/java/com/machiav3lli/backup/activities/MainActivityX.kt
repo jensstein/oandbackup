@@ -84,7 +84,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     }
 
     private var updatedBadge: BadgeDrawable? = null
-    private var badgeCounter = 0
     private lateinit var prefs: SharedPreferences
     private var navController: NavController? = null
     private var powerManager: PowerManager? = null

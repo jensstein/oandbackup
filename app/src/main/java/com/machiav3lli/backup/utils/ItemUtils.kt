@@ -61,7 +61,7 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
                 changeVisibility(binding.wipeCache, View.GONE, update)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.e(String.format("Package %s is not installed? Exception: %s", app.packageName, e))
+            Timber.e("Package ${app.packageName} is not installed? Exception: $e")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e, app)
         }

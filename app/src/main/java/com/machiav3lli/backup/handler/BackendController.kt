@@ -27,7 +27,7 @@ import java.util.*
 object BackendController {
 
     /*
-    List of packages ignored for any reason
+    List of packages to be ignored for said reasons
      */
     val ignoredPackages = listOf(
             "android",  // virtual package. Data directory is /data -> not a good idea to backup
@@ -86,7 +86,7 @@ object BackendController {
                                 try {
                                     AppInfo(context, it.uri, it.name)
                                 } catch (e: AssertionError) {
-                                    Timber.e("Could not process backup folder for uninstalled application in " + it.name + ": " + e)
+                                    Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                                     null
                                 }
                             }

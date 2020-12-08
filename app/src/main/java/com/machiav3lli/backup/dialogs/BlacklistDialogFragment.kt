@@ -30,6 +30,7 @@ import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 
+// TODO filter according to schedule's mode
 class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {

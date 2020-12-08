@@ -93,6 +93,7 @@ class LogsFragment : Fragment() {
         val logsList = mutableListOf<LogItemX>()
         viewModel.logsList.value?.forEach { logsList.add(LogItemX(it)) }
         FastAdapterDiffUtil[logItemAdapter] = logsList
+        logFastAdapter?.notifyDataSetChanged()
         viewModel.finishRefresh()
     }
 }

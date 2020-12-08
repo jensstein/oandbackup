@@ -128,7 +128,7 @@ class AppInfo {
             storageStats = BackendController.getPackageStorageStats(context, packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.e("Could not refresh StorageStats. Package was not found: " + e.message)
+            Timber.e("Could not refresh StorageStats. Package was not found: ${e.message}")
             false
         }
     }
@@ -167,7 +167,7 @@ class AppInfo {
                                     Timber.w(message)
                                 } catch (e: Throwable) {
                                     val message = "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
-                                    LogUtils.unhandledException(e, it.uri)
+                                    LogUtils.unhandledException(e, message)
                                 }
                             }
                 } catch (e: FileNotFoundException) {

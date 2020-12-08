@@ -27,6 +27,7 @@ import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import kotlin.math.abs
 
+// TODO Improve on it
 class AlarmsHandler(var context: Context) {
     private val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val deviceIdleChecker: DeviceIdleChecker = DeviceIdleChecker(context)
@@ -49,8 +50,7 @@ class AlarmsHandler(var context: Context) {
         } else {
             alarmManager[AlarmManager.RTC_WAKEUP, start] = pendingIntent
         }
-        Timber.i("backup starting in: " +
-                (start - System.currentTimeMillis()) / 1000f / 60 / 60f)
+        Timber.i("backup starting in: ${(start - System.currentTimeMillis()) / 1000f / 60 / 60f}")
     }
 
     fun cancelAlarm(id: Int) {
