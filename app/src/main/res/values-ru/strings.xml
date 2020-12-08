@@ -79,7 +79,7 @@
     <string name="disablePackageTitle">Отключить для пользователей</string>
     <string name="prefs_title">Настройки</string>
     <string name="prefs_acquirewakelock">Предотвратить сон</string>
-    <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна. значительно ускорит резервирование и восстановление, но будет потреблять больше энергии.</string>
+    <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна. Значительно ускоряет резервирование и восстановление, но потребляет больше энергии.</string>
     <string name="prefs_pathbackupfolder">Папка для р.к.</string>
     <string name="prefs_oldbackups">Отфильтровать р.к. по возрасту</string>
     <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
@@ -221,4 +221,5 @@
     <string name="delete_all_backups">Удалить все резервные копии</string>
     <string name="radio_externaldata">Внешние данные</string>
     <string name="prefs_advanced">Расширенные возможности</string>
+    <string name="help_issues">Известные проблемы</string>
 </resources>
