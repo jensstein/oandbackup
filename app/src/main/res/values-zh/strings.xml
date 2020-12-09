@@ -227,4 +227,8 @@
     <string name="help_issues">已知问题</string>
     <string name="prefs_obbdata_summary">备份和恢复放置在外部存储中的应用程序的obb文件（如 /storage/emulated/0/Android/obb/）</string>
     <string name="prefs_obbdata">备份 obb 文件</string>
+    <string name="stats_apps">应用程序</string>
+    <string name="stats_backups">备份</string>
+    <string name="stats_updated">已更新</string>
+    <string name="radio_launchable">可启动的应用程序</string>
 </resources>
