@@ -228,4 +228,10 @@
         <item quantity="other">%d Tage,</item>
     </plurals>
     <string name="help_issues">Bekannte Probleme</string>
+    <string name="stats_apps">Apps</string>
+    <string name="stats_backups">Sicherungen</string>
+    <string name="stats_updated">Aktualisiert</string>
+    <string name="radio_launchable">Startbare Apps</string>
+    <string name="prefs_obbdata_summary">Sichert und stellt die obb-Dateien der App wieder her, die sich auf dem externen Speicher befindet (z.B. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">obb Dateien sichern</string>
 </resources>
