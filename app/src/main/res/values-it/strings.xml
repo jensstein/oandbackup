@@ -127,7 +127,7 @@
     <string name="sched_blacklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
     <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
-    <string name="restart_dialog">Sembra che sia necessario riavviare l\\\'applicazione</string>
+    <string name="restart_dialog">Sembra che sia necessario riavviare l\'applicazione</string>
     <string name="filter_options">Filtri:</string>
     <string name="sort_options">Filtra per:</string>
     <string name="sortLabel">Etichetta</string>
@@ -214,4 +214,20 @@
     <string name="radio_obbdata">Dati OBB</string>
     <string name="radio_deviceprotecteddata">Dati protetti del dispositivo</string>
     <string name="radio_externaldata">Dati Esterni</string>
+    <string name="fetching_action_list">Recupero dell\'elenco delle app per %1$s …</string>
+    <plurals name="days_left">
+        <item quantity="one">%d giorno</item>
+        <item quantity="other">%d giorni</item>
+    </plurals>
+    <string name="intro_permission_batteryoptimization">L\'app può affrontare alcuni problemi eseguendo backup programmati su alcune ROM che adottano ottimizzazioni della batteria aggressive, ad es. MIUI, ma anche su vanilla AOSP può capitare un problema del genere.</string>
+    <string name="help_issues">Problemi noti</string>
+    <string name="logs_text_empty">Non c\'è niente da mostrare!</string>
+    <string name="delete_all_backups">Elimina tutti i backup</string>
+    <string name="msg_appkill_warning">Le app selezionate riceveranno il segnale di arresto e continueranno al termine dell\'attività. Controlla le tue app elaborate in seguito (ed evita di avviarle mentre il processo è ancora in esecuzione).</string>
+    <string name="intro_permission_usageaccess">L\'app necessita di questa autorizzazione per poter controllare le statistiche e le dimensioni dei dati e la cache delle tue app.</string>
+    <string name="intro_permission_storage_location">L\'app necessita di una posizione di backup per archiviare i backup. L\'app potrebbe richiedere alcuni gigabyte di spazio di archiviazione per un backup completo e sta interrogando molto il filesystem. Tienilo a mente quando scegli le posizioni di archiviazione basate sulla rete.</string>
+    <string name="intro_permission_storage">L\'app utilizza i permessi di lettura / scrittura della memoria per poter accedere alla memoria esterna e fornire la possibilità per il backup di dati esterni / obb di altre app.</string>
+    <string name="prefs_stopcont">STOP-CONT pre e post elaborazione di app su backup / ripristino</string>
+    <string name="prefs_obbdata_summary">Esegue il backup e ripristina i file obb dell\'app che vengono inseriti nella memoria esterna (ad esempio / storage / emulated / 0 / Android / obb /)</string>
+    <string name="prefs_obbdata">Eseguire il backup dei file obb</string>
 </resources>

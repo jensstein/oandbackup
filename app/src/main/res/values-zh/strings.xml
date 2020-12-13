@@ -218,10 +218,17 @@
     <string name="radio_externaldata">外部数据</string>
     <string name="logs_text_empty">没什么可显示的！</string>
     <string name="delete_all_backups">删除全部备份</string>
-    <string name="fetching_action_list">获取用于备份的应用程序列表…</string>
+    <string name="fetching_action_list">正在获取 %1$s 的应用程序列表…</string>
     <string name="prefs_disableverification_summary">还原APKs时禁用这一开发者选项，并在之后重新启用。用以解决错误：INSTALL_FAILED_VERIFICATION_FAILURE。</string>
     <string name="prefs_disableverification">禁用通过USB验证应用</string>
     <plurals name="days_left">
         <item quantity="other">%d 天,</item>
     </plurals>
+    <string name="help_issues">已知问题</string>
+    <string name="prefs_obbdata_summary">备份和恢复放置在外部存储中的应用程序的obb文件（如 /storage/emulated/0/Android/obb/）</string>
+    <string name="prefs_obbdata">备份 obb 文件</string>
+    <string name="stats_apps">应用程序</string>
+    <string name="stats_backups">备份</string>
+    <string name="stats_updated">已更新</string>
+    <string name="radio_launchable">可启动的应用程序</string>
 </resources>

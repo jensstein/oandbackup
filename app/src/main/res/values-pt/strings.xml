@@ -226,4 +226,11 @@
         <item quantity="one">%d dia,</item>
         <item quantity="other">%d dias,</item>
     </plurals>
+    <string name="stats_apps">Aplicações</string>
+    <string name="stats_backups">Backups</string>
+    <string name="stats_updated">Atualizado</string>
+    <string name="radio_launchable">Aplicativos lançáveis</string>
+    <string name="help_issues">Problemas conhecidos</string>
+    <string name="prefs_obbdata_summary">Faz backup e restauro de ficheiros obb da aplicação que são colocados no armazenamento externo (Ex: /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Backup de ficheiros obb</string>
 </resources>

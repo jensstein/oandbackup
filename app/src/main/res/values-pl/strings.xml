@@ -214,4 +214,19 @@
     <string name="prefs_advanced">Ustawienia zaawansowane</string>
     <string name="radio_obbdata">Dane OBB</string>
     <string name="radio_externaldata">Dane zewnętrzne</string>
+    <plurals name="days_left">
+        <item quantity="one">%d dzień,</item>
+        <item quantity="few">%d dni,</item>
+        <item quantity="many">%d dni,</item>
+        <item quantity="other">%d dni,</item>
+    </plurals>
+    <string name="help_issues">Znane problemy</string>
+    <string name="fetching_action_list">Pobieranie listy aplikacji dla %1$s…</string>
+    <string name="logs_text_empty">Nie ma nic do pokazania!</string>
+    <string name="delete_all_backups">Usuń wszystkie kopie zapasowe</string>
+    <string name="prefs_stopcont_summary">Zaawansowane: Może to pomóc, jeśli aplikacja zmienia pliki podczas tworzenia kopii zapasowej i kopia zapasowa się nie powiedzie.</string>
+    <string name="prefs_disableverification_summary">Wyłącza tę opcję podczas przywracania plików APK, a następnie włącza ją ponownie. Rozwiązuje błąd: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification">Wyłącz weryfikację aplikacji przez USB</string>
+    <string name="prefs_obbdata_summary">Kopiuje i przywraca dane OBB z pamięci zewnętrznej (np. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Twórz kopie zapasowe plików obb</string>
 </resources>

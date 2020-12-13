@@ -227,4 +227,10 @@
         <item quantity="one">%d día,</item>
         <item quantity="other">%d días,</item>
     </plurals>
+    <string name="help_issues">Errores conocidos</string>
+    <string name="prefs_obbdata_summary">Realiza una copia de seguridad y restaura los archivos obb de la aplicación que se colocan en el almacenamiento externo (por ejemplo, /almacenamiento/ emulado/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Copia de seguridad de archivos obb</string>
+    <string name="stats_backups">Copias de seguridad</string>
+    <string name="stats_apps">Apps</string>
+    <string name="stats_updated">Actualizado</string>
 </resources>
