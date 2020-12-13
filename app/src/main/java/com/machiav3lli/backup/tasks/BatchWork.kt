@@ -1,10 +1,14 @@
 package com.machiav3lli.backup.tasks
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.job.JobService
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.core.app.NotificationCompat
+import androidx.work.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -14,34 +18,35 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
 import timber.log.Timber
 
-class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class BatchWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
 
-    override fun doWork(): Result {
-        // val wl: WakeLock = WakeLocks.newWakeLock(context, TAG)
-        // wl.acquire()
+    private var notificationId: Int = 123454321
+    private var backupBoolean = true
 
+    override suspend fun doWork(): Result {
         val packageName = inputData.getString("packageName")
                 ?: ""
         val selectedMode = inputData.getInt("selectedMode", 0)
-        val backupBoolean = inputData.getBoolean("backupBoolean", true)
-
+        this.backupBoolean = inputData.getBoolean("backupBoolean", true)
+        this.notificationId = inputData.getInt("notificationId", 123454321)
+        setForeground(createForegroundInfo())
         var result: ActionResult? = null
         var appInfo: AppInfo? = null
 
-        val foundItem = context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-        when {
-            foundItem != null -> appInfo = AppInfo(context, foundItem)
-            else -> {
-                val backupDir = BackendController
-                        .getDirectoriesInBackupRoot(context)
-                        .find { it.name == packageName }
-                backupDir?.let {
-                    try {
-                        appInfo = AppInfo(context, it.uri, it.name)
-                    } catch (e: AssertionError) {
-                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                        result = ActionResult(null, null, "Could not process backup folder for uninstalled application in ${it.name}: $e", false)
-                    }
+        try {
+            val foundItem = context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+            appInfo = AppInfo(context, foundItem)
+        } catch (e: PackageManager.NameNotFoundException) {
+            val backupDir = BackendController
+                    .getDirectoriesInBackupRoot(context)
+                    .find { it.name == packageName }
+            backupDir?.let {
+                try {
+                    appInfo = AppInfo(context, it.uri, it.name)
+                } catch (e: AssertionError) {
+                    Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
+                    result = ActionResult(null, null,
+                            "Could not process backup folder for uninstalled application in ${it.name}: $e", false)
                 }
             }
         }
@@ -64,12 +69,14 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(c
                         }
                     }
                 } catch (e: Throwable) {
-                    result = ActionResult(ai, null, "not processed: $packageLabel: $e\n${e.stackTrace}", false)
+                    result = ActionResult(ai, null,
+                            "not processed: $packageLabel: $e\n${e.stackTrace}", false)
                     Timber.w("package: ${ai.packageLabel} result: $e")
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
-                            NotificationHandler.showNotification(context, MainActivityX::class.java, result.hashCode(), ai.packageLabel, it.message, it.message, false)
+                            NotificationHandler.showNotification(context, MainActivityX::class.java,
+                                    result.hashCode(), ai.packageLabel, it.message, it.message, false)
                         }
                     }
                 }
@@ -85,5 +92,43 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Worker(c
                     "packageLabel" to packageLabel
             ))
         }
+    }
+
+    private fun createForegroundInfo(): ForegroundInfo {
+        val contentPendingIntent = PendingIntent.getActivity(context, 0,
+                Intent(context, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val cancelIntent = WorkManager.getInstance(applicationContext)
+                .createCancelPendingIntent(id)
+
+        createNotificationChannel()
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle(when {
+                    backupBoolean -> context.getString(com.machiav3lli.backup.R.string.batchbackup)
+                    else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
+                })
+                .setSmallIcon(com.machiav3lli.backup.R.drawable.ic_app)
+                .setOngoing(true)
+                .setNotificationSilent()
+                .setContentIntent(contentPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .addAction(com.machiav3lli.backup.R.drawable.ic_wipe_24,
+                        context.getString(com.machiav3lli.backup.R.string.dialogCancel), cancelIntent)
+                .build()
+
+        return ForegroundInfo(this.notificationId + 1, notification)
+    }
+
+    private fun createNotificationChannel() {
+        val notificationManager = context.getSystemService(JobService.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_HIGH)
+        notificationChannel.enableVibration(true)
+        notificationManager.createNotificationChannel(notificationChannel)
+    }
+
+    companion object {
+        private val CHANNEL_ID = BatchWork::class.java.name
     }
 }

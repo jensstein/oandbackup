@@ -403,6 +403,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                             "packageName" to packageName,
                             "selectedMode" to mode,
                             "backupBoolean" to backupBoolean,
+                            "notificationId" to notificationId.toInt()
                     ))
                     .build()
 
