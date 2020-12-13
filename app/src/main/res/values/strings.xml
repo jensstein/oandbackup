@@ -126,6 +126,10 @@
     <string name="prefs_acquirewakelock_summary">Acquire a wakelock during batch operations to prevent sleep. Speeds up backups and restorations considerably, but consumes more energy.</string>
     <string name="prefs_disableverification">Disable "Verify apps over USB"</string>
     <string name="prefs_disableverification_summary">Disables this developer option while restoring APKs and re-enables it afterwards. Solves the error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_restoreallpermissions_summary">Give the restored app all the permissions it asks for.</string>
+    <string name="prefs_restoreallpermissions">Restore with all permissions</string>
+    <string name="prefs_allowdowngrade_summary">Allow restoring an older version of the installed app.</string>
+    <string name="prefs_allowdowngrade">Allow downgrading</string>
     <string name="prefs_stopcont">STOP-CONT pre- and postprocessing of apps on backup/restore</string>
     <string name="prefs_stopcont_summary">Experts only: This can help, if the app is changing files during backup and the backup fails.</string>
     <string name="prefs_batchdelete">Delete backups\?</string>

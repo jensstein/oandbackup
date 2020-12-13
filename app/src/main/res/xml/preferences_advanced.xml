@@ -47,6 +47,20 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:key="giveAllPermissions"
+        android:summary="@string/prefs_restoreallpermissions_summary"
+        android:title="@string/prefs_restoreallpermissions"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="allowDowngrade"
+        android:summary="@string/prefs_allowdowngrade_summary"
+        android:title="@string/prefs_allowdowngrade"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
         android:key="killBeforeAction"
         android:summary="@string/prefs_stopcont_summary"
         android:title="@string/prefs_stopcont"

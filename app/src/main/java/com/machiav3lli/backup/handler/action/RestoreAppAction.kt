@@ -34,14 +34,9 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileFromDocument
 import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileFromDocument
-import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.isDisableVerification
-import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
-import com.machiav3lli.backup.utils.uncompressTo
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
@@ -415,7 +410,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
      * @param apkPath path to the apk to be installed (should be in the staging dir)
      * @return a complete shell command
      */
-    private fun getPackageInstallCommand(apkPath: File?): String = this.getPackageInstallCommand(apkPath, null)
+    private fun getPackageInstallCommand(apkPath: File): String = this.getPackageInstallCommand(apkPath, null)
 
     /**
      * Returns an installation command for abd/shell installation.
@@ -425,11 +420,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
      * @param basePackageName null, if it's a base package otherwise the name of the base package
      * @return a complete shell command
      */
-    private fun getPackageInstallCommand(apkPath: File?, basePackageName: String?): String {
-        return String.format("%s%s -r \"%s\"",
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) "cmd package install" else "pm install",
+    private fun getPackageInstallCommand(apkPath: File, basePackageName: String?): String {
+        return String.format("cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}",
                 if (basePackageName != null) " -p $basePackageName" else "",
-                apkPath)
+                if (isRestoreAllPermissions(context)) " -g" else "",
+                if (isAllowDowngrade(context)) " -d" else "")
     }
 
     enum class RestoreCommand(private val command: String) {

@@ -176,12 +176,16 @@ fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerMa
         : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(context.packageName)
 
-fun isKillBeforeActionEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(PREFS_KILLBEFOREACTION, false)
-}
+fun isKillBeforeActionEnabled(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_KILLBEFOREACTION, false)
 
-fun isDisableVerification(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(PREFS_DISABLEVERIFICATION, true)
-}
+fun isDisableVerification(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_DISABLEVERIFICATION, true)
+
+fun isRestoreAllPermissions(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_RESTOREWITHALLPERMISSIONS, false)
+
+fun isAllowDowngrade(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_ALLOWDOWNGRADE, false)
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
