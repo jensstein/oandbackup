@@ -1,34 +1,15 @@
 <html>
     <body>
-        <h2>Usage notes</h2>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data
-            or both. An app not currently installed can only be restored if the apk is present.
+        <h2>Utilisation</h2>
+        <p><strong>Modes de sauvegarde</strong> : Il est possible de ne sauvegarder que l'apk d'une app, que ses données, ou bien les deux. Une app qui n'est pas installée ne peut seulement être restaurée si l'apk a été sauvegardée.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        <p><strong>Effacer la sauvegarde</strong> : Supprime les fichiers de sauvegarde pour l'app choisie.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition
-            to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes
-            files the app might have left over in /data/app-lib/.
+        <p><strong>Désinstaller</strong> : Un peu plus aggressif qu'une désinstallation normale. En plus d'une désinstallation normale via les commandes Android, OAndBackupX supprime les fichiers que l'app aurait pu laisser dans /data/app-lib/.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an
-            app. Disabling an app removes it from the normal user interface without uninstalling.
-            This can be used for enabling or disabling an app for muliple users at a time (if the
-            device has multiple users enabled). Users are identified with an id. 0 is the first user
-            (owner).
+        <p><strong>iActiver / Désactiver</strong> : Utilise le script Android `pm` pour activer ou désactiver une app. Désactiver une app la retire de l'interface utilisateur normale sans la désinstaller. Il est aussi possible d'activer ou désactiver une app pour plusieurs utilisateurices à la fois (si l'appareil est configuré pour). Les utilisateurices sont identifié⋅es par un identifiant. Le premier est le numéro 0 (propriétaire).
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should
-            work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and
-            subsequently the app is disabled for every user who has the app listed in
-            /data/system/user/$user/package-restrictions.xml (unless the app is listed as
-            enabled="1").
-            <br />
-            This can create problems for users installing the same app at some later point, but is
-            necessary to prevent the app from being installed to all users at the same time. The
-            context menu has an option to enable or disable apps which can be used if other users
-            become unable to use a specific app due to disabling on restore.
-            <br />
-            Enabling and disabling only works after an initial install (not necessarily from
-            OAndBackupx) or restore of the app.
+        <p><strong>Utilisateurices multiples</strong> : Cette fonctionnalité est quelque peu expérimentale mais devrait marcher. En restaurant dans un scénario multi-utilisateurices, `pm install -r $apk` est appelé puis l'app est désactivée pour chaque utilisateurice ayant cette app listée dans /data/system/user/$user/package-restrictions.xml (sauf si l'app est notée comme enabled="1"). <br> Cela peut mener à des problèmes pour les utilisateurices installant cette même app plus tard, mais est nécessaire pour empécher l'app d'être installée à tous le monde en même temps. Le menu contextuel a une option pour activer ou désactiver les apps, qui peut être utilisé s'il devient impossible pour certain⋅es utilisateurices d'utiliser une app spécifique suite à la désactivation lors de la restauration. <br> L'activation ou la désactivation fonctionnent uniquement après l'installation initiale (par forcément depuis OAndBackupX) ou après restauration de l'app.
         </p>
     </body>
 </html>
