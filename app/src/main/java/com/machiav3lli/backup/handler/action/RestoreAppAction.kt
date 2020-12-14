@@ -19,7 +19,6 @@ package com.machiav3lli.backup.handler.action
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
 import com.machiav3lli.backup.PREFS_EXTERNALDATA
 import com.machiav3lli.backup.PREFS_OBBDATA
@@ -190,19 +189,18 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
              *                              this has changed in the last couple of years.
              */
             stagingApkPath = File(context.getExternalFilesDir(null), "apkTmp")
-            Timber.w("Weird configuration. Expecting that the system does not allow installing " +
-                    "from OABX's own data directory. Copying the apk to $stagingApkPath")
+            Timber.w("Weird configuration. Expecting that the system does not allow installing from OABX's own data directory. Copying the apk to $stagingApkPath")
         }
         var success = false
         success = try {
             // Try it with a staging path. This is usually the way to go.
             // copy apks to staging dir
-            for (apkDoc in apksToRestore) {
+            apksToRestore.forEach {
                 // The file must be touched before it can be written for some reason...
-                Timber.d("[$packageName] Copying ${apkDoc.name} to staging dir")
-                runAsRoot("touch '${File(stagingApkPath, apkDoc.name ?: "").absolutePath}'")
-                suCopyFileFromDocument(context.contentResolver, apkDoc.uri,
-                        File(stagingApkPath, apkDoc.name ?: "").absolutePath
+                Timber.d("[$packageName] Copying ${it.name} to staging dir")
+                runAsRoot("touch '${File(stagingApkPath, "$packageName.${it.name}").absolutePath}'")
+                suCopyFileFromDocument(context.contentResolver, it.uri,
+                        File(stagingApkPath, "$packageName.${it.name}").absolutePath
                 )
             }
             val sb = StringBuilder()
@@ -210,20 +208,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // disable verify apps over usb
             if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
             // Install main package
-            sb.append(this.getPackageInstallCommand(File(stagingApkPath, baseApk.name ?: "")))
+            sb.append(this.getPackageInstallCommand(File(stagingApkPath, "$packageName.${baseApk.name}")))
             // If split apk resources exist, install them afterwards (order does not matter)
             if (splitApksInBackup.isNotEmpty()) {
-                for (apk in splitApksInBackup) {
-                    sb.append(" && ").append(this.getPackageInstallCommand(File(stagingApkPath, apk.name
-                            ?: ""),
-                            backupProperties.packageName))
+                splitApksInBackup.forEach {
+                    sb.append(" && ").append(this.getPackageInstallCommand(
+                            File(stagingApkPath, "$packageName.${it.name}"),
+                            backupProperties.packageName)
+                    )
                 }
             }
 
             // append cleanup command
-            val finalStagingApkPath = stagingApkPath
             sb.append(" && ${shell.utilboxPath} rm ${
-                apksToRestore.joinToString(separator = " ") { s: StorageFile -> '"'.toString() + finalStagingApkPath.absolutePath + '/' + s.name + '"' }
+                apksToRestore.joinToString(separator = " ") { "\"${File(stagingApkPath, "$packageName.${it.name}").absolutePath}\"" }
             }")
             // re-enable verify apps over usb
             if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
@@ -232,7 +230,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             true
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
-            val error = extractErrorMessage(e.shellResult)
+            val error = e.shellResult.err.joinToString(separator = "\n")
             Timber.e("Restore APKs failed: $error")
             throw RestoreFailedException(error, e)
         } catch (e: IOException) {
