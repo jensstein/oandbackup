@@ -23,7 +23,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.handler.action.BaseAppAction
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 import timber.log.Timber

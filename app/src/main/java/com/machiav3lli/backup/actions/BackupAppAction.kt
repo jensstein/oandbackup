@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.handler.action
+package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.net.Uri

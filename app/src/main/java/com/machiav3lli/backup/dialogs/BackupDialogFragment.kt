@@ -24,8 +24,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.items.PackageInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 

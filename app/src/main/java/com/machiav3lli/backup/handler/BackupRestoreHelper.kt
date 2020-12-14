@@ -25,8 +25,8 @@ import com.machiav3lli.backup.HousekeepingMoment
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
 import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
+import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.handler.action.*
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
@@ -125,10 +125,10 @@ object BackupRestoreHelper {
                 throw IOException(e.shellResult.err.joinToString(separator = " "), e)
             }
         } catch (e: StorageLocationNotConfiguredException) {
-            Timber.e(e.javaClass.simpleName + ": " + e)
+            Timber.e("${e.javaClass.simpleName}: $e")
             return false
         } catch (e: BackupLocationIsAccessibleException) {
-            Timber.e(e.javaClass.simpleName + ": " + e)
+            Timber.e("${e.javaClass.simpleName}: $e")
             return false
         }
         return true
@@ -169,9 +169,5 @@ object BackupRestoreHelper {
 
     enum class ActionType {
         BACKUP, RESTORE
-    }
-
-    interface OnBackupRestoreListener {
-        fun onBackupRestoreDone()
     }
 }

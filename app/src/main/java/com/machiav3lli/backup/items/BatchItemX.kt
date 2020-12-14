@@ -20,8 +20,8 @@ package com.machiav3lli.backup.items
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
-import com.machiav3lli.backup.handler.action.BaseAppAction
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
