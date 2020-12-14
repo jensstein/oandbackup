@@ -2,13 +2,13 @@
 
 * Which use android's keystore to identify users: Signal, 
 
-* Some Termux plug-ins which have cyclic smylinks
+* Some Termux plugins which have cyclic smylinks
 
 * Some system apps aren't meant to be backup/restored just be careful not breaking the system when you play with those
 
 * MIUI optimizations (and some other OSes) don't allow the restore in most scenarios
 
-*
+* VLC seems to have problem backing up
 
 ## OABX specific:
 
