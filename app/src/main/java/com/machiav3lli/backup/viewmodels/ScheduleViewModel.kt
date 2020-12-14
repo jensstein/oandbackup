@@ -21,7 +21,7 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao,
 
     init {
         schedule.addSource(scheduleDB.getLiveSchedule(id), schedule::setValue)
-        blacklist.addSource(blacklistDB.getLiveBlacklist(id.toInt()), blacklist::setValue)
+        blacklist.addSource(blacklistDB.getLiveBlacklist(id), blacklist::setValue)
     }
 
     fun deleteSchedule() {
@@ -44,7 +44,7 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao,
 
     private suspend fun deleteBL() {
         withContext(Dispatchers.IO) {
-            blacklistDB.deleteById(id.toInt())
+            blacklistDB.deleteById(id)
         }
     }
 
@@ -57,7 +57,7 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao,
 
     private suspend fun updateBL(newList: Set<String>) {
         withContext(Dispatchers.IO) {
-            blacklistDB.updateList(id.toInt(), newList)
+            blacklistDB.updateList(id, newList)
         }
     }
 }

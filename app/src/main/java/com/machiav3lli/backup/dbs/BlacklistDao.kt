@@ -37,16 +37,16 @@ interface BlacklistDao {
     val all: List<Blacklist>
 
     @Query("SELECT packageName FROM blacklist WHERE blacklistId = :blacklistId")
-    fun getBlacklistedPackages(blacklistId: Int): List<String>
+    fun getBlacklistedPackages(blacklistId: Long): List<String>
 
 
     @Query("SELECT packageName FROM blacklist WHERE blacklistId = :blacklistId")
-    fun getLiveBlacklist(blacklistId: Int): LiveData<List<String>>
+    fun getLiveBlacklist(blacklistId: Long): LiveData<List<String>>
 
     @Update
     fun update(blacklist: Blacklist?)
 
-    fun updateList(blacklistId: Int, newList: Set<String>) {
+    fun updateList(blacklistId: Long, newList: Set<String>) {
         deleteById(blacklistId)
         newList.forEach { packageName ->
             val newBlacklist = Blacklist.Builder()
@@ -61,5 +61,5 @@ interface BlacklistDao {
     fun deleteAll()
 
     @Query("DELETE FROM blacklist WHERE blacklistId = :blacklistId")
-    fun deleteById(blacklistId: Int)
+    fun deleteById(blacklistId: Long)
 }

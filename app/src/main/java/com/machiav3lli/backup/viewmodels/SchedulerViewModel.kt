@@ -3,17 +3,14 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.items.SchedulerItemX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-// TODO Add a getter for list of elements that reflect changes in each schedule
 class SchedulerViewModel(val database: ScheduleDao, application: Application)
     : AndroidViewModel(application) {
 
@@ -23,8 +20,6 @@ class SchedulerViewModel(val database: ScheduleDao, application: Application)
         get() = schedules.value?.map {
             SchedulerItemX(it)
         } ?: listOf()
-
-    var activeSchedule = MutableLiveData<Schedule?>()
 
     init {
         schedules.addSource(database.liveAll, schedules::setValue)
@@ -55,22 +50,5 @@ class SchedulerViewModel(val database: ScheduleDao, application: Application)
                     .build()
             database.insert(schedule)
         }
-    }
-
-    fun setActiveSchedule(id: Long) {
-        viewModelScope.launch {
-            activeSchedule.value = getSchedule(id)
-        }
-    }
-
-    fun getActiveSchedule(id: Long): Schedule? {
-        runBlocking {
-            activeSchedule.value = getSchedule(id)
-        }
-        return activeSchedule.value
-    }
-
-    private suspend fun getSchedule(id: Long): Schedule? {
-        return withContext(Dispatchers.IO) { database.getSchedule(id) }
     }
 }

@@ -19,14 +19,20 @@ package com.machiav3lli.backup.fragments
 
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -43,17 +49,16 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.dialogs.CustomListDialogFragment
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
-import com.machiav3lli.backup.handler.AlarmsHandler
-import com.machiav3lli.backup.handler.ScheduledBackupsHandler
+import com.machiav3lli.backup.handler.ScheduleJobsHandler
+import com.machiav3lli.backup.services.ScheduleJobService
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
 import java.lang.ref.WeakReference
 import java.time.LocalTime
 
-class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
+class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
-    private lateinit var alarmsHandler: AlarmsHandler
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding
 
@@ -64,7 +69,6 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
-        alarmsHandler = AlarmsHandler(requireContext())
         return sheet
     }
 
@@ -72,10 +76,10 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
                               savedInstanceState: Bundle?): View {
         binding = SheetScheduleBinding.inflate(inflater, container, false)
 
-        val scheduleDB = ScheduleDatabase.getInstance(requireContext(), SchedulerActivityX.SCHEDULES_DB_NAME).scheduleDao
+        val scheduleDB = ScheduleDatabase.getInstance(requireContext()).scheduleDao
         val blacklistDB = BlacklistDatabase.getInstance(requireContext()).blacklistDao
 
-        val viewModelFactory = ScheduleViewModelFactory(id, scheduleDB, blacklistDB, requireActivity().application)
+        val viewModelFactory = ScheduleViewModelFactory(scheduleId, scheduleDB, blacklistDB, requireActivity().application)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
@@ -157,14 +161,13 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
             blacklistDialogFragment.arguments = args
             blacklistDialogFragment.show(requireActivity().supportFragmentManager, "BLACKLIST_DIALOG")
         }
-        binding.enableCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.schedule.value?.enabled = isChecked
-            if (!isChecked) alarmsHandler.cancelAlarm(id.toInt())
+        binding.enableCheckbox.setOnClickListener {
+            viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
             refresh()
         }
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
-            alarmsHandler.cancelAlarm(id.toInt())
+            ScheduleJobsHandler.cancelJob(requireContext(), scheduleId.toInt())
             viewModel.deleteBlacklist()
             dismissAllowingStateLoss()
         }
@@ -178,7 +181,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.GONE
         } else {
-            val timeDiff = AlarmsHandler.timeUntilNextEvent(schedule.interval,
+            val timeDiff = ScheduleJobsHandler.timeUntilNextEvent(schedule.interval,
                     schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
             val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
             if (days == 0) {
@@ -206,17 +209,16 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
     }
 
     private fun refresh() {
-        Thread(UpdateRunnable(viewModel.schedule.value, SchedulerActivityX.BLACKLIST_DB_NAME,
-                requireActivity() as SchedulerActivityX))
+        Thread(UpdateRunnable(viewModel.schedule.value, requireActivity() as SchedulerActivityX))
                 .start()
     }
 
-    override fun onCustomListChanged(newList: Set<String>, blacklistId: Int) {
+    override fun onCustomListChanged(newList: Set<String>, blacklistId: Long) {
         viewModel.schedule.value?.customList = newList
         refresh()
     }
 
-    override fun onBlacklistChanged(newList: Set<String>, blacklistId: Int) {
+    override fun onBlacklistChanged(newList: Set<String>, blacklistId: Long) {
         viewModel.updateBlacklist(newList)
     }
 
@@ -231,8 +233,7 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
                     .setTitle("${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)
                     .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                        StartSchedule(requireContext(), ScheduledBackupsHandler(requireContext()),
-                                id, SchedulerActivityX.BLACKLIST_DB_NAME)
+                        StartSchedule(requireContext(), scheduleId)
                                 .execute()
                     }
                     .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
@@ -240,40 +241,43 @@ class ScheduleSheet(val id: Long) : BottomSheetDialogFragment(),
         }
     }
 
-    class UpdateRunnable(private val schedule: Schedule?, private val databaseName: String,
-                         scheduler: SchedulerActivityX?)
+    class UpdateRunnable(private val schedule: Schedule?, scheduler: SchedulerActivityX?)
         : Runnable {
         private val activityReference: WeakReference<SchedulerActivityX?> = WeakReference(scheduler)
 
         override fun run() {
             val scheduler = activityReference.get()
             if (scheduler != null && !scheduler.isFinishing) {
-                val scheduleDatabase = ScheduleDatabase.getInstance(scheduler, databaseName)
+                val scheduleDatabase = ScheduleDatabase.getInstance(scheduler)
                 val scheduleDao = scheduleDatabase.scheduleDao
-                schedule?.let { scheduleDao.update(it) }
+                schedule?.let {
+                    scheduleDao.update(it)
+                    if (it.enabled) ScheduleJobsHandler.scheduleJob(scheduler, it.id, true)
+                    else ScheduleJobsHandler.cancelJob(scheduler, it.id.toInt())
+                }
             }
         }
     }
 
-    internal class StartSchedule(context: Context, scheduledBackupsHandler: ScheduledBackupsHandler,
-                                 private val id: Long, private val databaseName: String)
+    internal class StartSchedule(val context: Context, private val scheduleId: Long)
         : Command {
-        private val contextReference = WeakReference(context)
-        private val handleScheduledBackupsReference = WeakReference(scheduledBackupsHandler)
 
         override fun execute() {
-            val t = Thread {
-                val context = contextReference.get()
-                if (context != null) {
-                    val scheduleDatabase = ScheduleDatabase.getInstance(context, databaseName)
-                    val scheduleDao = scheduleDatabase.scheduleDao
-                    val schedule = scheduleDao.getSchedule(id)
-                    val handleScheduledBackups = handleScheduledBackupsReference.get()
-                    handleScheduledBackups?.initiateBackup(id.toInt(), schedule?.mode, schedule?.subMode,
-                            schedule?.excludeSystem == true, schedule?.customList ?: setOf())
+            Thread {
+                val extras = PersistableBundle()
+                extras.putLong("scheduleId", scheduleId)
+                val jobScheduler = context.getSystemService(JobService.JOB_SCHEDULER_SERVICE) as JobScheduler
+                val jobInfoBuilder: JobInfo.Builder = JobInfo.Builder(scheduleId.toInt(), ComponentName(context, ScheduleJobService::class.java))
+                        .setPersisted(true)
+                        .setRequiresDeviceIdle(false)
+                        .setRequiresCharging(false)
+                        .setExtras(PersistableBundle(extras))
+                        .setOverrideDeadline(1000) // crashes on <= SDK28 when having no constraints
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    jobInfoBuilder.setImportantWhileForeground(true)
                 }
-            }
-            t.start()
+                jobScheduler.schedule(jobInfoBuilder.build())
+            }.start()
         }
     }
 

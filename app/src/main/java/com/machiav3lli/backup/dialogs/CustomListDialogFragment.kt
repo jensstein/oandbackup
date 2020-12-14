@@ -33,7 +33,7 @@ class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomList
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireActivity().application.applicationContext.packageManager
         val args = this.requireArguments()
-        val listId = args.getInt("listId", SchedulerActivityX.GLOBAL_ID)
+        val listId = args.getLong("listId", SchedulerActivityX.GLOBAL_ID)
         val selectedPackages = args.getStringArrayList("selectedPackages") ?: arrayListOf()
 
         var packageInfoList = BackendController.getPackageInfoList(requireContext(), mode)
@@ -70,7 +70,7 @@ class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomList
                 .create()
     }
 
-    private fun saveSelected(listId: Int, packagesNames: List<String>, selections: List<Int>) {
+    private fun saveSelected(listId: Long, packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
                 .map { packagesNames[it] }
                 .toSet()
@@ -78,6 +78,6 @@ class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomList
     }
 
     interface CustomListListener {
-        fun onCustomListChanged(newList: Set<String>, blacklistId: Int)
+        fun onCustomListChanged(newList: Set<String>, blacklistId: Long)
     }
 }

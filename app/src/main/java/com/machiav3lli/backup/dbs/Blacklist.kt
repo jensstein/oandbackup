@@ -27,12 +27,12 @@ class Blacklist {
 
     var packageName: String? = null
 
-    var blacklistId: Int = 0
+    var blacklistId = 0L
 
     class Builder {
-        val blacklist: Blacklist = Blacklist()
+        private val blacklist: Blacklist = Blacklist()
 
-        fun withId(blacklistId: Int): Builder {
+        fun withId(blacklistId: Long): Builder {
             blacklist.blacklistId = blacklistId
             return this
         }
@@ -60,7 +60,7 @@ class Blacklist {
         var hash = 7
         hash = 31 * hash + id.toInt()
         hash = 31 * hash + packageName.hashCode()
-        hash = 31 * hash + blacklistId
+        hash = 31 * hash + blacklistId.toInt()
         return hash
     }
 

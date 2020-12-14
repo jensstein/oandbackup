@@ -22,6 +22,9 @@ import java.time.format.DateTimeFormatter
 const val TAG_BASE = "OAndBackupX"
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
 
+const val SCHEDULES_DB_NAME = "schedules.db"
+const val BLACKLIST_DB_NAME = "blacklists.db"
+
 const val BLACKLIST_ARGS_ID = "blacklistId"
 const val BLACKLIST_ARGS_PACKAGES = "blacklistedPackages"
 const val PREFS_SORT_FILTER = "sortFilter"

@@ -67,13 +67,6 @@
             android:launchMode="singleTask"
             android:parentActivityName=".activities.MainActivityX" />
 
-        <receiver android:name=".services.AlarmReceiver" />
-        <receiver android:name=".services.BootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -83,6 +76,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths_provider" />
         </provider>
-        <service android:name=".services.ScheduleService" />
+
+        <service
+            android:name=".services.ScheduleJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

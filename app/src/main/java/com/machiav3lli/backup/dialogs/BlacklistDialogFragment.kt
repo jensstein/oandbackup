@@ -36,7 +36,7 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
         val args = this.requireArguments()
-        val blacklistId = args.getInt(BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
+        val blacklistId = args.getLong(BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
         val selectedPackages = args.getStringArrayList(BLACKLIST_ARGS_PACKAGES)
 
         var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
@@ -75,7 +75,7 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
                 .create()
     }
 
-    private fun saveSelected(listId: Int, packagesNames: List<String>, selections: List<Int>) {
+    private fun saveSelected(listId: Long, packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
                 .map { packagesNames[it] }
                 .toSet()
@@ -83,6 +83,6 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
     }
 
     interface BlacklistListener {
-        fun onBlacklistChanged(newList: Set<String>, blacklistId: Int)
+        fun onBlacklistChanged(newList: Set<String>, blacklistId: Long)
     }
 }
