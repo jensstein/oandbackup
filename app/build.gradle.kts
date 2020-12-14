@@ -1,5 +1,3 @@
-import java.util.*
-
 /*
  * OAndBackupX: open-source apps backup and restore app.
  * Copyright (C) 2020  Antonios Hazim
@@ -80,7 +78,7 @@ android {
     }
 }
 
-val versions: Properties = System.getProperties()
+val versions: java.util.Properties = System.getProperties()
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions["kotlin"]}")
     // Libs

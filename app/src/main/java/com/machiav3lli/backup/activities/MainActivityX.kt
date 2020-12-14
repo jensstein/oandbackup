@@ -115,8 +115,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()
             else if (mainBoolean) {
-                mainItemAdapter.adapterItems.forEach {
-                    if (it.app.hasBackups && it.app.isUpdated)
+                mainItemAdapter.adapterItems.forEach { item ->
+                    if (item.app.hasBackups && item.app.isUpdated)
                         viewModel.badgeCounter.value = viewModel.badgeCounter.value?.plus(1)
                 }
             }
@@ -205,7 +205,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.modeBar.visibility = View.VISIBLE
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
-        binding.buttonAction.setOnClickListener { actionOnClick(backupBoolean) }
+        binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
         viewModel.dataCheckedList.clear()
         viewModel.apkCheckedList.clear()
     }
@@ -361,7 +361,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         }
     }
 
-    private fun actionOnClick(backupBoolean: Boolean) {
+    private fun onClickBatchAction(backupBoolean: Boolean) {
         val arguments = Bundle()
         val selectedList = batchItemAdapter.adapterItems
                 .filter(BatchItemX::isChecked)
@@ -380,17 +380,19 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     }
 
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        val notificationId = System.currentTimeMillis().toInt()
+        val notificationId = System.currentTimeMillis()
         val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
         val notificationMessage = String.format(getString(R.string.fetching_action_list),
                 (if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)))
-        NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId, notificationMessage, "", true)
+        NotificationHandler.showNotification(this, MainActivityX::class.java,
+                notificationId.toInt(), notificationMessage, "", true)
         val selectedItems = selectedPackages
                 .mapIndexed { i, packageName ->
                     if (packageName.isNullOrEmpty()) null
                     else Pair(packageName, selectedModes[i])
                 }
                 .filterNotNull()
+
         binding.progressBar.visibility = View.VISIBLE
         binding.progressBar.max = selectedItems.size
         var errors = ""
@@ -412,6 +414,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             WorkManager.getInstance(this)
                     .getWorkInfoByIdLiveData(oneTimeWorkRequest.id).observe(this, {
                         if (it.state == WorkInfo.State.SUCCEEDED) {
+                            binding.progressBar.progress = counter
                             counter += 1
                             val succeeded = it.outputData.getBoolean("succeeded", false)
                             val packageLabel = it.outputData.getString("packageLabel")
@@ -419,10 +422,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                             val error = it.outputData.getString("error")
                                     ?: ""
                             val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
-                            NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId, message, packageLabel, false)
+                            NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId.toInt(), message, packageLabel, false)
                             if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
                             resultsSuccess = resultsSuccess && succeeded
-                            binding.progressBar.progress = counter
                         }
                     })
         }
@@ -441,7 +443,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                                 ?: ""
                         val title = it.outputData.getString("notificationTitle")
                                 ?: ""
-                        NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId, title, message, true)
+                        NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId.toInt(), title, message, true)
 
                         val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                         showActionResult(this, overAllResult,

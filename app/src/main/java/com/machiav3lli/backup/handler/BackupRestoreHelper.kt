@@ -20,8 +20,11 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.HousekeepingMoment
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
+import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
+import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.action.*
 import com.machiav3lli.backup.items.ActionResult

@@ -32,9 +32,9 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = this.requireArguments()
-        val selectedList = args.getParcelableArrayList<AppMetaInfo>("selectedList")
+        val selectedApps = args.getParcelableArrayList<AppMetaInfo>("selectedList")
                 ?: arrayListOf()
-        val selectedListModes = args.getIntegerArrayList("selectedListModes")
+        val selectedModes = args.getIntegerArrayList("selectedListModes")
                 ?: arrayListOf()
         val backupBoolean = args.getBoolean("backupBoolean")
         val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
@@ -43,17 +43,17 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
             message.append(requireContext().getString(R.string.msg_appkill_warning))
             message.append("\n\n")
         }
-        selectedList.forEachIndexed { i, item ->
-            message.append("${item.packageLabel}")
-            selectedListModes[i]?.let { message.append(": ${getModeString(it)}\n") }
+        selectedApps.forEachIndexed { i, metaInfo ->
+            message.append("${metaInfo.packageLabel}")
+            selectedModes[i]?.let { message.append(": ${getModeString(it)}\n") }
         }
-        val selectedPackages = selectedList.map { it.packageName }.toList()
+        val selectedPackages = selectedApps.map { it.packageName }.toList()
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(title)
         builder.setMessage(message.toString().trim { it <= ' ' })
         builder.setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
             try {
-                confirmListener.onConfirmed(selectedPackages, selectedListModes)
+                confirmListener.onConfirmed(selectedPackages, selectedModes)
             } catch (e: ClassCastException) {
                 Timber.e("BatchConfirmDialog: $e")
             }

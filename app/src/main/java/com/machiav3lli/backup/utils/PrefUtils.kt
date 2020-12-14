@@ -52,18 +52,17 @@ fun getCryptoSalt(context: Context): ByteArray {
     } else Crypto.FALLBACK_SALT
 }
 
-fun isEncryptionEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
-            ?: false
-}
+fun isEncryptionEnabled(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
+                ?: false
 
-fun isLockEnabled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)
-}
 
-fun isBiometricLockAvailable(context: Context): Boolean {
-    return BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
-}
+fun isLockEnabled(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)
+
+
+fun isBiometricLockAvailable(context: Context): Boolean =
+        BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
 /**
  * Returns the user selected location. Go for `FileUtil.getBackupDir` to get the actual
@@ -104,13 +103,11 @@ fun isStorageDirSetAndOk(context: Context): Boolean {
     }
 }
 
-fun getDefaultSharedPreferences(context: Context): SharedPreferences {
-    return PreferenceManager.getDefaultSharedPreferences(context)
-}
+fun getDefaultSharedPreferences(context: Context): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
-fun getPrivateSharedPrefs(context: Context): SharedPreferences {
-    return context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
-}
+fun getPrivateSharedPrefs(context: Context): SharedPreferences =
+        context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
 
 fun requireStorageLocation(fragment: Fragment) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
