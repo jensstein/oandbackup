@@ -231,4 +231,8 @@
     <string name="stats_backups">备份</string>
     <string name="stats_updated">已更新</string>
     <string name="radio_launchable">可启动的应用程序</string>
+    <string name="prefs_allowdowngrade">允许降级</string>
+    <string name="prefs_allowdowngrade_summary">允许恢复已安装应用程序的旧版本。</string>
+    <string name="prefs_restoreallpermissions">全权限还原</string>
+    <string name="prefs_restoreallpermissions_summary">给予恢复的应用程序要求的所有权限。</string>
 </resources>
