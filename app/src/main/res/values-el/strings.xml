@@ -236,4 +236,5 @@
     <string name="prefs_allowdowngrade_summary">Να επιτρέπεται η επαναφορά παλαιότερης έκδοσης της εγκατεστημένης εφαρμογής.</string>
     <string name="prefs_restoreallpermissions">Επαναφορά με όλες τις άδειες</string>
     <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
+    <string name="prefs_unset">Αποτυχία ορισμού</string>
 </resources>
