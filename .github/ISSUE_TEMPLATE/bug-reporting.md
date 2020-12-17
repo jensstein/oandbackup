@@ -11,6 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **Steps To Reproduce**
+
 1. ...
 2. ...
 3. ...
@@ -23,16 +24,23 @@ A clear and concise description of what you expected to happen.
 Only if there's no clear logs, add screenshots to help explain your problem.
 
 **System Information(please complete the following information):**
- - Device: 
- - Android Version: 
- - ROM: (AOSP, MIUI, OOS...)  
- - App's Version: 
 
+- Device: 
+- Android Version: 
+- ROM: (AOSP, MIUI, OOS...)  
+- App's Version: 
 
--------------------------------
+-----------------------------
+
 **Additional Notes**
-* If you're on the latest Test version(from the TG-Channel or Matrix-Room) please report there directly.
-* If you're on the latest github version. Please read all the open Issues if one does match yours, leave a comment there if there's some extra information you can provide.
-* If you're not on the latest github version(happens sometimes with F-Droid version), please read all of the open issues and also some of the latest closed issues.
 
-Thanks for reporting
+* If you're on the latest Test version(from the TG-Channel or Matrix-Room) please report there directly, not here.
+
+* If you're on the latest github version:
+  
+  * Please read the [FAQ](https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md) first.
+  * Please read all the open Issues. If one does match yours, leave a comment there if there's some extra information you can provide.
+
+* If you're not on the latest github version. Update, then make sure that the bug is still there. If it's go further with reporting.
+
+Thanks for reporting.

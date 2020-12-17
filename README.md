@@ -11,6 +11,8 @@ Now on functionality of our App:
 * Restoring system apps should be possible without requiring a reboot afterwards.
 * Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
+And here's the project's [FAQ](FAQ.md).
+
 ## Installation
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.machiav3lli.backup/)
