@@ -235,4 +235,8 @@
     <string name="stats_updated">Mis à jour</string>
     <string name="radio_launchable">Apps lançables</string>
     <string name="prefs_obbdata">Sauvegarde des fichiers obb</string>
+    <string name="prefs_allowdowngrade">Autoriser le retour à une version antérieure</string>
+    <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'app installée.</string>
+    <string name="prefs_restoreallpermissions">Restaurer avec toutes les permissions</string>
+    <string name="prefs_restoreallpermissions_summary">Donner à l\'app restaurée toutes les permissions qu\'elle demande.</string>
 </resources>
