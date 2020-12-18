@@ -136,12 +136,8 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
             item.schedule.enabled = (v as AppCompatCheckBox).isChecked
-            refresh(item.schedule)
+            Thread(ScheduleSheet.UpdateRunnable(item.schedule, this@SchedulerActivityX, true)).start()
         }
-    }
-
-    private fun refresh(schedule: Schedule) {
-        Thread(ScheduleSheet.UpdateRunnable(schedule, this@SchedulerActivityX)).start()
     }
 
     companion object {

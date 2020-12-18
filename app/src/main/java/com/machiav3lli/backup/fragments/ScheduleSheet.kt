@@ -115,18 +115,18 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             viewModel.schedule.value?.mode = idToMode(checkedId)
-            refresh()
+            refresh(false)
             toggleSecondaryButtons(binding.schedMode)
         }
         binding.schedSubMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             viewModel.schedule.value?.subMode = idToSubMode(checkedId)
-            refresh()
+            refresh(false)
         }
         binding.timeOfDay.setOnClickListener {
             TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
                 viewModel.schedule.value?.timeHour = hourOfDay
                 viewModel.schedule.value?.timeMinute = minute
-                refresh()
+                refresh(true)
             }, viewModel.schedule.value?.timeHour ?: 0,
                     viewModel.schedule.value?.timeMinute ?: 0, true)
                     .show()
@@ -134,12 +134,12 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         binding.intervalDays.setOnClickListener {
             IntervalInDaysDialog(binding.intervalDays.text) { intervalInDays: Int ->
                 viewModel.schedule.value?.interval = intervalInDays
-                refresh()
+                refresh(true)
             }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
         }
         binding.excludeSystem.setOnCheckedChangeListener { _, isChecked ->
             viewModel.schedule.value?.excludeSystem = isChecked
-            refresh()
+            refresh(false)
         }
         binding.customListButton.setOnClickListener {
             val args = Bundle()
@@ -163,7 +163,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         }
         binding.enableCheckbox.setOnClickListener {
             viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
-            refresh()
+            refresh(true)
         }
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
@@ -208,14 +208,14 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         }
     }
 
-    private fun refresh() {
-        Thread(UpdateRunnable(viewModel.schedule.value, requireActivity() as SchedulerActivityX))
+    private fun refresh(rescheduleBoolean: Boolean) {
+        Thread(UpdateRunnable(viewModel.schedule.value, requireActivity() as SchedulerActivityX, rescheduleBoolean))
                 .start()
     }
 
     override fun onCustomListChanged(newList: Set<String>, blacklistId: Long) {
         viewModel.schedule.value?.customList = newList
-        refresh()
+        refresh(false)
     }
 
     override fun onBlacklistChanged(newList: Set<String>, blacklistId: Long) {
@@ -241,7 +241,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         }
     }
 
-    class UpdateRunnable(private val schedule: Schedule?, scheduler: SchedulerActivityX?)
+    class UpdateRunnable(private val schedule: Schedule?, scheduler: SchedulerActivityX?, private val rescheduleBoolean: Boolean)
         : Runnable {
         private val activityReference: WeakReference<SchedulerActivityX?> = WeakReference(scheduler)
 
@@ -252,7 +252,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
                 val scheduleDao = scheduleDatabase.scheduleDao
                 schedule?.let {
                     scheduleDao.update(it)
-                    if (it.enabled) ScheduleJobsHandler.scheduleJob(scheduler, it.id, true)
+                    if (it.enabled) ScheduleJobsHandler.scheduleJob(scheduler, it.id, rescheduleBoolean)
                     else ScheduleJobsHandler.cancelJob(scheduler, it.id.toInt())
                 }
             }

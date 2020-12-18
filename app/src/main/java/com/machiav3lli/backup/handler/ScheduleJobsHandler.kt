@@ -24,50 +24,50 @@ import android.content.ComponentName
 import android.content.Context
 import android.icu.util.Calendar
 import android.os.PersistableBundle
+import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.services.ScheduleJobService
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 object ScheduleJobsHandler {
 
-    fun timeUntilNextEvent(interval: Int, hour: Int, minute: Int, timePLaced: Long, now: Long): Long {
+    fun timeUntilNextEvent(schedule: Schedule, now: Long): Long {
         val c = Calendar.getInstance()
-        c.timeInMillis = timePLaced
-        c.add(Calendar.DAY_OF_MONTH, interval)
-        c[Calendar.HOUR_OF_DAY] = hour
-        c[Calendar.MINUTE] = minute
+        c.timeInMillis = schedule.timePlaced
+        c.add(Calendar.DAY_OF_MONTH, schedule.interval)
+        c[Calendar.HOUR_OF_DAY] = schedule.timeHour
+        c[Calendar.MINUTE] = schedule.timeMinute
         return abs(c.timeInMillis - now)
     }
 
-    fun scheduleJob(context: Context, scheduleId: Long, firstBoolean: Boolean) {
+    fun scheduleJob(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
         if (scheduleId >= 0) {
             Thread {
                 val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
                 val schedule = scheduleDao.getSchedule(scheduleId)
                 schedule!!.timePlaced = System.currentTimeMillis()
-                scheduleDao.update(schedule)
                 val extras = PersistableBundle()
                 extras.putLong("scheduleId", scheduleId)
                 val jobScheduler = context.getSystemService(JobService.JOB_SCHEDULER_SERVICE) as JobScheduler
+                schedule.timeUntilNextEvent = when {
+                    rescheduleBoolean -> timeUntilNextEvent(schedule, System.currentTimeMillis())
+                    else -> schedule.timeUntilNextEvent
+                }
+                scheduleDao.update(schedule)
+
                 val jobInfoBuilder: JobInfo.Builder = JobInfo.Builder(scheduleId.toInt(), ComponentName(context, ScheduleJobService::class.java))
                         .setPersisted(true)
                         .setRequiresDeviceIdle(false)
                         .setRequiresCharging(false)
                         .setExtras(PersistableBundle(extras))
-                if (firstBoolean) {
-                    val timeLeft = timeUntilNextEvent(schedule.interval, schedule.timeHour,
-                            schedule.timeMinute, System.currentTimeMillis(), System.currentTimeMillis()
-                    )
-                    jobInfoBuilder.setMinimumLatency(timeLeft)
-                    Timber.i("backup starting in: $timeLeft")
-                } else {
-                    jobInfoBuilder.setPeriodic(schedule.interval * 1000 * 60 * 60 * 24L)
-                }
+                        .setMinimumLatency(schedule.timeUntilNextEvent)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                     jobInfoBuilder.setImportantWhileForeground(false)
                 }
                 jobScheduler.schedule(jobInfoBuilder.build())
+                Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
             }.start()
         } else {
             Timber.e("got id: $scheduleId from $this")

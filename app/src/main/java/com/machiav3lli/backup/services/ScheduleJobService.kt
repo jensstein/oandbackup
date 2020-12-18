@@ -22,7 +22,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.job.JobParameters
-import android.app.job.JobScheduler
 import android.app.job.JobService
 import android.content.Intent
 import androidx.core.app.NotificationCompat
@@ -49,8 +48,6 @@ open class ScheduleJobService : JobService() {
         NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId,
                 String.format(getString(R.string.fetching_action_list),
                         getString(R.string.backup)), "", true)
-        // TODO fix repetition
-        // ScheduleJobsHandler.scheduleJob(this, scheduleId, false)
 
         val contentPendingIntent = PendingIntent.getActivity(this, 0,
                 Intent(this, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
@@ -73,7 +70,8 @@ open class ScheduleJobService : JobService() {
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId, notificationId) {
             override fun onPostExecute(result: ActionResult?) {
-                jobFinished(params, !result?.succeeded!!)
+                jobFinished(params, result?.succeeded?.not() ?: false)
+                ScheduleJobsHandler.scheduleJob(context, scheduleId, true)
                 super.onPostExecute(result)
             }
         }
