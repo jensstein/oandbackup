@@ -20,13 +20,6 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
-        android:key="copySelfApk"
-        android:summary="@string/prefs_copyselfapk_summary"
-        android:title="@string/prefs_copyselfapk"
-        app:iconSpaceReserved="false" />
-
-    <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
         android:key="acquireWakelock"
         android:summary="@string/prefs_acquirewakelock_summary"
         android:title="@string/prefs_acquirewakelock"

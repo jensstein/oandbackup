@@ -26,15 +26,22 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.machiav3lli.backup.PREFS_BATCH_DELETE
+import com.machiav3lli.backup.PREFS_COPYSELF
 import com.machiav3lli.backup.PREFS_LOGVIEWER
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
+import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.NotificationHandler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
 
 class PrefsToolsFragment : PreferenceFragmentCompat() {
     private var appInfoList: List<AppInfo> = ArrayList()
@@ -49,6 +56,8 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         super.onActivityCreated(savedInstanceState)
         pref = findPreference(PREFS_BATCH_DELETE)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
+        pref = findPreference(PREFS_COPYSELF)!!
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickCopySelf() }
         pref = findPreference(PREFS_LOGVIEWER)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
@@ -90,6 +99,18 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
             Toast.makeText(requireActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show()
         }
         return true
+    }
+
+    private fun onClickCopySelf(): Boolean {
+        try {
+            GlobalScope.launch(Dispatchers.IO) {
+                BackupRestoreHelper.copySelfApk(requireContext(), MainActivityX.shellHandlerInstance!!)
+            }
+        } catch (e: IOException) {
+            Timber.e("Failed to copy OABX apk to the backup dir: $e")
+        } finally {
+            return true
+        }
     }
 
     private fun launchFragment(fragment: Fragment): Boolean {

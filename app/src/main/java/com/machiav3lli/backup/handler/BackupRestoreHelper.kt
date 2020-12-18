@@ -68,15 +68,6 @@ object BackupRestoreHelper {
         // create the new backup
         val result = action.run(appInfo, backupMode)
         Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
-        if (getDefaultSharedPreferences(context).getBoolean("copySelfApk", true)) {
-            try {
-                copySelfApk(context, shell)
-            } catch (e: IOException) {
-                // This is not critical, but the user should be informed about this problem
-                // in some low priority way
-                Timber.e("OABX apk was not copied to the backup dir: $e")
-            }
-        }
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
             housekeepingPackageBackups(context, appInfo, false)
         }
@@ -101,7 +92,8 @@ object BackupRestoreHelper {
         try {
             val backupRoot = getBackupRoot(context)
             val apkFile = backupRoot.findFile(filename)
-            if (apkFile == null) try {
+            apkFile?.delete()
+            try {
                 val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0)
                 val fileInfos = shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
                 if (fileInfos.size != 1) {
@@ -109,7 +101,7 @@ object BackupRestoreHelper {
                 }
                 suCopyFileToDocument(context.contentResolver, fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail
-                // Can cost a lot time, but these lines should only run once per installation/update
+                // Can cost a lot time, but this function won't be run that often
                 invalidateCache()
                 val baseApkFile = backupRoot.findFile(fileInfos[0].filename)
                 if (baseApkFile != null) {

@@ -25,6 +25,12 @@
         app:iconSpaceReserved="false" />
 
     <androidx.preference.Preference
+        android:key="copySelfApk"
+        android:summary="@string/prefs_copyselfapk_summary"
+        android:title="@string/prefs_copyselfapk"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.Preference
         android:key="logViewer"
         android:title="@string/prefs_logviewer"
         app:iconSpaceReserved="false" />
