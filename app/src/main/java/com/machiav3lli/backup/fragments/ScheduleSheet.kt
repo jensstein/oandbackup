@@ -56,6 +56,7 @@ import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
 import java.lang.ref.WeakReference
 import java.time.LocalTime
+import java.util.concurrent.TimeUnit
 
 class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
@@ -181,17 +182,16 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.GONE
         } else {
-            val timeDiff = ScheduleJobsHandler.timeUntilNextEvent(schedule.interval,
-                    schedule.timeHour, schedule.timeMinute, schedule.timePlaced, now)
-            val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
+            val timeDiff = ScheduleJobsHandler.timeUntilNextEvent(schedule, now)
+            val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
             if (days == 0) {
                 binding.daysLeft.visibility = View.GONE
             } else {
                 binding.daysLeft.visibility = View.VISIBLE
                 binding.daysLeft.text = requireContext().resources.getQuantityString(R.plurals.days_left, days, days)
             }
-            val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
-            val minutes = (timeDiff / (1000 * 60)).toInt() % 60
+            val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
             binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
             binding.timeLeftLine.visibility = View.VISIBLE
         }

@@ -27,6 +27,7 @@ import com.machiav3lli.backup.handler.ScheduleJobsHandler.timeUntilNextEvent
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import com.mikepenz.fastadapter.diff.DiffCallback
 import java.time.LocalTime
+import java.util.concurrent.TimeUnit
 
 class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemSchedulerXBinding>() {
 
@@ -70,17 +71,16 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.INVISIBLE
         } else {
-            val timeDiff = timeUntilNextEvent(schedule.interval,
-                    schedule.timeHour, schedule.timeMinute, schedule.timePlaced, System.currentTimeMillis())
-            val days = (timeDiff / (1000 * 60 * 60 * 24)).toInt()
+            val timeDiff = timeUntilNextEvent(schedule, System.currentTimeMillis())
+            val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
             if (days == 0) {
                 binding.daysLeft.visibility = View.GONE
             } else {
                 binding.daysLeft.visibility = View.VISIBLE
                 binding.daysLeft.text = binding.root.context.resources.getQuantityString(R.plurals.days_left, days, days)
             }
-            val hours = (timeDiff / (1000 * 60 * 60)).toInt() % 24
-            val minutes = (timeDiff / (1000 * 60)).toInt() % 60
+            val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
             binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
             binding.timeLeftLine.visibility = View.VISIBLE
         }
