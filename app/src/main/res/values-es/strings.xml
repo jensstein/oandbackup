@@ -108,7 +108,7 @@
     <string name="prefs_deviceprotecteddata">Repalda datos protegidos del dispositivo</string>
     <string name="prefs_deviceprotecteddata_summary">Repalda y restaura datos situados en data/user_de</string>
     <string name="prefs_copyselfapk">Respaldar APK de esta app</string>
-    <string name="prefs_copyselfapk_summary">Sitúa copia de OAndBackupX en el lugar más alto de la carpeta de respaldos cuando se haga el respaldo</string>
+    <string name="prefs_copyselfapk_summary">Sitúa copia de OAndBackupX en el lugar más alto de la carpeta de respaldos</string>
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Adquiere un wakelock mientras se ejecutan las operaciones en lote para prevenir la suspensión. Acelera la creación de respaldos y las restauraciones, pero incrementa el consumo de memoria.</string>
     <string name="prefs_enableSpecialBackups">Activar respaldos especiales</string>
@@ -126,7 +126,7 @@
     <string name="sched_startingbackup">Iniciando repaldo programado…</string>
     <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_submode">Sub-modo de respaldo:</string>
-    <string name="sched_timeLeft">Tiempo hasta el próximo respaldo:</string>
+    <string name="sched_timeLeft">Tiempo restante:</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
     <string name="sched_blacklist">Lista negra</string>
@@ -228,9 +228,14 @@
         <item quantity="other">%d días,</item>
     </plurals>
     <string name="help_issues">Errores conocidos</string>
-    <string name="prefs_obbdata_summary">Realiza una copia de seguridad y restaura los archivos obb de la aplicación que se colocan en el almacenamiento externo (por ejemplo, /almacenamiento/ emulado/0/Android/obb/)</string>
-    <string name="prefs_obbdata">Copia de seguridad de archivos obb</string>
-    <string name="stats_backups">Copias de seguridad</string>
-    <string name="stats_apps">Apps</string>
+    <string name="prefs_obbdata_summary">Realiza una copia de seguridad y restaura los archivos obb de la aplicación que se colocan en el almacenamiento externo (por ejemplo, /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Respaldar archivos obb</string>
+    <string name="stats_backups">Respaldos</string>
+    <string name="stats_apps">Aplicaciones</string>
     <string name="stats_updated">Actualizado</string>
+    <string name="radio_launchable">Aplicaciones lanzables</string>
+    <string name="prefs_allowdowngrade">Permitir volver a una versión anterior</string>
+    <string name="prefs_allowdowngrade_summary">Permitir restaurar una versión anterior a la de la aplicación instalada.</string>
+    <string name="prefs_restoreallpermissions">Restaurar con todos los permisos</string>
+    <string name="prefs_restoreallpermissions_summary">Dar a la aplicación restaurada todos los permisos que solicite.</string>
 </resources>
