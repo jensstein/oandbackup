@@ -146,7 +146,7 @@
     <string name="sched_startingbackup">Starting scheduled backup…</string>
     <string name="sched_mode">Backup mode:</string>
     <string name="sched_submode">Backup sub-mode:</string>
-    <string name="sched_timeLeft">Time until next backup:</string>
+    <string name="sched_timeLeft">Time left:</string>
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
     <string name="sched_blacklist">Blacklist</string>

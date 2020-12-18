@@ -100,7 +100,7 @@
     <string name="sched_activateButton">Sicherung jetzt starten</string>
     <string name="sched_startingbackup">Geplante Sicherung starten …</string>
     <string name="sched_mode">Sicherungsmodus:</string>
-    <string name="sched_timeLeft">Zeit bis zur nächsten Sicherung:</string>
+    <string name="sched_timeLeft">Verbleibende Zeit:</string>
     <string name="sched_customListUpdateButton">Eigene Liste aktualisieren</string>
     <string name="sched_excludeSystemCheckBox">System-Apps ausschließen</string>
     <string name="spec_accounts">Konten</string>

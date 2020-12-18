@@ -97,7 +97,7 @@
     <string name="sched_checkbox">activer</string>
     <string name="sched_startingbackup">lancement de la sauvegarde planifiée…</string>
     <string name="sched_mode">mode de sauvegarde :</string>
-    <string name="sched_timeLeft">heures restantes jusqu\'à la prochaine sauvegarde :</string>
+    <string name="sched_timeLeft">Temps restant:</string>
     <string name="sched_customListUpdateButton">mettre à jour la liste personnalisée</string>
     <string name="sched_excludeSystemCheckBox">exclure les applications systèmes</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
