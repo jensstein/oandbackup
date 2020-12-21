@@ -1,110 +1,115 @@
-Frequently Asked Questions:  
+# Frequently Asked Questions:
 
-- What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?  
-  
-  - Each backup basically consits of the two different parts:  
-    
-    - the software itself (stored in a so called APK file) and  
-    
-    - its data (created while using an app, settings, etc.)  
-  
-  - as there is a limit for the sizes of APK files set by Google, additional software parts can be delivered via additional obb-files (common for Games -> bigger parts like videos etc.)   
-    [APK Expansion Files &nbsp;|&nbsp; Android Developers](https://developer.android.com/google/play/expansion-files.html)  
-  
-  - The data part can be split again into:
-    
-    - normal data
-      
-      - Stored usually in /data/data
-      
-      - Default is set to include it in the backup
-    
-    - external data
-      
-      - Stored usually in /Android/data/ in the external storage (internal storage in android current terminology)
-      
-      - Default is set to not include it in the backup
-    
-    - obb files
-      
-      - Stored usually in /Android/obb/ in the external storage (internal storage in android current terminology)
-      
-      - Default is set to not include it in the backup
-    
-    - device protected data
-      
-      - Stored usually in /data/user_de/
-      
-      - Default is set to include it in the backup
-    
-    - cache
-      
-      - Default is set to not include it in backups
+* [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
+* [What are Special Backups?](#what-are-special-backups)
+* [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
+* [What is root access used for?](#what-is-root-access-used-for)
+* [Why is OABX so slow?](#why-is-oabx-so-slow)
+* [So why use SAF then?](#so-why-use-saf-then)
+* [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
+* [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
+* [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
+* [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+* [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 
-- What are Special Backups?
+#### What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?  
   
-  - System data that's bound to the user and not to certain apps.
-  - For them moment we don't provide them with full support, try with your own responsibility
-
-- Do I need a rooted phone?  
-  
-  - Yes, Oui, Si, Si, Ja, Ja, Da, Ay...  
-  
-  - What is it used for?  
+Each backup basically consits of the two different parts:  
     
-    - Accessing the APK+data of all apps (including system apps and special backups)
-
-- Why is OABX so slow?  
-  
-  - Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide. Needless to say: This is how much love this framework recieves from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)  
-
-- So why use SAF then?
-  
-  - [Access documents and other files from shared storage](https://developer.android.com/training/data-storage/shared/documents-files)  
+1. the software itself (stored in a so called APK file) and  
     
-    - In the next Android Versoins Google will force apps more and more to access the storage via SAF (???)  
-  
-  - Pro:  
+2. its data (created while using an app, settings, etc.)
+   The data can be split again into:
+   
+   2.1. normal data
+   
+        - Stored usually in /data/data
+        - Default is set to include it in the backup
+   
+   2.2. external data
+   
+       - Stored usually in /Android/data/ in the external storage (internal storage in android current terminology)
+       - Default is set to not include it in the backup
+   
+   2.3. obb files
+   
+        - Stored usually in /Android/obb/ in the external storage (internal storage in android current terminology)
+        - Default is set to not include it in the backup
     
-    - standardized way of accessing files on all storage providers
+   2.4. device protected data
+   
+        - Stored usually in /data/user_de/
+        - Default is set to include it in the backup
     
-    - more secure -> apps can only access their own data
-    
-    - Ability of OABX to backup to external SD card (or cloud providers) comes through SAF
-    
-    - ... 
-  
-  - Con:  
-    
-    - Performance, more of Performance and tons of Performance
+   2.5. cache
+   
+        - Default is set to not include it in backups
 
-- How can I backup SMS & Call log?
-  
-  - Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data.
-  - Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
-  - For contacts, calendar and todo-lists. We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+#### What are Special Backups?
 
-- Are you going to support older Android versions?  
-  
-  - No, Non, No, No, Nein, Nej, Niet, La... in seable future, maybe this would change in the far future...   
-  
-  - Oldest supported version: A8 - "Oreo" (A7 - "Nougat" support dropped in v3.1.0)  
-  
-  - Newest supported version: A11 - „Red Velvet Cake“ 
+Special backups describes system data that's bound to the user and not to certain apps.
+For the moment we don't provide them with full support, try with your own responsibility
 
-- Why do I have to login/register to app x y z again after restore?
+#### Do I need a rooted phone?  
   
-  - All apps which use the Android keystore can basically not be backup up, as the keystore is encrypted. Data restore might work but login have to be performed again (same for phone number registration for messengers)  
+Yes, Oui, Si, Si, Ja, Ja, Da, Ay...  
   
-  - there are several examples - e.g.: Nextcloud, Signal, Threema, Whatsapp, Facebook, ... ???  
+#### What is root access used for?  
 
-- Why is it not recommended to backup system apps?
-  
-  - *... as they change over the android version and restore might un-stabi**lize the system*
+Accessing the APK+data of all apps (including system apps and special backups)
 
-- - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
-  - In 5.0.0 this's already fixed. 
-
-- How can I open encrypted backups on my computer?  
+#### Why is OABX so slow?  
   
-  - You can find the encryption algorithm and setup in this class: [oandbackupx/Crypto.kt at master · machiav3lli/oandbackupx · GitHub](https://github.com/machiav3lli/oandbackupx/blob/master/app/src/main/java/com/machiav3lli/backup/handler/Crypto.kt) . The rest depends on the version you used.
+Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide. 
+Needless to say: This is how much love this framework recieves from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)  
+
+#### So why use SAF then?
+  
+[Access documents and other files from shared storage](https://developer.android.com/training/data-storage/shared/documents-files)  
+In the next Android Versoins Google will (most probably) force apps more and more to access the storage via SAF.  
+  
+<ins>***Pro:***</ins>
+
+- standardized way of accessing files on all storage providers
+- more secure -> apps can only access their own data
+- the ability of OABX to backup to external SD card (or cloud providers) comes through SAF
+- ... 
+
+<ins>***Con:***</ins>
+
+- Performance, more of Performance and tons of Performance
+- obfuscation of the classical path structure
+
+#### How can I backup SMS & Call log?
+
+Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data.
+Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
+For contacts, calendar and todo-lists. We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+
+#### Are you going to support older Android versions?  
+
+No, Non, No, No, Nein, Nej, Niet, La... in seable future, maybe this would change in the far future...   
+Oldest supported version:  A8 - "Oreo" (A7 "Nougat" and older Android version support dropped in OABX v3.1.0)  
+Newest supported version: A11 - „Red Velvet Cake“ 
+
+#### Why do I have to login/register to app x y z again after restore?
+  
+All apps which use the Android keystore can basically not be backup up, as the keystore is encrypted. Data restore might work but login have to be performed again (same for phone number registration for messengers)  
+Here are several examples - e.g.: 
+
+- Nextcloud
+- Signal
+- Threema
+- Whatsapp
+- Facebook
+- you name it
+
+#### Why is it not recommended to backup system apps?
+
+- ... as they change over the android version and restore might un-stabilize the system
+- You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
+  - --> In 5.0.0 this's already fixed. 
+
+#### How can I open encrypted backups on my computer?  
+  
+You can find the encryption algorithm and setup in this class: [oandbackupx/Crypto.kt at master · machiav3lli/oandbackupx · GitHub](https://github.com/machiav3lli/oandbackupx/blob/master/app/src/main/java/com/machiav3lli/backup/handler/Crypto.kt) . The rest depends on the version you used.
