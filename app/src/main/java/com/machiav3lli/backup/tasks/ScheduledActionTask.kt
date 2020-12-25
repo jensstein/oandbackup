@@ -19,6 +19,7 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.BlacklistDatabase
@@ -60,8 +61,8 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
     override fun doInBackground(vararg params: Void?): ActionResult? {
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
         val schedule = scheduleDao.getSchedule(scheduleId)
-        val mode = schedule?.mode ?: Schedule.Mode.ALL
-        val subMode = schedule?.subMode ?: Schedule.SubMode.BOTH
+        val filter = schedule?.filter ?: Schedule.Filter.ALL
+        val mode = schedule?.mode ?: BaseAppAction.MODE_BOTH
         val excludeSystem = schedule?.excludeSystem ?: false
         val customList = schedule?.customList ?: setOf()
 
@@ -86,14 +87,14 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val inListed = { packageName: String ->
             (customList.isEmpty() || customList.contains(packageName)) && !blackList.contains(packageName)
         }
-        val predicate: (AppInfo) -> Boolean = when (mode) {
-            Schedule.Mode.USER -> { appInfo: AppInfo ->
+        val predicate: (AppInfo) -> Boolean = when (filter) {
+            Schedule.Filter.USER -> { appInfo: AppInfo ->
                 appInfo.isInstalled && !appInfo.isSystem && inListed(appInfo.packageName)
             }
-            Schedule.Mode.SYSTEM -> { appInfo: AppInfo ->
+            Schedule.Filter.SYSTEM -> { appInfo: AppInfo ->
                 appInfo.isInstalled && appInfo.isSystem && inListed(appInfo.packageName)
             }
-            Schedule.Mode.NEW_UPDATED -> { appInfo: AppInfo ->
+            Schedule.Filter.NEW_UPDATED -> { appInfo: AppInfo ->
                 (appInfo.isInstalled && (!excludeSystem || !appInfo.isSystem)
                         && (!appInfo.hasBackups || appInfo.isUpdated)
                         && inListed(appInfo.packageName))
@@ -120,7 +121,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                 publishProgress(i.toString(), appInfo.packageLabel)
                 var result: ActionResult? = null
                 try {
-                    result = BackupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, subMode.value)
+                    result = BackupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, mode)
                 } catch (e: Throwable) {
                     result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
                     Timber.w("package: ${appInfo.packageLabel} result: $e")

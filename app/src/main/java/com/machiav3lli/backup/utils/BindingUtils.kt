@@ -5,15 +5,15 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.Schedule.Mode
-import com.machiav3lli.backup.dbs.Schedule.SubMode
+import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.dbs.Schedule.Filter
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.AppMetaInfo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-fun modeToId(mode: Int): Int {
+fun filterToId(mode: Int): Int {
     return when (mode) {
         1 -> R.id.schedUser
         2 -> R.id.schedSystem
@@ -22,16 +22,16 @@ fun modeToId(mode: Int): Int {
     }
 }
 
-fun idToMode(mode: Int): Mode {
+fun idToFilter(mode: Int): Filter {
     return when (mode) {
-        R.id.schedUser -> Mode.USER
-        R.id.schedSystem -> Mode.SYSTEM
-        R.id.schedNewUpdated -> Mode.NEW_UPDATED
-        else -> Mode.ALL
+        R.id.schedUser -> Filter.USER
+        R.id.schedSystem -> Filter.SYSTEM
+        R.id.schedNewUpdated -> Filter.NEW_UPDATED
+        else -> Filter.ALL
     }
 }
 
-fun subModeToId(subMode: Int): Int {
+fun modeToId(subMode: Int): Int {
     return when (subMode) {
         1 -> R.id.schedApk
         2 -> R.id.schedData
@@ -39,11 +39,11 @@ fun subModeToId(subMode: Int): Int {
     }
 }
 
-fun idToSubMode(subMode: Int): SubMode {
+fun idToMode(subMode: Int): Int {
     return when (subMode) {
-        R.id.schedApk -> SubMode.APK
-        R.id.schedData -> SubMode.DATA
-        else -> SubMode.BOTH
+        R.id.schedApk -> BaseAppAction.MODE_APK
+        R.id.schedData -> BaseAppAction.MODE_DATA
+        else -> BaseAppAction.MODE_BOTH
     }
 }
 

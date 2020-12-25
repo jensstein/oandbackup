@@ -34,15 +34,15 @@ object BackendController {
             BuildConfig.APPLICATION_ID // ignore own package, it would send a SIGTERM to itself on backup/restore
     )
 
-    fun getPackageInfoList(context: Context, mode: Schedule.Mode?): List<PackageInfo> {
+    fun getPackageInfoList(context: Context, filter: Schedule.Filter?): List<PackageInfo> {
         val pm = context.packageManager
         return pm.getInstalledPackages(0)
                 .filter { packageInfo: PackageInfo ->
                     val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
                     val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
-                    when (mode) {
-                        Schedule.Mode.USER -> return@filter !isSystem && isNotIgnored
-                        Schedule.Mode.SYSTEM -> return@filter isSystem && isNotIgnored
+                    when (filter) {
+                        Schedule.Filter.USER -> return@filter !isSystem && isNotIgnored
+                        Schedule.Filter.SYSTEM -> return@filter isSystem && isNotIgnored
                         else -> return@filter isNotIgnored
                     }
                 }

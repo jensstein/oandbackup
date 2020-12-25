@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "7c9facea6d64e15df4080e8b70eca6b0",
+    "identityHash": "c287e19a727f2f33ee927a489b424699",
     "entities": [
       {
         "tableName": "Schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `mode` TEXT NOT NULL, `subMode` TEXT NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `customList` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `filter` TEXT NOT NULL, `mode` INTEGER NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `customList` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -45,15 +45,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "mode",
-            "columnName": "mode",
+            "fieldPath": "filter",
+            "columnName": "filter",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "subMode",
-            "columnName": "subMode",
-            "affinity": "TEXT",
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -88,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c9facea6d64e15df4080e8b70eca6b0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c287e19a727f2f33ee927a489b424699')"
     ]
   }
 }

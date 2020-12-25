@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/cards_spacing"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@id/schedModeTitle"
+                    app:layout_constraintBottom_toTopOf="@id/schedFilterTitle"
                     app:layout_constraintEnd_toStartOf="@id/dismiss"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/timeOfDayBlock">
@@ -112,26 +112,26 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/schedModeTitle"
+                    android:id="@+id/schedFilterTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:text="@string/sched_mode"
+                    android:text="@string/filter_options"
                     android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toTopOf="@id/schedMode"
+                    app:layout_constraintBottom_toTopOf="@id/schedFilter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock" />
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/schedMode"
+                    android:id="@+id/schedFilter"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@id/excludeSystem"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/schedModeTitle">
+                    app:layout_constraintTop_toBottomOf="@id/schedFilterTitle">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/schedAll"
@@ -168,32 +168,32 @@
                     android:layout_height="wrap_content"
                     android:text="@string/sched_excludeSystemCheckBox"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/schedSubModeTitle"
+                    app:layout_constraintBottom_toTopOf="@id/schedModeTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/schedMode" />
+                    app:layout_constraintTop_toBottomOf="@id/schedFilter" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/schedSubModeTitle"
+                    android:id="@+id/schedModeTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/cards_spacing"
-                    android:text="@string/sched_submode"
+                    android:text="@string/sched_mode"
                     android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toTopOf="@id/schedSubMode"
+                    app:layout_constraintBottom_toTopOf="@id/schedMode"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/excludeSystem" />
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/schedSubMode"
+                    android:id="@+id/schedMode"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/schedSubModeTitle">
+                    app:layout_constraintTop_toBottomOf="@id/schedModeTitle">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/schedApk"
@@ -226,7 +226,7 @@
                     app:layout_constraintBottom_toTopOf="@id/customListButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/schedSubMode">
+                    app:layout_constraintTop_toBottomOf="@id/schedMode">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"

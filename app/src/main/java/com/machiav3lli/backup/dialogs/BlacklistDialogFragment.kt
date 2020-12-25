@@ -39,7 +39,7 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
         val blacklistId = args.getLong(BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
         val selectedPackages = args.getStringArrayList(BLACKLIST_ARGS_PACKAGES)
 
-        var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
+        var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Filter.ALL)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = selectedPackages!!.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)

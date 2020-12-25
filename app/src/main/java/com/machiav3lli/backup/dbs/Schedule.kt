@@ -21,6 +21,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.machiav3lli.backup.actions.BaseAppAction
 
 @Entity
 class Schedule {
@@ -37,11 +38,10 @@ class Schedule {
 
     var timePlaced = System.currentTimeMillis()
 
-    @TypeConverters(ModeConverter::class)
-    var mode: Mode
+    @TypeConverters(FilterConverter::class)
+    var filter: Filter
 
-    @TypeConverters(SubModeConverter::class)
-    var subMode: SubMode
+    var mode: Int
 
     var timeUntilNextEvent: Long = 0
 
@@ -65,8 +65,8 @@ class Schedule {
                 && timePlaced == schedule.timePlaced
                 && excludeSystem == schedule.excludeSystem
                 && enableCustomList == schedule.enableCustomList
+                && filter == schedule.filter
                 && mode == schedule.mode
-                && subMode == schedule.subMode
                 && customList == schedule.customList
     }
 
@@ -78,8 +78,8 @@ class Schedule {
         hash = 31 * hash + timeMinute
         hash = 31 * hash + interval
         hash = 31 * hash + timePlaced.toInt()
+        hash = 31 * hash + filter.hashCode()
         hash = 31 * hash + mode.hashCode()
-        hash = 31 * hash + subMode.hashCode()
         hash = 31 * hash + if (excludeSystem) 1 else 0
         hash = 31 * hash + if (enableCustomList) 1 else 0
         hash = 31 * hash + customList.hashCode()
@@ -94,8 +94,8 @@ class Schedule {
                 ", timeMinute=" + timeMinute +
                 ", interval=" + interval +
                 ", timePlaced=" + timePlaced +
+                ", filter=" + filter +
                 ", mode=" + mode +
-                ", submode=" + subMode +
                 ", excludeSystem=" + excludeSystem +
                 ", enableCustomList=" + enableCustomList +
                 ", customList=" + customList +
@@ -115,35 +115,19 @@ class Schedule {
         }
     }
 
-    enum class Mode(val value: Int) {
+    enum class Filter(val value: Int) {
         ALL(0), USER(1), SYSTEM(2), NEW_UPDATED(3);
     }
 
-    enum class SubMode(val value: Int) {
-        APK(1), DATA(2), BOTH(3);
-    }
-
-    class ModeConverter {
+    class FilterConverter {
         @TypeConverter
-        fun toString(mode: Mode): String {
-            return mode.name
+        fun toString(filter: Filter): String {
+            return filter.name
         }
 
         @TypeConverter
-        fun toMode(name: String?): Mode {
-            return Mode.valueOf(name!!)
-        }
-    }
-
-    class SubModeConverter {
-        @TypeConverter
-        fun toString(subMode: SubMode): String {
-            return subMode.name
-        }
-
-        @TypeConverter
-        fun toSubMode(name: String?): SubMode {
-            return SubMode.valueOf(name!!)
+        fun toFilter(name: String?): Filter {
+            return Filter.valueOf(name!!)
         }
     }
 
@@ -162,7 +146,7 @@ class Schedule {
     }
 
     init {
-        mode = Mode.ALL
-        subMode = SubMode.BOTH
+        filter = Filter.ALL
+        mode = BaseAppAction.MODE_BOTH
     }
 }
