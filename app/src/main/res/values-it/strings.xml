@@ -175,7 +175,6 @@
     <string name="apptype_special">Backup speciale</string>
     <string name="sortDataSize">Dimensioni dei dati</string>
     <string name="error_updating_schedule_mode">Errore durante l\'aggiornamento %1$s della pianificazione %2$d</string>
-    <string name="sched_submode">Sotto-modalità di backup:</string>
     <string name="sched_add">Aggiungi backup pianificato</string>
     <string name="showSplitAPKs">Split-APK</string>
     <string name="prefs_biometriclock_summary">Proteggi l\'app con il blocco biometrico del dispositivo (ad es. impronta digitale, sblocco facciale)</string>

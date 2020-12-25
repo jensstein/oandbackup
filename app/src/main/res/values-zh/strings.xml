@@ -191,7 +191,6 @@
     <string name="dialog_unlock">解锁</string>
     <string name="dialog_start">让我们开始吧！</string>
     <string name="dialogSave">保存</string>
-    <string name="sched_submode">备份子模式：</string>
     <string name="sched_add">添加计划任务</string>
     <string name="prefs_password_match_false">密码不匹配</string>
     <string name="prefs_password_match_true">密码匹配</string>

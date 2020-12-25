@@ -153,7 +153,6 @@
     <string name="spec_appwidgets">Widgets d\'applications</string>
     <string name="spec_accounts">Comptes</string>
     <string name="sched_blacklist">Liste noire</string>
-    <string name="sched_submode">Sous-mode de sauvegarde :</string>
     <string name="sched_activateButton">Démarrer la sauvegarde maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>

@@ -174,7 +174,6 @@
     <string name="intro_permission_storage">See rakendus kasutab mäluruumi kirjutamis-/lugemisõigust, et välisele mäluruumile ligi pääseda ning võimaldada teiste rakenduste väliste andmete või OBB varundamist.</string>
     <string name="storage_access">Mäluruumi ligipääs</string>
     <string name="sort_and_filter">Sorteeri ja filtreeri</string>
-    <string name="sched_submode">Varunduse alamrežiim:</string>
     <string name="welcome_to_oabx">Tere tulemast OABX-i!</string>
     <string name="enable_encryption_title">Andmete krüpteering</string>
     <string name="help_group">Meie grupp</string>

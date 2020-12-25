@@ -163,8 +163,8 @@ class ShellHandler {
 
         companion object {
             private val PATTERN_LINKSPLIT = Pattern.compile(" -> ")
-            val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
-            val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
+            private val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
+            private val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
 
             /**
              * Create an instance of FileInfo from a line of the output from
@@ -234,7 +234,7 @@ class ShellHandler {
                     'd' -> type = FileType.DIRECTORY
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
-                        val nameAndLink = PATTERN_LINKSPLIT.split(filePath)
+                        val nameAndLink = PATTERN_LINKSPLIT.split(filePath as CharSequence)
                         filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
                     }

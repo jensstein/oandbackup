@@ -177,7 +177,6 @@
     <string name="permission_not_granted">Необходимо разрешение на доступ к внешнему хранилищу</string>
     <string name="error_updating_schedule_mode">Ошибка обновления %1$ из запланированных %2$</string>
     <string name="error_creating_notification_channel">Невозможно создать канал уведомлений</string>
-    <string name="sched_submode">Вид р.к.:</string>
     <string name="prefs_unset">Снять</string>
     <string name="prefs_logviewer">Просмотреть лог</string>
     <string name="prefs_batchdelete_summary">Удалить р.к. всех приложений, не установленных в настоящий момент.</string>

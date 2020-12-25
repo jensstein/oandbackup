@@ -195,7 +195,6 @@
     <string name="dialog_unlock">Ξεκλείδωμα</string>
     <string name="dialog_start">Πάμε!</string>
     <string name="dialogSave">Αποθήκευση</string>
-    <string name="sched_submode">Υπό-λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_add">Προσθήκη Προγράμματος</string>
     <string name="prefs_password_match_false">Οι κωδικοί δεν ταιριάζουν</string>
     <string name="prefs_password_match_true">Οι κωδικοί ταιριάζουν</string>

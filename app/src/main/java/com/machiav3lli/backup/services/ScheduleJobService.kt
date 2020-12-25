@@ -46,8 +46,7 @@ open class ScheduleJobService : JobService() {
         MainActivityX.initShellHandler()
         createNotificationChannel()
         NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId,
-                String.format(getString(R.string.fetching_action_list),
-                        getString(R.string.backup)), "", true)
+                String.format(getString(R.string.fetching_action_list), getString(R.string.backup)), "", true)
 
         val contentPendingIntent = PendingIntent.getActivity(this, 0,
                 Intent(this, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT)

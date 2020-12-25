@@ -125,7 +125,6 @@
     <string name="sched_activateButton">Iniciar repaldo ahora</string>
     <string name="sched_startingbackup">Iniciando repaldo programado…</string>
     <string name="sched_mode">Modo de respaldo:</string>
-    <string name="sched_submode">Sub-modo de respaldo:</string>
     <string name="sched_timeLeft">Tiempo hasta el próximo respaldo:</string>
     <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
