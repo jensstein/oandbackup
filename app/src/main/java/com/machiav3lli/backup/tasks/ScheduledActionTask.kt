@@ -18,12 +18,10 @@
 package com.machiav3lli.backup.tasks
 
 import android.content.Context
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.BlacklistDatabase
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -61,8 +59,8 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
     override fun doInBackground(vararg params: Void?): ActionResult? {
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
         val schedule = scheduleDao.getSchedule(scheduleId)
-        val filter = schedule?.filter ?: Schedule.Filter.ALL
-        val mode = schedule?.mode ?: BaseAppAction.MODE_BOTH
+        val filter = schedule?.filter ?: SCHED_FILTER_ALL
+        val mode = schedule?.mode ?: MODE_BOTH
         val excludeSystem = schedule?.excludeSystem ?: false
         val customList = schedule?.customList ?: setOf()
 
@@ -88,13 +86,13 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             (customList.isEmpty() || customList.contains(packageName)) && !blackList.contains(packageName)
         }
         val predicate: (AppInfo) -> Boolean = when (filter) {
-            Schedule.Filter.USER -> { appInfo: AppInfo ->
+            SCHED_FILTER_USER -> { appInfo: AppInfo ->
                 appInfo.isInstalled && !appInfo.isSystem && inListed(appInfo.packageName)
             }
-            Schedule.Filter.SYSTEM -> { appInfo: AppInfo ->
+            SCHED_FILTER_SYSTEM -> { appInfo: AppInfo ->
                 appInfo.isInstalled && appInfo.isSystem && inListed(appInfo.packageName)
             }
-            Schedule.Filter.NEW_UPDATED -> { appInfo: AppInfo ->
+            SCHED_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
                 (appInfo.isInstalled && (!excludeSystem || !appInfo.isSystem)
                         && (!appInfo.hasBackups || appInfo.isUpdated)
                         && inListed(appInfo.packageName))

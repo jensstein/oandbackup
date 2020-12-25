@@ -25,10 +25,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 
-class CustomListDialogFragment(val filter: Schedule.Filter, val listener: CustomListListener) : DialogFragment() {
+class CustomListDialogFragment(val filter: Int, val listener: CustomListListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireActivity().application.applicationContext.packageManager

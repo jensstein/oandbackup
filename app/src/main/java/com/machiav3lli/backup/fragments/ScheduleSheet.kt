@@ -38,10 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.BLACKLIST_ARGS_ID
-import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.BlacklistDatabase
@@ -86,7 +83,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
         viewModel.schedule.observe(viewLifecycleOwner, {
-            binding.schedFilter.check(filterToId(it.filter.value))
+            binding.schedFilter.check(filterToId(it.filter))
             binding.schedMode.check(modeToId(it.mode))
             binding.enableCheckbox.isChecked = it.enabled
             when {
@@ -228,7 +225,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             val message = StringBuilder()
             message.append("\n${getModeString(it.mode, requireContext())}")
             message.append("\n${getFilterString(it.filter, requireContext())}")
-            if (it.filter == Schedule.Filter.NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
+            if (it.filter == SCHED_FILTER_NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
             message.append("\n${getString(R.string.customListTitle)}: ${it.enableCustomList}")
             AlertDialog.Builder(requireActivity())
                     .setTitle("${getString(R.string.sched_activateButton)}?")
@@ -285,18 +282,18 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
     companion object {
         private fun getModeString(mode: Int, context: Context): String {
             return when (mode) {
-                BaseAppAction.MODE_APK -> context.getString(R.string.handleApk)
-                BaseAppAction.MODE_DATA -> context.getString(R.string.handleData)
+                MODE_APK -> context.getString(R.string.handleApk)
+                MODE_DATA -> context.getString(R.string.handleData)
                 else -> context.getString(R.string.handleBoth)
             }
         }
 
-        private fun getFilterString(filter: Schedule.Filter, context: Context): String {
+        private fun getFilterString(filter: Int, context: Context): String {
             return when (filter) {
-                Schedule.Filter.ALL -> context.getString(R.string.radio_all)
-                Schedule.Filter.SYSTEM -> context.getString(R.string.radio_system)
-                Schedule.Filter.USER -> context.getString(R.string.radio_user)
-                Schedule.Filter.NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+                SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
+                SCHED_FILTER_USER -> context.getString(R.string.radio_user)
+                SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+                else -> context.getString(R.string.radio_all)
             }
         }
     }

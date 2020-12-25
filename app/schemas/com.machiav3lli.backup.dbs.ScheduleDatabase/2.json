@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "c287e19a727f2f33ee927a489b424699",
+    "identityHash": "40fa7f0da180334769386be91a681e2a",
     "entities": [
       {
         "tableName": "Schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `filter` TEXT NOT NULL, `mode` INTEGER NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `customList` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `filter` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `timeUntilNextEvent` INTEGER NOT NULL, `excludeSystem` INTEGER NOT NULL, `customList` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,7 +47,7 @@
           {
             "fieldPath": "filter",
             "columnName": "filter",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -88,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c287e19a727f2f33ee927a489b424699')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '40fa7f0da180334769386be91a681e2a')"
     ]
   }
 }

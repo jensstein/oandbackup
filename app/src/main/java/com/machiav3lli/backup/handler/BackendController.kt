@@ -9,7 +9,8 @@ import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.SCHED_FILTER_SYSTEM
+import com.machiav3lli.backup.SCHED_FILTER_USER
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
@@ -34,15 +35,15 @@ object BackendController {
             BuildConfig.APPLICATION_ID // ignore own package, it would send a SIGTERM to itself on backup/restore
     )
 
-    fun getPackageInfoList(context: Context, filter: Schedule.Filter?): List<PackageInfo> {
+    fun getPackageInfoList(context: Context, filter: Int): List<PackageInfo> {
         val pm = context.packageManager
         return pm.getInstalledPackages(0)
                 .filter { packageInfo: PackageInfo ->
                     val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
                     val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
                     when (filter) {
-                        Schedule.Filter.USER -> return@filter !isSystem && isNotIgnored
-                        Schedule.Filter.SYSTEM -> return@filter isSystem && isNotIgnored
+                        SCHED_FILTER_USER -> return@filter !isSystem && isNotIgnored
+                        SCHED_FILTER_SYSTEM -> return@filter isSystem && isNotIgnored
                         else -> return@filter isNotIgnored
                     }
                 }

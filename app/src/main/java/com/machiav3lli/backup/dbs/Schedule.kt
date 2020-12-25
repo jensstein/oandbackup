@@ -21,7 +21,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.MODE_BOTH
+import com.machiav3lli.backup.SCHED_FILTER_ALL
 
 @Entity
 class Schedule {
@@ -38,10 +39,9 @@ class Schedule {
 
     var timePlaced = System.currentTimeMillis()
 
-    @TypeConverters(FilterConverter::class)
-    var filter: Filter
+    var filter: Int = SCHED_FILTER_ALL
 
-    var mode: Int
+    var mode: Int = MODE_BOTH
 
     var timeUntilNextEvent: Long = 0
 
@@ -115,22 +115,6 @@ class Schedule {
         }
     }
 
-    enum class Filter(val value: Int) {
-        ALL(0), USER(1), SYSTEM(2), NEW_UPDATED(3);
-    }
-
-    class FilterConverter {
-        @TypeConverter
-        fun toString(filter: Filter): String {
-            return filter.name
-        }
-
-        @TypeConverter
-        fun toFilter(name: String?): Filter {
-            return Filter.valueOf(name!!)
-        }
-    }
-
     class CustomListConverter {
         @TypeConverter
         fun toCustomList(stringCustomList: String): Set<String> {
@@ -143,10 +127,5 @@ class Schedule {
             return if (customList?.isNotEmpty() == true) customList.joinToString(separator = ",")
             else ""
         }
-    }
-
-    init {
-        filter = Filter.ALL
-        mode = BaseAppAction.MODE_BOTH
     }
 }

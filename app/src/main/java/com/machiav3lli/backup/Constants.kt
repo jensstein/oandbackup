@@ -59,6 +59,38 @@ const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_LOGVIEWER = "logViewer"
 
+const val MODE_UNSET = 0
+const val MODE_APK = 1
+const val MODE_DATA = 2
+const val MODE_BOTH = 3
+
+const val MAIN_SORT_LABEL = '0'
+const val MAIN_SORT_PACKAGENAME = '1'
+const val MAIN_SORT_DATASIZE = '2'
+
+const val MAIN_FILTER_ALL = '0'
+const val MAIN_FILTER_SYSTEM = '1'
+const val MAIN_FILTER_USER = '2'
+const val MAIN_FILTER_SPECIAL = '3'
+const val MAIN_FILTER_LAUNCHABLE = '4'
+
+const val MAIN_BACKUPFILTER_ALL = '0'
+const val MAIN_BACKUPFILTER_BOTH = '1'
+const val MAIN_BACKUPFILTER_APK = '2'
+const val MAIN_BACKUPFILTER_DATA = '3'
+const val MAIN_BACKUPFILTER_NONE = '4'
+
+const val MAIN_SPECIALFILTER_ALL = '0'
+const val MAIN_SPECIALFILTER_NEW_UPDATED = '1'
+const val MAIN_SPECIALFILTER_NOTINSTALLED = '2'
+const val MAIN_SPECIALFILTER_OLD = '3'
+const val MAIN_SPECIALFILTER_SPLIT = '4'
+
+const val SCHED_FILTER_ALL = 0
+const val SCHED_FILTER_USER = 1
+const val SCHED_FILTER_SYSTEM = 2
+const val SCHED_FILTER_NEW_UPDATED = 3
+
 const val BUNDLE_USERS = "users"
 
 const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"

@@ -20,8 +20,7 @@ package com.machiav3lli.backup.items
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.ScheduleJobsHandler.timeUntilNextEvent
@@ -46,15 +45,15 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
     }
 
     override fun bindView(binding: ItemSchedulerXBinding, payloads: List<Any>) {
-        binding.schedFilter.setText(when (schedule.filter.value) {
-            1 -> R.string.radio_user
-            2 -> R.string.radio_system
-            3 -> R.string.showNewAndUpdated
+        binding.schedFilter.setText(when (schedule.filter) {
+            SCHED_FILTER_USER -> R.string.radio_user
+            SCHED_FILTER_SYSTEM -> R.string.radio_system
+            SCHED_FILTER_NEW_UPDATED -> R.string.showNewAndUpdated
             else -> R.string.radio_all
         })
         binding.schedMode.setText(when (schedule.mode) {
-            BaseAppAction.MODE_APK -> R.string.radio_apk
-            BaseAppAction.MODE_DATA -> R.string.radio_data
+            MODE_APK -> R.string.radio_apk
+            MODE_DATA -> R.string.radio_data
             else -> R.string.radio_both
         })
         binding.enableCheckbox.isChecked = schedule.enabled

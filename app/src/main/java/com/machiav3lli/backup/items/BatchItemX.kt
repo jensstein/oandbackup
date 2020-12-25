@@ -19,8 +19,7 @@ package com.machiav3lli.backup.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
@@ -31,13 +30,13 @@ class BatchItemX(var app: AppInfo, val backupBoolean: Boolean) : AbstractBinding
 
     val actionMode: Int
         get() = if (isApkChecked && isDataChecked) {
-            BaseAppAction.MODE_BOTH
+            MODE_BOTH
         } else if (isApkChecked) {
-            BaseAppAction.MODE_APK
+            MODE_APK
         } else if (isDataChecked) {
-            BaseAppAction.MODE_DATA
+            MODE_DATA
         } else {
-            BaseAppAction.MODE_UNSET
+            MODE_UNSET
         }
 
     val isChecked: Boolean

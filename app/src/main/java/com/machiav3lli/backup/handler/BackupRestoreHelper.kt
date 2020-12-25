@@ -20,11 +20,8 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.HousekeepingMoment
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
-import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
-import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
 import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
@@ -54,9 +51,9 @@ object BackupRestoreHelper {
         // Select and prepare the action to use
         val action: BackupAppAction
         if (appInfo.isSpecial) {
-            if (backupMode and BaseAppAction.MODE_APK == BaseAppAction.MODE_APK) {
+            if (backupMode and MODE_APK == MODE_APK) {
                 Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                backupMode = backupMode and BaseAppAction.MODE_DATA
+                backupMode = backupMode and MODE_DATA
                 Timber.d("[${appInfo.packageName}] New backup mode: $backupMode")
             }
             action = BackupSpecialAction(context, shell)
