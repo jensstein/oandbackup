@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.ViewModelProvider
@@ -511,6 +512,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         runOnUiThread {
             try {
                 FastAdapterDiffUtil[mainItemAdapter] = mainList
+                if (mainList.isEmpty())
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 mainFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
@@ -549,9 +552,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         runOnUiThread {
             try {
                 FastAdapterDiffUtil[batchItemAdapter] = batchList
+                if (batchList.isEmpty())
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 batchFastAdapter?.notifyAdapterDataSetChanged()
                 updateCheckAll()
+
                 OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
             } catch (e: Throwable) {

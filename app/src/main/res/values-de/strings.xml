@@ -143,7 +143,7 @@
     <string name="prefs_theme_light">Hell</string>
     <string name="prefs_theme_dark">Dunkel</string>
     <string name="prefs_theme_system">Systemvorgabe</string>
-    <string name="empty_filtered_list">Die gefilterte Liste ist leer, deswegen wird der Filter zurückgesetzt</string>
+    <string name="empty_filtered_list">Die gefilterte Liste ist leer.</string>
     <string name="dialog_refuse">Ich will es nicht</string>
     <string name="dialog_approve">Los!</string>
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
