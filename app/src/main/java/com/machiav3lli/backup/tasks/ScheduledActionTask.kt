@@ -19,44 +19,20 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.BlacklistDatabase
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHandler
-import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
 
-open class ScheduledActionTask(val context: Context, private val scheduleId: Long, private val notificationId: Int)
-    : CoroutinesAsyncTask<Void?, String, ActionResult>() {
-    private var totalOfActions: Int = 0
-    private lateinit var selectedPackages: List<AppInfo>
-    private lateinit var result: ActionResult
+open class ScheduledActionTask(val context: Context, private val scheduleId: Long)
+    : CoroutinesAsyncTask<Void?, String, Pair<List<String>, Int>>() {
 
-    override fun onProgressUpdate(vararg values: String?) {
-        when (values[0]) {
-            "finish" -> {
-                val notificationMessage = when {
-                    result.succeeded || selectedPackages.isEmpty() -> context.getString(R.string.batchSuccess)
-                    else -> context.getString(R.string.batchFailure)
-                }
-                val notificationTitle = context.getString(R.string.sched_notificationMessage)
-                NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId, notificationTitle, notificationMessage, true)
-            }
-            else -> {
-                val title = "${context.getString(R.string.backupProgress)} (${values[0]}/$totalOfActions)"
-                NotificationHandler.showNotification(context, MainActivityX::class.java, notificationId, title, values[1], false)
-            }
-        }
-    }
-
-    override fun doInBackground(vararg params: Void?): ActionResult? {
+    override fun doInBackground(vararg params: Void?): Pair<List<String>, Int>? {
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
         val schedule = scheduleDao.getSchedule(scheduleId)
         val filter = schedule?.filter ?: SCHED_FILTER_ALL
@@ -74,12 +50,12 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             BackendController.getApplicationList(context)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogUtils.logErrors(context, e.toString())
-            return ActionResult(null, null, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e", false)
+            LogUtils.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            return Pair(listOf(), MODE_BOTH)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogUtils.logErrors(context, e.toString())
-            return ActionResult(null, null, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e", false)
+            LogUtils.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            return Pair(listOf(), MODE_BOTH)
         }
 
         val inListed = { packageName: String ->
@@ -99,54 +75,11 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             }
             else -> { appInfo: AppInfo -> inListed(appInfo.packageName) }
         }
-        selectedPackages = list
-                .filter(predicate)
-                .toList()
+        val selectedItems = list.filter(predicate)
                 .sortedWith { m1: AppInfo, m2: AppInfo ->
                     m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
                 }
-
-
-        val results: MutableList<ActionResult> = mutableListOf()
-
-
-        this.totalOfActions = selectedPackages.size
-        var i = 1
-        var packageLabel = "NONE"
-        try {
-            selectedPackages.forEach { appInfo ->
-                packageLabel = appInfo.packageLabel
-                publishProgress(i.toString(), appInfo.packageLabel)
-                var result: ActionResult? = null
-                try {
-                    result = BackupRestoreHelper.backup(context, MainActivityX.shellHandlerInstance!!, appInfo, mode)
-                } catch (e: Throwable) {
-                    result = ActionResult(appInfo, null, "not processed: $packageLabel: $e", false)
-                    Timber.w("package: ${appInfo.packageLabel} result: $e")
-                } finally {
-                    result?.let {
-                        if (!it.succeeded) {
-                            NotificationHandler.showNotification(context, MainActivityX::class.java, it.hashCode(), appInfo.packageLabel, it.message, it.message, false)
-                        }
-                        results.add(it)
-                    }
-                    i++
-                }
-            }
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e, packageLabel)
-        } finally {
-            val errors = results
-                    .map { it.message }
-                    .filter { it.isNotEmpty() }
-                    .joinToString(separator = "\n")
-            val resultsSuccess = results.parallelStream().anyMatch(ActionResult::succeeded)
-
-            this.result = ActionResult(null, null, errors, resultsSuccess)
-            publishProgress("finish")
-            if (!result.succeeded) LogUtils.logErrors(context, errors)
-
-            return this.result
-        }
+                .map(AppInfo::packageName)
+        return Pair(selectedItems, mode)
     }
 }
