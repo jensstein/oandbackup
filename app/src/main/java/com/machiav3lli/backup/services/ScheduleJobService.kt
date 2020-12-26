@@ -37,6 +37,7 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.utils.setNeedRefresh
 import timber.log.Timber
 
 open class ScheduleJobService : JobService() {
@@ -119,6 +120,7 @@ open class ScheduleJobService : JobService() {
 
                             jobFinished(params, false)
                             ScheduleJobsHandler.scheduleJob(context, scheduleId, true)
+                            setNeedRefresh(context, true)
                             finishWorkLiveData.removeObserver(this)
                         }
                     }

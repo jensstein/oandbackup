@@ -92,6 +92,7 @@ const val SCHED_FILTER_SYSTEM = 2
 const val SCHED_FILTER_NEW_UPDATED = 3
 
 const val BUNDLE_USERS = "users"
+const val NEED_REFRESH = "needRefresh"
 
 const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/OAndBackupX"

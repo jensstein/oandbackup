@@ -149,7 +149,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     fun onResumeFragment() {
         if (viewModel.initial.value != true) refreshView()
-        else viewModel.refreshList()
+        else {
+            viewModel.refreshList()
+            setNeedRefresh(this, false)
+        }
     }
 
     fun setSearchViewController(searchViewController: SearchViewController?) {

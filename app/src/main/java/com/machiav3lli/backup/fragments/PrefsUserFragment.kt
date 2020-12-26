@@ -83,6 +83,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun setDefaultDir(context: Context, dir: Uri) {
         setStorageRootDir(context, dir)
+        setNeedRefresh(context, true)
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         pref.summary = dir.toString()
     }
