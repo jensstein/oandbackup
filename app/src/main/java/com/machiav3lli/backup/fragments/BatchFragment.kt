@@ -67,10 +67,14 @@ open class BatchFragment : Fragment(), SearchViewController {
         binding.searchBar.setQuery("", false)
     }
 
+    override fun onStart() {
+        super.onStart()
+        requireMainActivity().onResumeFragment()
+    }
+
     override fun onResume() {
         super.onResume()
         requireMainActivity().setSearchViewController(this)
-        requireMainActivity().onResumeFragment()
     }
 
     class BackupFragment : BatchFragment()
