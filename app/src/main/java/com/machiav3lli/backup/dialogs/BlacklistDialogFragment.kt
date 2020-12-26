@@ -26,8 +26,8 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.BLACKLIST_ARGS_ID
 import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 
 // TODO filter according to schedule's mode
@@ -39,7 +39,7 @@ class BlacklistDialogFragment(private val blacklistListener: BlacklistListener) 
         val blacklistId = args.getLong(BLACKLIST_ARGS_ID, SchedulerActivityX.GLOBAL_ID)
         val selectedPackages = args.getStringArrayList(BLACKLIST_ARGS_PACKAGES)
 
-        var packageInfoList = BackendController.getPackageInfoList(requireContext(), Schedule.Mode.ALL)
+        var packageInfoList = BackendController.getPackageInfoList(requireContext(), SCHED_FILTER_ALL)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = selectedPackages!!.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)

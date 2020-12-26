@@ -143,7 +143,7 @@
     <string name="prefs_theme_light">Hell</string>
     <string name="prefs_theme_dark">Dunkel</string>
     <string name="prefs_theme_system">Systemvorgabe</string>
-    <string name="empty_filtered_list">Die gefilterte Liste ist leer, deswegen wird der Filter zurückgesetzt</string>
+    <string name="empty_filtered_list">Die gefilterte Liste ist leer.</string>
     <string name="dialog_refuse">Ich will es nicht</string>
     <string name="dialog_approve">Los!</string>
     <string name="ignore_battery_optimization_title">Akku-Optimierung</string>
@@ -179,7 +179,6 @@
     <string name="sortDataSize">Datengröße</string>
     <string name="prefs_biometriclock">Biometrische Sperre</string>
     <string name="prefs_biometriclock_summary">Die Anwendung mit der biometrischen Sperre des Geräts sichern (z. B. Fingerabdruck, Gesichtsentsperrung)</string>
-    <string name="sched_submode">Sicherungssubmodus:</string>
     <string name="prefs_password_match_true">Die Passwörter stimmen überein</string>
     <string name="prefs_password_match_false">Die Passwörter stimmen nicht überein</string>
     <string name="prefs_passwordconfirmation">Verschlüsselungspasswortbestätigung</string>

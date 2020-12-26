@@ -25,10 +25,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.BackendController
 
-class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomListListener) : DialogFragment() {
+class CustomListDialogFragment(val filter: Int, val listener: CustomListListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireActivity().application.applicationContext.packageManager
@@ -36,7 +35,7 @@ class CustomListDialogFragment(val mode: Schedule.Mode, val listener: CustomList
         val listId = args.getLong("listId", SchedulerActivityX.GLOBAL_ID)
         val selectedPackages = args.getStringArrayList("selectedPackages") ?: arrayListOf()
 
-        var packageInfoList = BackendController.getPackageInfoList(requireContext(), mode)
+        var packageInfoList = BackendController.getPackageInfoList(requireContext(), filter)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = selectedPackages.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)

@@ -4,34 +4,32 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.Schedule.Mode
-import com.machiav3lli.backup.dbs.Schedule.SubMode
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.AppMetaInfo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-fun modeToId(mode: Int): Int {
+fun filterToId(mode: Int): Int {
     return when (mode) {
-        1 -> R.id.schedUser
-        2 -> R.id.schedSystem
-        3 -> R.id.schedNewUpdated
+        SCHED_FILTER_USER -> R.id.schedUser
+        SCHED_FILTER_SYSTEM -> R.id.schedSystem
+        SCHED_FILTER_NEW_UPDATED -> R.id.schedNewUpdated
         else -> R.id.schedAll
     }
 }
 
-fun idToMode(mode: Int): Mode {
+fun idToFilter(mode: Int): Int {
     return when (mode) {
-        R.id.schedUser -> Mode.USER
-        R.id.schedSystem -> Mode.SYSTEM
-        R.id.schedNewUpdated -> Mode.NEW_UPDATED
-        else -> Mode.ALL
+        R.id.schedUser -> SCHED_FILTER_USER
+        R.id.schedSystem -> SCHED_FILTER_SYSTEM
+        R.id.schedNewUpdated -> SCHED_FILTER_NEW_UPDATED
+        else -> SCHED_FILTER_ALL
     }
 }
 
-fun subModeToId(subMode: Int): Int {
+fun modeToId(subMode: Int): Int {
     return when (subMode) {
         1 -> R.id.schedApk
         2 -> R.id.schedData
@@ -39,11 +37,11 @@ fun subModeToId(subMode: Int): Int {
     }
 }
 
-fun idToSubMode(subMode: Int): SubMode {
+fun idToMode(subMode: Int): Int {
     return when (subMode) {
-        R.id.schedApk -> SubMode.APK
-        R.id.schedData -> SubMode.DATA
-        else -> SubMode.BOTH
+        R.id.schedApk -> MODE_APK
+        R.id.schedData -> MODE_DATA
+        else -> MODE_BOTH
     }
 }
 

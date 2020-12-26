@@ -38,9 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.BLACKLIST_ARGS_ID
-import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.BlacklistDatabase
@@ -85,8 +83,8 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
         viewModel.schedule.observe(viewLifecycleOwner, {
-            binding.schedMode.check(modeToId(it.mode.value))
-            binding.schedSubMode.check(subModeToId(it.subMode.value))
+            binding.schedFilter.check(filterToId(it.filter))
+            binding.schedMode.check(modeToId(it.mode))
             binding.enableCheckbox.isChecked = it.enabled
             when {
                 it.customList.isNotEmpty() -> binding.customListButton.setTextColor(requireContext().getColor(R.color.app_accent))
@@ -114,13 +112,13 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
 
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            viewModel.schedule.value?.mode = idToMode(checkedId)
+        binding.schedFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+            viewModel.schedule.value?.filter = idToFilter(checkedId)
             refresh(false)
             toggleSecondaryButtons(binding.schedMode)
         }
-        binding.schedSubMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            viewModel.schedule.value?.subMode = idToSubMode(checkedId)
+        binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+            viewModel.schedule.value?.mode = idToMode(checkedId)
             refresh(false)
         }
         binding.timeOfDay.setOnClickListener {
@@ -148,7 +146,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             val customList = viewModel.schedule.value?.customList?.toCollection(ArrayList())
             args.putStringArrayList("selectedPackages", customList)
 
-            val customListDialogFragment = CustomListDialogFragment(idToMode(binding.schedMode.checkedChipId), this)
+            val customListDialogFragment = CustomListDialogFragment(idToFilter(binding.schedMode.checkedChipId), this)
             customListDialogFragment.arguments = args
             customListDialogFragment.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
         }
@@ -225,9 +223,9 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
     private fun startSchedule() {
         viewModel.schedule.value?.let {
             val message = StringBuilder()
-            message.append("\n${getSubModeString(it.subMode, requireContext())}")
             message.append("\n${getModeString(it.mode, requireContext())}")
-            if (it.mode == Schedule.Mode.NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
+            message.append("\n${getFilterString(it.filter, requireContext())}")
+            if (it.filter == SCHED_FILTER_NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
             message.append("\n${getString(R.string.customListTitle)}: ${it.enableCustomList}")
             AlertDialog.Builder(requireActivity())
                     .setTitle("${getString(R.string.sched_activateButton)}?")
@@ -282,20 +280,20 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
     }
 
     companion object {
-        private fun getSubModeString(mode: Schedule.SubMode, context: Context): String {
+        private fun getModeString(mode: Int, context: Context): String {
             return when (mode) {
-                Schedule.SubMode.APK -> context.getString(R.string.handleApk)
-                Schedule.SubMode.DATA -> context.getString(R.string.handleData)
-                Schedule.SubMode.BOTH -> context.getString(R.string.handleBoth)
+                MODE_APK -> context.getString(R.string.handleApk)
+                MODE_DATA -> context.getString(R.string.handleData)
+                else -> context.getString(R.string.handleBoth)
             }
         }
 
-        private fun getModeString(mode: Schedule.Mode, context: Context): String {
-            return when (mode) {
-                Schedule.Mode.ALL -> context.getString(R.string.radio_all)
-                Schedule.Mode.SYSTEM -> context.getString(R.string.radio_system)
-                Schedule.Mode.USER -> context.getString(R.string.radio_user)
-                Schedule.Mode.NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+        private fun getFilterString(filter: Int, context: Context): String {
+            return when (filter) {
+                SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
+                SCHED_FILTER_USER -> context.getString(R.string.radio_user)
+                SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+                else -> context.getString(R.string.radio_all)
             }
         }
     }

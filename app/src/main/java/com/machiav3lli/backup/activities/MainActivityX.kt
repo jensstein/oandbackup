@@ -24,8 +24,10 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -46,7 +48,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.items.*
-import com.machiav3lli.backup.tasks.BatchWork
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
@@ -147,7 +149,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     fun onResumeFragment() {
         if (viewModel.initial.value != true) refreshView()
-        else viewModel.refreshList()
+        else {
+            viewModel.refreshList()
+            setNeedRefresh(this, false)
+        }
     }
 
     fun setSearchViewController(searchViewController: SearchViewController?) {
@@ -400,7 +405,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(BatchWork::class.java)
+            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
                     .setInputData(workDataOf(
                             "packageName" to packageName,
                             "selectedMode" to mode,
@@ -411,22 +416,26 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
             worksList.add(oneTimeWorkRequest)
 
-            WorkManager.getInstance(this)
-                    .getWorkInfoByIdLiveData(oneTimeWorkRequest.id).observe(this, {
-                        if (it.state == WorkInfo.State.SUCCEEDED) {
-                            binding.progressBar.progress = counter
-                            counter += 1
-                            val succeeded = it.outputData.getBoolean("succeeded", false)
-                            val packageLabel = it.outputData.getString("packageLabel")
-                                    ?: ""
-                            val error = it.outputData.getString("error")
-                                    ?: ""
-                            val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
-                            NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId.toInt(), message, packageLabel, false)
-                            if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
-                            resultsSuccess = resultsSuccess && succeeded
-                        }
-                    })
+            val oneTimeWorkLiveData = WorkManager.getInstance(this)
+                    .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                override fun onChanged(t: WorkInfo?) {
+                    if (t?.state == WorkInfo.State.SUCCEEDED) {
+                        binding.progressBar.progress = counter
+                        counter += 1
+                        val succeeded = t.outputData.getBoolean("succeeded", false)
+                        val packageLabel = t.outputData.getString("packageLabel")
+                                ?: ""
+                        val error = t.outputData.getString("error")
+                                ?: ""
+                        val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
+                        NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(), message, packageLabel, false)
+                        if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
+                        resultsSuccess = resultsSuccess && succeeded
+                        oneTimeWorkLiveData.removeObserver(this)
+                    }
+                }
+            })
         }
 
         val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
@@ -436,24 +445,31 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 ))
                 .build()
 
-        WorkManager.getInstance(this)
-                .getWorkInfoByIdLiveData(finishWorkRequest.id).observe(this, {
-                    if (it.state == WorkInfo.State.SUCCEEDED) {
-                        val message = it.outputData.getString("notificationMessage")
-                                ?: ""
-                        val title = it.outputData.getString("notificationTitle")
-                                ?: ""
-                        NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId.toInt(), title, message, true)
+        val finishWorkLiveData = WorkManager.getInstance(this)
+                .getWorkInfoByIdLiveData(finishWorkRequest.id)
+        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
+            override fun onChanged(t: WorkInfo?) {
+                if (t?.state == WorkInfo.State.SUCCEEDED) {
+                    val message = t.outputData.getString("notificationMessage")
+                            ?: ""
+                    val title = t.outputData.getString("notificationTitle")
+                            ?: ""
+                    NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java,
+                            notificationId.toInt(), title, message, true)
 
-                        val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                        showActionResult(this, overAllResult,
-                                if (overAllResult.succeeded) null
-                                else DialogInterface.OnClickListener { _: DialogInterface?, _: Int -> LogUtils.logErrors(this, errors.dropLast(2)) }
-                        )
-                        binding.progressBar.visibility = View.GONE
-                        viewModel.refreshList()
-                    }
-                })
+                    val overAllResult = ActionResult(null, null, errors, resultsSuccess)
+                    showActionResult(this@MainActivityX, overAllResult,
+                            if (overAllResult.succeeded) null
+                            else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
+                                LogUtils.logErrors(this@MainActivityX, errors.dropLast(2))
+                            }
+                    )
+                    binding.progressBar.visibility = View.GONE
+                    viewModel.refreshList()
+                    finishWorkLiveData.removeObserver(this)
+                }
+            }
+        })
 
         WorkManager.getInstance(this)
                 .beginWith(worksList)
@@ -511,6 +527,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         runOnUiThread {
             try {
                 FastAdapterDiffUtil[mainItemAdapter] = mainList
+                if (mainList.isEmpty())
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 mainFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
@@ -549,9 +567,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         runOnUiThread {
             try {
                 FastAdapterDiffUtil[batchItemAdapter] = batchList
+                if (batchList.isEmpty())
+                    Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 batchFastAdapter?.notifyAdapterDataSetChanged()
                 updateCheckAll()
+
                 OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
             } catch (e: Throwable) {

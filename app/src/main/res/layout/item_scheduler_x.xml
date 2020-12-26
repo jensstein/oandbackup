@@ -46,32 +46,32 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/schedMode"
+                app:layout_constraintEnd_toStartOf="@id/schedFilter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedMode"
+                android:id="@+id/schedFilter"
                 style="@style/TextViewWrapped"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Label"
                 app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
-                app:layout_constraintEnd_toStartOf="@id/schedSubMode"
+                app:layout_constraintEnd_toStartOf="@id/schedMode"
                 app:layout_constraintStart_toEndOf="@+id/enableCheckbox"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedSubMode"
+                android:id="@+id/schedMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.Label"
-                app:layout_constraintBottom_toBottomOf="@id/schedMode"
+                app:layout_constraintBottom_toBottomOf="@id/schedFilter"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/schedMode"
+                app:layout_constraintStart_toEndOf="@id/schedFilter"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -82,8 +82,8 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/schedMode"
-                app:layout_constraintTop_toBottomOf="@id/schedMode">
+                app:layout_constraintStart_toStartOf="@id/schedFilter"
+                app:layout_constraintTop_toBottomOf="@id/schedFilter">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"

@@ -191,7 +191,6 @@
     <string name="dialog_unlock">Kilidi aç</string>
     <string name="dialog_start">Hadi başlayalım!</string>
     <string name="dialogSave">Kaydet</string>
-    <string name="sched_submode">Yedekleme alt modu:</string>
     <string name="sched_add">Zamanlama Ekle</string>
     <string name="prefs_password_match_false">Parolalar eşleşmiyor</string>
     <string name="prefs_password_match_true">Parolalar eşleşiyor</string>

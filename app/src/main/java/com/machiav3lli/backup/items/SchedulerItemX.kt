@@ -20,7 +20,7 @@ package com.machiav3lli.backup.items
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.ScheduleJobsHandler.timeUntilNextEvent
@@ -45,15 +45,15 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
     }
 
     override fun bindView(binding: ItemSchedulerXBinding, payloads: List<Any>) {
-        binding.schedMode.setText(when (schedule.mode.value) {
-            1 -> R.string.radio_user
-            2 -> R.string.radio_system
-            3 -> R.string.showNewAndUpdated
+        binding.schedFilter.setText(when (schedule.filter) {
+            SCHED_FILTER_USER -> R.string.radio_user
+            SCHED_FILTER_SYSTEM -> R.string.radio_system
+            SCHED_FILTER_NEW_UPDATED -> R.string.showNewAndUpdated
             else -> R.string.radio_all
         })
-        binding.schedSubMode.setText(when (schedule.subMode.value) {
-            1 -> R.string.radio_apk
-            2 -> R.string.radio_data
+        binding.schedMode.setText(when (schedule.mode) {
+            MODE_APK -> R.string.radio_apk
+            MODE_DATA -> R.string.radio_data
             else -> R.string.radio_both
         })
         binding.enableCheckbox.isChecked = schedule.enabled
@@ -61,8 +61,8 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
     }
 
     override fun unbindView(binding: ItemSchedulerXBinding) {
+        binding.schedFilter.text = null
         binding.schedMode.text = null
-        binding.schedSubMode.text = null
         binding.timeLeft.text = null
     }
 
@@ -100,8 +100,8 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
                         && oldItem.schedule.timePlaced == newItem.schedule.timePlaced
                         && oldItem.schedule.excludeSystem == newItem.schedule.excludeSystem
                         && oldItem.schedule.enableCustomList == newItem.schedule.enableCustomList
+                        && oldItem.schedule.filter == newItem.schedule.filter
                         && oldItem.schedule.mode == newItem.schedule.mode
-                        && oldItem.schedule.subMode == newItem.schedule.subMode
                         && oldItem.schedule.customList == newItem.schedule.customList
             }
 

@@ -145,7 +145,6 @@
     <string name="sched_activateButton">Start backup now</string>
     <string name="sched_startingbackup">Starting scheduled backup…</string>
     <string name="sched_mode">Backup mode:</string>
-    <string name="sched_submode">Backup sub-mode:</string>
     <string name="sched_timeLeft">Time left:</string>
     <string name="sched_customListUpdateButton">Update custom list</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
@@ -190,7 +189,7 @@
     <string name="encrypted_data_title">Encrypted data:</string>
     <string name="other_filters_options">Special filters:</string>
     <string name="deleted_backup">Deleted the backup</string>
-    <string name="empty_filtered_list">The filtered list is empty, therefore setting the filters back to default</string>
+    <string name="empty_filtered_list">The filtered list is empty.</string>
     <string name="ignore_battery_optimization_title">Battery Optimization</string>
     <string name="ignore_battery_optimization_message">Backups could stop sometimes. To prevent this, you should turn off the battery optimization</string>
     <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>

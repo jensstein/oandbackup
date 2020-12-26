@@ -22,9 +22,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.ActionListener
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.items.BackupProperties
@@ -44,14 +42,14 @@ class RestoreDialogFragment(private val listener: ActionListener) : DialogFragme
         builder.setMessage(R.string.restore)
         val actionType = ActionType.RESTORE
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK, properties) }
+            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_APK, properties) }
         }
         if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA, properties) }
+            builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_DATA, properties) }
         }
         if (showBothBtn) {
             val textId = R.string.radio_both
-            builder.setPositiveButton(textId) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH, properties) }
+            builder.setPositiveButton(textId) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_BOTH, properties) }
         }
         return builder.create()
     }

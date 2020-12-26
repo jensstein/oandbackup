@@ -20,7 +20,6 @@ package com.machiav3lli.backup.actions
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -85,11 +84,6 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     }
 
     companion object {
-        private val TAG = classTag(".BaseAppAction")
-        const val MODE_UNSET = 0
-        const val MODE_APK = 1
-        const val MODE_DATA = 2
-        const val MODE_BOTH = 3
         const val BACKUP_DIR_DATA = "data"
         const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"
         const val BACKUP_DIR_EXTERNAL_FILES = "external_files"

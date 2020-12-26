@@ -121,7 +121,7 @@
     <string name="ignore_battery_optimization_title">Optimisation de batterie</string>
     <string name="dialog_approve">Allons-y !</string>
     <string name="dialog_refuse">Je ne veux pas</string>
-    <string name="empty_filtered_list">La liste filtrée est vide, ce qui remet les filtres par défaut</string>
+    <string name="empty_filtered_list">La liste filtrée est vide.</string>
     <string name="deleted_backup">Sauvegarde supprimée</string>
     <string name="other_filters_options">Filtres spéciaux :</string>
     <string name="encrypted_data_title">Données chiffrées :</string>
@@ -153,7 +153,6 @@
     <string name="spec_appwidgets">Widgets d\'applications</string>
     <string name="spec_accounts">Comptes</string>
     <string name="sched_blacklist">Liste noire</string>
-    <string name="sched_submode">Sous-mode de sauvegarde :</string>
     <string name="sched_activateButton">Démarrer la sauvegarde maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>

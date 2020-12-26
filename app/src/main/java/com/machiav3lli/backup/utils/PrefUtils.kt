@@ -44,6 +44,12 @@ const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
 const val BACKUP_DIR = 5
 
+fun getDefaultSharedPreferences(context: Context): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
+
+fun getPrivateSharedPrefs(context: Context): SharedPreferences =
+        context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
+
 fun getCryptoSalt(context: Context): ByteArray {
     val userSalt = getDefaultSharedPreferences(context).getString(PREFS_SALT, "")
             ?: ""
@@ -52,14 +58,13 @@ fun getCryptoSalt(context: Context): ByteArray {
     } else Crypto.FALLBACK_SALT
 }
 
+
 fun isEncryptionEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
                 ?: false
 
-
 fun isLockEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)
-
 
 fun isBiometricLockAvailable(context: Context): Boolean =
         BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
@@ -73,7 +78,7 @@ fun isBiometricLockAvailable(context: Context): Boolean =
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
 @Throws(StorageLocationNotConfiguredException::class)
-fun getStorageRootDir(context: Context): String? {
+fun getStorageRootDir(context: Context): String {
     val location = getPrivateSharedPrefs(context).getString(PREFS_PATH_BACKUP_DIRECTORY, "")
             ?: ""
     if (location.isEmpty()) {
@@ -102,12 +107,6 @@ fun isStorageDirSetAndOk(context: Context): Boolean {
         false
     }
 }
-
-fun getDefaultSharedPreferences(context: Context): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
-
-fun getPrivateSharedPrefs(context: Context): SharedPreferences =
-        context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
 
 fun requireStorageLocation(fragment: Fragment) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
@@ -184,5 +183,12 @@ fun isRestoreAllPermissions(context: Context): Boolean =
 
 fun isAllowDowngrade(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_ALLOWDOWNGRADE, false)
+
+fun isNeedRefresh(context: Context): Boolean =
+        getPrivateSharedPrefs(context).getBoolean(NEED_REFRESH, false)
+
+fun setNeedRefresh(context: Context, value: Boolean) {
+    getPrivateSharedPrefs(context).edit().putBoolean(NEED_REFRESH, value).apply()
+}
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")

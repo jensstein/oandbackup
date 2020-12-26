@@ -202,7 +202,6 @@
     <string name="dialog_unlock">Buka kunci</string>
     <string name="dialog_start">Ayo!</string>
     <string name="dialogSave">Simpan</string>
-    <string name="sched_submode">Sub-mode pencadangan:</string>
     <string name="sched_add">Tambah Jadwal</string>
     <string name="prefs_unset">Tidak disetel</string>
     <string name="prefs_stopcont_summary">Hanya ahli: Ini dapat membantu, jika aplikasi mengubah file selama pencadangan dan pencadangan gagal.</string>

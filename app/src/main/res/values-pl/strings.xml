@@ -167,7 +167,6 @@
     <string name="sortDataSize">Rozmiar danych</string>
     <string name="dialog_unlock">Odblokuj</string>
     <string name="dialogSave">Zapisz</string>
-    <string name="sched_submode">Pod-tryb tworzenia kopii zapasowych:</string>
     <string name="sched_add">Dodaj element harmonogramu</string>
     <string name="prefs_password_match_false">Hasła nie zgadzają się</string>
     <string name="prefs_password_match_true">Hasła zgadzają się</string>

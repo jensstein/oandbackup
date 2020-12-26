@@ -22,8 +22,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_BOTH
+import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 import timber.log.Timber
@@ -68,9 +70,9 @@ class BatchDialogFragment(private var confirmListener: ConfirmListener) : Dialog
 
     private fun getModeString(mode: Int): String {
         return when (mode) {
-            BaseAppAction.MODE_APK -> requireContext().resources.getString(R.string.handleApk)
-            BaseAppAction.MODE_DATA -> requireContext().resources.getString(R.string.handleData)
-            BaseAppAction.MODE_BOTH -> requireContext().resources.getString(R.string.handleBoth)
+            MODE_APK -> requireContext().resources.getString(R.string.handleApk)
+            MODE_DATA -> requireContext().resources.getString(R.string.handleData)
+            MODE_BOTH -> requireContext().resources.getString(R.string.handleBoth)
             else -> ""
         }
     }

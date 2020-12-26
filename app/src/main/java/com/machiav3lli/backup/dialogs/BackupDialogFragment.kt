@@ -22,9 +22,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.ActionListener
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.PackageInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
@@ -44,11 +42,11 @@ class BackupDialogFragment(private val listener: ActionListener) : DialogFragmen
         val showApkBtn = pi != null && pi.apkDir.isNotEmpty()
         val actionType = ActionType.BACKUP
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_APK, null) }
-            builder.setPositiveButton(R.string.handleBoth) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_BOTH, null) }
+            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_APK, null) }
+            builder.setPositiveButton(R.string.handleBoth) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_BOTH, null) }
         }
         // Data button (always visible)
-        builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, BaseAppAction.MODE_DATA, null) }
+        builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_DATA, null) }
         return builder.create()
     }
 }
