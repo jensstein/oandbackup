@@ -33,7 +33,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.handler.ScheduleJobsHandler
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.tasks.BatchWork
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.utils.LogUtils
@@ -63,7 +63,7 @@ open class ScheduleJobService : JobService() {
                 val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
                 selectedItems.forEach { packageName ->
-                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(BatchWork::class.java)
+                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
                             .setInputData(workDataOf(
                                     "packageName" to packageName,
                                     "selectedMode" to mode,

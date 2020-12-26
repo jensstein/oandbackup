@@ -18,7 +18,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
 import timber.log.Timber
 
-class BatchWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
+class AppActionWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
 
     private var notificationId: Int = 123454321
     private var backupBoolean = true
@@ -85,7 +85,6 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Coroutin
             LogUtils.unhandledException(e, packageLabel)
         } finally {
             val error = result?.message
-            // wl.release()
             return Result.success(workDataOf(
                     "error" to error,
                     "succeeded" to result?.succeeded,
@@ -129,6 +128,6 @@ class BatchWork(val context: Context, workerParams: WorkerParameters) : Coroutin
     }
 
     companion object {
-        private val CHANNEL_ID = BatchWork::class.java.name
+        private val CHANNEL_ID = AppActionWork::class.java.name
     }
 }

@@ -48,7 +48,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.items.*
-import com.machiav3lli.backup.tasks.BatchWork
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
@@ -402,7 +402,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(BatchWork::class.java)
+            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
                     .setInputData(workDataOf(
                             "packageName" to packageName,
                             "selectedMode" to mode,
