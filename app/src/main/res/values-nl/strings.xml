@@ -43,7 +43,7 @@
     <string name="restoreDataWithoutApkError">Kan de data niet terugzetten zonder de APK terug te zetten, pakket is niet geïnstalleerd.</string>
     <string name="collectingData">Pakketinformatie aan het verzamelen…</string>
     <string name="noSu">Kon geen superuser rechten verkrijgen</string>
-    <string name="busyboxProblem">Kon busybox niet vinden. Controleer de foutlog</string>
+    <string name="busyboxProblem">Kon BusyBox niet vinden. Controleer de foutlog</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Kon bestand niet creëren</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

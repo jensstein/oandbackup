@@ -223,4 +223,17 @@
     <string name="fetching_backup_list">Απόκτηση λίστας εφαρμογών για τη δημιουργία αντιγράφου…</string>
     <string name="prefs_disableverification_summary">Απενεργοποιεί αυτήν την επιλογή προγραμματιστών κατά την επαναφορά εφαρμογών και την επανενεργοποιεί έπειτα. Λύνει το σφάλμα: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Απενεργοποίηση Επαλήθευσης εφαρμογών μέσω USB</string>
+    <string name="stats_apps">Εφαρμογές</string>
+    <string name="stats_backups">Αντίγραφα</string>
+    <string name="stats_updated">Ενημερωμένο</string>
+    <string name="radio_launchable">Εκκινήσιμες Εφαρμογές</string>
+    <string name="help_issues">Γνωστά προβλήματα</string>
+    <string name="fetching_action_list">Απόκτηση λίστας εφαρμογών για %1$s…</string>
+    <string name="prefs_obbdata_summary">Δημιουργεί αντίγραφο κι επαναφέρει τα αρχεία obb της εφαρμογής τα οποία είναι τοποθετημένα στον εξωτερικό αποθηκευτικό χώρο (π.χ. /storage/emulated/0/Android/obb)</string>
+    <string name="prefs_obbdata">Αντίγραφο αρχείων</string>
+    <string name="prefs_allowdowngrade">Να επιτρέπεται η υποβάθμιση</string>
+    <string name="prefs_allowdowngrade_summary">Να επιτρέπεται η επαναφορά παλαιότερης έκδοσης της εγκατεστημένης εφαρμογής.</string>
+    <string name="prefs_restoreallpermissions">Επαναφορά με όλες τις άδειες</string>
+    <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
+    <string name="prefs_unset">Αποτυχία ορισμού</string>
 </resources>

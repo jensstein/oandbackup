@@ -13,7 +13,7 @@
     <string name="de_selectAll">Marcar/desmarcar tudo</string>
     <string name="onlyApkBackedUp">Apenas APK</string>
     <string name="onlyDataBackedUp">Apenas dados</string>
-    <string name="refresh">Atualizar</string>
+    <string name="refresh">Recarregar</string>
     <string name="batchbackup">Backup em lote</string>
     <string name="batchrestore">Restauro em lote</string>
     <string name="search">Procurar</string>
@@ -30,7 +30,7 @@
     <string name="showOldBackups">Backups antigos</string>
     <string name="showOnlyApkBackedUp">Aplicações só com backup de APK</string>
     <string name="showOnlyDataBackedUp">Aplicações só com backup de dados</string>
-    <string name="radio_special">Apenas backups especiais</string>
+    <string name="radio_special">Backups especiais</string>
     <string name="sortByLabel">Ordenar por nome</string>
     <string name="sortByPackageName">Ordenar por nome de pacote</string>
     <string name="sort">Filtro e ordem</string>
@@ -47,18 +47,18 @@
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Não foi possível criar</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
-    <string name="fallbackToDefault">Utilizar pré-definições</string>
+    <string name="fallbackToDefault">Utilizar definições padrão</string>
     <string name="backupFolderError">Defina o caminho correto nas preferências e certifique-se que o caminho existe ou que tem permissões de escrita</string>
     <string name="shellReturnSuccess">Sucesso</string>
     <string name="shellReturnError">Erro</string>
-    <string name="backupProgress">A criar Backup…</string>
+    <string name="backupProgress">A criar backup…</string>
     <string name="backupSuccess">Backup terminado</string>
-    <string name="backupFailure">Erro ao fazer backup</string>
+    <string name="backupFailure">Erro ao criar o backup</string>
     <string name="restoreProgress">A restaurar…</string>
     <string name="restoreSuccess">Restauro terminado</string>
     <string name="restoreFailure">Erro ao restaurar</string>
     <string name="batchSuccess">Operação terminada</string>
-    <string name="batchFailure">Terminado com erros</string>
+    <string name="batchFailure">Terminada com erros</string>
     <string name="uninstallSuccess">Desinstalação terminada</string>
     <string name="uninstallFailure">Erro ao desinstalar</string>
     <string name="errorDialogTitle">Ocorreram erros</string>
@@ -97,22 +97,22 @@
     <string name="sched_hourOfDay">Hora do dia:</string>
     <string name="sched_checkbox">Ativar</string>
     <string name="sched_activateButton">Iniciar backup agora</string>
-    <string name="sched_startingbackup">A iniciar o backup agendado…</string>
+    <string name="sched_startingbackup">A iniciar backup agendado…</string>
     <string name="sched_mode">Modo de backup:</string>
-    <string name="sched_timeLeft">Tempo até o próximo backup:</string>
+    <string name="sched_timeLeft">Tempo restante:</string>
     <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicações de sistema</string>
     <string name="spec_accounts">Contas</string>
     <string name="spec_appwidgets">Widgets da aplicação</string>
     <string name="spec_bluetooth">Bluetooth</string>
-    <string name="spec_data">Uso e Política de Uso de Dados</string>
+    <string name="spec_data">Utilização de dados e política</string>
     <string name="spec_wallpaper">Imagem de fundo</string>
     <string name="spec_wifiAccessPoints">Pontos de acesso WiFi</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
     <string name="help_license">Licença</string>
-    <string name="radio_user">Aplicações de Utilizador</string>
-    <string name="radio_system">Aplicações de Sistema</string>
-    <string name="showSplitAPKs">APK-Dividido</string>
+    <string name="radio_user">Aplicações de utilizador</string>
+    <string name="radio_system">Aplicações de sistema</string>
+    <string name="showSplitAPKs">APK dividido</string>
     <string name="prefs_user">Preferências de utilizador</string>
     <string name="prefs_theme">Tema</string>
     <string name="prefs_theme_light">Claro</string>
@@ -123,7 +123,7 @@
     <string name="prefs_encryption">Encriptação</string>
     <string name="prefs_encryption_summary">Permitir encriptar os backups de dados</string>
     <string name="prefs_password">Palavra-passe de encriptação</string>
-    <string name="prefs_password_summary">Deixar vazio para desativar encriptação</string>
+    <string name="prefs_password_summary">Deixe vazio para desativar encriptação</string>
     <string name="prefs_passwordconfirmation">Confirmação de palavra-passe de encriptação</string>
     <string name="prefs_password_match_true">As palavras-passe coincidem</string>
     <string name="prefs_excludecache">Excluir cache da aplicação</string>
@@ -131,15 +131,15 @@
     <string name="prefs_deviceprotecteddata_summary">Fazer backup e restaura os dados que são colocados em data/user_de</string>
     <string name="prefs_batchdelete_summary">Eliminar backups de todas as aplicações não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver registo</string>
-    <string name="sched_add">Adicionar Agenda</string>
+    <string name="sched_add">Adicionar agendamento</string>
     <string name="sched_blacklist">Lista negra</string>
     <string name="error_creating_notification_channel">Não foi possível de criar um canal de notificação</string>
-    <string name="error_updating_schedule_mode">Error ao atualizar %1$s do esquema %2$d</string>
-    <string name="permission_not_granted">Permissão necessária para aceder ao armazenamento externo</string>
+    <string name="error_updating_schedule_mode">Error ao atualizar %1$s do agendamento %2$d</string>
+    <string name="permission_not_granted">Requer permissão para aceder ao armazenamento externo</string>
     <string name="dialogSave">Gravar</string>
-    <string name="dialog_refuse">Não vou fazer isso</string>
-    <string name="dialog_approve">Vamos a isso!</string>
-    <string name="dialog_start">Vamos!</string>
+    <string name="dialog_refuse">Não</string>
+    <string name="dialog_approve">Sim</string>
+    <string name="dialog_start">Vamos</string>
     <string name="dialog_unlock">Desbloquear</string>
     <string name="filter_options">Filtros:</string>
     <string name="sort_options">Ordenar por:</string>
@@ -186,8 +186,8 @@
     <string name="prefs_password_match_false">As palavras-passe não coincidem</string>
     <string name="prefs_excludecache_summary">Excluir cache da aplicação do backup de dados</string>
     <string name="prefs_externaldata">Fazer backup de dados externos</string>
-    <string name="prefs_deviceprotecteddata">Fazer Backup de dados protegidos do dispositivo</string>
-    <string name="restart_dialog">Aplicação parece precisar de ser reiniciada</string>
+    <string name="prefs_deviceprotecteddata">Fazer backup de dados protegidos do dispositivo</string>
+    <string name="restart_dialog">Parece que necessita reiniciar a aplicação</string>
     <string name="empty_filtered_list">A lista de filtros está vazia, sendo assim os filtros estão de volta a predefinição</string>
     <string name="intro_welcome_message">O OAndBackupX é uma bifurcação do reconhecido OAndBackup com o objetivo de levá-lo até 2020 e mais. Por enquanto, a maior parte da funcionalidade e da interface da aplicação são reescritas e algumas são adicionadas.
 \n A aplicação ainda se encontra em fase beta e muitas vezes estão a ser feitas as melhorias. Leia atentamente o registo de alterações a cada novo lançamento.
@@ -214,8 +214,8 @@
     <string name="prefs_advanced">Preferências avançadas</string>
     <string name="radio_updated">Atualizado</string>
     <string name="radio_obbdata">Dados OBB</string>
-    <string name="radio_deviceprotecteddata">Dados Protegidos do Dispositivo</string>
-    <string name="radio_externaldata">Dados Externos</string>
+    <string name="radio_deviceprotecteddata">Dados protegidos no dispositivo</string>
+    <string name="radio_externaldata">Dados externos</string>
     <string name="fetching_action_list">A obter aplicações para backup…</string>
     <string name="logs_text_empty">Não há nada a mostrar!</string>
     <string name="delete_all_backups">Eliminar todos os backups</string>
@@ -232,4 +232,8 @@
     <string name="help_issues">Problemas conhecidos</string>
     <string name="prefs_obbdata_summary">Faz backup e restauro de ficheiros obb da aplicação que são colocados no armazenamento externo (Ex: /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Backup de ficheiros obb</string>
+    <string name="prefs_allowdowngrade">Permitir versões anteriores</string>
+    <string name="prefs_allowdowngrade_summary">Permitir restauro de versões anteriores da aplicação.</string>
+    <string name="prefs_restoreallpermissions">Restaurar com todas as permissões</string>
+    <string name="prefs_restoreallpermissions_summary">Conceder à aplicação restaurada todas as permissões solicitadas.</string>
 </resources>

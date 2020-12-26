@@ -86,7 +86,7 @@
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'.</string>
     <string name="prefs_copyselfapk">Copia l\'APK del programma</string>
-    <string name="prefs_copyselfapk_summary">Crea una copia di oandbackup nel livello superiore della cartella di backup quando effettua il salvataggio</string>
+    <string name="prefs_copyselfapk_summary">Crea una copia di OAndBackupX nel livello superiore della cartella di backup</string>
     <string name="prefs_languages">Lingua</string>
     <string name="prefs_language_system">Predefinita di sistema</string>
     <string name="prefs_rememberfiltering">Ricorda l\'ordinamento e i filtri</string>
@@ -99,7 +99,7 @@
     <string name="sched_checkbox">Abilita</string>
     <string name="sched_startingbackup">Avvio del backup pianificato…</string>
     <string name="sched_mode">Modalità di backup:</string>
-    <string name="sched_timeLeft">Ore mancanti al prossimo backup:</string>
+    <string name="sched_timeLeft">Tempo rimasto:</string>
     <string name="sched_customListUpdateButton">Aggiorna l\'elenco personalizzato</string>
     <string name="sched_excludeSystemCheckBox">Escludi le applicazioni di sistema</string>
     <string name="spec_accounts">Account</string>
@@ -229,4 +229,12 @@
     <string name="prefs_stopcont">STOP-CONT pre e post elaborazione di app su backup / ripristino</string>
     <string name="prefs_obbdata_summary">Esegue il backup e ripristina i file obb dell\'app che vengono inseriti nella memoria esterna (ad esempio / storage / emulated / 0 / Android / obb /)</string>
     <string name="prefs_obbdata">Eseguire il backup dei file obb</string>
+    <string name="stats_apps">Applicazioni</string>
+    <string name="stats_backups">Backup</string>
+    <string name="stats_updated">Aggiornato</string>
+    <string name="radio_launchable">App avviabili</string>
+    <string name="prefs_allowdowngrade">Consenti il downgrade</string>
+    <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata.</string>
+    <string name="prefs_restoreallpermissions">Ripristina con tutte le autorizzazioni</string>
+    <string name="prefs_restoreallpermissions_summary">Assegna all\'app ripristinata tutte le autorizzazioni richieste.</string>
 </resources>

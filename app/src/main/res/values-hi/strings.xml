@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="backup">बैकअप</string>
+    <string name="handleBoth">दोनों</string>
+    <string name="radio_user">यूज़र ऐप</string>
+    <string name="radio_all">सभी ऐप</string>
+    <string name="handleData">डेटा</string>
 </resources>

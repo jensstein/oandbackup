@@ -104,7 +104,7 @@
     <string name="prefs_excludecache_summary">从数据备份中排除应用程序的缓存</string>
     <string name="prefs_acquirewakelock_summary">在批处理操作期间获取一个wakelock以防止睡眠。这将大大加速备份和还原，但会消耗更多电量。</string>
     <string name="prefs_oldbackups_summary">筛选指定天数前的备份，与“显示旧备份”筛选一起使用.</string>
-    <string name="prefs_copyselfapk_summary">备份时将 OAndBackupX 的副本放在备份文件夹的顶层</string>
+    <string name="prefs_copyselfapk_summary">将 OAndBackupX 的一份副本放在备份文件夹的顶层</string>
     <string name="prefs_rememberfiltering_summary">保存所选的排序和筛选方式，只考虑那些被菜单复选框标记的。</string>
     <string name="prefs_batchdelete_summary">删除当前未安装的所有应用的备份。</string>
     <string name="sched_title">定时</string>
@@ -115,7 +115,7 @@
     <string name="sched_activateButton">现在开始备份</string>
     <string name="sched_startingbackup">正在开始定时备份…</string>
     <string name="sched_mode">备份模式:</string>
-    <string name="sched_timeLeft">距离下次备份的时间:</string>
+    <string name="sched_timeLeft">剩余时间：</string>
     <string name="sched_customListUpdateButton">更新自定义列表</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
     <string name="sched_blacklist">黑名单</string>
@@ -230,4 +230,8 @@
     <string name="stats_backups">备份</string>
     <string name="stats_updated">已更新</string>
     <string name="radio_launchable">可启动的应用程序</string>
+    <string name="prefs_allowdowngrade">允许降级</string>
+    <string name="prefs_allowdowngrade_summary">允许恢复已安装应用程序的旧版本。</string>
+    <string name="prefs_restoreallpermissions">全权限还原</string>
+    <string name="prefs_restoreallpermissions_summary">给予恢复的应用程序要求的所有权限。</string>
 </resources>

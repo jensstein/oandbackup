@@ -63,7 +63,7 @@
     <string name="uninstallFailure">Erreur lors de la désinstallation</string>
     <string name="errorDialogTitle">Présence d\'erreurs</string>
     <string name="customListTitle">Liste personnalisée</string>
-    <string name="notInstalledModeDataWarning">l\'application ne peut être restaurer sans apk</string>
+    <string name="notInstalledModeDataWarning">L\'application ne peut être restaurée sans APK</string>
     <string name="shareTitle">partager</string>
     <string name="prefs_tools">Outils</string>
     <string name="prefs_batchdelete">Effacer les sauvegardes \?</string>
@@ -228,4 +228,14 @@
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
     <string name="help_issues">Problèmes connus</string>
     <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>
+    <string name="prefs_obbdata_summary">Sauvegarde et restaure les fichiers obb de l\'app placés sur le stockage externe (par exemple /storage/emulated/0/Android/obb/)</string>
+    <string name="stats_apps">Apps</string>
+    <string name="stats_backups">Sauvegardes</string>
+    <string name="stats_updated">Mis à jour</string>
+    <string name="radio_launchable">Apps lançables</string>
+    <string name="prefs_obbdata">Sauvegarde des fichiers obb</string>
+    <string name="prefs_allowdowngrade">Autoriser le retour à une version antérieure</string>
+    <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'app installée.</string>
+    <string name="prefs_restoreallpermissions">Restaurer avec toutes les permissions</string>
+    <string name="prefs_restoreallpermissions_summary">Donner à l\'app restaurée toutes les permissions qu\'elle demande.</string>
 </resources>
