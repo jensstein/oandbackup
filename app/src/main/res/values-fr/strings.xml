@@ -221,7 +221,6 @@
         <item quantity="one">%d jour,</item>
         <item quantity="other">%d jours,</item>
     </plurals>
-    <string name="fetching_backup_list">Récupération de la liste des applications pour la sauvegarde…</string>
     <string name="logs_text_empty">Il n\'y a rien à montrer !</string>
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>
     <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APKs et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
