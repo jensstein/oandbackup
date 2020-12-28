@@ -27,7 +27,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.handler.BackendController
 
-class CustomListDialogFragment(val filter: Int, val listener: CustomListListener) : DialogFragment() {
+class CustomListDialogFragment(val filter: Int, private val listener: CustomListListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireActivity().application.applicationContext.packageManager

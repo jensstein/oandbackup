@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.BLACKLIST_ARGS_ID
 import com.machiav3lli.backup.BLACKLIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
 import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
@@ -96,7 +97,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
                         .getBlacklistedPackages(GLOBAL_ID) as ArrayList<String>
                 args.putStringArrayList(BLACKLIST_ARGS_PACKAGES,
                         blacklistedPackages)
-                val blacklistDialogFragment = BlacklistDialogFragment(this)
+                val blacklistDialogFragment = BlacklistDialogFragment(SCHED_FILTER_ALL,this)
                 blacklistDialogFragment.arguments = args
                 blacklistDialogFragment.show(supportFragmentManager, "BLACKLIST_DIALOG")
             }.start()

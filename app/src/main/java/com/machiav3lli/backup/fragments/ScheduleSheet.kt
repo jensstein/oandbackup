@@ -145,8 +145,10 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             args.putInt("listId", viewModel.id.toInt())
             val customList = viewModel.schedule.value?.customList?.toCollection(ArrayList())
             args.putStringArrayList("selectedPackages", customList)
+            args.putInt("filter", viewModel.schedule.value?.filter ?: SCHED_FILTER_ALL)
 
-            val customListDialogFragment = CustomListDialogFragment(idToFilter(binding.schedMode.checkedChipId), this)
+            val customListDialogFragment = CustomListDialogFragment(viewModel.schedule.value?.filter
+                    ?: SCHED_FILTER_ALL, this)
             customListDialogFragment.arguments = args
             customListDialogFragment.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
         }
@@ -156,7 +158,8 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             val blacklistedPackages = viewModel.blacklist.value ?: arrayListOf()
             args.putStringArrayList(BLACKLIST_ARGS_PACKAGES, blacklistedPackages as ArrayList<String>)
 
-            val blacklistDialogFragment = BlacklistDialogFragment(this)
+            val blacklistDialogFragment = BlacklistDialogFragment(viewModel.schedule.value?.filter
+                    ?: SCHED_FILTER_ALL, this)
             blacklistDialogFragment.arguments = args
             blacklistDialogFragment.show(requireActivity().supportFragmentManager, "BLACKLIST_DIALOG")
         }
@@ -170,9 +173,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             viewModel.deleteBlacklist()
             dismissAllowingStateLoss()
         }
-        binding.activateButton.setOnClickListener {
-            startSchedule()
-        }
+        binding.activateButton.setOnClickListener { startSchedule() }
     }
 
     private fun setTimeLeft(schedule: Schedule, now: Long) {
