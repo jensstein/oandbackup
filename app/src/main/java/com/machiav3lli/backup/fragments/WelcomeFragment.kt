@@ -49,6 +49,7 @@ class WelcomeFragment : Fragment() {
         binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT))) }
         binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE))) }
         binding.issues.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES))) }
+        binding.faq.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ))) }
     }
 
     private fun setupViews() {
