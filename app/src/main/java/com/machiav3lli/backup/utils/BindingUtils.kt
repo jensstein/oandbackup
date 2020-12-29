@@ -16,6 +16,7 @@ fun filterToId(mode: Int): Int {
         SCHED_FILTER_USER -> R.id.schedUser
         SCHED_FILTER_SYSTEM -> R.id.schedSystem
         SCHED_FILTER_NEW_UPDATED -> R.id.schedNewUpdated
+        SCHED_FILTER_LAUNCHABLE -> R.id.schedLaunchable
         else -> R.id.schedAll
     }
 }
@@ -25,6 +26,7 @@ fun idToFilter(mode: Int): Int {
         R.id.schedUser -> SCHED_FILTER_USER
         R.id.schedSystem -> SCHED_FILTER_SYSTEM
         R.id.schedNewUpdated -> SCHED_FILTER_NEW_UPDATED
+        R.id.schedLaunchable -> SCHED_FILTER_LAUNCHABLE
         else -> SCHED_FILTER_ALL
     }
 }

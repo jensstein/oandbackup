@@ -160,6 +160,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/schedLaunchable"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_launchable" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatCheckBox

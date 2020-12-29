@@ -90,6 +90,7 @@ const val SCHED_FILTER_ALL = 0
 const val SCHED_FILTER_USER = 1
 const val SCHED_FILTER_SYSTEM = 2
 const val SCHED_FILTER_NEW_UPDATED = 3
+const val SCHED_FILTER_LAUNCHABLE = 4
 
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"

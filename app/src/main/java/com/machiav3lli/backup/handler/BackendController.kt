@@ -3,14 +3,12 @@ package com.machiav3lli.backup.handler
 import android.app.usage.StorageStats
 import android.app.usage.StorageStatsManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.SCHED_FILTER_SYSTEM
-import com.machiav3lli.backup.SCHED_FILTER_USER
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
@@ -37,6 +35,12 @@ object BackendController {
 
     fun getPackageInfoList(context: Context, filter: Int): List<PackageInfo> {
         val pm = context.packageManager
+        var launchableAppsList = listOf<String>()
+        if (filter == SCHED_FILTER_LAUNCHABLE) {
+            val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+            launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
+                    .map { it.activityInfo.packageName }
+        }
         return pm.getInstalledPackages(0)
                 .filter { packageInfo: PackageInfo ->
                     val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
@@ -44,6 +48,7 @@ object BackendController {
                     when (filter) {
                         SCHED_FILTER_USER -> return@filter !isSystem && isNotIgnored
                         SCHED_FILTER_SYSTEM -> return@filter isSystem && isNotIgnored
+                        SCHED_FILTER_LAUNCHABLE -> return@filter launchableAppsList.contains(packageInfo.packageName) && isNotIgnored
                         else -> return@filter isNotIgnored
                     }
                 }

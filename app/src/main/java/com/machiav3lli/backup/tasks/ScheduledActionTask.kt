@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.tasks
 
 import android.content.Context
+import android.content.Intent
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.dbs.BlacklistDatabase
@@ -58,6 +59,12 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             return Pair(listOf(), MODE_BOTH)
         }
 
+        var launchableAppsList = listOf<String>()
+        if (filter == SCHED_FILTER_LAUNCHABLE) {
+            val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+            launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
+                    .map { it.activityInfo.packageName }
+        }
         val inListed = { packageName: String ->
             (customList.isEmpty() || customList.contains(packageName)) && !blackList.contains(packageName)
         }
@@ -72,6 +79,10 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                 (appInfo.isInstalled && (!excludeSystem || !appInfo.isSystem)
                         && (!appInfo.hasBackups || appInfo.isUpdated)
                         && inListed(appInfo.packageName))
+            }
+            SCHED_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
+                launchableAppsList.contains(appInfo.packageName)
+                        && inListed(appInfo.packageName)
             }
             else -> { appInfo: AppInfo -> inListed(appInfo.packageName) }
         }

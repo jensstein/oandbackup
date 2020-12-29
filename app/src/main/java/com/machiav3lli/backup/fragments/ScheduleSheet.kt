@@ -294,6 +294,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
                 SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
                 SCHED_FILTER_USER -> context.getString(R.string.radio_user)
                 SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+                SCHED_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
                 else -> context.getString(R.string.radio_all)
             }
         }
