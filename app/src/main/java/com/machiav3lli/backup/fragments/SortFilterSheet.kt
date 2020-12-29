@@ -32,10 +32,10 @@ import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
-import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
-import com.machiav3lli.backup.handler.SortFilterManager.saveFilterPreferences
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.getFilterPreferences
+import com.machiav3lli.backup.utils.saveFilterPreferences
 
 class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding

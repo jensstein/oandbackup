@@ -46,7 +46,6 @@ import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
-import com.machiav3lli.backup.handler.SortFilterManager.getFilterPreferences
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -112,7 +111,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         prefs = getPrivateSharedPrefs(this)
         val viewModelFactory = MainViewModelFactory(this, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-
+        if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel())
         viewModel.refreshActive.observe(this, {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()

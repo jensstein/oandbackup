@@ -37,6 +37,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.Crypto
+import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
 import java.nio.charset.StandardCharsets
 
@@ -189,6 +190,24 @@ fun isNeedRefresh(context: Context): Boolean =
 
 fun setNeedRefresh(context: Context, value: Boolean) {
     getPrivateSharedPrefs(context).edit().putBoolean(NEED_REFRESH, value).apply()
+}
+
+fun getFilterPreferences(context: Context): SortFilterModel {
+    val sortFilterModel: SortFilterModel
+    val sortFilterPref = getPrivateSharedPrefs(context).getString(PREFS_SORT_FILTER, "")
+    sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
+    return sortFilterModel
+}
+
+fun saveFilterPreferences(context: Context, filterModel: SortFilterModel) {
+    getPrivateSharedPrefs(context).edit().putString(PREFS_SORT_FILTER, filterModel.toString()).apply()
+}
+
+fun isRememberFiltering(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_REMEMBERFILTERING, true)
+
+fun setRememberFilterig(context: Context, value: Boolean) {
+    getDefaultSharedPreferences(context).edit().putBoolean(PREFS_REMEMBERFILTERING, value).apply()
 }
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
