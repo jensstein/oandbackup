@@ -227,7 +227,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             message.append("\n${getModeString(it.mode, requireContext())}")
             message.append("\n${getFilterString(it.filter, requireContext())}")
             if (it.filter == SCHED_FILTER_NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
-            message.append("\n${getString(R.string.customListTitle)}: ${it.enableCustomList}")
+            message.append("\n${getString(R.string.customListTitle)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
             AlertDialog.Builder(requireActivity())
                     .setTitle("${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)

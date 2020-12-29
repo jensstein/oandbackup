@@ -19,9 +19,7 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.PREFS_OLDBACKUPS
-import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
-import com.machiav3lli.backup.PREFS_SORT_FILTER
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -52,16 +50,16 @@ object SortFilterManager {
     fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
         val predicate: (AppInfo) -> Boolean
         var launchableAppsList = listOf<String>()
-        if (filter[1] == '4') {
+        if (filter[1] == MAIN_FILTER_LAUNCHABLE) {
             val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
                     .map { it.activityInfo.packageName }
         }
         predicate = when (filter[1]) {
-            '1' -> { appInfo: AppInfo -> appInfo.isSystem }
-            '2' -> { appInfo: AppInfo -> !appInfo.isSystem }
-            '3' -> { appInfo: AppInfo -> appInfo.isSpecial }
-            '4' -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
+            MAIN_FILTER_SYSTEM -> { appInfo: AppInfo -> appInfo.isSystem }
+            MAIN_FILTER_USER -> { appInfo: AppInfo -> !appInfo.isSystem }
+            MAIN_FILTER_SPECIAL -> { appInfo: AppInfo -> appInfo.isSpecial }
+            MAIN_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
             else -> { _: AppInfo -> true }
         }
         val filteredList = list
@@ -73,10 +71,10 @@ object SortFilterManager {
     private fun applyBackupFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
         val predicate: (AppInfo) -> Boolean
         predicate = when (filter[2]) {
-            '1' -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
-            '2' -> { appInfo: AppInfo -> appInfo.hasApk }
-            '3' -> { appInfo: AppInfo -> appInfo.hasAppData }
-            '4' -> { appInfo: AppInfo -> !appInfo.hasBackups }
+            MAIN_BACKUPFILTER_BOTH -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
+            MAIN_BACKUPFILTER_APK -> { appInfo: AppInfo -> appInfo.hasApk }
+            MAIN_BACKUPFILTER_DATA -> { appInfo: AppInfo -> appInfo.hasAppData }
+            MAIN_BACKUPFILTER_NONE -> { appInfo: AppInfo -> !appInfo.hasBackups }
             else -> { _: AppInfo -> true }
         }
         val filteredList = list
@@ -90,9 +88,9 @@ object SortFilterManager {
         val days = getDefaultSharedPreferences(context).getString(PREFS_OLDBACKUPS, "7")?.toInt()
                 ?: 7
         predicate = when (filter[3]) {
-            '1' -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
-            '2' -> { appInfo: AppInfo -> !appInfo.isInstalled }
-            '3' -> {
+            MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
+            MAIN_SPECIALFILTER_NOTINSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
+            MAIN_SPECIALFILTER_OLD -> {
                 { appInfo: AppInfo ->
                     when {
                         appInfo.hasBackups -> {
@@ -104,7 +102,7 @@ object SortFilterManager {
                     }
                 }
             }
-            '4' -> { appInfo: AppInfo -> appInfo.apkSplits.isNotEmpty() }
+            MAIN_SPECIALFILTER_SPLIT -> { appInfo: AppInfo -> appInfo.apkSplits.isNotEmpty() }
             else -> { _: AppInfo -> true }
         }
         val filteredList = list
@@ -115,8 +113,8 @@ object SortFilterManager {
 
     private fun applySort(list: List<AppInfo>, filter: CharSequence): List<AppInfo> {
         return when (filter[0]) {
-            '1' -> list.sortedWith(APP_INFO_PACKAGE_NAME_COMPARATOR)
-            '2' -> list.sortedWith(APP_INFO_DATA_SIZE_COMPARATOR)
+            MAIN_SORT_PACKAGENAME -> list.sortedWith(APP_INFO_PACKAGE_NAME_COMPARATOR)
+            MAIN_SORT_DATASIZE -> list.sortedWith(APP_INFO_DATA_SIZE_COMPARATOR)
             else -> list.sortedWith(APP_INFO_LABEL_COMPARATOR)
         }
     }
