@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
@@ -61,7 +62,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
-class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
+class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
         var shellHandlerInstance: ShellHandler? = null
@@ -109,6 +110,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         setContentView(binding.root)
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs(this)
+        prefs.registerOnSharedPreferenceChangeListener(this)
         val viewModelFactory = MainViewModelFactory(this, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel())
@@ -475,6 +477,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 .then(finishWorkRequest)
                 .enqueue()
 
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (isNeedRefresh(this)) {
+            viewModel.refreshList()
+            setNeedRefresh(this,false)
+        }
     }
 
     private fun checkUtilBox() {
