@@ -40,7 +40,7 @@ android {
     }
     buildTypes {
         named("release") {
-            minifyEnabled(false)
+            minifyEnabled(true)
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -52,7 +52,7 @@ android {
         create("neo") {
             applicationIdSuffix = ".neo"
             versionNameSuffix = "-neo"
-            // minifyEnabled = true
+            minifyEnabled(false)
             proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
