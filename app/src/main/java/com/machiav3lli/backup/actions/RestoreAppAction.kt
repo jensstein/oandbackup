@@ -99,18 +99,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(ShellCommandFailedException::class)
     protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        val targetContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
-        targetContents.removeAll(excludeDirs)
-        if (targetContents.isEmpty()) {
-            Timber.i("Nothing to remove in $targetDirectory")
-            return
+        if (targetDirectory != "/" && !targetDirectory.isNullOrEmpty()) {
+            val targetContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
+            targetContents.removeAll(excludeDirs)
+            if (targetContents.isEmpty()) {
+                Timber.i("Nothing to remove in $targetDirectory")
+                return
+            }
+            val removeTargets = targetContents
+                    .map { s: String -> '"'.toString() + File(targetDirectory, s).absolutePath + '"' }
+                    .toTypedArray()
+            Timber.d("Removing existing files in $targetDirectory")
+            val command = prependUtilbox("rm -rf ${removeTargets.joinToString(separator = " ")}")
+            runAsRoot(command)
         }
-        val removeTargets = targetContents
-                .map { s: String -> '"'.toString() + File(targetDirectory, s).absolutePath + '"' }
-                .toTypedArray()
-        Timber.d("Removing existing files in $targetDirectory")
-        val command = prependUtilbox("rm -rf ${removeTargets.joinToString(separator = " ")}")
-        runAsRoot(command)
     }
 
     @Throws(IOException::class, CryptoSetupException::class)
