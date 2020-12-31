@@ -1,15 +1,21 @@
 <html>
     <body>
         <h2>使用说明</h2>
-        <p><strong>备份模式</strong>:应用可仅备份apk或仅备份数据或apk与数据同时备份.仅当存在apk时,才能还原当前未安装的应用程序.
+        <p><strong>备份模式</strong>：应用可仅备份apk或仅备份数据或apk与数据同时备份。仅当存在apk时，才能还原当前未安装的应用程序。除了主数据外，应用还支持其他三种特殊类型的数据：受设备保护的数据、外部数据和 obb 文件。
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
-        </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
-        </p>
-        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
+        <p><strong>删除备份</strong>：删除指定备份实例的备份文件。当删除所有备份时，删除所选应用程序的所有备份。
         </p>
         <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>启用/禁用</strong>：使用安卓脚本 `pm` 来启用或禁用应用程序。禁用一个应用程序可以在不卸载的情况下将其从普通用户界面上移除。这可以用于同时对多个用户启用或禁用一个应用程序 （如果设备启用了多个用户）。以 id 标识不同用户，如0是第一个用户（所有者），10通常是工作配置文件。
+        </p>
+        <p><strong>多用户</strong>：多用户仍多少处于实验阶段，但应该可以工作。启用和禁用该功能仅在初始安装 (不一定从OAndBackupx进行）或恢复应用程序后才能工作。
+        </p>
+        <p><strong>无系统应用</strong>：本应用不支持对作为Magisk模块安装的无系统应用程序进行备份和还原，尝试它可能会导致系统失败，并迫使您格式化和刷机。
+        </p>
+        <p><strong>导航</strong>：导航栏依次通向“设置”、“主备份”、“批量备份”、“批量恢复”和“计划备份”。主页上的通知意味着很多应用程序在上次备份后都进行了更新。
+        </p>
+        <p><strong>使用密钥库的应用程序</strong>：Android有一个用于敏感数据的加密存储。利用该功能存储登录数据或某些密钥的应用程序无法被成功恢复。这类应用的两个例子是 Signal 和 Element(Riot)。
         </p>
     </body>
 </html>
