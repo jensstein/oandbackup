@@ -1,5 +1,6 @@
 # Frequently Asked Questions:
 
+* [What is OAndBackupX?]
 * [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
 * [What are Special Backups?](#what-are-special-backups)
 * [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
@@ -44,6 +45,10 @@ Each backup basically consits of the two different parts:
    2.5. cache
    
         - Default is set to not include it in backups
+#### What is OAndBackupX?
+
+OAndBackup is backup program for android (which is inactive). requires root and allows you to backup individual apps and their data. both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+OAndBackupX is a fork of the OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
 
 #### What are Special Backups?
 
