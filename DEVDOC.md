@@ -29,6 +29,7 @@
 - [x] Replace deprecated Classes/Methods:
   
   - [x] AsyncTask
+
   - [x] ProgressDialog
 
 - [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
@@ -45,7 +46,7 @@
 
 - [ ] Use DataBinding/BindingAdapter where useful
 
-- [ ] Refactore Batch & Schedules handling
+- [x] Refactore Batch & Schedules handling
 
 - [x] Migrate to Kotlin
 
@@ -59,7 +60,7 @@
   
   - [x] AppSheet
 
-- [ ] Rewrite Help text
+- [x] Rewrite Help text
 
 ## Low Priority
 

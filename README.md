@@ -39,6 +39,8 @@ If enabled the data backup will be encrypted with AES256 based on a password you
 
 ## Compatibility
 
+Version 5.0.0 uses new encryption, new databases, fixes most of reported bugs in 4.0.0 and boost the performance to something near the 3.2.0's. With that said, it's incompatible with the older versions.
+
 Version 4.0.0 marks a full overhaul of the app structure and thus breaks compatibility with previous versions.
 
 Till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.

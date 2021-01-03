@@ -1,5 +1,84 @@
-changelog
+CHANGELOG
 =========
+
+5.0.0 (03.01.2021)
+------------------
+
+MIRGATED TO KOTLIN, NEW ENCRYPTION ALGORITHM: clean install & doesn't support restore of previous encrypted backups.
+SCHEDULED ACTIONS CAN ONLY LAST 10 MINUTES (SYSTEM CONSTRAINT): so partition your group of apps. will be fixed in next minor releases.
+
+* Added: Individual modes for apps in batch action dialog
+* Added: Launchable apps filter
+* Added: Ability to install test builds
+* Added: Option to restore with all asked permissions
+* Added: Option to allow downgrading apps
+* Added: Progress indicator for batch actions
+* Added: Filter black list based on schedule's filter
+* Added: Refresh after scheduled actions or changing backup folder (no visual indicator)
+* Added: Copy app's own APK to tools
+* Added: Stats to sort/filter sheet
+* Added: Blacklists to scheduled actions
+* Added: Shortcut to known issues in Help
+* Added: Notification on missing storage permission of scheduled backups
+* Added: Separate Option to backup obb files
+* Updated: Multi-threading batch & scheduled actions (big improvement to performance)
+* Updated: Encryption algorithm and parameters
+* Updated: Log the errors on most actions
+* Updated: New log viewer system
+* Updated: Choosing a backup directory doesn't create a child folder anymore
+* Updated: Migrate from Java to Kotlin (99.99%)
+* Updated: Far less unneeded refreshing
+* Updated: Schedules mode/sub-mode to filter/mode
+* Updated: Standardize modes and filters variables
+* Updated: Scheduling from Alarm-based to Job-based
+* Updated: Migrated to Gradle Kotlinscript
+* Updated: Batch & scheduled actions to WorkManager-based
+* Updated: Don't use cmd package anymore
+* Updated: Migrate from Log to Timber
+* Updated: Turn some utils and handlers classes to objects
+* Updated: Integrate Backup- & RestoreFragment in BatchFragment
+* Updated: Migrate custom list to DialogFragment
+* Updated: Color the shortcuts icons
+* Updated: Migrate blacklist DB to Room
+* Updated: Using ViewModel to manage data in Main and Scheduler
+* Updated: Batch items reflect their backup mode
+* Updated: Show Blacklist's & Customlist's apps with labels (@hg42)
+* Updated: Format of the time left for scheduled backups
+* Updated: Return special backups setting to advanced
+* Updated: Set default disable usb verification to true
+* Updated: Improve the details in start schedule now dialog
+* Updated: Safer backup history initialization (@hg42)
+* Fixed: APK/data not found error
+* Fixed: Persistant storage permission
+* Fixed: Ability to query for all apps (on A11)
+* Fixed: Asking for permission to manage all files (on A11)
+* Fixed: Backup directory being asked again after a reboot
+* Fixed: Crashing on picking up new backup directory from settings
+* Fixed: Enable/disable apps
+* Fixed: Running scheduled backup with empty list gives an error
+* Fixed: Backup items restoring the latest backup not the chosen one
+* Fixed: Crash when deleting an app that has no backups
+* Fixed: Ghost clicking when the app is long in the background
+* Fixed: Not able to read the full text of error notifications
+* Fixed: AppInfo's latestBackup & isUpdated
+* Fixed: RememberFiltering option
+* Fixed: Length of the time left string
+* Fixed: Updated tag not updating
+* Fixed: Scheduling repeated actions
+* Fixed: Try to read logs as backups
+* Fixed: CheckApk,-Data & -All behavior
+* Fixed: Blacklist saving wrong selected apps
+* Fixed: AppInfo constructor missing AppMetaInfo
+* Fixed: Exclude system apps not showing correctly
+* Fixed: Crashing on delete all backups
+* Fixed: Restore of apps with device-protected data (@fantostisch)
+* Fixed: Exception hardening (@hg42)
+* Removed: Copying app's own apk on backup actions
+* Removed: Quick reboot tool
+* Removed: Toasts on batch actions
+* Removed: Usage of Wakelocks
+* Removed: HandleMessages
+* Updated Translations: Estonian, Indonesian, Hindi, Greek, Italian, Norwegian, Russian, Chinese, German, French, Spanish, Dutch, Arabic, Polish, Portuguese
 
 4.0.0 (02.11.2020)
 ------------------
