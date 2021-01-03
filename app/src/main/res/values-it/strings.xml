@@ -152,7 +152,7 @@
     <string name="prefs_theme_light">Chiaro</string>
     <string name="prefs_theme_dark">Scuro</string>
     <string name="prefs_theme_system">Tema di sistema</string>
-    <string name="empty_filtered_list">La lista filtrata è vuota, perciò i filtri ritornaneranno ai valori predefiniti</string>
+    <string name="empty_filtered_list">La lista filtrata è vuota.</string>
     <string name="dialog_refuse">Non lo farò</string>
     <string name="dialog_approve">Facciamolo!</string>
     <string name="ignore_battery_optimization_title">Ottimizzazione batteria</string>
@@ -237,4 +237,5 @@
     <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata.</string>
     <string name="prefs_restoreallpermissions">Ripristina con tutte le autorizzazioni</string>
     <string name="prefs_restoreallpermissions_summary">Assegna all\'app ripristinata tutte le autorizzazioni richieste.</string>
+    <string name="help_faq">Domande frequenti</string>
 </resources>
