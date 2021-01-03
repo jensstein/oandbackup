@@ -85,7 +85,7 @@
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté.</string>
     <string name="prefs_copyselfapk">Copier son propre APK</string>
-    <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX dans le niveau supérieur du dossier de sauvegarde lors de la sauvegarde</string>
+    <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX dans le niveau supérieur du dossier de sauvegarde</string>
     <string name="prefs_languages">Langue</string>
     <string name="prefs_language_system">Selon le système</string>
     <string name="prefs_rememberfiltering">Enregistrer les critères de tri et les filtres</string>
@@ -237,4 +237,5 @@
     <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'app installée.</string>
     <string name="prefs_restoreallpermissions">Restaurer avec toutes les permissions</string>
     <string name="prefs_restoreallpermissions_summary">Donner à l\'app restaurée toutes les permissions qu\'elle demande.</string>
+    <string name="help_faq">Foire Aux Questions</string>
 </resources>
