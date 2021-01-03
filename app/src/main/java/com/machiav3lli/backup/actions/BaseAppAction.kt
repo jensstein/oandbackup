@@ -39,8 +39,8 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     }
 
     abstract class AppActionFailedException : Exception {
-        protected constructor(message: String?) : super(message) {}
-        protected constructor(message: String?, cause: Throwable?) : super(message, cause) {}
+        protected constructor(message: String?) : super(message)
+        protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
     @SuppressLint("DefaultLocale")

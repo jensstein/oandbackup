@@ -30,7 +30,8 @@ import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
 class LogUtils(var context: Context) {
-    var logsDirectory: StorageFile?
+    private var logsDirectory: StorageFile?
+
     init {
         val backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context))
         logsDirectory = DocumentUtils.ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
