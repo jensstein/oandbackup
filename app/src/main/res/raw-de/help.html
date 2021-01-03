@@ -1,17 +1,21 @@
 <html>
     <body>
-        <h2>Usage notes</h2>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        <h2>Benutzungshinweise</h2>
+        <p><strong>Sicherungsmodi</strong>: Eine App kann nur mit ihrer APK, nur ihren Daten oder beiden gesichert werden. Eine derzeit nicht installierte App kann nur wiederhergestellt werden, wenn die APK vorhanden ist. Zusätzlich zu den internen Daten werden drei spezielle Datentypen unterstützt: gerätegeschützte Daten, externe Daten und obb-Daten.
         </p>
-        <p><strong>Sicherung löschen</strong>: Löscht die Dateien einer Sicherung für die ausgewählte App.
+        <p><strong>Sicherung löschen</strong>: Löscht die Sicherungsdateien für eine bestimmte Sicherungsinstanz. Während "Alle Backups löschen" alle Backups der gewählten App löscht.
         </p>
-        <p><strong>Deinstallieren</strong>: Etwas aggressiver als eine normale Deinstallation. Zusätzlich zu einer normalen Deinstallation über Android-Befehle, werden bei der Deinstallation via OAndBackupX Dateien gelöscht, die die Anwendung möglicherweise in /data/app-lib/ zurückgelassen hat.
+        <p><strong>Deinstallieren</strong>: Etwas aggressiver als eine normale Deinstallation. Zusätzlich zu einer normalen Deinstallation über Android-Befehle werden bei der Deinstallation via OAndBackupX Dateien gelöscht, die die Anwendung möglicherweise in /data/app-lib/ zurückgelassen hat.
         </p>
-        <p><strong> Aktivieren / deaktivieren</strong>: Verwendet das Android-Skript `pm`, um eine Anwendung zu aktivieren oder zu deaktivieren. Durch das Deaktivieren einer Anwendung wird diese von der normalen Benutzeroberfläche entfernt, ohne das sie deinstalliert werden muss. Dies kann verwendet werden, um eine Anwendung für mehrere Benutzer gleichzeitig zu aktivieren oder zu deaktivieren (wenn auf dem Gerät mehrere Benutzer exisiteren). Benutzer werden mit einer ID identifiziert. 0 ist der erste Benutzer (Besitzer).
+        <p><strong>Aktivieren / Deaktivieren</strong>: Verwendet das `pm` Android-Skript zum Aktivieren oder Deaktivieren einer App. Das Deaktivieren einer App entfernt sie aus der normalen Benutzeroberfläche, ohne sie zu deinstallieren. Dies kann verwendet werden, um eine App für mehrere Benutzer gleichzeitig zu aktivieren oder zu deaktivieren (wenn das Gerät mehrere Benutzer hat). Benutzer werden mit einer ID identifiziert, z. B. 0 ist der erste Benutzer (Eigentümer), 10 ist normalerweise das Arbeitsprofil.
         </p>
-        <p><strong>Mehrere Benutzer</strong>: Multi-User ist noch etwas experimentell, sollte aber funktionieren. Beim Wiederherstellen in einem Mehrbenutzer-Szenario wird `pm install -r $apk` aufgerufen und anschließend wird die Anwendung für jeden Benutzer deaktiviert, der die Anwendung in /data/system/user/$user/package-restrictions.xml aufgelistet hat (es sei denn, die Anwendung ist als enabled="1" aufgeführt). 
-Dies kann für Benutzer, die dieselbe Anwendung zu einem späteren Zeitpunkt installieren, zu Problemen führen, ist aber notwendig, um zu verhindern, dass die Anwendung für alle Benutzer gleichzeitig installiert wird. Das Kontextmenü verfügt über eine Option zum Aktivieren oder Deaktivieren von Anwendungen, die verwendet werden können, wenn andere Benutzer eine bestimmte Anwendung aufgrund der Deaktivierung bei der Wiederherstellung nicht mehr verwenden können. 
-Aktivieren und Deaktivieren funktioniert nur nach einer Erstinstallation (nicht notwendigerweise von OAndBackupx) oder Wiederherstellung der Anwendung.
+        <p><strong>Mehrere Benutzer</strong>: Mehrere-Benutzer ist noch etwas experimentell, sollte aber funktionieren. Das Aktivieren und Deaktivieren funktioniert nur nach einer Erstinstallation (nicht unbedingt von OAndBackupX) oder Wiederherstellung der App.
+        </p>
+        <p><strong>Systemlose Apps</strong>: Das Sichern und Wiederherstellen von systemlosen Apps, die als Magisk-Module installiert sind, wird nicht unterstützt und das herumprobieren damit könnte zu einem Systemabsturz führen und Sie zwingen, neu zu formatieren und zu flashen.
+        </p>
+        <p><strong> Navigation </strong>: Die Navigationsleiste enthält "Einstellungen", "Startseite", "Stapelsicherung", "Stapelwiederherstellung" und "Sicherungen planen" (in dieser Reihenfolge). Die Anzahl der Apps, die nach ihrer letzten Sicherung aktualisiert wurden, wird als Benachrichtigungspunkt auf der Schaltfläche "Startseite" angezeigt.
+        </p>
+        <p><strong>Apps mit Keystore</strong>: Android verfügt über einen verschlüsselten Speicher für sensible Daten. Apps, die diesen nutzen, um Anmeldedaten oder einige Schlüssel für ihre Funktion zu speichern, können nicht erfolgreich wiederhergestellt werden. Zwei Beispiele für solche Apps sind Signal und Element(Riot).
         </p>
     </body>
 </html>

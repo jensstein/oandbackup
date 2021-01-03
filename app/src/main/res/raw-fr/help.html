@@ -1,15 +1,21 @@
 <html>
     <body>
-        <h2>Utilisation</h2>
-        <p><strong>Modes de sauvegarde</strong> : Il est possible de ne sauvegarder que l'apk d'une app, que ses données, ou bien les deux. Une app qui n'est pas installée ne peut seulement être restaurée si l'apk a été sauvegardée.
+        <h2>Notes d'utilisation</h2>
+        <p><strong>Modes de sauvegarde</strong> : Il est possible de ne sauvegarder que l'APK d'une app, que ses données, ou bien les deux. Une app qui n'est pas installée ne peut seulement être restaurée si l'APK a été sauvegardée. Trois types spéciaux de données sont pris en charge en plus des données principales : les données protégées par l'appareil, les données externes et les données obb.
         </p>
         <p><strong>Effacer la sauvegarde</strong> : Supprime les fichiers de sauvegarde pour l'app choisie.
         </p>
         <p><strong>Désinstaller</strong> : Un peu plus aggressif qu'une désinstallation normale. En plus d'une désinstallation normale via les commandes Android, OAndBackupX supprime les fichiers que l'app aurait pu laisser dans /data/app-lib/.
         </p>
-        <p><strong>iActiver / Désactiver</strong> : Utilise le script Android `pm` pour activer ou désactiver une app. Désactiver une app la retire de l'interface utilisateur normale sans la désinstaller. Il est aussi possible d'activer ou désactiver une app pour plusieurs utilisateurices à la fois (si l'appareil est configuré pour). Les utilisateurices sont identifié⋅es par un identifiant. Le premier est le numéro 0 (propriétaire).
+        <p><strong>iActiver / Désactiver</strong> : Utilise le script Android `pm` pour activer ou désactiver une app. Désactiver une app la retire de l'interface utilisateur normale sans la désinstaller. Il est aussi possible d'activer ou désactiver une app pour plusieurs utilisateurices à la fois (si l'appareil est configuré pour). Les utilisateurices sont identifié⋅es par un identifiant. Le premier est le numéro 0 (propriétaire).
         </p>
-        <p><strong>Utilisateurices multiples</strong> : Cette fonctionnalité est quelque peu expérimentale mais devrait marcher. En restaurant dans un scénario multi-utilisateurices, `pm install -r $apk` est appelé puis l'app est désactivée pour chaque utilisateurice ayant cette app listée dans /data/system/user/$user/package-restrictions.xml (sauf si l'app est notée comme enabled="1"). <br> Cela peut mener à des problèmes pour les utilisateurices installant cette même app plus tard, mais est nécessaire pour empécher l'app d'être installée à tous le monde en même temps. Le menu contextuel a une option pour activer ou désactiver les apps, qui peut être utilisé s'il devient impossible pour certain⋅es utilisateurices d'utiliser une app spécifique suite à la désactivation lors de la restauration. <br> L'activation ou la désactivation fonctionnent uniquement après l'installation initiale (par forcément depuis OAndBackupX) ou après restauration de l'app.
+        <p><strong>Désinstaller</strong> : Un peu plus aggressif qu'une désinstallation normale. En plus d'une désinstallation normale via les commandes Android, OAndBackupX supprime les fichiers que l'app aurait pu laisser dans /data/app-lib/.
+        </p>
+        <p><strong>System-less apps</strong>: backup and restore of system-less apps installed as Magisk module is not supported and trying it could lead to failure in the system and forcing you to format and flash anew.
+        </p>
+        <p><strong>Navigation</strong> : La barre de navigation a « Paramètres », « Accueil », « Sauvegarde par lots », « Restauration de lots » et « Sauvegardes d’horaire » (dans cet ordre). Le nombre d’applications mises à niveau après leur dernière sauvegarde sera présenté sous forme de notification sur le bouton « Accueil ».
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
         </p>
     </body>
 </html>
