@@ -236,4 +236,5 @@
     <string name="prefs_allowdowngrade_summary">Permitir restauro de versões anteriores da aplicação.</string>
     <string name="prefs_restoreallpermissions">Restaurar com todas as permissões</string>
     <string name="prefs_restoreallpermissions_summary">Conceder à aplicação restaurada todas as permissões solicitadas.</string>
+    <string name="help_faq">Perguntas frequentes</string>
 </resources>
