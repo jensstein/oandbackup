@@ -1,6 +1,6 @@
 # Frequently Asked Questions:
 
-* [What is OAndBackupX?]
+* [What is OAndBackupX?](#what-is-oandbackupx)
 * [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
 * [What are Special Backups?](#what-are-special-backups)
 * [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
