@@ -97,7 +97,7 @@
     <string name="sched_checkbox">activer</string>
     <string name="sched_startingbackup">lancement de la sauvegarde planifiée…</string>
     <string name="sched_mode">mode de sauvegarde :</string>
-    <string name="sched_timeLeft">Temps restant:</string>
+    <string name="sched_timeLeft">Temps restant :</string>
     <string name="sched_customListUpdateButton">mettre à jour la liste personnalisée</string>
     <string name="sched_excludeSystemCheckBox">exclure les applications systèmes</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
@@ -223,7 +223,7 @@
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à montrer !</string>
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>
-    <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APKs et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APK et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
     <string name="help_issues">Problèmes connus</string>
     <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>
