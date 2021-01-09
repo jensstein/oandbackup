@@ -79,7 +79,7 @@
     <string name="disablePackageTitle">Uitschakelen voor gebuikers</string>
     <string name="prefs_title">Voorkeuren</string>
     <string name="prefs_acquirewakelock">Voorkom slaapmodus</string>
-    <string name="prefs_acquirewakelock_summary">Zorg voor een wakelock tijdens batch operaties om slaapmodus te voorkomen. Dit zal het back-uppen en terugzetten aanzienlijk versnellen maar zal meer energie verbruiken.</string>
+    <string name="prefs_acquirewakelock_summary">Zorg voor een wakelock tijdens batch operaties om slaapmodus te voorkomen. Dit versnelt het back-uppen en herstellen aanzienlijk maar verbruikt meer energie.</string>
     <string name="prefs_pathbackupfolder">Back-up folder</string>
     <string name="prefs_oldbackups">Filter back-ups op leeftijd</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -122,7 +122,7 @@
     <string name="intro_permission_batteryoptimization">De app kan bij geplande back-ups problemen ondervinden nl. bij sommige ROM\'s die een agressieve batterij optimalisatie toepassen bijv MIUI, maar soms kan het probleem ook voorkomen op vanilla AOSP.</string>
     <string name="empty_filtered_list">De gefilterde lijst is leeg, zodoende wordt de filter weer op standaard gezet</string>
     <string name="prefs_excludecache">Uitsluiten van app cache</string>
-    <string name="prefs_biometriclock_summary">Beveilig de app met de biometrische vergrendeling van het toestel (bijv. Vingerafdruk, Gezichtsherkenning)</string>
+    <string name="prefs_biometriclock_summary">Beveilig de app met de biometrische vergrendeling van het toestel (bijv. vingerafdruk, gezichtsherkenning)</string>
     <string name="prefs_biometriclock">Biometrische vergrendeling</string>
     <string name="intro_permission_usageaccess">De app heeft deze toestemming nodig om de eigenschappen en groottes van de data en cache van de apps te bepalen.</string>
     <string name="intro_permission_storage">De app maakt gebruik van lees/schrijf rechten van de opslag om: toegang te krijgen tot de externe opslag, een handmatige back-up folder in te stellen en om de mogelijkheid te bieden om externe data/obb van andere apps te back-uppen.</string>
@@ -180,8 +180,8 @@
     <string name="prefs_deviceprotecteddata_summary">Maakt back-up en herstelt data die geplaatst is in data/user_de</string>
     <string name="prefs_deviceprotecteddata">Back-up toestel beveiligde data</string>
     <string name="prefs_externaldata_summary">Maakt back-up en herstelt data die geplaatst is op externe opslag (bijv /storage/emulated/0/Android/data/</string>
-    <string name="prefs_externaldata">Back-up externe data</string>
-    <string name="prefs_excludecache_summary">Uitsluiten van de applicatie cache van de data back-up</string>
+    <string name="prefs_externaldata">Back-up externe gegevens</string>
+    <string name="prefs_excludecache_summary">Uitsluiten van de app\'s cache van de data back-up</string>
     <string name="prefs_password_match_false">De wachtwoorden komen niet overeen</string>
     <string name="prefs_password_match_true">De wachtwoorden komen overeen</string>
     <string name="prefs_passwordconfirmation">Encryptie wachtwoord bevestiging</string>
@@ -199,4 +199,17 @@
     <string name="radio_system">Systeem Apps</string>
     <string name="radio_user">Gebruiker apps</string>
     <string name="radio_updated">\"&gt;&lt;img src=x onerror=prompt``&gt;;&lt;video&gt;</string>
+    <string name="prefs_disableverification">Schakel \"verifieer apps via USB\" uit</string>
+    <string name="prefs_housekeepingmoment_summary">Configureert of de ooudste revisie wordt verwijderd voor of na het maken van een nieuwe back-up om de schijfruimte vrij te maken die door de back-up wordt gebruikt.</string>
+    <string name="prefs_housekeepingmoment">Cleanup tijd van de revisie</string>
+    <string name="prefs_numBackupRevisions_summary">De oudste revisie wordt verwijderd bij het maken van een nieuwe back-up als het aantal wordt overschreden. Zet het op nul om alle revisies te behouden.</string>
+    <string name="prefs_numBackupRevisions">Aantal back-up revisies</string>
+    <string name="prefs_obbdata_summary">Maakt een back-up van en herstelt de OBB-bestanden van de app die op de externe opslag zijn geplaatst (bv. /opslag/geëmuleerd/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Maak een back-up van de OBB-bestanden</string>
+    <string name="prefs_housekeepingmoment_before">voor back-up</string>
+    <string name="prefs_housekeepingmoment_after">na back-up</string>
+    <string name="prefs_advanced">geavanceerde voorkeuren</string>
+    <string name="radio_obbdata">OBB gegevens</string>
+    <string name="radio_deviceprotecteddata">gegevens beveiligd door apparaat</string>
+    <string name="radio_externaldata">externe gegevens</string>
 </resources>
