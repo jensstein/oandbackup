@@ -327,7 +327,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         try {
             Timber.i("Getting user/group info and apply it recursively on $targetDir")
             // retrieve the assigned uid and gid from the data directory Android created
-            val uidgid = shell.suGetOwnerAndGroup(targetDir.absolutePath)
+            val uidgidcon = shell.suGetOwnerGroupContext(targetDir.absolutePath)
             // get the contents. lib for example must be owned by root
             val dataContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(targetDir))
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
@@ -341,10 +341,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 Timber.i("No chown targets. Is this an app without any $type ? Doing nothing.")
                 return
             }
-            Timber.d("Changing owner and group of '$targetDir' to ${uidgid[0]}:${uidgid[1]} and restoring selinux context")
-            val defaultContext = "u:object_r:app_data_file:s0:c512,c768"
-            val command = prependUtilbox("chown -R ${uidgid[0]}:${uidgid[1]} ${java.lang.String.join(" ", *chownTargets)} " +
-                    "&& chcon -R -v $defaultContext \"$targetDir\"")
+            Timber.d("Changing owner and group of '$targetDir' to ${uidgidcon[0]}:${uidgidcon[1]} and selinux context to ${uidgidcon[2]}")
+            val command = prependUtilbox("chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${java.lang.String.join(" ", *chownTargets)} " +
+                    "&& chcon -R -v ${uidgidcon[2]} \"$targetDir\"")
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"

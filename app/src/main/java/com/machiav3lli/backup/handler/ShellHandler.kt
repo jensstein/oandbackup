@@ -75,24 +75,27 @@ class ShellHandler {
     }
 
     /**
-     * Uses superuser permissions to retrieve uid and gid of any given directory.
+     * Uses superuser permissions to retrieve uid, gid and SELinux context of any given directory.
      *
      * @param filepath the filepath to retrieve the information from
-     * @return an array with two fields. First ist uid, second is gid:  {uid, gid}
+     * @return an array with 3 fields: {uid, gid, context}
      */
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
-    fun suGetOwnerAndGroup(filepath: String?): Array<String> {
-        val command = String.format("%s stat -c '%%u %%g' \"%s\"", utilboxPath, filepath)
+    fun suGetOwnerGroupContext(filepath: String?): Array<String> {
+        val command = "$utilboxPath stat -c '%u %g %C' \"$filepath\""
         val shellResult = runAsRoot(command)
         val result = shellResult.out[0].split(" ").toTypedArray()
-        if (result.size != 2) {
-            throw UnexpectedCommandResult(String.format("'%s' should have returned 2 values, but produced %d", command, result.size), shellResult)
+        if (result.size != 3) {
+            throw UnexpectedCommandResult("'$command' should have returned 3 values, but produced ${result.size}", shellResult)
         }
         if (result[0].isEmpty()) {
             throw UnexpectedCommandResult("'$command' returned an empty uid", shellResult)
         }
         if (result[1].isEmpty()) {
             throw UnexpectedCommandResult("'$command' returned an empty gid", shellResult)
+        }
+        if (result[2].isEmpty()) {
+            throw UnexpectedCommandResult("'$command' returned an empty SELinux context", shellResult)
         }
         return result
     }
