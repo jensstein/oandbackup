@@ -342,7 +342,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 return
             }
             Timber.d("Changing owner and group of '$targetDir' to ${uidgid[0]}:${uidgid[1]} and restoring selinux context")
-            val command = prependUtilbox("chown -R ${uidgid[0]}:${uidgid[1]} ${java.lang.String.join(" ", *chownTargets)} && restorecon -R -v \"$targetDir\"")
+            val defaultContext = "u:object_r:app_data_file:s0:c512,c768"
+            val command = prependUtilbox("chown -R ${uidgid[0]}:${uidgid[1]} ${java.lang.String.join(" ", *chownTargets)} " +
+                    "&& chcon -R -v $defaultContext \"$targetDir\"")
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"
