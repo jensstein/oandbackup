@@ -85,7 +85,7 @@
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que la valeur en jours. utilisé par le filtrage par ancienneté.</string>
     <string name="prefs_copyselfapk">Copier son propre APK</string>
-    <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX dans le niveau supérieur du dossier de sauvegarde</string>
+    <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX à la racine du dossier de sauvegarde lors de la sauvegarde</string>
     <string name="prefs_languages">Langue</string>
     <string name="prefs_language_system">Selon le système</string>
     <string name="prefs_rememberfiltering">Enregistrer les critères de tri et les filtres</string>
@@ -97,7 +97,7 @@
     <string name="sched_checkbox">activer</string>
     <string name="sched_startingbackup">lancement de la sauvegarde planifiée…</string>
     <string name="sched_mode">mode de sauvegarde :</string>
-    <string name="sched_timeLeft">Temps restant:</string>
+    <string name="sched_timeLeft">Temps restant :</string>
     <string name="sched_customListUpdateButton">mettre à jour la liste personnalisée</string>
     <string name="sched_excludeSystemCheckBox">exclure les applications systèmes</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
@@ -223,7 +223,7 @@
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à montrer !</string>
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>
-    <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APKs et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APK et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
     <string name="help_issues">Problèmes connus</string>
     <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>

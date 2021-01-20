@@ -153,7 +153,7 @@
     <string name="prefs_theme_light">亮色</string>
     <string name="prefs_theme_dark">暗色</string>
     <string name="prefs_theme_system">系统主题</string>
-    <string name="empty_filtered_list">筛选列表为空，因此将筛选器设置退回默认值</string>
+    <string name="empty_filtered_list">筛选列表为空。</string>
     <string name="dialog_refuse">忽略</string>
     <string name="dialog_approve">让我们开始吧！</string>
     <string name="ignore_battery_optimization_title">电池优化</string>
@@ -234,4 +234,5 @@
     <string name="prefs_allowdowngrade_summary">允许恢复已安装应用程序的旧版本。</string>
     <string name="prefs_restoreallpermissions">全权限还原</string>
     <string name="prefs_restoreallpermissions_summary">给予恢复的应用程序要求的所有权限。</string>
+    <string name="help_faq">常见问题</string>
 </resources>

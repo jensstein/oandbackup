@@ -152,7 +152,7 @@
     <string name="prefs_theme_light">Φωτεινό</string>
     <string name="prefs_theme_dark">Σκούρο</string>
     <string name="prefs_theme_system">Θέμα συστήματος</string>
-    <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή, επομένως τα φίλτρα επιστρέφουν στην προεπιλογή</string>
+    <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή.</string>
     <string name="dialog_refuse">Δε θα το κάνω</string>
     <string name="dialog_approve">Ας το κάνω!</string>
     <string name="ignore_battery_optimization_title">Βελτιστοποίηση Μπαταρίας</string>
@@ -235,4 +235,5 @@
     <string name="prefs_restoreallpermissions">Επαναφορά με όλες τις άδειες</string>
     <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
     <string name="prefs_unset">Αποτυχία ορισμού</string>
+    <string name="help_faq">Συχνές ερωτήσεις</string>
 </resources>

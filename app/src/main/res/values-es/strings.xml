@@ -169,7 +169,7 @@
     <string name="encrypted_data_title">Datos cifrados:</string>
     <string name="other_filters_options">Filtros especiales:</string>
     <string name="deleted_backup">Respaldo eliminado</string>
-    <string name="empty_filtered_list">La lista filtrada está vacía, con lo que se han devuelto los ajustes de filtrado a los valores por defecto</string>
+    <string name="empty_filtered_list">La lista filtrada está vacía.</string>
     <string name="ignore_battery_optimization_title">Optimización de batería</string>
     <string name="ignore_battery_optimization_message">Los respaldos podrían detenerse algunas veces. Para evitarlo, deberías desactivar la optimización de batería</string>
     <string name="ignore_battery_optimization_not_supported">Desafortunadamente, ¡este dispositivo no soporta desactivar la optimización de bateria!</string>
@@ -237,4 +237,5 @@
     <string name="prefs_allowdowngrade_summary">Permitir restaurar una versión anterior a la de la aplicación instalada.</string>
     <string name="prefs_restoreallpermissions">Restaurar con todos los permisos</string>
     <string name="prefs_restoreallpermissions_summary">Dar a la aplicación restaurada todos los permisos que solicite.</string>
+    <string name="help_faq">Preguntas frecuentes</string>
 </resources>

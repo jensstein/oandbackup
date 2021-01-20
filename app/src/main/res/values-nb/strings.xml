@@ -115,8 +115,8 @@
     <string name="enable_encryption_message">Det er ikke trygt å ha dataen din på en enhet som ikke er kryptert. For å trygge dataen din, kan du skru på kryptering og sette et passord.</string>
     <string name="grant_usage_access_message">Det er nødvendig å innhente info om programmenes filstørrelser</string>
     <string name="failed_unzipping">Klarte ikke å pakke ut dataen. Sjekk krypteringspassordet.</string>
-    <string name="ignore_battery_optimization_not_supported">Denne enheten støtter ikke ignorering av batterioptimisering.</string>
-    <string name="ignore_battery_optimization_message">Sikkerhetskopiering kan stoppe noen ganger. For å forhindre dette bør du skru av batterioptimisering</string>
+    <string name="ignore_battery_optimization_not_supported">Denne enheten støtter ikke ignorering av batterioptimalisering.</string>
+    <string name="ignore_battery_optimization_message">Sikkerhetskopiering kan stoppe noen ganger. For å forhindre dette bør du skru av batterioptimalisering</string>
     <string name="enable_encryption_title">Datakryptering</string>
     <string name="help_group">Vår gruppe</string>
     <string name="cache_size">Hurtiglagerstørrelse:</string>
@@ -125,7 +125,7 @@
     <string name="grant_usage_access_title">Innvilg brukstilgang</string>
     <string name="backup_filters">Sikkerhetskopifilter:</string>
     <string name="split_apks">Delte APK-er:</string>
-    <string name="ignore_battery_optimization_title">Batterioptimisering</string>
+    <string name="ignore_battery_optimization_title">Batterioptimalisering</string>
     <string name="dialog_approve">Ønsker å gjøre det.</string>
     <string name="dialog_refuse">Vil ikke gjøre det</string>
     <string name="empty_filtered_list">Den filtrerte listen er tom, derfor settes filterne tilbake til forvalg</string>
@@ -180,7 +180,7 @@
     <string name="showSplitAPKs">Delt-APK</string>
     <string name="radio_system">Systemprogrammer</string>
     <string name="radio_user">Brukerprogrammer</string>
-    <string name="intro_permission_batteryoptimization">Programmet kan få problemer med planlagte sikkerhetskopier på noen Android-distribusjoner som har aggressiv batterioptimisering f.eks. MIUI, men selv på vanlig AOSP kan dette inntreffe.</string>
+    <string name="intro_permission_batteryoptimization">Programmet kan få problemer med planlagte sikkerhetskopier på noen Android-distribusjoner som har aggressiv batterioptimalisering f.eks. MIUI, men selv på vanlig AOSP kan dette inntreffe.</string>
     <string name="intro_permission_usageaccess">Programmet trenger tilgang for å kunne sjekke statistikk og størrelser for data og hurtiglager tilhørende dine programmer.</string>
     <string name="intro_permission_storage">Programmet bruker lese-/skrivetilgang til lagring for å få tilgang til eksternt lagringsmedium, oppsett av egendefinert sikkerhetskopimappe og mulighet for sikkerhetskopiering av ekstern data/obb tilhørende andre programmer.</string>
     <string name="welcome_to_oabx">Velkommen til OABX.</string>
@@ -227,4 +227,15 @@
         <item quantity="other">%d dager,</item>
     </plurals>
     <string name="help_issues">Kjente feil</string>
+    <string name="prefs_restoreallpermissions">Gjenopprett med alle tilganger</string>
+    <string name="prefs_allowdowngrade">Tillat nedgradering</string>
+    <string name="stats_apps">Programmer</string>
+    <string name="stats_backups">Sikkerhetskopier</string>
+    <string name="stats_updated">Oppdatert</string>
+    <string name="radio_launchable">Kjørbare programmer</string>
+    <string name="help_faq">Ofte stilte spørsmål</string>
+    <string name="prefs_allowdowngrade_summary">Tillat gjenoppretting av en eldre versjon av det installerte programmet.</string>
+    <string name="prefs_restoreallpermissions_summary">Gi det gjenopprettede programmet alle tilgangene det etterspør.</string>
+    <string name="prefs_obbdata_summary">Sikkerhetskopierer og gjenoppretter programmets OBB-filer som er plassert på eksternt lagringsmedium (f.eks. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Sikkerhetskopier OBB-filer</string>
 </resources>
