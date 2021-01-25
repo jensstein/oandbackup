@@ -58,7 +58,7 @@ class ShellHandler {
         val result = shellResult.out.asSequence()
                 .filter { line: String -> line.isNotEmpty() }
                 .filter { line: String -> !line.startsWith("total") }
-                .filter { line: String -> splitWithoutEmptyValues(line, " ", 0).size > 8 }
+                .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
                 .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
                 .toMutableList()
         if (recursive) {
@@ -182,19 +182,19 @@ class ShellHandler {
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
                 var absoluteParent = absoluteParent
-                val tokens = splitWithoutEmptyValues(lsLine, " ", 8)
+                val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
                 var filePath: String?
                 val owner = tokens[2]
                 val group = tokens[3]
                 // 2020-11-26 04:35:21.543772855 +0100
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-                val fileModTime = formatter.parse("${tokens[5]} ${tokens[6]!!.split(".")[0]} ${tokens[7]}")
+                val fileModTime = formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
-                if (tokens[8]!!.startsWith(absoluteParent)) {
+                if (tokens[8].startsWith(absoluteParent)) {
                     absoluteParent = File(absoluteParent).parent!!
-                    tokens[8] = tokens[8]!!.substring(absoluteParent.length + 1)
+                    tokens[8] = tokens[8].substring(absoluteParent.length + 1)
                 }
                 filePath =
                         if (parentPath == null || parentPath.isEmpty()) {
@@ -204,7 +204,7 @@ class ShellHandler {
                         }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
-                    fileMode = translatePosixPermissionToMode(tokens[0]!!.substring(1))
+                    fileMode = translatePosixPermissionToMode(tokens[0].substring(1))
                 } catch (e: IllegalArgumentException) {
                     // Happens on cache and code_cache dir because of sticky bits
                     // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
@@ -218,7 +218,7 @@ class ShellHandler {
                         fileMode = translatePosixPermissionToMode("rwxrws--x")
                     } else {
                         fileMode =
-                                if (tokens[0]!![0] == 'd') {
+                                if (tokens[0][0] == 'd') {
                                     FALLBACK_MODE_FOR_DIR
                                 } else {
                                     FALLBACK_MODE_FOR_FILE
@@ -233,7 +233,7 @@ class ShellHandler {
                 var linkName: String? = null
                 var fileSize: Long = 0
                 val type: FileType
-                when (tokens[0]!![0]) {
+                when (tokens[0][0]) {
                     'd' -> type = FileType.DIRECTORY
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
@@ -306,17 +306,6 @@ class ShellHandler {
             return result
         }
 
-        fun splitWithoutEmptyValues(str: String, regex: String?, limit: Int): Array<String?> {
-            val split = str.split(regex!!).filter { s: String -> s.isNotEmpty() }.toTypedArray()
-            // add one to the limit because limit is not meant to count from zero
-            val targetSize = if (limit > 0) min(split.size, limit + 1) else split.size
-            val result = arrayOfNulls<String>(targetSize)
-            System.arraycopy(split, 0, result, 0, targetSize)
-            for (i in targetSize until split.size) {
-                result[result.size - 1] += String.format("%s%s", regex, split[i])
-            }
-            return result
-        }
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
