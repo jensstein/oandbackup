@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.utils.LogUtils
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
@@ -62,9 +63,9 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            e.printStackTrace()
+            Timber.w("Could not stop package " + packageName + ": " + java.lang.String.join(" ", e.shellResult.err))
         } catch (e: Throwable) {
-            e.printStackTrace()
+            LogUtils.unhandledException(e)
         }
     }
 
@@ -79,7 +80,9 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not kill package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
+            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
+        } catch (e: Throwable) {
+            LogUtils.unhandledException(e)
         }
     }
 
