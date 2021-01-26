@@ -80,7 +80,7 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 entry = TarArchiveEntry(file.filePath)
                 entry.size = file.fileSize
                 entry.setNames(file.owner, file.group)
-                entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
+                entry.mode = FILE_MODE_OR_MASK or file.fileMode
                 entry.modTime = file.fileModTime
                 archive.putArchiveEntry(entry)
                 try {
@@ -94,7 +94,7 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
             FileType.DIRECTORY -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
-                entry.mode = DIR_MODE_OR_MASK or file.fileMode.toInt()
+                entry.mode = DIR_MODE_OR_MASK or file.fileMode
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
@@ -102,14 +102,14 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_LINK)
                 entry.linkName = file.linkName
                 entry.setNames(file.owner, file.group)
-                entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
+                entry.mode = FILE_MODE_OR_MASK or file.fileMode
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
             FileType.NAMED_PIPE -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_FIFO)
                 entry.setNames(file.owner, file.group)
-                entry.mode = FILE_MODE_OR_MASK or file.fileMode.toInt()
+                entry.mode = FILE_MODE_OR_MASK or file.fileMode
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
