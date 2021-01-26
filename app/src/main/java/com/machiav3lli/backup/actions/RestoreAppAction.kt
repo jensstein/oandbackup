@@ -23,7 +23,10 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.Crypto.decryptStream
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
 import com.machiav3lli.backup.items.ActionResult
@@ -107,10 +110,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 return
             }
             val removeTargets = targetContents
-                    .map { s: String -> '"'.toString() + File(targetDirectory, s).absolutePath + '"' }
-                    .toTypedArray()
+                    .map { s -> File(targetDirectory, s).absolutePath }
             Timber.d("Removing existing files in $targetDirectory")
-            val command = prependUtilbox("rm -rf ${removeTargets.joinToString(separator = " ")}")
+            val command = "$utilBoxQuoted rm -rf ${quoteMultiple(removeTargets)}"
             runAsRoot(command)
         }
     }
@@ -197,7 +199,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             apksToRestore.forEach {
                 // The file must be touched before it can be written for some reason...
                 Timber.d("[$packageName] Copying ${it.name} to staging dir")
-                runAsRoot("touch '${File(stagingApkPath, "$packageName.${it.name}").absolutePath}'")
+                runAsRoot("touch ${quote(File(stagingApkPath, "$packageName.${it.name}"))}")
                 suCopyFileFromDocument(context.contentResolver, it.uri,
                         File(stagingApkPath, "$packageName.${it.name}").absolutePath
                 )
@@ -219,9 +221,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             }
 
             // append cleanup command
-            sb.append(" && ${shell.utilboxPath} rm ${
-                apksToRestore.joinToString(separator = " ") { "\"${File(stagingApkPath, "$packageName.${it.name}").absolutePath}\"" }
-            }")
+            sb.append(" && $utilBoxQuoted rm ${
+                                quoteMultiple(
+                                        apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
+                                )}"
+            )
             // re-enable verify apps over usb
             if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
@@ -238,8 +242,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // Cleanup only in case of failure, otherwise it's already included
             if (!success) {
                 Timber.i("[$packageName] Restore unsuccessful. Removing possible leftovers in staging directory")
-                val command = apksToRestore
-                        .joinToString(separator = "; ") { apkDoc: StorageFile -> "rm '${File(stagingApkPath, apkDoc.name ?: "").absolutePath}'" }
+                val command =
+                        "$utilBoxQuoted rm ${
+                            quoteMultiple(
+                                    apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
+                            )}"
                 try {
                     runAsRoot(command)
                 } catch (e: ShellCommandFailedException) {
@@ -293,12 +300,14 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             openArchiveFile(archiveUri, isEncrypted).use { inputStream ->
                 // Create a temporary directory in OABX's cache directory and uncompress the data into it
                 tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
-                uncompressTo(inputStream, tempDir?.toFile())
-                // clear the data from the final directory
-                wipeDirectory(targetDir, DATA_EXCLUDED_DIRS)
-                // Move all the extracted data into the target directory
-                val command = prependUtilbox("mv \"$tempDir\"/* \"$targetDir\"")
-                runAsRoot(command)
+                tempDir?.let {
+                    uncompressTo(inputStream, it.toFile())
+                    // clear the data from the final directory
+                    wipeDirectory(targetDir, DATA_EXCLUDED_DIRS)
+                    // Move all the extracted data into the target directory
+                    val command = "$utilBoxQuoted mv -f ${quote(it.toString())}/* ${quote(targetDir)}/"
+                    runAsRoot(command)
+                }
             }
         } catch (e: FileNotFoundException) {
             throw RestoreFailedException("Backup archive at $archiveUri is missing", e)
@@ -333,17 +342,19 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
             dataContents.removeAll(DATA_EXCLUDED_DIRS)
             // calculate a list what must be updated
-            val chownTargets = dataContents
-                    .map { s: String -> '"'.toString() + File(targetDir, s).absolutePath + '"' }
-                    .toTypedArray()
+            val chownTargets = dataContents.map { s -> File(targetDir, s).absolutePath }
             if (chownTargets.isEmpty()) {
                 // surprise. No data?
                 Timber.i("No chown targets. Is this an app without any $type ? Doing nothing.")
                 return
             }
             Timber.d("Changing owner and group of '$targetDir' to ${uidgidcon[0]}:${uidgidcon[1]} and selinux context to ${uidgidcon[2]}")
-            val command = prependUtilbox("chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${java.lang.String.join(" ", *chownTargets)} " +
-                    "&& chcon -R -v ${uidgidcon[2]} \"$targetDir\"")
+            var command =
+                    "$utilBoxQuoted chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${
+                        quoteMultiple(chownTargets)
+                    }"
+            if(uidgidcon[2] != "?")  //TODO hg: if context is "?", what does it mean?
+                command += " && chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"
@@ -423,14 +434,6 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 if (basePackageName != null) " -p $basePackageName" else "",
                 if (isRestoreAllPermissions(context)) " -g" else "",
                 if (isAllowDowngrade(context)) " -d" else "")
-    }
-
-    enum class RestoreCommand(private val command: String) {
-        MOVE("mv"), COPY("cp -r");
-
-        override fun toString(): String {
-            return command
-        }
     }
 
     class RestoreFailedException : AppActionFailedException {

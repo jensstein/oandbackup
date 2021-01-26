@@ -21,7 +21,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
@@ -55,21 +57,25 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
             // Android versions prior Android 10 use /system
             mountPoint = "/system"
         }
-        val appDir = apkTargetPath.parentFile?.absoluteFile
-        val command = "(mount -o remount,rw $mountPoint" + " && " +
-                "mkdir -p $appDir" + " && " +  // chmod might be obsolete
-                prependUtilbox("chmod 755 $appDir") + " && " +  // for some reason a permissions error is thrown if the apk path is not created first
-                prependUtilbox("touch $apkTargetPath") + " && " + // with touch, a reboot is not necessary after restoring system apps
-                prependUtilbox("mv \"$tempPath\" \"$apkTargetPath\"") + " && " +
-                prependUtilbox("chmod 644 \"$apkTargetPath\"") + "); mount -o remount,ro $mountPoint"
-        try {
-            runAsRoot(command)
-        } catch (e: ShellCommandFailedException) {
-            val error = extractErrorMessage(e.shellResult)
-            Timber.e("Restore System apk failed: $error")
-            throw RestoreFailedException(error, e)
-        } finally {
-            tempPath.delete()
+        apkTargetPath.parentFile?.absoluteFile?.let { appDir ->
+            val command =
+                    "(mount -o remount,rw ${quote(mountPoint)} && " + //TODO hg: check && and mount scopes
+                        "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
+                        "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
+                        "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
+                        "$utilBoxQuoted mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
+                        "$utilBoxQuoted chmod 644 ${quote(apkTargetPath)}" +
+                        ")" +
+                    "); mount -o remount,ro $mountPoint"
+            try {
+                runAsRoot(command)
+            } catch (e: ShellCommandFailedException) {
+                val error = extractErrorMessage(e.shellResult)
+                Timber.e("Restore System apk failed: $error")
+                throw RestoreFailedException(error, e)
+            } finally {
+                tempPath.delete()
+            }
         }
     }
 

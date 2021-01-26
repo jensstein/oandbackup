@@ -19,9 +19,10 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.os.Binder
-import com.machiav3lli.backup.UTILBOX_PATH
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
@@ -52,7 +53,7 @@ class ShellCommands(private var users: List<String>?) {
         var command: String
         if (!isSystem) {
             // Uninstalling while user app
-            command = String.format("pm uninstall %s", packageName)
+            command = "pm uninstall $packageName"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -63,8 +64,10 @@ class ShellCommands(private var users: List<String>?) {
             }
             // don't care for the result here, it likely fails due to file not found
             try {
-                command = String.format("%s rm -r /data/lib/%s/*", UTILBOX_PATH, packageName)
-                runAsRoot(command)
+                if( ! packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command = "$utilBoxQuoted rm -r /data/lib/$packageName/*"
+                    runAsRoot(command)
+                }
             } catch (e: ShellCommandFailedException) {
                 Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
             } catch (e: Throwable) {
@@ -81,12 +84,15 @@ class ShellCommands(private var users: List<String>?) {
                 Timber.wtf(error)
                 throw IllegalArgumentException(error)
             }
-            command = "(mount -o remount,rw /system && " +
-                    "$UTILBOX_PATH rm $sourceDir ; " +
-                    "rm -r /system/app/$apkSubDir ; " +
-                    "$UTILBOX_PATH rm -r $dataDir ; " +
-                    "$UTILBOX_PATH rm -r /data/app-lib/$packageName*); " +
-                    "mount -o remount,ro /system"
+            command = "(mount -o remount,rw /system && " +      //TODO hg: mount && ( only system ) ; remount
+                    "$utilBoxQuoted rm ${quote(sourceDir)}"     //TODO hg: rm dir ???
+            if( ! apkSubDir.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -r ${quote("/system/app/$apkSubDir")}"
+            if( ! dataDir.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -r ${quote(dataDir)}"
+            if( ! packageName.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -r /data/app-lib/${packageName}/*"
+            command += ") ; mount -o remount,ro /system"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -106,7 +112,7 @@ class ShellCommands(private var users: List<String>?) {
             for (user in users) {
                 commands.add("pm $option --user $user $packageName")
             }
-            val command = java.lang.String.join(" && ", commands)
+            val command = commands.joinToString(" && ")
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -123,7 +129,7 @@ class ShellCommands(private var users: List<String>?) {
         if (!users.isNullOrEmpty()) {
             return users
         }
-        val command = "pm list users | $UTILBOX_PATH sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
+        val command = "pm list users | $utilBoxQuoted sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
         return try {
             val result = runAsRoot(command)
             result.out
@@ -140,7 +146,7 @@ class ShellCommands(private var users: List<String>?) {
 
     @Throws(ShellActionFailedException::class)
     fun quickReboot() {
-        val command = "$UTILBOX_PATH pkill system_server"
+        val command = "$utilBoxQuoted pkill system_server"
         try {
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
@@ -195,10 +201,12 @@ class ShellCommands(private var users: List<String>?) {
             Timber.i("${app.packageName}: Wiping cache")
             val commandBuilder = StringBuilder()
             // Normal app cache always exists
-            commandBuilder.append("rm -rf \"${app.getDataPath()}/cache/\"* \"${app.getDataPath()}/code_cache/\"*")
+            val dataPath = app.getDataPath()
+            if( ! dataPath.isNullOrEmpty())
+                commandBuilder.append("rm -rf '${dataPath}/cache/'* '${dataPath}/code_cache/'*")
 
             // device protected data cache, might exist or not
-            val conditionalDeleteTemplate = "\\\n && if [ -d \"%s\" ]; then rm -rf \"%s/\"* ; fi"
+            val conditionalDeleteTemplate = "\\\n && if [ -d '%s' ]; then rm -rf '%s/'* ; fi"   //TODO use function...no String.format etc.
             if (app.getDevicesProtectedDataPath().isNotEmpty()) {
                 val cacheDir = File(app.getDevicesProtectedDataPath(), "cache").absolutePath
                 val codeCacheDir = File(app.getDevicesProtectedDataPath(), "code_cache").absolutePath

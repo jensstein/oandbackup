@@ -35,10 +35,6 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         return "$what.tar.gz${if (isEncrypted) ".enc" else ""}"
     }
 
-    fun prependUtilbox(command: String?): String {
-        return "${shell.utilboxPath} $command"
-    }
-
     abstract class AppActionFailedException : Exception {
         protected constructor(message: String?) : super(message)
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -58,7 +54,13 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
                 //   also pauses essential processes (because some uids are shared between apps and essential services)
                 //ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill -STOP", applicationInfo.uid));
                 //   try to exclude essential services android.* via grep
-                runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -STOP \$pid ; done", applicationInfo.uid))
+                runAsRoot(
+                    "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                            + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                            +   " while read pid user name; do"
+                            +     " kill -STOP \$pid ;"
+                            +   " done"
+                )
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
@@ -73,10 +75,13 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            runAsRoot(String.format(
-                    "ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -CONT \$pid ; done",
-                    applicationInfo.uid
-            ))
+            runAsRoot(
+                "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                        + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                        +   " while read pid user name; do"
+                        +     " kill -CONT \$pid ;"
+                        +   " done"
+            )
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
