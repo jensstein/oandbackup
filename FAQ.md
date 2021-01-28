@@ -11,7 +11,7 @@
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
-* [What is the difference to implementations like Seedvault?](#What-is-the-difference-to-implementations-like-Seedvault)
+* [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 
 #### What is OAndBackupX?
@@ -63,7 +63,7 @@ Yes, Oui, Si, Si, Ja, Ja, Da, Ay...
   
 #### What is root access used for?  
 
-Accessing the APK+data of all apps (including system apps and special backups)
+Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of).
 
 #### Why is OABX so slow?  
   
