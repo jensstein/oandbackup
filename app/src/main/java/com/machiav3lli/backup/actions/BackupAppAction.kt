@@ -282,6 +282,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
+                // no such data found
                 Timber.i(String.format(LOG_NO_THING_TO_BACKUP, backupType, app.packageName))
                 return false
             }
@@ -299,6 +300,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
+                // no such data found
                 Timber.i(String.format(LOG_NO_THING_TO_BACKUP, backupType, app.packageName))
                 return false
             }
@@ -316,6 +318,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
+                // no such data found
                 Timber.i(String.format(LOG_NO_THING_TO_BACKUP, backupType, app.packageName))
                 return false
             }

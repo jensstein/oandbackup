@@ -111,9 +111,12 @@ class ShellHandler {
                     utilBoxVersion = iterableToString(shellResult.out)
                     Timber.i("Using Utilbox $utilBoxName : $utilBoxQuoted : $utilBoxVersion")
                 }
+                return
             }
         }
+        // not found => try bare executables (no utilbox prefixed)
         utilBoxPath = ""
+        utilBoxQuoted = ""
     }
 
     class ShellCommandFailedException(@field:Transient val shellResult: Shell.Result) : Exception()
@@ -297,9 +300,8 @@ class ShellHandler {
             val stderr: List<String> = arrayListOf()
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
             Timber.d(String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
-            if (!result.isSuccess) {
+            if (!result.isSuccess)
                 throw ShellCommandFailedException(result)
-            }
             return result
         }
 
@@ -313,12 +315,15 @@ class ShellHandler {
             return runShellCommand(SuRunnableShellCommand(), *commands)
         }
 
+        //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
+        val charactersToBeEscaped = Regex("""[\\\|\&\$\(\"\[]""")   // blacklist, only escape those that are necessary
+
         fun quote(parameter: String): String {
-            return "'" + parameter + "'"
+            return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""
         }
 
         fun quote(parameter: File): String {
-            return "'" + parameter.absolutePath + "'"
+            return quote(parameter.absolutePath)
         }
 
         fun quoteMultiple(parameters: Collection<String>): String {
@@ -389,7 +394,7 @@ class ShellHandler {
                 false
             }
         }
-        if (utilBoxQuoted == null) {
+        if (utilBoxQuoted.isNullOrEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }
