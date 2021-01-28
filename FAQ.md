@@ -11,7 +11,13 @@
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+* [What is the difference to implementations like Seedvault?](#What-is-the-difference-to-implementations-like-Seedvault)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
+
+#### What is OAndBackupX?
+
+OAndBackupX is a fork of the OAndBackup (which is inactive) with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
+Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
 
 #### What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?  
   
@@ -45,11 +51,6 @@ Each backup basically consits of the two different parts:
    2.5. cache
    
         - Default is set to not include it in backups
-
-#### What is OAndBackupX?
-
-OAndBackupX is a fork of the OAndBackup (which is inactive) with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
-Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
 
 #### What are Special Backups?
 
@@ -115,6 +116,21 @@ Here are several examples - e.g.:
 - ... as they change over the android version and restore might un-stabilize the system
 - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
   - --> In 5.0.0 this's already fixed. 
+
+#### What is the difference to implementations like Seedvault?
+
+The main difference is that OABX uses root to create a copy of the apps [APK and it's data](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) while Seedvault relies on Google's api to backup (without forcing the user to backup to the Google-Cloud). 
+Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - check it for latest information as the infos/comparison in the table below might be outdated.
+
+|  | OABX  | Seedvault  |
+| ---: | :--- | :--- |
+| root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
+| encrypted backup | yes (optional) | yes |
+| automatic backup | yes (individual schedules) | yes (daily) |
+| usable For | [A8-A11](#are-you-going-to-support-older-android-versions) | A11 only (branches down to A9) |
+| Considers 'allowbackup' flag of apps? | no | yes |
+| OS-/Rom intergrated | no (dedicated app) | yes |
+| Choose backup location possibility? | yes | yes |
 
 #### How can I open encrypted backups on my computer?  
   
