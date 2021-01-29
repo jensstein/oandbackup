@@ -17,6 +17,9 @@
  */
 package com.machiav3lli.backup.utils
 
+//TODO hg42: several special conditions (e.g. storing a socket) throw an exception, breaking the surrounding loop and the function. I think it should be ignored and probably logged.
+
+
 import android.system.ErrnoException
 import android.system.Os
 import com.machiav3lli.backup.handler.ShellHandler
@@ -90,8 +93,8 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                     archive.closeArchiveEntry()
                 }
             }
-            FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur")
-            FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur")
+            FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur") //TODO hg42: ignore?
+            FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur") //TODO hg42: ignore?
             FileType.DIRECTORY -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
@@ -114,7 +117,7 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
-            FileType.SOCKET -> throw NotImplementedError("It does not make sense to backup sockets")
+            FileType.SOCKET -> throw NotImplementedError("It does not make sense to backup sockets") //TODO hg42: ignore?
         }
     }
 }
@@ -135,7 +138,7 @@ fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
             } else if (tarEntry.isFIFO) {
                 ShellHandler.runAsRoot("cd ${quote(targetDir)} && mkfifo ${quote(file)}; cd -")
             } else {
-                throw NotImplementedError("Cannot restore file type")
+                throw NotImplementedError("Cannot restore file type") //TODO hg42: ignore?
             }
         }
     }

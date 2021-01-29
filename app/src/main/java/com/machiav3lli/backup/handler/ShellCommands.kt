@@ -41,9 +41,9 @@ class ShellCommands(private var users: List<String>?) {
             var error: String? = null
             // instanceOf returns false for nulls, so need to check if null
             if (e.cause is ShellCommandFailedException) {
-                error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(" ")
+                error = e.cause.shellResult.err.joinToString(" ")
             }
-            Timber.e("Could not load list of users: $e${if (error != null) " ; $error" else ""}")
+            Timber.e("Could not load list of users: ${e}${if (error != null) " : $error" else ""}")
         }
         multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
     }
@@ -78,23 +78,23 @@ class ShellCommands(private var users: List<String>?) {
             // it seems that busybox mount sometimes fails silently so use toolbox instead
             var apkSubDir = FileUtils.getName(sourceDir!!)
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf('.'))
-            if (apkSubDir.isEmpty()) {
+            if (apkSubDir.isNullOrEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
                         + "in a recursive rm call and would cause catastrophic damage!")
                 Timber.wtf(error)
                 throw IllegalArgumentException(error)
             }
-            // TODO: add message to each variable.isNullOrEmpty() test below?
-            command = "mount -o remount,rw /system && ("        //TODO hg: mount && ( only system ) ; remount
-            if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"  //TODO hg: was rm dir which cannot work
-            if( ! apkSubDir.isEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
+            // TODO: add logging/throw to each variable.isNullOrEmpty() test below?
+            command = "mount -o remount,rw /system && ("
+                if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
+                if( ! apkSubDir.isNullOrEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
             if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
                 command += " ; $utilBoxQuoted rm -rf ${quote(dataDir)}"
             if( ! packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -rf /data/app-lib/${packageName}/*"
+                command += " ; $utilBoxQuoted rm -rf ${quote("/data/app-lib/${packageName}")}/*"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -110,11 +110,11 @@ class ShellCommands(private var users: List<String>?) {
     fun enableDisablePackage(packageName: String?, users: List<String?>?, enable: Boolean) {
         val option = if (enable) "enable" else "disable"
         if (!users.isNullOrEmpty()) {
-            val commands: MutableList<String> = ArrayList()
+            val commands = mutableListOf<String>()
             for (user in users) {
                 commands.add("pm $option --user $user $packageName")
             }
-            val command = commands.joinToString(" && ") //TODO hg42: really "&&" or better ";"?
+            val command = commands.joinToString(" ; ")  // no dependency
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -201,28 +201,34 @@ class ShellCommands(private var users: List<String>?) {
         @Throws(ShellActionFailedException::class)
         fun wipeCache(context: Context, app: AppInfo) {
             Timber.i("${app.packageName}: Wiping cache")
-            val commandBuilder = StringBuilder()
+            val commands = mutableListOf<String>()
             // Normal app cache always exists
             val dataPath = app.getDataPath()
             if( ! dataPath.isNullOrEmpty())
-                commandBuilder.append("rm -rf '${dataPath}/cache/'* '${dataPath}/code_cache/'*")
+                commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
+
+            fun conditionalDeleteCommand(directory : String) : String {
+                if(!directory.isNullOrEmpty())
+                    return "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
+                else
+                    return ""
+            }
 
             // device protected data cache, might exist or not
-            val conditionalDeleteTemplate = "\\\n && if [ -d '%s' ]; then rm -rf '%s/'* ; fi"   //TODO use function...no String.format etc.
             if (app.getDevicesProtectedDataPath().isNotEmpty()) {
                 val cacheDir = File(app.getDevicesProtectedDataPath(), "cache").absolutePath
                 val codeCacheDir = File(app.getDevicesProtectedDataPath(), "code_cache").absolutePath
-                commandBuilder.append(String.format(conditionalDeleteTemplate, cacheDir, cacheDir))
-                commandBuilder.append(String.format(conditionalDeleteTemplate, codeCacheDir, codeCacheDir))
+                commands.add(conditionalDeleteCommand(cacheDir))
+                commands.add(conditionalDeleteCommand(codeCacheDir))
             }
 
             // external cache dirs are added dynamically, the bash if-else will handle the logic
             for (myCacheDir in context.externalCacheDirs) {
                 val cacheDirName = myCacheDir.name
-                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName)
-                commandBuilder.append(String.format(conditionalDeleteTemplate, appsCacheDir, appsCacheDir))
+                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName).absolutePath
+                commands.add(conditionalDeleteCommand(appsCacheDir))
             }
-            val command = commandBuilder.toString()
+            val command = commands.joinToString(" ; ")  // no dependency
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {

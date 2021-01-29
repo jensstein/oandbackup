@@ -70,11 +70,11 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
-                val commands: MutableList<String> = ArrayList(expectedFiles.size)
+                val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
                     commands.add("$utilBoxQuoted mv -f ${quote(File(tempPath, restoreFile.name))} ${quote(restoreFile)}")
                 }
-                val command = commands.joinToString(" && ")
+                val command = commands.joinToString(" ; ")  // no dependency
                 runAsRoot(command)
             }
         } catch (e: ShellCommandFailedException) {

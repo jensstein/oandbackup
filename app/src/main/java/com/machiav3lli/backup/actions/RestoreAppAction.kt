@@ -386,7 +386,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         val externalDataDir = File(app.getExternalDataPath(context))
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
         //  if (!externalDataDir.exists()) {
-        //      val mkdirResult = externalDataDir.mkdir()  // TODO hg42 root access would be more consistent anyways
+        //      val mkdirResult = externalDataDir.mkdir()
         //      if (!mkdirResult) {
         //          throw RestoreFailedException("Could not create external data directory at $externalDataDir")
         //      }
