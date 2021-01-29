@@ -178,7 +178,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             Timber.d("[${app.packageName}] Package is splitted into ${apksToBackup.size} apks")
         }
         Timber.d(String.format("[%s] Backing up package (%d apks: %s)", app.packageName, apksToBackup.size,
-                apksToBackup.joinToString(separator = " ") { s: String -> File(s).name }
+                apksToBackup.joinToString(" ") { s: String -> File(s).name }
         ))
         try {
             for (apk in apksToBackup) {

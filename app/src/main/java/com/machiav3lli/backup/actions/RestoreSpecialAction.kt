@@ -74,7 +74,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
                 for (restoreFile in expectedFiles) {
                     commands.add("$utilBoxQuoted mv -f ${quote(File(tempPath, restoreFile.name))} ${quote(restoreFile)}")
                 }
-                val command = commands.joinToString(separator = " && ")
+                val command = commands.joinToString(" && ")
                 runAsRoot(command)
             }
         } catch (e: ShellCommandFailedException) {

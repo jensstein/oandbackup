@@ -65,7 +65,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not stop package " + packageName + ": " + java.lang.String.join(" ", e.shellResult.err))
+            Timber.w("Could not stop package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
@@ -85,7 +85,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
+            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }

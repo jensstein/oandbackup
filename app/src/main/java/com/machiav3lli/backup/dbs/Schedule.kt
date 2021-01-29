@@ -124,7 +124,7 @@ class Schedule {
 
         @TypeConverter
         fun toString(customList: Set<String?>?): String {
-            return if (customList?.isNotEmpty() == true) customList.joinToString(separator = ",")
+            return if (customList?.isNotEmpty() == true) customList.joinToString(",")
             else ""
         }
     }

@@ -233,7 +233,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             true
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
-            val error = e.shellResult.err.joinToString(separator = "\n")
+            val error = e.shellResult.err.joinToString("\n")
             Timber.e("Restore APKs failed: $error")
             throw RestoreFailedException(error, e)
         } catch (e: IOException) {
@@ -250,7 +250,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 try {
                     runAsRoot(command)
                 } catch (e: ShellCommandFailedException) {
-                    Timber.w("[$packageName] Cleanup after failure failed: ${e.shellResult.err.joinToString(separator = "; ")}")
+                    Timber.w("[$packageName] Cleanup after failure failed: ${e.shellResult.err.joinToString("; ")}")
                 }
             }
         }

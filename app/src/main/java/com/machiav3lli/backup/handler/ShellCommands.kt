@@ -41,7 +41,7 @@ class ShellCommands(private var users: List<String>?) {
             var error: String? = null
             // instanceOf returns false for nulls, so need to check if null
             if (e.cause is ShellCommandFailedException) {
-                error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
+                error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(" ")
             }
             Timber.e("Could not load list of users: $e${if (error != null) " ; $error" else ""}")
         }
@@ -57,7 +57,7 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
@@ -69,7 +69,7 @@ class ShellCommands(private var users: List<String>?) {
                     runAsRoot(command)
                 }
             } catch (e: ShellCommandFailedException) {
-                Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
+                Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(" ")}")
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
             }
@@ -98,7 +98,7 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
@@ -226,7 +226,7 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)

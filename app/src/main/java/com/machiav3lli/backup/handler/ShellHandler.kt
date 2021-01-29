@@ -327,7 +327,7 @@ class ShellHandler {
         }
 
         fun quoteMultiple(parameters: Collection<String>): String {
-            return parameters.map { quote(it) }.joinToString(separator = " ")
+            return parameters.map { quote(it) }.joinToString(" ")
         }
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
