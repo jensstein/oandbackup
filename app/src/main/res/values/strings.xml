@@ -234,6 +234,9 @@
     <string name="stats_updated">Updated</string>
     <string name="stats_backups">Backups</string>
     <string name="stats_apps">Apps</string>
+    <string name="help">Help</string>
+    <string name="main">Main</string>
+    <string name="usage_notes_title">Usage Notes</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

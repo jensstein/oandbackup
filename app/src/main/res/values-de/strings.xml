@@ -238,4 +238,7 @@
     <string name="prefs_restoreallpermissions">Mit allen Berechtigungen wiederherstellen</string>
     <string name="prefs_restoreallpermissions_summary">Der wiederhergestellten App alle Berechtigungen geben, nach denen sie fragt.</string>
     <string name="help_faq">Häufig gestellte Fragen</string>
+    <string name="help">Hilfe</string>
+    <string name="main">Hauptseite</string>
+    <string name="usage_notes_title">Benutzungshinweise</string>
 </resources>
