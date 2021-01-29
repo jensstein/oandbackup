@@ -46,7 +46,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             Timber.i(String.format("package %s uid %d", packageName, applicationInfo.uid))
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Requested to kill processes of UID 1000. Refusing to kill system's processes!")
+                Timber.w("Requested to kill processes of UID < 10000. Refusing to kill system's processes!")
                 return
             }
             if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist

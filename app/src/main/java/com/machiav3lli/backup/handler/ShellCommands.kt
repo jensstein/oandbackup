@@ -65,7 +65,7 @@ class ShellCommands(private var users: List<String>?) {
             // don't care for the result here, it likely fails due to file not found
             try {
                 if( ! packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
-                    command = "$utilBoxQuoted rm -r /data/lib/$packageName/*"
+                    command = "$utilBoxQuoted rm -rf /data/lib/$packageName/*"
                     runAsRoot(command)
                 }
             } catch (e: ShellCommandFailedException) {
@@ -84,15 +84,17 @@ class ShellCommands(private var users: List<String>?) {
                 Timber.wtf(error)
                 throw IllegalArgumentException(error)
             }
-            command = "(mount -o remount,rw /system && " +      //TODO hg: mount && ( only system ) ; remount
-                    "$utilBoxQuoted rm ${quote(sourceDir)}"     //TODO hg: rm dir ???
-            if( ! apkSubDir.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -r ${quote("/system/app/$apkSubDir")}"
-            if( ! dataDir.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -r ${quote(dataDir)}"
-            if( ! packageName.isNullOrEmpty()) // IMPORTANT!!! otherwise removing all in parent(!) directory
-                command += " ; $utilBoxQuoted rm -r /data/app-lib/${packageName}/*"
+            // TODO: add message to each variable.isNullOrEmpty() test below?
+            command = "mount -o remount,rw /system && ("        //TODO hg: mount && ( only system ) ; remount
+            if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"  //TODO hg: was rm dir which cannot work
+            if( ! apkSubDir.isEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
+            if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote(dataDir)}"
+            if( ! packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf /data/app-lib/${packageName}/*"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -112,7 +114,7 @@ class ShellCommands(private var users: List<String>?) {
             for (user in users) {
                 commands.add("pm $option --user $user $packageName")
             }
-            val command = commands.joinToString(" && ")
+            val command = commands.joinToString(" && ") //TODO hg42: really "&&" or better ";"?
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {

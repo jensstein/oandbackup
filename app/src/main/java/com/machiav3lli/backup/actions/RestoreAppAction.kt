@@ -391,7 +391,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 throw RestoreFailedException("Could not create external data directory at $externalDataDir")
             }
         }
-        genericRestoreFromArchive(backupArchive.uri, app.getExternalDataPath(context), backupProperties.isEncrypted, context.externalCacheDir)
+        genericRestoreFromArchive(backupArchive.uri, externalDataDir.absolutePath, backupProperties.isEncrypted, context.externalCacheDir)
     }
 
     @Throws(RestoreFailedException::class)
