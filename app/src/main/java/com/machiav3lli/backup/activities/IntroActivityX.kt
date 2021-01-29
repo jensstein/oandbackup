@@ -23,7 +23,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import androidx.biometric.BiometricConstants
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
@@ -141,7 +140,7 @@ class IntroActivityX : BaseActivity() {
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                if (errorCode == BiometricConstants.ERROR_USER_CANCELED) {
+                if (errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
                     binding.positiveButton.setText(R.string.dialog_unlock)
                     binding.positiveButton.visibility = View.VISIBLE
                 } else {
