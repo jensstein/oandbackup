@@ -385,12 +385,15 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
         val externalDataDir = File(app.getExternalDataPath(context))
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
-        if (!externalDataDir.exists()) {
-            val mkdirResult = externalDataDir.mkdir()
-            if (!mkdirResult) {
-                throw RestoreFailedException("Could not create external data directory at $externalDataDir")
-            }
-        }
+        //  if (!externalDataDir.exists()) {
+        //      val mkdirResult = externalDataDir.mkdir()  // TODO hg42 root access would be more consistent anyways
+        //      if (!mkdirResult) {
+        //          throw RestoreFailedException("Could not create external data directory at $externalDataDir")
+        //      }
+        //  }
+        runAsRoot("$utilBoxQuoted mkdir -p ${quote(externalDataDir)}")
+        if(!externalDataDir.isDirectory())  //TODO hg42: what if it is a link to a directory? in case it existed before
+            throw RestoreFailedException("Could not create external data directory at $externalDataDir")
         genericRestoreFromArchive(backupArchive.uri, externalDataDir.absolutePath, backupProperties.isEncrypted, context.externalCacheDir)
     }
 
