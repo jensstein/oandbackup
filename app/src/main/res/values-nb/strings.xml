@@ -238,4 +238,7 @@
     <string name="prefs_restoreallpermissions_summary">Gi det gjenopprettede programmet alle tilgangene det etterspør.</string>
     <string name="prefs_obbdata_summary">Sikkerhetskopierer og gjenoppretter programmets OBB-filer som er plassert på eksternt lagringsmedium (f.eks. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Sikkerhetskopier OBB-filer</string>
+    <string name="usage_notes_title">Bruksmerknader</string>
+    <string name="main">Hovedside</string>
+    <string name="help">Hjelp</string>
 </resources>
