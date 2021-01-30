@@ -59,7 +59,7 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
         }
         apkTargetPath.parentFile?.absoluteFile?.let { appDir ->
             val command =
-                    "(mount -o remount,rw ${quote(mountPoint)} && " + //TODO hg: check "&&" and "("
+                    "(mount -o remount,rw ${quote(mountPoint)} && " +
                         "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
                         "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
                         "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps

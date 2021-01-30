@@ -213,7 +213,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // If split apk resources exist, install them afterwards (order does not matter)
             if (splitApksInBackup.isNotEmpty()) {
                 splitApksInBackup.forEach {
-                    sb.append(" && ").append(this.getPackageInstallCommand(
+                    sb.append(" ; ").append(this.getPackageInstallCommand(
                             File(stagingApkPath, "$packageName.${it.name}"),
                             backupProperties.packageName)
                     )
@@ -221,7 +221,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             }
 
             // append cleanup command
-            sb.append(" && $utilBoxQuoted rm ${
+            sb.append(" ; $utilBoxQuoted rm ${
                                 quoteMultiple(
                                         apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
                                 )}"
@@ -354,7 +354,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                         quoteMultiple(chownTargets)
                     }"
             if(uidgidcon[2] != "?")  //TODO hg: if context is "?", what does it mean?
-                command += " && chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
+                command += " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"
