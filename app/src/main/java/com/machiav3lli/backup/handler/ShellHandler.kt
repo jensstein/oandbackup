@@ -60,7 +60,7 @@ class ShellHandler {
                 .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
                 .toMutableList()
         if (recursive) {
-            val directories: Array<FileInfo> = result
+            val directories = result
                     .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
                     .toTypedArray()
             directories.forEach { dir ->

@@ -102,7 +102,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(ShellCommandFailedException::class)
     protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        if (targetDirectory != "/" && !targetDirectory.isNullOrEmpty()) {
+        if (targetDirectory != "/" && ! targetDirectory.isNullOrEmpty()) {
             val targetContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
             targetContents.removeAll(excludeDirs)
             if (targetContents.isEmpty()) {
@@ -303,7 +303,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 tempDir?.let {
                     uncompressTo(inputStream, it.toFile())
                     // clear the data from the final directory
-                    wipeDirectory(targetDir, DATA_EXCLUDED_DIRS)
+                    wipeDirectory(targetDir, DATA_EXCLUDED_DIRS) //TODO hg: isn't it inconsistent, if we keep cache*? and what about "lib", why isn't it in the backup?
                     // Move all the extracted data into the target directory
                     val command = "$utilBoxQuoted mv -f ${quote(it.toString())}/* ${quote(targetDir)}/"
                     runAsRoot(command)

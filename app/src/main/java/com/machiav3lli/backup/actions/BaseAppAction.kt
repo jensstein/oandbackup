@@ -96,7 +96,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"
         const val BACKUP_DIR_EXTERNAL_FILES = "external_files"
         const val BACKUP_DIR_OBB_FILES = "obb_files"
-        val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")
+        val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")  //TODO hg42 why exclude lib? how is it restored?
         private val doNotStop = listOf(
                 "com.android.shell",  // don't remove this
                 "com.android.systemui",
