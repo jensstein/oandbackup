@@ -22,7 +22,7 @@ fun iterableToString(iterable: Iterable<String>): String {
 }
 
 fun iterableToString(delimiter: CharSequence, iterable: Iterable<String>): String {
-    return iterable.joinToString(separator = delimiter)
+    return iterable.joinToString(delimiter)
 }
 
 interface Command {

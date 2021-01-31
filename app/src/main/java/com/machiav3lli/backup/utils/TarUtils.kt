@@ -17,9 +17,13 @@
  */
 package com.machiav3lli.backup.utils
 
+//TODO hg42: several special conditions (e.g. storing a socket) throw an exception, breaking the surrounding loop and the function. I think it should be ignored and probably logged.
+
+
 import android.system.ErrnoException
 import android.system.Os
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.topjohnwu.superuser.io.SuFile
@@ -89,8 +93,8 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                     archive.closeArchiveEntry()
                 }
             }
-            FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur")
-            FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur")
+            FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur") //TODO hg42: ignore?
+            FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur") //TODO hg42: ignore?
             FileType.DIRECTORY -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
@@ -113,77 +117,81 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
-            FileType.SOCKET -> throw NotImplementedError("It does not make sense to backup sockets")
+            FileType.SOCKET -> throw NotImplementedError("It does not make sense to backup sockets") //TODO hg42: ignore?
         }
     }
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun suUncompressTo(archive: TarArchiveInputStream, targetDir: String?) {
-    generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
-        val file = File(targetDir, tarEntry.name)
-        Timber.d("Extracting ${tarEntry.name}")
-        if (tarEntry.isDirectory) {
-            ShellHandler.runAsRoot("mkdir \"${file.absolutePath}\"")
-            suUncompressTo(archive, targetDir)
-        } else if (tarEntry.isFile) {
-            SuFileOutputStream(SuFile.open(targetDir, tarEntry.name)).use { fos -> IOUtils.copy(archive, fos, BUFFER_SIZE) }
-        } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
-            ShellHandler.runAsRoot("cd \"$targetDir\" && ln -s \"${file.absolutePath}\" \"${tarEntry.linkName}\"; cd -")
-        } else if (tarEntry.isFIFO) {
-            ShellHandler.runAsRoot("cd \"$targetDir\" && mkfifo \"${file.absolutePath}\"; cd -")
-        } else {
-            throw NotImplementedError("Cannot restore file type")
+fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
+    targetDir?.let { targetDir ->
+        generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
+            val file = File(targetDir, tarEntry.name)
+            Timber.d("Extracting ${tarEntry.name}")
+            if (tarEntry.isDirectory) {
+                ShellHandler.runAsRoot("mkdir -p ${quote(file)}")
+                suUncompressTo(archive, targetDir)
+            } else if (tarEntry.isFile) {
+                SuFileOutputStream(SuFile.open(targetDir, tarEntry.name)).use { fos -> IOUtils.copy(archive, fos, BUFFER_SIZE) }
+            } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
+                ShellHandler.runAsRoot("cd ${quote(targetDir)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
+            } else if (tarEntry.isFIFO) {
+                ShellHandler.runAsRoot("cd ${quote(targetDir)} && mkfifo ${quote(file)}; cd -")
+            } else {
+                throw NotImplementedError("Cannot restore file type") //TODO hg42: ignore?
+            }
         }
     }
 }
 
 @Throws(IOException::class)
 fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
-    generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
-        val targetPath = File(targetDir, tarEntry.name)
-        Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
-        var doChmod = true
-        when {
-            tarEntry.isDirectory -> {
-                if (!targetPath.mkdirs()) {
-                    throw IOException("Unable to create folder ${targetPath.absolutePath}")
+    targetDir?.let { targetDir ->
+        generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
+            val targetPath = File(targetDir, tarEntry.name)
+            Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
+            var doChmod = true
+            when {
+                tarEntry.isDirectory -> {
+                    if (!targetPath.mkdirs()) {
+                        throw IOException("Unable to create folder ${targetPath.absolutePath}")
+                    }
+                }
+                tarEntry.isLink || tarEntry.isSymbolicLink -> {
+                    try {
+                        Os.symlink(tarEntry.linkName, targetPath.absolutePath)
+                    } catch (e: ErrnoException) {
+                        throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetPath.absolutePath} : $e")
+                    }
+                    doChmod = false
+                }
+                tarEntry.isFIFO -> {
+                    try {
+                        Os.mkfifo(targetPath.absolutePath, tarEntry.mode)
+                    } catch (e: ErrnoException) {
+                        throw IOException("Unable to create fifo ${targetPath.absolutePath}: $e")
+                    }
+                }
+                else -> {
+                    val parent = targetPath.parentFile!!
+                    if (!parent.exists() && !parent.mkdirs()) {
+                        throw IOException("Unable to create folder ${parent.absolutePath}")
+                    }
+                    FileOutputStream(targetPath).use { fos -> IOUtils.copy(archive, fos) }
                 }
             }
-            tarEntry.isLink || tarEntry.isSymbolicLink -> {
+            if (doChmod) {
                 try {
-                    Os.symlink(tarEntry.linkName, targetPath.absolutePath)
+                    Os.chmod(targetPath.absolutePath, tarEntry.mode)
                 } catch (e: ErrnoException) {
-                    throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetPath.absolutePath} : $e")
-                }
-                doChmod = false
-            }
-            tarEntry.isFIFO -> {
-                try {
-                    Os.mkfifo(targetPath.absolutePath, tarEntry.mode)
-                } catch (e: ErrnoException) {
-                    throw IOException("Unable to create fifo ${targetPath.absolutePath}: $e")
+                    throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
                 }
             }
-            else -> {
-                val parent = targetPath.parentFile!!
-                if (!parent.exists() && !parent.mkdirs()) {
-                    throw IOException("Unable to create folder ${parent.absolutePath}")
-                }
-                FileOutputStream(targetPath).use { fos -> IOUtils.copy(archive, fos) }
-            }
-        }
-        if (doChmod) {
             try {
-                Os.chmod(targetPath.absolutePath, tarEntry.mode)
+                targetPath.setLastModified(tarEntry.modTime.time)
             } catch (e: ErrnoException) {
-                throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
+                throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
             }
-        }
-        try {
-            targetPath.setLastModified(tarEntry.modTime.time)
-        } catch (e: ErrnoException) {
-            throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
         }
     }
 }

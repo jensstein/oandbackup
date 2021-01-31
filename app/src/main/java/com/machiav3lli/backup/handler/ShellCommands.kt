@@ -19,9 +19,10 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.os.Binder
-import com.machiav3lli.backup.UTILBOX_PATH
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
@@ -40,9 +41,9 @@ class ShellCommands(private var users: List<String>?) {
             var error: String? = null
             // instanceOf returns false for nulls, so need to check if null
             if (e.cause is ShellCommandFailedException) {
-                error = (e.cause as ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
+                error = e.cause.shellResult.err.joinToString(" ")
             }
-            Timber.e("Could not load list of users: $e${if (error != null) " ; $error" else ""}")
+            Timber.e("Could not load list of users: ${e}${if (error != null) " : $error" else ""}")
         }
         multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
     }
@@ -52,21 +53,23 @@ class ShellCommands(private var users: List<String>?) {
         var command: String
         if (!isSystem) {
             // Uninstalling while user app
-            command = String.format("pm uninstall %s", packageName)
+            command = "pm uninstall $packageName"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
             // don't care for the result here, it likely fails due to file not found
             try {
-                command = String.format("%s rm -r /data/lib/%s/*", UTILBOX_PATH, packageName)
-                runAsRoot(command)
+                if( ! packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command = "$utilBoxQuoted rm -rf /data/lib/$packageName/*"
+                    runAsRoot(command)
+                }
             } catch (e: ShellCommandFailedException) {
-                Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(separator = " ")}")
+                Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(" ")}")
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
             }
@@ -75,22 +78,27 @@ class ShellCommands(private var users: List<String>?) {
             // it seems that busybox mount sometimes fails silently so use toolbox instead
             var apkSubDir = FileUtils.getName(sourceDir!!)
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf('.'))
-            if (apkSubDir.isEmpty()) {
+            if (apkSubDir.isNullOrEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
                         + "in a recursive rm call and would cause catastrophic damage!")
                 Timber.wtf(error)
                 throw IllegalArgumentException(error)
             }
-            command = "(mount -o remount,rw /system && " +
-                    "$UTILBOX_PATH rm $sourceDir ; " +
-                    "rm -r /system/app/$apkSubDir ; " +
-                    "$UTILBOX_PATH rm -r $dataDir ; " +
-                    "$UTILBOX_PATH rm -r /data/app-lib/$packageName*); " +
-                    "mount -o remount,ro /system"
+            // TODO: add logging/throw to each variable.isNullOrEmpty() test below?
+            command = "mount -o remount,rw /system && ("
+                if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
+                if( ! apkSubDir.isNullOrEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                    command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
+            command += ") ; mount -o remount,ro /system"
+            if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote(dataDir)}"
+            if( ! packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote("/data/app-lib/${packageName}")}/*"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
@@ -102,11 +110,11 @@ class ShellCommands(private var users: List<String>?) {
     fun enableDisablePackage(packageName: String?, users: List<String?>?, enable: Boolean) {
         val option = if (enable) "enable" else "disable"
         if (!users.isNullOrEmpty()) {
-            val commands: MutableList<String> = ArrayList()
+            val commands = mutableListOf<String>()
             for (user in users) {
                 commands.add("pm $option --user $user $packageName")
             }
-            val command = java.lang.String.join(" && ", commands)
+            val command = commands.joinToString(" ; ")  // no dependency
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
@@ -123,7 +131,7 @@ class ShellCommands(private var users: List<String>?) {
         if (!users.isNullOrEmpty()) {
             return users
         }
-        val command = "pm list users | $UTILBOX_PATH sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
+        val command = "pm list users | $utilBoxQuoted sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"
         return try {
             val result = runAsRoot(command)
             result.out
@@ -140,7 +148,7 @@ class ShellCommands(private var users: List<String>?) {
 
     @Throws(ShellActionFailedException::class)
     fun quickReboot() {
-        val command = "$UTILBOX_PATH pkill system_server"
+        val command = "$utilBoxQuoted pkill system_server"
         try {
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
@@ -193,30 +201,38 @@ class ShellCommands(private var users: List<String>?) {
         @Throws(ShellActionFailedException::class)
         fun wipeCache(context: Context, app: AppInfo) {
             Timber.i("${app.packageName}: Wiping cache")
-            val commandBuilder = StringBuilder()
+            val commands = mutableListOf<String>()
             // Normal app cache always exists
-            commandBuilder.append("rm -rf \"${app.getDataPath()}/cache/\"* \"${app.getDataPath()}/code_cache/\"*")
+            val dataPath = app.getDataPath()
+            if( ! dataPath.isNullOrEmpty())
+                commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
+
+            fun conditionalDeleteCommand(directory : String) : String {
+                if(!directory.isNullOrEmpty())
+                    return "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
+                else
+                    return ""
+            }
 
             // device protected data cache, might exist or not
-            val conditionalDeleteTemplate = "\\\n && if [ -d \"%s\" ]; then rm -rf \"%s/\"* ; fi"
             if (app.getDevicesProtectedDataPath().isNotEmpty()) {
                 val cacheDir = File(app.getDevicesProtectedDataPath(), "cache").absolutePath
                 val codeCacheDir = File(app.getDevicesProtectedDataPath(), "code_cache").absolutePath
-                commandBuilder.append(String.format(conditionalDeleteTemplate, cacheDir, cacheDir))
-                commandBuilder.append(String.format(conditionalDeleteTemplate, codeCacheDir, codeCacheDir))
+                commands.add(conditionalDeleteCommand(cacheDir))
+                commands.add(conditionalDeleteCommand(codeCacheDir))
             }
 
             // external cache dirs are added dynamically, the bash if-else will handle the logic
             for (myCacheDir in context.externalCacheDirs) {
                 val cacheDirName = myCacheDir.name
-                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName)
-                commandBuilder.append(String.format(conditionalDeleteTemplate, appsCacheDir, appsCacheDir))
+                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName).absolutePath
+                commands.add(conditionalDeleteCommand(appsCacheDir))
             }
-            val command = commandBuilder.toString()
+            val command = commands.joinToString(" ; ")  // no dependency
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, e.shellResult.err.joinToString(separator = "\n"), e)
+                throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)

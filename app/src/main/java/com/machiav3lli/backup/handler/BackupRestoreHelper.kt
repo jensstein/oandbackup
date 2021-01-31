@@ -111,7 +111,7 @@ object BackupRestoreHelper {
                 Timber.wtf("${e.javaClass.canonicalName}! This should never happen! Message: $e")
                 return false
             } catch (e: ShellCommandFailedException) {
-                throw IOException(e.shellResult.err.joinToString(separator = " "), e)
+                throw IOException(e.shellResult.err.joinToString(" "), e)
             }
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("${e.javaClass.simpleName}: $e")

@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.handler
 
-import com.machiav3lli.backup.UTILBOX_PATH
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -32,15 +31,14 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.math.min
+
+val UTILBOX_NAMES = listOf("toybox", "busybox")
 
 class ShellHandler {
-    var utilboxPath: String? = null
-        private set
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
-        val shellResult = runAsRoot("$utilboxPath ls \"${path.absolutePath}\"")
+        val shellResult = runAsRoot("$utilBoxQuoted ls ${quote(path)}")
         return shellResult.out.toTypedArray()
     }
 
@@ -53,7 +51,7 @@ class ShellHandler {
         // "drwxrwx--x 4 u0_a627 u0_a627 4096 2020-11-26 04:35:21.543772855 +0100 files"
         // Special case:
         // "lrwxrwxrwx 1 root    root      64 2020-11-24 19:41:09.569333987 +0100 lib -> /data/app/com.almalence.opencam-SekQMXi3UuGHZ_CVtPxhCA==/lib/arm"
-        val shellResult = runAsRoot("$utilboxPath ls -All \"$path\"")
+        val shellResult = runAsRoot("$utilBoxQuoted ls -All ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
                 .filter { line: String -> line.isNotEmpty() }
@@ -62,7 +60,7 @@ class ShellHandler {
                 .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
                 .toMutableList()
         if (recursive) {
-            val directories: Array<FileInfo> = result
+            val directories = result
                     .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
                     .toTypedArray()
             directories.forEach { dir ->
@@ -81,8 +79,8 @@ class ShellHandler {
      * @return an array with 3 fields: {uid, gid, context}
      */
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
-    fun suGetOwnerGroupContext(filepath: String?): Array<String> {
-        val command = "$utilboxPath stat -c '%u %g %C' \"$filepath\""
+    fun suGetOwnerGroupContext(filepath: String): Array<String> {
+        val command = "$utilBoxQuoted stat -c '%u %g %C' ${quote(filepath)}"
         val shellResult = runAsRoot(command)
         val result = shellResult.out[0].split(" ").toTypedArray()
         if (result.size != 3) {
@@ -101,18 +99,24 @@ class ShellHandler {
     }
 
     @Throws(UtilboxNotAvailableException::class)
-    fun setUtilboxPath(utilboxPath: String) {
-        try {
-            val shellResult = runAsUser("$utilboxPath --version")
-            var utilBoxVersion: String? = "Not returned"
-            if (shellResult.out.isNotEmpty()) {
-                utilBoxVersion = iterableToString(shellResult.out)
+    fun setUtilBoxPath(utilBoxName: String) {
+        val shellResult = runAsRoot("which $utilBoxName")
+        if (shellResult.out.isNotEmpty()) {
+            utilBoxPath = iterableToString(shellResult.out)
+            if ( ! utilBoxPath.isNullOrEmpty()) {
+                utilBoxQuoted = quote(utilBoxPath)
+                val shellResult = runAsRoot("$utilBoxQuoted --version")
+                var utilBoxVersion: String? = "Not returned"
+                if (shellResult.out.isNotEmpty()) {
+                    utilBoxVersion = iterableToString(shellResult.out)
+                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQuoted : $utilBoxVersion")
+                }
+                return
             }
-            Timber.i("Using Utilbox `$utilboxPath`: $utilBoxVersion")
-        } catch (e: ShellCommandFailedException) {
-            throw UtilboxNotAvailableException(utilboxPath, e)
         }
-        this.utilboxPath = utilboxPath
+        // not found => try bare executables (no utilbox prefixed)
+        utilBoxPath = ""
+        utilBoxQuoted = ""
     }
 
     class ShellCommandFailedException(@field:Transient val shellResult: Shell.Result) : Exception()
@@ -262,6 +266,12 @@ class ShellHandler {
     }
 
     companion object {
+
+        var utilBoxPath = ""
+            private set
+        var utilBoxQuoted = ""
+            private set
+
         interface RunnableShellCommand {
             fun runCommand(vararg commands: String?): Shell.Job
         }
@@ -279,16 +289,6 @@ class ShellHandler {
         }
 
         @Throws(ShellCommandFailedException::class)
-        fun runAsRoot(vararg commands: String): Shell.Result {
-            return runShellCommand(SuRunnableShellCommand(), *commands)
-        }
-
-        @Throws(ShellCommandFailedException::class)
-        fun runAsUser(vararg commands: String): Shell.Result {
-            return runShellCommand(ShRunnableShellCommand(), *commands)
-        }
-
-        @Throws(ShellCommandFailedException::class)
         private fun runShellCommand(shell: RunnableShellCommand, vararg commands: String): Shell.Result {
             // defining stdout and stderr on our own
             // otherwise we would have to set set the flag redirect stderr to stdout:
@@ -300,12 +300,35 @@ class ShellHandler {
             val stderr: List<String> = arrayListOf()
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
             Timber.d(String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
-            if (!result.isSuccess) {
+            if (!result.isSuccess)
                 throw ShellCommandFailedException(result)
-            }
             return result
         }
 
+        @Throws(ShellCommandFailedException::class)
+        fun runAsUser(vararg commands: String): Shell.Result {
+            return runShellCommand(ShRunnableShellCommand(), *commands)
+        }
+
+        @Throws(ShellCommandFailedException::class)
+        fun runAsRoot(vararg commands: String): Shell.Result {
+            return runShellCommand(SuRunnableShellCommand(), *commands)
+        }
+
+        //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
+        val charactersToBeEscaped = Regex("""[\\\|\&\$\(\"\[]""")   // blacklist, only escape those that are necessary
+
+        fun quote(parameter: String): String {
+            return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""
+        }
+
+        fun quote(parameter: File): String {
+            return quote(parameter.absolutePath)
+        }
+
+        fun quoteMultiple(parameters: Collection<String>): String {
+            return parameters.map { quote(it) }.joinToString(" ")
+        }
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
@@ -361,14 +384,19 @@ class ShellHandler {
     }
 
     init {
-        try {
-            setUtilboxPath(UTILBOX_PATH)
-        } catch (e: UtilboxNotAvailableException) {
-            Timber.d("Tried utilbox path `${UTILBOX_PATH}`. Not available.")
+        val names = UTILBOX_NAMES
+        names.any {
+            try {
+                setUtilBoxPath(it)
+                true
+            } catch (e: UtilboxNotAvailableException) {
+                Timber.d("Tried utilbox name '${it}'. Not available.")
+                false
+            }
         }
-        if (utilboxPath == null) {
+        if (utilBoxQuoted.isNullOrEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(UTILBOX_PATH, null)
+            throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }
     }
 }

@@ -21,7 +21,9 @@ import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
@@ -56,7 +58,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
             openArchiveFile(backupArchiveFile.uri, isEncrypted).use { archive ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
-                suUncompressTo(archive, tempPath.absolutePath)
+                suUncompressTo(archive, tempPath)
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
@@ -68,11 +70,11 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
-                val commands: MutableList<String> = ArrayList(expectedFiles.size)
+                val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
-                    commands.add(prependUtilbox("mv -f \"${File(tempPath, restoreFile.name)}\" \"$restoreFile\""))
+                    commands.add("$utilBoxQuoted mv -f ${quote(File(tempPath, restoreFile.name))} ${quote(restoreFile)}")
                 }
-                val command = commands.joinToString(separator = " && ")
+                val command = commands.joinToString(" ; ")  // no dependency
                 runAsRoot(command)
             }
         } catch (e: ShellCommandFailedException) {
