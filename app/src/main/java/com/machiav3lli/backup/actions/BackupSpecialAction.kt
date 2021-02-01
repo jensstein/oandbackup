@@ -61,7 +61,14 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 val file = File(filePath!!)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
-                val fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
+                var fileInfos : List<ShellHandler.FileInfo>;
+                try {
+                    fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
+                } catch(e: ShellCommandFailedException) {
+                    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
+                        continue
+                    throw(e)
+                }
                 if (isDirSource) {
                     // also add directory
                     filesToBackup.add(
