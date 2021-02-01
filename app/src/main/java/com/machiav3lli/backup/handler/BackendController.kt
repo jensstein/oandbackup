@@ -30,7 +30,13 @@ object BackendController {
      */
     val ignoredPackages = listOf(
             "android",  // virtual package. Data directory is /data -> not a good idea to backup
-            BuildConfig.APPLICATION_ID // ignore own package, it would send a SIGTERM to itself on backup/restore
+            BuildConfig.APPLICATION_ID, // ignore own package
+            "com.android.shell",
+            "com.android.systemui",
+            "com.android.externalstorage",
+            "com.android.providers.media",
+            "com.google.android.gms",
+            "com.google.android.gsf"
     )
 
     fun getPackageInfoList(context: Context, filter: Int): List<PackageInfo> {

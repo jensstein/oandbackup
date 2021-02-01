@@ -4,6 +4,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.StorageFile
@@ -106,7 +108,7 @@ object DocumentUtils {
         val rootDir = StorageFile.fromUri(context, sourceDir)
         for (sourceDoc in rootDir.listFiles()) {
             if (sourceDoc.isDirectory) {
-                ShellHandler.runAsRoot("mkdir \"${File(targetPath, sourceDoc.name!!)}\"")
+                runAsRoot("mkdir -p ${quote(File(targetPath, sourceDoc.name!!))}")
             } else if (sourceDoc.isFile) {
                 suCopyFileFromDocument(
                         resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath)

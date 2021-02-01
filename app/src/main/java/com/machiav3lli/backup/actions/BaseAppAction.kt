@@ -35,10 +35,6 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         return "$what.tar.gz${if (isEncrypted) ".enc" else ""}"
     }
 
-    fun prependUtilbox(command: String?): String {
-        return "${shell.utilboxPath} $command"
-    }
-
     abstract class AppActionFailedException : Exception {
         protected constructor(message: String?) : super(message)
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -50,7 +46,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             Timber.i(String.format("package %s uid %d", packageName, applicationInfo.uid))
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Requested to kill processes of UID 1000. Refusing to kill system's processes!")
+                Timber.w("Requested to kill processes of UID < 10000. Refusing to kill system's processes!")
                 return
             }
             if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist
@@ -58,12 +54,18 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
                 //   also pauses essential processes (because some uids are shared between apps and essential services)
                 //ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill -STOP", applicationInfo.uid));
                 //   try to exclude essential services android.* via grep
-                runAsRoot(String.format("ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -STOP \$pid ; done", applicationInfo.uid))
+                runAsRoot(
+                    "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                            + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                            +   " while read pid user name; do"
+                            +     " kill -STOP \$pid ;"
+                            +   " done"
+                )
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not stop package " + packageName + ": " + java.lang.String.join(" ", e.shellResult.err))
+            Timber.w("Could not stop package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
@@ -73,14 +75,17 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            runAsRoot(String.format(
-                    "ps -o PID,USER,NAME -u %d | grep -v -E ' PID | android\\.|\\.providers\\.|systemui' | while read pid user name; do kill -CONT \$pid ; done",
-                    applicationInfo.uid
-            ))
+            runAsRoot(
+                "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                        + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                        +   " while read pid user name; do"
+                        +     " kill -CONT \$pid ;"
+                        +   " done"
+            )
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(separator = " ")}")
+            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogUtils.unhandledException(e)
         }
@@ -91,7 +96,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"
         const val BACKUP_DIR_EXTERNAL_FILES = "external_files"
         const val BACKUP_DIR_OBB_FILES = "obb_files"
-        val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")
+        val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")  //TODO hg42 why exclude lib? how is it restored?
         private val doNotStop = listOf(
                 "com.android.shell",  // don't remove this
                 "com.android.systemui",

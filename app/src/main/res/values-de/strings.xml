@@ -73,11 +73,11 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Gelöschte Sicherungen:</string>
     <string name="batchDeleteNothingToDelete">Keine Sicherungen zum Löschen vorhanden</string>
-    <string name="enablePackage">Aktivieren</string>
+    <string name="enablePackage">App aktivieren</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">Für Benutzer aktivieren</string>
-    <string name="disablePackage">Deaktivieren</string>
-    <string name="disablePackageTitle">Für Benutzer deaktivieren</string>
+    <string name="enablePackageTitle">App für Benutzer aktivieren</string>
+    <string name="disablePackage">App deaktivieren</string>
+    <string name="disablePackageTitle">App für Benutzer deaktivieren</string>
     <string name="prefs_title">Einstellungen</string>
     <string name="prefs_acquirewakelock">Standby verhindern</string>
     <string name="prefs_acquirewakelock_summary">Wakelock anfordern, um den Ruhemodus zu verhindern während die Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie.</string>

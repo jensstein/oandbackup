@@ -93,7 +93,7 @@ class LogUtils(var context: Context) {
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
         fun message(e: Throwable) = e.toString() + "\n" + stackTrace(e)
 
-        fun unhandledException(e: Throwable, what: Any? = null) {
+        fun logException(e: Throwable, what: Any? = null, prefix : String? = null) {
             var whatStr = ""
             if (what != null) {
                 whatStr = what.toString()
@@ -102,8 +102,12 @@ class LogUtils(var context: Context) {
                 else
                     whatStr = "$whatStr : "
             }
-            var msg = "unexpected: " + e.toString() + whatStr + "\n" + message(e)
+            var msg = "$prefix$e $whatStr\n${stackTrace(e)}"
             Timber.e(msg)
+        }
+
+        fun unhandledException(e: Throwable, what: Any? = null) {
+            logException(e, what, "unexpected: ")
         }
     }
 }

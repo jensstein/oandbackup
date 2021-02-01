@@ -200,7 +200,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                     // Not a critical issue
                     val errorMessage: String? = when (e.cause) {
                         is ShellHandler.ShellCommandFailedException -> {
-                            (e.cause as ShellHandler.ShellCommandFailedException?)?.shellResult?.err?.joinToString(separator = " ")
+                            (e.cause as ShellHandler.ShellCommandFailedException?)?.shellResult?.err?.joinToString(" ")
                         }
                         else -> {
                             e.cause?.message
