@@ -65,9 +65,11 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 try {
                     fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
                 } catch(e: ShellCommandFailedException) {
-                    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
-                        continue
-                    throw(e)
+                    continue  //TODO hg42: avoid checking the error message text for now
+                    //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
+                    //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
+                    //        continue
+                    //    throw(e)
                 }
                 if (isDirSource) {
                     // also add directory
