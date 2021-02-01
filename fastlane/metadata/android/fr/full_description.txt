@@ -1,5 +1,5 @@
-<p>Fork du tristement célèbre OAndBackup dans le but de mener l'application vers 2020, en ajoutant la prise en charge des dernières versions d'Android et en mettant à jour son apparence.</p>
-<p>L'application vous permet de faire et de restaurer des sauvegardes des applications sur votre appareil. <i>OAndBackupX</i> vous permet de sauvegarder les données des applications à un endroit accessible à l'utilisateur. La sauvegarde/restauration d'une seule application et de plusieurs applications est prise en charge.</p>
-<p><br><b>Contribuez à la traduction sur Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
-<p><br><b>Requiert root :</b> Parce qu'il copie les fichiers depuis /data/data, /data/app et /system/app.</p>
-<p>État : Bêta</p>
+<p>Effectuez et restaurez des sauvegardes des applications sur votre appareil et enregistrez les données des applications dans un emplacement accessible par l'utilisateur. Prend en charge la sauvegarde et la restauration d'une ou plusieurs applications.</p>
+<p>Fork d'OAndBackup apportant la prise en charge des nouvelles versions d'Android et des apparences mises à jour.</p>
+<p><br><b>Aidez-nous à traduire sur Weblate : </b>https://hosted.weblate.org/engage/oandbackupx/</p>
+<p> <br> <b>Nécessite root :</b>Parce qu'il copie les fichiers de /data/data, /data/app et /system/app. </p>
+<p>État : Bêta </p>
