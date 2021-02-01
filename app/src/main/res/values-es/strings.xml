@@ -238,4 +238,7 @@
     <string name="prefs_restoreallpermissions">Restaurar con todos los permisos</string>
     <string name="prefs_restoreallpermissions_summary">Dar a la aplicación restaurada todos los permisos que solicite.</string>
     <string name="help_faq">Preguntas frecuentes</string>
+    <string name="usage_notes_title">Notas de uso</string>
+    <string name="main">Inicio</string>
+    <string name="help">Ayuda</string>
 </resources>
