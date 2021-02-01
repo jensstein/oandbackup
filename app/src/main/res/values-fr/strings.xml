@@ -2,10 +2,10 @@
 <resources>
     <string name="backup">Sauvegarder</string>
     <string name="restore">restaurer</string>
-    <string name="backupConfirmation">Sauvegarder \?</string>
-    <string name="restoreConfirmation">Restaurer \?</string>
+    <string name="backupConfirmation">Sauvegarder \?</string>
+    <string name="restoreConfirmation">Restaurer \?</string>
     <string name="handleApk">APK</string>
-    <string name="handleData">données</string>
+    <string name="handleData">Données</string>
     <string name="handleBoth">les deux</string>
     <string name="radio_apk">APK</string>
     <string name="radio_data">données</string>
@@ -66,7 +66,7 @@
     <string name="notInstalledModeDataWarning">L\'application ne peut être restaurée sans APK</string>
     <string name="shareTitle">partager</string>
     <string name="prefs_tools">Outils</string>
-    <string name="prefs_batchdelete">Effacer les sauvegardes \?</string>
+    <string name="prefs_batchdelete">Effacer les sauvegardes \?</string>
     <string name="batchDeleteMessage">Effacement des sauvegardes…</string>
     <string name="batchDeleteNotificationTitle">effacer les sauvegardes</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -104,7 +104,7 @@
     <string name="apptype_special">Sauvegarde spéciale</string>
     <string name="sched_add">Ajouter une sauvegarde planifiée</string>
     <string name="sort_and_filter">Trier et filtrer</string>
-    <string name="enable_encryption_message">Il n\'est pas sûr de garder vos données sur votre appareil non chiffrées. Pour la sécurité de vos données, activez le chiffrement et définissez un mot de passe.</string>
+    <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non chiffrées. Pour la sécurité de vos données, activez le chiffrement et définissez un mot de passe.</string>
     <string name="enable_encryption_title">Chiffrement des données</string>
     <string name="help_group">Notre groupe</string>
     <string name="help_license">Licence</string>
@@ -190,24 +190,24 @@
 \n L\'application est encore en phase bêta et de nombreux changements de base sont souvent effectués. Veuillez donc lire attentivement le journal des modifications à chaque nouvelle version.
 \n Tout type de contribution est le bienvenu, qu\'il s\'agisse de traductions, d\'idées, de signalements de bogues ou de travail sur le code.
 \n
-\n Maintenant sur les fonctionnalitées de notre App :
-\n - Elle requiert le root et vous permet de sauvegarder les applications individuelles et leurs données.
-\n - La sauvegarde et la restauration de programmes individuels une à une ainsi que la sauvegarde et la restauration par lots de plusieurs programmes sont toutes deux prises en charge.
-\n - La restauration des applications système devrait être possible sans qu\'il soit nécessaire de redémarrer ensuite, mais nous vous déconseillons néanmoins de le faire.
-\n - Les sauvegardes peuvent être programmées sans limite du nombre de programmes individuels et il est possible de créer des listes personnalisées uniques.</string>
+\n Maintenant sur les fonctionnalitées de notre application :
+\n • Elle requiert le root et vous permet de sauvegarder les applications individuelles et leurs données.
+\n • La sauvegarde et la restauration de programmes individuels une à une ainsi que la sauvegarde et la restauration par lots de plusieurs programmes sont toutes deux prises en charge.
+\n • La restauration des applications système devrait être possible sans qu\'il soit nécessaire de redémarrer ensuite, mais nous vous déconseillons néanmoins de le faire.
+\n • Les sauvegardes peuvent être programmées sans limite du nombre de programmes individuels et il est possible de créer des listes personnalisées uniques.</string>
     <string name="help_appTypeHint">* L\'icône du type d\'application sera grise si l\'application est désinstallée et gris foncé si l\'application est désactivée.</string>
-    <string name="help_legend">Légende :</string>
+    <string name="help_legend">Légende :</string>
     <string name="prefs_housekeepingmoment_summary">Configure si la révision la plus ancienne est supprimée avant ou après la création d\'une nouvelle sauvegarde afin de libérer l\'espace disque utilisé par la sauvegarde.</string>
     <string name="prefs_stopcont_summary">Experts uniquement : Cela peut être utile si l\'application modifie des fichiers pendant la sauvegarde et que celle-ci échoue.</string>
     <string name="prefs_housekeepingmoment_after">Après la sauvegarde</string>
     <string name="prefs_password_match_false">Les mots de passe ne correspondent pas</string>
     <string name="prefs_password_match_true">Les mots de passe correspondent</string>
     <string name="prefs_passwordconfirmation">Confirmation du mot de passe de chiffrement</string>
-    <string name="welcome_to_oabx">Bienvenue sur OABX !</string>
+    <string name="welcome_to_oabx">Bienvenue sur OABX !</string>
     <string name="storage_access">Accès au données</string>
     <string name="dialog_unlock">Déverouiller</string>
     <string name="dialog_start">Allons-y !</string>
-    <string name="prefs_unset">Non-définie</string>
+    <string name="prefs_unset">Non définie</string>
     <string name="prefs_numBackupRevisions_summary">La dernière version sera supprimée après la création d\'une nouvelle sauvegarde si le nombre est dépassé. Mettez le à zéro pour garder toutes les versions.</string>
     <string name="prefs_numBackupRevisions">Nombres de versions de la sauvegarde</string>
     <string name="prefs_stopcont">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
@@ -221,14 +221,14 @@
         <item quantity="one">%d jour,</item>
         <item quantity="other">%d jours,</item>
     </plurals>
-    <string name="logs_text_empty">Il n\'y a rien à montrer !</string>
+    <string name="logs_text_empty">Il n\'y a rien à afficher !</string>
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>
     <string name="prefs_disableverification_summary">Désactive cette option pour développeurs pendant la restauration d\'APK et la réactive ensuite. Résout l\'erreur : INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
     <string name="help_issues">Problèmes connus</string>
     <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>
     <string name="prefs_obbdata_summary">Sauvegarde et restaure les fichiers obb de l\'app placés sur le stockage externe (par exemple /storage/emulated/0/Android/obb/)</string>
-    <string name="stats_apps">Apps</string>
+    <string name="stats_apps">Applis</string>
     <string name="stats_backups">Sauvegardes</string>
     <string name="stats_updated">Mis à jour</string>
     <string name="radio_launchable">Apps lançables</string>
@@ -237,5 +237,8 @@
     <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'app installée.</string>
     <string name="prefs_restoreallpermissions">Restaurer avec toutes les permissions</string>
     <string name="prefs_restoreallpermissions_summary">Donner à l\'app restaurée toutes les permissions qu\'elle demande.</string>
-    <string name="help_faq">Foire Aux Questions</string>
+    <string name="help_faq">Foire aux questions</string>
+    <string name="usage_notes_title">Notes d\'usage</string>
+    <string name="main">Accueil</string>
+    <string name="help">Aide</string>
 </resources>
