@@ -237,6 +237,10 @@
     <string name="help">Help</string>
     <string name="main">Main</string>
     <string name="usage_notes_title">Usage Notes</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="exodus_report">Exodus report</string>
+    <string name="launch_app">Launch app</string>
+    <string name="app_info">App-info</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>
