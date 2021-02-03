@@ -241,4 +241,8 @@
     <string name="help">Hilfe</string>
     <string name="main">Hauptseite</string>
     <string name="usage_notes_title">Benutzungshinweise</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d aktualisierte App</item>
+        <item quantity="other">%d aktualisierte Apps</item>
+    </plurals>
 </resources>
