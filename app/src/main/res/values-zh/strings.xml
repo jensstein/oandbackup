@@ -242,4 +242,7 @@
     <string name="usage_notes_title">使用说明</string>
     <string name="main">主页</string>
     <string name="help">帮助</string>
+    <plurals name="updated_apps">
+        <item quantity="other">%d 更新的应用</item>
+    </plurals>
 </resources>
