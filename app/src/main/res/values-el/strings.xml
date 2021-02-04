@@ -71,11 +71,11 @@
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Διεγραμμένα αντίγραφα:</string>
     <string name="batchDeleteNothingToDelete">Δεν υπάρχουν αντίγραφα για διαγραφή</string>
-    <string name="enablePackage">Ενεργοποίηση</string>
+    <string name="enablePackage">Ενεργοποίηση εφαρμογής</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
-    <string name="enablePackageTitle">Ενεργοποίηση για χρήστες</string>
-    <string name="disablePackage">Απενεργοποίηση</string>
-    <string name="disablePackageTitle">Απενεργοποίηση για χρήστες</string>
+    <string name="enablePackageTitle">Ενεργοποίηση εφαρμογής για χρήστες</string>
+    <string name="disablePackage">Απενεργοποίηση εφαρμογής</string>
+    <string name="disablePackageTitle">Απενεργοποίηση εφαρμογής για χρήστες</string>
     <string name="prefs_title">Προτιμήσεις</string>
     <string name="prefs_service">Προτιμήσεις υπηρεσίας</string>
     <string name="prefs_user">Προτιμήσεις χρήστη</string>
@@ -224,7 +224,7 @@
     <string name="prefs_disableverification">Απενεργοποίηση Επαλήθευσης εφαρμογών μέσω USB</string>
     <string name="stats_apps">Εφαρμογές</string>
     <string name="stats_backups">Αντίγραφα</string>
-    <string name="stats_updated">Ενημερωμένο</string>
+    <string name="stats_updated">Ενημερωμένα</string>
     <string name="radio_launchable">Εκκινήσιμες Εφαρμογές</string>
     <string name="help_issues">Γνωστά προβλήματα</string>
     <string name="fetching_action_list">Απόκτηση λίστας εφαρμογών για %1$s…</string>
@@ -236,4 +236,15 @@
     <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
     <string name="prefs_unset">Αποτυχία ορισμού</string>
     <string name="help_faq">Συχνές Ερωτήσεις</string>
+    <string name="main">Κυρίως</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d ενημερωμένη εφαρμογή</item>
+        <item quantity="other">%d ενημερωμένες εφαρμογές</item>
+    </plurals>
+    <string name="app_info">Πληροφορίες εφαρμογής</string>
+    <string name="launch_app">Εκκίνηση εφαρμογής</string>
+    <string name="exodus_report">Αναφορά exodus</string>
+    <string name="clear_cache">Καθαρισμός cache</string>
+    <string name="usage_notes_title">Σημειώσεις Χρήσης</string>
+    <string name="help">Βοήθεια</string>
 </resources>
