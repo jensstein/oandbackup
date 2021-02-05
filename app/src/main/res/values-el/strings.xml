@@ -36,7 +36,7 @@
     <string name="sort">Ταξινόμηση και φιλτράρισμα</string>
     <string name="uninstallDialogMessage">Απεγκατάσταση της εφαρμογής;</string>
     <string name="deleteBackupDialogMessage">Διαγραφή αρχείων αντιγράφου;</string>
-    <string name="dialogOK">ΟΚ</string>
+    <string name="dialogOK">Εντάξει</string>
     <string name="dialogCancel">Ακύρωση</string>
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
@@ -150,7 +150,7 @@
     <string name="other_filters_options">Ειδικά φίλτρα:</string>
     <string name="deleted_backup">Το αντίγραφο διαγράφηκε</string>
     <string name="prefs_theme_light">Φωτεινό</string>
-    <string name="prefs_theme_dark">Σκούρο</string>
+    <string name="prefs_theme_dark">Σκοτεινό</string>
     <string name="prefs_theme_system">Θέμα συστήματος</string>
     <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή.</string>
     <string name="dialog_refuse">Δε θα το κάνω</string>
@@ -209,8 +209,8 @@
     <string name="prefs_advanced">Προηγμένες προτιμήσεις</string>
     <string name="prefs_housekeepingmoment_summary">Ρυθμίζει εάν η παλαιότερη εκδοχή διαγράφεται πριν ή μετά τη δημιουργία ενός νέου αντιγράφου ώστε να ελευθερώσει το χώρο του δίσκου που χρησιμοποιείται από το αντίγραφο.</string>
     <string name="prefs_housekeepingmoment">Χρόνος Καθαρισμού Εκδοχών</string>
-    <string name="prefs_housekeepingmoment_before">Πριν τη Δημιουργία Αντιγράφου</string>
-    <string name="prefs_housekeepingmoment_after">Μετά τη Δημιουργία Αντιγράφου</string>
+    <string name="prefs_housekeepingmoment_before">Πριν τη δημιουργία Αντιγράφου ασφαλείας</string>
+    <string name="prefs_housekeepingmoment_after">Μετά τη δημιουργία Αντιγράφου ασφαλείας</string>
     <string name="radio_obbdata">Δεδομένα OBB</string>
     <string name="radio_deviceprotecteddata">Προστατευμένα από τη Συσκευή Δεδομένα</string>
     <string name="radio_externaldata">Εξωτερικά Δεδομένα</string>
@@ -235,5 +235,5 @@
     <string name="prefs_restoreallpermissions">Επαναφορά με όλες τις άδειες</string>
     <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
     <string name="prefs_unset">Αποτυχία ορισμού</string>
-    <string name="help_faq">Συχνές ερωτήσεις</string>
+    <string name="help_faq">Συχνές Ερωτήσεις</string>
 </resources>
