@@ -32,9 +32,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-val UTILBOX_NAMES = listOf("toybox", "busybox")
-
 class ShellHandler {
+
+    val UTILBOX_NAMES = listOf("toybox", "busybox")
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
@@ -80,9 +80,11 @@ class ShellHandler {
      */
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
     fun suGetOwnerGroupContext(filepath: String): Array<String> {
-        val command = "$utilBoxQuoted stat -c '%u %g %C' ${quote(filepath)}"
+        //val command = "$utilBoxQuoted stat -c '%u %g %C' ${quote(filepath)}"
+        val command = "$utilBoxQuoted ls -dnZ ${quote(filepath)}"
         val shellResult = runAsRoot(command)
-        val result = shellResult.out[0].split(" ").toTypedArray()
+        //val result = shellResult.out[0].split(" ").toTypedArray()
+        val result = shellResult.out[0].split(" ",limit=6).slice(2..4).toTypedArray()
         if (result.size != 3) {
             throw UnexpectedCommandResult("'$command' should have returned 3 values, but produced ${result.size}", shellResult)
         }
