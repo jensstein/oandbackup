@@ -245,4 +245,8 @@
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>
     </plurals>
+    <plurals name="updated_apps">
+        <item quantity="one">%d updated app</item>
+        <item quantity="other">%d updated apps</item>
+    </plurals>
 </resources>

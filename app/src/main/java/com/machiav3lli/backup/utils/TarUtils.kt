@@ -17,9 +17,6 @@
  */
 package com.machiav3lli.backup.utils
 
-//TODO hg42: several special conditions (e.g. storing a socket) throw an exception, breaking the surrounding loop and the function. I think it should be ignored and probably logged.
-
-
 import android.system.ErrnoException
 import android.system.Os
 import com.machiav3lli.backup.handler.ShellHandler
@@ -93,8 +90,6 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                     archive.closeArchiveEntry()
                 }
             }
-            FileType.BLOCK_DEVICE -> throw NotImplementedError("Block devices should not occur") //TODO hg42: ignore?
-            FileType.CHAR_DEVICE -> throw NotImplementedError("Char devices should not occur") //TODO hg42: ignore?
             FileType.DIRECTORY -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
@@ -117,7 +112,9 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 archive.putArchiveEntry(entry)
                 archive.closeArchiveEntry()
             }
-            FileType.SOCKET -> throw NotImplementedError("It does not make sense to backup sockets") //TODO hg42: ignore?
+            FileType.BLOCK_DEVICE -> Timber.w("Block devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
+            FileType.CHAR_DEVICE -> Timber.w("Char devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
+            FileType.SOCKET -> Timber.w("It does not make sense to backup sockets: {$file.filePath}") // not necessary //TODO hg42: add to errors?
         }
     }
 }
@@ -138,7 +135,7 @@ fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
             } else if (tarEntry.isFIFO) {
                 ShellHandler.runAsRoot("cd ${quote(targetDir)} && mkfifo ${quote(file)}; cd -")
             } else {
-                throw NotImplementedError("Cannot restore file type") //TODO hg42: ignore?
+                Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
             }
         }
     }
