@@ -80,37 +80,31 @@ class ShellHandler {
      */
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
     fun suGetOwnerGroupContext(filepath: String): Array<String> {
-        //val command = "$utilBoxQuoted stat -c '%u %g %C' ${quote(filepath)}"
-        val command = "$utilBoxQuoted ls -dnZ ${quote(filepath)}"
-        val shellResult = runAsRoot(command)
-        //val result = shellResult.out[0].split(" ").toTypedArray()
-        val result = shellResult.out[0].split(" ",limit=6).slice(2..4).toTypedArray()
-        if (result.size != 3) {
-            throw UnexpectedCommandResult("'$command' should have returned 3 values, but produced ${result.size}", shellResult)
+        // val command = "$utilBoxQuoted stat -c '%u %g %C' ${quote(filepath)}" // %C usually not supported in toybox
+        // ls -Z supported as an option since landley/toybox 0.6.0 mid 2015, Android 8 starts mid 2017
+        // use -dlZ instead of -dnZ, because -nZ was found (by Kostas!) with an error (with no space between group and context)
+        // apparently uid/gid is less tested than names
+        var shellResult : Shell.Result? = null
+        try {
+            val command = "$utilBoxQuoted ls -dlZ ${quote(filepath)}"
+            shellResult = runAsRoot(command)
+            val result = shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
+            return result
+        } catch (e: Throwable) {
+            throw UnexpectedCommandResult("'\$command' failed", shellResult!!)
         }
-        if (result[0].isEmpty()) {
-            throw UnexpectedCommandResult("'$command' returned an empty uid", shellResult)
-        }
-        if (result[1].isEmpty()) {
-            throw UnexpectedCommandResult("'$command' returned an empty gid", shellResult)
-        }
-        if (result[2].isEmpty()) {
-            throw UnexpectedCommandResult("'$command' returned an empty SELinux context", shellResult)
-        }
-        return result
     }
 
     @Throws(UtilboxNotAvailableException::class)
     fun setUtilBoxPath(utilBoxName: String) {
-        val shellResult = runAsRoot("which $utilBoxName")
+        var shellResult = runAsRoot("which $utilBoxName")
         if (shellResult.out.isNotEmpty()) {
             utilBoxPath = iterableToString(shellResult.out)
             if ( ! utilBoxPath.isNullOrEmpty()) {
                 utilBoxQuoted = quote(utilBoxPath)
-                val shellResult = runAsRoot("$utilBoxQuoted --version")
-                var utilBoxVersion: String? = "Not returned"
+                shellResult = runAsRoot("$utilBoxQuoted --version")
                 if (shellResult.out.isNotEmpty()) {
-                    utilBoxVersion = iterableToString(shellResult.out)
+                    val utilBoxVersion = iterableToString(shellResult.out)
                     Timber.i("Using Utilbox $utilBoxName : $utilBoxQuoted : $utilBoxVersion")
                 }
                 return
@@ -187,20 +181,20 @@ class ShellHandler {
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
-                var absoluteParent = absoluteParent
+                var parent = absoluteParent
                 val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
                 var filePath: String?
                 val owner = tokens[2]
                 val group = tokens[3]
                 // 2020-11-26 04:35:21.543772855 +0100
-                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
                 val fileModTime = formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
-                if (tokens[8].startsWith(absoluteParent)) {
-                    absoluteParent = File(absoluteParent).parent!!
-                    tokens[8] = tokens[8].substring(absoluteParent.length + 1)
+                if (tokens[8].startsWith(parent)) {
+                    parent = File(parent).parent!!
+                    tokens[8] = tokens[8].substring(parent.length + 1)
                 }
                 filePath =
                         if (parentPath == null || parentPath.isEmpty()) {
@@ -231,7 +225,7 @@ class ShellHandler {
                                 }
                         Timber.w(String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
-                                tokens[0], fileMode, filePath, absoluteParent))
+                                tokens[0], fileMode, filePath, parent))
                     }
                 } catch (e: Throwable) {
                     LogUtils.unhandledException(e, filePath)
@@ -253,10 +247,10 @@ class ShellHandler {
                     'c' -> type = FileType.CHAR_DEVICE
                     else -> {
                         type = FileType.REGULAR_FILE
-                        fileSize = tokens[4]!!.toLong()
+                        fileSize = tokens[4].toLong()
                     }
                 }
-                val result = FileInfo(filePath!!, type, absoluteParent, owner!!, group!!, fileMode, fileSize, fileModTime!!)
+                val result = FileInfo(filePath!!, type, parent, owner, group, fileMode, fileSize, fileModTime!!)
                 result.linkName = linkName
                 return result
             }
@@ -318,7 +312,7 @@ class ShellHandler {
         }
 
         //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
-        val charactersToBeEscaped = Regex("""[\\\|\&\$\(\"\[]""")   // blacklist, only escape those that are necessary
+        val charactersToBeEscaped = Regex("""[\\|&$("\[]""")   // blacklist, only escape those that are necessary
 
         fun quote(parameter: String): String {
             return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""
@@ -328,9 +322,8 @@ class ShellHandler {
             return quote(parameter.absolutePath)
         }
 
-        fun quoteMultiple(parameters: Collection<String>): String {
-            return parameters.map { quote(it) }.joinToString(" ")
-        }
+        fun quoteMultiple(parameters: Collection<String>): String =
+                parameters.map(::quote).joinToString(" ")
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
