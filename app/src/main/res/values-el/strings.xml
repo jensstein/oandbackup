@@ -13,8 +13,8 @@
     <string name="de_selectAll">Από/επιλογή όλων</string>
     <string name="onlyApkBackedUp">Μόνον εφαρμογή</string>
     <string name="onlyDataBackedUp">Μόνο δεδομένα</string>
-    <string name="refresh">Επαναφόρτωση</string>
-    <string name="batchbackup">Μαζικά αντίγραφα</string>
+    <string name="refresh">Ανανέωση</string>
+    <string name="batchbackup">Μαζική δημιουργία αντιγράφων ασφαλείας</string>
     <string name="batchrestore">Μαζική επαναφορά</string>
     <string name="search">Αναζήτηση</string>
     <string name="searchHint">Αναζήτηση εφαρμογών</string>
@@ -37,7 +37,7 @@
     <string name="uninstallDialogMessage">Απεγκατάσταση της εφαρμογής;</string>
     <string name="deleteBackupDialogMessage">Διαγραφή αρχείων αντιγράφου;</string>
     <string name="dialogOK">Εντάξει</string>
-    <string name="dialogCancel">Ακύρωση</string>
+    <string name="dialogCancel">Άκυρο</string>
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
     <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο.</string>
