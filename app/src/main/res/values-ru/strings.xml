@@ -225,4 +225,5 @@
     <string name="prefs_obbdata">Резервное копирование obb файлов</string>
     <string name="prefs_housekeepingmoment_before">До резервной копии</string>
     <string name="prefs_housekeepingmoment_after">После резервной копии</string>
+    <string name="radio_obbdata">OBB-данные</string>
 </resources>
