@@ -353,7 +353,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     "$utilBoxQuoted chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${
                         quoteMultiple(chownTargets)
                     }"
-            if(uidgidcon[2] != "?")  //TODO hg: if context is "?", what does it mean?
+            if(uidgidcon[2] == "?") //TODO hg42: when does it happen?
+                command += " ; restorecon -RF -v ${quote(targetDir)}"
+            else
                 command += " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
