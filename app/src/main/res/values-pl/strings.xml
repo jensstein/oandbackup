@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">Uruchamianie zaplanowanej kopii zapasowej…</string>
     <string name="sched_mode">Tryb tworzenia kopii zapasowych:</string>
     <string name="sched_timeLeft">Pozostały czas:</string>
-    <string name="sched_customListUpdateButton">Uaktualnij listę niestandardową</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
     <string name="sched_blacklist">Czarna lista</string>
     <string name="spec_accounts">Konta</string>

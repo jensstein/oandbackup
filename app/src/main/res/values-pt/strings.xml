@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">A iniciar backup agendado…</string>
     <string name="sched_mode">Modo de backup:</string>
     <string name="sched_timeLeft">Tempo restante:</string>
-    <string name="sched_customListUpdateButton">Atualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicações de sistema</string>
     <string name="spec_accounts">Contas</string>
     <string name="spec_appwidgets">Widgets da aplicação</string>

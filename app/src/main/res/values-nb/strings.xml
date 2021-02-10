@@ -101,7 +101,6 @@
     <string name="sched_startingbackup">Starter planlegget sikkerhetskopi…</string>
     <string name="sched_mode">Metode for sikkerhetskopi:</string>
     <string name="sched_timeLeft">Timer til neste sikkerhetskopien:</string>
-    <string name="sched_customListUpdateButton">Oppdater tilpasset liste</string>
     <string name="sched_excludeSystemCheckBox">Ekskluder system apper</string>
     <string name="spec_accounts">Kontoer</string>
     <string name="spec_appwidgets">Program-miniprogrammer</string>

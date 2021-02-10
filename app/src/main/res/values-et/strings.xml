@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">Käivitan ajastatud varunduse…</string>
     <string name="sched_mode">Varundusrežiim:</string>
     <string name="sched_timeLeft">Aega järgmise varunduseni:</string>
-    <string name="sched_customListUpdateButton">Uuenda kohandatud nimekirja</string>
     <string name="sched_excludeSystemCheckBox">Välista süsteemirakendused</string>
     <string name="sched_blacklist">Must nimekiri</string>
     <string name="spec_accounts">Kontod</string>

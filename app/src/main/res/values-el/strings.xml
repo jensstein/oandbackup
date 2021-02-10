@@ -113,7 +113,6 @@
     <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου…</string>
     <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Εναπομένων χρόνος:</string>
-    <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
     <string name="sched_blacklist">Μαύρη λίστα</string>
     <string name="spec_accounts">Λογαριασμοί</string>

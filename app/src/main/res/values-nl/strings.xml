@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">Start geplande back-up…</string>
     <string name="sched_mode">Back-up modus:</string>
     <string name="sched_timeLeft">Tijd tot aan volgende back-up:</string>
-    <string name="sched_customListUpdateButton">Update aangepaste lijst</string>
     <string name="sched_excludeSystemCheckBox">Systeem apps uitsluiten</string>
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">Applicatie Widgets</string>

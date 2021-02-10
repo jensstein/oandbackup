@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">Покретање програмираног прављења резервне копије…</string>
     <string name="sched_mode">Мод прављења резервне копије:</string>
     <string name="sched_timeLeft">Сати до следеће прављења резервне копије:</string>
-    <string name="sched_customListUpdateButton">Освежи произвољни списак</string>
     <string name="sched_excludeSystemCheckBox">Изузимање системских апликација</string>
     <string name="spec_accounts">Налози</string>
     <string name="spec_appwidgets">Виџети</string>

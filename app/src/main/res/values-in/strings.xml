@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">Mulai cadangan terjadwal…</string>
     <string name="sched_mode">Mode cadangan:</string>
     <string name="sched_timeLeft">Waktu tersisa:</string>
-    <string name="sched_customListUpdateButton">Perbarui daftar khusus</string>
     <string name="sched_excludeSystemCheckBox">Kecualikan aplikasi sistem</string>
     <string name="sched_blacklist">Daftar hitam</string>
     <string name="spec_accounts">Akun</string>

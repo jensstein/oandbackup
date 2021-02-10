@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">スケジュールされたバックアップを開始中…</string>
     <string name="sched_mode">バックアップ モード:</string>
     <string name="sched_timeLeft">次回のバックアップまでの時間:</string>
-    <string name="sched_customListUpdateButton">カスタムリストを更新</string>
     <string name="sched_excludeSystemCheckBox">システムアプリを除外</string>
     <string name="spec_accounts">アカウント</string>
     <string name="spec_appwidgets">アプリケーショ ウィジェット</string>

@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">Avvio del backup pianificato…</string>
     <string name="sched_mode">Modalità di backup:</string>
     <string name="sched_timeLeft">Tempo rimasto:</string>
-    <string name="sched_customListUpdateButton">Aggiorna l\'elenco personalizzato</string>
     <string name="sched_excludeSystemCheckBox">Escludi le applicazioni di sistema</string>
     <string name="spec_accounts">Account</string>
     <string name="spec_appwidgets">Widget dell\'applicazione</string>

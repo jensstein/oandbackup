@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">Zamanlanmış yedekleme başlatılıyor…</string>
     <string name="sched_mode">Yedekleme modu:</string>
     <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat:</string>
-    <string name="sched_customListUpdateButton">Özel listeyi güncelle</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
     <string name="sched_blacklist">Karaliste</string>
     <string name="spec_accounts">Hesaplar</string>

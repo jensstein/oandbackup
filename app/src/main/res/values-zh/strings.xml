@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">正在开始定时备份…</string>
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">剩余时间：</string>
-    <string name="sched_customListUpdateButton">更新自定义列表</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
     <string name="sched_blacklist">黑名单</string>
     <string name="spec_accounts">账户</string>

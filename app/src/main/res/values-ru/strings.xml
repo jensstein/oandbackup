@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">Начало запланированного резервирования…</string>
     <string name="sched_mode">Режим резервирования:</string>
     <string name="sched_timeLeft">Часов до следующего резервирования:</string>
-    <string name="sched_customListUpdateButton">Обновить пользовательский список</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
     <string name="sched_blacklist">Черный список</string>
     <string name="spec_accounts">Аккуанты</string>
