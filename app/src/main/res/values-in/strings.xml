@@ -31,7 +31,7 @@
     <string name="showNotInstalled">Tidak menginstal aplikasi</string>
     <string name="showNewAndUpdated">Aplikasi baru dan yang diperbarui</string>
     <string name="showOldBackups">Backup lama</string>
-    <string name="showSplitAPKs">Split-APK</string>
+    <string name="showSplitAPKs">Pisahkan-APK</string>
     <string name="showOnlyApkBackedUp">Aplikasi dengan hanya yang dicadangkan APK</string>
     <string name="showOnlyDataBackedUp">Aplikasi dengan hanya data yang dicadangkan</string>
     <string name="sortByLabel">Sortir menurut label</string>
@@ -51,7 +51,7 @@
     <string name="mkfileError">Tidak dapat membuat</string>
     <!-- fallbackToDefault: menunjukkan fallback ke default untuk pembuatan file tertentu. digunakan dengan cara yang sama seperti mkfileError -->
     <string name="fallbackToDefault">Kembali ke default</string>
-    <string name="backupFolderError">Harap tetapkan jalur yang benar dalam preferensi dan pastikan ada atau dapat dibuat</string>
+    <string name="backupFolderError">Harap tetapkan lokasi yang benar dalam preferensi dan pastikan ada atau dapat dibuat</string>
     <string name="shellReturnSuccess">Keberhasilan</string>
     <string name="shellReturnError">Kesalahan</string>
     <string name="backupProgress">Mencadangkan…</string>
@@ -74,11 +74,11 @@
     <!-- tools_backupsDeleted: ditampilkan dalam pemberitahuan diikuti oleh jumlah cadangan yang dihapus -->
     <string name="batchDeleteBackupsDeleted">Cadangan dihapus:</string>
     <string name="batchDeleteNothingToDelete">Tidak ada cadangan untuk dihapus</string>
-    <string name="enablePackage">Memungkinkan</string>
+    <string name="enablePackage">Aktifkan aplikasi</string>
     <!-- enablePackageTitle: judul untuk daftar pengguna yang dapat diperiksa -->
-    <string name="enablePackageTitle">Aktifkan untuk pengguna</string>
-    <string name="disablePackage">Nonaktifkan</string>
-    <string name="disablePackageTitle">Nonaktifkan untuk pengguna</string>
+    <string name="enablePackageTitle">Aktifkan aplikasi untuk pengguna</string>
+    <string name="disablePackage">Nonaktifkan aplikasi</string>
+    <string name="disablePackageTitle">Nonaktifkan aplikasi untuk pengguna</string>
     <string name="prefs_title">Preferensi</string>
     <string name="prefs_service">Preferensi layanan</string>
     <string name="prefs_user">Preferensi pengguna</string>
@@ -96,26 +96,26 @@
     <string name="prefs_encryption">Enkripsi</string>
     <string name="prefs_password">Kata sandi enkripsi</string>
     <string name="prefs_externaldata">Cadangkan data eksternal</string>
-    <string name="prefs_deviceprotecteddata">Cadangan data yang dilindungi perangkat</string>
+    <string name="prefs_deviceprotecteddata">Cadangkan data yang dilindungi perangkat</string>
     <string name="prefs_deviceprotecteddata_summary">Mencadangkan dan mengembalikan data yang ditempatkan di data/user_de</string>
     <string name="prefs_externaldata_summary">Mencadangkan dan mengembalikan data yang ditempatkan pada penyimpanan eksternal (mis. /Storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Setel ke kosong untuk menonaktifkan enkripsi</string>
     <string name="prefs_encryption_summary">Aktifkan untuk mengenkripsi cadangan data</string>
-    <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan backup data</string>
-    <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. akan mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak energi.</string>
+    <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan mencadangkan data</string>
+    <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. Mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak daya.</string>
     <string name="prefs_oldbackups_summary">Saring cadangan yang lebih lama dari nilai dalam beberapa hari. digunakan dengan filter \'tampilkan backup lama\'.</string>
-    <string name="prefs_copyselfapk_summary">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan saat dicadangkan</string>
+    <string name="prefs_copyselfapk_summary">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan</string>
     <string name="prefs_rememberfiltering_summary">Menyimpan metode penyortiran dan penyaringan yang dipilih. Hanya yang ditandai oleh kotak centang di menu yang dipertimbangkan.</string>
     <string name="prefs_batchdelete_summary">Hapus cadangan semua aplikasi yang saat ini tidak diinstal.</string>
     <string name="sched_title">Penjadwalan</string>
     <string name="sched_notificationMessage">Pencadangan terjadwal</string>
-    <string name="sched_interval">Interval dalam beberapa: hari</string>
+    <string name="sched_interval">Interval dalam hari:</string>
     <string name="sched_hourOfDay">Jam hari:</string>
     <string name="sched_checkbox">Memungkinkan</string>
     <string name="sched_activateButton">Mulai cadangan sekarang</string>
     <string name="sched_startingbackup">Mulai cadangan terjadwal…</string>
     <string name="sched_mode">Mode cadangan:</string>
-    <string name="sched_timeLeft">Waktu hingga cadangan berikutnya:</string>
+    <string name="sched_timeLeft">Waktu tersisa:</string>
     <string name="sched_customListUpdateButton">Perbarui daftar khusus</string>
     <string name="sched_excludeSystemCheckBox">Kecualikan aplikasi sistem</string>
     <string name="sched_blacklist">Daftar hitam</string>
@@ -124,12 +124,12 @@
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Penggunaan dan Kebijakan Data</string>
     <string name="spec_wallpaper">Wallpaper</string>
-    <string name="spec_wifiAccessPoints">Poin Akses Wifi</string>
+    <string name="spec_wifiAccessPoints">Akses point Wifi</string>
     <!-- filebrowser_createDirectoryError: kesalahan terjadi saat mencoba membuat direktori. format: string + " " + nama direktori -->
     <string name="error_creating_notification_channel">Tidak dapat membuat saluran pemberitahuan</string>
     <string name="error_updating_schedule_mode">Kesalahan memperbarui %1$s dari jadwal %2$d</string>
     <string name="permission_not_granted">Diperlukan izin untuk mengakses penyimpanan eksternal</string>
-    <string name="restart_dialog">Aplikasi sepertinya perlu direstart</string>
+    <string name="restart_dialog">Aplikasi sepertinya perlu dimulai ulang</string>
     <string name="filter_options">Filter:</string>
     <string name="sort_options">Sortir dengan:</string>
     <string name="sortLabel">Label</string>
@@ -153,9 +153,9 @@
     <string name="prefs_theme_light">Cahaya</string>
     <string name="prefs_theme_dark">Gelap</string>
     <string name="prefs_theme_system">Tema sistem</string>
-    <string name="empty_filtered_list">Daftar yang difilter kosong, oleh karena itu mengatur filter kembali ke default</string>
+    <string name="empty_filtered_list">Daftar yang difilter kosong.</string>
     <string name="dialog_refuse">Tidak akan melakukannya</string>
-    <string name="dialog_approve">Ayo lakukan</string>
+    <string name="dialog_approve">Ayo lakukan!</string>
     <string name="ignore_battery_optimization_title">Optimalisasi Baterai</string>
     <string name="ignore_battery_optimization_message">Backup kadang-kadang bisa berhenti. Untuk mencegah hal ini, Anda harus mematikan optimisasi baterai</string>
     <string name="ignore_battery_optimization_not_supported">Sayangnya, perangkat ini tidak mendukung pengabaian baterai!</string>
@@ -171,7 +171,7 @@
     <string name="prefs_stopcont">Tutup paksa aplikasi sebelum backup/dikembalikan</string>
     <string name="prefs_password_match_false">Kata Sandi Tidak Sesuai</string>
     <string name="prefs_passwordconfirmation">Konfirmasi enkripsi katasandi</string>
-    <string name="fetching_action_list">Mengambil daftar aplikasi untuk cadangan…</string>
+    <string name="fetching_action_list">Mengambil daftar aplikasi untuk %1$s…</string>
     <string name="logs_text_empty">Tidak ada yang bisa ditampilkan!</string>
     <string name="delete_all_backups">Hapus semua cadangan</string>
     <string name="msg_appkill_warning">Aplikasi yang dipilih akan diberi sinyal untuk berhenti dan setelah tugas selesai akan dilanjutkan. Harap pastikan untuk memeriksa aplikasi Anda yang diproses setelah tugas selesai dan hindari meluncurkannya saat proses masih berjalan.</string>
@@ -207,7 +207,7 @@
     <string name="prefs_stopcont_summary">Hanya ahli: Ini dapat membantu, jika aplikasi mengubah file selama pencadangan dan pencadangan gagal.</string>
     <string name="prefs_disableverification_summary">Menonaktifkan opsi pengembang ini saat memulihkan APK dan mengaktifkannya kembali setelahnya. Memecahkan kesalahan: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Nonaktifkan Verifikasi aplikasi melalui USB</string>
-    <string name="prefs_housekeepingmoment_summary">Mengonfigurasi apakah revisi terlama dihapus sebelum atau setelah membuat cadangan baru untuk mengosongkan ruang disk yang digunakan oleh cadangan.</string>
+    <string name="prefs_housekeepingmoment_summary">Mengkonfigurasi apakah revisi terlama dihapus sebelum atau setelah membuat cadangan baru untuk mengosongkan ruang penyimpanan yang digunakan oleh cadangan.</string>
     <string name="prefs_housekeepingmoment">Waktu pembersihan revisi</string>
     <string name="prefs_numBackupRevisions_summary">Revisi terlama akan dihapus saat membuat cadangan baru jika jumlahnya terlampaui. Setel ke nol untuk menyimpan semua revisi.</string>
     <string name="prefs_numBackupRevisions">Jumlah revisi cadangan</string>
@@ -220,4 +220,29 @@
     <string name="radio_deviceprotecteddata">Data yang Dilindungi Perangkat</string>
     <string name="radio_externaldata">Data Eksternal</string>
     <string name="radio_updated">Diperbarui</string>
+    <plurals name="updated_apps">
+        <item quantity="other">%d aplikasi yang diperbarui</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="other">%d hari,</item>
+    </plurals>
+    <string name="app_info">Informasi-aplikasi</string>
+    <string name="launch_app">Luncurkan aplikasi</string>
+    <string name="exodus_report">Laporan eksodus</string>
+    <string name="clear_cache">Bersihkan cache</string>
+    <string name="usage_notes_title">Catatan Pengunaan</string>
+    <string name="main">Utama</string>
+    <string name="help">Bantuan</string>
+    <string name="stats_apps">Aplikasi</string>
+    <string name="stats_backups">Cadangan</string>
+    <string name="stats_updated">Diperbaharui</string>
+    <string name="radio_launchable">Aplikasi yang dapat diluncurkan</string>
+    <string name="help_issues">Masalah yang diketahui</string>
+    <string name="help_faq">Pertanyaan yang sering ditanyakan</string>
+    <string name="prefs_allowdowngrade_summary">Izinkan versi terlama dari aplikasi yang terpasang dipulihkan.</string>
+    <string name="prefs_restoreallpermissions_summary">Beri aplikasi yang telah dipulihkan semua izin yang diperlukan.</string>
+    <string name="prefs_restoreallpermissions">Pulihkan dengan semua izin</string>
+    <string name="prefs_allowdowngrade">Perbolehkan downgrading</string>
+    <string name="prefs_obbdata_summary">Cadangkan dan pulihkan berkas obb aplikasi yang ditempatkan di penyimpanan eksternal (e.g. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Cadangkan berkas obb</string>
 </resources>

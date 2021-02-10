@@ -20,7 +20,7 @@
     <string name="searchHint">Nach Anwendungen suchen</string>
     <string name="deleteBackup">Sicherung löschen</string>
     <string name="uninstall">App deinstallieren</string>
-    <string name="uninstallProgress">Deinstalliere…</string>
+    <string name="uninstallProgress">Deinstalliere …</string>
     <string name="radio_all">Alle Apps</string>
     <string name="showOnlySystem">Nur System-Apps</string>
     <string name="showOnlyUser">Nur Benutzer-Apps</string>
@@ -41,7 +41,7 @@
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nein</string>
     <string name="restoreDataWithoutApkError">Kann Daten ohne die APK nicht wiederherstellen, Paket ist nicht installiert.</string>
-    <string name="collectingData">Paketinformationen sammeln…</string>
+    <string name="collectingData">Paketinformationen sammeln …</string>
     <string name="utilboxCheck">Überprüfe auf Busybox/Toybox…</string>
     <string name="noSu">Konnte Superuser-Rechte nicht erlangen</string>
     <string name="busyboxProblem">Konnte BusyBox nicht finden. Bitte das Fehlerprotokoll überprüfen</string>
@@ -219,7 +219,7 @@
     <string name="radio_externaldata">Externe Daten</string>
     <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
     <string name="delete_all_backups">Alle Sicherungen löschen</string>
-    <string name="fetching_action_list">App-Liste für %1$s abrufen…</string>
+    <string name="fetching_action_list">Anwendungsliste für %1$s abrufen …</string>
     <string name="prefs_disableverification_summary">Deaktiviert diese Entwickleroption beim Wiederherstellen von APKs und aktiviert sie danach wieder. Behebt den Fehler: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Anwendungsüberprüfung via USB deaktivieren</string>
     <plurals name="days_left">
@@ -245,4 +245,8 @@
         <item quantity="one">%d aktualisierte App</item>
         <item quantity="other">%d aktualisierte Apps</item>
     </plurals>
+    <string name="app_info">App-Info</string>
+    <string name="launch_app">App starten</string>
+    <string name="exodus_report">Exodus Report</string>
+    <string name="clear_cache">Cache löschen</string>
 </resources>

@@ -74,11 +74,11 @@
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">备份已删除：</string>
     <string name="batchDeleteNothingToDelete">没有要删除的备份</string>
-    <string name="enablePackage">启用</string>
+    <string name="enablePackage">启用应用</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
-    <string name="enablePackageTitle">为用户启用</string>
-    <string name="disablePackage">禁用</string>
-    <string name="disablePackageTitle">为用户禁用</string>
+    <string name="enablePackageTitle">为用户启用应用</string>
+    <string name="disablePackage">禁用应用</string>
+    <string name="disablePackageTitle">为用户禁用应用</string>
     <string name="prefs_title">首选项</string>
     <string name="prefs_service">服务首选项</string>
     <string name="prefs_user">用户首选项</string>
@@ -235,4 +235,14 @@
     <string name="prefs_restoreallpermissions">全权限还原</string>
     <string name="prefs_restoreallpermissions_summary">给予恢复的应用程序要求的所有权限。</string>
     <string name="help_faq">常见问题</string>
+    <string name="app_info">应用信息</string>
+    <string name="launch_app">启动应用</string>
+    <string name="exodus_report">Exodus 报告</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="usage_notes_title">使用说明</string>
+    <string name="main">主页</string>
+    <string name="help">帮助</string>
+    <plurals name="updated_apps">
+        <item quantity="other">%d 更新的应用</item>
+    </plurals>
 </resources>
