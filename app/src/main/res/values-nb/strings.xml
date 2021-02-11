@@ -240,4 +240,12 @@
     <string name="usage_notes_title">Bruksmerknader</string>
     <string name="main">Hovedside</string>
     <string name="help">Hjelp</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d oppdatert program</item>
+        <item quantity="other">%d oppdaterte programmer</item>
+    </plurals>
+    <string name="app_info">Programinfo</string>
+    <string name="launch_app">Kjør program</string>
+    <string name="exodus_report">Exodus-rapport</string>
+    <string name="clear_cache">Tøm hurtiglager</string>
 </resources>
