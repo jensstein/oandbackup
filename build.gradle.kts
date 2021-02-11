@@ -24,6 +24,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:4.1.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${System.getProperty("kotlin")}")
         classpath("android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0")
+        classpath("de.mannodermaus.gradle.plugins:android-junit5:1.7.0.0")
     }
 }
 
