@@ -1,0 +1,8 @@
+**NEUE MAJOR VERSION**: inkompatibel mit den alten Versionen.
+**MIGRIERT TO KOTLIN**.
+GEPLANTE AKTIONEN BEENDEN SICH NACH 10 MINUTEN (SYSTEMEINSCHRÄNKUNG): also gruppieren Sie ihre Apps.
+
+* Aktualisiert: Die Auswahl eines Backup-Verzeichnisses erzeugt keinen Unterordner mehr
+* Aktualisiert: Weit weniger unnötige Aktualisierungen
+* Behoben: A11-Unterstützung
+* Viel viele andere Verbesserungen, Korrekturen und Bereinigungen (siehe vollständiges Changelog)

@@ -1,5 +1,5 @@
-<p>Fork des berüchtigten OAndBackup mit dem Ziel, die App ins Jahr 2020 zu bringen, auch neuere Android-Versionen zu unterstützen und ihr einen neuen Anstrich zu verpassen.</p>
-<p>Es ermöglicht das Erstellen und Wiederherstellen von Backups von Apps auf deinem Android-Gerät. <i>OAndBackupX</i> ermöglicht das Speichern von App-Daten an einem für den Anwender erreichbaren Speicherort. Sowohl Sichern als auch das Wiederherstellen einzelner sowie mehrerer Apps wird unterstützt.</p>
+<p>Erstellen und Wiederherstellen von Sicherungen von Apps auf Ihrem Gerät und Speichern von App-Daten an einem für den Benutzer zugänglichen Ort. Unterstützt das Sichern und Wiederherstellen von einzelnen oder mehreren Apps.</p>
+<p>Nachfolger von OAndBackup bringt die Unterstützung für neue Android-Versionen und eine aktualisierte Benutzeroberfläche.</p>
 <p><br><b>Trage zur Übersetzung auf Weblate bei:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
 <p><br><b>Benötigt Superuser-Rechte:</b> Damit es Dateien aus /data/data, /data/app und /system/app kopieren kann.</p>
 <p>Status: Beta</p>
