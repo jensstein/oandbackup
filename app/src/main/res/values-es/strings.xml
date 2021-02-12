@@ -73,11 +73,11 @@
     <!-- tools_backupsDeleted: Mostrar en una notificacion seguida del numero de respaldos eliminados -->
     <string name="batchDeleteBackupsDeleted">Respaldos eliminados:</string>
     <string name="batchDeleteNothingToDelete">No hay respaldos para eliminar</string>
-    <string name="enablePackage">Activar</string>
+    <string name="enablePackage">Habilitar la aplicación</string>
     <!-- enablePackageTitle: título para la lista de usuarios comprobables -->
-    <string name="enablePackageTitle">Activar para usuarios</string>
-    <string name="disablePackage">Desactivar</string>
-    <string name="disablePackageTitle">Desactivar para usuarios</string>
+    <string name="enablePackageTitle">Activar aplicación para usuarios</string>
+    <string name="disablePackage">Desactivar la aplicación</string>
+    <string name="disablePackageTitle">Desactivar la aplicación para usuarios</string>
     <string name="prefs_title">Preferencias</string>
     <string name="prefs_user">Preferencias de usuario</string>
     <string name="prefs_theme">Tema</string>
@@ -126,7 +126,6 @@
     <string name="sched_startingbackup">Iniciando repaldo programado…</string>
     <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_timeLeft">Tiempo restante:</string>
-    <string name="sched_customListUpdateButton">Actualizar lista personalizada</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
     <string name="sched_blacklist">Lista negra</string>
     <string name="spec_accounts">Cuentas</string>
@@ -238,4 +237,15 @@
     <string name="prefs_restoreallpermissions">Restaurar con todos los permisos</string>
     <string name="prefs_restoreallpermissions_summary">Dar a la aplicación restaurada todos los permisos que solicite.</string>
     <string name="help_faq">Preguntas frecuentes</string>
+    <string name="usage_notes_title">Notas de uso</string>
+    <string name="main">Inicio</string>
+    <string name="help">Ayuda</string>
+    <string name="exodus_report">Reporte del Éxodo</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d aplicación actualizada</item>
+        <item quantity="other">%d aplicaciones actualizadas</item>
+    </plurals>
+    <string name="app_info">Info-App</string>
+    <string name="launch_app">Lanzar aplicación</string>
+    <string name="clear_cache">Limpiar caché</string>
 </resources>

@@ -72,11 +72,11 @@
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Р.к. удалена:</string>
     <string name="batchDeleteNothingToDelete">Нет р.к. для удаления</string>
-    <string name="enablePackage">Включить</string>
+    <string name="enablePackage">Включить приложение</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
-    <string name="enablePackageTitle">Включить для пользователей</string>
-    <string name="disablePackage">Отключить</string>
-    <string name="disablePackageTitle">Отключить для пользователей</string>
+    <string name="enablePackageTitle">Включить приложение для пользователей</string>
+    <string name="disablePackage">Отключить приложение</string>
+    <string name="disablePackageTitle">Отключить приложение для пользователей</string>
     <string name="prefs_title">Настройки</string>
     <string name="prefs_acquirewakelock">Предотвратить сон</string>
     <string name="prefs_acquirewakelock_summary">Использовать wakelock во время пакетных операций для предотвращения сна. Значительно ускоряет резервирование и восстановление, но потребляет больше энергии.</string>
@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">Начало запланированного резервирования…</string>
     <string name="sched_mode">Режим резервирования:</string>
     <string name="sched_timeLeft">Часов до следующего резервирования:</string>
-    <string name="sched_customListUpdateButton">Обновить пользовательский список</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
     <string name="sched_blacklist">Черный список</string>
     <string name="spec_accounts">Аккуанты</string>
@@ -221,4 +220,9 @@
     <string name="radio_externaldata">Внешние данные</string>
     <string name="prefs_advanced">Расширенные возможности</string>
     <string name="help_issues">Известные проблемы</string>
+    <string name="prefs_obbdata_summary">Создает резервные копии и восстанавливает obb-файлы приложения, которые размещаются во внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata">Резервное копирование obb файлов</string>
+    <string name="prefs_housekeepingmoment_before">До резервной копии</string>
+    <string name="prefs_housekeepingmoment_after">После резервной копии</string>
+    <string name="radio_obbdata">OBB-данные</string>
 </resources>

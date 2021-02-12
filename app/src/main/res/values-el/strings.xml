@@ -13,8 +13,8 @@
     <string name="de_selectAll">Από/επιλογή όλων</string>
     <string name="onlyApkBackedUp">Μόνον εφαρμογή</string>
     <string name="onlyDataBackedUp">Μόνο δεδομένα</string>
-    <string name="refresh">Επαναφόρτωση</string>
-    <string name="batchbackup">Μαζικά αντίγραφα</string>
+    <string name="refresh">Ανανέωση</string>
+    <string name="batchbackup">Μαζική δημιουργία αντιγράφων ασφαλείας</string>
     <string name="batchrestore">Μαζική επαναφορά</string>
     <string name="search">Αναζήτηση</string>
     <string name="searchHint">Αναζήτηση εφαρμογών</string>
@@ -36,8 +36,8 @@
     <string name="sort">Ταξινόμηση και φιλτράρισμα</string>
     <string name="uninstallDialogMessage">Απεγκατάσταση της εφαρμογής;</string>
     <string name="deleteBackupDialogMessage">Διαγραφή αρχείων αντιγράφου;</string>
-    <string name="dialogOK">ΟΚ</string>
-    <string name="dialogCancel">Ακύρωση</string>
+    <string name="dialogOK">Εντάξει</string>
+    <string name="dialogCancel">Άκυρο</string>
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
     <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο.</string>
@@ -71,11 +71,11 @@
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Διεγραμμένα αντίγραφα:</string>
     <string name="batchDeleteNothingToDelete">Δεν υπάρχουν αντίγραφα για διαγραφή</string>
-    <string name="enablePackage">Ενεργοποίηση</string>
+    <string name="enablePackage">Ενεργοποίηση εφαρμογής</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
-    <string name="enablePackageTitle">Ενεργοποίηση για χρήστες</string>
-    <string name="disablePackage">Απενεργοποίηση</string>
-    <string name="disablePackageTitle">Απενεργοποίηση για χρήστες</string>
+    <string name="enablePackageTitle">Ενεργοποίηση εφαρμογής για χρήστες</string>
+    <string name="disablePackage">Απενεργοποίηση εφαρμογής</string>
+    <string name="disablePackageTitle">Απενεργοποίηση εφαρμογής για χρήστες</string>
     <string name="prefs_title">Προτιμήσεις</string>
     <string name="prefs_service">Προτιμήσεις υπηρεσίας</string>
     <string name="prefs_user">Προτιμήσεις χρήστη</string>
@@ -113,7 +113,6 @@
     <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου…</string>
     <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Εναπομένων χρόνος:</string>
-    <string name="sched_customListUpdateButton">Ενημέρωση ειδικής λίστας</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
     <string name="sched_blacklist">Μαύρη λίστα</string>
     <string name="spec_accounts">Λογαριασμοί</string>
@@ -150,7 +149,7 @@
     <string name="other_filters_options">Ειδικά φίλτρα:</string>
     <string name="deleted_backup">Το αντίγραφο διαγράφηκε</string>
     <string name="prefs_theme_light">Φωτεινό</string>
-    <string name="prefs_theme_dark">Σκούρο</string>
+    <string name="prefs_theme_dark">Σκοτεινό</string>
     <string name="prefs_theme_system">Θέμα συστήματος</string>
     <string name="empty_filtered_list">Η φιλτραρισμένη λίστα είναι κενή.</string>
     <string name="dialog_refuse">Δε θα το κάνω</string>
@@ -209,8 +208,8 @@
     <string name="prefs_advanced">Προηγμένες προτιμήσεις</string>
     <string name="prefs_housekeepingmoment_summary">Ρυθμίζει εάν η παλαιότερη εκδοχή διαγράφεται πριν ή μετά τη δημιουργία ενός νέου αντιγράφου ώστε να ελευθερώσει το χώρο του δίσκου που χρησιμοποιείται από το αντίγραφο.</string>
     <string name="prefs_housekeepingmoment">Χρόνος Καθαρισμού Εκδοχών</string>
-    <string name="prefs_housekeepingmoment_before">Πριν τη Δημιουργία Αντιγράφου</string>
-    <string name="prefs_housekeepingmoment_after">Μετά τη Δημιουργία Αντιγράφου</string>
+    <string name="prefs_housekeepingmoment_before">Πριν τη δημιουργία Αντιγράφου ασφαλείας</string>
+    <string name="prefs_housekeepingmoment_after">Μετά τη δημιουργία Αντιγράφου ασφαλείας</string>
     <string name="radio_obbdata">Δεδομένα OBB</string>
     <string name="radio_deviceprotecteddata">Προστατευμένα από τη Συσκευή Δεδομένα</string>
     <string name="radio_externaldata">Εξωτερικά Δεδομένα</string>
@@ -224,7 +223,7 @@
     <string name="prefs_disableverification">Απενεργοποίηση Επαλήθευσης εφαρμογών μέσω USB</string>
     <string name="stats_apps">Εφαρμογές</string>
     <string name="stats_backups">Αντίγραφα</string>
-    <string name="stats_updated">Ενημερωμένο</string>
+    <string name="stats_updated">Ενημερωμένα</string>
     <string name="radio_launchable">Εκκινήσιμες Εφαρμογές</string>
     <string name="help_issues">Γνωστά προβλήματα</string>
     <string name="fetching_action_list">Απόκτηση λίστας εφαρμογών για %1$s…</string>
@@ -235,5 +234,16 @@
     <string name="prefs_restoreallpermissions">Επαναφορά με όλες τις άδειες</string>
     <string name="prefs_restoreallpermissions_summary">Παραχώρηση όλων των αδειών στην επαναφερθείσα εφαρμογή.</string>
     <string name="prefs_unset">Αποτυχία ορισμού</string>
-    <string name="help_faq">Συχνές ερωτήσεις</string>
+    <string name="help_faq">Συχνές Ερωτήσεις</string>
+    <string name="main">Κυρίως</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d ενημερωμένη εφαρμογή</item>
+        <item quantity="other">%d ενημερωμένες εφαρμογές</item>
+    </plurals>
+    <string name="app_info">Πληροφορίες εφαρμογής</string>
+    <string name="launch_app">Εκκίνηση εφαρμογής</string>
+    <string name="exodus_report">Αναφορά exodus</string>
+    <string name="clear_cache">Καθαρισμός cache</string>
+    <string name="usage_notes_title">Σημειώσεις Χρήσης</string>
+    <string name="help">Βοήθεια</string>
 </resources>

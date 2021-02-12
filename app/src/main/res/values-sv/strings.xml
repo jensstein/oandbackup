@@ -100,7 +100,6 @@
     <string name="sched_startingbackup">startar den schemalagda säkerhetskopieringen…</string>
     <string name="sched_mode">säkerhetskopieringsläge:</string>
     <string name="sched_timeLeft">timmar till nästa säkerhetskopiering:</string>
-    <string name="sched_customListUpdateButton">uppdatera anpassad lista</string>
     <string name="sched_excludeSystemCheckBox">uteslut system-appar</string>
     <string name="spec_accounts">Konton</string>
     <string name="spec_appwidgets">Applikations-widgeter</string>

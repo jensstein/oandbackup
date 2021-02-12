@@ -116,7 +116,6 @@
     <string name="sched_startingbackup">Uruchamianie zaplanowanej kopii zapasowej…</string>
     <string name="sched_mode">Tryb tworzenia kopii zapasowych:</string>
     <string name="sched_timeLeft">Pozostały czas:</string>
-    <string name="sched_customListUpdateButton">Uaktualnij listę niestandardową</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
     <string name="sched_blacklist">Czarna lista</string>
     <string name="spec_accounts">Konta</string>
@@ -236,4 +235,6 @@
     <string name="prefs_allowdowngrade_summary">Pozwól na przywrócenie starszej wersji zainstalowanej aplikacji.</string>
     <string name="prefs_restoreallpermissions">Przywróć ze wszystkimi uprawnieniami</string>
     <string name="prefs_restoreallpermissions_summary">Daj przywróconej aplikacji wszystkie uprawnienia jakich zażąda.</string>
+    <string name="help">Pomoc</string>
+    <string name="radio_launchable">Aplikacje Możliwe do Uruchomienia</string>
 </resources>
