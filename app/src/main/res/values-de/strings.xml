@@ -248,4 +248,6 @@
     <string name="launch_app">App starten</string>
     <string name="exodus_report">Exodus Report</string>
     <string name="clear_cache">Cache löschen</string>
+    <string name="forceKillMessage">Sind Sie sicher, dass Sie das Beenden dieser App erzwingen wollen\?</string>
+    <string name="sched_name">Name:</string>
 </resources>
