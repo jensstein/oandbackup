@@ -29,8 +29,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdkVersion(26)
         targetSdkVersion(29)
-        versionCode = 5000
-        versionName = "5.0.0"
+        versionCode = 5001
+        versionName = "5.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {

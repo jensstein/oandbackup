@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+5.0.1 (13.02.2021)
+------------------
+
+* Updated: Improving shell commands function (@hg42)
+* Fixed: Correct SELinux context (@jakeler & @hg42)
+* Fixed: Missing files for some special backups (@hg42)
+* Fixed: Throwing exception on sockets and other special files (@hg42)
+* Fixed: Failed backups with files with names with double spaces (@jakeler)
+* Fixed: STOP-CONT log messages (@hg42)
+* Updated: Gradle & Dependencies
+* Updated translations: Polish, Portuguese, Chinese, Greek, German, French, Norwegian, Dutch, Spanish, Italian, Indonesian, Japanese, Russian
+* Clean up
+
 5.0.0 (03.01.2021)
 ------------------
 
