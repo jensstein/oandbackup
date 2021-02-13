@@ -280,7 +280,6 @@
                     android:focusable="true"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     android:text="@string/sched_blacklist"
-                    android:tooltipText="@string/sched_customListUpdateButton"
                     app:layout_constraintBottom_toBottomOf="@id/customListButton"
                     app:layout_constraintEnd_toStartOf="@id/removeButton"
                     app:layout_constraintStart_toEndOf="@id/customListButton"
