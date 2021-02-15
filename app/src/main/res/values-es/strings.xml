@@ -75,9 +75,9 @@
     <string name="batchDeleteNothingToDelete">No hay respaldos para eliminar</string>
     <string name="enablePackage">Habilitar la aplicación</string>
     <!-- enablePackageTitle: título para la lista de usuarios comprobables -->
-    <string name="enablePackageTitle">Activar aplicación para usuarios</string>
-    <string name="disablePackage">Desactivar la aplicación</string>
-    <string name="disablePackageTitle">Desactivar la aplicación para usuarios</string>
+    <string name="enablePackageTitle">Habilitar aplicación para usuarios</string>
+    <string name="disablePackage">Deshabilitar la aplicación</string>
+    <string name="disablePackageTitle">Deshabilitar la aplicación para usuarios</string>
     <string name="prefs_title">Preferencias</string>
     <string name="prefs_user">Preferencias de usuario</string>
     <string name="prefs_theme">Tema</string>
@@ -249,4 +249,5 @@
     <string name="launch_app">Lanzar aplicación</string>
     <string name="clear_cache">Limpiar caché</string>
     <string name="sched_name">Nombre:</string>
+    <string name="forceKillMessage">grandtrucksimulator2¿Seguro que quieres forzar la detención de la aplicación\?</string>
 </resources>
