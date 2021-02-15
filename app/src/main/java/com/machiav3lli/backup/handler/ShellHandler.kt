@@ -291,11 +291,11 @@ class ShellHandler {
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
             // stderr is used for logging, so it's better not to call an application that does that
             // and keeps quiet
-            Timber.d("Running Command: ${iterableToString("; ", commands.toList())}")
+            Timber.d("Running Command: ${commands.joinToString(" ; ")}")
             val stdout: List<String> = arrayListOf()
             val stderr: List<String> = arrayListOf()
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
-            Timber.d(String.format("Command(s) '%s' ended with %d", commands.toString(), result.code))
+            Timber.d("Command(s) ${commands.joinToString(" ; ")} ended with ${result.code}")
             if (!result.isSuccess)
                 throw ShellCommandFailedException(result)
             return result
