@@ -244,6 +244,6 @@
     <plurals name="updated_apps">
         <item quantity="other">%d 更新的应用</item>
     </plurals>
-    <string name="forceKillMessage">你确定要强制停止该应用吗？</string>
+    <string name="forceKillMessage">grandtrucksimulator2你确定要强制停止该应用吗？</string>
     <string name="sched_name">名称：</string>
 </resources>
