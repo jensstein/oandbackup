@@ -47,6 +47,7 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.dialogs.CustomListDialogFragment
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
+import com.machiav3lli.backup.dialogs.ScheduleNameDialog
 import com.machiav3lli.backup.handler.ScheduleJobsHandler
 import com.machiav3lli.backup.services.ScheduleJobService
 import com.machiav3lli.backup.utils.*
@@ -83,23 +84,18 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
         viewModel.schedule.observe(viewLifecycleOwner, {
+            binding.schedName.text = it.name
             binding.schedFilter.check(filterToId(it.filter))
             binding.schedMode.check(modeToId(it.mode))
             binding.enableCheckbox.isChecked = it.enabled
-            when {
-                it.customList.isNotEmpty() -> binding.customListButton.setTextColor(requireContext().getColor(R.color.app_accent))
-                else -> binding.customListButton.setTextColor(requireContext().getColor(R.color.app_secondary))
-            }
+            binding.customListButton.setColor(it.customList)
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
             toggleSecondaryButtons(binding.schedMode)
         })
         viewModel.blacklist.observe(viewLifecycleOwner, {
-            if (it.isNotEmpty())
-                binding.blacklistButton.setTextColor(requireContext().getColor(R.color.app_accent))
-            else
-                binding.blacklistButton.setTextColor(requireContext().getColor(R.color.app_secondary))
+            binding.blacklistButton.setColor(it.toSet())
         })
 
         return binding.root
@@ -112,6 +108,12 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
 
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.schedName.setOnClickListener {
+            ScheduleNameDialog(binding.schedName.text) {
+                viewModel.schedule.value?.name = it
+                refresh(false)
+            }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
+        }
         binding.schedFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             viewModel.schedule.value?.filter = idToFilter(checkedId)
             refresh(false)
@@ -226,10 +228,11 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             val message = StringBuilder()
             message.append("\n${getModeString(it.mode, requireContext())}")
             message.append("\n${getFilterString(it.filter, requireContext())}")
-            if (it.filter == SCHED_FILTER_NEW_UPDATED) message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
+            if (it.filter == SCHED_FILTER_NEW_UPDATED)
+                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
             message.append("\n${getString(R.string.customListTitle)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
             AlertDialog.Builder(requireActivity())
-                    .setTitle("${getString(R.string.sched_activateButton)}?")
+                    .setTitle("${it.name}: ${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)
                     .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
                         StartSchedule(requireContext(), scheduleId)

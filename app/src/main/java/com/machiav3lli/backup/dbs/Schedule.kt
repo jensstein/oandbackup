@@ -29,6 +29,8 @@ class Schedule {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
+    var name: String? = "New Schedule"
+
     var enabled = false
 
     var timeHour = 0
@@ -58,6 +60,7 @@ class Schedule {
         if (other == null || javaClass != other.javaClass) return false
         val schedule = other as Schedule
         return id == schedule.id
+                && name == schedule.name
                 && enabled == schedule.enabled
                 && timeHour == schedule.timeHour
                 && timeMinute == schedule.timeMinute
@@ -73,6 +76,7 @@ class Schedule {
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + id.toInt()
+        hash = 31 * hash + name.hashCode()
         hash = 31 * hash + if (enabled) 1 else 0
         hash = 31 * hash + timeHour
         hash = 31 * hash + timeMinute
@@ -89,6 +93,7 @@ class Schedule {
     override fun toString(): String {
         return "Schedule{" +
                 "id=" + id +
+                ", name="+ name +
                 ", enabled=" + enabled +
                 ", timeHour=" + timeHour +
                 ", timeMinute=" + timeMinute +
