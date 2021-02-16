@@ -29,8 +29,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdkVersion(26)
         targetSdkVersion(29)
-        versionCode = 5000
-        versionName = "5.0.0"
+        versionCode = 5001
+        versionName = "5.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -87,7 +87,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.5.0")
     kapt("androidx.room:room-compiler:2.2.6")
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("org.apache.commons:commons-compress:1.20")
     implementation("commons-io:commons-io:${versions["commons_io"]}")
@@ -98,8 +98,8 @@ dependencies {
 
     // UI
     implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.2.5")
-    implementation("com.google.android.material:material:1.3.0-rc01")
+    implementation("androidx.fragment:fragment-ktx:1.3.0")
+    implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.3")
