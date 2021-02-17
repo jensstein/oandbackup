@@ -38,7 +38,7 @@ open class LogItem : Parcelable {
     constructor(text: String, date: LocalDateTime) {
         this.logDate = date
         this.deviceName = android.os.Build.DEVICE
-        this.sdkCodename = android.os.Build.VERSION.CODENAME
+        this.sdkCodename = android.os.Build.VERSION.RELEASE
         this.cpuArch = android.os.Build.SUPPORTED_ABIS[0]
         this.logText = text
     }
