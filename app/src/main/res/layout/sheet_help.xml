@@ -238,7 +238,7 @@
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     android:paddingBottom="@dimen/cards_spacing"
-                    app:layout_constraintBottom_toTopOf="@id/help_html"
+                    app:layout_constraintBottom_toTopOf="@id/usage_notes"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/help_info">
@@ -436,15 +436,54 @@
                         android:text="@string/help_appTypeHint" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/help_html"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/usage_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginBottom="@dimen/cards_spacing"
+                    android:background="@drawable/bg_card_ripple"
+                    android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/help_legend" />
+                    app:layout_constraintTop_toBottomOf="@id/help_legend">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/usage_notes_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_spacing"
+                        android:text="@string/usage_notes_title"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        app:layout_constraintBottom_toTopOf="@id/usage_notes_html"
+                        app:layout_constraintEnd_toStartOf="@id/extend_shrink"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/extend_shrink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:src="@drawable/ic_arrow_down_42"
+                        app:layout_constraintBottom_toBottomOf="@id/usage_notes_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/usage_notes_title"
+                        app:layout_constraintTop_toTopOf="@id/usage_notes_title" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/usage_notes_html"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/usage_notes_title" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>
