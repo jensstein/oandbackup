@@ -22,6 +22,12 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="TextAppearance.Headline" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
     <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
