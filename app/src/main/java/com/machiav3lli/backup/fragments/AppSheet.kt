@@ -17,7 +17,9 @@
  */
 package com.machiav3lli.backup.fragments
 
+import android.app.ActivityManager
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -138,7 +140,12 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                 changeVisibility(binding.backup, View.VISIBLE, update)
                 changeVisibility(binding.appSizeLine, View.VISIBLE, update)
                 changeVisibility(binding.dataSizeLine, View.VISIBLE, update)
+                changeVisibility(binding.splitsLine, View.VISIBLE, update)
                 changeVisibility(binding.cacheSizeLine, View.VISIBLE, update)
+                changeVisibility(binding.wipeCache, View.VISIBLE, update)
+                changeVisibility(binding.launchApp, View.VISIBLE, update)
+                changeVisibility(binding.forceKill, View.VISIBLE, update)
+                changeVisibility(binding.appInfo, View.VISIBLE, update)
             } else {
                 // Special app is not installed but backup should be possible... maybe a check of the backup is really
                 // possible on the device could be an indicator for `isInstalled()` of special packages
@@ -150,7 +157,12 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                 changeVisibility(binding.disablePackage, View.GONE, update)
                 changeVisibility(binding.appSizeLine, View.GONE, update)
                 changeVisibility(binding.dataSizeLine, View.GONE, update)
+                changeVisibility(binding.splitsLine, View.GONE, update)
                 changeVisibility(binding.cacheSizeLine, View.GONE, update)
+                changeVisibility(binding.wipeCache, View.INVISIBLE, update)
+                changeVisibility(binding.launchApp, View.INVISIBLE, update) // TODO add isLaunchable attribute to AppInfo
+                changeVisibility(binding.forceKill, View.INVISIBLE, update)
+                changeVisibility(binding.appInfo, View.INVISIBLE, update)
             }
             if (it.isSystem) {
                 changeVisibility(binding.uninstall, View.GONE, update)
@@ -169,7 +181,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
             binding.label.text = appMetaInfo.packageLabel
             binding.packageName.text = it.packageName
             binding.appType.setText(if (appMetaInfo.isSystem) com.machiav3lli.backup.R.string.apptype_system else com.machiav3lli.backup.R.string.apptype_user)
-            pickSheetDataSizes(requireContext(), it, binding, update)
+            context?.let { context -> pickSheetDataSizes(context, it, binding, update) }
             binding.appSplits.setText(if (it.apkSplits.isNullOrEmpty()) com.machiav3lli.backup.R.string.dialogNo else com.machiav3lli.backup.R.string.dialogYes)
             binding.versionName.text = appMetaInfo.versionName
             if (it.hasBackups) {
@@ -186,6 +198,22 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         viewModel.appInfo.value?.let { app: AppInfo ->
             binding.exodusReport.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(exodusUrl(app.packageName)))) }
+            binding.launchApp.setOnClickListener {
+                requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
+                    startActivity(it)
+                }
+            }
+            binding.forceKill.setOnClickListener {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(app.packageLabel)
+                        .setMessage(com.machiav3lli.backup.R.string.forceKillMessage)
+                        .setPositiveButton(com.machiav3lli.backup.R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                            (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                                    .killBackgroundProcesses(app.packageName)
+                        }
+                        .setNegativeButton(com.machiav3lli.backup.R.string.dialogNo, null)
+                        .show()
+            }
             binding.appInfo.setOnClickListener {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", app.packageName, null)

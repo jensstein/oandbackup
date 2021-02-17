@@ -47,8 +47,8 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
     if (app.isSpecial || !app.isInstalled) {
         changeVisibility(binding.appSizeLine, View.GONE, update)
         changeVisibility(binding.dataSizeLine, View.GONE, update)
+        changeVisibility(binding.splitsLine, View.GONE, update)
         changeVisibility(binding.cacheSizeLine, View.GONE, update)
-        changeVisibility(binding.appSplitsLine, View.GONE, update)
     } else {
         try {
             binding.appSize.text = Formatter.formatFileSize(context, app.storageStats?.appBytes
@@ -58,7 +58,7 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
             binding.cacheSize.text = Formatter.formatFileSize(context, app.storageStats?.cacheBytes
                     ?: 0)
             if (app.storageStats?.cacheBytes == 0L) {
-                changeVisibility(binding.wipeCache, View.GONE, update)
+                changeVisibility(binding.wipeCache, View.INVISIBLE, update)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.e("Package ${app.packageName} is not installed? Exception: $e")
