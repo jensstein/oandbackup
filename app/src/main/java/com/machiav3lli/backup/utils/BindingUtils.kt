@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
+import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.AppMetaInfo
@@ -101,6 +102,23 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
         }
     }
     imageTintList = color
+}
+
+fun Chip.setColor(theList: Set<String>) {
+    when {
+        theList.isNotEmpty() -> {
+            this.setTextColor(this.context.getColor(R.color.app_accent))
+            this.setChipStrokeColorResource(R.color.app_accent)
+            this.setChipIconTintResource(R.color.app_accent)
+            this.setRippleColorResource(R.color.app_accent)
+        }
+        else -> {
+            this.setTextColor(this.context.getColor(R.color.app_secondary))
+            this.setChipStrokeColorResource(R.color.app_secondary)
+            this.setChipIconTintResource(R.color.app_secondary)
+            this.setRippleColorResource(R.color.app_secondary)
+        }
+    }
 }
 
 fun getFormattedDate(lastUpdate: LocalDateTime?, withTime: Boolean): String? {
