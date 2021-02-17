@@ -24,6 +24,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.handler.ScheduleJobsHandler.timeUntilNextEvent
+import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import com.mikepenz.fastadapter.diff.DiffCallback
 import java.time.LocalTime
@@ -45,25 +46,20 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
     }
 
     override fun bindView(binding: ItemSchedulerXBinding, payloads: List<Any>) {
-        binding.schedFilter.setText(when (schedule.filter) {
-            SCHED_FILTER_USER -> R.string.radio_user
-            SCHED_FILTER_SYSTEM -> R.string.radio_system
-            SCHED_FILTER_NEW_UPDATED -> R.string.showNewAndUpdated
-            else -> R.string.radio_all
-        })
-        binding.schedMode.setText(when (schedule.mode) {
-            MODE_APK -> R.string.radio_apk
-            MODE_DATA -> R.string.radio_data
-            else -> R.string.radio_both
-        })
+        binding.schedName.text = schedule.name
+        binding.systemFilter.setExists(schedule.filter == SCHED_FILTER_SYSTEM || schedule.filter == SCHED_FILTER_ALL)
+        binding.userFilter.setExists(schedule.filter == SCHED_FILTER_USER || schedule.filter == SCHED_FILTER_ALL)
+        binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
+        binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
+        binding.apkMode.setExists(schedule.mode == MODE_APK || schedule.mode == MODE_BOTH)
+        binding.dataMode.setExists(schedule.mode == MODE_DATA || schedule.mode == MODE_BOTH)
         binding.enableCheckbox.isChecked = schedule.enabled
         setTimeLeft(binding)
     }
 
     override fun unbindView(binding: ItemSchedulerXBinding) {
-        binding.schedFilter.text = null
-        binding.schedMode.text = null
         binding.timeLeft.text = null
+        binding.schedName.text = null
     }
 
     private fun setTimeLeft(binding: ItemSchedulerXBinding) {
@@ -94,6 +90,7 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
 
             override fun areItemsTheSame(oldItem: SchedulerItemX, newItem: SchedulerItemX): Boolean {
                 return oldItem.schedule.enabled == newItem.schedule.enabled
+                        && oldItem.schedule.name == newItem.schedule.name
                         && oldItem.schedule.timeHour == newItem.schedule.timeHour
                         && oldItem.schedule.timeMinute == newItem.schedule.timeMinute
                         && oldItem.schedule.interval == newItem.schedule.interval
