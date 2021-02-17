@@ -540,7 +540,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 searchViewController?.setup()
                 mainFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
-                OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e)
@@ -580,8 +579,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 searchViewController?.setup()
                 batchFastAdapter?.notifyAdapterDataSetChanged()
                 updateCheckAll()
-
-                OnlyInJava.slideUp(binding.bottomBar)
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e)

@@ -21,10 +21,12 @@ import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
+import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.PrefsServiceFragment
 
 class PrefsActivity : BaseActivity() {
     private lateinit var binding: ActivityPrefsBinding
+    var sheetHelp: HelpSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,10 @@ class PrefsActivity : BaseActivity() {
             supportFragmentManager.beginTransaction().replace(R.id.prefsFragment, PrefsFragment()).commit()
         }
         binding.backButton.setOnClickListener { if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
-
+        binding.helpButton.setOnClickListener {
+            if (sheetHelp == null) sheetHelp = HelpSheet()
+            sheetHelp!!.showNow(supportFragmentManager, "HELPSHEET")
+        }
         setContentView(binding.root)
     }
 

@@ -105,11 +105,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         binding.addSchedule.setOnClickListener {
             viewModel.addSchedule()
         }
-        binding.helpButton.setOnClickListener {
-            if (sheetHelp == null) sheetHelp = HelpSheet()
-            sheetHelp?.showNow(this@SchedulerActivityX.supportFragmentManager, "SCHEDULESHEET")
-        }
-        schedulerFastAdapter.addEventHook(OnDeleteClickHook())
+        // schedulerFastAdapter.addEventHook(OnDeleteClickHook())
         schedulerFastAdapter.addEventHook(OnEnableClickHook())
     }
 

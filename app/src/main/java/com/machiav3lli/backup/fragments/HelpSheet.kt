@@ -27,9 +27,9 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.core.text.HtmlCompat
-import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -46,7 +46,7 @@ class HelpSheet : BottomSheetDialogFragment() {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
         return sheet
@@ -71,19 +71,34 @@ class HelpSheet : BottomSheetDialogFragment() {
         binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE))) }
         binding.issues.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES))) }
         binding.faq.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ))) }
+        binding.usageNotesTitle.setOnClickListener { usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE) }
+        binding.extendShrink.setOnClickListener { usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE) }
     }
 
     private fun setupViews() {
         try {
             binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
-            val stream = resources.openRawResource(com.machiav3lli.backup.R.raw.help)
+            val stream = resources.openRawResource(R.raw.help)
             val htmlString = convertStreamToString(stream)
             stream.close()
-            binding.helpHtml.text = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
-            binding.helpHtml.movementMethod = LinkMovementMethod.getInstance()
+            binding.usageNotesHtml.text = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.usageNotesHtml.movementMethod = LinkMovementMethod.getInstance()
         } catch (e: IOException) {
-            binding.helpHtml.text = e.toString()
+            binding.usageNotesHtml.text = e.toString()
         } catch (ignored: PackageManager.NameNotFoundException) {
+        }
+    }
+
+    private fun usageNotesExtendShrink(extended: Boolean) {
+        val rotate = AnimationUtils.loadAnimation(context, R.anim.anim_rotate)
+        if (extended) {
+            binding.usageNotesHtml.visibility = View.GONE
+            binding.extendShrink.startAnimation(rotate)
+            binding.extendShrink.rotation = 0.0F
+        } else {
+            binding.usageNotesHtml.visibility = View.VISIBLE
+            binding.extendShrink.startAnimation(rotate)
+            binding.extendShrink.rotation = 180.0F
         }
     }
 

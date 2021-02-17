@@ -31,6 +31,10 @@
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="colorControlNormal">@android:color/white</item>
+        <item name="fastScrollHorizontalThumbDrawable">@drawable/fastscroll_thumb</item>
+        <item name="fastScrollHorizontalTrackDrawable">@drawable/fastscroll_track</item>
+        <item name="fastScrollVerticalThumbDrawable">@drawable/fastscroll_thumb</item>
+        <item name="fastScrollVerticalTrackDrawable">@drawable/fastscroll_track</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.DayNight">
@@ -58,10 +62,8 @@
     <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">64dp</item>
-        <item name="android:layout_marginHorizontal">32dp</item>
-        <item name="android:layout_gravity">bottom|center_horizontal</item>
-        <item name="layout_behavior">@string/hide_bottom_view_on_scroll_behavior</item>
+        <item name="android:layout_marginHorizontal">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:elevation">2dp</item>
     </style>
 
@@ -147,25 +149,56 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
+    <style name="Chip.Data" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/ic_data</item>
+        <item name="rippleColor">@color/ic_data</item>
+        <item name="chipSurfaceColor">@color/chip_surface_data</item>
+        <item name="android:textColor">@color/chip_text_data</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">8dp</item>
+    </style>
+
+    <style name="Chip.Apk" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/ic_apk</item>
+        <item name="rippleColor">@color/ic_apk</item>
+        <item name="chipSurfaceColor">@color/chip_surface_apk</item>
+        <item name="android:textColor">@color/chip_text_apk</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">8dp</item>
+    </style>
+
     <style name="Chip.Action" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="chipSurfaceColor">?android:windowBackground</item>
         <item name="android:textColor">@color/chip_text</item>
         <item name="labelVisibilityMode">labeled</item>
-        <item name="checkedIconTint">?colorAccent</item>
+        <item name="chipCornerRadius">8dp</item>
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
         <item name="chipStrokeColor">@color/app_secondary</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="rippleColor">@color/app_secondary</item>
+        <item name="chipSurfaceColor">?android:windowBackground</item>
         <item name="android:textColor">@color/app_secondary</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
         <item name="chipStrokeColor">@color/app_accent</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="rippleColor">@color/app_accent</item>
+        <item name="chipSurfaceColor">?android:windowBackground</item>
         <item name="android:textColor">@color/app_accent</item>
+    </style>
+
+    <style name="Chip.Action.Filled.Positive" parent="Chip.Action">
+        <item name="chipStrokeColor">@color/app_accent</item>
+        <item name="rippleColor">@color/app_primary_base</item>
+        <item name="chipSurfaceColor">@color/app_accent</item>
+        <item name="android:textColor">?colorControlNormal</item>
     </style>
 </resources>

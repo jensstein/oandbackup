@@ -29,9 +29,9 @@
         android:paddingVertical="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            style="@style/ItemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_card_ripple"
             android:paddingHorizontal="@dimen/cards_spacing"
             android:paddingVertical="4dp">
 
@@ -103,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cards_spacing"
                 android:padding="@dimen/small_spacing"
+                android:textIsSelectable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
