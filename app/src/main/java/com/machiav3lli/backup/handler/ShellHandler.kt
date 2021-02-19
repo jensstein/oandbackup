@@ -312,7 +312,7 @@ class ShellHandler {
         }
 
         //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
-        val charactersToBeEscaped = Regex("""[\\|&$("\[]""")   // blacklist, only escape those that are necessary
+        val charactersToBeEscaped = Regex("""[\\$"`]""")   // blacklist, only escape those that are necessary
 
         fun quote(parameter: String): String {
             return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""

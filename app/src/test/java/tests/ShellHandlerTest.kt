@@ -79,7 +79,7 @@ internal class ShellHandlerTest {
 
     @Test
     fun test_quote() {
-        assertEquals("""${'"'}My\\\|\$\&\"'`\[]\(){}   =:;?<~>-+!%^#*,.file${'"'}""",
+        assertEquals("""${'"'}My\\|\$&\"'\`[](){}   =:;?<~>-+!%^#*,.file${'"'}""",
                 ShellHandler.quote("""My\|$&"'`[](){}   =:;?<~>-+!%^#*,.file""")
         )
     }
