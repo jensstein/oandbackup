@@ -381,4 +381,6 @@
     <string name="exodus_report"></string>
     <string name="launch_app"></string>
     <string name="prefs_useexpedited_summary" translatable="false"></string>
+    <string name="forceKillMessage"></string>
+    <string name="msg_appkill_warning"></string>
 </resources>
