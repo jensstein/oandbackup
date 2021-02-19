@@ -378,8 +378,8 @@
     <string name="dialog_approve"></string>
     <string name="dialog_start"></string>
     <string name="sched_exported"></string>
-    <string name="forceKillMessage"/>
-    <string name="msg_appkill_warning"/>
+    <string name="forceKillMessage"></string>
+    <string name="msg_appkill_warning"></string>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata_summary"></string>
     <string name="prefs_nobackupdata"></string>
