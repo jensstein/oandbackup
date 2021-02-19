@@ -3,6 +3,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
+import junit.framework.Assert.assertEquals
 import org.jetbrains.annotations.TestOnly
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
@@ -46,6 +47,32 @@ class ShellTests {
         )
         assertTrue(
                 checkCommandLength("echo -n", safeCommandLength)
+        )
+    }
+
+    @Test
+    @DisplayName("quote()")
+    fun test_quote() {
+        val ext = ".aNoNeXiStEnTExt"
+        val filename = """test    file    \|$&"'`[](){}=:;?<~>-+!%^#*,""" + ext
+        val dir = "/data/local/tmp"
+        //val dir = "/cache"
+        try { ShellHandler.runAsRoot("toybox rm $dir/*$ext") } catch(e: Throwable) {}
+        assertEquals(
+            0,
+            ShellHandler.runAsRoot("toybox touch ${ShellHandler.quote("$dir/$filename")}").code
+        )
+        assertEquals(
+            "$dir/$filename",
+            ShellHandler.runAsRoot("toybox echo $dir/*$ext").out.joinToString(";")
+        )
+        assertEquals(
+            "$dir/$filename",
+            ShellHandler.runAsRoot("toybox ls -dlZ $dir/*$ext").out.joinToString(";").split(" ", limit=9)[8]
+        )
+        assertEquals(
+            0,
+            ShellHandler.runAsRoot("toybox rm ${ShellHandler.quote("$dir/$filename")}").code
         )
     }
 }
