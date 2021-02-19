@@ -378,4 +378,6 @@
     <string name="dialog_approve"></string>
     <string name="dialog_start"></string>
     <string name="sched_exported"></string>
+    <string name="forceKillMessage"></string>
+    <string name="msg_appkill_warning"></string>
 </resources>
