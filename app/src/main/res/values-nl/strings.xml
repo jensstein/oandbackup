@@ -388,4 +388,6 @@
     <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
     <string name="prefs_maxcrashlines_summary" translatable="false"></string>
     <string name="smsmms_permission_title"></string>
+    <string name="forceKillMessage"></string>
+    <string name="msg_appkill_warning"></string>
 </resources>
