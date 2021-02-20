@@ -244,4 +244,6 @@
     <string name="prefs_allowdowngrade">Perbolehkan downgrading</string>
     <string name="prefs_obbdata_summary">Cadangkan dan pulihkan berkas obb aplikasi yang ditempatkan di penyimpanan eksternal (e.g. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Cadangkan berkas obb</string>
+    <string name="forceKillMessage">Apakah anda yakin untuk memaksa penghentian aplikasi\?</string>
+    <string name="sched_name">Nama :</string>
 </resources>
