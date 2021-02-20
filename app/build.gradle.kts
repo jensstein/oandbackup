@@ -135,13 +135,10 @@ dependencies {
 
     // 4) Jupiter API & Test Runner, if you don't have it already
     androidTestImplementation("androidx.test:runner:1.3.0")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit-jupiter"]}")
 
     // 5) The instrumentation test companion libraries
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:1.2.0")
     androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:1.2.0")
-
-    //androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    //androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 }
 
