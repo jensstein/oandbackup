@@ -22,44 +22,43 @@
         android:defaultValue="system"
         android:entries="@array/themeEntries"
         android:entryValues="@array/themeEntryValues"
+        android:icon="@drawable/ic_theme"
         android:key="themes"
         android:title="@string/prefs_theme"
-        app:iconSpaceReserved="false"
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.ListPreference
         android:defaultValue="system"
         android:entries="@array/languageEntries"
         android:entryValues="@array/languageEntryValues"
+        android:icon="@drawable/ic_languages"
         android:key="languages"
         android:title="@string/prefs_languages"
-        app:iconSpaceReserved="false"
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.Preference
+        android:icon="@drawable/ic_storage"
         android:key="pathBackupFolder"
-        android:title="@string/prefs_pathbackupfolder"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_pathbackupfolder" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_biometric"
         android:key="biometricLock"
         android:summary="@string/prefs_biometriclock_summary"
-        android:title="@string/prefs_biometriclock"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_biometriclock" />
 
     <androidx.preference.EditTextPreference
         android:defaultValue="7"
         android:inputType="number"
         android:key="oldBackups"
         android:summary="@string/prefs_oldbackups_summary"
-        android:title="@string/prefs_oldbackups"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_oldbackups" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
+        android:icon="@drawable/ic_filter"
         android:key="rememberFiltering"
         android:summary="@string/prefs_rememberfiltering_summary"
-        android:title="@string/prefs_rememberfiltering"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_rememberfiltering" />
 </androidx.preference.PreferenceScreen>

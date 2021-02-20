@@ -15,47 +15,39 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
-        android:key="acquireWakelock"
-        android:summary="@string/prefs_acquirewakelock_summary"
-        android:title="@string/prefs_acquirewakelock"
-        app:iconSpaceReserved="false" />
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_special"
         android:key="enableSpecialBackups"
-        android:title="@string/prefs_enableSpecialBackups"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_enableSpecialBackups" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
+        android:icon="@drawable/ic_andy"
         android:key="disableVerification"
         android:summary="@string/prefs_disableverification_summary"
-        android:title="@string/prefs_disableverification"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_disableverification" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_de_data"
         android:key="giveAllPermissions"
         android:summary="@string/prefs_restoreallpermissions_summary"
-        android:title="@string/prefs_restoreallpermissions"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_restoreallpermissions" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_restore"
         android:key="allowDowngrade"
         android:summary="@string/prefs_allowdowngrade_summary"
-        android:title="@string/prefs_allowdowngrade"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_allowdowngrade" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_force_kill"
         android:key="killBeforeAction"
         android:summary="@string/prefs_stopcont_summary"
-        android:title="@string/prefs_stopcont"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_stopcont" />
 </androidx.preference.PreferenceScreen>
