@@ -249,5 +249,5 @@
     <string name="launch_app">Lanzar aplicación</string>
     <string name="clear_cache">Limpiar caché</string>
     <string name="sched_name">Nombre:</string>
-    <string name="forceKillMessage">grandtrucksimulator2¿Seguro que quieres forzar la detención de la aplicación\?</string>
+    <string name="forceKillMessage">¿Seguro que quieres forzar la detención de la aplicación\?</string>
 </resources>
