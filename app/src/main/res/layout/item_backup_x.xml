@@ -30,7 +30,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_static"
+            android:background="@drawable/bg_card_ripple"
             android:padding="@dimen/cards_spacing">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -69,38 +69,38 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/obbMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_obb_data_24" />
+                    app:srcCompat="@drawable/ic_obb_data" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/deDataMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_device_encrypted_data_24" />
+                    app:srcCompat="@drawable/ic_de_data" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/extDataMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_external_data_24" />
+                    app:srcCompat="@drawable/ic_external_data" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/dataMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_data_24" />
+                    app:srcCompat="@drawable/ic_data" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/apkMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_apk_24" />
+                    app:srcCompat="@drawable/ic_apk" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.AppCompatTextView

@@ -85,13 +85,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         }
     }
 
-    private var updatedBadge: BadgeDrawable? = null
     private lateinit var prefs: SharedPreferences
     private var navController: NavController? = null
     private var powerManager: PowerManager? = null
     private var searchViewController: SearchViewController? = null
 
-    private lateinit var binding: ActivityMainXBinding
+    lateinit var binding: ActivityMainXBinding
     private lateinit var viewModel: MainViewModel
     val mainItemAdapter = ItemAdapter<MainItemX>()
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
@@ -119,8 +118,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             if (it) searchViewController?.clean()
             else if (mainBoolean) {
                 mainItemAdapter.adapterItems.forEach { item ->
-                    if (item.app.hasBackups && item.app.isUpdated)
-                        viewModel.badgeCounter.value = viewModel.badgeCounter.value?.plus(1)
+                    if (item.app.hasBackups && item.app.isUpdated) {
+                        viewModel.updatedList.value = viewModel.updatedList.value?.plus(item.app.packageLabel)?.toMutableList()
+                    }
                 }
             }
         })
@@ -161,14 +161,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     }
 
     private fun setupViews() {
-        binding.cbAll.isChecked = false
         binding.refreshLayout.setColorSchemeColors(resources.getColor(R.color.app_accent, theme))
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.app_primary_base, theme))
         binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
-        binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
-        updatedBadge?.backgroundColor = resources.getColor(R.color.app_accent, theme)
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         mainFastAdapter?.setHasStableIds(true)

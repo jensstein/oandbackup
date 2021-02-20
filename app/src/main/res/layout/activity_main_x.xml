@@ -49,168 +49,159 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragmentContainer" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/modeBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient_alpha_bottom_top"
+            android:elevation="@dimen/small_spacing"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/cards_spacing"
-            android:paddingVertical="@dimen/buttons_spacing"
-            app:layout_constraintBottom_toTopOf="@id/mainLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progressBar">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.chip.Chip
+                android:id="@+id/updatedApps"
+                style="@style/Chip.Action.Filled.Positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dp"
+                android:text="@string/place_holder"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.chip.Chip
                 android:id="@+id/apkBatch"
+                style="@style/Chip.Apk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/buttons_spacing"
-                android:background="@drawable/bg_lower_opacity_ripple_apk"
-                android:gravity="center_horizontal"
-                android:minWidth="@dimen/app_icon_size"
-                android:padding="@dimen/buttons_spacing"
                 android:text="@string/radio_apk"
-                android:textAppearance="@style/TextAppearance.Lines" />
+                android:textAppearance="@style/TextAppearance.Lines"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dataBatch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/ic_apk" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/dataBatch"
+                style="@style/Chip.Data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_lower_opacity_ripple_data"
-                android:gravity="center_horizontal"
-                android:minWidth="@dimen/app_icon_size"
-                android:padding="@dimen/buttons_spacing"
+                android:layout_marginStart="@dimen/buttons_spacing"
                 android:text="@string/radio_data"
-                android:textAppearance="@style/TextAppearance.Lines" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                android:textAppearance="@style/TextAppearance.Lines"
+                app:layout_constraintStart_toEndOf="@id/apkBatch"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/ic_data" />
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/mainLayout"
-            android:layout_width="0dp"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/buttonSortFilter"
+                style="@style/Chip.Action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_neutral_ripple"
+                android:clickable="true"
+                android:contextClickable="true"
+                android:focusable="true"
+                android:text="@string/sort_and_filter"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:chipIcon="@drawable/ic_filter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/app_accent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="top"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/modeBar">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/refreshLayout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="top"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+                android:clipToPadding="false"
+                app:fastScrollEnabled="true"
+                tools:listitem="@layout/item_main_x" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingTop="@dimen/buttons_spacing"
-                    app:fastScrollEnabled="true"
-                    app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
-                    app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
-                    app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
-                    app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
-                    tools:listitem="@layout/item_main_x" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <FrameLayout
+            android:id="@+id/buttonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient_alpha_top_bottom"
+            app:layout_constraintBottom_toTopOf="@id/navigationBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/refreshLayout">
 
-            <FrameLayout
-                android:id="@+id/bottomBar"
-                style="@style/Bar.Bottom"
-                android:layout_gravity="bottom"
-                android:background="@drawable/bg_bar_static_round">
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="@dimen/buttons_spacing"
+                android:background="@drawable/bg_button_positive_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/place_holder"
+                android:textColor="?colorAccent" />
+        </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/navigationBar"
+            style="@style/Bar.Bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bar_static_round"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonBar">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                style="@style/Bar.BottomNavigation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@drawable/bg_button_middle_navbar"
+                app:itemRippleColor="?colorAccent"
+                app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                app:menu="@menu/navi_menu_main" />
 
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:id="@+id/batchBar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/cards_spacing"
-                            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/buttonScheduler"
+                style="@style/Button.NavBar.Middle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_scheduler"
+                android:tooltipText="@string/sched_title" />
 
-                            <androidx.appcompat.widget.AppCompatCheckBox
-                                android:id="@+id/cbAll"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/cards_spacing"
-                                android:singleLine="true"
-                                android:text="@string/all" />
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/buttonAction"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginVertical="@dimen/buttons_spacing"
-                                android:layout_weight="1"
-                                android:background="@drawable/bg_button_positive_ripple"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:text=""
-                                android:textColor="?colorAccent" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <androidx.appcompat.widget.AppCompatImageButton
-                                android:id="@+id/buttonSettings"
-                                style="@style/Button.NavBar.Start"
-                                android:layout_width="52dp"
-                                android:layout_height="wrap_content"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:src="@drawable/ic_settings_32"
-                                android:tooltipText="@string/prefs_title" />
-
-                            <com.google.android.material.bottomnavigation.BottomNavigationView
-                                android:id="@+id/bottom_navigation"
-                                style="@style/Bar.BottomNavigation"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="3"
-                                android:background="@drawable/bg_button_middle_navbar"
-                                app:itemRippleColor="?colorAccent"
-                                app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
-                                app:menu="@menu/navi_menu_main" />
-
-                            <androidx.appcompat.widget.AppCompatImageButton
-                                android:id="@+id/buttonScheduler"
-                                style="@style/Button.NavBar.Middle"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:src="@drawable/ic_scheduler_32"
-                                android:tooltipText="@string/sched_title" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-                    </LinearLayout>
-
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/buttonSortFilter"
-                        style="@style/Button.NavBar.End"
-                        android:layout_width="52dp"
-                        android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_filter_list_32"
-                        android:tooltipText="@string/sort_and_filter" />
-                </LinearLayout>
-            </FrameLayout>
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/buttonSettings"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_settings"
+                android:tooltipText="@string/prefs_title" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-

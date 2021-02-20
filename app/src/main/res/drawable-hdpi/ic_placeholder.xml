@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -21,17 +20,17 @@
         <shape android:shape="oval">
             <solid android:color="?colorAccent" />
             <stroke
-                android:width="4dp"
+                android:width="1dp"
                 android:color="@android:color/black" />
             <size
-                android:width="48dp"
-                android:height="48dp" />
+                android:width="@dimen/icon_large"
+                android:height="@dimen/icon_large" />
         </shape>
     </item>
     <item>
         <vector
-            android:width="48dp"
-            android:height="48dp"
+            android:width="@dimen/icon_large"
+            android:height="@dimen/icon_large"
             android:viewportWidth="108"
             android:viewportHeight="108">
 

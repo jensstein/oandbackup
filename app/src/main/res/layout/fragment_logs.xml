@@ -41,10 +41,6 @@
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/buttons_spacing"
                 app:fastScrollEnabled="true"
-                app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
-                app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
-                app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
-                app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track"
                 tools:listitem="@layout/item_log_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

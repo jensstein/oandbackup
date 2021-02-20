@@ -64,34 +64,34 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/systemFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
                 android:tint="@color/ic_system"
-                app:srcCompat="@drawable/ic_system_24" />
+                app:srcCompat="@drawable/ic_system" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/userFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
                 android:tint="@color/ic_user"
-                app:srcCompat="@drawable/ic_user_24" />
+                app:srcCompat="@drawable/ic_user" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/launchableFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
                 android:tint="@color/ic_special"
-                app:srcCompat="@drawable/ic_launchable_24" />
+                app:srcCompat="@drawable/ic_launchable" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/updatedFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_update_24" />
+                app:srcCompat="@drawable/ic_updated" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -138,17 +138,17 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/dataMode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_data_24" />
+                app:srcCompat="@drawable/ic_data" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/apkMode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_apk_24" />
+                app:srcCompat="@drawable/ic_apk" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

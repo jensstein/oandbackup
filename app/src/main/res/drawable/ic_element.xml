@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ OAndBackupX: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/icon_medium"
+    android:height="@dimen/icon_medium"
+    android:tint="@color/ic_apk"
+    android:viewportWidth="201.21"
+    android:viewportHeight="201.21">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="m108.179,171.091c-50.963,1.037 -70.226,-26.012 -74.224,-58.522 7.427,-5.554 13.43,-1.078 13.43,-1.078 9.639,31.655 23.337,43.81 60.044,45.62 4.351,6.225 4.689,8.898 0.751,13.98z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="m22.405,107.372c5.216,-50.706 34.42,-66.51 67.175,-66.494 4.603,8.052 -0.576,13.46 -0.576,13.46 -32.597,5.688 -46.339,17.793 -52.633,54.001 -6.711,3.556 -9.405,3.564 -13.966,-0.968z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="m93.642,29.188c50.963,-1.038 70.227,26.009 74.226,58.519 -7.427,5.555 -13.429,1.078 -13.429,1.078C144.798,57.132 131.1,44.977 94.393,43.168 90.042,36.944 89.704,34.27 93.642,29.188Z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="m178.906,92.92c-4.233,50.797 -33.127,67.163 -65.876,67.782 -4.758,-7.961 0.315,-13.469 0.315,-13.469 32.481,-6.318 45.986,-18.687 51.578,-55.01 6.641,-3.685 9.335,-3.745 13.983,0.697z" />
+</vector>

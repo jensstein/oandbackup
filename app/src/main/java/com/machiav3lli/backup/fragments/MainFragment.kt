@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SearchViewController
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentMainBinding
@@ -70,6 +71,7 @@ class MainFragment : Fragment(), SearchViewController {
     override fun onStart() {
         super.onStart()
         requireMainActivity().onResumeFragment()
+        binding.pageHeadline.text = resources.getText(R.string.main)
     }
 
     override fun onResume() {
