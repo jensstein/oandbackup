@@ -35,8 +35,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon"
-                android:layout_width="@dimen/app_icon_size"
-                android:layout_height="@dimen/app_icon_size"
+                android:layout_width="@dimen/icon_large"
+                android:layout_height="@dimen/icon_large"
                 android:layout_marginEnd="@dimen/cards_spacing"
                 android:contentDescription="@string/app_s_icon"
                 android:src="@drawable/ic_placeholder"

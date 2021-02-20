@@ -28,8 +28,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
-            style="@style/Widget.AppBar"
-            android:background="@drawable/bg_bar_static"
+            style="@style/Bar.AppBar"
+            android:background="@drawable/bg_bar_static_round"
             android:elevation="@dimen/small_spacing">
 
             <androidx.appcompat.widget.AppCompatImageView

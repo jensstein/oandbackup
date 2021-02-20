@@ -81,7 +81,7 @@
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
     </style>
 
-    <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+    <style name="Bar.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginHorizontal">8dp</item>
