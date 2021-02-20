@@ -336,7 +336,7 @@ class ShellHandler {
         }
 
         @Throws(IOException::class)
-        fun quirkLibsuReadFileWorkaround(filepath: String?, filesize: Long, output: OutputStream) {
+        fun quirkLibsuReadFileWorkaround(filepath: String, filesize: Long, output: OutputStream) {
             val maxRetries: Short = 10
             var stream = SuRandomAccessFile.open(filepath, "r")
             val buf = ByteArray(BUFFER_SIZE)

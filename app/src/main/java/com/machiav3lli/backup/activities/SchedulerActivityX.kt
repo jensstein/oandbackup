@@ -32,7 +32,6 @@ import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
-import com.machiav3lli.backup.handler.ScheduleJobsHandler
 import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
@@ -97,7 +96,7 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
                         .getBlacklistedPackages(GLOBAL_ID) as ArrayList<String>
                 args.putStringArrayList(BLACKLIST_ARGS_PACKAGES,
                         blacklistedPackages)
-                val blacklistDialogFragment = BlacklistDialogFragment(SCHED_FILTER_ALL,this)
+                val blacklistDialogFragment = BlacklistDialogFragment(SCHED_FILTER_ALL, this)
                 blacklistDialogFragment.arguments = args
                 blacklistDialogFragment.show(supportFragmentManager, "BLACKLIST_DIALOG")
             }.start()
@@ -105,7 +104,6 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         binding.addSchedule.setOnClickListener {
             viewModel.addSchedule()
         }
-        // schedulerFastAdapter.addEventHook(OnDeleteClickHook())
         schedulerFastAdapter.addEventHook(OnEnableClickHook())
     }
 
@@ -113,17 +111,6 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
         Thread {
             blacklistDao.updateList(blacklistId, newList)
         }.start()
-    }
-
-    inner class OnDeleteClickHook : ClickEventHook<SchedulerItemX>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-            return viewHolder.itemView.findViewById(R.id.delete)
-        }
-
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<SchedulerItemX>, item: SchedulerItemX) {
-            viewModel.removeSchedule(item.schedule.id)
-            ScheduleJobsHandler.cancelJob(this@SchedulerActivityX, item.schedule.id.toInt())
-        }
     }
 
     inner class OnEnableClickHook : ClickEventHook<SchedulerItemX>() {
