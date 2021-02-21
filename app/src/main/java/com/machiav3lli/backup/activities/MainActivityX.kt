@@ -32,15 +32,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
-import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
+import com.machiav3lli.backup.dialogs.UpdatedAppsDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
@@ -85,13 +85,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         }
     }
 
-    private var updatedBadge: BadgeDrawable? = null
     private lateinit var prefs: SharedPreferences
     private var navController: NavController? = null
     private var powerManager: PowerManager? = null
     private var searchViewController: SearchViewController? = null
 
-    private lateinit var binding: ActivityMainXBinding
+    lateinit var binding: ActivityMainXBinding
     private lateinit var viewModel: MainViewModel
     val mainItemAdapter = ItemAdapter<MainItemX>()
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
@@ -102,9 +101,11 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     private var sheetSortFilter: SortFilterSheet? = null
     private var sheetApp: AppSheet? = null
     var sheetHelp: HelpSheet? = null
+    var snackBar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
@@ -119,8 +120,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             if (it) searchViewController?.clean()
             else if (mainBoolean) {
                 mainItemAdapter.adapterItems.forEach { item ->
-                    if (item.app.hasBackups && item.app.isUpdated)
-                        viewModel.badgeCounter.value = viewModel.badgeCounter.value?.plus(1)
+                    if (item.app.hasBackups && item.app.isUpdated) {
+                        viewModel.updatedList.value = viewModel.updatedList.value?.plus(item.app.packageLabel)?.toMutableList()
+                    }
                 }
             }
         })
@@ -129,9 +131,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 refreshView()
             }
         })
-        viewModel.badgeCounter.observe(this, {
-            updatedBadge?.isVisible = it != 0
-            updatedBadge?.number = it
+        viewModel.updatedList.observe(this, {
+            if (it.size > 0) {
+                binding.updatedApps.text = binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it.size, it.size)
+                binding.updatedApps.visibility = View.VISIBLE
+            } else {
+                binding.updatedApps.visibility = View.GONE
+            }
         })
         checkUtilBox()
         runOnUiThread { showEncryptionDialog() }
@@ -161,14 +167,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     }
 
     private fun setupViews() {
-        binding.cbAll.isChecked = false
         binding.refreshLayout.setColorSchemeColors(resources.getColor(R.color.app_accent, theme))
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.app_primary_base, theme))
         binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
-        binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        updatedBadge = binding.bottomNavigation.getOrCreateBadge(R.id.mainFragment)
-        updatedBadge?.backgroundColor = resources.getColor(R.color.app_accent, theme)
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         mainFastAdapter?.setHasStableIds(true)
@@ -187,10 +189,18 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             when (destination.id) {
                 R.id.mainFragment -> navigateMain()
                 R.id.backupFragment -> {
+                    if (!backupBoolean) {
+                        viewModel.dataCheckedList.clear()
+                        viewModel.apkCheckedList.clear()
+                    }
                     backupBoolean = true
                     navigateBatch()
                 }
                 R.id.restoreFragment -> {
+                    if (backupBoolean) {
+                        viewModel.dataCheckedList.clear()
+                        viewModel.apkCheckedList.clear()
+                    }
                     backupBoolean = false
                     navigateBatch()
                 }
@@ -200,29 +210,29 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
 
     private fun navigateMain() {
         mainBoolean = true
-        binding.batchBar.visibility = View.GONE
-        binding.modeBar.visibility = View.GONE
+        binding.buttonBar.visibility = View.GONE
+        binding.updatedApps.visibility = View.VISIBLE
+        binding.apkBatch.visibility = View.INVISIBLE
+        binding.dataBatch.visibility = View.INVISIBLE
         binding.recyclerView.adapter = mainFastAdapter
+        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, 0) }
     }
 
     private fun navigateBatch() {
         mainBoolean = false
-        binding.batchBar.visibility = View.VISIBLE
-        binding.modeBar.visibility = View.VISIBLE
+        binding.buttonBar.visibility = View.VISIBLE
+        binding.updatedApps.visibility = View.GONE
+        binding.apkBatch.visibility = View.VISIBLE
+        binding.dataBatch.visibility = View.VISIBLE
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
+        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, binding.buttonBar.height) }
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
-        viewModel.dataCheckedList.clear()
-        viewModel.apkCheckedList.clear()
     }
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
-        binding.cbAll.setOnClickListener {
-            binding.cbAll.isChecked = (it as AppCompatCheckBox).isChecked
-            onCheckAllChanged()
-        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
                     getFilterPreferences(this).toString()),
@@ -254,67 +264,79 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 viewModel.dataCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter?.notifyAdapterDataSetChanged()
-            updateCheckAll()
+            updateApkChecks()
+            updateDataChecks()
             false
         }
-        binding.apkBatch.setOnClickListener { onCheckedApkClicked() }
-        binding.dataBatch.setOnClickListener { onCheckedDataClicked() }
+        binding.updatedApps.setOnClickListener {
+            val dialog = UpdatedAppsDialogFragment(viewModel.updatedList.value ?: mutableListOf())
+            dialog.show(supportFragmentManager, "UpdatedAppsDialogFragment")
+        }
+        binding.apkBatch.setOnClickListener {
+            binding.apkBatch.isChecked = (it as AppCompatCheckBox).isChecked
+            onCheckedApkClicked()
+        }
+        binding.dataBatch.setOnClickListener {
+            binding.dataBatch.isChecked = (it as AppCompatCheckBox).isChecked
+            onCheckedDataClicked()
+        }
         batchFastAdapter?.addEventHook(OnApkCheckBoxClickHook())
         batchFastAdapter?.addEventHook(OnDataCheckBoxClickHook())
     }
 
-    private fun onCheckAllChanged() {
-        batchItemAdapter.adapterItems.forEach { item ->
-            val apbEligible = item.app.hasApk || backupBoolean
-            val dataEligible = item.app.hasAppData || backupBoolean
-            if (apbEligible) item.isApkChecked = binding.cbAll.isChecked
-            if (dataEligible) item.isDataChecked = binding.cbAll.isChecked
-            when {
-                binding.cbAll.isChecked -> {
-                    if (!viewModel.apkCheckedList.contains(item.app.packageName) && apbEligible)
-                        viewModel.apkCheckedList.add(item.app.packageName)
-                    if (!viewModel.dataCheckedList.contains(item.app.packageName) && dataEligible)
-                        viewModel.dataCheckedList.add(item.app.packageName)
-                }
-                else -> {
-                    viewModel.apkCheckedList.remove(item.app.packageName)
-                    viewModel.dataCheckedList.remove(item.app.packageName)
-                }
-            }
-        }
-        batchFastAdapter?.notifyAdapterDataSetChanged()
+    fun scrollToItem(packageLabel: String) {
+        val theItem = mainItemAdapter.adapterItems.find { it.app.packageLabel == packageLabel }
+        binding.recyclerView.smoothScrollToPosition(mainFastAdapter?.getPosition(theItem!!)!!)
     }
 
     private fun onCheckedApkClicked() {
         val possibleApkCheckedList = batchItemAdapter.adapterItems.filter { it.app.hasApk || backupBoolean }
-        val checkBoolean = viewModel.apkCheckedList.size != possibleApkCheckedList.size
-        viewModel.apkCheckedList.clear()
+        val checkBoolean = binding.apkBatch.isChecked
         possibleApkCheckedList.forEach {
             val packageName = it.app.packageName
             it.isApkChecked = checkBoolean
-            if (checkBoolean) viewModel.apkCheckedList.add(packageName)
+            when {
+                checkBoolean -> {
+                    if (!viewModel.apkCheckedList.contains(packageName))
+                        viewModel.apkCheckedList.add(packageName)
+                }
+                else -> {
+                    viewModel.apkCheckedList.remove(packageName)
+                }
+            }
         }
         batchFastAdapter?.notifyAdapterDataSetChanged()
-        updateCheckAll()
+        updateApkChecks()
     }
 
     private fun onCheckedDataClicked() {
         val possibleDataCheckedList = batchItemAdapter.itemList.items.filter { it.app.hasAppData || backupBoolean }
-        val checkBoolean = viewModel.dataCheckedList.size != possibleDataCheckedList.size
-        viewModel.dataCheckedList.clear()
+        val checkBoolean = binding.dataBatch.isChecked
         possibleDataCheckedList.forEach {
             val packageName = it.app.packageName
             it.isDataChecked = checkBoolean
-            if (checkBoolean) viewModel.dataCheckedList.add(packageName)
+            when {
+                checkBoolean -> {
+                    if (!viewModel.dataCheckedList.contains(packageName))
+                        viewModel.dataCheckedList.add(packageName)
+                }
+                else -> {
+                    viewModel.dataCheckedList.remove(packageName)
+                }
+            }
         }
         batchFastAdapter?.notifyAdapterDataSetChanged()
-        updateCheckAll()
+        updateDataChecks()
     }
 
-    private fun updateCheckAll() {
+    private fun updateApkChecks() {
         val possibleApkChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasApk || backupBoolean }.size
+        binding.apkBatch.isChecked = viewModel.apkCheckedList.size == possibleApkChecked
+    }
+
+    private fun updateDataChecks() {
         val possibleDataChecked: Int = batchItemAdapter.itemList.items.filter { it.app.hasAppData || backupBoolean }.size
-        binding.cbAll.isChecked = viewModel.apkCheckedList.size == possibleApkChecked && viewModel.dataCheckedList.size == possibleDataChecked
+        binding.dataBatch.isChecked = viewModel.dataCheckedList.size == possibleDataChecked
     }
 
     inner class OnApkCheckBoxClickHook : ClickEventHook<BatchItemX>() {
@@ -330,7 +352,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 viewModel.apkCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter?.notifyAdapterDataSetChanged()
-            updateCheckAll()
+            updateApkChecks()
         }
     }
 
@@ -347,7 +369,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 viewModel.dataCheckedList.remove(item.app.packageName)
             }
             batchFastAdapter?.notifyAdapterDataSetChanged()
-            updateCheckAll()
+            updateDataChecks()
         }
     }
 
@@ -482,7 +504,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (isNeedRefresh(this)) {
             viewModel.refreshList()
-            setNeedRefresh(this,false)
+            setNeedRefresh(this, false)
         }
     }
 
@@ -505,7 +527,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     // Most functionality could be added to the view model
     fun refresh(mainBoolean: Boolean, backupOrAppSheetBoolean: Boolean) {
         Timber.d("refreshing")
-        viewModel.badgeCounter.value = 0
+        viewModel.updatedList.value = mutableListOf()
         if (mainBoolean) {
             viewModel.apkCheckedList.clear()
             viewModel.dataCheckedList.clear()
@@ -578,7 +600,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 batchFastAdapter?.notifyAdapterDataSetChanged()
-                updateCheckAll()
+                updateApkChecks()
+                updateDataChecks()
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
                 LogUtils.unhandledException(e)
@@ -589,8 +612,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     private fun createBatchAppsList(filteredList: List<AppInfo>, backupBoolean: Boolean): MutableList<BatchItemX> = filteredList
             .filter { toAddToBatch(backupBoolean, it) }.map {
                 val item = BatchItemX(it, backupBoolean)
-                if (viewModel.apkCheckedList.contains(it.packageName)) item.isApkChecked = true
-                if (viewModel.dataCheckedList.contains(it.packageName)) item.isDataChecked = true
+                item.isApkChecked = viewModel.apkCheckedList.contains(it.packageName)
+                item.isDataChecked = viewModel.dataCheckedList.contains(it.packageName)
                 return@map item
             }.toMutableList()
 

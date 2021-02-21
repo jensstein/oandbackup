@@ -66,12 +66,12 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/dismiss"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large"
                     android:background="@drawable/bg_ripple_click"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_arrow_down_42"
+                    android:src="@drawable/ic_arrow_down"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -291,7 +291,7 @@
                     android:focusable="true"
                     android:text="@string/customListTitle"
                     android:textAppearance="@style/TextAppearance.Label"
-                    app:chipIcon="@drawable/ic_blacklist_32"
+                    app:chipIcon="@drawable/ic_customlist"
                     app:layout_constraintBottom_toTopOf="@id/schedFilterTitle"
                     app:layout_constraintEnd_toStartOf="@id/blacklistButton"
                     app:layout_constraintStart_toStartOf="parent"
@@ -309,6 +309,7 @@
                     android:contextClickable="true"
                     android:focusable="true"
                     android:text="@string/sched_blacklist"
+                    app:chipIcon="@drawable/ic_blacklist"
                     app:layout_constraintBottom_toBottomOf="@id/customListButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/customListButton"
@@ -334,7 +335,7 @@
                     android:background="@drawable/bg_button_negative_ripple"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_delete_32"
+                    android:src="@drawable/ic_delete"
                     app:layout_constraintBottom_toBottomOf="@id/enableCheckbox"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/enableCheckbox" />

@@ -91,7 +91,7 @@
                 android:background="@drawable/bg_button_negative_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_delete_32"
+                android:src="@drawable/ic_delete"
                 app:layout_constraintBottom_toBottomOf="@id/sdkCodename"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/deviceName"

@@ -168,7 +168,7 @@ open class ScheduleJobService : JobService() {
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .addAction(R.drawable.ic_wipe_24, getString(R.string.dialogCancel), closeIntent)
+                .addAction(R.drawable.ic_wipe, getString(R.string.dialogCancel), closeIntent)
                 .build()
     }
 

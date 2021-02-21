@@ -14,7 +14,6 @@ import timber.log.Timber
 class MainViewModel(val context: Context, application: Application)
     : AndroidViewModel(application) {
 
-
     val apkCheckedList = mutableListOf<String>()
 
     val dataCheckedList = mutableListOf<String>()
@@ -31,11 +30,11 @@ class MainViewModel(val context: Context, application: Application)
 
     val refreshNow = MutableLiveData<Boolean>()
 
-    val badgeCounter = MutableLiveData<Int>()
+    val updatedList: MutableLiveData<MutableList<String>> = MutableLiveData()
 
     init {
         _initial.value = true
-        badgeCounter.value = 0
+        updatedList.value = mutableListOf()
     }
 
     fun refreshList() {

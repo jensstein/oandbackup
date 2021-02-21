@@ -113,7 +113,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .addAction(com.machiav3lli.backup.R.drawable.ic_wipe_24,
+                .addAction(com.machiav3lli.backup.R.drawable.ic_wipe,
                         context.getString(com.machiav3lli.backup.R.string.dialogCancel), cancelIntent)
                 .build()
 

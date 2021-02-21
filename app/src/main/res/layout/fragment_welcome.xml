@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_update_32" />
+                    app:srcCompat="@drawable/ic_release" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_telegram_32" />
+                    app:srcCompat="@drawable/ic_telegram" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_element_32" />
+                    app:srcCompat="@drawable/ic_element" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -134,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_info_32" />
+                    app:srcCompat="@drawable/ic_info" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_issue_32" />
+                    app:srcCompat="@drawable/ic_issue" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -180,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/cards_spacing"
-                    app:srcCompat="@drawable/ic_faq_32" />
+                    app:srcCompat="@drawable/ic_faq" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"

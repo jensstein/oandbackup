@@ -30,8 +30,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
-            style="@style/Widget.AppBar"
-            android:background="@drawable/bg_bar_static"
+            style="@style/Bar.AppBar"
+            android:background="@drawable/bg_bar_static_round"
             android:elevation="@dimen/small_spacing">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -45,69 +45,70 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back_32" />
+                app:srcCompat="@drawable/ic_arrow_back" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/helpButton"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/pageHeadline"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/cards_spacing"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/sched_title"
+                android:textAppearance="@style/TextAppearance.Headline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/blacklistButton"
+                app:layout_constraintStart_toEndOf="@id/backButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/blacklistButton"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_ripple_click"
-                android:contentDescription=""
-                android:padding="@dimen/med_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:tooltipText="@string/sched_blacklist"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_info_24" />
+                app:srcCompat="@drawable/ic_blacklist" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?actionBarSize"
+            android:orientation="vertical"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingTop="@dimen/cards_spacing"
-                tools:listitem="@layout/item_scheduler_x" />
-        </FrameLayout>
+                android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/bottomBar"
-            style="@style/Bar.Bottom"
-            android:background="@drawable/bg_bar_static_round">
-
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/blacklistButton"
-                    style="@style/Button.NavBar.Start"
-                    android:layout_width="52dp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ic_blacklist_32"
-                    android:tooltipText="@string/sched_blacklist" />
+                    android:clipToPadding="false"
+                    android:paddingTop="@dimen/cards_spacing"
+                    tools:listitem="@layout/item_scheduler_x" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/addSchedule"
-                    style="@style/Button.NavBar.End"
-                    android:layout_width="52dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
+                    android:layout_marginVertical="@dimen/buttons_spacing"
+                    android:background="@drawable/bg_button_positive_ripple"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_add_sched_32"
-                    android:tooltipText="@string/sched_add" />
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </FrameLayout>
+                    android:paddingVertical="@dimen/large_spacing"
+                    android:src="@drawable/ic_add_sched" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 

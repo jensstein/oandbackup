@@ -24,14 +24,29 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
-        style="@style/Widget.AppBar"
-        android:background="@drawable/bg_bar_static"
+        style="@style/Bar.AppBar"
+        android:background="@drawable/bg_bar_static_round"
         android:elevation="@dimen/small_spacing">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/pageHeadline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/cards_spacing"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/place_holder"
+            android:textAppearance="@style/TextAppearance.Headline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/searchBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchBar"
             style="@android:style/Widget.Material.SearchView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:autofillHints="@string/searchHint"
             android:clickable="true"
@@ -41,27 +56,28 @@
             android:inputType="text"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.Title"
-            app:iconifiedByDefault="false"
+            app:closeIcon="@drawable/ic_close"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/helpButton"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pageHeadline"
             app:layout_constraintTop_toTopOf="parent"
             app:queryBackground="@android:color/transparent"
             app:queryHint="@string/searchHint"
-            app:searchIcon="@drawable/ic_app_vv" />
+            app:searchIcon="@drawable/ic_search" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/helpButton"
-            android:layout_width="wrap_content"
+            style="@style/Button.NavBar.End"
+            android:layout_width="52dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_ripple_click"
-            android:contentDescription=""
-            android:padding="@dimen/med_spacing"
+            android:clickable="true"
+            android:focusable="true"
+            android:tooltipText="@string/help"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/searchBar"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_info_24" />
+            app:srcCompat="@drawable/ic_help" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

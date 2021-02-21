@@ -20,53 +20,51 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_encryption"
         android:key="encryption"
         android:summary="@string/prefs_encryption_summary"
-        android:title="@string/prefs_encryption"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_encryption" />
 
     <androidx.preference.EditTextPreference
         android:defaultValue=""
+        android:icon="@drawable/ic_password"
         android:inputType="textPassword"
         android:key="password"
         android:summary="@string/prefs_password_summary"
-        android:title="@string/prefs_password"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_password" />
 
     <androidx.preference.EditTextPreference
         android:defaultValue=""
         android:inputType="textPassword"
         android:key="passwordConfirmation"
-        android:title="@string/prefs_passwordconfirmation"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_passwordconfirmation" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:key="excludeCache"
         android:summary="@string/prefs_excludecache_summary"
-        android:title="@string/prefs_excludecache"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_excludecache" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_external_data"
         android:key="backupExternalData"
         android:summary="@string/prefs_externaldata_summary"
-        android:title="@string/prefs_externaldata"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_externaldata" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_obb_data"
         android:key="backupObbData"
         android:summary="@string/prefs_obbdata_summary"
-        android:title="@string/prefs_obbdata"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_obbdata" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
+        android:icon="@drawable/ic_de_data"
         android:key="backupDeviceProtectedData"
         android:summary="@string/prefs_deviceprotecteddata_summary"
-        android:title="@string/prefs_deviceprotecteddata"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_deviceprotecteddata" />
 
     <androidx.preference.SeekBarPreference
         android:defaultValue="2"
@@ -74,7 +72,6 @@
         android:max="10"
         android:summary="@string/prefs_numBackupRevisions_summary"
         android:title="@string/prefs_numBackupRevisions"
-        app:iconSpaceReserved="false"
         app:min="0"
         app:showSeekBarValue="true" />
 
@@ -82,8 +79,8 @@
         android:defaultValue="after"
         android:entries="@array/housekeepingMomentEntries"
         android:entryValues="@array/housekeepingMomentValues"
+        android:icon="@drawable/ic_wipe"
         android:key="housekeepingMoment"
         android:summary="@string/prefs_housekeepingmoment_summary"
-        android:title="@string/prefs_housekeepingmoment"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_housekeepingmoment" />
 </androidx.preference.PreferenceScreen>

@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mainFragment"
-        android:icon="@drawable/ic_main_32"
+        android:icon="@drawable/ic_main"
         android:title="@string/main" />
 
     <item
         android:id="@+id/backupFragment"
-        android:icon="@drawable/ic_backup_32"
+        android:icon="@drawable/ic_backup"
         android:title="@string/backup" />
 
     <item
         android:id="@+id/restoreFragment"
-        android:icon="@drawable/ic_restore_32"
+        android:icon="@drawable/ic_restore"
         android:title="@string/restore" />
 </menu>

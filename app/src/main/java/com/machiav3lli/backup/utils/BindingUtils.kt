@@ -80,17 +80,17 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
         appInfo.isSpecial -> {
             color = ColorStateList.valueOf(COLOR_SPECIAL)
             visibility = View.VISIBLE
-            setImageResource(R.drawable.ic_special_24)
+            setImageResource(R.drawable.ic_special)
         }
         appInfo.isSystem -> {
             color = ColorStateList.valueOf(COLOR_SYSTEM)
             visibility = View.VISIBLE
-            setImageResource(R.drawable.ic_system_24)
+            setImageResource(R.drawable.ic_system)
         }
         else -> {
             color = ColorStateList.valueOf(COLOR_USER)
             visibility = View.VISIBLE
-            setImageResource(R.drawable.ic_user_24)
+            setImageResource(R.drawable.ic_user)
         }
     }
     if (!appInfo.isSpecial) {

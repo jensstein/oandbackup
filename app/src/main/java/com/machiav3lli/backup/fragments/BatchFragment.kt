@@ -23,12 +23,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SearchViewController
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.BatchItemX
 
-open class BatchFragment : Fragment(), SearchViewController {
+open class BatchFragment(val backupBoolean: Boolean) : Fragment(), SearchViewController {
     private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +71,10 @@ open class BatchFragment : Fragment(), SearchViewController {
     override fun onStart() {
         super.onStart()
         requireMainActivity().onResumeFragment()
+        binding.pageHeadline.text = when {
+            backupBoolean -> resources.getText(R.string.backup)
+            else -> resources.getText(R.string.restore)
+        }
     }
 
     override fun onResume() {
@@ -77,9 +82,9 @@ open class BatchFragment : Fragment(), SearchViewController {
         requireMainActivity().setSearchViewController(this)
     }
 
-    class BackupFragment : BatchFragment()
+    class BackupFragment : BatchFragment(true)
 
-    class RestoreFragment : BatchFragment()
+    class RestoreFragment : BatchFragment(false)
 
     fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

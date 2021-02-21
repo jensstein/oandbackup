@@ -28,8 +28,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
-            style="@style/Widget.AppBar"
-            android:background="@drawable/bg_bar_static"
+            style="@style/Bar.AppBar"
+            android:background="@drawable/bg_bar_static_round"
             android:elevation="@dimen/small_spacing">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -43,7 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back_32" />
+                app:srcCompat="@drawable/ic_arrow_back" />
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -72,7 +72,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_info_24" />
+                app:srcCompat="@drawable/ic_help" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView

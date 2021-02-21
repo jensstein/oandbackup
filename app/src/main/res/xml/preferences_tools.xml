@@ -15,23 +15,22 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.Preference
+        android:icon="@drawable/ic_wipe"
         android:key="batchDelete"
         android:summary="@string/prefs_batchdelete_summary"
-        android:title="@string/prefs_batchdelete"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_batchdelete" />
 
     <androidx.preference.Preference
+        android:icon="@drawable/ic_andy"
         android:key="copySelfApk"
         android:summary="@string/prefs_copyselfapk_summary"
-        android:title="@string/prefs_copyselfapk"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_copyselfapk" />
 
     <androidx.preference.Preference
+        android:icon="@drawable/ic_customlist"
         android:key="logViewer"
-        android:title="@string/prefs_logviewer"
-        app:iconSpaceReserved="false" />
+        android:title="@string/prefs_logviewer" />
 </androidx.preference.PreferenceScreen>
