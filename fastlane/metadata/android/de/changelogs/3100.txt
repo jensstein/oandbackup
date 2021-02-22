@@ -5,7 +5,6 @@
 * Hinzugefügt: biometrisches Schloss 
 * Hinzugefügt: Elemente in der Stapelverarbeitung merken
 * Aktualisiert: gesamte Benutzeroberfläche
-* Aktualisiert: Zeitplan benutzerdefinierte App-Liste (Labels statt Paketnamen)
-* Aktualisiert: weniger Wiederholungen - Verschlüsselungs AlertDialog
 * Aktualisiert: Standardeinstellung für externe Daten und obb - aus
+* Lizenz nun Affero GPL v3
 und vieles mehr ...
