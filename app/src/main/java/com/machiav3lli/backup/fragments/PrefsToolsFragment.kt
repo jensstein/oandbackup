@@ -19,6 +19,7 @@ package com.machiav3lli.backup.fragments
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -33,7 +34,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHandler.showNotification
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -52,8 +53,9 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences_tools, rootKey)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_BATCH_DELETE)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
         pref = findPreference(PREFS_COPYSELF)!!
@@ -104,10 +106,15 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     private fun onClickCopySelf(): Boolean {
         try {
             GlobalScope.launch(Dispatchers.IO) {
-                BackupRestoreHelper.copySelfApk(requireContext(), MainActivityX.shellHandlerInstance!!)
+                if (BackupRestoreHelper.copySelfApk(requireContext(), MainActivityX.shellHandlerInstance!!))
+                    showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                            getString(R.string.copyOwnApkSuccess), "", false)
+                else
+                    showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                            getString(R.string.copyOwnApkFailed), "", false)
             }
         } catch (e: IOException) {
-            Timber.e("Failed to copy OABX apk to the backup dir: $e")
+            Timber.e("${getString(R.string.copyOwnApkFailed)}: $e")
         } finally {
             return true
         }
@@ -128,6 +135,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
             Timber.i("deleting backups of ${it.packageLabel}")
             it.deleteAllBackups(requireContext())
         }
-        showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(), getString(R.string.batchDeleteNotificationTitle), getString(R.string.batchDeleteBackupsDeleted) + " " + deleteList.size, false)
+        showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                getString(R.string.batchDeleteNotificationTitle), "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}", false)
     }
 }
