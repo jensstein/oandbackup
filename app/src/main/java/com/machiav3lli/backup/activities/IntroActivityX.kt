@@ -23,6 +23,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
@@ -36,10 +38,7 @@ import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.isLockEnabled
-import com.machiav3lli.backup.utils.showWarning
+import com.machiav3lli.backup.utils.*
 import com.scottyab.rootbeer.RootBeer
 
 class IntroActivityX : BaseActivity() {
@@ -113,20 +112,22 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchMainActivity() {
-        if (isBiometricLockAvailable(this) && isLockEnabled(this)) {
-            launchBiometricPrompt()
+        if (isBiometricLockAvailable(this) && isBiometricLockEnabled(this)) {
+            launchBiometricPrompt(true)
+        } else if (isDeviceLockEnabled(this)) {
+            launchBiometricPrompt(false)
         } else {
             startActivity(Intent(this, MainActivityX::class.java))
             overridePendingTransition(0, 0)
         }
     }
 
-    private fun launchBiometricPrompt() {
+    private fun launchBiometricPrompt(withBiometric : Boolean) {
         val biometricPrompt = createBiometricPrompt(this)
         val promptInfo = PromptInfo.Builder()
                 .setTitle(getString(R.string.prefs_biometriclock))
                 .setConfirmationRequired(true)
-                .setDeviceCredentialAllowed(true)
+                .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
                 .build()
         biometricPrompt.authenticate(promptInfo)
     }

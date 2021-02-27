@@ -43,6 +43,13 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:icon="@drawable/ic_encryption"
+        android:key="deviceLock"
+        android:summary="@string/prefs_devicelock_summary"
+        android:title="@string/prefs_devicelock" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
         android:icon="@drawable/ic_biometric"
         android:key="biometricLock"
         android:summary="@string/prefs_biometriclock_summary"

@@ -31,9 +31,9 @@ import android.os.PowerManager
 import android.os.Process
 import android.provider.DocumentsContract
 import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
 import androidx.biometric.BiometricManager
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.Crypto
@@ -43,7 +43,6 @@ import java.nio.charset.StandardCharsets
 
 const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
-const val BACKUP_DIR = 5
 
 fun getDefaultSharedPreferences(context: Context): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -64,11 +63,15 @@ fun isEncryptionEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
                 ?: false
 
-fun isLockEnabled(context: Context): Boolean =
+fun isDeviceLockEnabled(context: Context): Boolean =
+        getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICELOCK, false)
+
+fun isBiometricLockEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)
 
 fun isBiometricLockAvailable(context: Context): Boolean =
-        BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
+        BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
+                BiometricManager.BIOMETRIC_SUCCESS
 
 /**
  * Returns the user selected location. Go for `FileUtil.getBackupDir` to get the actual
@@ -109,13 +112,13 @@ fun isStorageDirSetAndOk(context: Context): Boolean {
     }
 }
 
-fun requireStorageLocation(fragment: Fragment) {
+fun requireStorageLocation(activityResultLauncher: ActivityResultLauncher<Intent>) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
             .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
-    fragment.startActivityForResult(intent, BACKUP_DIR)
+    activityResultLauncher.launch(intent)
 }
 
 fun checkStoragePermissions(context: Context): Boolean = when {
