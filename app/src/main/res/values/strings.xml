@@ -94,6 +94,8 @@
     <string name="prefs_languages">Language</string>
     <string name="prefs_language_system">System default</string>
     <string name="prefs_pathbackupfolder">Backup folder</string>
+    <string name="prefs_devicelock">Device lock</string>
+    <string name="prefs_devicelock_summary">Secure the app with device credintals</string>
     <string name="prefs_biometriclock">Biometric lock</string>
     <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
@@ -243,6 +245,8 @@
     <string name="app_info">App-info</string>
     <string name="forceKillMessage">Are you sure you want to force kill the app?</string>
     <string name="place_holder" translatable="false">PLACE HOLDER</string>
+    <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
+    <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>
