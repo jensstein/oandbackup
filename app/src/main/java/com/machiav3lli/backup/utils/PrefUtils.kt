@@ -99,7 +99,7 @@ fun setStorageRootDir(context: Context, value: Uri) {
 fun isStorageDirSetAndOk(context: Context): Boolean {
     return try {
         val storageDirPath = getStorageRootDir(context)
-        if (storageDirPath!!.isEmpty()) {
+        if (storageDirPath.isEmpty()) {
             return false
         }
         val storageDir = StorageFile.fromUri(context, Uri.parse(storageDirPath))
@@ -205,9 +205,5 @@ fun saveFilterPreferences(context: Context, filterModel: SortFilterModel) {
 
 fun isRememberFiltering(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_REMEMBERFILTERING, true)
-
-fun setRememberFilterig(context: Context, value: Boolean) {
-    getDefaultSharedPreferences(context).edit().putBoolean(PREFS_REMEMBERFILTERING, value).apply()
-}
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")

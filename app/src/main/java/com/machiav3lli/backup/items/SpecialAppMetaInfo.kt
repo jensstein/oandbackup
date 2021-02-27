@@ -49,7 +49,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 return arrayOfNulls(size)
             }
         }
-        val specialPackages: MutableList<AppInfo> = mutableListOf()
+        private val specialPackages: MutableList<AppInfo> = mutableListOf()
         /**
          * Returns the list of special (virtual) packages
          *

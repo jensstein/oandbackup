@@ -29,7 +29,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.items.BatchItemX
 
-open class BatchFragment(val backupBoolean: Boolean) : Fragment(), SearchViewController {
+open class BatchFragment(private val backupBoolean: Boolean) : Fragment(), SearchViewController {
     private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

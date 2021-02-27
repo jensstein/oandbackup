@@ -52,8 +52,7 @@ object SortFilterManager {
     }
 
     private fun applyBackupFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
-        val predicate: (AppInfo) -> Boolean
-        predicate = when (filter[2]) {
+        val predicate: (AppInfo) -> Boolean = when (filter[2]) {
             MAIN_BACKUPFILTER_BOTH -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
             MAIN_BACKUPFILTER_APK -> { appInfo: AppInfo -> appInfo.hasApk }
             MAIN_BACKUPFILTER_DATA -> { appInfo: AppInfo -> appInfo.hasAppData }

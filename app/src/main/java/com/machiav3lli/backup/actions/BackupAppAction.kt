@@ -45,8 +45,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     open fun run(app: AppInfo, backupMode: Int): ActionResult {
         Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-        val appBackupRootUri: Uri?
-        appBackupRootUri = try {
+        val appBackupRootUri: Uri? = try {
             app.getAppUri(context, true)
         } catch (e: BackupLocationIsAccessibleException) {
             // Usually, this should never happen, but just in case...

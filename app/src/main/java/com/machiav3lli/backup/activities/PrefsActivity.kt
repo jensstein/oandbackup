@@ -26,7 +26,7 @@ import com.machiav3lli.backup.fragments.PrefsServiceFragment
 
 class PrefsActivity : BaseActivity() {
     private lateinit var binding: ActivityPrefsBinding
-    var sheetHelp: HelpSheet? = null
+    private var sheetHelp: HelpSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

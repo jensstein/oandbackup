@@ -25,8 +25,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
@@ -58,7 +58,7 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getPostExecuteMessage(mainActivityX, actionType, result)
-            NotificationHandler.showNotification(mainActivityX, MainActivityX::class.java,
+            showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
             showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
             else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message ?: "") })

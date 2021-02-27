@@ -96,16 +96,18 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupOnClicks()
-        setupChips(false)
-        setupAppInfo(false)
-        setupBackupList()
+        setup(false)
     }
 
     fun updateApp(item: MainItemX) {
         viewModel.appInfo.value = item.app
-        setupChips(true)
-        setupAppInfo(true)
+        setup(true)
+    }
+
+    private fun setup(update: Boolean) {
+        setupOnClicks()
+        setupChips(update)
+        setupAppInfo(update)
         setupBackupList()
     }
 

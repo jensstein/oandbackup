@@ -78,7 +78,7 @@ class ShellCommands(private var users: List<String>?) {
             // it seems that busybox mount sometimes fails silently so use toolbox instead
             var apkSubDir = FileUtils.getName(sourceDir!!)
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf('.'))
-            if (apkSubDir.isNullOrEmpty()) {
+            if (apkSubDir.isEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
                         + "in a recursive rm call and would cause catastrophic damage!")
                 Timber.wtf(error)
@@ -88,7 +88,7 @@ class ShellCommands(private var users: List<String>?) {
             command = "mount -o remount,rw /system && ("
                 if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
                     command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
-                if( ! apkSubDir.isNullOrEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                if(apkSubDir.isNotEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
                     command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
             if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
@@ -204,14 +204,14 @@ class ShellCommands(private var users: List<String>?) {
             val commands = mutableListOf<String>()
             // Normal app cache always exists
             val dataPath = app.getDataPath()
-            if( ! dataPath.isNullOrEmpty())
+            if(dataPath.isNotEmpty())
                 commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
 
             fun conditionalDeleteCommand(directory : String) : String {
-                if(!directory.isNullOrEmpty())
-                    return "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
+                return if(directory.isNotEmpty())
+                    "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
                 else
-                    return ""
+                    ""
             }
 
             // device protected data cache, might exist or not

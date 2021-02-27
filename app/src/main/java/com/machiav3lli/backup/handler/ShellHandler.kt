@@ -100,7 +100,7 @@ class ShellHandler {
         var shellResult = runAsRoot("which $utilBoxName")
         if (shellResult.out.isNotEmpty()) {
             utilBoxPath = iterableToString(shellResult.out)
-            if ( ! utilBoxPath.isNullOrEmpty()) {
+            if (utilBoxPath.isNotEmpty()) {
                 utilBoxQuoted = quote(utilBoxPath)
                 shellResult = runAsRoot("$utilBoxQuoted --version")
                 if (shellResult.out.isNotEmpty()) {
@@ -323,11 +323,11 @@ class ShellHandler {
         }
 
         fun quoteMultiple(parameters: Collection<String>): String =
-                parameters.map(::quote).joinToString(" ")
+                parameters.joinToString(" ", transform = ::quote)
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
-            return err.isNotEmpty() && err[0].toLowerCase().contains("no such file or directory")
+            return err.isNotEmpty() && err[0].contains("no such file or directory",true)
         }
 
         @Throws(IOException::class)
@@ -389,7 +389,7 @@ class ShellHandler {
                 false
             }
         }
-        if (utilBoxQuoted.isNullOrEmpty()) {
+        if (utilBoxQuoted.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }

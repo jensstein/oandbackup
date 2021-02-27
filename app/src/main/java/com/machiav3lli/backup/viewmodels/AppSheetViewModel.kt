@@ -7,8 +7,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.NotificationHandler.showNotification
 import com.machiav3lli.backup.handler.ShellCommands
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.utils.LogUtils

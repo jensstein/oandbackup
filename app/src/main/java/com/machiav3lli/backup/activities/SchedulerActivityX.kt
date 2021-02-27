@@ -30,7 +30,6 @@ import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.databinding.ActivitySchedulerXBinding
 import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
-import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -50,7 +49,6 @@ class SchedulerActivityX : BaseActivity(), BlacklistDialogFragment.BlacklistList
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var binding: ActivitySchedulerXBinding
     private lateinit var blacklistDao: BlacklistDao
-    private var sheetHelp: HelpSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

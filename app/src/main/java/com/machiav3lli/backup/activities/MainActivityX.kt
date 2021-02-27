@@ -44,9 +44,9 @@ import com.machiav3lli.backup.dialogs.UpdatedAppsDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
-import com.machiav3lli.backup.handler.NotificationHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -215,7 +215,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         binding.apkBatch.visibility = View.INVISIBLE
         binding.dataBatch.visibility = View.INVISIBLE
         binding.recyclerView.adapter = mainFastAdapter
-        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, 0) }
     }
 
     private fun navigateBatch() {
@@ -226,7 +225,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         binding.dataBatch.visibility = View.VISIBLE
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
-        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, binding.buttonBar.height) }
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
@@ -412,8 +410,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
         val notificationMessage = String.format(getString(R.string.fetching_action_list),
                 (if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)))
-        NotificationHandler.showNotification(this, MainActivityX::class.java,
-                notificationId.toInt(), notificationMessage, "", true)
+        showNotification(this, MainActivityX::class.java, notificationId.toInt(),
+                notificationMessage, "", true)
         val selectedItems = selectedPackages
                 .mapIndexed { i, packageName ->
                     if (packageName.isNullOrEmpty()) null
@@ -452,7 +450,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                         val error = t.outputData.getString("error")
                                 ?: ""
                         val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
-                        NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(), message, packageLabel, false)
+                        showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(),
+                                message, packageLabel, false)
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
                         resultsSuccess = resultsSuccess && succeeded
                         oneTimeWorkLiveData.removeObserver(this)
@@ -477,7 +476,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                             ?: ""
                     val title = t.outputData.getString("notificationTitle")
                             ?: ""
-                    NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java,
+                    showNotification(this@MainActivityX, MainActivityX::class.java,
                             notificationId.toInt(), title, message, true)
 
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)

@@ -133,7 +133,8 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         var cacheDirty = true
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
-            // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
+            // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
+            //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
             return StorageFile(null, context, uri)
         }
 

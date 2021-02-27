@@ -102,7 +102,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(ShellCommandFailedException::class)
     protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        if (targetDirectory != "/" && ! targetDirectory.isNullOrEmpty()) {
+        if (targetDirectory != "/" && targetDirectory.isNotEmpty()) {
             val targetContents: MutableList<String> = mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
             targetContents.removeAll(excludeDirs)
             if (targetContents.isEmpty()) {
@@ -142,8 +142,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         if (baseApk == null) {
             throw RestoreFailedException("$BASE_APK_FILENAME is missing in backup", null)
         }
-        val splitApksInBackup: Array<StorageFile>
-        splitApksInBackup = try {
+        val splitApksInBackup: Array<StorageFile> = try {
             backupDir.listFiles()
                     .filter { !it.isDirectory } // Forget about dictionaries immediately
                     .filter { it.name?.endsWith(".apk") == true } // Only apks are relevant
@@ -222,9 +221,10 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
             // append cleanup command
             sb.append(" ; $utilBoxQuoted rm ${
-                                quoteMultiple(
-                                        apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
-                                )}"
+                quoteMultiple(
+                        apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
+                )
+            }"
             )
             // re-enable verify apps over usb
             if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
@@ -246,7 +246,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                         "$utilBoxQuoted rm ${
                             quoteMultiple(
                                     apksToRestore.map { File(stagingApkPath, "$packageName.${it.name}").absolutePath }
-                            )}"
+                            )
+                        }"
                 try {
                     runAsRoot(command)
                 } catch (e: ShellCommandFailedException) {
@@ -353,10 +354,10 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     "$utilBoxQuoted chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${
                         quoteMultiple(chownTargets)
                     }"
-            if(uidgidcon[2] == "?") //TODO hg42: when does it happen?
-                command += " ; restorecon -RF -v ${quote(targetDir)}"
+            command += if (uidgidcon[2] == "?") //TODO hg42: when does it happen?
+                " ; restorecon -RF -v ${quote(targetDir)}"
             else
-                command += " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
+                " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"
@@ -394,7 +395,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         //      }
         //  }
         runAsRoot("$utilBoxQuoted mkdir -p ${quote(externalDataDir)}")
-        if(!externalDataDir.isDirectory())  //TODO hg42: what if it is a link to a directory? in case it existed before
+        if (!externalDataDir.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
             throw RestoreFailedException("Could not create external data directory at $externalDataDir")
         genericRestoreFromArchive(backupArchive.uri, externalDataDir.absolutePath, backupProperties.isEncrypted, context.externalCacheDir)
     }

@@ -32,19 +32,18 @@ android {
         targetSdkVersion(29)
         versionCode = 5001
         versionName = "5.0.1"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments(mapOf("room.schemaLocation" to "$projectDir/schemas", "room.incremental" to "true"))
-            }
-        }
-
         // Tests
         testApplicationId = "${applicationId}.tests"
         // 1) Make sure to use the AndroidJUnitRunner, or a subclass of it. This requires a dependency on androidx.test:runner, too!
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // 2) Connect JUnit 5 to the runner
         testInstrumentationRunnerArgument("runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments(mapOf("room.schemaLocation" to "$projectDir/schemas", "room.incremental" to "true"))
+            }
+        }
+
     }
 
     buildTypes {
@@ -88,7 +87,6 @@ android {
 }
 
 
-
 val versions: java.util.Properties = System.getProperties()
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions["kotlin"]}")
@@ -125,13 +123,11 @@ dependencies {
     // (Required) Writing and executing Unit Tests on the JUnit Platform
     testImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit-jupiter"]}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    //testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
     // (Optional) If you need "Parameterized Tests"
     testImplementation("org.junit.jupiter:junit-jupiter-params:${versions["junit-jupiter"]}")
     // (Optional) If you also have JUnit 4-based tests
     testCompileOnly("junit:junit:${versions["junit-vintage"]}")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
-    //testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
 
     // 4) Jupiter API & Test Runner, if you don't have it already
     androidTestImplementation("androidx.test:runner:1.3.0")

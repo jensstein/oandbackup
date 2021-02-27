@@ -61,7 +61,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 val file = File(filePath!!)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
-                var fileInfos : List<ShellHandler.FileInfo>;
+                var fileInfos : List<ShellHandler.FileInfo>
                 try {
                     fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
                 } catch(e: ShellCommandFailedException) {

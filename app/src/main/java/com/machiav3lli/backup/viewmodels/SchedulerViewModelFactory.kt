@@ -14,5 +14,4 @@ class SchedulerViewModelFactory(private val dataSource: ScheduleDao, private val
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

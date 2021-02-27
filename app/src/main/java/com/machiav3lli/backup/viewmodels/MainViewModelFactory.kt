@@ -14,5 +14,4 @@ class MainViewModelFactory(private val context: Context, private val application
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

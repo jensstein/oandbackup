@@ -14,5 +14,4 @@ class LogViewModelFactory(private val application: Application)
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

@@ -56,7 +56,7 @@ class PermissionsFragment : Fragment() {
                     .show()
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentPermissionsBinding.inflate(inflater, container, false)
         return binding.root

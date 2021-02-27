@@ -49,20 +49,16 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
         return sheet
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = SheetSortFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sortFilterModel = getFilterPreferences(requireContext())
         setupOnClicks()
         setupChips()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sortFilterModel = getFilterPreferences(requireContext())
     }
 
     private fun setupOnClicks() {

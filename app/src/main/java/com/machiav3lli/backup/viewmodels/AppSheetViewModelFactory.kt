@@ -16,5 +16,4 @@ class AppSheetViewModelFactory(private val app: AppInfo, private val shellComman
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

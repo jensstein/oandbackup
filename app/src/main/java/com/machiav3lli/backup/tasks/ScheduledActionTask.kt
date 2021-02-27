@@ -46,8 +46,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val customBlacklist = blacklistDao.getBlacklistedPackages(scheduleId)
         val blackList = globalBlacklist.plus(customBlacklist).toSet()
 
-        val list: List<AppInfo>
-        list = try {
+        val list: List<AppInfo> = try {
             BackendController.getApplicationList(context)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")

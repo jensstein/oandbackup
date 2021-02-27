@@ -12,7 +12,7 @@ import androidx.work.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHandler
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.LogUtils
@@ -75,7 +75,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
-                            NotificationHandler.showNotification(context, MainActivityX::class.java,
+                            showNotification(context, MainActivityX::class.java,
                                     result.hashCode(), ai.packageLabel, it.message, it.message, false)
                         }
                     }

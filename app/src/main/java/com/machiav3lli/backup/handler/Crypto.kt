@@ -157,8 +157,7 @@ object Crypto {
     }
 
     private fun initIv(cipherAlgorithm: String): ByteArray {
-        val blockSize: Int
-        blockSize = try {
+        val blockSize: Int = try {
             val cipher = Cipher.getInstance(cipherAlgorithm)
             cipher.blockSize
         } catch (e: NoSuchAlgorithmException) {
