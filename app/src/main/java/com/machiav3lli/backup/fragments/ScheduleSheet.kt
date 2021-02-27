@@ -19,14 +19,10 @@ package com.machiav3lli.backup.fragments
 
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.app.job.JobService
-import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,14 +44,14 @@ import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
 import com.machiav3lli.backup.dialogs.CustomListDialogFragment
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
-import com.machiav3lli.backup.handler.ScheduleJobsHandler
-import com.machiav3lli.backup.services.ScheduleJobService
+import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
 import java.lang.ref.WeakReference
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
@@ -171,7 +167,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         }
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
-            ScheduleJobsHandler.cancelJob(requireContext(), scheduleId.toInt())
+            cancelAlarm(requireContext(), scheduleId.toInt())
             viewModel.deleteBlacklist()
             dismissAllowingStateLoss()
         }
@@ -183,7 +179,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.GONE
         } else {
-            val timeDiff = ScheduleJobsHandler.timeUntilNextEvent(schedule, now)
+            val timeDiff = abs(timeUntilNextEvent(schedule, now))
             val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
             if (days == 0) {
                 binding.daysLeft.visibility = View.GONE
@@ -254,8 +250,8 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
                 val scheduleDao = scheduleDatabase.scheduleDao
                 schedule?.let {
                     scheduleDao.update(it)
-                    if (it.enabled) ScheduleJobsHandler.scheduleJob(scheduler, it.id, rescheduleBoolean)
-                    else ScheduleJobsHandler.cancelJob(scheduler, it.id.toInt())
+                    if (it.enabled) scheduleAlarm(scheduler, it.id, rescheduleBoolean)
+                    else cancelAlarm(scheduler, it.id.toInt())
                 }
             }
         }
@@ -266,19 +262,9 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
 
         override fun execute() {
             Thread {
-                val extras = PersistableBundle()
-                extras.putLong("scheduleId", scheduleId)
-                val jobScheduler = context.getSystemService(JobService.JOB_SCHEDULER_SERVICE) as JobScheduler
-                val jobInfoBuilder: JobInfo.Builder = JobInfo.Builder(scheduleId.toInt(), ComponentName(context, ScheduleJobService::class.java))
-                        .setPersisted(true)
-                        .setRequiresDeviceIdle(false)
-                        .setRequiresCharging(false)
-                        .setExtras(PersistableBundle(extras))
-                        .setOverrideDeadline(1000) // crashes on <= SDK28 when having no constraints
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                    jobInfoBuilder.setImportantWhileForeground(true)
-                }
-                jobScheduler.schedule(jobInfoBuilder.build())
+                val serviceIntent = Intent(context, ScheduleService::class.java)
+                serviceIntent.putExtra("scheduleId", scheduleId)
+                context.startService(serviceIntent)
             }.start()
         }
     }
