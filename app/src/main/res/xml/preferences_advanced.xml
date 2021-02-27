@@ -45,7 +45,7 @@
         android:title="@string/prefs_allowdowngrade" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:icon="@drawable/ic_force_kill"
         android:key="killBeforeAction"
         android:summary="@string/prefs_stopcont_summary"

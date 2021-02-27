@@ -174,7 +174,7 @@ fun checkBatteryOptimization(context: Context, prefs: SharedPreferences, powerMa
         || powerManager.isIgnoringBatteryOptimizations(context.packageName)
 
 fun isKillBeforeActionEnabled(context: Context): Boolean =
-        getDefaultSharedPreferences(context).getBoolean(PREFS_KILLBEFOREACTION, false)
+        getDefaultSharedPreferences(context).getBoolean(PREFS_KILLBEFOREACTION, true)
 
 fun isDisableVerification(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_DISABLEVERIFICATION, true)
