@@ -72,17 +72,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             shellHandlerInstance = ShellHandler()
             return true
         }
-
-        init {
-            /*
-            * Shell.Config methods shall be called before any shell is created
-            * This is the why in this example we call it in a static block
-            * The followings are some examples, check Javadoc for more details
-            */
-            Shell.enableVerboseLogging = BuildConfig.DEBUG
-            Shell.setDefaultBuilder(Shell.Builder.create()
-                    .setTimeout(20))
-        }
     }
 
     private lateinit var prefs: SharedPreferences
