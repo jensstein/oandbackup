@@ -1,5 +1,5 @@
-<p>Uygulamayı 2020'ye getirmek, Android'in en yeni sürümleri için destek eklemek ve görünümünü güncellemek amacıyla meşhur OAndBackup çatalı.</p>
-<p>Uygulama cihazınızdaki uygulamaların yedeklerini oluşturmanıza ve geri yüklemenize olanak tanır. <i>OAndBackupX</i> uygulama verilerini kullanıcı tarafından erişilebilen bir konuma kaydetmenizi sağlar. Hem tek uygulamaların hem de birden fazla uygulamanın yedeklenmesi/geri yüklenmesi desteklenmektedir.</p>
-<p><br><b>Weblate üzerinde çeviriye katkıda bulunun:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
-<p><br>/data/data, /data/app ve /system/app içindeki dosyaları kopyaladığı için <b>root gerektirir:</b></p>
-<p>Durum: Beta aşamasında</p>
+Cihazınızdaki uygulamaların yedeklerini oluşturun, geri yükleyin ve uygulama verilerini kullanıcı tarafından erişilebilen bir konuma kaydedin. Yedekleme ve tek ya da çoklu uygulamalar geri yüklemeyi destekler.< / p>
+Oandbackup çatalı, Android'in yeni sürümleri ve güncellenmiş görünümleri için destek sağlar.< / p>
+<p><br><b>Weblate'e çevirmeye yardım edin:< / b> https://hosted.weblate.org/engage/oandbackupx/.< / p>
+<p><br><b>Root gerektirir: < /b> çünkü dosyaları /data/data, /data/app ve /system/app'den kopyalar.< / p>
+< P > Durum: Beta < /p>

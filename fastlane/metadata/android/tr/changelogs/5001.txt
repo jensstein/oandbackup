@@ -1,0 +1,6 @@
+* Güncelleme: iyileştirme kabuk komutları fonksiyonu (@hg42)
+* Sabit: doğru SELinux bağlamı (@jakeler & @ hg42)
+* Sabit: çift boşluklu isimlerle dosyalarla başarısız yedekleme (@jakeler)
+* Sabit: soketler ve diğer özel dosyalar (@hg42) istisna atma)
+* Sabit: çift boşluklu isimlerle dosyalarla başarısız yedekleme (@jakeler)
+* Güncelleme çeviriler: Polonya, Portekiz, Çin, Yunan, Alman, Fransız, Norveçli, Hollandalı, İspanyol, İtalyan, Endonezyalı, Japon, Rus
