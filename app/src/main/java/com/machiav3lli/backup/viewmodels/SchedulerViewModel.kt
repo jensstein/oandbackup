@@ -11,8 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SchedulerViewModel(val database: ScheduleDao, application: Application)
-    : AndroidViewModel(application) {
+class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
+    : AndroidViewModel(appContext) {
 
     var schedules = MediatorLiveData<List<Schedule>>()
 

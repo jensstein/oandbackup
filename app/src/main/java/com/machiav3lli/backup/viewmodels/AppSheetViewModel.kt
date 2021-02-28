@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,8 +16,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: ShellCommands?, application: Application)
-    : AndroidViewModel(application) {
+class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private val appContext: Application)
+    : AndroidViewModel(appContext) {
 
     var appInfo = MediatorLiveData<AppInfo>()
 
@@ -45,13 +44,13 @@ class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: S
                 try {
                     shellCommands?.uninstall(appInfo.value?.packageName, appInfo.value?.getApkPath(),
                             appInfo.value?.getDataPath(), appInfo.value?.isSystem == true)
-                    showNotification(context, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
-                            context.getString(com.machiav3lli.backup.R.string.uninstallSuccess), true)
+                    showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
+                            appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess), true)
                     it.packageInfo = null
                 } catch (e: ShellCommands.ShellActionFailedException) {
-                    showNotification(context, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
-                            context.getString(com.machiav3lli.backup.R.string.uninstallFailure), true)
-                    e.message?.let { message -> LogUtils.logErrors(context, message) }
+                    showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
+                            appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure), true)
+                    e.message?.let { message -> LogUtils.logErrors(appContext, message) }
                 }
             }
         }
@@ -86,9 +85,9 @@ class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: S
         withContext(Dispatchers.IO) {
             appInfo.value?.let {
                 if (it.backupHistory.size > 1) {
-                    it.delete(context, backup)
+                    it.delete(appContext, backup)
                 } else {
-                    it.deleteAllBackups(context)
+                    it.deleteAllBackups(appContext)
                 }
             }
         }
@@ -103,7 +102,7 @@ class AppSheetViewModel(val context: Context, app: AppInfo, var shellCommands: S
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            appInfo.value?.deleteAllBackups(context)
+            appInfo.value?.deleteAllBackups(appContext)
         }
     }
 }

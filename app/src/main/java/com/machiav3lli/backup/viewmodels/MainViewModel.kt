@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.*
 import com.machiav3lli.backup.handler.BackendController
@@ -11,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class MainViewModel(val context: Context, application: Application)
-    : AndroidViewModel(application) {
+class MainViewModel(private val appContext: Application)
+    : AndroidViewModel(appContext) {
 
     val apkCheckedList = mutableListOf<String>()
 
@@ -51,9 +50,9 @@ class MainViewModel(val context: Context, application: Application)
         _refreshActive.value = false
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<AppInfo>? {
+    private suspend fun recreateAppInfoList(): MutableList<AppInfo> {
         return withContext(Dispatchers.IO) {
-            val dataList = BackendController.getApplicationList(context)
+            val dataList = BackendController.getApplicationList(appContext)
             dataList
         }
     }
@@ -75,7 +74,7 @@ class MainViewModel(val context: Context, application: Application)
             var appInfo = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = AppInfo(context, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+                appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
                 dataList?.add(appInfo)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

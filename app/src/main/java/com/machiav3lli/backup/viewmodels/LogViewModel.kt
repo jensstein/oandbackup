@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.*
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.utils.LogUtils
@@ -9,8 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LogViewModel(val context: Context, application: Application)
-    : AndroidViewModel(application) {
+class LogViewModel(private val appContext: Application)
+    : AndroidViewModel(appContext) {
 
     var logsList = MediatorLiveData<MutableList<LogItem>>()
 
@@ -41,7 +40,7 @@ class LogViewModel(val context: Context, application: Application)
 
     private suspend fun recreateAppInfoList(): MutableList<LogItem>? {
         return withContext(Dispatchers.IO) {
-            val dataList = LogUtils(context).readLogs()
+            val dataList = LogUtils(appContext).readLogs()
             dataList
         }
     }
@@ -56,7 +55,7 @@ class LogViewModel(val context: Context, application: Application)
     private suspend fun delete(log: LogItem) {
         withContext(Dispatchers.IO) {
             logsList.value?.remove(log)
-            log.delete(context)
+            log.delete(appContext)
         }
     }
 }

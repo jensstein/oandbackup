@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao,
-                        private val blacklistDB: BlacklistDao, application: Application)
-    : AndroidViewModel(application) {
+                        private val blacklistDB: BlacklistDao, appContext: Application)
+    : AndroidViewModel(appContext) {
 
     var schedule = MediatorLiveData<Schedule>()
 
