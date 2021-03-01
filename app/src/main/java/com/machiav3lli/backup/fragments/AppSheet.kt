@@ -148,10 +148,10 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
                 changeVisibility(binding.forceKill, View.GONE, update)
                 changeVisibility(binding.wipeCache, View.GONE, update)
                 if (it.isSpecial) {
-                    changeVisibility(binding.exodusReport, View.VISIBLE, update)
+                    changeVisibility(binding.manager, View.GONE, update)
                     changeVisibility(binding.backup, View.VISIBLE, update)
                 } else {
-                    changeVisibility(binding.exodusReport, View.INVISIBLE, update)
+                    changeVisibility(binding.manager, View.VISIBLE, update)
                     changeVisibility(binding.backup, View.GONE, update)
                 }
             } else {
