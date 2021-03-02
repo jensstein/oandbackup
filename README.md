@@ -91,6 +91,8 @@ Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/autho
 
 [Nils](https://github.com/Tiefkuehlpizze) & [Harald](https://github.com/hg42) for their active contribution to the project.
 
+[Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
+
 Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
 ### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/?utm_source=widget)
