@@ -9,6 +9,7 @@ import com.machiav3lli.backup.utils.LogUtils
 import java.io.FileNotFoundException
 import java.util.*
 
+// TODO MAYBE migrate to FuckSAF
 open class StorageFile protected constructor(val parentFile: StorageFile?, private val context: Context, var uri: Uri) {
     var name: String? = null
         get() {
@@ -21,7 +22,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         get() = DocumentContractApi.isFile(context, this.uri)
 
     val isPropertyFile: Boolean
-        get() = DocumentContractApi.isPropertyFile(context, this.uri)
+        get() = DocumentContractApi.isFile(context, this.uri)
 
     val isDirectory: Boolean
         get() = DocumentContractApi.isDirectory(context, this.uri)
@@ -61,7 +62,6 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         return null
     }
 
-    // TODO cause of huge part of cpu time
     @Throws(FileNotFoundException::class)
     fun listFiles(): Array<StorageFile> {
         try {

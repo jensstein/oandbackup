@@ -64,7 +64,7 @@ class ShellCommands(private var users: List<String>?) {
             }
             // don't care for the result here, it likely fails due to file not found
             try {
-                if( ! packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
+                if (!packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
                     command = "$utilBoxQuoted rm -rf /data/lib/$packageName/*"
                     runAsRoot(command)
                 }
@@ -86,14 +86,14 @@ class ShellCommands(private var users: List<String>?) {
             }
             // TODO: add logging/throw to each variable.isNullOrEmpty() test below?
             command = "mount -o remount,rw /system && ("
-                if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
-                    command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
-                if(apkSubDir.isNotEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
-                    command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
+            if (!sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
+            if (apkSubDir.isNotEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
-            if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
+            if (!dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
                 command += " ; $utilBoxQuoted rm -rf ${quote(dataDir)}"
-            if( ! packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
+            if (!packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
                 command += " ; $utilBoxQuoted rm -rf ${quote("/data/app-lib/${packageName}")}/*"
             try {
                 runAsRoot(command)
@@ -146,19 +146,6 @@ class ShellCommands(private var users: List<String>?) {
         }
     }
 
-    @Throws(ShellActionFailedException::class)
-    fun quickReboot() {
-        val command = "$utilBoxQuoted pkill system_server"
-        try {
-            runAsRoot(command)
-        } catch (e: ShellCommandFailedException) {
-            throw ShellActionFailedException(command, "Could not kill system_server", e)
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e, command)
-            throw ShellActionFailedException(command, "Could not kill system_server", e)
-        }
-    }
-
     class ShellActionFailedException(val command: String, message: String, cause: Throwable?) : Exception(message, cause)
     companion object {
 
@@ -204,11 +191,11 @@ class ShellCommands(private var users: List<String>?) {
             val commands = mutableListOf<String>()
             // Normal app cache always exists
             val dataPath = app.getDataPath()
-            if(dataPath.isNotEmpty())
+            if (dataPath.isNotEmpty())
                 commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
 
-            fun conditionalDeleteCommand(directory : String) : String {
-                return if(directory.isNotEmpty())
+            fun conditionalDeleteCommand(directory: String): String {
+                return if (directory.isNotEmpty())
                     "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
                 else
                     ""

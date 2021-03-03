@@ -34,7 +34,7 @@ object DocumentUtils {
         return deleteRecursive(target)
     }
 
-    fun deleteRecursive(target: StorageFile): Boolean {
+    private fun deleteRecursive(target: StorageFile): Boolean {
         if (target.isFile) {
             target.delete()
             return true
@@ -71,7 +71,7 @@ object DocumentUtils {
                     FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
                     else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
                 }
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 LogUtils.logException(e)
             }
         }
@@ -88,7 +88,7 @@ object DocumentUtils {
      */
     @Throws(IOException::class)
     fun suCopyFileToDocument(resolver: ContentResolver, sourcePath: String, targetDir: StorageFile) {
-        SuFileInputStream(sourcePath).use { inputFile ->
+        SuFileInputStream.open(sourcePath).use { inputFile ->
             val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)
             if (newFile != null)
                 resolver.openOutputStream(newFile.uri).use { outputFile -> IOUtils.copy(inputFile, outputFile) }
@@ -121,7 +121,7 @@ object DocumentUtils {
     }
 
     @Throws(IOException::class)
-    fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri, targetPath: String?) {
-        SuFileOutputStream(targetPath).use { outputFile -> resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }
+    fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri, targetPath: String) {
+        SuFileOutputStream.open(targetPath).use { outputFile -> resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }
     }
 }

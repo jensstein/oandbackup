@@ -84,7 +84,7 @@ class ShellHandler {
         // ls -Z supported as an option since landley/toybox 0.6.0 mid 2015, Android 8 starts mid 2017
         // use -dlZ instead of -dnZ, because -nZ was found (by Kostas!) with an error (with no space between group and context)
         // apparently uid/gid is less tested than names
-        var shellResult : Shell.Result? = null
+        var shellResult: Shell.Result? = null
         try {
             val command = "$utilBoxQuoted ls -dlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
@@ -327,7 +327,7 @@ class ShellHandler {
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
-            return err.isNotEmpty() && err[0].contains("no such file or directory",true)
+            return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
         @Throws(IOException::class)

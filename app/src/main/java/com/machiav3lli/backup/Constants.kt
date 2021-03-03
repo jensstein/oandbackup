@@ -104,17 +104,11 @@ const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ
 
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
-fun classAddress(address: String): String {
-    return PREFS_SHARED_PRIVATE + address
-}
+fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
-fun classTag(tag: String): String {
-    return TAG_BASE + tag
-}
+fun classTag(tag: String): String = TAG_BASE + tag
 
-fun exodusUrl(app: String): String {
-    return "https://reports.exodus-privacy.eu.org/reports/$app/latest"
-}
+fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
 
 enum class HousekeepingMoment(val value: String) {
     BEFORE("before"), AFTER("after");
