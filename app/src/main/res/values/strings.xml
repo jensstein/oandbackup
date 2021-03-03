@@ -95,7 +95,7 @@
     <string name="prefs_language_system">System default</string>
     <string name="prefs_pathbackupfolder">Backup folder</string>
     <string name="prefs_devicelock">Device lock</string>
-    <string name="prefs_devicelock_summary">Secure the app with device credintals</string>
+    <string name="prefs_devicelock_summary">Secure the app with device credentials</string>
     <string name="prefs_biometriclock">Biometric lock</string>
     <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
