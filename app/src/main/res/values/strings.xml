@@ -243,7 +243,7 @@
     <string name="exodus_report">Exodus report</string>
     <string name="launch_app">Launch app</string>
     <string name="app_info">App-info</string>
-    <string name="forceKillMessage">Are you sure you want to force kill the app?</string>
+    <string name="forceKillMessage">Are you sure you want to force kill the app\?</string>
     <string name="place_holder" translatable="false">PLACE HOLDER</string>
     <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
     <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
