@@ -8,7 +8,13 @@
         </p>
         <p><strong>Etkinleştir/devre dışı bırak</strong>: Bir uygulamayı etkinleştirmek veya devre dışı bırakmak için `pm` Android betiğini kullanır. Bir uygulamayı devre dışı bırakmak, onu kaldırmadan normal kullanıcı arayüzünden gizler. Bu, aynı anda birden fazla kullanıcı için (cihazda birden fazla etkinleştirilmiş kullanıcı varsa) bir uygulamayı etkinleştirmek veya devre dışı bırakmak için kullanılabilir. Kullanıcılar bir kimlik numarası ile tanımlanır. 0 ilk kullanıcıdır (sahip).
         </p>
-        <p><strong>Birden çok kullanıcı</strong>: Çok kullanıcılı hala biraz deneyseldir ama düzgün çalışması beklenir. Çok kullanıcılı bir durumda geri yüklerken, `pm install -r $apk` çalıştırılır ve daha sonra /data/system/user/$user/package-restrictions.xml dosyasında uygulama listelenmiş olan her kullanıcı için uygulama devre dışı bırakılır (uygulama enabled="1" olarak listelenmemişse). <br> Bu, daha sonraki bir noktada aynı uygulamayı kuran kullanıcılar için sorun yaratabilir, ancak uygulamanın aynı anda tüm kullanıcılar için kurulmasını önlemek için gereklidir. Bağlam menüsünde, geri yükleme sırasında devre dışı bırakılması nedeniyle diğer kullanıcıların belirli bir uygulamayı kullanamaması durumunda kullanılabilecek uygulamaları etkinleştirme veya devre dışı bırakma seçeneği vardır. <br> Etkinleştirme ve devre dışı bırakma, yalnızca uygulamanın ilk kurulumundan (OAndBackupX'ten olması gerekmez) veya geri yüklenmesinden sonra çalışır.
+        <p><strong>Çoklu kullanıcı</strong>: Çok kullanıcılı hala biraz deneyseldir, ancak çalışması gerekir. Etkinleştirme ve devre dışı bırakma yalnızca ilk kurulumdan sonra (Oandbackupx'ten değil) veya uygulamanın geri yüklenmesinden sonra çalışır.
+        </p>
+        <p><strong>Sistemsiz uygulamalar</strong>: Magisk modülleri desteklenmediğinden sistemsiz uygulamaların yedeklenmesi ve geri yüklenmesi desteklenmez ve bunu denemek sistem arızasına neden olabilir ve yeniden biçimlendirmenize ve yanıp sönmenize neden olabilir.
+        </p>
+        <p><strong>Gezinme</strong>: gezinme çubuğunda "Ayarlar", "Ana Sayfa", "toplu yedekleme", "toplu geri yükleme" ve "yedekleme zamanlaması" (bu sırayla) bulunur. Son yedeklemelerinden sonra güncellenen uygulamaların sayısı "Ana Sayfa" düğmesinde bir bildirim olarak sunulacaktır.
+        </p>
+        <p><strong>Keystore kullanan uygulamalar</strong>: Android'in hassas veriler için şifreli bir depolama alanı vardır. Oturum açma verilerini veya işlevinin bazı anahtarlarını saklamak için bunu kullanan uygulamalar başarıyla geri yüklenemez. Bu tür uygulamaların iki örneği Signal ve Element(Riot) ' dir.
         </p>
     </body>
 </html>

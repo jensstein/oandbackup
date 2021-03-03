@@ -1,0 +1,6 @@
+* Aktualisiert: Verbesserte Funktion für Shell-Befehle (@hg42)
+* Behoben: SELinux-Kontext korrigieren (@jakeler & @hg42)
+* Behoben: Fehlgeschlagene Backups bei Dateien mit Namen mit doppelten Leerzeichen (@jakeler)
+* Behoben: Exception bei Sockets und anderen speziellen Dateien (@hg42)
+* Behoben: Fehlgeschlagene Backups bei Dateien mit Namen mit doppelten Leerzeichen (@jakeler)
+* diverse aktualisierte Übersetzungen

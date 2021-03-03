@@ -74,11 +74,11 @@
     <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
     <string name="batchDeleteBackupsDeleted">Silinen yedekler:</string>
     <string name="batchDeleteNothingToDelete">Silinecek yedek yok</string>
-    <string name="enablePackage">Etkinleştir</string>
+    <string name="enablePackage">App Etkinleştir</string>
     <!-- enablePackageTitle: title for a list of checkable users -->
-    <string name="enablePackageTitle">Kullanıcı için etkinleştir</string>
-    <string name="disablePackage">Etkisizleştir</string>
-    <string name="disablePackageTitle">Kullanıcı için etkisizleştir</string>
+    <string name="enablePackageTitle">Kullanıcılar için app\'yi etkinleştir</string>
+    <string name="disablePackage">App\'yi Etkisizleştir</string>
+    <string name="disablePackageTitle">App Kullanıcıları için etkisizleştir</string>
     <string name="prefs_title">Seçenekler</string>
     <string name="prefs_service">Servis seçenekleri</string>
     <string name="prefs_user">Kullanıcı seçenekleri</string>
@@ -102,9 +102,9 @@
     <string name="prefs_password_summary">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Uygulamanın önbelleğini veri yedeklemesinden hariç tutun</string>
-    <string name="prefs_acquirewakelock_summary">Toplu yedekleme yaparken uykuyu önlemek için bir wakelock kullan. Yedekleme ve geri yüklemeyi hızlandırır ama fazladan enerji harcar.</string>
+    <string name="prefs_acquirewakelock_summary">Uykuyu önlemek için toplu işlemler sırasında bir uyandırma kilidi alın. Yedeklemeleri ve restorasyonları önemli ölçüde hızlandırır, ancak daha fazla enerji tüketir.</string>
     <string name="prefs_oldbackups_summary">Bu günden daha eski olan yedekleri filtrele. \'Eski yedekleri göster\' filtresi ile kullanılır.</string>
-    <string name="prefs_copyselfapk_summary">Yedekleme yapıldığında yedekleme klasörüne OAndBackupX\'in bir kopyasını yerleştirir</string>
+    <string name="prefs_copyselfapk_summary">Oandbackupx\'in bir kopyasını yedekleme klasörünün en üst seviyesine yerleştirin</string>
     <string name="prefs_rememberfiltering_summary">Seçilen sıralama ve filtreleme yöntemini kayıtlı tutar. Yalnızca menüde seçilenler önemsenecek.</string>
     <string name="prefs_batchdelete_summary">Kurulu olmayan uygulamarın yedeklerini sil.</string>
     <string name="sched_title">Zamanlama</string>
@@ -115,7 +115,7 @@
     <string name="sched_activateButton">Yedeklemeyi şimdi başlat</string>
     <string name="sched_startingbackup">Zamanlanmış yedekleme başlatılıyor…</string>
     <string name="sched_mode">Yedekleme modu:</string>
-    <string name="sched_timeLeft">Sonraki yedeklemeye kalan saat:</string>
+    <string name="sched_timeLeft">Kalan süre:</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
     <string name="sched_blacklist">Karaliste</string>
     <string name="spec_accounts">Hesaplar</string>
@@ -152,7 +152,7 @@
     <string name="prefs_theme_light">Açık</string>
     <string name="prefs_theme_dark">Koyu</string>
     <string name="prefs_theme_system">Sistem teması</string>
-    <string name="empty_filtered_list">Filtrelenmiş liste boş olduğundan filtreler öntanımlı değerlerine döndürüldü</string>
+    <string name="empty_filtered_list">Filtrelenmiş liste boş.</string>
     <string name="dialog_refuse">Uğraşamam</string>
     <string name="dialog_approve">Hadi yapalım!</string>
     <string name="ignore_battery_optimization_title">Pil optimizasyonu</string>
@@ -201,7 +201,7 @@
     <string name="intro_permission_storage_location">Uygulama, yedeklemeleri depolamak için bir yedekleme konumuna ihtiyaç duymaktadır. Uygulama tam bir yedekleme için birkaç gigabayt depolamaya ihtiyaç duyabilir ve dosya sistemine çok fazla sorgulama yapar. Lütfen ağ tabanlı depolama konumlarını seçerken bunu aklınızda bulundurun.</string>
     <string name="help_legend">Açıklamalar:</string>
     <string name="prefs_unset">Ayarlanmadı</string>
-    <string name="msg_appkill_warning">Seçili uygulamalar durdurulacak. Önemli bildirimleri kaçırmamak için işlemden sonra cihazınızı yeniden başlattığınızdan veya daha sonra çalar saatiniz ya da takviminiz gibi uygulamaları açtığınızdan emin olun. Klavyeniz veya başlatıcınız bunun için öntanımlı uygulamaya sıfırlanabilir.</string>
+    <string name="msg_appkill_warning">Seçilen uygulama(lar) durdurulacak ve görev tamamlandıktan sonra devam edecektir. Daha sonra işlenmiş uygulamalarınızı kontrol edin (ve işlem hala çalışırken bunları başlatmaktan kaçının).</string>
     <string name="prefs_numBackupRevisions_summary">Sayı aşılırsa yeni bir yedek oluşturulduğunda en eski düzeltme silinecektir. Tüm düzeltmeleri tutmak için sıfıra ayarlayın.</string>
     <string name="prefs_numBackupRevisions">Yedekleme düzeltmelerinin sayısı</string>
     <string name="prefs_stopcont_summary">Yalnızca uzmanlar: Uygulama yedekleme sırasında dosyaları değiştirirse ve yedekleme başarısız olursa bu yardımcı olabilir.</string>
@@ -214,4 +214,38 @@
     <string name="radio_obbdata">OBB Verisi</string>
     <string name="radio_deviceprotecteddata">Cihaz Korumalı Veri</string>
     <string name="radio_externaldata">Harici Veri</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d güncellenmiş uygulama</item>
+        <item quantity="other">%d güncellenmiş uygulamalar</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="one">%d gün,</item>
+        <item quantity="other">%d günler,</item>
+    </plurals>
+    <string name="forceKillMessage">Uygulamayı zorla öldürmek istediğinizden emin misiniz\?</string>
+    <string name="app_info">Uygulama-bilgisi</string>
+    <string name="launch_app">Uygulamayı Başlat</string>
+    <string name="exodus_report">Göç Raporu</string>
+    <string name="clear_cache">Önbelleği Temizle</string>
+    <string name="usage_notes_title">Kullanım Notları</string>
+    <string name="main">Ana</string>
+    <string name="help">Yardım</string>
+    <string name="stats_apps">Uygulamalar</string>
+    <string name="stats_backups">Yedekler</string>
+    <string name="stats_updated">Güncel</string>
+    <string name="radio_launchable">Başlatılabilir Uygulamalar</string>
+    <string name="help_issues">Bilinen sorunlar</string>
+    <string name="fetching_action_list">%1$s için uygulama listesi alınıyor…</string>
+    <string name="logs_text_empty">Gösterecek bir şey yok!</string>
+    <string name="delete_all_backups">Tüm yedeklemeleri sil</string>
+    <string name="help_faq">Sıkça Sorulan Sorular</string>
+    <string name="sched_name">Ad:</string>
+    <string name="prefs_allowdowngrade">İndirmeye izin ver</string>
+    <string name="prefs_allowdowngrade_summary">Yüklü uygulamanın eski bir sürümünü geri yüklemeye izin verin.</string>
+    <string name="prefs_restoreallpermissions">Tüm izinlerle geri yükle</string>
+    <string name="prefs_restoreallpermissions_summary">Geri yüklenen uygulamaya istediği tüm izinleri verin.</string>
+    <string name="prefs_disableverification_summary">Apk\'ları geri yüklerken bu geliştirici seçeneğini devre dışı bırakır ve daha sonra yeniden etkinleştirir. Hatayı çözer: INSTALL_FAİLED_VERİFİCATİON_FAİLURE.</string>
+    <string name="prefs_disableverification">USB üzerinden uygulamaları doğrulamayı devre dışı bırak</string>
+    <string name="prefs_obbdata_summary">Harici depolama alanına yerleştirilen uygulamanın obb dosyalarını Yedekler ve geri yükler (örn. / storage/emulated / 0 / Android / obb/)</string>
+    <string name="prefs_obbdata">obb dosyalarını yedekle</string>
 </resources>

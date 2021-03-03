@@ -8,7 +8,7 @@
     <string name="handleData">Données</string>
     <string name="handleBoth">les deux</string>
     <string name="radio_apk">APK</string>
-    <string name="radio_data">données</string>
+    <string name="radio_data">Données</string>
     <string name="radio_both">APK et données</string>
     <string name="de_selectAll">tout dé/sélectionner</string>
     <string name="onlyApkBackedUp">Uniquement l\'APK</string>
@@ -83,7 +83,7 @@
     <string name="prefs_pathbackupfolder">Dossier de sauvegarde</string>
     <string name="prefs_oldbackups">Filtrer les sauvegardes par ancienneté</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que la valeur du jours. Utilisé avec le filtre \'Afficher les anciennes sauvegardes\'</string>
+    <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que le nombre de jours. Utilisé avec le filtre \'Afficher les anciennes sauvegardes\'.</string>
     <string name="prefs_copyselfapk">Copier son propre APK</string>
     <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX à la racine du dossier de sauvegarde lors de la sauvegarde</string>
     <string name="prefs_languages">Langue</string>
@@ -240,4 +240,14 @@
     <string name="usage_notes_title">Notes d\'usage</string>
     <string name="main">Accueil</string>
     <string name="help">Aide</string>
+    <string name="forceKillMessage">Êtes-vous sûr de vouloir tuer l\'application \?</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d application actualisée</item>
+        <item quantity="other">%d applications actualisées</item>
+    </plurals>
+    <string name="app_info">Info sur l\'appli</string>
+    <string name="launch_app">Lancer l\'appli</string>
+    <string name="exodus_report">Rapport Exodus</string>
+    <string name="clear_cache">Effacer le cache</string>
+    <string name="sched_name">Nom :</string>
 </resources>

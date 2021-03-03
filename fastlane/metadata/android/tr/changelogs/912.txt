@@ -1,0 +1,8 @@
+** OAndBackupX 0.9.12 (aka 1.0.0-rc1)**
+* Eklendi: uygulama sayfasındaki uygulama bilgileri kısayolu
+* Güncelleme: UI öğelerinin yumruk
+* * Güncelleme: Yeni varsayılan yedekleme dizini / Oandbackup
+* Sabit: eylemleri gerçekleştirdikten sonra adaptörün davranışı
+* Sabit: adaptör çöküyor
+* Anahtarlamalı: uygulamanın önbelleğini temizlemekten yedeklemeden hariç tutmaya kadar(Credit @ ıcewind1991)
+* Tweaked: farklı UI öğelerinin davranışı
