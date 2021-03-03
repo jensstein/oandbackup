@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+5.0.2 (24.02.2021)
+------------------
+
+* Fixed: Message disply on error (@hg42)
+* Fixed: Quote issue in backup process (@hg42)
+
 5.0.1 (13.02.2021)
 ------------------
 
