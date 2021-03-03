@@ -1,0 +1,4 @@
+** OAndBackupX 0.9.7**
+* Sabit: güncelleme mantığı
+* Kaldırıldı: PGP şifreleme ve sembolik bağlantıları takip
+* Temizlenmiş kod
