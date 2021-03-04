@@ -59,7 +59,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragment(), ActionListener {
+class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragment(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -82,7 +82,7 @@ class AppSheet(val item: MainItemX, val position: Int) : BottomSheetDialogFragme
         binding = SheetAppBinding.inflate(inflater, container, false)
         val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
-        val viewModelFactory = AppSheetViewModelFactory(item.app, shellCommands, requireActivity().application)
+        val viewModelFactory = AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
         viewModel.refreshNow.observe(viewLifecycleOwner, { refreshBoolean ->

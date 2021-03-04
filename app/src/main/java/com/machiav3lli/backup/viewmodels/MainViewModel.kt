@@ -46,11 +46,11 @@ class MainViewModel(private val appContext: Application)
 
     val refreshNow = MutableLiveData<Boolean>()
 
-    val updatedList: MutableLiveData<MutableList<String>> = MutableLiveData()
+    val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
 
     init {
         _initial.value = true
-        updatedList.value = mutableListOf()
+        nUpdatedApps.value = 0
     }
 
     fun refreshList() {
