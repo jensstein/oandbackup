@@ -91,7 +91,7 @@
     <string name="prefs_languages">Bahasa</string>
     <string name="prefs_language_system">Sistem standar</string>
     <string name="prefs_rememberfiltering">Ingat mengurutkan dan memfilter</string>
-    <string name="prefs_enableSpecialBackups">Aktifkan cadangan khusus</string>
+    <string name="prefs_enablespecial">Aktifkan cadangan khusus</string>
     <string name="prefs_excludecache">Bersihkan cache aplikasi</string>
     <string name="prefs_encryption">Enkripsi</string>
     <string name="prefs_password">Kata sandi enkripsi</string>

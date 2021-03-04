@@ -91,7 +91,7 @@
     <string name="prefs_languages">Dil</string>
     <string name="prefs_language_system">Sistem öntanımlı değeri</string>
     <string name="prefs_rememberfiltering">Sıralama ve filtrelemeyi hatırla</string>
-    <string name="prefs_enableSpecialBackups">Özel yedekleri etkinleştir</string>
+    <string name="prefs_enablespecial">Özel yedekleri etkinleştir</string>
     <string name="prefs_excludecache">Uygulamaların önbelleğini temizle</string>
     <string name="prefs_encryption">Şifreleme</string>
     <string name="prefs_password">Şifreleme parolası</string>

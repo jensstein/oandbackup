@@ -125,7 +125,7 @@
     <string name="restart_dialog">Izgleda da je ovoj aplikaciji potreban restart</string>
     <string name="sched_hourOfDay">Vrijeme dana:</string>
     <string name="prefs_batchdelete_summary">Brisanje sigurnosne kopije svih aplikacija koje nisu trenutno instalirane.</string>
-    <string name="prefs_enableSpecialBackups">Omogući posebne sigurnosne kopije</string>
+    <string name="prefs_enablespecial">Omogući posebne sigurnosne kopije</string>
     <string name="prefs_deviceprotecteddata">Pravi sigurnosnu kopiju podataka zaštićenih uređajem</string>
     <string name="prefs_encryption_summary">Omogućite za enkripciju podataka sigurnosnih kopija</string>
     <string name="prefs_oldbackups">Filtriraj sigurnosne kopije po starosti</string>

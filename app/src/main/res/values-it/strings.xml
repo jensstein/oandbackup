@@ -91,7 +91,7 @@
     <string name="prefs_language_system">Predefinita di sistema</string>
     <string name="prefs_rememberfiltering">Ricorda l\'ordinamento e i filtri</string>
     <string name="prefs_rememberfiltering_summary">Salva il metodo selezionato di ordinamento e filtro. solo quelli indicati da una checkbox nel menu sono considerati.</string>
-    <string name="prefs_enableSpecialBackups">Abilita i backup speciali</string>
+    <string name="prefs_enablespecial">Abilita i backup speciali</string>
     <string name="sched_title">Pianificazioni</string>
     <string name="sched_notificationMessage">Backup pianificato</string>
     <string name="sched_interval">Intervallo in giorni:</string>

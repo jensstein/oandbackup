@@ -155,7 +155,7 @@
     <string name="sched_activateButton">Démarrer la sauvegarde maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>
-    <string name="prefs_enableSpecialBackups">Activer les sauvegardes spéciales</string>
+    <string name="prefs_enablespecial">Activer les sauvegardes spéciales</string>
     <string name="prefs_deviceprotecteddata_summary">Sauvegarde et restaure les données placées dans data/user_de</string>
     <string name="prefs_deviceprotecteddata">Sauvegarder les données protégées par l\'appareil</string>
     <string name="prefs_externaldata_summary">Sauvegarde et restauration des données placées sur le stockage externe (par exemple /storage/emulated/0/Android/data/)</string>

@@ -91,7 +91,7 @@
     <string name="prefs_languages">Język</string>
     <string name="prefs_language_system">Systemowy</string>
     <string name="prefs_rememberfiltering">Zapamiętaj sortowanie i filtrowanie</string>
-    <string name="prefs_enableSpecialBackups">Włącz specjalne kopie zapasowe</string>
+    <string name="prefs_enablespecial">Włącz specjalne kopie zapasowe</string>
     <string name="prefs_excludecache">Wyczyść pamięć podręczną aplikacji</string>
     <string name="prefs_encryption">Szyfrowanie</string>
     <string name="prefs_password">Hasło szyfrowania</string>

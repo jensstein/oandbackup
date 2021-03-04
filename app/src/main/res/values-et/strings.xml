@@ -91,7 +91,7 @@
     <string name="prefs_languages">Keel</string>
     <string name="prefs_language_system">Süsteemi vaikeväärtus</string>
     <string name="prefs_rememberfiltering">Jäta järjestus ja filter meelde</string>
-    <string name="prefs_enableSpecialBackups">Luba erilised varundused</string>
+    <string name="prefs_enablespecial">Luba erilised varundused</string>
     <string name="prefs_excludecache">Tühjenda rakenduse vahemälu</string>
     <string name="prefs_encryption">Krüpteerimine</string>
     <string name="prefs_password">Krüpteeringu parool</string>

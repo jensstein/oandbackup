@@ -111,7 +111,7 @@
     <string name="prefs_copyselfapk_summary">Sitúa copia de OAndBackupX en el lugar más alto de la carpeta de respaldos</string>
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Adquiere un wakelock mientras se ejecutan las operaciones en lote para prevenir la suspensión. Acelera la creación de respaldos y las restauraciones, pero incrementa el consumo de memoria.</string>
-    <string name="prefs_enableSpecialBackups">Activar respaldos especiales</string>
+    <string name="prefs_enablespecial">Activar respaldos especiales</string>
     <string name="prefs_batchdelete">¿Eliminar respaldos\?</string>
     <string name="prefs_batchdelete_summary">Elimina los respaldos de todas las aplicaciones que no están instaladas actualmente.</string>
     <string name="prefs_logviewer">Ver historial</string>

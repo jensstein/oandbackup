@@ -91,7 +91,7 @@
     <string name="prefs_language_system">Systemsprache</string>
     <string name="prefs_rememberfiltering">Sortierung und Filter beibehalten</string>
     <string name="prefs_rememberfiltering_summary">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü ausgewählten werden beachtet.</string>
-    <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
+    <string name="prefs_enablespecial">Spezialsicherungen ermöglichen</string>
     <string name="sched_title">Sicherung planen</string>
     <string name="sched_notificationMessage">Geplante Sicherung</string>
     <string name="sched_interval">Intervall in Tagen:</string>

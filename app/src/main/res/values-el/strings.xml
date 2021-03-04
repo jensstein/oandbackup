@@ -88,7 +88,7 @@
     <string name="prefs_languages">Γλώσσα</string>
     <string name="prefs_language_system">Προεπιλογή συστήματος</string>
     <string name="prefs_rememberfiltering">Διατήρηση ταξινόμησης και φιλτραρίσματος</string>
-    <string name="prefs_enableSpecialBackups">Ενεργοποίηση ειδικών αντιγράφων</string>
+    <string name="prefs_enablespecial">Ενεργοποίηση ειδικών αντιγράφων</string>
     <string name="prefs_excludecache">Καθαρισμός μνήμης cache της εφαρμογής</string>
     <string name="prefs_encryption">Κρυπτογράφηση</string>
     <string name="prefs_password">Κωδικός κρυπτογράφησης</string>

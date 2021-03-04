@@ -91,7 +91,7 @@
     <string name="prefs_languages">语言</string>
     <string name="prefs_language_system">系统默认</string>
     <string name="prefs_rememberfiltering">记住排序和筛选方式</string>
-    <string name="prefs_enableSpecialBackups">启用特殊备份</string>
+    <string name="prefs_enablespecial">启用特殊备份</string>
     <string name="prefs_excludecache">清除应用缓存</string>
     <string name="prefs_encryption">加密</string>
     <string name="prefs_password">加密密码</string>

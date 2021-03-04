@@ -109,7 +109,7 @@
     <string name="prefs_passwordconfirmation">Encryption password confirmation</string>
     <string name="prefs_password_match_true">The passwords match</string>
     <string name="prefs_password_match_false">The passwords don\'t match</string>
-    <string name="prefs_enableSpecialBackups">Enable special backups</string>
+    <string name="prefs_enablespecial">Enable special backups</string>
     <string name="prefs_excludecache">Exclude app\'s cache</string>
     <string name="prefs_excludecache_summary">Exclude app\'s cache from data backup</string>
     <string name="prefs_externaldata">Back up external data</string>
@@ -247,6 +247,7 @@
     <string name="place_holder" translatable="false">PLACE HOLDER</string>
     <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
     <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
+    <string name="prefs_enablespecial_summary">Still needs intensive testing, try knowing the danger that it can cause boot loops. Feedback is always welcome.</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

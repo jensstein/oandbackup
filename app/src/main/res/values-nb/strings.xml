@@ -91,7 +91,7 @@
     <string name="prefs_language_system">Systemets standard</string>
     <string name="prefs_rememberfiltering">Husk sortering og filtere</string>
     <string name="prefs_rememberfiltering_summary">Lagrer utvalgte sortering og filter innstillinger. Tar bare hensyn til de som er markert med en avkryssingsboks i menyen.</string>
-    <string name="prefs_enableSpecialBackups">Aktiver spesielle sikkerhetskopier</string>
+    <string name="prefs_enablespecial">Aktiver spesielle sikkerhetskopier</string>
     <string name="sched_title">Planlegge</string>
     <string name="sched_notificationMessage">Planlagt sikkerhetskopi</string>
     <string name="sched_interval">Intervall i dager:</string>
