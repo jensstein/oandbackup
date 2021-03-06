@@ -240,12 +240,12 @@
     <string name="usage_notes_title">Notes d\'usage</string>
     <string name="main">Accueil</string>
     <string name="help">Aide</string>
-    <string name="forceKillMessage">Êtes-vous sûr de vouloir tuer l\'application \?</string>
+    <string name="forceKillMessage">Êtes-vous sûr·e de vouloir forcer l\'arrêt de l\'application \?</string>
     <plurals name="updated_apps">
         <item quantity="one">%d application actualisée</item>
         <item quantity="other">%d applications actualisées</item>
     </plurals>
-    <string name="app_info">Info sur l\'appli</string>
+    <string name="app_info">Infos sur l\'appli</string>
     <string name="launch_app">Lancer l\'appli</string>
     <string name="exodus_report">Rapport Exodus</string>
     <string name="clear_cache">Effacer le cache</string>
