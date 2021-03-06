@@ -396,11 +396,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 .filter(BatchItemX::isChecked)
                 .map(BatchItemX::actionMode)
                 .toCollection(ArrayList())
-        arguments.putIntegerArrayList("selectedListModes", selectedListModes)
-        arguments.putBoolean("backupBoolean", backupBoolean)
-        val dialog = BatchDialogFragment(this)
-        dialog.arguments = arguments
-        dialog.show(supportFragmentManager, "DialogFragment")
+        if (selectedList.isNotEmpty()) {
+            arguments.putIntegerArrayList("selectedListModes", selectedListModes)
+            arguments.putBoolean("backupBoolean", backupBoolean)
+            val dialog = BatchDialogFragment(this)
+            dialog.arguments = arguments
+            dialog.show(supportFragmentManager, "DialogFragment")
+        }
     }
 
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
@@ -491,11 +493,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             }
         })
 
-        WorkManager.getInstance(this)
-                .beginWith(worksList)
-                .then(finishWorkRequest)
-                .enqueue()
-
+        if (worksList.isNotEmpty()) {
+            WorkManager.getInstance(this)
+                    .beginWith(worksList)
+                    .then(finishWorkRequest)
+                    .enqueue()
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
