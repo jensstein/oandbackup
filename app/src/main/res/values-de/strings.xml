@@ -19,22 +19,22 @@
     <string name="search">Suchen</string>
     <string name="searchHint">Nach Anwendungen suchen</string>
     <string name="deleteBackup">Sicherung löschen</string>
-    <string name="uninstall">App deinstallieren</string>
+    <string name="uninstall">Anwendung deinstallieren</string>
     <string name="uninstallProgress">Deinstalliere …</string>
-    <string name="radio_all">Alle Apps</string>
-    <string name="showOnlySystem">Nur System-Apps</string>
-    <string name="showOnlyUser">Nur Benutzer-Apps</string>
-    <string name="showNotBackedup">Apps ohne Sicherung</string>
-    <string name="showNotInstalled">Nicht installierte Apps</string>
-    <string name="showNewAndUpdated">Neue und aktualisierte Apps</string>
+    <string name="radio_all">Alle Anwendungen</string>
+    <string name="showOnlySystem">Nur Systemanwendungen</string>
+    <string name="showOnlyUser">Nur Benutzeranwendungen</string>
+    <string name="showNotBackedup">Anwendungen ohne Sicherung</string>
+    <string name="showNotInstalled">Nicht installierte Anwendungen</string>
+    <string name="showNewAndUpdated">Neue und aktualisierte Anwendungen</string>
     <string name="showOldBackups">Alte Sicherungen</string>
-    <string name="showOnlyApkBackedUp">Nur Apps, bei denen nur die APK-Datei gesichert wurde</string>
-    <string name="showOnlyDataBackedUp">Nur Apps, bei denen nur die App-Daten gesichert wurden</string>
+    <string name="showOnlyApkBackedUp">Nur Anwendungen, bei denen nur die APK-Datei gesichert wurde</string>
+    <string name="showOnlyDataBackedUp">Nur Anwendungen, bei denen nur die Anwendungsdaten gesichert wurden</string>
     <string name="radio_special">Spezielle Sicherungen</string>
     <string name="sortByLabel">Nach Bezeichnung sortieren</string>
     <string name="sortByPackageName">Nach Paketname sortieren</string>
     <string name="sort">Sortieren und Filtern</string>
-    <string name="uninstallDialogMessage">Diese App deinstallieren?</string>
+    <string name="uninstallDialogMessage">Diese Anwendung deinstallieren\?</string>
     <string name="deleteBackupDialogMessage">Sicherungsdateien löschen?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Abbrechen</string>
@@ -64,7 +64,7 @@
     <string name="uninstallFailure">Fehler bei der Deinstallation</string>
     <string name="errorDialogTitle">Fehler sind aufgetreten</string>
     <string name="customListTitle">Eigene Liste</string>
-    <string name="notInstalledModeDataWarning">App kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
+    <string name="notInstalledModeDataWarning">Anwendung kann aus einer Sicherung ohne APK nicht wiederhergestellt werden</string>
     <string name="shareTitle">Teilen</string>
     <string name="prefs_tools">Hilfsmittel</string>
     <string name="prefs_batchdelete">Sicherungen löschen\?</string>
@@ -73,11 +73,11 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Gelöschte Sicherungen:</string>
     <string name="batchDeleteNothingToDelete">Keine Sicherungen zum Löschen vorhanden</string>
-    <string name="enablePackage">App aktivieren</string>
+    <string name="enablePackage">Anwendung aktivieren</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">App für Benutzer aktivieren</string>
-    <string name="disablePackage">App deaktivieren</string>
-    <string name="disablePackageTitle">App für Benutzer deaktivieren</string>
+    <string name="enablePackageTitle">Anwendung für Benutzer aktivieren</string>
+    <string name="disablePackage">Anwendung deaktivieren</string>
+    <string name="disablePackageTitle">Anwendung für Benutzer deaktivieren</string>
     <string name="prefs_title">Einstellungen</string>
     <string name="prefs_acquirewakelock">Standby verhindern</string>
     <string name="prefs_acquirewakelock_summary">Wakelock anfordern, um den Ruhemodus zu verhindern während die Stapelverarbeitung läuft. Beschleunigt Sicherungen und Wiederherstellungen erheblich, verbraucht aber mehr Energie.</string>
@@ -114,8 +114,8 @@
     <string name="sort_options">Sortieren nach:</string>
     <string name="sortPackageName">Paketname</string>
     <string name="sortLabel">Bezeichnung</string>
-    <string name="radio_user">Benutzer-Apps</string>
-    <string name="radio_system">System-Apps</string>
+    <string name="radio_user">Benutzeranwendungen</string>
+    <string name="radio_system">Systemanwendungen</string>
     <string name="app_s_icon">App-Icon</string>
     <string name="permission_not_granted">Die Erlaubnis zum Zugriff auf externen Speicher ist erforderlich</string>
     <string name="restart_dialog">App scheint neu gestartet werden zu müssen</string>
@@ -149,7 +149,7 @@
     <string name="ignore_battery_optimization_message">Es kann passieren, dass der Sicherungsprozess im Hintergrund plötzlich abbricht. In solchen Fällen hilft das Ausschalten der Akku-Optimierung</string>
     <string name="ignore_battery_optimization_not_supported">Dieses Gerät unterstützt das Ausschalten der Akku-Optimierung leider nicht!</string>
     <string name="prefs_excludecache">App-Cache ausschließen</string>
-    <string name="prefs_excludecache_summary">Den Cache der App von der Datensicherung ausschließen</string>
+    <string name="prefs_excludecache_summary">Den Cache der Anwendung von der Datensicherung ausschließen</string>
     <string name="prefs_encryption">Verschlüsselung</string>
     <string name="prefs_password">Verschlüsselungspasswort</string>
     <string name="prefs_password_summary">Leer lassen, um die Verschlüsselung zu deaktivieren</string>
@@ -230,10 +230,10 @@
     <string name="stats_backups">Sicherungen</string>
     <string name="stats_updated">Aktualisiert</string>
     <string name="radio_launchable">Startbare Apps</string>
-    <string name="prefs_obbdata_summary">Sichert und stellt die obb-Dateien der App wieder her, die sich auf dem externen Speicher befindet (z.B. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata_summary">Sichert und stellt die obb-Dateien der Anwendung wieder her, die sich auf dem externen Speicher befindet (z.B. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">obb Dateien sichern</string>
     <string name="prefs_allowdowngrade">Installation von Vorgängerversionen erlauben</string>
-    <string name="prefs_allowdowngrade_summary">Das Wiederherstellen einer älteren Version einer installieren App erlauben.</string>
+    <string name="prefs_allowdowngrade_summary">Das Wiederherstellen einer älteren Version einer installieren Anwendung erlauben.</string>
     <string name="prefs_restoreallpermissions">Mit allen Berechtigungen wiederherstellen</string>
     <string name="prefs_restoreallpermissions_summary">Der wiederhergestellten App alle Berechtigungen geben, nach denen sie fragt.</string>
     <string name="help_faq">Häufig gestellte Fragen</string>
@@ -244,10 +244,10 @@
         <item quantity="one">%d aktualisierte App</item>
         <item quantity="other">%d aktualisierte Apps</item>
     </plurals>
-    <string name="app_info">App-Info</string>
+    <string name="app_info">Anwendungsinfos</string>
     <string name="launch_app">App starten</string>
     <string name="exodus_report">Exodus Report</string>
     <string name="clear_cache">Cache löschen</string>
-    <string name="forceKillMessage">Sind Sie sicher, dass Sie das Beenden dieser App erzwingen wollen\?</string>
+    <string name="forceKillMessage">Sind Sie sicher, dass Sie das Beenden dieser Anwendung erzwingen wollen\?</string>
     <string name="sched_name">Name:</string>
 </resources>
