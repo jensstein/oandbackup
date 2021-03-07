@@ -33,7 +33,7 @@ class LogUtils(var context: Context) {
     private var logsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context))
+        val backupRootFolder = DocumentUtils.getBackupRoot(context)
         logsDirectory = DocumentUtils.ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
     }
 
