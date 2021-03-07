@@ -57,6 +57,7 @@ const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
+const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
 const val MODE_UNSET = 0

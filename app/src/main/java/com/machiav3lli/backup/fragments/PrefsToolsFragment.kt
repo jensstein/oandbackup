@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.fragments
 
 import android.content.DialogInterface
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -26,23 +27,24 @@ import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.machiav3lli.backup.PREFS_BATCH_DELETE
-import com.machiav3lli.backup.PREFS_COPYSELF
-import com.machiav3lli.backup.PREFS_LOGVIEWER
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.utils.DocumentUtils
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.BufferedOutputStream
 import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 
 class PrefsToolsFragment : PreferenceFragmentCompat() {
     private var appInfoList: List<AppInfo> = ArrayList()
@@ -53,13 +55,14 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences_tools, rootKey)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_BATCH_DELETE)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
         pref = findPreference(PREFS_COPYSELF)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickCopySelf() }
+        pref = findPreference(PREFS_SAVEAPPSLIST)!!
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickSaveAppsList() }
         pref = findPreference(PREFS_LOGVIEWER)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
@@ -118,6 +121,36 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         } finally {
             return true
         }
+    }
+
+    private fun onClickSaveAppsList(): Boolean {
+        if (appInfoList.isNotEmpty()) {
+            AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.prefs_saveappslist)
+                    .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
+                        writeAppsListFile(appInfoList.filter { it.isSystem }.map { "${it.packageLabel}: ${it.packageName}" })
+                    }
+                    .setNeutralButton(R.string.radio_user) { _: DialogInterface, _: Int ->
+                        writeAppsListFile(appInfoList.filter { !it.isSystem }.map { "${it.packageLabel}: ${it.packageName}" })
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
+        } else {
+            Toast.makeText(requireActivity(), getString(R.string.noAppsListToSave), Toast.LENGTH_LONG).show()
+        }
+        return true
+    }
+
+    @Throws(IOException::class)
+    fun writeAppsListFile(appsList: List<String>) {
+        val date = LocalDateTime.now()
+        val filesText = appsList.joinToString("\n")
+        val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
+        val listFile = DocumentUtils.getBackupRoot(requireContext()).createFile("application/octet-stream", fileName)
+        BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
+                ?: Uri.EMPTY, "w"))
+                .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
+        Timber.i("Wrote apps\' list file at $date")
     }
 
     private fun launchFragment(fragment: Fragment): Boolean {
