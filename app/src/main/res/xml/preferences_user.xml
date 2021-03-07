@@ -57,6 +57,7 @@
 
     <androidx.preference.EditTextPreference
         android:defaultValue="7"
+        android:icon="@drawable/ic_updated"
         android:inputType="number"
         android:key="oldBackups"
         android:summary="@string/prefs_oldbackups_summary"

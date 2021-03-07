@@ -41,6 +41,7 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
+        android:icon="@drawable/ic_blacklist"
         android:key="excludeCache"
         android:summary="@string/prefs_excludecache_summary"
         android:title="@string/prefs_excludecache" />
@@ -68,6 +69,7 @@
 
     <androidx.preference.SeekBarPreference
         android:defaultValue="2"
+        android:icon="@drawable/ic_revisions"
         android:key="numBackupRevisions"
         android:max="10"
         android:summary="@string/prefs_numBackupRevisions_summary"
