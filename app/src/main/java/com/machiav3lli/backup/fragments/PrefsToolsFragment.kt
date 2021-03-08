@@ -32,11 +32,13 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.DocumentUtils
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getFilterPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -130,8 +132,10 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                     .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
                         writeAppsListFile(appInfoList.filter { it.isSystem }.map { "${it.packageLabel}: ${it.packageName}" })
                     }
-                    .setNeutralButton(R.string.radio_user) { _: DialogInterface, _: Int ->
-                        writeAppsListFile(appInfoList.filter { !it.isSystem }.map { "${it.packageLabel}: ${it.packageName}" })
+                    .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
+                        writeAppsListFile(applyFilter(appInfoList,
+                                getFilterPreferences(requireContext()).toString(), requireContext())
+                                .map { "${it.packageLabel}: ${it.packageName}" })
                     }
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()

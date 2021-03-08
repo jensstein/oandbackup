@@ -251,6 +251,7 @@
     <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
     <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
     <string name="noAppsListToSave">Still no apps\' list to save. Wait…</string>
+    <string name="filtered_list">Filtered list</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>
