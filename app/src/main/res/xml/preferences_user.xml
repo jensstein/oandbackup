@@ -37,7 +37,7 @@
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.Preference
-        android:icon="@drawable/ic_storage"
+        android:icon="@drawable/ic_folder"
         android:key="pathBackupFolder"
         android:title="@string/prefs_pathbackupfolder" />
 
