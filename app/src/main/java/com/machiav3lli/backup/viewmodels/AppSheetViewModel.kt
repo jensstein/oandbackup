@@ -27,7 +27,7 @@ import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -67,7 +67,7 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private
                 } catch (e: ShellCommands.ShellActionFailedException) {
                     showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
                             appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure), true)
-                    e.message?.let { message -> LogUtils.logErrors(appContext, message) }
+                    e.message?.let { message -> LogsHandler.logErrors(appContext, message) }
                 }
             }
         }

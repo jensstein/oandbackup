@@ -26,7 +26,6 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.LogUtils
 import timber.log.Timber
 import java.io.File
 
@@ -59,7 +58,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
             // don't care for the result here, it likely fails due to file not found
@@ -71,7 +70,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(" ")}")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
             }
         } else {
             // Deleting while system app
@@ -100,7 +99,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
@@ -120,7 +119,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, "Could not $option package $packageName", e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "Could not $option package $packageName", e)
             }
         }
@@ -141,7 +140,7 @@ class ShellCommands(private var users: List<String>?) {
         } catch (e: ShellCommandFailedException) {
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, command)
+            LogsHandler.unhandledException(e, command)
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
         }
     }
@@ -180,7 +179,7 @@ class ShellCommands(private var users: List<String>?) {
                 } catch (e: ShellCommandFailedException) {
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, command)
+                    LogsHandler.unhandledException(e, command)
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 }
             }
@@ -221,7 +220,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }

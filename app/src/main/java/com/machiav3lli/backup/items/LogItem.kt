@@ -24,7 +24,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils.instance
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -75,7 +75,7 @@ open class LogItem : Parcelable {
         } catch (e: IOException) {
             throw BackupItem.BrokenBackupException("Cannot read ${logFile.name} at URI ${logFile.uri}", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, logFile.uri)
+            LogsHandler.unhandledException(e, logFile.uri)
             throw BackupItem.BrokenBackupException("Unable to process ${logFile.name} at URI ${logFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
     }
@@ -113,7 +113,7 @@ open class LogItem : Parcelable {
     }
 
     fun delete(context: Context): Boolean? {
-        val logFile = LogUtils(context).getLogFile(this.logDate)
+        val logFile = LogsHandler(context).getLogFile(this.logDate)
         return logFile?.delete()
     }
 

@@ -32,7 +32,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -99,7 +99,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
                 }
             }
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, packageLabel)
+            LogsHandler.unhandledException(e, packageLabel)
         } finally {
             val error = result?.message
             return Result.success(workDataOf(

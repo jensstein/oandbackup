@@ -23,7 +23,7 @@ import android.content.pm.PackageManager
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
@@ -67,7 +67,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: ShellCommandFailedException) {
             Timber.w("Could not stop package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 
@@ -87,7 +87,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         } catch (e: ShellCommandFailedException) {
             Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 

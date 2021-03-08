@@ -36,7 +36,6 @@ import androidx.biometric.BiometricManager
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.handler.Crypto
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
 import java.nio.charset.StandardCharsets
@@ -55,7 +54,7 @@ fun getCryptoSalt(context: Context): ByteArray {
             ?: ""
     return if (userSalt.isNotEmpty()) {
         userSalt.toByteArray(StandardCharsets.UTF_8)
-    } else Crypto.FALLBACK_SALT
+    } else FALLBACK_SALT
 }
 
 

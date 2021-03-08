@@ -19,7 +19,6 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.net.Uri
-import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -30,6 +29,7 @@ import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
+import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.suUncompressTo
 import org.apache.commons.io.FileUtils

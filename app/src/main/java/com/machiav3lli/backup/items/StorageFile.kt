@@ -4,28 +4,31 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import com.machiav3lli.backup.handler.DocumentContractApi
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.utils.exists
+import com.machiav3lli.backup.utils.getName
+import com.machiav3lli.backup.utils.isDirectory
+import com.machiav3lli.backup.utils.isFile
 import java.io.FileNotFoundException
 import java.util.*
 
-// TODO MAYBE migrate to FuckSAF
+// TODO MAYBE migrate at some point to FuckSAF
 open class StorageFile protected constructor(val parentFile: StorageFile?, private val context: Context, var uri: Uri) {
     var name: String? = null
         get() {
-            if (field == null) field = DocumentContractApi.getName(context, uri)
+            if (field == null) field = getName(context, uri)
             return field
         }
         private set
 
     val isFile: Boolean
-        get() = DocumentContractApi.isFile(context, this.uri)
+        get() = isFile(context, this.uri)
 
     val isPropertyFile: Boolean
-        get() = DocumentContractApi.isFile(context, this.uri)
+        get() = isFile(context, this.uri)
 
     val isDirectory: Boolean
-        get() = DocumentContractApi.isDirectory(context, this.uri)
+        get() = isDirectory(context, this.uri)
 
     fun createDirectory(displayName: String): StorageFile? {
         val result = createFile(context, uri, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
@@ -43,7 +46,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, uri)
             false
         }
     }
@@ -57,7 +60,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             }
         } catch (e: FileNotFoundException) {
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, uri)
         }
         return null
     }
@@ -93,7 +96,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                     results.add(documentUri)
                 }
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, uri)
+                LogsHandler.unhandledException(e, uri)
             } finally {
                 closeQuietly(cursor)
             }
@@ -115,13 +118,13 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             }
             false
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, uri)
             false
         }
     }
 
     fun exists(): Boolean {
-        return DocumentContractApi.exists(context, uri)
+        return exists(context, uri)
     }
 
     override fun toString(): String {
@@ -144,7 +147,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
             } catch (e: FileNotFoundException) {
                 null
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, uri)
+                LogsHandler.unhandledException(e, uri)
                 null
             }
         }
@@ -161,7 +164,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
                     // noinspection ProhibitedExceptionThrown
                     throw rethrown
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e)
+                    LogsHandler.unhandledException(e)
                 }
             }
         }

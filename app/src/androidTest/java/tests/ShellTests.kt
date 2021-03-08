@@ -1,6 +1,6 @@
 package tests
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import org.jetbrains.annotations.TestOnly
@@ -32,9 +32,9 @@ class ShellTests {
                     return iterableToString(it.out).toInt() == length
                 }
             } catch (e: OutOfMemoryError) {
-                LogUtils.logException(e, "length: $length")
+                LogsHandler.logException(e, "length: $length")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, "length: $length err: ${shellResult?.err}")
+                LogsHandler.unhandledException(e, "length: $length err: ${shellResult?.err}")
             }
             return false
         }

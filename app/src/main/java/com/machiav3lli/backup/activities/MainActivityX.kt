@@ -43,8 +43,8 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -84,7 +84,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
     val batchItemAdapter = ItemAdapter<BatchItemX>()
     private var batchFastAdapter: FastAdapter<BatchItemX>? = null
-    val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
+    private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
     private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
     private var mainBoolean = false
     private var backupBoolean = false
@@ -483,7 +483,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                     showActionResult(this@MainActivityX, overAllResult,
                             if (overAllResult.succeeded) null
                             else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
-                                LogUtils.logErrors(this@MainActivityX, errors.dropLast(2))
+                                LogsHandler.logErrors(this@MainActivityX, errors.dropLast(2))
                             }
                     )
                     binding.progressBar.visibility = View.GONE
@@ -546,7 +546,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }.start()
     }
@@ -566,7 +566,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 if (appSheetBoolean) refreshAppSheet()
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }
     }
@@ -592,7 +592,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             } else
                 sheetApp?.dismissAllowingStateLoss()
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 
@@ -609,7 +609,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 updateDataChecks()
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }
     }

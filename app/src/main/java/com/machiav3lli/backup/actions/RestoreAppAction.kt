@@ -20,8 +20,7 @@ package com.machiav3lli.backup.actions
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
-import com.machiav3lli.backup.handler.Crypto.decryptStream
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
@@ -34,8 +33,6 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.*
-import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileFromDocument
-import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileFromDocument
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
@@ -318,7 +315,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException("Could not restore a file due to a failed root command: $error", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
             throw RestoreFailedException("Could not restore a file due to a failed root command", e)
         } finally {
             // Clean up the temporary directory if it was initialized

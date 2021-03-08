@@ -20,7 +20,7 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -46,7 +46,7 @@ open class BackupItem {
         } catch (e: IOException) {
             throw BrokenBackupException("Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, propertiesFile.uri)
+            LogsHandler.unhandledException(e, propertiesFile.uri)
             throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
         backupInstance = StorageFile.fromUri(context, backupProperties.getBackupLocation(propertiesFile.parentFile))

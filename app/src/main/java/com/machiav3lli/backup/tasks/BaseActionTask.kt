@@ -29,7 +29,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.LogUtils.Companion.logErrors
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.utils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch

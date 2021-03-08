@@ -20,14 +20,14 @@ package com.machiav3lli.backup.actions
 import android.content.Context
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.utils.CryptoSetupException
 import timber.log.Timber
 import java.io.File
 import java.nio.file.Files
@@ -61,10 +61,10 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 val file = File(filePath!!)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
-                var fileInfos : List<ShellHandler.FileInfo>
+                var fileInfos: List<ShellHandler.FileInfo>
                 try {
                     fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
-                } catch(e: ShellCommandFailedException) {
+                } catch (e: ShellCommandFailedException) {
                     continue  //TODO hg42: avoid checking the error message text for now
                     //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
                     //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
@@ -90,7 +90,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
             Timber.e("$app: Backup Special Data failed: $error")
             throw BackupFailedException(error, e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, app)
+            LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
         }
         return true

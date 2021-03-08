@@ -24,6 +24,7 @@ import android.text.format.Formatter
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.databinding.SheetAppBinding
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
 import timber.log.Timber
@@ -63,7 +64,7 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.e("Package ${app.packageName} is not installed? Exception: $e")
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, app)
+            LogsHandler.unhandledException(e, app)
         }
     }
 }

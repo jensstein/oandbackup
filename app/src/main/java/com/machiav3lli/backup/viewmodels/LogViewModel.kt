@@ -20,7 +20,7 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.items.LogItem
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,7 +57,7 @@ class LogViewModel(private val appContext: Application)
 
     private suspend fun recreateAppInfoList(): MutableList<LogItem>? {
         return withContext(Dispatchers.IO) {
-            val dataList = LogUtils(appContext).readLogs()
+            val dataList = LogsHandler(appContext).readLogs()
             dataList
         }
     }

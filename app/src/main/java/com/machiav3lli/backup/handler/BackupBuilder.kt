@@ -25,7 +25,7 @@ import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.DocumentUtils.ensureDirectory
+import com.machiav3lli.backup.utils.ensureDirectory
 import java.time.LocalDateTime
 
 class BackupBuilder(private val context: Context, private val appInfo: AppMetaInfo, backupRoot: Uri) {

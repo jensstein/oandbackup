@@ -26,7 +26,7 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
 
@@ -50,11 +50,11 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             BackendController.getApplicationList(context)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogUtils.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             return Pair(listOf(), MODE_BOTH)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogUtils.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             return Pair(listOf(), MODE_BOTH)
         }
 

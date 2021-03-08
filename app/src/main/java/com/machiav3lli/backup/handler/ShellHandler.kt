@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
-import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
@@ -228,7 +227,7 @@ class ShellHandler {
                                 tokens[0], fileMode, filePath, parent))
                     }
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, filePath)
+                    LogsHandler.unhandledException(e, filePath)
                 }
                 var linkName: String? = null
                 var fileSize: Long = 0

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.utils
+package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.net.Uri
@@ -23,18 +23,21 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.ensureDirectory
+import com.machiav3lli.backup.utils.getBackupRoot
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
-class LogUtils(var context: Context) {
+class LogsHandler(var context: Context) {
     private var logsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = DocumentUtils.getBackupRoot(context)
-        logsDirectory = DocumentUtils.ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
+        val backupRootFolder = getBackupRoot(context)
+        logsDirectory = ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
     }
 
     @Throws(IOException::class)
@@ -79,7 +82,7 @@ class LogUtils(var context: Context) {
         const val LOG_FOLDER_NAME = "LOGS"
         fun logErrors(context: Context, errors: String) {
             try {
-                val logUtils = LogUtils(context)
+                val logUtils = LogsHandler(context)
                 logUtils.writeToLogFile(errors)
             } catch (e: IOException) {
                 e.printStackTrace()

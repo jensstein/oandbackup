@@ -32,13 +32,9 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.DocumentUtils
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getFilterPreferences
+import com.machiav3lli.backup.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -74,7 +70,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         Thread {
             try {
                 appInfoList = getApplicationList(requireContext())
-            } catch (e: BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {
                 e.printStackTrace()
@@ -150,7 +146,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val date = LocalDateTime.now()
         val filesText = appsList.joinToString("\n")
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
-        val listFile = DocumentUtils.getBackupRoot(requireContext()).createFile("application/octet-stream", fileName)
+        val listFile = getBackupRoot(requireContext()).createFile("application/octet-stream", fileName)
         BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }

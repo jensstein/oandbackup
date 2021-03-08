@@ -31,7 +31,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.setNeedRefresh
 import timber.log.Timber
@@ -122,7 +122,7 @@ open class ScheduleService : Service() {
                             showNotification(this@ScheduleService, MainActivityX::class.java,
                                     notificationId, title, message, true)
                             val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                            if (!overAllResult.succeeded) LogUtils.logErrors(context, errors)
+                            if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
                             scheduleAlarm(context, scheduleId, true)
                             setNeedRefresh(context, true)
                             stopService(intent)

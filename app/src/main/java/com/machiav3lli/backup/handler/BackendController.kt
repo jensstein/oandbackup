@@ -30,11 +30,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -78,10 +74,10 @@ object BackendController {
                 .toList()
     }
 
-    @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getApplicationList(context: Context): MutableList<AppInfo> = getApplicationList(context, true)
 
-    @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getApplicationList(context: Context, includeUninstalled: Boolean): MutableList<AppInfo> {
         invalidateCache()
         val includeSpecial = getDefaultSharedPreferences(context).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
@@ -125,17 +121,17 @@ object BackendController {
         return packageList
     }
 
-    @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getDirectoriesInBackupRoot(context: Context): List<StorageFile> {
         val backupRoot = getBackupRoot(context)
         try {
             return backupRoot.listFiles()
-                    .filter { it.isDirectory && it.name != LogUtils.LOG_FOLDER_NAME }
+                    .filter { it.isDirectory && it.name != LogsHandler.LOG_FOLDER_NAME }
                     .toList()
         } catch (e: FileNotFoundException) {
             Timber.e("${e.javaClass.simpleName}: ${e.message}")
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
         return arrayListOf()
     }
@@ -155,7 +151,7 @@ object BackendController {
             Timber.e("Could not retrieve storage stats of $packageName: $e")
             null
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, packageName)
+            LogsHandler.unhandledException(e, packageName)
             null
         }
     }
