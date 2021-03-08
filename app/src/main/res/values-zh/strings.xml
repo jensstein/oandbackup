@@ -251,4 +251,7 @@
     <string name="copyOwnApkSuccess">已将应用程序的 APK 复制到备份目录</string>
     <string name="prefs_devicelock_summary">使用设备凭据保护这个应用程序</string>
     <string name="prefs_devicelock">设备锁</string>
+    <string name="noAppsListToSave">仍然没有要保存的应用列表。 等待…</string>
+    <string name="prefs_saveappslist_summary">将应用列表写入用户备份目录中的 txt 文件</string>
+    <string name="prefs_saveappslist">保存应用列表</string>
 </resources>
