@@ -258,4 +258,5 @@
     <string name="prefs_enablespecial_summary">Necessita ancora di collaudo intenso, immagina il pericolo che riavvii continui potrebbero causarti. Un feedback è sempre benvenuto.</string>
     <string name="prefs_devicelock_summary">Difendi la app con credenziali di dispositivo</string>
     <string name="prefs_devicelock">Blocco dispositivo</string>
+    <string name="filtered_list">Lista filtrata</string>
 </resources>
