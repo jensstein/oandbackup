@@ -258,4 +258,5 @@
     <string name="prefs_enablespecial_summary">Trenger fremdeles mye testing. Prøv det i viten om at det kan forårsake omstartsløkker. Tilbakemeldinger er alltid velkomne.</string>
     <string name="prefs_devicelock_summary">Sikre programmet med enhetsidentietsdetaljer</string>
     <string name="prefs_devicelock">Enhetslås</string>
+    <string name="filtered_list">Filtrert liste</string>
 </resources>
