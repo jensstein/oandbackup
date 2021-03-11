@@ -11,8 +11,8 @@
     <string name="radio_data">Données</string>
     <string name="radio_both">APK et données</string>
     <string name="de_selectAll">tout dé/sélectionner</string>
-    <string name="onlyApkBackedUp">Uniquement l\'APK</string>
-    <string name="onlyDataBackedUp">Uniquement les données</string>
+    <string name="onlyApkBackedUp">l\'APK seulement</string>
+    <string name="onlyDataBackedUp">Les données seulement</string>
     <string name="refresh">Rafraîchir</string>
     <string name="batchbackup">sauvegarder par lot</string>
     <string name="batchrestore">restaurer par lot</string>
@@ -93,7 +93,7 @@
     <string name="sched_title">planification</string>
     <string name="sched_notificationMessage">sauvegarde planifiée</string>
     <string name="sched_interval">intervalle en jours :</string>
-    <string name="sched_hourOfDay">Heure de la journée :</string>
+    <string name="sched_hourOfDay">Heure du jour :</string>
     <string name="sched_checkbox">activer</string>
     <string name="sched_startingbackup">lancement de la sauvegarde planifiée…</string>
     <string name="sched_mode">mode de sauvegarde :</string>
@@ -152,7 +152,7 @@
     <string name="spec_appwidgets">Widgets d\'applications</string>
     <string name="spec_accounts">Comptes</string>
     <string name="sched_blacklist">Liste noire</string>
-    <string name="sched_activateButton">Démarrer la sauvegarde maintenant</string>
+    <string name="sched_activateButton">Démarrer maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>
     <string name="prefs_enablespecial">Activer les sauvegardes spéciales</string>
@@ -250,4 +250,13 @@
     <string name="exodus_report">Rapport Exodus</string>
     <string name="clear_cache">Effacer le cache</string>
     <string name="sched_name">Nom :</string>
+    <string name="filtered_list">Liste filtrée</string>
+    <string name="noAppsListToSave">Toujours pas de liste d\'applications à sauvegarder. Patientez…</string>
+    <string name="copyOwnApkFailed">Échec de la copie de l\'APK de l\'application dans le répertoire de sauvegarde</string>
+    <string name="copyOwnApkSuccess">Copie de l\'APK de l\'application dans le répertoire de sauvegarde</string>
+    <string name="prefs_saveappslist_summary">Écrit la liste des applications dans un fichier txt dans le répertoire de sauvegarde de l\'utilisateur</string>
+    <string name="prefs_saveappslist">Sauvegarder la liste des applications</string>
+    <string name="prefs_enablespecial_summary">Il doit encore être testé intensivement, en sachant qu\'il peut provoquer des boucles de redémarrage. Les commentaires sont toujours les bienvenus.</string>
+    <string name="prefs_devicelock_summary">Sécuriser l\'application avec les informations d\'identification de l\'appareil</string>
+    <string name="prefs_devicelock">Verrouillage de l\'appareil</string>
 </resources>
