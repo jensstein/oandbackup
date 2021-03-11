@@ -75,9 +75,9 @@
     <string name="batchDeleteNothingToDelete">No hay respaldos para eliminar</string>
     <string name="enablePackage">Habilitar la aplicación</string>
     <!-- enablePackageTitle: título para la lista de usuarios comprobables -->
-    <string name="enablePackageTitle">Activar aplicación para usuarios</string>
-    <string name="disablePackage">Desactivar la aplicación</string>
-    <string name="disablePackageTitle">Desactivar la aplicación para usuarios</string>
+    <string name="enablePackageTitle">Habilitar aplicación para usuarios</string>
+    <string name="disablePackage">Deshabilitar la aplicación</string>
+    <string name="disablePackageTitle">Deshabilitar la aplicación para usuarios</string>
     <string name="prefs_title">Preferencias</string>
     <string name="prefs_user">Preferencias de usuario</string>
     <string name="prefs_theme">Tema</string>
@@ -111,7 +111,7 @@
     <string name="prefs_copyselfapk_summary">Sitúa copia de OAndBackupX en el lugar más alto de la carpeta de respaldos</string>
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
     <string name="prefs_acquirewakelock_summary">Adquiere un wakelock mientras se ejecutan las operaciones en lote para prevenir la suspensión. Acelera la creación de respaldos y las restauraciones, pero incrementa el consumo de memoria.</string>
-    <string name="prefs_enableSpecialBackups">Activar respaldos especiales</string>
+    <string name="prefs_enablespecial">Activar respaldos especiales</string>
     <string name="prefs_batchdelete">¿Eliminar respaldos\?</string>
     <string name="prefs_batchdelete_summary">Elimina los respaldos de todas las aplicaciones que no están instaladas actualmente.</string>
     <string name="prefs_logviewer">Ver historial</string>
@@ -205,7 +205,7 @@
     <string name="intro_permission_batteryoptimization">La aplicación podría encontrarse con algunos problemas realizando respaldos programados en algunas ROMs que tienen optimizaciones de batería muy agresivas, por ejemplo MIUI, pero incluso en AOSP estándar podría suceder.</string>
     <string name="msg_appkill_warning">La(s) aplicación(es) seleccionadas recibirán la orden de detenerse y al finalizar la tarea se reanudarán. Por favor, compruebe las aplicaciones procesadas al terminar la tarea y evite abrirlas mientras la tarea está en proceso.</string>
     <string name="prefs_stopcont">STOP-CONT pre- y postprocesado de las aplicaciones en respaldo/restaurado</string>
-    <string name="fetching_action_list">Obteniendo lista de aplicaciones para el respaldo…</string>
+    <string name="fetching_action_list">Obteniendo lista de aplicaciones para %1$s…</string>
     <string name="logs_text_empty">¡No hay nada para mostrar!</string>
     <string name="delete_all_backups">Borrar todos los respaldos</string>
     <string name="prefs_stopcont_summary">Solo expertos: esto puede ayudar si la aplicación está cambiando archivos durante el respaldo y el respaldo falla.</string>
@@ -248,4 +248,6 @@
     <string name="app_info">Info-App</string>
     <string name="launch_app">Lanzar aplicación</string>
     <string name="clear_cache">Limpiar caché</string>
+    <string name="sched_name">Nombre:</string>
+    <string name="forceKillMessage">¿Seguro que quieres forzar la detención de la aplicación\?</string>
 </resources>

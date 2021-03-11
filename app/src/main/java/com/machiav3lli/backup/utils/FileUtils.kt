@@ -56,7 +56,7 @@ object FileUtils {
     fun getBackupDir(context: Context): Uri {
         if (backupLocation == null) {
             val storageRoot = getStorageRootDir(context)
-            if (storageRoot!!.isEmpty()) {
+            if (storageRoot.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
             }
             val storageRootDoc = DocumentFile.fromTreeUri(context, Uri.parse(storageRoot))
@@ -100,8 +100,8 @@ object FileUtils {
     }
 
     class BackupLocationIsAccessibleException : Exception {
-        constructor() : super() {}
-        constructor(message: String?) : super(message) {}
-        constructor(message: String?, cause: Throwable?) : super(message, cause) {}
+        constructor() : super()
+        constructor(message: String?) : super(message)
+        constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 }

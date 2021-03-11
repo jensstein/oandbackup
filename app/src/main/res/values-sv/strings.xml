@@ -90,7 +90,7 @@
     <string name="prefs_language_system">systemstandard</string>
     <string name="prefs_rememberfiltering">kom ihåg sortering och filter</string>
     <string name="prefs_rememberfiltering_summary">sparar den valda sorterings- och filtreringsmetoden. endast de som markeras med en kryssruta i menyn beaktas.</string>
-    <string name="prefs_enableSpecialBackups">aktivera speciella säkerhetskopior</string>
+    <string name="prefs_enablespecial">aktivera speciella säkerhetskopior</string>
     <string name="sched_title">schemaläggning</string>
     <string name="sched_notificationMessage">schemalagd säkerhetskopiering</string>
     <string name="sched_interval">intervall i dagar:</string>

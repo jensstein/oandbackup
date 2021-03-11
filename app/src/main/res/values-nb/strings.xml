@@ -91,7 +91,7 @@
     <string name="prefs_language_system">Systemets standard</string>
     <string name="prefs_rememberfiltering">Husk sortering og filtere</string>
     <string name="prefs_rememberfiltering_summary">Lagrer utvalgte sortering og filter innstillinger. Tar bare hensyn til de som er markert med en avkryssingsboks i menyen.</string>
-    <string name="prefs_enableSpecialBackups">Aktiver spesielle sikkerhetskopier</string>
+    <string name="prefs_enablespecial">Aktiver spesielle sikkerhetskopier</string>
     <string name="sched_title">Planlegge</string>
     <string name="sched_notificationMessage">Planlagt sikkerhetskopi</string>
     <string name="sched_interval">Intervall i dager:</string>
@@ -205,7 +205,7 @@
     <string name="prefs_housekeepingmoment_after">Etter sikkerhetskopiering</string>
     <string name="prefs_housekeepingmoment_before">Før sikkerhetskopiering</string>
     <string name="delete_all_backups">Slett alle sikkerhetskopier</string>
-    <string name="fetching_action_list">Henter programliste for sikkerhetskopiering…</string>
+    <string name="fetching_action_list">Henter programliste for %1$s…</string>
     <string name="logs_text_empty">Ingenting å vise.</string>
     <string name="radio_obbdata">OBB-data</string>
     <string name="radio_deviceprotecteddata">Enhetsbeskyttet data</string>
@@ -240,4 +240,13 @@
     <string name="usage_notes_title">Bruksmerknader</string>
     <string name="main">Hovedside</string>
     <string name="help">Hjelp</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d oppdatert program</item>
+        <item quantity="other">%d oppdaterte programmer</item>
+    </plurals>
+    <string name="app_info">Programinfo</string>
+    <string name="launch_app">Kjør program</string>
+    <string name="exodus_report">Exodus-rapport</string>
+    <string name="clear_cache">Tøm hurtiglager</string>
+    <string name="sched_name">Navn:</string>
 </resources>

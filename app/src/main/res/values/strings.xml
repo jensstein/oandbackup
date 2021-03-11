@@ -20,8 +20,8 @@
     <string name="radio_deviceprotecteddata">Device Protected Data</string>
     <string name="radio_obbdata">OBB Data</string>
     <string name="de_selectAll">De/select all</string>
-    <string name="onlyApkBackedUp">Only APK</string>
-    <string name="onlyDataBackedUp">Only data</string>
+    <string name="onlyApkBackedUp">APK only</string>
+    <string name="onlyDataBackedUp">Data only</string>
     <string name="refresh">Refresh</string>
     <string name="batchbackup">Batch backup</string>
     <string name="batchrestore">Batch restore</string>
@@ -94,6 +94,8 @@
     <string name="prefs_languages">Language</string>
     <string name="prefs_language_system">System default</string>
     <string name="prefs_pathbackupfolder">Backup folder</string>
+    <string name="prefs_devicelock">Device lock</string>
+    <string name="prefs_devicelock_summary">Secure the app with device credentials</string>
     <string name="prefs_biometriclock">Biometric lock</string>
     <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
@@ -107,7 +109,8 @@
     <string name="prefs_passwordconfirmation">Encryption password confirmation</string>
     <string name="prefs_password_match_true">The passwords match</string>
     <string name="prefs_password_match_false">The passwords don\'t match</string>
-    <string name="prefs_enableSpecialBackups">Enable special backups</string>
+    <string name="prefs_enablespecial">Enable special backups</string>
+    <string name="prefs_enablespecial_summary">Still needs intensive testing, try knowing the danger that it can cause boot loops. Feedback is always welcome.</string>
     <string name="prefs_excludecache">Exclude app\'s cache</string>
     <string name="prefs_excludecache_summary">Exclude app\'s cache from data backup</string>
     <string name="prefs_externaldata">Back up external data</string>
@@ -134,6 +137,8 @@
     <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
     <string name="prefs_copyselfapk">Copy own APK</string>
     <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder</string>
+    <string name="prefs_saveappslist">Save apps list</string>
+    <string name="prefs_saveappslist_summary">Writes apps list to a txt file in the user\'s backup directory</string>
     <string name="prefs_logviewer">View the log</string>
     <string name="prefs_unset">Unset</string>
     <string name="sched_name">Name:</string>
@@ -141,9 +146,9 @@
     <string name="sched_add">Add Schedule</string>
     <string name="sched_notificationMessage">Scheduled backup</string>
     <string name="sched_interval">Interval in days:</string>
-    <string name="sched_hourOfDay">Hour of the day:</string>
+    <string name="sched_hourOfDay">Time of day:</string>
     <string name="sched_checkbox">Enable</string>
-    <string name="sched_activateButton">Start backup now</string>
+    <string name="sched_activateButton">Start now</string>
     <string name="sched_startingbackup">Starting scheduled backup…</string>
     <string name="sched_mode">Backup mode:</string>
     <string name="sched_timeLeft">Time left:</string>
@@ -241,8 +246,12 @@
     <string name="exodus_report">Exodus report</string>
     <string name="launch_app">Launch app</string>
     <string name="app_info">App-info</string>
-    <string name="forceKillMessage">Are you sure you want to force kill the app?</string>
+    <string name="forceKillMessage">Are you sure you want to force kill the app\?</string>
     <string name="place_holder" translatable="false">PLACE HOLDER</string>
+    <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
+    <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
+    <string name="noAppsListToSave">Still no apps\' list to save. Wait…</string>
+    <string name="filtered_list">Filtered list</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

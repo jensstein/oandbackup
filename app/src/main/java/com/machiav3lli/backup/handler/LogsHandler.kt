@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.utils
+package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.net.Uri
@@ -23,18 +23,21 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.ensureDirectory
+import com.machiav3lli.backup.utils.getBackupRoot
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
-class LogUtils(var context: Context) {
+class LogsHandler(var context: Context) {
     private var logsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = StorageFile.fromUri(context, FileUtils.getBackupDir(context))
-        logsDirectory = DocumentUtils.ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
+        val backupRootFolder = getBackupRoot(context)
+        logsDirectory = ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
     }
 
     @Throws(IOException::class)
@@ -79,7 +82,7 @@ class LogUtils(var context: Context) {
         const val LOG_FOLDER_NAME = "LOGS"
         fun logErrors(context: Context, errors: String) {
             try {
-                val logUtils = LogUtils(context)
+                val logUtils = LogsHandler(context)
                 logUtils.writeToLogFile(errors)
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -93,17 +96,16 @@ class LogUtils(var context: Context) {
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
         fun message(e: Throwable) = e.toString() + "\n" + stackTrace(e)
 
-        fun logException(e: Throwable, what: Any? = null, prefix : String? = null) {
+        fun logException(e: Throwable, what: Any? = null, prefix: String? = null) {
             var whatStr = ""
             if (what != null) {
                 whatStr = what.toString()
-                if (whatStr.contains("\n") || whatStr.length > 20)
-                    whatStr = "{\n$whatStr\n}\n"
+                whatStr = if (whatStr.contains("\n") || whatStr.length > 20)
+                    "{\n$whatStr\n}\n"
                 else
-                    whatStr = "$whatStr : "
+                    "$whatStr : "
             }
-            var msg = "$prefix$e $whatStr\n${stackTrace(e)}"
-            Timber.e(msg)
+            Timber.e("$prefix$e $whatStr\n${stackTrace(e)}")
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {

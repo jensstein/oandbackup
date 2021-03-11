@@ -1,20 +1,21 @@
 package tests
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
-import junit.framework.Assert.assertEquals
 import org.jetbrains.annotations.TestOnly
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
 @DisplayName("shell commands")
 class ShellTests {
 
     companion object {
 
-        val safeCommandLength = 130_000
+        const val safeCommandLength = 130_000
 
         @TestOnly
         fun checkCommandLength(commandStub: String, length: Int, check: String = "api"): Boolean {
@@ -31,16 +32,16 @@ class ShellTests {
                     return iterableToString(it.out).toInt() == length
                 }
             } catch (e: OutOfMemoryError) {
-                LogUtils.logException(e, "length: $length")
+                LogsHandler.logException(e, "length: $length")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, "length: $length err: ${shellResult?.err}")
+                LogsHandler.unhandledException(e, "length: $length err: ${shellResult?.err}")
             }
             return false
         }
     }
 
     @Test
-    @DisplayName("safe command length works")
+    @DisplayName("safe command length ($safeCommandLength)")
     fun test_safeCommandLength() {          // test a line length everyone should be able to process
         assertTrue(
                 checkCommandLength("toybox echo -n", safeCommandLength)
@@ -50,30 +51,53 @@ class ShellTests {
         )
     }
 
-    @Test
-    @DisplayName("quote()")
-    fun test_quote() {
-        val ext = ".aNoNeXiStEnTExt"
-        val filename = """test    file    \|$&"'`[](){}=:;?<~>-+!%^#*,""" + ext
-        val dir = "/data/local/tmp"
-        //val dir = "/cache"
-        try { ShellHandler.runAsRoot("toybox rm $dir/*$ext") } catch(e: Throwable) {}
-        assertEquals(
-            0,
-            ShellHandler.runAsRoot("toybox touch ${ShellHandler.quote("$dir/$filename")}").code
-        )
-        assertEquals(
-            "$dir/$filename",
-            ShellHandler.runAsRoot("toybox echo $dir/*$ext").out.joinToString(";")
-        )
-        assertEquals(
-            "$dir/$filename",
-            ShellHandler.runAsRoot("toybox ls -dlZ $dir/*$ext").out.joinToString(";").split(" ", limit=9)[8]
-        )
-        assertEquals(
-            0,
-            ShellHandler.runAsRoot("toybox rm ${ShellHandler.quote("$dir/$filename")}").code
-        )
-    }
+    val ext = ".nonExistingExt_${Thread.currentThread().id}"
+    val dir = "/data/local/tmp"
+    //val dir = "/cache"
+
+    @TestFactory
+    @DisplayName("quote")
+    @ExperimentalStdlibApi
+    fun test_quote() =
+        listOf(
+            """test   ,\|$&"'`[](){}=:;?<~>-+!%^#*""" + ext,
+            """test   \a\b\f\n\r\t\v\e\E\u1234\U123456""" + ext,
+            (0..32).map { it.toChar() }.filter { c -> !(c.toInt() == 0 || c in "\n\r") }
+                .joinToString("") + ext,
+            (33..127).map { it.toChar() }.filter { c -> !(c.isLetterOrDigit() || c == '/') }
+                .joinToString("") + ext,
+            // fails: (0..32).map { (128+it).toChar() }.filter { c -> ! (c.toInt() == 0 || c.toInt() == 173 || (c.toInt().and(127)).toChar() in "\t\n\r ") }.joinToString("") + ext,
+            (33..127).map { (128 + it).toChar() }.joinToString("") + ext
+        ).map { filename ->
+            dynamicTest(
+                "file '$filename' (${filename[0].toInt()})"
+            ) {
+                try {
+                    runAsRoot("toybox rm $dir/*$ext")
+                } catch (e: Throwable) {
+                }
+
+                assertEquals(
+                    0,
+                    runAsRoot("toybox touch ${quote("$dir/$filename")}")
+                        .code
+                )
+                assertEquals(
+                    "$dir/$filename",
+                    runAsRoot("toybox echo $dir/*$ext")
+                        .out.joinToString(";")
+                )
+                assertEquals(
+                    "$dir/$filename",
+                    runAsRoot("toybox ls -dlZ $dir/*$ext")
+                        .out.joinToString(";").split(" ", limit = 9)[8]
+                )
+                assertEquals(
+                    0,
+                    runAsRoot("toybox rm ${quote("$dir/$filename")}")
+                        .code
+                )
+            }
+        }
 }
 

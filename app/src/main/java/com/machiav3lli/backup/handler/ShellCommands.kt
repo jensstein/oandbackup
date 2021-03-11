@@ -26,7 +26,6 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.LogUtils
 import timber.log.Timber
 import java.io.File
 
@@ -59,26 +58,26 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
             // don't care for the result here, it likely fails due to file not found
             try {
-                if( ! packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
+                if (!packageName.isNullOrEmpty()) { // IMPORTANT!!! otherwise removing all in parent(!) directory
                     command = "$utilBoxQuoted rm -rf /data/lib/$packageName/*"
                     runAsRoot(command)
                 }
             } catch (e: ShellCommandFailedException) {
                 Timber.d("Command '$command' failed: ${e.shellResult.err.joinToString(" ")}")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
             }
         } else {
             // Deleting while system app
             // it seems that busybox mount sometimes fails silently so use toolbox instead
             var apkSubDir = FileUtils.getName(sourceDir!!)
             apkSubDir = apkSubDir.substring(0, apkSubDir.lastIndexOf('.'))
-            if (apkSubDir.isNullOrEmpty()) {
+            if (apkSubDir.isEmpty()) {
                 val error = ("Variable apkSubDir in uninstall method is empty. This is used "
                         + "in a recursive rm call and would cause catastrophic damage!")
                 Timber.wtf(error)
@@ -86,21 +85,21 @@ class ShellCommands(private var users: List<String>?) {
             }
             // TODO: add logging/throw to each variable.isNullOrEmpty() test below?
             command = "mount -o remount,rw /system && ("
-                if( ! sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
-                    command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
-                if( ! apkSubDir.isNullOrEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
-                    command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
+            if (!sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote(sourceDir)}"
+            if (apkSubDir.isNotEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory
+                command += " ; $utilBoxQuoted rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
-            if( ! dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
+            if (!dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory
                 command += " ; $utilBoxQuoted rm -rf ${quote(dataDir)}"
-            if( ! packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
+            if (!packageName.isNullOrEmpty())  // IMPORTANT!!! otherwise removing all in parent(!) directory
                 command += " ; $utilBoxQuoted rm -rf ${quote("/data/app-lib/${packageName}")}/*"
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
@@ -120,7 +119,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, "Could not $option package $packageName", e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "Could not $option package $packageName", e)
             }
         }
@@ -141,21 +140,8 @@ class ShellCommands(private var users: List<String>?) {
         } catch (e: ShellCommandFailedException) {
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, command)
+            LogsHandler.unhandledException(e, command)
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
-        }
-    }
-
-    @Throws(ShellActionFailedException::class)
-    fun quickReboot() {
-        val command = "$utilBoxQuoted pkill system_server"
-        try {
-            runAsRoot(command)
-        } catch (e: ShellCommandFailedException) {
-            throw ShellActionFailedException(command, "Could not kill system_server", e)
-        } catch (e: Throwable) {
-            LogUtils.unhandledException(e, command)
-            throw ShellActionFailedException(command, "Could not kill system_server", e)
         }
     }
 
@@ -193,7 +179,7 @@ class ShellCommands(private var users: List<String>?) {
                 } catch (e: ShellCommandFailedException) {
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, command)
+                    LogsHandler.unhandledException(e, command)
                     throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
                 }
             }
@@ -204,14 +190,14 @@ class ShellCommands(private var users: List<String>?) {
             val commands = mutableListOf<String>()
             // Normal app cache always exists
             val dataPath = app.getDataPath()
-            if( ! dataPath.isNullOrEmpty())
+            if (dataPath.isNotEmpty())
                 commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
 
-            fun conditionalDeleteCommand(directory : String) : String {
-                if(!directory.isNullOrEmpty())
-                    return "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
+            fun conditionalDeleteCommand(directory: String): String {
+                return if (directory.isNotEmpty())
+                    "if [ -d ${quote(directory)} ]; then $utilBoxQuoted rm -rf ${quote(directory)}/* ; fi"
                 else
-                    return ""
+                    ""
             }
 
             // device protected data cache, might exist or not
@@ -234,7 +220,7 @@ class ShellCommands(private var users: List<String>?) {
             } catch (e: ShellCommandFailedException) {
                 throw ShellActionFailedException(command, e.shellResult.err.joinToString("\n"), e)
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e, command)
+                LogsHandler.unhandledException(e, command)
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }

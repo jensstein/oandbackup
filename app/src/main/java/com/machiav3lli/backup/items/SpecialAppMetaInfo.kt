@@ -49,14 +49,15 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 return arrayOfNulls(size)
             }
         }
-        val specialPackages: MutableList<AppInfo> = mutableListOf()
+        private val specialPackages: MutableList<AppInfo> = mutableListOf()
+
         /**
          * Returns the list of special (virtual) packages
          *
          * @param context Context object
          * @return a list of of virtual packages
-         * @throws FileUtils.BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
-         * @throws PrefUtils.StorageLocationNotConfiguredException when the backup location is not set in the configuration
+         * @throws BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
+         * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
         @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
         fun getSpecialPackages(context: Context): List<AppInfo> {

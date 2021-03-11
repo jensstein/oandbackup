@@ -21,7 +21,8 @@
         android:defaultValue="false"
         android:icon="@drawable/ic_special"
         android:key="enableSpecialBackups"
-        android:title="@string/prefs_enableSpecialBackups" />
+        android:summary="@string/prefs_enablespecial_summary"
+        android:title="@string/prefs_enablespecial" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
@@ -45,7 +46,7 @@
         android:title="@string/prefs_allowdowngrade" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:icon="@drawable/ic_force_kill"
         android:key="killBeforeAction"
         android:summary="@string/prefs_stopcont_summary"

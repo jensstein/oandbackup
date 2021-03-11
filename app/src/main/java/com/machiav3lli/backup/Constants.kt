@@ -36,6 +36,7 @@ const val PREFS_THEME = "themes"
 const val PREFS_LANGUAGES = "languages"
 const val PREFS_LANGUAGES_DEFAULT = "system"
 const val PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder"
+const val PREFS_DEVICELOCK = "deviceLock"
 const val PREFS_BIOMETRICLOCK = "biometricLock"
 const val PREFS_OLDBACKUPS = "oldBackups"
 const val PREFS_REMEMBERFILTERING = "rememberFiltering"
@@ -56,6 +57,7 @@ const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
+const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
 const val MODE_UNSET = 0
@@ -103,17 +105,11 @@ const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ
 
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
-fun classAddress(address: String): String {
-    return PREFS_SHARED_PRIVATE + address
-}
+fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
-fun classTag(tag: String): String {
-    return TAG_BASE + tag
-}
+fun classTag(tag: String): String = TAG_BASE + tag
 
-fun exodusUrl(app: String): String {
-    return "https://reports.exodus-privacy.eu.org/reports/$app/latest"
-}
+fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
 
 enum class HousekeepingMoment(val value: String) {
     BEFORE("before"), AFTER("after");

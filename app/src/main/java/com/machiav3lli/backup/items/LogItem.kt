@@ -1,3 +1,20 @@
+/*
+ * OAndBackupX: open-source apps backup and restore app.
+ * Copyright (C) 2020  Antonios Hazim
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.machiav3lli.backup.items
 
 import android.content.Context
@@ -7,7 +24,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils.instance
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -58,7 +75,7 @@ open class LogItem : Parcelable {
         } catch (e: IOException) {
             throw BackupItem.BrokenBackupException("Cannot read ${logFile.name} at URI ${logFile.uri}", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, logFile.uri)
+            LogsHandler.unhandledException(e, logFile.uri)
             throw BackupItem.BrokenBackupException("Unable to process ${logFile.name} at URI ${logFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
     }
@@ -96,7 +113,7 @@ open class LogItem : Parcelable {
     }
 
     fun delete(context: Context): Boolean? {
-        val logFile = LogUtils(context).getLogFile(this.logDate)
+        val logFile = LogsHandler(context).getLogFile(this.logDate)
         return logFile?.delete()
     }
 

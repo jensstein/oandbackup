@@ -116,6 +116,28 @@
                 app:rippleColor="@color/app_accent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <FrameLayout
+            android:id="@+id/updatedBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/cards_spacing"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toTopOf="@id/refreshLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modeBar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/updatedRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_bar_static_round"
+                android:orientation="horizontal"
+                android:padding="@dimen/buttons_spacing"
+                android:scrollbars="horizontal"
+                tools:listitem="@layout/item_updated_x" />
+        </FrameLayout>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
@@ -125,7 +147,7 @@
             app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/modeBar">
+            app:layout_constraintTop_toBottomOf="@id/updatedBar">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

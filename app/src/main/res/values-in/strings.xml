@@ -91,7 +91,7 @@
     <string name="prefs_languages">Bahasa</string>
     <string name="prefs_language_system">Sistem standar</string>
     <string name="prefs_rememberfiltering">Ingat mengurutkan dan memfilter</string>
-    <string name="prefs_enableSpecialBackups">Aktifkan cadangan khusus</string>
+    <string name="prefs_enablespecial">Aktifkan cadangan khusus</string>
     <string name="prefs_excludecache">Bersihkan cache aplikasi</string>
     <string name="prefs_encryption">Enkripsi</string>
     <string name="prefs_password">Kata sandi enkripsi</string>
@@ -244,4 +244,6 @@
     <string name="prefs_allowdowngrade">Perbolehkan downgrading</string>
     <string name="prefs_obbdata_summary">Cadangkan dan pulihkan berkas obb aplikasi yang ditempatkan di penyimpanan eksternal (e.g. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Cadangkan berkas obb</string>
+    <string name="forceKillMessage">Apakah anda yakin untuk memaksa penghentian aplikasi\?</string>
+    <string name="sched_name">Nama :</string>
 </resources>

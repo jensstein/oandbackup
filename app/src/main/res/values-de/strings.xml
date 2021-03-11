@@ -91,7 +91,7 @@
     <string name="prefs_language_system">Systemsprache</string>
     <string name="prefs_rememberfiltering">Sortierung und Filter beibehalten</string>
     <string name="prefs_rememberfiltering_summary">Die gewählte Sortierungs- und Filtermethode speichern. Nur die im Menü ausgewählten werden beachtet.</string>
-    <string name="prefs_enableSpecialBackups">Spezialsicherungen ermöglichen</string>
+    <string name="prefs_enablespecial">Spezialsicherungen ermöglichen</string>
     <string name="sched_title">Sicherung planen</string>
     <string name="sched_notificationMessage">Geplante Sicherung</string>
     <string name="sched_interval">Intervall in Tagen:</string>
@@ -216,7 +216,7 @@
     <string name="radio_obbdata">OBB Daten</string>
     <string name="radio_deviceprotecteddata">Geschützte Geräte-Daten</string>
     <string name="radio_externaldata">Externe Daten</string>
-    <string name="logs_text_empty">Es gibt Nichts zu zeigen.</string>
+    <string name="logs_text_empty">Es gibt nichts zu zeigen!</string>
     <string name="delete_all_backups">Alle Sicherungen löschen</string>
     <string name="fetching_action_list">Anwendungsliste für %1$s abrufen …</string>
     <string name="prefs_disableverification_summary">Deaktiviert diese Entwickleroption beim Wiederherstellen von APKs und aktiviert sie danach wieder. Behebt den Fehler: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -248,4 +248,6 @@
     <string name="launch_app">App starten</string>
     <string name="exodus_report">Exodus Report</string>
     <string name="clear_cache">Cache löschen</string>
+    <string name="forceKillMessage">Sind Sie sicher, dass Sie das Beenden dieser App erzwingen wollen\?</string>
+    <string name="sched_name">Name:</string>
 </resources>

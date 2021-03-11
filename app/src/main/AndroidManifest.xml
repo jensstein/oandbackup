@@ -78,8 +78,17 @@
                 android:resource="@xml/file_paths_provider" />
         </provider>
 
-        <service
-            android:name=".services.ScheduleJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver
+            android:name=".services.BootReceiver"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".services.AlarmReceiver" />
+
+        <service android:name=".services.ScheduleService" />
     </application>
 </manifest>

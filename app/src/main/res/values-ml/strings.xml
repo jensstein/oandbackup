@@ -24,7 +24,7 @@
     <string name="radio_user">ഇൻസ്റ്റാൾ ചെയ്ത ആപ്പുകൾ</string>
     <string name="radio_all">എല്ലാം ആപ്പും</string>
     <string name="handleBoth">രണ്ടും</string>
-    <string name="handleData">ഡാറ്റാ</string>
+    <string name="handleData">ഡാറ്റ</string>
     <string name="backupConfirmation">ബാക്കപ്പ് ചെയ്യണോ\?</string>
     <string name="restoreConfirmation">റിസ്റോർ ചെയ്യണോ\?</string>
     <string name="restore">റിസ്റ്റോർ</string>

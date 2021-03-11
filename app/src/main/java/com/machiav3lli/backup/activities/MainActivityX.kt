@@ -40,13 +40,12 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.dialogs.UpdatedAppsDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
-import com.machiav3lli.backup.handler.NotificationHandler
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.SortFilterManager.applyFilter
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -72,17 +71,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             shellHandlerInstance = ShellHandler()
             return true
         }
-
-        init {
-            /*
-            * Shell.Config methods shall be called before any shell is created
-            * This is the why in this example we call it in a static block
-            * The followings are some examples, check Javadoc for more details
-            */
-            Shell.enableVerboseLogging = BuildConfig.DEBUG
-            Shell.setDefaultBuilder(Shell.Builder.create()
-                    .setTimeout(20))
-        }
     }
 
     private lateinit var prefs: SharedPreferences
@@ -96,6 +84,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
     val batchItemAdapter = ItemAdapter<BatchItemX>()
     private var batchFastAdapter: FastAdapter<BatchItemX>? = null
+    private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
+    private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
     private var mainBoolean = false
     private var backupBoolean = false
     private var sheetSortFilter: SortFilterSheet? = null
@@ -118,12 +108,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         viewModel.refreshActive.observe(this, {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()
-            else if (mainBoolean) {
-                mainItemAdapter.adapterItems.forEach { item ->
-                    if (item.app.hasBackups && item.app.isUpdated) {
-                        viewModel.updatedList.value = viewModel.updatedList.value?.plus(item.app.packageLabel)?.toMutableList()
-                    }
-                }
+            if (mainBoolean) {
+                viewModel.nUpdatedApps.value = updatedItemAdapter.adapterItems.size
+            } else {
+                viewModel.nUpdatedApps.value = 0
             }
         })
         viewModel.refreshNow.observe(this, {
@@ -131,12 +119,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 refreshView()
             }
         })
-        viewModel.updatedList.observe(this, {
-            if (it.size > 0) {
-                binding.updatedApps.text = binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it.size, it.size)
+        viewModel.nUpdatedApps.observe(this, {
+            if (it > 0) {
+                binding.updatedApps.text = binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
                 binding.updatedApps.visibility = View.VISIBLE
             } else {
                 binding.updatedApps.visibility = View.GONE
+                binding.updatedBar.visibility = View.GONE
             }
         })
         checkUtilBox()
@@ -171,10 +160,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.app_primary_base, theme))
         binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.updatedRecycler.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
+        updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
         mainFastAdapter?.setHasStableIds(true)
         batchFastAdapter?.setHasStableIds(true)
+        updatedFastAdapter?.setHasStableIds(true)
     }
 
     private fun setupNavigation() {
@@ -215,7 +207,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         binding.apkBatch.visibility = View.INVISIBLE
         binding.dataBatch.visibility = View.INVISIBLE
         binding.recyclerView.adapter = mainFastAdapter
-        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, 0) }
+        binding.updatedRecycler.adapter = updatedFastAdapter
     }
 
     private fun navigateBatch() {
@@ -226,7 +218,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         binding.dataBatch.visibility = View.VISIBLE
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
         binding.recyclerView.adapter = batchFastAdapter
-        // runOnUiThread { binding.recyclerView.setPadding(0, binding.modeBar.height, 0, binding.buttonBar.height) }
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
@@ -243,7 +234,15 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         mainFastAdapter?.onClickListener = { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
             if (sheetApp != null) sheetApp?.dismissAllowingStateLoss()
             item?.let {
-                sheetApp = AppSheet(item, position ?: -1)
+                sheetApp = AppSheet(item.app, position ?: -1)
+                sheetApp?.showNow(supportFragmentManager, "APP_SHEET")
+            }
+            false
+        }
+        updatedFastAdapter?.onClickListener = { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
+            if (sheetApp != null) sheetApp?.dismissAllowingStateLoss()
+            item?.let {
+                sheetApp = AppSheet(item.app, position ?: -1)
                 sheetApp?.showNow(supportFragmentManager, "APP_SHEET")
             }
             false
@@ -269,8 +268,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             false
         }
         binding.updatedApps.setOnClickListener {
-            val dialog = UpdatedAppsDialogFragment(viewModel.updatedList.value ?: mutableListOf())
-            dialog.show(supportFragmentManager, "UpdatedAppsDialogFragment")
+            binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
+                View.VISIBLE -> View.GONE
+                else -> View.VISIBLE
+            }
         }
         binding.apkBatch.setOnClickListener {
             binding.apkBatch.isChecked = (it as AppCompatCheckBox).isChecked
@@ -282,11 +283,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         }
         batchFastAdapter?.addEventHook(OnApkCheckBoxClickHook())
         batchFastAdapter?.addEventHook(OnDataCheckBoxClickHook())
-    }
-
-    fun scrollToItem(packageLabel: String) {
-        val theItem = mainItemAdapter.adapterItems.find { it.app.packageLabel == packageLabel }
-        binding.recyclerView.smoothScrollToPosition(mainFastAdapter?.getPosition(theItem!!)!!)
     }
 
     private fun onCheckedApkClicked() {
@@ -400,11 +396,13 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 .filter(BatchItemX::isChecked)
                 .map(BatchItemX::actionMode)
                 .toCollection(ArrayList())
-        arguments.putIntegerArrayList("selectedListModes", selectedListModes)
-        arguments.putBoolean("backupBoolean", backupBoolean)
-        val dialog = BatchDialogFragment(this)
-        dialog.arguments = arguments
-        dialog.show(supportFragmentManager, "DialogFragment")
+        if (selectedList.isNotEmpty()) {
+            arguments.putIntegerArrayList("selectedListModes", selectedListModes)
+            arguments.putBoolean("backupBoolean", backupBoolean)
+            val dialog = BatchDialogFragment(this)
+            dialog.arguments = arguments
+            dialog.show(supportFragmentManager, "DialogFragment")
+        }
     }
 
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
@@ -412,8 +410,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
         val notificationMessage = String.format(getString(R.string.fetching_action_list),
                 (if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)))
-        NotificationHandler.showNotification(this, MainActivityX::class.java,
-                notificationId.toInt(), notificationMessage, "", true)
+        showNotification(this, MainActivityX::class.java, notificationId.toInt(),
+                notificationMessage, "", true)
         val selectedItems = selectedPackages
                 .mapIndexed { i, packageName ->
                     if (packageName.isNullOrEmpty()) null
@@ -452,7 +450,8 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                         val error = t.outputData.getString("error")
                                 ?: ""
                         val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
-                        NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(), message, packageLabel, false)
+                        showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(),
+                                message, packageLabel, false)
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
                         resultsSuccess = resultsSuccess && succeeded
                         oneTimeWorkLiveData.removeObserver(this)
@@ -477,14 +476,14 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                             ?: ""
                     val title = t.outputData.getString("notificationTitle")
                             ?: ""
-                    NotificationHandler.showNotification(this@MainActivityX, MainActivityX::class.java,
+                    showNotification(this@MainActivityX, MainActivityX::class.java,
                             notificationId.toInt(), title, message, true)
 
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                     showActionResult(this@MainActivityX, overAllResult,
                             if (overAllResult.succeeded) null
                             else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
-                                LogUtils.logErrors(this@MainActivityX, errors.dropLast(2))
+                                LogsHandler.logErrors(this@MainActivityX, errors.dropLast(2))
                             }
                     )
                     binding.progressBar.visibility = View.GONE
@@ -494,11 +493,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             }
         })
 
-        WorkManager.getInstance(this)
-                .beginWith(worksList)
-                .then(finishWorkRequest)
-                .enqueue()
-
+        if (worksList.isNotEmpty()) {
+            WorkManager.getInstance(this)
+                    .beginWith(worksList)
+                    .then(finishWorkRequest)
+                    .enqueue()
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -527,7 +527,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     // Most functionality could be added to the view model
     fun refresh(mainBoolean: Boolean, backupOrAppSheetBoolean: Boolean) {
         Timber.d("refreshing")
-        viewModel.updatedList.value = mutableListOf()
         if (mainBoolean) {
             viewModel.apkCheckedList.clear()
             viewModel.dataCheckedList.clear()
@@ -547,24 +546,27 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }.start()
     }
 
     private fun refreshMain(filteredList: List<AppInfo>, appSheetBoolean: Boolean) {
         val mainList = createMainAppsList(filteredList)
+        val updatedList = createUpdatedAppsList(filteredList)
         runOnUiThread {
             try {
                 FastAdapterDiffUtil[mainItemAdapter] = mainList
+                FastAdapterDiffUtil[updatedItemAdapter] = updatedList
                 if (mainList.isEmpty())
                     Toast.makeText(this, getString(R.string.empty_filtered_list), Toast.LENGTH_SHORT).show()
                 searchViewController?.setup()
                 mainFastAdapter?.notifyAdapterDataSetChanged()
+                updatedFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }
     }
@@ -572,6 +574,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<MainItemX> = filteredList
             .map { MainItemX(it) }.toMutableList()
 
+    private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> = filteredList
+            .filter { it.isUpdated }
+            .map { UpdatedItemX(it) }.toMutableList()
 
     private fun refreshAppSheet() {
         try {
@@ -587,7 +592,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             } else
                 sheetApp?.dismissAllowingStateLoss()
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 
@@ -604,7 +609,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 updateDataChecks()
                 viewModel.finishRefresh()
             } catch (e: Throwable) {
-                LogUtils.unhandledException(e)
+                LogsHandler.unhandledException(e)
             }
         }
     }

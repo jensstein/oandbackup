@@ -26,7 +26,7 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 
 class IntervalInDaysDialog(intervalInDays: CharSequence, var confirmListener: (Int) -> Unit) : DialogFragment() {
-    var intervalInDays: Int = intervalInDays.toString().toInt()
+    private var intervalInDays: Int = intervalInDays.toString().toInt()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val numberPicker = NumberPicker(requireActivity())

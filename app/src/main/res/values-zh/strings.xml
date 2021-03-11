@@ -91,7 +91,7 @@
     <string name="prefs_languages">语言</string>
     <string name="prefs_language_system">系统默认</string>
     <string name="prefs_rememberfiltering">记住排序和筛选方式</string>
-    <string name="prefs_enableSpecialBackups">启用特殊备份</string>
+    <string name="prefs_enablespecial">启用特殊备份</string>
     <string name="prefs_excludecache">清除应用缓存</string>
     <string name="prefs_encryption">加密</string>
     <string name="prefs_password">加密密码</string>
@@ -244,4 +244,6 @@
     <plurals name="updated_apps">
         <item quantity="other">%d 更新的应用</item>
     </plurals>
+    <string name="forceKillMessage">你确定要强制停止该应用吗？</string>
+    <string name="sched_name">名称：</string>
 </resources>

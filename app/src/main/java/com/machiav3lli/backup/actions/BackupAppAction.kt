@@ -21,16 +21,12 @@ import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupBuilder
-import com.machiav3lli.backup.handler.Crypto
-import com.machiav3lli.backup.handler.Crypto.CryptoSetupException
-import com.machiav3lli.backup.handler.Crypto.encryptStream
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.*
-import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
-import com.machiav3lli.backup.utils.DocumentUtils.suRecursiveCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
@@ -45,8 +41,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     open fun run(app: AppInfo, backupMode: Int): ActionResult {
         Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-        val appBackupRootUri: Uri?
-        appBackupRootUri = try {
+        val appBackupRootUri: Uri? = try {
             app.getAppUri(context, true)
         } catch (e: BackupLocationIsAccessibleException) {
             // Usually, this should never happen, but just in case...
@@ -56,7 +51,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, app)
+            LogsHandler.unhandledException(e, app)
             // Usually, this should never happen, but just in case...
             val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
             return ActionResult(app, null, "${realException.javaClass.simpleName}: ${e.message}", false)
@@ -96,7 +91,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 }
             }
             if (isEncryptionEnabled(context)) {
-                backupBuilder.setCipherType(Crypto.CIPHER_ALGORITHM)
+                backupBuilder.setCipherType(CIPHER_ALGORITHM)
             }
             backupItem = backupBuilder.createBackupItem()
             saveBackupProperties(StorageFile.fromUri(context, appBackupRootUri), backupItem.backupProperties)
@@ -114,7 +109,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, app)
+            LogsHandler.unhandledException(e, app)
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
             if (stopProcess) {
@@ -188,7 +183,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             Timber.e("$app: Backup APKs failed: $e")
             throw BackupFailedException("Could not backup apk", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, app)
+            LogsHandler.unhandledException(e, app)
             throw BackupFailedException("Could not backup apk", e)
         }
     }
@@ -212,7 +207,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             throw BackupFailedException(message, e)
         } catch (e: Throwable) {
             val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
-            LogUtils.unhandledException(e, message)
+            LogsHandler.unhandledException(e, message)
             throw BackupFailedException(message, e)
         }
         return true
@@ -252,14 +247,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                         Timber.w("Directory has been deleted during processing: $dir")
                     }
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, dir)
+                    LogsHandler.unhandledException(e, dir)
                 }
             }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
             throw BackupFailedException("Could not list contents of $sourceDirectory", e)
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, sourceDirectory)
+            LogsHandler.unhandledException(e, sourceDirectory)
             throw BackupFailedException("Could not list contents of $sourceDirectory", e)
         }
     }

@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
-import com.machiav3lli.backup.utils.LogUtils
 import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
@@ -84,7 +83,7 @@ class ShellHandler {
         // ls -Z supported as an option since landley/toybox 0.6.0 mid 2015, Android 8 starts mid 2017
         // use -dlZ instead of -dnZ, because -nZ was found (by Kostas!) with an error (with no space between group and context)
         // apparently uid/gid is less tested than names
-        var shellResult : Shell.Result? = null
+        var shellResult: Shell.Result? = null
         try {
             val command = "$utilBoxQuoted ls -dlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
@@ -100,7 +99,7 @@ class ShellHandler {
         var shellResult = runAsRoot("which $utilBoxName")
         if (shellResult.out.isNotEmpty()) {
             utilBoxPath = iterableToString(shellResult.out)
-            if ( ! utilBoxPath.isNullOrEmpty()) {
+            if (utilBoxPath.isNotEmpty()) {
                 utilBoxQuoted = quote(utilBoxPath)
                 shellResult = runAsRoot("$utilBoxQuoted --version")
                 if (shellResult.out.isNotEmpty()) {
@@ -228,7 +227,7 @@ class ShellHandler {
                                 tokens[0], fileMode, filePath, parent))
                     }
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, filePath)
+                    LogsHandler.unhandledException(e, filePath)
                 }
                 var linkName: String? = null
                 var fileSize: Long = 0
@@ -323,11 +322,11 @@ class ShellHandler {
         }
 
         fun quoteMultiple(parameters: Collection<String>): String =
-                parameters.map(::quote).joinToString(" ")
+                parameters.joinToString(" ", transform = ::quote)
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
-            return err.isNotEmpty() && err[0].toLowerCase().contains("no such file or directory")
+            return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
         @Throws(IOException::class)
@@ -389,7 +388,7 @@ class ShellHandler {
                 false
             }
         }
-        if (utilBoxQuoted.isNullOrEmpty()) {
+        if (utilBoxQuoted.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }

@@ -91,7 +91,7 @@
     <string name="prefs_languages">Język</string>
     <string name="prefs_language_system">Systemowy</string>
     <string name="prefs_rememberfiltering">Zapamiętaj sortowanie i filtrowanie</string>
-    <string name="prefs_enableSpecialBackups">Włącz specjalne kopie zapasowe</string>
+    <string name="prefs_enablespecial">Włącz specjalne kopie zapasowe</string>
     <string name="prefs_excludecache">Wyczyść pamięć podręczną aplikacji</string>
     <string name="prefs_encryption">Szyfrowanie</string>
     <string name="prefs_password">Hasło szyfrowania</string>
@@ -237,4 +237,14 @@
     <string name="prefs_restoreallpermissions_summary">Daj przywróconej aplikacji wszystkie uprawnienia jakich zażąda.</string>
     <string name="help">Pomoc</string>
     <string name="radio_launchable">Aplikacje Możliwe do Uruchomienia</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d zaktualizowana aplikacja</item>
+        <item quantity="few">%d zaktualizowane aplikacje</item>
+        <item quantity="many">%d zaktualizowanych aplikacji</item>
+        <item quantity="other">%d zaktualizowanych aplikacji</item>
+    </plurals>
+    <string name="launch_app">Uruchom aplikację</string>
+    <string name="exodus_report">Raport Exodus</string>
+    <string name="clear_cache">Wyczyść pamięć podręczną</string>
+    <string name="sched_name">Nazwa:</string>
 </resources>

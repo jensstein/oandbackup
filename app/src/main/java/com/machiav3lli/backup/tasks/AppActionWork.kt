@@ -1,3 +1,20 @@
+/*
+ * OAndBackupX: open-source apps backup and restore app.
+ * Copyright (C) 2020  Antonios Hazim
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.machiav3lli.backup.tasks
 
 import android.app.NotificationChannel
@@ -12,10 +29,10 @@ import androidx.work.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.NotificationHandler
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -75,14 +92,14 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
-                            NotificationHandler.showNotification(context, MainActivityX::class.java,
+                            showNotification(context, MainActivityX::class.java,
                                     result.hashCode(), ai.packageLabel, it.message, it.message, false)
                         }
                     }
                 }
             }
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, packageLabel)
+            LogsHandler.unhandledException(e, packageLabel)
         } finally {
             val error = result?.message
             return Result.success(workDataOf(

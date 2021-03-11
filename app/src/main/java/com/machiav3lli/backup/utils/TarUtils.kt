@@ -121,19 +121,19 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
 
 @Throws(IOException::class, ShellCommandFailedException::class)
 fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
-    targetDir?.let { targetDir ->
+    targetDir?.let {
         generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
-            val file = File(targetDir, tarEntry.name)
+            val file = File(it, tarEntry.name)
             Timber.d("Extracting ${tarEntry.name}")
             if (tarEntry.isDirectory) {
                 ShellHandler.runAsRoot("mkdir -p ${quote(file)}")
-                suUncompressTo(archive, targetDir)
+                suUncompressTo(archive, it)
             } else if (tarEntry.isFile) {
-                SuFileOutputStream(SuFile.open(targetDir, tarEntry.name)).use { fos -> IOUtils.copy(archive, fos, BUFFER_SIZE) }
+                SuFileOutputStream(SuFile.open(it, tarEntry.name)).use { fos -> IOUtils.copy(archive, fos, BUFFER_SIZE) }
             } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
-                ShellHandler.runAsRoot("cd ${quote(targetDir)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
+                ShellHandler.runAsRoot("cd ${quote(it)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
             } else if (tarEntry.isFIFO) {
-                ShellHandler.runAsRoot("cd ${quote(targetDir)} && mkfifo ${quote(file)}; cd -")
+                ShellHandler.runAsRoot("cd ${quote(it)} && mkfifo ${quote(file)}; cd -")
             } else {
                 Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
             }
@@ -143,9 +143,9 @@ fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
 
 @Throws(IOException::class)
 fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
-    targetDir?.let { targetDir ->
+    targetDir?.let {
         generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
-            val targetPath = File(targetDir, tarEntry.name)
+            val targetPath = File(it, tarEntry.name)
             Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
             var doChmod = true
             when {

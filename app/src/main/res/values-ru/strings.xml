@@ -90,7 +90,7 @@
     <string name="prefs_language_system">Системный</string>
     <string name="prefs_rememberfiltering">Запомнить сортировку и фильтр</string>
     <string name="prefs_rememberfiltering_summary">Сохраняет выбранные методы сортировки и фильтрования. учитываются только отмеченные флажком.</string>
-    <string name="prefs_enableSpecialBackups">Включить специальные р.к.</string>
+    <string name="prefs_enablespecial">Включить специальные р.к.</string>
     <string name="sched_title">Планирование</string>
     <string name="sched_notificationMessage">Запланированное резервирование</string>
     <string name="sched_interval">Интервал в днях:</string>

@@ -32,7 +32,7 @@ import com.machiav3lli.backup.items.MainItemX
 class MainFragment : Fragment(), SearchViewController {
     private lateinit var binding: FragmentMainBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,8 +43,8 @@ class MainFragment : Fragment(), SearchViewController {
             override fun onQueryTextChange(newText: String): Boolean {
                 requireMainActivity().mainItemAdapter.filter(newText)
                 requireMainActivity().mainItemAdapter.itemFilter.filterPredicate = { mainItemX: MainItemX, charSequence: CharSequence? ->
-                    (mainItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || mainItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                    (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
+                            || mainItemX.app.packageName.contains(charSequence.toString(), true))
                 }
                 return true
             }
@@ -52,8 +52,8 @@ class MainFragment : Fragment(), SearchViewController {
             override fun onQueryTextSubmit(query: String): Boolean {
                 requireMainActivity().mainItemAdapter.filter(query)
                 requireMainActivity().mainItemAdapter.itemFilter.filterPredicate = { mainItemX: MainItemX, charSequence: CharSequence? ->
-                    (mainItemX.app.packageLabel.toLowerCase().contains(charSequence.toString().toLowerCase())
-                            || mainItemX.app.packageName.toLowerCase().contains(charSequence.toString().toLowerCase()))
+                    (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
+                            || mainItemX.app.packageName.contains(charSequence.toString(), true))
                 }
                 return true
             }

@@ -24,10 +24,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackendController
-import com.machiav3lli.backup.utils.DocumentUtils
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.LogUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -67,7 +65,7 @@ class AppInfo {
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
-        val backupDoc = DocumentUtils.getBackupRoot(context).findFile(packageName)
+        val backupDoc = getBackupRoot(context).findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
     }
@@ -76,7 +74,7 @@ class AppInfo {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
-        val backupDoc = DocumentUtils.getBackupRoot(context).findFile(packageName)
+        val backupDoc = getBackupRoot(context).findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
         refreshStorageStats(context)
@@ -167,7 +165,7 @@ class AppInfo {
                                     Timber.w(message)
                                 } catch (e: Throwable) {
                                     val message = "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
-                                    LogUtils.unhandledException(e, message)
+                                    LogsHandler.unhandledException(e, message)
                                 }
                             }
                 } catch (e: FileNotFoundException) {
@@ -175,7 +173,7 @@ class AppInfo {
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
-                    LogUtils.unhandledException(e, backupDir.encodedPath)
+                    LogsHandler.unhandledException(e, backupDir.encodedPath)
                 }
                 backupHistoryCache = Pair(backups, context)
                 historyCollectorThread = null
@@ -187,7 +185,7 @@ class AppInfo {
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getAppUri(context: Context, create: Boolean): Uri {
         if (create && backupDirUri == Uri.EMPTY) {
-            backupDirUri = DocumentUtils.ensureDirectory(DocumentUtils.getBackupRoot(context), packageName)!!.uri
+            backupDirUri = ensureDirectory(getBackupRoot(context), packageName)!!.uri
         }
         return backupDirUri
     }
@@ -207,10 +205,10 @@ class AppInfo {
         val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
         try {
-            DocumentUtils.deleteRecursive(context, backupItem.backupInstanceDirUri)
+            deleteRecursive(context, backupItem.backupInstanceDirUri)
             StorageFile.fromUri(context, backupDirUri).findFile(propertiesFileName)!!.delete()
         } catch (e: Throwable) {
-            LogUtils.unhandledException(e, backupItem.backupProperties.packageName)
+            LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)
         }
         if (directBoolean) backupHistory.remove(backupItem)
     }

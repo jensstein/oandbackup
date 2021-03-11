@@ -29,11 +29,11 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.DocumentUtils.getBackupRoot
-import com.machiav3lli.backup.utils.DocumentUtils.suCopyFileToDocument
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -41,7 +41,7 @@ import java.io.IOException
 object BackupRestoreHelper {
 
     fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
-        var backupMode = backupMode
+        var reBackupMode = backupMode
         val housekeepingWhen = fromString(getDefaultSharedPreferences(context)
                 .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
                 ?: HousekeepingMoment.AFTER.value)
@@ -51,10 +51,10 @@ object BackupRestoreHelper {
         // Select and prepare the action to use
         val action: BackupAppAction
         if (appInfo.isSpecial) {
-            if (backupMode and MODE_APK == MODE_APK) {
+            if (reBackupMode and MODE_APK == MODE_APK) {
                 Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                backupMode = backupMode and MODE_DATA
-                Timber.d("[${appInfo.packageName}] New backup mode: $backupMode")
+                reBackupMode = reBackupMode and MODE_DATA
+                Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
             }
             action = BackupSpecialAction(context, shell)
         } else {
@@ -63,7 +63,7 @@ object BackupRestoreHelper {
         Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
 
         // create the new backup
-        val result = action.run(appInfo, backupMode)
+        val result = action.run(appInfo, reBackupMode)
         Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
             housekeepingPackageBackups(context, appInfo, false)

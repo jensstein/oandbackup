@@ -17,42 +17,48 @@
  */
 package com.machiav3lli.backup.services
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.job.JobParameters
-import android.app.job.JobService
+import android.app.*
 import android.content.Intent
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.NotificationHandler
-import com.machiav3lli.backup.handler.ScheduleJobsHandler
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
-import com.machiav3lli.backup.utils.LogUtils
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.setNeedRefresh
 import timber.log.Timber
 
-open class ScheduleJobService : JobService() {
+open class ScheduleService : Service() {
     private lateinit var scheduledActionTask: ScheduledActionTask
     lateinit var notification: Notification
     private var scheduleId = -1L
+    private var notificationId = -1
 
-    override fun onStartJob(params: JobParameters?): Boolean {
-        this.scheduleId = params?.extras?.getLong("scheduleId")
-                ?: -1L
-        val notificationId = System.currentTimeMillis().toInt()
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        this.notificationId = System.currentTimeMillis().toInt()
         MainActivityX.initShellHandler()
         createNotificationChannel()
-        NotificationHandler.showNotification(this, MainActivityX::class.java, notificationId,
+        showNotification(this, MainActivityX::class.java, notificationId,
                 String.format(getString(R.string.fetching_action_list), getString(R.string.backup)), "", true)
+        createForegroundInfo()
+        startForeground(notification.hashCode(), this.notification)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.let { this.scheduleId = it.getLongExtra("scheduleId", -1L) }
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
             override fun onPostExecute(result: Pair<List<String>, Int>?) {
@@ -87,7 +93,8 @@ open class ScheduleJobService : JobService() {
                                 val error = t.outputData.getString("error")
                                         ?: ""
                                 val message = "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
-                                NotificationHandler.showNotification(this@ScheduleJobService, MainActivityX::class.java, notificationId, message, packageLabel, false)
+                                showNotification(this@ScheduleService, MainActivityX::class.java,
+                                        notificationId, message, packageLabel, false)
                                 if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
                                 resultsSuccess = resultsSuccess && succeeded
                                 oneTimeWorkLiveData.removeObserver(this)
@@ -112,15 +119,13 @@ open class ScheduleJobService : JobService() {
                                     ?: ""
                             val title = t.outputData.getString("notificationTitle")
                                     ?: ""
-                            NotificationHandler.showNotification(this@ScheduleJobService, MainActivityX::class.java,
+                            showNotification(this@ScheduleService, MainActivityX::class.java,
                                     notificationId, title, message, true)
-
                             val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                            if (!overAllResult.succeeded) LogUtils.logErrors(context, errors)
-
-                            jobFinished(params, false)
-                            ScheduleJobsHandler.scheduleJob(context, scheduleId, true)
+                            if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
+                            scheduleAlarm(context, scheduleId, true)
                             setNeedRefresh(context, true)
+                            stopService(intent)
                             finishWorkLiveData.removeObserver(this)
                         }
                     }
@@ -136,15 +141,7 @@ open class ScheduleJobService : JobService() {
         }
         Timber.i(getString(R.string.sched_startingbackup))
         scheduledActionTask.execute()
-
-        createForegroundInfo()
-        startForeground(notification.hashCode(), this.notification)
-        return true
-    }
-
-    override fun onStopJob(params: JobParameters?): Boolean {
-        scheduledActionTask.cancel(true)
-        return false
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
@@ -180,6 +177,6 @@ open class ScheduleJobService : JobService() {
     }
 
     companion object {
-        private val CHANNEL_ID = ScheduleJobService::class.java.name
+        private val CHANNEL_ID = ScheduleService::class.java.name
     }
 }

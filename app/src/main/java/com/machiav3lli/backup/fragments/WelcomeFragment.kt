@@ -31,7 +31,7 @@ import com.machiav3lli.backup.databinding.FragmentWelcomeBinding
 class WelcomeFragment : Fragment() {
     private lateinit var binding: FragmentWelcomeBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         return binding.root

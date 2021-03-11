@@ -22,38 +22,69 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.*
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
     private lateinit var pref: Preference
+    private lateinit var deviceLockPref: CheckBoxPreference
+    private lateinit var biometricLockPref: CheckBoxPreference
+
+    private val askForDirectory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.data != null && result.resultCode == Activity.RESULT_OK) {
+            result.data?.let {
+                val uri = it.data ?: return@registerForActivityResult
+                val oldDir = try {
+                    getStorageRootDir(requireContext())
+                } catch (e: StorageLocationNotConfiguredException) {
+                    // Can be ignored, this is about to set the path
+                    ""
+                }
+                if (oldDir != uri.toString()) {
+                    val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+                    Timber.i("setting uri $uri")
+                    setDefaultDir(requireContext(), uri)
+                }
+            }
+        }
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
+        deviceLockPref = findPreference(PREFS_DEVICELOCK)!!
+        biometricLockPref = findPreference(PREFS_BIOMETRICLOCK)!!
+        biometricLockPref.isVisible = deviceLockPref.isChecked && isBiometricLockAvailable(requireContext())
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_THEME)!!
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeTheme(newValue.toString()) }
         pref = findPreference(PREFS_LANGUAGES)!!
         val oldLang = (findPreference<Preference>(PREFS_LANGUAGES) as ListPreference?)!!.value
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
-        pref = findPreference(PREFS_BIOMETRICLOCK)!!
-        pref.isVisible = isBiometricLockAvailable(requireContext())
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
             pref.summary = getStorageRootDir(requireContext())
         } catch (e: StorageLocationNotConfiguredException) {
             pref.summary = getString(R.string.prefs_unset)
         }
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBackupDirectory() }
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            requireStorageLocation(askForDirectory)
+            true
+        }
+        deviceLockPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
+            onPrefChangeDeviceLock(deviceLockPref, biometricLockPref)
+        }
     }
 
     private fun onPrefChangeTheme(newValue: String): Boolean {
@@ -75,12 +106,6 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun onClickBackupDirectory(): Boolean {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        startActivityForResult(intent, BACKUP_DIR)
-        return true
-    }
-
     private fun setDefaultDir(context: Context, dir: Uri) {
         setStorageRootDir(context, dir)
         setNeedRefresh(context, true)
@@ -88,24 +113,10 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         pref.summary = dir.toString()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BACKUP_DIR && data != null && resultCode == Activity.RESULT_OK) {
-            val uri = data.data ?: return
-            val oldDir: String? = try {
-                getStorageRootDir(requireContext())
-            } catch (e: StorageLocationNotConfiguredException) {
-                // Can be ignored, this is about to set the path
-                ""
-            }
-            if (oldDir != uri.toString()) {
-                val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                Timber.i("setting uri $uri")
-                setDefaultDir(requireContext(), uri)
-            }
-        }
+    private fun onPrefChangeDeviceLock(deviceLock: CheckBoxPreference, biometricLock: CheckBoxPreference)
+            : Boolean {
+        if (deviceLock.isChecked) biometricLock.isChecked = false
+        biometricLock.isVisible = !deviceLock.isChecked
+        return true
     }
-
 }

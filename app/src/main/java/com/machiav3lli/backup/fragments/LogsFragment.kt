@@ -42,7 +42,7 @@ class LogsFragment : Fragment() {
     private lateinit var viewModel: LogViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentLogsBinding.inflate(inflater, container, false)
 

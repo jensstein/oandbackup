@@ -26,7 +26,7 @@ import java.util.*
  * Can be null, if succeeded is set to false
  */
 class ActionResult(val app: AppInfo?, val backupProperties: BackupProperties?, val message: String, val succeeded: Boolean) {
-    val occurrence: LocalDateTime = LocalDateTime.now()
+    private val occurrence: LocalDateTime = LocalDateTime.now()
 
     override fun toString(): String {
         return "${timeFormat.format(occurrence)}: ${app ?: "NoApp"}${if (message.isEmpty()) "" else " $message"}"

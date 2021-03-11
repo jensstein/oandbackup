@@ -90,7 +90,7 @@
     <string name="prefs_language_system">システムデフォルト</string>
     <string name="prefs_rememberfiltering">並び替えとフィルターを記憶</string>
     <string name="prefs_rememberfiltering_summary">選択した並び替えやフィルター方法を保存します。メニューのチェックボックスでマークされたもののみ考慮されます。</string>
-    <string name="prefs_enableSpecialBackups">特別バックアップを有効にする</string>
+    <string name="prefs_enablespecial">特別バックアップを有効にする</string>
     <string name="sched_title">スケジューリング</string>
     <string name="sched_notificationMessage">バックアップがスケジュールされました</string>
     <string name="sched_interval">間隔の日数:</string>

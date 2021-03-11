@@ -28,6 +28,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
@@ -37,11 +38,22 @@ import com.machiav3lli.backup.databinding.FragmentPermissionsBinding
 import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 
-
 class PermissionsFragment : Fragment() {
     private lateinit var binding: FragmentPermissionsBinding
     private lateinit var powerManager: PowerManager
     private lateinit var prefs: SharedPreferences
+
+    private val askForDirectory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.data != null && result.resultCode == Activity.RESULT_OK) {
+            result.data?.let {
+                val uri = it.data ?: return@registerForActivityResult
+                val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+                setStorageRootDir(this.requireContext(), uri)
+            }
+        }
+    }
 
     private val usageStatsPermission: Unit
         get() {
@@ -56,7 +68,7 @@ class PermissionsFragment : Fragment() {
                     .show()
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentPermissionsBinding.inflate(inflater, container, false)
         return binding.root
@@ -88,7 +100,7 @@ class PermissionsFragment : Fragment() {
 
     private fun setupOnClicks() {
         binding.cardStoragePermission.setOnClickListener { getStoragePermission(requireActivity()) }
-        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(this) }
+        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(askForDirectory) }
         binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
         binding.cardBatteryOptimization.setOnClickListener { showBatteryOptimizationDialog(powerManager) }
     }
@@ -144,17 +156,6 @@ class PermissionsFragment : Fragment() {
             }
         } else {
             Timber.w("Unknown permissions request code: $requestCode")
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BACKUP_DIR && data != null && resultCode == Activity.RESULT_OK) {
-            val uri = data.data ?: return
-            val flags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-            setStorageRootDir(this.requireContext(), uri)
         }
     }
 }
