@@ -250,4 +250,5 @@
     <string name="clear_cache">Cache löschen</string>
     <string name="forceKillMessage">Sind Sie sicher, dass Sie das Beenden dieser Anwendung erzwingen wollen\?</string>
     <string name="sched_name">Name:</string>
+    <string name="prefs_devicelock_summary">App mit den Geräteanmeldeinformationen absichern</string>
 </resources>
