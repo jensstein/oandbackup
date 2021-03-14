@@ -107,12 +107,12 @@ dependencies {
 
     // UI
     implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.0")
+    implementation("androidx.fragment:fragment-ktx:1.3.1")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.3")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.3.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.3.4")
     implementation("com.mikepenz:fastadapter:${versions["fastadapter"]}")
     implementation("com.mikepenz:fastadapter-extensions-diff:${versions["fastadapter"]}")
     implementation("com.mikepenz:fastadapter-extensions-binding:${versions["fastadapter"]}")
