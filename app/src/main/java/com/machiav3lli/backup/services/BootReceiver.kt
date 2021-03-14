@@ -56,9 +56,9 @@ class BootReceiver : BroadcastReceiver() {
             for (schedule in schedules) {
                 val timeLeft = timeUntilNextEvent(schedule, currentTime)
                 if (timeLeft <= TimeUnit.MINUTES.toMillis(5)) {
-                    scheduleAlarm(context, schedule.id, true)
-                } else {
                     scheduleAlarm(context, schedule.id, false)
+                } else {
+                    scheduleAlarm(context, schedule.id, true)
                 }
             }
         }
