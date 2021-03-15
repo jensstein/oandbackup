@@ -251,7 +251,7 @@
     <string name="clear_cache">Effacer le cache</string>
     <string name="sched_name">Nom :</string>
     <string name="filtered_list">Liste filtrée</string>
-    <string name="noAppsListToSave">Toujours pas de liste d\'applications à sauvegarder. Patientez…</string>
+    <string name="wait_noappslist">Toujours pas de liste d\'applications à sauvegarder. Patientez…</string>
     <string name="copyOwnApkFailed">Échec de la copie de l\'APK de l\'application dans le répertoire de sauvegarde</string>
     <string name="copyOwnApkSuccess">Copie de l\'APK de l\'application dans le répertoire de sauvegarde</string>
     <string name="prefs_saveappslist_summary">Écrit la liste des applications dans un fichier txt dans le répertoire de sauvegarde de l\'utilisateur</string>

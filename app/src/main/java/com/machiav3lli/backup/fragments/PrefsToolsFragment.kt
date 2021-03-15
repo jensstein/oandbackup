@@ -56,7 +56,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_BATCH_DELETE)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickBatchDelete() }
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickUninstalledBackupsDelete() }
         pref = findPreference(PREFS_COPYSELF)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickCopySelf() }
         pref = findPreference(PREFS_SAVEAPPSLIST)!!
@@ -78,7 +78,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         }.start()
     }
 
-    private fun onClickBatchDelete(): Boolean {
+    private fun onClickUninstalledBackupsDelete(): Boolean {
         val deleteList = ArrayList<AppInfo>()
         val message = StringBuilder()
         if (appInfoList.isNotEmpty()) {
@@ -89,19 +89,35 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-        if (deleteList.isNotEmpty()) {
-            AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.prefs_batchdelete)
-                    .setMessage(message.toString().trim { it <= ' ' })
-                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        Thread { deleteBackups(deleteList) }.start()
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
+        if (appInfoList.isNotEmpty()) {
+            if (deleteList.isNotEmpty()) {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.prefs_batchdelete)
+                        .setMessage(message.toString().trim { it <= ' ' })
+                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                            runOnUiThread { deleteBackups(deleteList) }
+                        }
+                        .setNegativeButton(R.string.dialogNo, null)
+                        .show()
+            } else {
+                Toast.makeText(requireActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show()
+            }
         } else {
-            Toast.makeText(requireActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity(), getString(R.string.wait_noappslist), Toast.LENGTH_LONG).show()
         }
         return true
+    }
+
+    private fun deleteBackups(deleteList: List<AppInfo>) {
+        val notificationId = System.currentTimeMillis().toInt()
+        deleteList.forEachIndexed { i, ai ->
+            showNotification(requireContext(), PrefsActivity::class.java, notificationId,
+                    "${getString(R.string.batchDeleteMessage)} ($i/${deleteList.size})", ai.packageLabel, false)
+            Timber.i("deleting backups of ${ai.packageLabel}")
+            ai.deleteAllBackups(requireContext())
+        }
+        showNotification(requireContext(), PrefsActivity::class.java, notificationId,
+                getString(R.string.batchDeleteNotificationTitle), "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}", false)
     }
 
     private fun onClickCopySelf(): Boolean {
@@ -136,7 +152,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
         } else {
-            Toast.makeText(requireActivity(), getString(R.string.noAppsListToSave), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity(), getString(R.string.wait_noappslist), Toast.LENGTH_LONG).show()
         }
         return true
     }
@@ -160,15 +176,5 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 .addToBackStack(null)
                 .commit()
         return true
-    }
-
-    private fun deleteBackups(deleteList: List<AppInfo>) {
-        deleteList.forEach {
-            runOnUiThread { Toast.makeText(requireContext(), "${it.packageLabel}: ${getString(R.string.batchDeleteMessage)}", Toast.LENGTH_SHORT).show() }
-            Timber.i("deleting backups of ${it.packageLabel}")
-            it.deleteAllBackups(requireContext())
-        }
-        showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                getString(R.string.batchDeleteNotificationTitle), "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}", false)
     }
 }

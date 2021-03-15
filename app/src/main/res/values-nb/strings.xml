@@ -249,7 +249,7 @@
     <string name="exodus_report">Exodus-rapport</string>
     <string name="clear_cache">Tøm hurtiglager</string>
     <string name="sched_name">Navn:</string>
-    <string name="noAppsListToSave">Enda ingen programliste å lagre. Vent …</string>
+    <string name="wait_noappslist">Enda ingen programliste å lagre. Vent …</string>
     <string name="copyOwnApkFailed">Klarte ikke å kopiere programmets APK til sikkerhetskopimappen</string>
     <string name="copyOwnApkSuccess">Kopierte programmets APK til sikkerhetskopimappen</string>
     <string name="forceKillMessage">Er du sikker på at du vil drepe programmet med tvang\?</string>

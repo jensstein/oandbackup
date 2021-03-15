@@ -250,7 +250,7 @@
     <string name="exodus_report">Rapporto Exodus</string>
     <string name="clear_cache">Svuota la cache</string>
     <string name="sched_name">Nome:</string>
-    <string name="noAppsListToSave">Nessuna lista di app da salvare. Attendere…</string>
+    <string name="wait_noappslist">Nessuna lista di app da salvare. Attendere…</string>
     <string name="copyOwnApkFailed">Fallito il salvataggio dell\'APK della app nella cartella di salvataggio</string>
     <string name="copyOwnApkSuccess">Copiato l\'APK della app nella cartella di salvataggio</string>
     <string name="prefs_saveappslist_summary">Scrive la lista delle app in un file di testo nella cartella di salvataggio dell\'utente</string>
