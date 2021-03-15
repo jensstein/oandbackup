@@ -73,11 +73,11 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Backup cancellati:</string>
     <string name="batchDeleteNothingToDelete">Nessun backup da cancellare</string>
-    <string name="enablePackage">Abilita</string>
+    <string name="enablePackage">Abilita l\'applicazione</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">Abilita per gli utenti</string>
-    <string name="disablePackage">Disabilita</string>
-    <string name="disablePackageTitle">Disabilita per gli utenti</string>
+    <string name="enablePackageTitle">Abilita l\'applicazione per gli utenti</string>
+    <string name="disablePackage">Disabilita l\'applicazione</string>
+    <string name="disablePackageTitle">Disabilita l\'applicazione per gli utenti</string>
     <string name="prefs_title">Opzioni</string>
     <string name="prefs_acquirewakelock">Impedisci la modalità sleep</string>
     <string name="prefs_acquirewakelock_summary">Ottieni un wakelock mentre le operazioni multiple sono in corso per impedire la modalità di attesa. Aumenta significativamente la velocità di salvataggi e ripristini ma consuma più energia.</string>
@@ -122,7 +122,7 @@
     <string name="prefs_encryption_summary">Attiva per criptare i dati dei backup</string>
     <string name="prefs_excludecache_summary">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
     <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment.</string>
-    <string name="sched_activateButton">Inizia backup ora</string>
+    <string name="sched_activateButton">Inizia ora</string>
     <string name="sched_blacklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
     <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
@@ -131,8 +131,8 @@
     <string name="sort_options">Filtra per:</string>
     <string name="sortLabel">Etichetta</string>
     <string name="sortPackageName">Nome pacchetto</string>
-    <string name="radio_user">App Utente</string>
-    <string name="radio_system">App di Sistema</string>
+    <string name="radio_user">App utente</string>
+    <string name="radio_system">App di sistema</string>
     <string name="app_s_icon">Icona dell\'app</string>
     <string name="bothBackedUp">APK e dati</string>
     <string name="all">Tutto</string>
@@ -211,7 +211,7 @@
     <string name="prefs_housekeepingmoment_after">Dopo il backup</string>
     <string name="radio_obbdata">Dati OBB</string>
     <string name="radio_deviceprotecteddata">Dati protetti del dispositivo</string>
-    <string name="radio_externaldata">Dati Esterni</string>
+    <string name="radio_externaldata">Dati esterni</string>
     <string name="fetching_action_list">Recupero dell\'elenco delle app per %1$s …</string>
     <plurals name="days_left">
         <item quantity="one">%d giorno</item>
@@ -232,7 +232,7 @@
     <string name="stats_backups">Backup</string>
     <string name="stats_updated">Aggiornato</string>
     <string name="radio_launchable">App avviabili</string>
-    <string name="prefs_allowdowngrade">Consenti il downgrade</string>
+    <string name="prefs_allowdowngrade">Consenti l\'installazione di una versione anteriore</string>
     <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata.</string>
     <string name="prefs_restoreallpermissions">Ripristina con tutte le autorizzazioni</string>
     <string name="prefs_restoreallpermissions_summary">Assegna all\'app ripristinata tutte le autorizzazioni richieste.</string>
@@ -240,4 +240,23 @@
     <string name="usage_notes_title">Note d\'uso</string>
     <string name="main">Principale</string>
     <string name="help">Aiuto</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d applicazione aggiornata</item>
+        <item quantity="other">%d applicazioni aggiornate</item>
+    </plurals>
+    <string name="forceKillMessage">Sei sicuro/a di voler forzare la chiusura dell\'applicazione\?</string>
+    <string name="app_info">Info sull\'app</string>
+    <string name="launch_app">Avvia l\'applicazione</string>
+    <string name="exodus_report">Rapporto Exodus</string>
+    <string name="clear_cache">Svuota la cache</string>
+    <string name="sched_name">Nome:</string>
+    <string name="noAppsListToSave">Nessuna lista di app da salvare. Attendere…</string>
+    <string name="copyOwnApkFailed">Fallito il salvataggio dell\'APK della app nella cartella di salvataggio</string>
+    <string name="copyOwnApkSuccess">Copiato l\'APK della app nella cartella di salvataggio</string>
+    <string name="prefs_saveappslist_summary">Scrive la lista delle app in un file di testo nella cartella di salvataggio dell\'utente</string>
+    <string name="prefs_saveappslist">Salva lista delle app</string>
+    <string name="prefs_enablespecial_summary">Necessita ancora di collaudo intenso, immagina il pericolo che riavvii continui potrebbero causarti. Un feedback è sempre benvenuto.</string>
+    <string name="prefs_devicelock_summary">Difendi la app con credenziali di dispositivo</string>
+    <string name="prefs_devicelock">Blocco dispositivo</string>
+    <string name="filtered_list">Lista filtrata</string>
 </resources>

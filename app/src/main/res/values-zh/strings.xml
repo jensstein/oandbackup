@@ -110,9 +110,9 @@
     <string name="sched_title">定时</string>
     <string name="sched_notificationMessage">定时备份</string>
     <string name="sched_interval">间隔天数:</string>
-    <string name="sched_hourOfDay">当天几点:</string>
+    <string name="sched_hourOfDay">当天几时:</string>
     <string name="sched_checkbox">启用</string>
-    <string name="sched_activateButton">现在开始备份</string>
+    <string name="sched_activateButton">现在开始</string>
     <string name="sched_startingbackup">正在开始定时备份…</string>
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">剩余时间：</string>
@@ -246,4 +246,13 @@
     </plurals>
     <string name="forceKillMessage">你确定要强制停止该应用吗？</string>
     <string name="sched_name">名称：</string>
+    <string name="prefs_enablespecial_summary">仍然需要进行严格的测试，请尝试了解可能导致启动循环的危险。 始终欢迎反馈。</string>
+    <string name="copyOwnApkFailed">未能将应用的 APK 复制到备份目录</string>
+    <string name="copyOwnApkSuccess">已将应用程序的 APK 复制到备份目录</string>
+    <string name="prefs_devicelock_summary">使用设备凭据保护这个应用程序</string>
+    <string name="prefs_devicelock">设备锁</string>
+    <string name="noAppsListToSave">仍然没有要保存的应用列表。 等待…</string>
+    <string name="prefs_saveappslist_summary">将应用列表写入用户备份目录中的 txt 文件</string>
+    <string name="prefs_saveappslist">保存应用列表</string>
+    <string name="filtered_list">过滤的列表</string>
 </resources>

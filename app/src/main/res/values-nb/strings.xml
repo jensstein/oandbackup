@@ -11,8 +11,8 @@
     <string name="radio_data">Data</string>
     <string name="radio_both">APK + Data</string>
     <string name="de_selectAll">De/marker alle</string>
-    <string name="onlyApkBackedUp">Bare APK</string>
-    <string name="onlyDataBackedUp">Bare data</string>
+    <string name="onlyApkBackedUp">Kun APK</string>
+    <string name="onlyDataBackedUp">Kun data</string>
     <string name="refresh">Gjenoppfrisk</string>
     <string name="batchbackup">Satsvis sikkerhetskopi</string>
     <string name="batchrestore">Satsvis gjenoppretting</string>
@@ -73,20 +73,20 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Sikkerhetskopier ble slettet: </string>
     <string name="batchDeleteNothingToDelete">Ingen sikkerhetskopier å slette</string>
-    <string name="enablePackage">Aktiver</string>
+    <string name="enablePackage">Aktiver program</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">Aktiver for brukere</string>
-    <string name="disablePackage">Deaktiver</string>
-    <string name="disablePackageTitle">Deaktiver for brukere</string>
+    <string name="enablePackageTitle">Aktiver program for brukere</string>
+    <string name="disablePackage">Deaktiver program</string>
+    <string name="disablePackageTitle">Deaktiver program for brukere</string>
     <string name="prefs_title">Innstillinger</string>
     <string name="prefs_acquirewakelock">Hindre dvalemodus</string>
-    <string name="prefs_acquirewakelock_summary">Få en \'wakelock\' når satsvis prosessering foregår for å hindre dvalemodus. Gjør gjenoppretting og lagring av sikkerhetskopier mye raskere, men bruker mer energi.</string>
+    <string name="prefs_acquirewakelock_summary">Skaff en \'wakelock\' under satsvis prosessering for å hindre dvalemodus. Gjør gjenoppretting og lagring av sikkerhetskopier mye raskere, men bruker mer energi.</string>
     <string name="prefs_pathbackupfolder">Mappe for sikkerhetskopier</string>
     <string name="prefs_oldbackups">Filtrer sikkerhetskopier etter alderen</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Vis sikkerhetskopier som er eldre enn verdi angitt i dager. Bruk sammen med filteret «Vis gamle sikkerhetskopier».</string>
     <string name="prefs_copyselfapk">Kopier oandbackup APK</string>
-    <string name="prefs_copyselfapk_summary">Kopier oandbackup APKen til mappen for sikkerhetskopier når det lages en sikkerhetskopi</string>
+    <string name="prefs_copyselfapk_summary">Legg en kopi av OAndBackupX i i toppnivå av sikkerhetskopimappen</string>
     <string name="prefs_languages">Språk</string>
     <string name="prefs_language_system">Systemets standard</string>
     <string name="prefs_rememberfiltering">Husk sortering og filtere</string>
@@ -97,10 +97,10 @@
     <string name="sched_interval">Intervall i dager:</string>
     <string name="sched_hourOfDay">Klokkeslett:</string>
     <string name="sched_checkbox">Aktiver</string>
-    <string name="sched_activateButton">Start å lage sikkerhetskopien nå</string>
+    <string name="sched_activateButton">Start nå</string>
     <string name="sched_startingbackup">Starter planlegget sikkerhetskopi…</string>
     <string name="sched_mode">Metode for sikkerhetskopi:</string>
-    <string name="sched_timeLeft">Timer til neste sikkerhetskopien:</string>
+    <string name="sched_timeLeft">Gjenværende tid:</string>
     <string name="sched_excludeSystemCheckBox">Ekskluder system apper</string>
     <string name="spec_accounts">Kontoer</string>
     <string name="spec_appwidgets">Program-miniprogrammer</string>
@@ -249,4 +249,14 @@
     <string name="exodus_report">Exodus-rapport</string>
     <string name="clear_cache">Tøm hurtiglager</string>
     <string name="sched_name">Navn:</string>
+    <string name="noAppsListToSave">Enda ingen programliste å lagre. Vent …</string>
+    <string name="copyOwnApkFailed">Klarte ikke å kopiere programmets APK til sikkerhetskopimappen</string>
+    <string name="copyOwnApkSuccess">Kopierte programmets APK til sikkerhetskopimappen</string>
+    <string name="forceKillMessage">Er du sikker på at du vil drepe programmet med tvang\?</string>
+    <string name="prefs_saveappslist_summary">Skriver programliste til en TXT-fil i brukerens sikkerhetskopimappe</string>
+    <string name="prefs_saveappslist">Lagre programliste</string>
+    <string name="prefs_enablespecial_summary">Trenger fremdeles mye testing. Prøv det i viten om at det kan forårsake omstartsløkker. Tilbakemeldinger er alltid velkomne.</string>
+    <string name="prefs_devicelock_summary">Sikre programmet med enhetsidentietsdetaljer</string>
+    <string name="prefs_devicelock">Enhetslås</string>
+    <string name="filtered_list">Filtrert liste</string>
 </resources>
