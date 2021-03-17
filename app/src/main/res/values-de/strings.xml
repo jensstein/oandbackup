@@ -226,7 +226,7 @@
         <item quantity="other">%d Tage,</item>
     </plurals>
     <string name="help_issues">Bekannte Probleme</string>
-    <string name="stats_apps">Apps</string>
+    <string name="stats_apps">Anwendungen</string>
     <string name="stats_backups">Sicherungen</string>
     <string name="stats_updated">Aktualisiert</string>
     <string name="radio_launchable">Startbare Apps</string>
@@ -257,4 +257,6 @@
     <string name="prefs_saveappslist_summary">Schreibt die Liste der Apps in eine txt-Datei im Sicherungsverzeichnis des Benutzers</string>
     <string name="prefs_saveappslist">Liste der Apps speichern</string>
     <string name="prefs_devicelock">Gerätesperre</string>
+    <string name="wait_noappslist">Die Liste der Anwendungen wird immer noch nicht abgerufen. Warte…</string>
+    <string name="prefs_enablespecial_summary">Muss noch intensiv getestet werden, da die Gefahr besteht, dass es zu Bootschleifen kommen kann. Feedback ist immer willkommen.</string>
 </resources>
