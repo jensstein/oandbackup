@@ -190,4 +190,71 @@
     <string name="prefs_devicelock_summary">تأمين التطبيق باستخدام القفل الخاص بالجهاز</string>
     <string name="prefs_devicelock">قفل الجهاز</string>
     <string name="batchDeleteBackupsDeleted">تم حذف النسخ الاحتياطية:</string>
+    <plurals name="updated_apps">
+        <item quantity="zero">تطبيقات للمحادثات</item>
+        <item quantity="one">تطبيق المحادث</item>
+        <item quantity="two">تطبيقين للمحادثات</item>
+        <item quantity="few">بعض التطبيقات للمحادثات</item>
+        <item quantity="many">تطبيقات المحادث</item>
+        <item quantity="other">تطبيق للمحادث</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="zero">٪d يوم,</item>
+        <item quantity="one">يوم</item>
+        <item quantity="two">يومين</item>
+        <item quantity="few">بعض الايام</item>
+        <item quantity="many">ايام</item>
+        <item quantity="other">يوما</item>
+    </plurals>
+    <string name="filtered_list">قائمة تمت تصفيتها</string>
+    <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظري…</string>
+    <string name="copyOwnApkFailed">فشل نسخ APK للتطبيق إلى دليل النسخ الاحتياطي</string>
+    <string name="copyOwnApkSuccess">APK التطبيق المنسوخة إلى دليل النسخ الاحتياطي</string>
+    <string name="forceKillMessage">هل تريد بالتأكيد أن تقتل التطبيق بالقوة؟</string>
+    <string name="app_info">معلومات التطبيق</string>
+    <string name="launch_app">تشغيل التطبيق</string>
+    <string name="exodus_report">تقرير الهجرة</string>
+    <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
+    <string name="usage_notes_title">ملاحظات الاستخدام</string>
+    <string name="main">الرئيسيه</string>
+    <string name="help">تعليمات</string>
+    <string name="stats_apps">تطبيقات</string>
+    <string name="stats_backups">النسخ الاحتياطي</string>
+    <string name="stats_updated">تحديث</string>
+    <string name="radio_launchable">تطبيقات قابلة للإطلاق</string>
+    <string name="help_issues">المشكلات المعروفة</string>
+    <string name="fetching_action_list">إحضار قائمة التطبيقات لـ ٪1$s…</string>
+    <string name="logs_text_empty">لا يوجد شيء لإظهار!</string>
+    <string name="delete_all_backups">حذف كافة النسخ الاحتياطية</string>
+    <string name="msg_appkill_warning">سيتم منح التطبيق (التطبيقات) المحدد إشارة التوقف، ثم يستمر بعد انتهاء المهمة. تحقق من التطبيقات التي تمت معالجتها بعد ذلك (وتجنب بدء تشغيلها أثناء استمرار تشغيل العملية).</string>
+    <string name="intro_permission_batteryoptimization">يمكن أن يواجه التطبيق بعض المشاكل القيام النسخ الاحتياطي المجدولة على بعض المدمجات التي تعتمد تحسينات البطارية العدوانية على سبيل المثال MIUI، ولكن حتى على الفانيليا AOSP مثل هذه المشكلة يمكن أن يحدث.</string>
+    <string name="intro_permission_usageaccess">يحتاج التطبيق إلى هذا الإذن ليتمكن من التحقق من الإحصائيات وأحجام البيانات وذاكرة التخزين المؤقت لتطبيقاتك.</string>
+    <string name="intro_permission_storage_location">يحتاج التطبيق إلى موقع نسخ احتياطي لتخزين النسخ الاحتياطية. قد يحتاج التطبيق إلى بضع غيغابايت من التخزين للحصول على نسخة احتياطية كاملة وياستعلام عن نظام الملفات كثيرًا. يرجى مراعاة ذلك عند اختيار مواقع التخزين القائمة على الشبكة.</string>
+    <string name="intro_permission_storage">يستخدم التطبيق إذن القراءة / الكتابة للتخزين لتكون قادرة على الوصول إلى التخزين الخارجي وتوفير إمكانية النسخ الاحتياطي للبيانات الخارجية / obb من التطبيقات الأخرى.</string>
+    <string name="intro_welcome_message">OAndBackupX هو شوكة من OAndBackup سيئة السمعة بهدف جعله إلى عام 2020 وما بعد ذلك. في الوقت الراهن تتم إعادة كتابة معظم وظائف واجهة المستخدم للتطبيق ويتم إضافة بعض.
+\n التطبيق لا يزال في مراحل بيتا ويتم الكثير من rebasing في كثير من الأحيان. لذا يرجى قراءة التغيير بعناية مع كل إصدار جديد.
+\n جميع أنواع المساهمة هي موضع ترحيب كان ذلك الترجمة، والأفكار، والإبلاغ عن الخلل أو عمل التعليمات البرمجية.
+\n
+\nالآن على وظيفة من التطبيق لدينا:
+\n • يتطلب الجذر ويسمح لك النسخ احتياطي الفردية</string>
+    <string name="welcome_to_oabx">مرحبا بكم في OABX!</string>
+    <string name="storage_access">الوصول إلى التخزين</string>
+    <string name="sort_and_filter">فرز وتصفية</string>
+    <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
+    <string name="enable_encryption_title">تشفير البيانات</string>
+    <string name="help_legend">اسطوره:</string>
+    <string name="help_faq">الأسئلة المتداولة</string>
+    <string name="help_group">مجموعتنا</string>
+    <string name="help_license">الترخيص</string>
+    <string name="cache_size">حجم ذاكرة التخزين المؤقت:</string>
+    <string name="data_size">حجم البيانات:</string>
+    <string name="app_size">حجم التطبيق:</string>
+    <string name="grant_usage_access_message">هذا أمر ضروري للحصول على معلومات حول أحجام ملفات التطبيق</string>
+    <string name="grant_usage_access_title">منح الوصول إلى الاستخدام</string>
+    <string name="backup_filters">مرشحات النسخ الاحتياطي:</string>
+    <string name="split_apks">سبليت APKs:</string>
+    <string name="ignore_battery_optimization_message">النسخ الاحتياطي قد تتوقف أحياناً لمنع ذلك، يجب إيقاف تشغيل تحسين البطارية</string>
+    <string name="ignore_battery_optimization_title">تحسين البطارية</string>
+    <string name="spec_appwidgets">التطبيق الحاجيات</string>
+    <string name="prefs_acquirewakelock_summary">الحصول على تنبيه أثناء عمليات الدفع لمنع النوم. يسرع النسخ الاحتياطية والاستعادة إلى حد كبير، ولكن يستهلك المزيد من الطاقة.</string>
 </resources>
