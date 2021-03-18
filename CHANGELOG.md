@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+5.1.0 (18.03.2021)
+------------------
+
+* Added: Tool to save apps' list to a file
+* Added: Option to use device credentials as lock
+* Added: Names to schedules
+* Added: Force kill and launch to App Sheet
+* Added: Updated apps bar
+* Added: Snackbar on single Backup/Restore actions
+* Added: Warning text to enable special backups preference
+* Updated: UI/UX revamp (in co-op with @opepp)
+* Updated: STOP-CONT default is on
+* Fixed: Scheduling backups
+* Fixed: Log items sdk release name
+* Fixed: Crash on batch actions with nothing checked
+* Updated Translations: Norwegian, German, Chinese, Spanish, Polish, Indonesian, Malayalam, French, Turkish, Arabic
+* A ton of other small fixes
+
 5.0.2 (24.02.2021)
 ------------------
 

@@ -2,7 +2,15 @@
 
 - [ ] Rootless Backups: maybe [Shizuku](https://github.com/RikkaApps/Shizuku) could be useful in this matter.
 
-- [ ] More functionality for AppSheet: kill app, share backup, clear data (for now...).
+- [ ] More functionality for AppSheet:
+
+  - [x] Kill app
+
+  - [ ] share backup
+
+  - [x] launch
+
+  - [x] package info shortcut
 
 - [x] Multi-Backups support
 
@@ -20,7 +28,17 @@
 
 ## Needed Fixes
 
-- [ ] Fully support for Special Backups: Accounts, SMS, Bluetooth, Wifi (for now...).
+- [ ] Fully support for Special Backups:
+
+  - [ ] Accounts
+
+  - [ ] SMS
+
+  - [ ] Bluetooth
+
+  - [ ] Wifi
+
+  - [ ] and others…
 
 - [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. NEEDS TESTING
 
@@ -42,9 +60,15 @@
 
 - [x] Not responding to clicks after long time in background
 
+- [ ] Fix GSF push notifications' issue
+
 ## Planned Restructure
 
+- [x] Improve UI/UX (on anniversary release as co-op with @opepp)
+
 - [ ] Use DataBinding/BindingAdapter where useful
+
+- [ ] Migrate to Jetpack Compose instead of XML (where possible)
 
 - [x] Refactore Batch & Schedules handling
 
@@ -66,6 +90,6 @@
 
 - [ ] Add Flashable Zip feature
 
-- [ ] (re)add OpenGPG
+- [ ] (re)integrate OpenGPG
 
 - [ ] Legacy Backup mode

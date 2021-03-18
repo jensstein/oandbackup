@@ -247,7 +247,6 @@
     <string name="usage_notes_title">Σημειώσεις Χρήσης</string>
     <string name="help">Βοήθεια</string>
     <string name="filtered_list">Φιλτραρισμένη λίστα</string>
-    <string name="noAppsListToSave">Δεν υπάρχει ακόμα λίστα εφαρμογών για αποθήκευση. Περιμένετε…</string>
     <string name="copyOwnApkSuccess">Το APK της εφαρμογής αντιγράφηκε στο φάκελο αντιγράφων</string>
     <string name="copyOwnApkFailed">Αποτυχία αντιγραφής του APK της εφαρμογής στο φάκελο αντιγράφων</string>
     <string name="forceKillMessage">Θέλετε σίγουρα να τερματίσετε αναγκαστικά την εφαρμογή;</string>
