@@ -19,7 +19,7 @@
     <color name="app_accent">#E0163D</color>
     <color name="app_primary_base">#323639</color>
     <color name="app_primary_inverse">#E9ECEF</color>
-    <color name="app_secondary">#67EEf7</color>
+    <color name="app_secondary">#80FFE7</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="ic_background_alpha">#55000000</color>
     <color name="ic_exodus">#AB47BC</color>
@@ -31,5 +31,5 @@
     <color name="ic_ext_data">#B3CDF6</color>
     <color name="ic_de_data">#EAEB58</color>
     <color name="ic_obb">#B3FF85</color>
-    <color name="ic_updated">#F43345</color>
+    <color name="ic_updated">#FF0000</color>
 </resources>

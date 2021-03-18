@@ -30,8 +30,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdkVersion(26)
         targetSdkVersion(29)
-        versionCode = 5002
-        versionName = "5.0.2"
+        versionCode = 5100
+        versionName = "5.1.0"
         // Tests
         testApplicationId = "${applicationId}.tests"
         // 1) Make sure to use the AndroidJUnitRunner, or a subclass of it. This requires a dependency on androidx.test:runner, too!

@@ -10,5 +10,11 @@
         </p>
         <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
         </p>
+        <p><strong>App prive di sistema</strong>: Il backup e il ripristino delle app prive di sistema installate come moduli Magisk non sono supportati e provarlo potrebbe portare a un errore di sistema e costringerti a formattare e installare da zero.
+        </p>
+        <p><strong>Navigazione</strong>: La barra di navigazione ha "Impostazioni", "Home", "Backup batch", "Ripristino batch" e "Backup pianificati" (in quest'ordine). Il numero di app aggiornate dopo l'ultimo backup verrà presentato come una notifica sul pulsante "Home".
+        </p>
+        <p><strong>Apps che usano Keystore</strong>: Android ha una memoria crittografata per i dati sensibili. Le app che ne fanno uso per memorizzare i dati di accesso o alcune chiavi per il suo funzionamento non possono essere ripristinate correttamente. Due esempi di tali app sono Signal ed Element (Riot).
+        </p>
     </body>
 </html>

@@ -10,5 +10,11 @@
         </p>
         <p><strong>Wielu użytkowników</strong>: Tryb wielu użytkowników jest jeszcze trochę eksperymentalny, ale powinien działać. Podczas przywracania w scenariuszu wieloużytkownikowym, `pm install -r $apk` zostaje wywołany i następnie aplikacja jest wyłączona dla każdego użytkownika, który ma aplikację wymienioną w /data/system/user/$user/package-restrictions.xml (chyba że aplikacja jest wymieniona jako włączona="1"). <br> Może to spowodować problemy dla użytkowników instalujących tę samą aplikację w późniejszym czasie, ale jest konieczne, aby uniemożliwić instalację aplikacji dla wszystkich użytkowników w tym samym czasie. Menu kontekstowe posiada opcję włączania lub wyłączania aplikacji, z której można korzystać, gdy inni użytkownicy nie będą mogli korzystać z konkretnej aplikacji z powodu wyłączenia funkcji przywracania. <br> Włączanie i wyłączanie działa tylko po pierwszej instalacji (niekoniecznie z OAndBackupx) lub przywróceniu aplikacji.
         </p>
+        <p><strong>Aplikacje system-less</strong>: Kopia zapasowa i przywracanie aplikacji system-less zainstalowanych jako moduły Magisk nie jest obsługiwana, a jej wypróbowanie może doprowadzić do awarii systemu i zmuszenia do sformatowania i flashowania go od nowa.
+        </p>
+        <p><strong>Nawigacja</strong>: Na pasku nawigacji znajdują się "Ustawienia", "Strona główna", "Masowa kopia zapasowa", "Masowe przywracanie" i "Zaplanuj kopie zapasowe" (w tej kolejności). Liczba aplikacji zaktualizowanych po ostatniej kopii zapasowej będzie prezentowana w formie powiadomienia na przycisku "Strona główna".
+        </p>
+        <p><strong>Aplikacje korzystające z Keystore</strong>: Android posiada zaszyfrowany magazyn dla wrażliwych danych. Aplikacje, które wykorzystują to do przechowywania danych logowania lub niektórych kluczy do swoich funkcji, nie mogą zostać pomyślnie przywrócone. Dwa przykłady takich aplikacji to Signal i Element(Riot).
+        </p>
     </body>
 </html>

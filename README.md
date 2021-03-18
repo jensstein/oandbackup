@@ -2,7 +2,7 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](COC.md) [![Main CI Workflow](https://github.com/machiav3lli/oandbackupx/workflows/Main%20CI%20Workflow/badge.svg?branch=master)](https://github.com/machiav3lli/oandbackupx/actions?query=workflow%3A%22Main+CI+Workflow%22)
 
-OAndBackupX is a fork of the famous OAndBackup with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device. Therefore all types of contribution are welcome.
+OAndBackupX is a fork of the famous OAndBackup with the aim to bring OAndBackup to 2020. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device. Therefore all types of contribution are always welcome.
 
 Now on functionality of our App:
 
@@ -55,22 +55,11 @@ The communication and each contribution in the project community should follow o
 
 ## Screenshots
 
-### Dark Theme
-
 <p float="left">
  <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="170" />
  <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="170" />
  <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="170" />
  <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="170" />
-</p>
-
-### Light Theme
-
-<p float="left">
- <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="170" />
- <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" />
- <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" width="170" />
- <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" width="170" />
 </p>
 
 ## Building

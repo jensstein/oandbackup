@@ -11,8 +11,8 @@
     <string name="radio_data">Δεδομένα</string>
     <string name="radio_both">Εφαρμογή + Δεδομένα</string>
     <string name="de_selectAll">Από/επιλογή όλων</string>
-    <string name="onlyApkBackedUp">Μόνον εφαρμογή</string>
-    <string name="onlyDataBackedUp">Μόνο δεδομένα</string>
+    <string name="onlyApkBackedUp">Εφαρμογή μόνο</string>
+    <string name="onlyDataBackedUp">Δεδομένα μόνο</string>
     <string name="refresh">Ανανέωση</string>
     <string name="batchbackup">Μαζική δημιουργία αντιγράφων ασφαλείας</string>
     <string name="batchrestore">Μαζική επαναφορά</string>
@@ -109,7 +109,7 @@
     <string name="sched_interval">Μεσοδιάστημα σε ημέρες:</string>
     <string name="sched_hourOfDay">Ώρα της ημέρας:</string>
     <string name="sched_checkbox">Ενεργοποίηση</string>
-    <string name="sched_activateButton">Εκκίνηση δημιουργίας αντιγράφου τώρα</string>
+    <string name="sched_activateButton">Εκκίνηση τώρα</string>
     <string name="sched_startingbackup">Εκκίνηση προγραμματισμένου αντιγράφου…</string>
     <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Εναπομένων χρόνος:</string>
@@ -246,4 +246,14 @@
     <string name="clear_cache">Καθαρισμός cache</string>
     <string name="usage_notes_title">Σημειώσεις Χρήσης</string>
     <string name="help">Βοήθεια</string>
+    <string name="filtered_list">Φιλτραρισμένη λίστα</string>
+    <string name="copyOwnApkSuccess">Το APK της εφαρμογής αντιγράφηκε στο φάκελο αντιγράφων</string>
+    <string name="copyOwnApkFailed">Αποτυχία αντιγραφής του APK της εφαρμογής στο φάκελο αντιγράφων</string>
+    <string name="forceKillMessage">Θέλετε σίγουρα να τερματίσετε αναγκαστικά την εφαρμογή;</string>
+    <string name="sched_name">Όνομα:</string>
+    <string name="prefs_saveappslist_summary">Εγγράφει τη λίστα εφαρμογών σε ένα αρχείο txt στον φάκελο αντιγράφων του χρήστη</string>
+    <string name="prefs_saveappslist">Αποθήκευση λίστας εφαρμογών</string>
+    <string name="prefs_enablespecial_summary">Ακόμα χρειάζεται εντατική δοκιμή, δοκιμάστε γνωρίζοντας τον κίνδυνο πως μπορεί να προκαλέσει βρόχο εκκίνησης. Η ανατροφοδότηση είναι πάντα καλοδεχούμενη.</string>
+    <string name="prefs_devicelock_summary">Ασφαλίστε την εφαρμογή με τα διαπιστευτήρια της συσκευής</string>
+    <string name="prefs_devicelock">Κλείδωμα συσκευής</string>
 </resources>
