@@ -26,7 +26,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
@@ -67,15 +66,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        Thread {
-            try {
-                appInfoList = getApplicationList(requireContext())
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
-                e.printStackTrace()
-            } catch (e: StorageLocationNotConfiguredException) {
-                e.printStackTrace()
-            }
-        }.start()
+        refreshAppsList()
     }
 
     private fun onClickUninstalledBackupsDelete(): Boolean {
@@ -95,7 +86,8 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                         .setTitle(R.string.prefs_batchdelete)
                         .setMessage(message.toString().trim { it <= ' ' })
                         .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            runOnUiThread { deleteBackups(deleteList) }
+                            deleteBackups(deleteList)
+                            refreshAppsList()
                         }
                         .setNegativeButton(R.string.dialogNo, null)
                         .show()
@@ -142,12 +134,16 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
             AlertDialog.Builder(requireContext())
                     .setTitle(R.string.prefs_saveappslist)
                     .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
-                        writeAppsListFile(appInfoList.filter { it.isSystem }.map { "${it.packageLabel}: ${it.packageName}" })
+                        writeAppsListFile(appInfoList
+                                .filter { it.isSystem }
+                                .map { "${it.packageLabel}: ${it.packageName}" }, false)
+                        refreshAppsList()
                     }
                     .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
                         writeAppsListFile(applyFilter(appInfoList,
                                 getFilterPreferences(requireContext()).toString(), requireContext())
-                                .map { "${it.packageLabel}: ${it.packageName}" })
+                                .map { "${it.packageLabel}: ${it.packageName}" }, true)
+                        refreshAppsList()
                     }
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
@@ -158,7 +154,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     @Throws(IOException::class)
-    fun writeAppsListFile(appsList: List<String>) {
+    fun writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) {
         val date = LocalDateTime.now()
         val filesText = appsList.joinToString("\n")
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
@@ -166,6 +162,9 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
+        // TODO create two different texts
+        showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                "Wrote ${getString(if (filteredBoolean) R.string.filtered_list else R.string.radio_all)} file", null, false)
         Timber.i("Wrote apps\' list file at $date")
     }
 
@@ -176,5 +175,18 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 .addToBackStack(null)
                 .commit()
         return true
+    }
+
+    private fun refreshAppsList() {
+        appInfoList = listOf()
+        Thread {
+            try {
+                appInfoList = getApplicationList(requireContext())
+            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+                e.printStackTrace()
+            } catch (e: StorageLocationNotConfiguredException) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 }
