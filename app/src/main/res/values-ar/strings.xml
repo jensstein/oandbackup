@@ -256,5 +256,5 @@
     <string name="ignore_battery_optimization_message">النسخ الاحتياطي قد تتوقف أحياناً لمنع ذلك، يجب إيقاف تشغيل تحسين البطارية</string>
     <string name="ignore_battery_optimization_title">تحسين البطارية</string>
     <string name="spec_appwidgets">التطبيق الحاجيات</string>
-    <string name="prefs_acquirewakelock_summary">الحصول على تنبيه أثناء عمليات الدفع لمنع النوم. يسرع النسخ الاحتياطية والاستعادة إلى حد كبير، ولكن يستهلك المزيد من الطاقة.</string>
+    <string name="prefs_acquirewakelock_summary">الحصول على تنبيه أثناء عمليات التجهيز لمنع الجهاز من الإسبات. يسرع عملية النسخ الاحتياطي والاستعادة إلى حد كبير، ولكن يستهلك المزيد من الطاقة.</string>
 </resources>
