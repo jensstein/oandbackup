@@ -30,14 +30,14 @@
     <string name="busyboxProblem">تعذر العثور على BusyBox. يرجى التحقق من سجل الأخطاء</string>
     <string name="noSu">تعذر الحصول على صلاحيات superuser</string>
     <string name="collectingData">جار جمع معلومات الحزمة…</string>
-    <string name="restoreDataWithoutApkError">لا يمكن استعادة البيانات دون استعادة الـAPK، الحزمة غير مثبتة.</string>
+    <string name="restoreDataWithoutApkError">لا يمكن استعادة البيانات دون استعادة الAPK، الحزمة غير مثبتة.</string>
     <string name="deleteBackupDialogMessage">حذف ملفات النسخة الاحتياطية؟</string>
     <string name="uninstallDialogMessage">إزالة تثبيت هذا التطبيق؟</string>
     <string name="sort">الفرز والتصفية</string>
     <string name="sortByPackageName">فرز باسم الحزمة</string>
     <string name="sortByLabel">فرز بالتسمية</string>
     <string name="showOnlyDataBackedUp">التطبيقات التي تم نسخ بياناتها فقط احتياطياً</string>
-    <string name="showOnlyApkBackedUp">التطبيقات التي تم نسخ الـAPK لها فقط احتياطياً</string>
+    <string name="showOnlyApkBackedUp">التطبيقات التي تم نسخ الAPK لها فقط احتياطياً</string>
     <string name="showSplitAPKs">APK-مقسم</string>
     <string name="showOldBackups">النسخ الاحتياطة القديمة</string>
     <string name="showNotBackedup">التطبيقات دون نسخة احتياطية</string>
@@ -200,11 +200,11 @@
     </plurals>
     <plurals name="days_left">
         <item quantity="zero">٪d يوم,</item>
-        <item quantity="one">يوم</item>
-        <item quantity="two">يومين</item>
-        <item quantity="few">بعض الايام</item>
-        <item quantity="many">ايام</item>
-        <item quantity="other">يوما</item>
+        <item quantity="one">٪d يوم</item>
+        <item quantity="two">٪d يومين</item>
+        <item quantity="few">٪d بعض الايام</item>
+        <item quantity="many">٪d ايام</item>
+        <item quantity="other">٪d يوما</item>
     </plurals>
     <string name="filtered_list">قائمة تمت تصفيتها</string>
     <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظري…</string>
@@ -223,7 +223,7 @@
     <string name="stats_updated">تحديث</string>
     <string name="radio_launchable">تطبيقات قابلة للإطلاق</string>
     <string name="help_issues">المشكلات المعروفة</string>
-    <string name="fetching_action_list">إحضار قائمة التطبيقات لـ ٪1$s…</string>
+    <string name="fetching_action_list">إحضار قائمة التطبيقات ل ٪1$s…</string>
     <string name="logs_text_empty">لا يوجد شيء لإظهار!</string>
     <string name="delete_all_backups">حذف كافة النسخ الاحتياطية</string>
     <string name="msg_appkill_warning">سيتم منح التطبيق (التطبيقات) المحدد إشارة التوقف، ثم يستمر بعد انتهاء المهمة. تحقق من التطبيقات التي تمت معالجتها بعد ذلك (وتجنب بدء تشغيلها أثناء استمرار تشغيل العملية).</string>
@@ -231,12 +231,15 @@
     <string name="intro_permission_usageaccess">يحتاج التطبيق إلى هذا الإذن ليتمكن من التحقق من الإحصائيات وأحجام البيانات وذاكرة التخزين المؤقت لتطبيقاتك.</string>
     <string name="intro_permission_storage_location">يحتاج التطبيق إلى موقع نسخ احتياطي لتخزين النسخ الاحتياطية. قد يحتاج التطبيق إلى بضع غيغابايت من التخزين للحصول على نسخة احتياطية كاملة وياستعلام عن نظام الملفات كثيرًا. يرجى مراعاة ذلك عند اختيار مواقع التخزين القائمة على الشبكة.</string>
     <string name="intro_permission_storage">يستخدم التطبيق إذن القراءة / الكتابة للتخزين لتكون قادرة على الوصول إلى التخزين الخارجي وتوفير إمكانية النسخ الاحتياطي للبيانات الخارجية / obb من التطبيقات الأخرى.</string>
-    <string name="intro_welcome_message">OAndBackupX هو شوكة من OAndBackup سيئة السمعة بهدف جعله إلى عام 2020 وما بعد ذلك. في الوقت الراهن تتم إعادة كتابة معظم وظائف واجهة المستخدم للتطبيق ويتم إضافة بعض.
-\n التطبيق لا يزال في مراحل بيتا ويتم الكثير من rebasing في كثير من الأحيان. لذا يرجى قراءة التغيير بعناية مع كل إصدار جديد.
-\n جميع أنواع المساهمة هي موضع ترحيب كان ذلك الترجمة، والأفكار، والإبلاغ عن الخلل أو عمل التعليمات البرمجية.
+    <string name="intro_welcome_message">OAndBackupX هو تفرع من OAndBackup سيئ السمعة بهدف تقديمه إلى عام 2020 وما بعده. في الوقت الحالي ، تتم إعادة كتابة معظم وظائف التطبيق وواجهة المستخدم وإضافة بعضها.
+\n لا يزال التطبيق في مراحل تجريبية ويتم إجراء الكثير من عمليات إعادة التأسيس كثيرًا. لذا يرجى قراءة سجل التغيير بعناية مع كل إصدار جديد.
+\n نرحب بجميع أنواع المساهمات سواء كانت الترجمة أو الأفكار أو الإبلاغ عن الأخطاء أو عمل التعليمات البرمجية.
 \n
-\nالآن على وظيفة من التطبيق لدينا:
-\n • يتطلب الجذر ويسمح لك النسخ احتياطي الفردية</string>
+\n الآن في وظائف التطبيق لدينا:
+\n • يتطلب جذرًا ويسمح لك بعمل نسخة احتياطية من التطبيقات الفردية وبياناتها.
+\n • يتم دعم كل من النسخ الاحتياطي واستعادة البرامج الفردية في وقت واحد والنسخ الاحتياطي دفعة واستعادة برامج متعددة.
+\n • يجب أن تكون استعادة تطبيقات النظام ممكنة دون الحاجة إلى إعادة التشغيل بعد ذلك ، ولكننا ما زلنا لا ننصح بالقيام بذلك.
+\n • يمكن جدولة النسخ الاحتياطية بدون حد لعدد الجداول الفردية وهناك إمكانية لإنشاء قوائم مخصصة فريدة.</string>
     <string name="welcome_to_oabx">مرحبا بكم في OABX!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
     <string name="sort_and_filter">فرز وتصفية</string>
