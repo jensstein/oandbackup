@@ -8,7 +8,7 @@
 * [What is root access used for?](#what-is-root-access-used-for)
 * [Why is OABX so slow?](#why-is-oabx-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
-* [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list--what-can-be-the-reason)
+* [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
@@ -110,7 +110,7 @@ In the next Android Versoins Google will (most probably) force apps more and mor
 #### I do not see any apps in the list. What can be the reason?
 
 In most cases the you chose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
-This is not supported by SAF. You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions)
+This is not supported by SAF. You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
 
 <ins>Solution:</ins><br/>
 Create a separate folder and choose it in oabx preferences (User preferences) as your "Backup folder".
