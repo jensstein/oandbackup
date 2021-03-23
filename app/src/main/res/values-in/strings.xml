@@ -110,9 +110,9 @@
     <string name="sched_title">Penjadwalan</string>
     <string name="sched_notificationMessage">Pencadangan terjadwal</string>
     <string name="sched_interval">Interval dalam hari:</string>
-    <string name="sched_hourOfDay">Jam hari:</string>
+    <string name="sched_hourOfDay">Waktu hari ini:</string>
     <string name="sched_checkbox">Memungkinkan</string>
-    <string name="sched_activateButton">Mulai cadangan sekarang</string>
+    <string name="sched_activateButton">Mulai sekarang</string>
     <string name="sched_startingbackup">Mulai cadangan terjadwal…</string>
     <string name="sched_mode">Mode cadangan:</string>
     <string name="sched_timeLeft">Waktu tersisa:</string>
@@ -246,4 +246,13 @@
     <string name="prefs_obbdata">Cadangkan berkas obb</string>
     <string name="forceKillMessage">Apakah anda yakin untuk memaksa penghentian aplikasi\?</string>
     <string name="sched_name">Nama :</string>
+    <string name="filtered_list">Daftar yang difilter</string>
+    <string name="wait_noappslist">Daftar aplikasi masih belum diambil. Tunggu…</string>
+    <string name="copyOwnApkFailed">Gagal menyalin APK aplikasi ke direktori cadangan</string>
+    <string name="copyOwnApkSuccess">Menyalin APK aplikasi ke direktori cadangan</string>
+    <string name="prefs_saveappslist_summary">Menulis daftar aplikasi ke file txt di direktori cadangan pengguna</string>
+    <string name="prefs_saveappslist">Simpan daftar aplikasi</string>
+    <string name="prefs_enablespecial_summary">Masih perlu pengujian yang intensif, coba ketahui bahaya yang bisa menyebabkan boot loop. Umpan balik selalu diterima.</string>
+    <string name="prefs_devicelock_summary">Amankan aplikasi dengan kredensial perangkat</string>
+    <string name="prefs_devicelock">Kunci perangkat</string>
 </resources>
