@@ -1,12 +1,14 @@
 # Frequently Asked Questions:
 
 * [What is OAndBackupX?](#what-is-oandbackupx)
+* [How do I use OABX?](#how-do-i-use-oabx)
 * [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
 * [What are Special Backups?](#what-are-special-backups)
 * [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
 * [What is root access used for?](#what-is-root-access-used-for)
 * [Why is OABX so slow?](#why-is-oabx-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
+* [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list--what-can-be-the-reason)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
@@ -16,8 +18,26 @@
 
 #### What is OAndBackupX?
 
-OAndBackupX is a fork of the OAndBackup (which is inactive) with the aim to bring OAndBackup to 2020. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
+OAndBackupX (short OABX) is a fork of the OAndBackup (which is inactive) with the aim to bring OAndBackup to 202x. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
 Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+
+#### How do I use OABX?
+
+The first start will guide you through the most important preferences. It still make sense to shortly check the prefs, to see what else can bet set. E.g. you can define the amount of kept backup revisions or decide which [app parts](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) should be included.
+
+There are 4 screens/tabs:<br/> 
+(navigate between them using the icons of the menu-bar on the bottom of the screen)
+
+1. Main (AppList based on the current filter + access to AppSheet of each app)
+2. Batch - Backup
+3. Batch - Restore
+4. Scheduled backups
+
+The fifth and very right icon of the menu-bar will open the preferences.
+A safe way to start is to do some backup and restore tests of an uncritical app via AppSheet. 
+Go forward and backup multiple apps via Batch and finally define schedules e.g. with Custom lists.
+
+In case of any problems report it in [the Telegram group](https://github.com/machiav3lli/oandbackupx#on-telegram-tmeoandbackupx) first (sometimes there is an easy solution) and/or [raise an issue here in github](https://github.com/machiav3lli/oandbackupx/issues).
 
 #### What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?  
   
@@ -87,6 +107,16 @@ In the next Android Versoins Google will (most probably) force apps more and mor
 - Performance, more of Performance and tons of Performance
 - obfuscation of the classical path structure
 
+#### I do not see any apps in the list. What can be the reason?
+
+In most cases the you chose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
+This is not supported by SAF. You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions)
+
+<ins>Solution:</ins><br/>
+Create a separate folder and choose it in oabx preferences (User preferences) as your "Backup folder".
+
+Another mistake which might happen is, that you set special filters which lead to an empty result.
+
 #### How can I backup SMS & Call log?
 
 Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data.
@@ -127,7 +157,7 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
 | encrypted backup | yes (optional) | yes |
 | automatic backup | yes (individual schedules) | yes (daily) |
-| usable For | [A8-A11](#are-you-going-to-support-older-android-versions) | A11 only (branches down to A9) |
+| usable For | [A8-A11](#are-you-going-to-support-older-android-versions) | A11 only (but [integrated into LOS now](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) ) |
 | Considers 'allowbackup' flag of apps? | no | yes |
 | OS-/Rom intergrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |
