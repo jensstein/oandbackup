@@ -247,4 +247,12 @@
     <string name="exodus_report">Raport Exodus</string>
     <string name="clear_cache">Wyczyść pamięć podręczną</string>
     <string name="sched_name">Nazwa:</string>
+    <string name="copyOwnApkFailed">Nie udało się skopiować pliku APK aplikacji do katalogu kopii zapasowej</string>
+    <string name="copyOwnApkSuccess">Skopiowano plik APK aplikacji do katalogu kopii zapasowych</string>
+    <string name="forceKillMessage">Czy na pewno chcesz wymusić zatrzymanie aplikacji\?</string>
+    <string name="app_info">Informacje o aplikacji</string>
+    <string name="prefs_saveappslist_summary">Zapisuje listę aplikacji do pliku txt w katalogu kopii zapasowej</string>
+    <string name="prefs_saveappslist">Zapisz listę aplikacji</string>
+    <string name="prefs_devicelock_summary">Zabezpiecz aplikację za pomocą blokady ekranu urządzenia</string>
+    <string name="prefs_devicelock">Blokada ekranu</string>
 </resources>
