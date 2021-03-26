@@ -223,7 +223,7 @@
     <string name="stats_updated">تحديث</string>
     <string name="radio_launchable">تطبيقات قابلة للإطلاق</string>
     <string name="help_issues">المشكلات المعروفة</string>
-    <string name="fetching_action_list">إحضار قائمة التطبيقات ل ٪1$s…</string>
+    <string name="fetching_action_list">إحضار قائمة التطبيقات ل %1$s…</string>
     <string name="logs_text_empty">لا يوجد شيء لإظهار!</string>
     <string name="delete_all_backups">حذف كافة النسخ الاحتياطية</string>
     <string name="msg_appkill_warning">سيتم منح التطبيق (التطبيقات) المحدد إشارة التوقف، ثم يستمر بعد انتهاء المهمة. تحقق من التطبيقات التي تمت معالجتها بعد ذلك (وتجنب بدء تشغيلها أثناء استمرار تشغيل العملية).</string>
