@@ -245,9 +245,9 @@
     <string name="stats_backups">Копий</string>
     <string name="help">Помощь</string>
     <string name="stats_apps">Всего</string>
-    <string name="stats_updated">Обновлённых</string>
+    <string name="stats_updated">Обновлены</string>
     <string name="radio_launchable">Запускаемые приложения</string>
-    <string name="fetching_action_list">Получение списка приложений для %1$s…</string>
+    <string name="fetching_action_list">Загрузка спика приложений для %1$s…</string>
     <string name="help_faq">Часто задаваемые вопросы</string>
     <string name="sched_name">Имя:</string>
     <string name="prefs_saveappslist_summary">Выводит список приложений в текстовый файл в папке с р.к.</string>
