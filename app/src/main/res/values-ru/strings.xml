@@ -11,7 +11,7 @@
     <string name="radio_data">Данные</string>
     <string name="radio_both">APK + Данные</string>
     <string name="de_selectAll">Инвертировать всё</string>
-    <string name="onlyApkBackedUp">Только apk</string>
+    <string name="onlyApkBackedUp">Только APK</string>
     <string name="onlyDataBackedUp">Только данные</string>
     <string name="refresh">Обновить</string>
     <string name="batchbackup">Пакетное резервирование</string>
@@ -85,7 +85,7 @@
     <!-- prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups -->
     <string name="prefs_oldbackups_summary">Отфильтровать р.к. старше, чем это значение в днях. используется с фильтром \"показать старые р.к.\".</string>
     <string name="prefs_copyselfapk">Копировать собственный apk</string>
-    <string name="prefs_copyselfapk_summary">Разместить копию oandbackup в верхнем уровне папки с р.к. при резервировании</string>
+    <string name="prefs_copyselfapk_summary">Разместить копию OAndBackupX в верхнем уровне папки с р.к.</string>
     <string name="prefs_languages">Язык</string>
     <string name="prefs_language_system">Системный</string>
     <string name="prefs_rememberfiltering">Запомнить сортировку и фильтр</string>
@@ -96,10 +96,10 @@
     <string name="sched_interval">Интервал в днях:</string>
     <string name="sched_hourOfDay">Час дня:</string>
     <string name="sched_checkbox">Включить</string>
-    <string name="sched_activateButton">Начать резервирование</string>
+    <string name="sched_activateButton">Начать сейчас</string>
     <string name="sched_startingbackup">Начало запланированного резервирования…</string>
     <string name="sched_mode">Режим резервирования:</string>
-    <string name="sched_timeLeft">Часов до следующего резервирования:</string>
+    <string name="sched_timeLeft">Осталось времени:</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
     <string name="sched_blacklist">Черный список</string>
     <string name="spec_accounts">Аккуанты</string>
@@ -162,7 +162,7 @@
     <string name="failed_unzipping">Ошибка извлечения данный, проверьте пароль шифрования!</string>
     <string name="ignore_battery_optimization_not_supported">К сожалению, это устройство не может игнорировать оптимизацию батареи!</string>
     <string name="ignore_battery_optimization_message">Создание р.к. может иногда останавливаться. Для предотвращения этого, Вам следует выключить оптимизацию батареи</string>
-    <string name="empty_filtered_list">Отфильтрованный список пуст, возвращаю настройки фильтра по умолчанию</string>
+    <string name="empty_filtered_list">Отфильтрованный список пуст.</string>
     <string name="deleted_backup">Удалить р.к.</string>
     <string name="apptype_user">Пользовательское приложение</string>
     <string name="apptype_system">Системное приложение</string>
@@ -189,7 +189,7 @@
     <string name="prefs_password_summary">Оставьте пустым для отключения шифрования</string>
     <string name="prefs_biometriclock_summary">Защита приложения с биометрической блокировкой (напр., отпечаток пальца, разблокировка по лицу)</string>
     <string name="prefs_biometriclock">Биометрическая блокировка</string>
-    <string name="msg_appkill_warning">Выбранное приложение (я) будет остановлено. Убедитесь, что вы перезагрузили устройство после завершения, или открыли приложения, такие как будильник или календарь, чтобы не пропустить важные уведомления. Ваша клавиатура или лаунчер могут сбросить свои настройки по умолчанию для этого приложения.</string>
+    <string name="msg_appkill_warning">Выбранным приложениям будет послан сигнал stop, и они будут возобновлены после окончания задания. Проверьте их после этого (и избегайте запускать их во время выполнения задания).</string>
     <string name="intro_permission_storage">Приложение использует разрешение на чтение/запись хранилища, чтобы иметь возможность доступа к внешнему хранилищу и обеспечить возможность резервного копирования внешних данных/obb других приложений.</string>
     <string name="intro_welcome_message">OAndBackupX - это форк печально известного OAndBackup с целью принести его в 2020 и будущее. Сейчас большинство функционала и UI приложения переписано и что-то добавлено.
 \n- Приложение все еще на стадии бета и постоянно вносятся много изменений. Читайте внимательно ченджлог с каждым новым релизом.
@@ -220,9 +220,46 @@
     <string name="radio_externaldata">Внешние данные</string>
     <string name="prefs_advanced">Расширенные возможности</string>
     <string name="help_issues">Известные проблемы</string>
-    <string name="prefs_obbdata_summary">Создает резервные копии и восстанавливает obb-файлы приложения, которые размещаются во внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata_summary">Создаёт резервную копию и восстанавливает obb-файлы приложения, которые размещаются во внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Резервное копирование obb файлов</string>
-    <string name="prefs_housekeepingmoment_before">До резервной копии</string>
-    <string name="prefs_housekeepingmoment_after">После резервной копии</string>
+    <string name="prefs_housekeepingmoment_before">До резервирования</string>
+    <string name="prefs_housekeepingmoment_after">После резервирования</string>
     <string name="radio_obbdata">OBB-данные</string>
+    <plurals name="updated_apps">
+        <item quantity="one">%d обновлённое</item>
+        <item quantity="few">%d обновлённых</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
+    <string name="filtered_list">Отфильтрованный список</string>
+    <string name="wait_noappslist">Список приложений ещё не получен. Подождите…</string>
+    <string name="copyOwnApkFailed">Не удалось скопировать APK приложения в его домашнюю папку</string>
+    <string name="copyOwnApkSuccess">APK приложения скопирован в свою домашнюю папку</string>
+    <string name="forceKillMessage">Вы уверены, что хотите принудительно остановить приложение\?</string>
+    <string name="app_info">О приложении</string>
+    <string name="launch_app">Запустить приложение</string>
+    <string name="exodus_report">Отчёт Exodus</string>
+    <string name="clear_cache">Очистить кэш</string>
+    <string name="usage_notes_title">Замечания по использованию</string>
+    <string name="main">Главная</string>
+    <string name="stats_backups">Копий</string>
+    <string name="help">Помощь</string>
+    <string name="stats_apps">Всего</string>
+    <string name="stats_updated">Обновлённых</string>
+    <string name="radio_launchable">Запускаемые приложения</string>
+    <string name="fetching_action_list">Получение списка приложений для %1$s…</string>
+    <string name="help_faq">Часто задаваемые вопросы</string>
+    <string name="sched_name">Имя:</string>
+    <string name="prefs_saveappslist_summary">Выводит список приложений в текстовый файл в папке с р.к.</string>
+    <string name="prefs_saveappslist">Сохранить список приложений</string>
+    <string name="prefs_allowdowngrade">Разрешить даунгрейд</string>
+    <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения.</string>
+    <string name="prefs_restoreallpermissions">Восстановить со всеми разрешениями</string>
+    <string name="prefs_restoreallpermissions_summary">Выдать восстановленным приложениям все запрашиваемые ими разрешения.</string>
+    <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE</string>
+    <string name="prefs_housekeepingmoment_summary">Выберите будут ли старые версии удалены перед или после создания новой р.к., чтобы освободить дисковое пространство, используемое для резервирования.</string>
+    <string name="prefs_housekeepingmoment">Порядок удаления старых р.к.</string>
+    <string name="prefs_enablespecial_summary">Нуждается в интенсивном тестировании, может привести к циклической перезагрузке. Ваши отзывы всегда приветствуются.</string>
+    <string name="prefs_devicelock_summary">Обезопасьте приложение с помощью учётных данных устройства</string>
+    <string name="prefs_devicelock">Блокировка</string>
 </resources>
