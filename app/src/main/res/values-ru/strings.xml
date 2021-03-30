@@ -174,7 +174,7 @@
     <string name="dialog_refuse">Не делать это</string>
     <string name="restart_dialog">Похоже необходимо перезапустить приложение</string>
     <string name="permission_not_granted">Необходимо разрешение на доступ к внешнему хранилищу</string>
-    <string name="error_updating_schedule_mode">Ошибка обновления %1$ из запланированных %2$</string>
+    <string name="error_updating_schedule_mode">Ошибка обновления %1$s из запланированных %2$d</string>
     <string name="error_creating_notification_channel">Невозможно создать канал уведомлений</string>
     <string name="prefs_unset">Снять</string>
     <string name="prefs_logviewer">Просмотреть лог</string>
@@ -256,8 +256,8 @@
     <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения.</string>
     <string name="prefs_restoreallpermissions">Восстановить со всеми разрешениями</string>
     <string name="prefs_restoreallpermissions_summary">Выдать восстановленным приложениям все запрашиваемые ими разрешения.</string>
-    <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE</string>
-    <string name="prefs_housekeepingmoment_summary">Выберите будут ли старые версии удалены перед или после создания новой р.к., чтобы освободить дисковое пространство, используемое для резервирования.</string>
+    <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_housekeepingmoment_summary">Укажите будут ли старые версии удалены перед или после создания новой р.к., чтобы освободить дисковое пространство, используемое для резервирования.</string>
     <string name="prefs_housekeepingmoment">Порядок удаления старых р.к.</string>
     <string name="prefs_enablespecial_summary">Нуждается в интенсивном тестировании, может привести к циклической перезагрузке. Ваши отзывы всегда приветствуются.</string>
     <string name="prefs_devicelock_summary">Обезопасьте приложение с помощью учётных данных устройства</string>
