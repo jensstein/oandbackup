@@ -83,7 +83,29 @@ Yes, Oui, Si, Si, Ja, Ja, Da, Ay...
   
 #### What is root access used for?  
 
+In short words:
 Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of).
+
+More Details?:
+You need access to the data directories of the apps. Android creates user accounts for each installed app and assigns the permissions to the data directory just to the user and some system user(s). If the ROM doesn't bring a feature or interface to do backups like the deprecated adb backup or Google Cloud Backup does, it's impossible due to the security model.
+
+Even more detailed?:
+It's differently...depending on the app and probably also for diffenrent ROMs.
+
+E.g. for one of the devs ROMs:
+/data/app/* all belong to system:system, while
+/data/data/* usually belong to appuser:appuser, but some system data belong to system users e.g. system or radio,
+(*appuser* is used as a wildcard name, usually something like *u0_595*)
+/system/app/* belong to root.
+
+Most probably "system" (which is not necessarily the user "system") starts an app as the appuser. It uses root access to become the appuser to start the app, which then runs as appuser.
+
+Naturally system apps and services run as several system users.
+
+On a A10 ROM a user (in the terminal) cannot access /data/app and /data/data itself. Reading an app's apk directory is possible (normal read access for others via r attribute) if you know the name, e.g. You can do
+ls -l /data/app/<app_package_name>-VP8zj7n2sqzHID5Oqfh88w== but I have no chance to find out the name because of the random code that changes on each installation (which also invalidates links to inside). Some directories cannot be read, but only be opened (only x attribute)
+
+You cannot acccess /data/data/* at all, so app data is protected between apps.
 
 #### Why is OABX so slow?  
   
