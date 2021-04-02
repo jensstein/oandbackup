@@ -86,10 +86,10 @@ Yes, Oui, Si, Si, Ja, Ja, Da, Ay...
 In short words:
 Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of).
 
-More Details?:
+More Details?:<br/>
 You need access to the data directories of the apps. Android creates user accounts for each installed app and assigns the permissions to the data directory just to the user and some system user(s). If the ROM doesn't bring a feature or interface to do backups like the deprecated adb backup or Google Cloud Backup does, it's impossible due to the security model.
 
-Even more detailed?:
+Even more detailed?:<br/>
 It's differently...depending on the app and probably also for diffenrent ROMs.
 
 E.g. for one of the devs ROMs:
