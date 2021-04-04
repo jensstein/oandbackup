@@ -46,10 +46,11 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
             val alarmIntent = Intent(context, AlarmReceiver::class.java)
             alarmIntent.putExtra("scheduleId", scheduleId)
             val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
-            schedule!!.timePlaced = System.currentTimeMillis()
-            val timeLeft = timeUntilNextEvent(schedule, System.currentTimeMillis())
-            if (rescheduleBoolean) schedule.timeUntilNextEvent = timeLeft
-            else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
+            val timeLeft = timeUntilNextEvent(schedule!!, System.currentTimeMillis())
+            if (rescheduleBoolean) {
+                schedule.timePlaced = System.currentTimeMillis()
+                schedule.timeUntilNextEvent = timeUntilNextEvent(schedule, System.currentTimeMillis())
+            } else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
                 schedule.timeUntilNextEvent = AlarmManager.INTERVAL_FIFTEEN_MINUTES
             scheduleDao.update(schedule)
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
