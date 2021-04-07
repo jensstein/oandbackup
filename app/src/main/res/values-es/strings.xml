@@ -122,7 +122,7 @@
     <string name="sched_interval">Intervalo en días:</string>
     <string name="sched_hourOfDay">Hora del día:</string>
     <string name="sched_checkbox">Activar</string>
-    <string name="sched_activateButton">Iniciar repaldo ahora</string>
+    <string name="sched_activateButton">Iniciar ahora</string>
     <string name="sched_startingbackup">Iniciando repaldo programado…</string>
     <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_timeLeft">Tiempo restante:</string>
@@ -250,4 +250,13 @@
     <string name="clear_cache">Limpiar caché</string>
     <string name="sched_name">Nombre:</string>
     <string name="forceKillMessage">¿Seguro que quieres forzar la detención de la aplicación\?</string>
+    <string name="filtered_list">Lista filtrada</string>
+    <string name="wait_noappslist">La lista de aplicaciones todavía no ha sido obtenida. Espera…</string>
+    <string name="copyOwnApkFailed">Falló copiar la APK de la aplicación a la carpeta de respaldos</string>
+    <string name="copyOwnApkSuccess">Copiada APK de la aplicación a la carpeta de respaldos</string>
+    <string name="prefs_saveappslist_summary">Escribe la lista de aplicaciones en un archivo txt en la carpeta de respaldos del usuario</string>
+    <string name="prefs_saveappslist">Guardar lista de aplicaciones</string>
+    <string name="prefs_enablespecial_summary">Todavía necesita pruebas intensivas, pruébalo sabiendo que hay peligro de causar bucles de reinicios. Se agradecen comentarios de evaluación.</string>
+    <string name="prefs_devicelock_summary">Bloquea la aplicación con las credenciales del dispositivo</string>
+    <string name="prefs_devicelock">Bloqueo del dispositivo</string>
 </resources>
