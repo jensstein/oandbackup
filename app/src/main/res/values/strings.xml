@@ -256,6 +256,8 @@
     <string name="prefs_schedulesexportimport_summary">Exports or imports the list of schedules you\'ve created.</string>
     <string name="no_file_manager_title">No SAF manager</string>
     <string name="no_file_manager_message">There\'s no file manager to manage SAF. Maybe you\'ve disabled the built-in file manager. Please restore it or reenable it.</string>
+    <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
+    <string name="schedule_failed">Running schedule failed</string>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

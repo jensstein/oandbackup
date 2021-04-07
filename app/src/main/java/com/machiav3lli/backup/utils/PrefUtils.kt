@@ -34,8 +34,10 @@ import androidx.biometric.BiometricManager
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
+import com.scottyab.rootbeer.RootBeer
 import java.nio.charset.StandardCharsets
 
 const val READ_PERMISSION = 2
@@ -109,7 +111,7 @@ fun isStorageDirSetAndOk(context: Context): Boolean {
     }
 }
 
-fun requireStorageLocation(activity : Activity, activityResultLauncher: ActivityResultLauncher<Intent>) {
+fun requireStorageLocation(activity: Activity, activityResultLauncher: ActivityResultLauncher<Intent>) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
             .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -117,8 +119,8 @@ fun requireStorageLocation(activity : Activity, activityResultLauncher: Activity
             .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
     try {
         activityResultLauncher.launch(intent)
-    } catch (e : ActivityNotFoundException) {
-        showWarning(activity,activity.getString(R.string.no_file_manager_title),activity.getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
+    } catch (e: ActivityNotFoundException) {
+        showWarning(activity, activity.getString(R.string.no_file_manager_title), activity.getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
             activity.finishAffinity()
         }
     }
@@ -143,6 +145,21 @@ fun getStoragePermission(activity: Activity) {
             requireReadStoragePermission(activity)
         }
     }
+}
+
+fun checkRootAccess(activity: Activity): Boolean {
+    val rootBeer = RootBeer(activity)
+    if (!rootBeer.isRooted) {
+        showFatalUiWarning(activity, activity.getString(R.string.noSu))
+        return false
+    }
+    try {
+        ShellHandler.runAsRoot("id")
+    } catch (e: ShellHandler.ShellCommandFailedException) {
+        showFatalUiWarning(activity, activity.getString(R.string.noSu))
+        return false
+    }
+    return true
 }
 
 private fun requireReadStoragePermission(activity: Activity) {

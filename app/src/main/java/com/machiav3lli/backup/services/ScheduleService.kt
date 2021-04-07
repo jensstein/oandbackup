@@ -26,12 +26,12 @@ import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.setNeedRefresh
 import timber.log.Timber
@@ -49,12 +49,16 @@ open class ScheduleService : Service() {
     override fun onCreate() {
         super.onCreate()
         this.notificationId = System.currentTimeMillis().toInt()
-        MainActivityX.initShellHandler()
-        createNotificationChannel()
-        showNotification(this, MainActivityX::class.java, notificationId,
-                String.format(getString(R.string.fetching_action_list), getString(R.string.backup)), "", true)
-        createForegroundInfo()
-        startForeground(notification.hashCode(), this.notification)
+        if (MainActivityX.initShellHandler()) {
+            createNotificationChannel()
+            showNotification(this, MainActivityX::class.java, notificationId,
+                    String.format(getString(R.string.fetching_action_list), getString(R.string.backup)), "", true)
+            createForegroundInfo()
+            startForeground(notification.hashCode(), this.notification)
+        } else {
+            showNotification(this, MainActivityX::class.java, notificationId, getString(R.string.schedule_failed), getString(R.string.shell_initproblem), false)
+            stopSelf()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

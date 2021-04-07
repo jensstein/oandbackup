@@ -59,6 +59,10 @@ fun showError(activity: Activity, message: String?) {
     }
 }
 
+fun showFatalUiWarning(activity: Activity,message: String) {
+    showWarning(activity, activity.javaClass.simpleName, message) { _: DialogInterface?, _: Int -> activity.finishAffinity() }
+}
+
 fun showWarning(activity: Activity, title: String, message: String, callback: DialogInterface.OnClickListener?) {
     activity.runOnUiThread {
         AlertDialog.Builder(activity)

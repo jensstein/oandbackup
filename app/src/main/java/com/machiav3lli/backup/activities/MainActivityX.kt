@@ -68,8 +68,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
             private set
 
         fun initShellHandler(): Boolean {
-            shellHandlerInstance = ShellHandler()
-            return true
+            return try {
+                shellHandlerInstance = ShellHandler()
+                true
+            } catch (e: ShellHandler.ShellCommandFailedException) {
+                false
+            }
         }
     }
 
@@ -128,7 +132,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                 binding.updatedBar.visibility = View.GONE
             }
         })
-        checkUtilBox()
+        initShell()
         runOnUiThread { showEncryptionDialog() }
         setupViews()
     }
@@ -508,10 +512,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         }
     }
 
-    private fun checkUtilBox() {
+    private fun initShell() {
         // Initialize the ShellHandler for further root checks
         if (!initShellHandler()) {
-            showWarning(this, classTag("MainActivityX"), this.getString(R.string.busyboxProblem)) { _: DialogInterface?, _: Int -> finishAffinity() }
+            showWarning(this, MainActivityX::class.java.simpleName, this.getString(R.string.shell_initproblem)) { _: DialogInterface?, _: Int -> finishAffinity() }
         }
     }
 
