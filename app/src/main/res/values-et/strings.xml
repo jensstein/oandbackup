@@ -44,9 +44,7 @@
     <string name="dialogYes">Jah</string>
     <string name="dialogNo">Ei</string>
     <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud.</string>
-    <string name="collectingData">Paketi info kogumine…</string>
     <string name="noSu">Superuseri õiguste saamine ebaõnnestus</string>
-    <string name="busyboxProblem">Busyboxi ei leitud, palun kontrolli vealogi</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Ei saanud luua faili</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->

@@ -19,8 +19,14 @@ package com.machiav3lli.backup
 
 import java.time.format.DateTimeFormatter
 
-const val TAG_BASE = "OAndBackupX"
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
+const val EXPORTS_FOLDER_NAME = "EXPORTS"
+const val LOG_FOLDER_NAME = "LOGS"
+
+const val LOG_INSTANCE = "%s.log"
+const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
+const val BACKUP_INSTANCE_DIR = "%s-user_%s"
+const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
 const val BLACKLIST_DB_NAME = "blacklists.db"
@@ -57,6 +63,7 @@ const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
+const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
@@ -106,8 +113,6 @@ const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
-
-fun classTag(tag: String): String = TAG_BASE + tag
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
 

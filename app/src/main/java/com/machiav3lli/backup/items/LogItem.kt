@@ -22,9 +22,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils.instance
-import com.machiav3lli.backup.handler.LogsHandler
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -118,8 +118,7 @@ open class LogItem : Parcelable {
     }
 
     companion object {
-        const val LOG_INSTANCE = "%s.log"
-        val CREATOR: Parcelable.Creator<LogItem?> = object : Parcelable.Creator<LogItem?> {
+        val CREATOR = object : Parcelable.Creator<LogItem?> {
             override fun createFromParcel(source: Parcel): LogItem {
                 return LogItem(source)
             }

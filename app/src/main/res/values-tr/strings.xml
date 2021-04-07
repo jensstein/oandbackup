@@ -44,9 +44,7 @@
     <string name="dialogYes">Evet</string>
     <string name="dialogNo">Hayır</string>
     <string name="restoreDataWithoutApkError">APK geri yüklenmeden veriler geri yüklenemiyor, paket kurulu değil.</string>
-    <string name="collectingData">Paket bilgisi alınıyor…</string>
     <string name="noSu">superuser izinleri alınamadı</string>
-    <string name="busyboxProblem">BusyBox bulunamadı. Lütfen hata günlüğüne göz atın</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Oluşturulamadı</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->

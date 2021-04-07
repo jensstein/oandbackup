@@ -202,7 +202,7 @@ class AppInfo {
             throw RuntimeException("Asked to delete a backup of ${backupItem.backupProperties.packageName} but this object is for $packageName")
         }
         Timber.d("[$packageName] Deleting backup revision $backupItem")
-        val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
+        val propertiesFileName = String.format(BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
         try {
             deleteRecursive(context, backupItem.backupInstanceDirUri)

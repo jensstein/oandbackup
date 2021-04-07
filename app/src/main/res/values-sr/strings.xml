@@ -41,9 +41,7 @@
     <string name="dialogYes">Да</string>
     <string name="dialogNo">Не</string>
     <string name="restoreDataWithoutApkError">Подаци не могу бити враћени без Apk-а, пакет није инсталиран.</string>
-    <string name="collectingData">Скупљање података о пакетима…</string>
     <string name="noSu">Није могуће прибавити superuser дозволе</string>
-    <string name="busyboxProblem">Није могуће наћи busybox. Проверите записник</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Није могуће направити</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

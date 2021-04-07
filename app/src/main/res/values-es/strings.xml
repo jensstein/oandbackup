@@ -42,10 +42,8 @@
     <string name="uninstallDialogMessage">¿Desinstalar esta aplicación\?</string>
     <string name="deleteBackupDialogMessage">¿Eliminar archivos de respaldo\?</string>
     <string name="restoreDataWithoutApkError">No se pueden restaurar datos si no está instalada la aplicación. La aplicación no está instalada.</string>
-    <string name="collectingData">Recolectando información del paquete…</string>
     <string name="utilboxCheck" translatable="false">Chequeando BusyBox/Toybox…</string>
     <string name="noSu">No se pueden obtener permisos de super usuario root</string>
-    <string name="busyboxProblem">No se encuentra BusyBox. Por favor, revise el log de errores</string>
     <!-- mkfileError: Se ha producido un error mientras se creaba el archivo. format: string + " " + filename -->
     <string name="mkfileError">No se puede crear</string>
     <!-- fallbackToDefault: indica una alternativa al valor predeterminado para crear archivo específico similar a mkfileError -->

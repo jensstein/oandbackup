@@ -41,9 +41,7 @@
     <string name="dialogYes">はい</string>
     <string name="dialogNo">いいえ</string>
     <string name="restoreDataWithoutApkError">apkを復元しないとデータは復元できません。パッケージがインストールされていません。</string>
-    <string name="collectingData">パッケージ情報の収集中…</string>
     <string name="noSu">スーパーユーザーのアクセス許可を取得できませんでした</string>
-    <string name="busyboxProblem">BusyBox が見つかりませんでした。エラーログを確認してください</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">作成できませんでした</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

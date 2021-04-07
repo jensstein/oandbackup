@@ -44,9 +44,7 @@
     <string name="dialogYes">是</string>
     <string name="dialogNo">否</string>
     <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK.</string>
-    <string name="collectingData">正在收集安装包信息…</string>
     <string name="noSu">无法获得超级用户权限</string>
-    <string name="busyboxProblem">找不到 busybox。请检查错误日志</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">无法创建</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->

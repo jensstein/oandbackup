@@ -41,9 +41,7 @@
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
     <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο.</string>
-    <string name="collectingData">Συλλογή πληροφοριών πακέτου…</string>
     <string name="noSu">Αδυναμία απόκτησης αδειών υπερχρήστη</string>
-    <string name="busyboxProblem">Αδυναμία εύρεσης ΒusyΒox. Παρακαλώ ελέγξτε το αρχείο καταγραφής σφαλμάτων</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Αδυναμία δημιουργίας</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->

@@ -126,7 +126,7 @@ object BackendController {
         val backupRoot = getBackupRoot(context)
         try {
             return backupRoot.listFiles()
-                    .filter { it.isDirectory && it.name != LogsHandler.LOG_FOLDER_NAME }
+                    .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }
                     .toList()
         } catch (e: FileNotFoundException) {
             Timber.e("${e.javaClass.simpleName}: ${e.message}")

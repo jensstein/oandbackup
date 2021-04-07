@@ -123,7 +123,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(packageBackupDir: StorageFile, properties: BackupProperties) {
-        val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
+        val propertiesFileName = String.format(BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId)
         val propertiesFile = packageBackupDir.createFile("application/octet-stream", propertiesFileName)
         BufferedOutputStream(context.contentResolver.openOutputStream(propertiesFile?.uri

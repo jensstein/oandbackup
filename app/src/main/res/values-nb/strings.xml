@@ -41,10 +41,8 @@
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nei</string>
     <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APK-en, pakken er ikke installert.</string>
-    <string name="collectingData">Samler informasjon om pakken…</string>
     <string name="utilboxCheck">Sjekker for \'busybox/toybox\'</string>
     <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>
-    <string name="busyboxProblem">Fant ikke BusyBox. Sjekk feilrapporten</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Kunne ikke opprette</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

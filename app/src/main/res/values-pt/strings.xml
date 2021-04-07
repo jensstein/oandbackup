@@ -41,9 +41,7 @@
     <string name="dialogYes">Sim</string>
     <string name="dialogNo">Não</string>
     <string name="restoreDataWithoutApkError">Não é possível restaurar os dados sem restaurar o APK, o pacote não está instalado.</string>
-    <string name="collectingData">A obter informação do pacote…</string>
     <string name="noSu">Não foi possível obter as permissões \'superuser\'</string>
-    <string name="busyboxProblem">Não foi possível encontrar \'BusyBox\'. Consulte o registo de erros</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Não foi possível criar</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
