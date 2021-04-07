@@ -100,7 +100,7 @@ class PermissionsFragment : Fragment() {
 
     private fun setupOnClicks() {
         binding.cardStoragePermission.setOnClickListener { getStoragePermission(requireActivity()) }
-        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(askForDirectory) }
+        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(requireActivity(), askForDirectory) }
         binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
         binding.cardBatteryOptimization.setOnClickListener { showBatteryOptimizationDialog(powerManager) }
     }

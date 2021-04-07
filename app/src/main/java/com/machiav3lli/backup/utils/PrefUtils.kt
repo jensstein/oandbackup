@@ -20,9 +20,7 @@ package com.machiav3lli.backup.utils
 import android.Manifest
 import android.app.Activity
 import android.app.AppOpsManager
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -111,13 +109,19 @@ fun isStorageDirSetAndOk(context: Context): Boolean {
     }
 }
 
-fun requireStorageLocation(activityResultLauncher: ActivityResultLauncher<Intent>) {
+fun requireStorageLocation(activity : Activity, activityResultLauncher: ActivityResultLauncher<Intent>) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
             .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
-    activityResultLauncher.launch(intent)
+    try {
+        activityResultLauncher.launch(intent)
+    } catch (e : ActivityNotFoundException) {
+        showWarning(activity,activity.getString(R.string.no_file_manager_title),activity.getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
+            activity.finishAffinity()
+        }
+    }
 }
 
 fun checkStoragePermissions(context: Context): Boolean = when {

@@ -79,7 +79,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             pref.summary = getString(R.string.prefs_unset)
         }
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            requireStorageLocation(askForDirectory)
+            requireStorageLocation(requireActivity(), askForDirectory)
             true
         }
         deviceLockPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
