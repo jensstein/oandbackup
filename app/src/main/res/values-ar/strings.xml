@@ -258,4 +258,12 @@
     <string name="ignore_battery_optimization_title">تحسين البطارية</string>
     <string name="spec_appwidgets">التطبيق الحاجيات</string>
     <string name="prefs_acquirewakelock_summary">الحصول على تنبيه أثناء عمليات التجهيز لمنع الجهاز من الإسبات. يسرع عملية النسخ الاحتياطي والاستعادة إلى حد كبير، ولكن يستهلك المزيد من الطاقة.</string>
+    <string name="dialog_import">إستيراد</string>
+    <string name="dialog_export">تصدير</string>
+    <string name="schedule_failed">فشل تشغيل الجدولة</string>
+    <string name="shell_initproblem">تعذر بدء معالج shell. إما أن يكون toybox / busybox مفقودًا أو إذن جذر معطل للتطبيق.</string>
+    <string name="no_file_manager_message">لا يوجد مدير ملفات لإدارة SAF. ربما قمت بتعطيل مدير الملفات المدمج. يرجى استعادته أو إعادة تمكينه.</string>
+    <string name="no_file_manager_title">لا يوجد مدير SAF</string>
+    <string name="prefs_schedulesexportimport_summary">تصدير او استيراد قائمة الجداول التي أنشأتها .</string>
+    <string name="prefs_schedulesexportimport">تصدير / استيراد المجدوله</string>
 </resources>
