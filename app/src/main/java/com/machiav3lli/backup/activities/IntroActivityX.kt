@@ -53,16 +53,19 @@ class IntroActivityX : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkRootAccess(this)
+    }
+
     private fun setupNavigation() {
         navController = Navigation.findNavController(this, R.id.introContainer)
         navController!!.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
             if (destination.id == R.id.welcomeFragment) {
                 binding.positiveButton.setText(R.string.dialog_start)
                 binding.positiveButton.setOnClickListener {
-                    if (checkRootAccess(this)) {
-                        prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
-                        moveTo(2)
-                    }
+                    prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
+                    moveTo(2)
                 }
             }
         }
