@@ -69,6 +69,7 @@
                 android:minWidth="150dp"
                 android:text="@string/place_holder"
                 android:textAppearance="@style/TextAppearance.Label"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
