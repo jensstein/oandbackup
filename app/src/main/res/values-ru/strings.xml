@@ -226,8 +226,8 @@
     <plurals name="updated_apps">
         <item quantity="one">%d обновлённое</item>
         <item quantity="few">%d обновлённых</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="many"/>
+        <item quantity="other"/>
     </plurals>
     <string name="filtered_list">Отфильтрованный список</string>
     <string name="wait_noappslist">Список приложений ещё не получен. Подождите…</string>
@@ -260,4 +260,12 @@
     <string name="prefs_enablespecial_summary">Нуждается в интенсивном тестировании, может привести к циклической перезагрузке. Ваши отзывы всегда приветствуются.</string>
     <string name="prefs_devicelock_summary">Обезопасьте приложение с помощью учётных данных устройства</string>
     <string name="prefs_devicelock">Блокировка</string>
+    <string name="dialog_import">Импорт</string>
+    <string name="dialog_export">Экспорт</string>
+    <string name="schedule_failed">Не удалось запустить расписание</string>
+    <string name="shell_initproblem">Не удалось запустить обработчик shell. Либо отсутствует toybox/busybox, либо приложению отключён root доступ.</string>
+    <string name="no_file_manager_message">Файловый менеджер для управления SAF (Storage Access Framework) не найден. Возможно вы отключили встроенный файловый менеджер. Пожалуйста, восстановите или включите его.</string>
+    <string name="no_file_manager_title">Отсутствует менеджер SAF (Storage Access Framework)</string>
+    <string name="prefs_schedulesexportimport_summary">Экспортирует или импортирует список расписаний, который вы создали.</string>
+    <string name="prefs_schedulesexportimport">Экспорт/импорт расписаний</string>
 </resources>
