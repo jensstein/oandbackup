@@ -226,8 +226,8 @@
     <plurals name="updated_apps">
         <item quantity="one">%d обновлённое</item>
         <item quantity="few">%d обновлённых</item>
-        <item quantity="many"/>
-        <item quantity="other"/>
+        <item quantity="many">%d обновлённых</item>
+        <item quantity="other">%d обновлённых</item>
     </plurals>
     <string name="filtered_list">Отфильтрованный список</string>
     <string name="wait_noappslist">Список приложений ещё не получен. Подождите…</string>
