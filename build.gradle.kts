@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+// TODO when android studio supports it: replace deprecated jcenter() with mavenCentral()
 buildscript {
     repositories {
         google()
@@ -23,7 +24,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${System.getProperty("kotlin")}")
-        classpath("android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5")
         classpath("de.mannodermaus.gradle.plugins:android-junit5:1.7.0.0")
     }
 }
