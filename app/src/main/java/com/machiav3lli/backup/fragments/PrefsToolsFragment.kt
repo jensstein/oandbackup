@@ -31,6 +31,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.*
@@ -58,6 +59,8 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickUninstalledBackupsDelete() }
         pref = findPreference(PREFS_COPYSELF)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickCopySelf() }
+        pref = findPreference(PREFS_SCHEDULESEXPORTIMPORT)!!
+        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickSchedulesExportImport() }
         pref = findPreference(PREFS_SAVEAPPSLIST)!!
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickSaveAppsList() }
         pref = findPreference(PREFS_LOGVIEWER)!!
@@ -127,6 +130,22 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         } finally {
             return true
         }
+    }
+
+    private fun onClickSchedulesExportImport(): Boolean {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.prefs_schedulesexportimport)
+                .setPositiveButton(R.string.dialog_export) { _: DialogInterface, _: Int ->
+                    GlobalScope.launch(Dispatchers.IO) {
+                        ExportsHandler(requireContext()).exportSchedules()
+                    }
+                }
+                .setNeutralButton(R.string.dialog_import) { _: DialogInterface, _: Int ->
+                    launchFragment(ExportsFragment())
+                }
+                .setNegativeButton(R.string.dialogNo, null)
+                .show()
+        return true
     }
 
     private fun onClickSaveAppsList(): Boolean {

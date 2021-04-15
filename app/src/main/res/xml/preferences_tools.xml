@@ -30,13 +30,19 @@
         android:title="@string/prefs_copyselfapk" />
 
     <androidx.preference.Preference
+        android:icon="@drawable/ic_scheduler"
+        android:key="schedulesExportImport"
+        android:summary="@string/prefs_schedulesexportimport_summary"
+        android:title="@string/prefs_schedulesexportimport" />
+
+    <androidx.preference.Preference
         android:icon="@drawable/ic_revisions"
         android:key="saveAppsList"
         android:summary="@string/prefs_saveappslist_summary"
         android:title="@string/prefs_saveappslist" />
 
     <androidx.preference.Preference
-        android:icon="@drawable/ic_customlist"
+        android:icon="@drawable/ic_log"
         android:key="logViewer"
         android:title="@string/prefs_logviewer" />
 </androidx.preference.PreferenceScreen>

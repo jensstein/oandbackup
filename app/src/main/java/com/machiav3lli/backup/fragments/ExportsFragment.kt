@@ -27,27 +27,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
-import com.machiav3lli.backup.items.LogItemX
-import com.machiav3lli.backup.viewmodels.LogViewModel
-import com.machiav3lli.backup.viewmodels.LogViewModelFactory
+import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.items.ExportsItemX
+import com.machiav3lli.backup.viewmodels.ExportsViewModel
+import com.machiav3lli.backup.viewmodels.ExportsViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
-class LogsFragment : Fragment() {
+class ExportsFragment : Fragment() {
     private lateinit var binding: FragmentRecyclerBinding
-    private val logItemAdapter = ItemAdapter<LogItemX>()
-    private var logFastAdapter: FastAdapter<LogItemX>? = null
-    private lateinit var viewModel: LogViewModel
+    private val schedulesItemAdapter = ItemAdapter<ExportsItemX>()
+    private var schedulesFastAdapter: FastAdapter<ExportsItemX>? = null
+    private lateinit var viewModel: ExportsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
-        val viewModelFactory = LogViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(LogViewModel::class.java)
+        val dataSource = ScheduleDatabase.getInstance(requireContext()).scheduleDao
+        val viewModelFactory = ExportsViewModelFactory(dataSource, requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ExportsViewModel::class.java)
 
         viewModel.refreshActive.observe(viewLifecycleOwner, {
             binding.refreshLayout.isRefreshing = it
@@ -71,29 +73,40 @@ class LogsFragment : Fragment() {
     }
 
     private fun setupViews() {
-        logFastAdapter = FastAdapter.with(logItemAdapter)
-        logFastAdapter?.setHasStableIds(true)
-        binding.recyclerView.adapter = logFastAdapter
+        schedulesFastAdapter = FastAdapter.with(schedulesItemAdapter)
+        schedulesFastAdapter?.setHasStableIds(true)
+        binding.recyclerView.adapter = schedulesFastAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        logFastAdapter?.addEventHook(OnDeleteClickHook())
+        schedulesFastAdapter?.addEventHook(OnDeleteClickHook())
+        schedulesFastAdapter?.addEventHook(OnRestoreClickHook())
         binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
     }
 
-    inner class OnDeleteClickHook : ClickEventHook<LogItemX>() {
+    inner class OnRestoreClickHook : ClickEventHook<ExportsItemX>() {
+        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
+            return viewHolder.itemView.findViewById(R.id.restore)
+        }
+
+        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExportsItemX>, item: ExportsItemX) {
+            viewModel.importSchedule(item.schedule)
+        }
+    }
+
+    inner class OnDeleteClickHook : ClickEventHook<ExportsItemX>() {
         override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
             return viewHolder.itemView.findViewById(R.id.delete)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<LogItemX>, item: LogItemX) {
-            viewModel.deleteLog(item.log)
+        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExportsItemX>, item: ExportsItemX) {
+            viewModel.deleteExport(item.exportFile)
         }
     }
 
     fun refresh() {
-        val logsList = mutableListOf<LogItemX>()
-        viewModel.logsList.value?.forEach { logsList.add(LogItemX(it)) }
-        FastAdapterDiffUtil[logItemAdapter] = logsList
-        logFastAdapter?.notifyDataSetChanged()
+        val exportsList = mutableListOf<ExportsItemX>()
+        viewModel.exportsList.value?.forEach { exportsList.add(ExportsItemX(it.first, it.second)) }
+        FastAdapterDiffUtil[schedulesItemAdapter] = exportsList
+        schedulesFastAdapter?.notifyDataSetChanged()
         viewModel.finishRefresh()
     }
 }

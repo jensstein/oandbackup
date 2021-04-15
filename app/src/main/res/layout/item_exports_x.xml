@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ OAndBackupX: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/cards_spacing"
+        android:layout_marginVertical="4dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/schedName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLACE HOLDER"
+            android:textAppearance="@style/TextAppearance.Label"
+            app:layout_constraintBottom_toTopOf="@id/timeLine"
+            app:layout_constraintEnd_toStartOf="@id/schedFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/schedFilter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/timeLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/schedName"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/systemFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/ic_system"
+                app:srcCompat="@drawable/ic_system" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/userFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/ic_user"
+                app:srcCompat="@drawable/ic_user" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/launchableFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/ic_special"
+                app:srcCompat="@drawable/ic_launchable" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/updatedFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_updated" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/timeLine"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/schedMode"
+            app:layout_constraintEnd_toStartOf="@id/schedMode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/schedFilter">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/timeOfDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/buttons_spacing"
+                android:text="12:56"
+                android:textAppearance="@style/TextAppearance.Secondary" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Secondary" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/schedMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/timeLine"
+            app:layout_constraintTop_toBottomOf="@id/schedFilter">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/dataMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/apkMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_apk" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/restore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_positive_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_restore"
+            android:tint="@color/app_accent"
+            app:layout_constraintBottom_toBottomOf="@id/delete"
+            app:layout_constraintEnd_toStartOf="@id/delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/delete" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/cards_spacing"
+            android:layout_marginTop="@dimen/cards_spacing"
+            android:background="@drawable/bg_button_negative_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/restore"
+            app:layout_constraintTop_toBottomOf="@id/schedMode" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
