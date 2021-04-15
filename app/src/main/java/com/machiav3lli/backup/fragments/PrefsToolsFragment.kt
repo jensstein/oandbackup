@@ -162,9 +162,9 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
-        // TODO create two different texts in R.string
         showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                "Wrote ${getString(if (filteredBoolean) R.string.filtered_list else R.string.radio_all)} file", null, false)
+                getString(if (filteredBoolean) R.string.write_apps_list_filtered
+                else R.string.write_apps_list_all), null, false)
         Timber.i("Wrote apps\' list file at $date")
     }
 

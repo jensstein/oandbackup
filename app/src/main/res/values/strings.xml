@@ -250,6 +250,8 @@
     <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
     <string name="wait_noappslist">Apps\' list is still not fetched. Wait…</string>
     <string name="filtered_list">Filtered list</string>
+    <string name="write_apps_list_filtered">Wrote filtered apps list file</string>
+    <string name="write_apps_list_all">Wrote all apps list file</string>
     <string name="prefs_schedulesexportimport">Export/import schedules</string>
     <string name="prefs_schedulesexportimport_summary">Exports or imports the list of schedules you\'ve created.</string>
     <string name="no_file_manager_title">No SAF manager</string>
