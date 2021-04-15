@@ -22,6 +22,7 @@ import android.net.Uri
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
@@ -111,6 +112,14 @@ class LogsHandler(var context: Context) {
 
         fun unhandledException(e: Throwable, what: Any? = null) {
             logException(e, what, "unexpected: ")
+        }
+
+        fun handleErrorMessages(context: Context, errorText: String?): String? {
+            return when {
+                errorText?.contains("bytes specified in the header were written")
+                        ?: false -> context.getString(R.string.error_datachanged)
+                else -> errorText
+            }
         }
     }
 }

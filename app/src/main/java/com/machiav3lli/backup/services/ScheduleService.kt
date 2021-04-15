@@ -99,7 +99,7 @@ open class ScheduleService : Service() {
                                 val message = "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
                                 showNotification(this@ScheduleService, MainActivityX::class.java,
                                         notificationId, message, packageLabel, false)
-                                if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
+                                if (error.isNotEmpty()) errors = "$errors$packageLabel: ${LogsHandler.handleErrorMessages(this@ScheduleService, error)}\n"
                                 resultsSuccess = resultsSuccess && succeeded
                                 oneTimeWorkLiveData.removeObserver(this)
                             }

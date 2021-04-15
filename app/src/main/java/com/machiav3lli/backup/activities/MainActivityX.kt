@@ -456,7 +456,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                         val message = "${if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)} ($counter/${selectedItems.size})"
                         showNotification(this@MainActivityX, MainActivityX::class.java, notificationId.toInt(),
                                 message, packageLabel, false)
-                        if (error.isNotEmpty()) errors = "$errors$packageLabel: $error\n"
+                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${LogsHandler.handleErrorMessages(this@MainActivityX, error)}\n"
                         resultsSuccess = resultsSuccess && succeeded
                         oneTimeWorkLiveData.removeObserver(this)
                     }
