@@ -271,6 +271,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/exodus_report"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -285,6 +286,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/launch_app"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -309,6 +311,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/disablePackage"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -323,6 +326,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/enablePackage"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -348,6 +352,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/apptype_system"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -363,6 +368,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/apptype_user"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -388,6 +394,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/apptype_special"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -402,6 +409,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_apk"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -426,6 +434,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_data"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -440,6 +449,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_updated"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -464,6 +474,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_externaldata"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -478,6 +489,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_obbdata"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
@@ -502,6 +514,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:layout_weight="4"
+                            android:singleLine="true"
                             android:text="@string/radio_deviceprotecteddata"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
