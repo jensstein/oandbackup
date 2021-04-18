@@ -33,6 +33,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.biometric.BiometricManager
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
@@ -46,8 +48,15 @@ const val WRITE_PERMISSION = 3
 fun getDefaultSharedPreferences(context: Context): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
 
-fun getPrivateSharedPrefs(context: Context): SharedPreferences =
-        context.getSharedPreferences(PREFS_SHARED_PRIVATE, Context.MODE_PRIVATE)
+fun getPrivateSharedPrefs(context: Context): SharedPreferences {
+    val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+    return EncryptedSharedPreferences.create(context,
+            PREFS_SHARED_PRIVATE,
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+}
 
 fun getCryptoSalt(context: Context): ByteArray {
     val userSalt = getDefaultSharedPreferences(context).getString(PREFS_SALT, "")
@@ -59,8 +68,22 @@ fun getCryptoSalt(context: Context): ByteArray {
 
 
 fun isEncryptionEnabled(context: Context): Boolean =
-        getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
+        getPrivateSharedPrefs(context).getString(PREFS_PASSWORD, "")?.isNotEmpty()
                 ?: false
+
+fun getEncryptionPassword(context: Context): String =
+        getPrivateSharedPrefs(context).getString(PREFS_PASSWORD, "")
+                ?: ""
+
+fun setEncryptionPassword(context: Context, value: String) =
+        getPrivateSharedPrefs(context).edit().putString(PREFS_PASSWORD, value).commit()
+
+fun getEncryptionPasswordConfirmation(context: Context): String =
+        getPrivateSharedPrefs(context).getString(PREFS_PASSWORD_CONFIRMATION, "")
+                ?: ""
+
+fun setEncryptionPasswordConfirmation(context: Context, value: String) =
+        getPrivateSharedPrefs(context).edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
 fun isDeviceLockEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICELOCK, false)

@@ -118,9 +118,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     protected fun uncompress(filepath: File, targetDir: File?) {
         val inputFilename = filepath.absolutePath
         Timber.d("Opening file for expansion: $inputFilename")
-        val password = getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")
+        val password = getEncryptionPassword(context)
         var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
-        if (!password.isNullOrEmpty()) {
+        if (password.isNotEmpty()) {
             Timber.d("Encryption enabled")
             stream = decryptStream(stream, password, getCryptoSalt(context))
         }
@@ -273,9 +273,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     protected fun openArchiveFile(archiveUri: Uri, isEncrypted: Boolean): TarArchiveInputStream {
         val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
         if (isEncrypted) {
-            val password = getDefaultSharedPreferences(context)
-                    .getString(PREFS_PASSWORD, "")
-            if (!password.isNullOrEmpty()) {
+            val password = getEncryptionPassword(context)
+            if (password.isNotEmpty()) {
                 Timber.d("Decryption enabled")
                 return TarArchiveInputStream(
                         GzipCompressorInputStream(

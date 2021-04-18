@@ -374,9 +374,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     }
 
     private fun showEncryptionDialog() {
-        val defPrefs = getDefaultSharedPreferences(this)
-        val dontShowAgain = defPrefs.getBoolean(PREFS_ENCRYPTION, false) && (defPrefs.getString(PREFS_PASSWORD, "")
-                ?: "").isNotEmpty()
+        val dontShowAgain = isEncryptionEnabled(this)
         if (dontShowAgain) return
         val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
         prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()

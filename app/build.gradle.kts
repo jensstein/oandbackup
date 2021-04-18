@@ -97,6 +97,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.2.6")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("org.apache.commons:commons-compress:1.20")
     implementation("commons-io:commons-io:${versions["commons_io"]}")

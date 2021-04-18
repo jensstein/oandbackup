@@ -138,10 +138,10 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupFilename = getBackupArchiveFilename(what!!, isEncryptionEnabled(context))
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
-        val password = getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")
+        val password = getEncryptionPassword(context)
         var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
                 ?: Uri.EMPTY, "w"))
-        if (!password.isNullOrEmpty()) {
+        if (password.isNotEmpty()) {
             outStream = encryptStream(outStream, password, getCryptoSalt(context))
         }
         try {
