@@ -77,7 +77,6 @@
                             android:id="@+id/helpVersionName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/small_spacing"
                             android:textAppearance="@style/TextAppearance.Secondary" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
