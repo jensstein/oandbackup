@@ -18,9 +18,13 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.*
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.showNotification
+import com.machiav3lli.backup.items.LogItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,6 +63,33 @@ class LogViewModel(private val appContext: Application)
         return withContext(Dispatchers.IO) {
             val dataList = LogsHandler(appContext).readLogs()
             dataList
+        }
+    }
+
+    fun shareLog(log: LogItem) {
+        viewModelScope.launch {
+            share(log)
+            _refreshNow.value = true
+        }
+    }
+
+    private suspend fun share(log: LogItem) {
+        withContext(Dispatchers.IO) {
+            val shareFileIntent: Intent
+            LogsHandler(appContext).getLogFile(log.logDate)?.let {
+                if (it.exists()) {
+                    shareFileIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_STREAM, it.uri)
+                        type = "text/plain"
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    appContext.startActivity(shareFileIntent)
+                } else {
+                    showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                            appContext.getString(R.string.logs_share_failed), "", false)
+                }
+            }
         }
     }
 

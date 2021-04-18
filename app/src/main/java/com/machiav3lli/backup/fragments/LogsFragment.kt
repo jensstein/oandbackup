@@ -76,7 +76,18 @@ class LogsFragment : Fragment() {
         binding.recyclerView.adapter = logFastAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         logFastAdapter?.addEventHook(OnDeleteClickHook())
+        logFastAdapter?.addEventHook(OnShareClickHook())
         binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
+    }
+
+    inner class OnShareClickHook : ClickEventHook<LogItemX>() {
+        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
+            return viewHolder.itemView.findViewById(R.id.share)
+        }
+
+        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<LogItemX>, item: LogItemX) {
+            viewModel.shareLog(item.log)
+        }
     }
 
     inner class OnDeleteClickHook : ClickEventHook<LogItemX>() {

@@ -263,6 +263,7 @@
     <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
     <string name="sched_exported">Schedules were exported sucessfully</string>
     <string name="sched_imported">Schedule imported successfully</string>
+    <string name="logs_share_failed">Log file not found</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">each day</item>
         <item quantity="other">each %d days</item>
