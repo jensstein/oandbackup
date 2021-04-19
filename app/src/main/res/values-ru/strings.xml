@@ -157,7 +157,7 @@
     <string name="help_legend">Легенда:</string>
     <string name="help_group">Наша группа</string>
     <string name="grant_usage_access_message">Это необходимо для получения информации о размере файлов приложения</string>
-    <string name="failed_unzipping">Ошибка извлечения данный, проверьте пароль шифрования!</string>
+    <string name="failed_unzipping">Ошибка извлечения данных, проверьте пароль шифрования!</string>
     <string name="ignore_battery_optimization_not_supported">К сожалению, это устройство не может игнорировать оптимизацию батареи!</string>
     <string name="ignore_battery_optimization_message">Создание р.к. может иногда останавливаться. Для предотвращения этого, Вам следует выключить оптимизацию батареи</string>
     <string name="empty_filtered_list">Отфильтрованный список пуст.</string>
@@ -268,4 +268,16 @@
     <string name="no_file_manager_title">Отсутствует менеджер SAF (Storage Access Framework)</string>
     <string name="prefs_schedulesexportimport_summary">Экспортирует или импортирует список расписаний, который вы создали.</string>
     <string name="prefs_schedulesexportimport">Экспорт/импорт расписаний</string>
+    <string name="write_apps_list_all">Файл со списком всех приложений записан</string>
+    <string name="write_apps_list_filtered">Файл со списком отфильтрованных приложений записан</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">каждый день</item>
+        <item quantity="few">каждые %d дня</item>
+        <item quantity="many">каждые %d дней</item>
+        <item quantity="other">каждые %d дней</item>
+    </plurals>
+    <string name="logs_share_failed">Файл журнала не найден</string>
+    <string name="sched_imported">Расписание импортировано успешно</string>
+    <string name="sched_exported">Расписания были успешно экспортированы</string>
+    <string name="error_datachanged">Данные приложения были изменены во время создания резервной копии. Попробуйте завершить процесс перед созданием резервной копии</string>
 </resources>
