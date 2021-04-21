@@ -81,8 +81,13 @@ open class Schedule() {
 
     @SerializedName("customList")
     @Expose
-    @TypeConverters(CustomListConverter::class)
+    @TypeConverters(AppsListConverter::class)
     var customList: Set<String> = setOf()
+
+    @SerializedName("blockList")
+    @Expose
+    @TypeConverters(AppsListConverter::class)
+    var blockList: Set<String> = setOf()
 
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
@@ -97,6 +102,7 @@ open class Schedule() {
                 this.interval = item.interval
                 this.excludeSystem = item.excludeSystem
                 this.customList = item.customList
+                this.blockList = item.blockList
             }
         } catch (e: FileNotFoundException) {
             throw BackupItem.BrokenBackupException("Cannot open ${exportFile.name} at URI ${exportFile.uri}", e)
@@ -124,6 +130,7 @@ open class Schedule() {
                 && filter == schedule.filter
                 && mode == schedule.mode
                 && customList == schedule.customList
+                && blockList == schedule.blockList
     }
 
     override fun hashCode(): Int {
@@ -140,6 +147,7 @@ open class Schedule() {
         hash = 31 * hash + if (excludeSystem) 1 else 0
         hash = 31 * hash + if (enableCustomList) 1 else 0
         hash = 31 * hash + customList.hashCode()
+        hash = 31 * hash + blockList.hashCode()
         return hash
     }
 
@@ -161,6 +169,7 @@ open class Schedule() {
                 ", excludeSystem=" + excludeSystem +
                 ", enableCustomList=" + enableCustomList +
                 ", customList=" + customList +
+                ", blockList=" + blockList +
                 '}'
     }
 
@@ -180,6 +189,7 @@ open class Schedule() {
             schedule.timeMinute = export.timeMinute
             schedule.interval = export.interval
             schedule.customList = export.customList
+            schedule.blockList = export.blockList
             return this
         }
 
@@ -188,17 +198,16 @@ open class Schedule() {
         }
     }
 
-    class CustomListConverter {
-
+    class AppsListConverter {
         @TypeConverter
-        fun toCustomList(stringCustomList: String): Set<String> {
-            return if (stringCustomList == "") setOf()
-            else stringCustomList.split(",").toHashSet()
+        fun toAppsList(string: String): Set<String> {
+            return if (string == "") setOf()
+            else string.split(",").toHashSet()
         }
 
         @TypeConverter
-        fun toString(customList: Set<String?>?): String {
-            return if (customList?.isNotEmpty() == true) customList.joinToString(",")
+        fun toString(appsList: Set<String?>?): String {
+            return if (appsList?.isNotEmpty() == true) appsList.joinToString(",")
             else ""
         }
     }

@@ -129,7 +129,7 @@
     <string name="prefs_batchdelete_summary">Eliminar backups de todas as aplicações não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver registo</string>
     <string name="sched_add">Adicionar agendamento</string>
-    <string name="sched_blacklist">Lista negra</string>
+    <string name="sched_blocklist">Lista negra</string>
     <string name="error_creating_notification_channel">Não foi possível de criar um canal de notificação</string>
     <string name="error_updating_schedule_mode">Error ao atualizar %1$s do agendamento %2$d</string>
     <string name="permission_not_granted">Requer permissão para aceder ao armazenamento externo</string>

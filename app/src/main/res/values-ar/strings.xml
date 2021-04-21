@@ -154,7 +154,7 @@
     <string name="spec_data">استخدام و سياسة البيانات</string>
     <string name="spec_bluetooth">بلوتوث</string>
     <string name="spec_accounts">حسابات</string>
-    <string name="sched_blacklist">القائمة السوداء</string>
+    <string name="sched_blocklist">القائمة السوداء</string>
     <string name="sched_excludeSystemCheckBox">استبعاد تطبيقات النظام</string>
     <string name="sched_timeLeft">الوقت المتبقي:</string>
     <string name="sched_mode">وضع النسخ الاحتياطي:</string>

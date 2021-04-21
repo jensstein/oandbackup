@@ -26,7 +26,6 @@ import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import java.time.LocalTime
 
-// TODO add black lists export/import
 class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : AbstractBindingItem<ItemExportsXBinding>() {
 
     override var identifier: Long
@@ -50,6 +49,8 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : Abstra
         binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
         binding.apkMode.setExists(schedule.mode == MODE_APK || schedule.mode == MODE_BOTH)
         binding.dataMode.setExists(schedule.mode == MODE_DATA || schedule.mode == MODE_BOTH)
+        binding.customlist.setExists(schedule.customList.isNotEmpty())
+        binding.blocklist.setExists(schedule.blockList.isNotEmpty())
         binding.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()
         binding.interval.text = binding.root.context.resources
                 .getQuantityString(R.plurals.sched_interval_formal, schedule.interval, schedule.interval)

@@ -99,7 +99,7 @@
     <string name="sched_mode">Режим резервирования:</string>
     <string name="sched_timeLeft">Осталось времени:</string>
     <string name="sched_excludeSystemCheckBox">Исключить системные приложения</string>
-    <string name="sched_blacklist">Черный список</string>
+    <string name="sched_blocklist">Черный список</string>
     <string name="spec_accounts">Аккуанты</string>
     <string name="spec_appwidgets">Виджеты приложений</string>
     <string name="spec_bluetooth">Bluetooth</string>

@@ -37,12 +37,11 @@ import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
-import com.machiav3lli.backup.dbs.BlacklistDatabase
+import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDatabase
-import com.machiav3lli.backup.dialogs.BlacklistDialogFragment
-import com.machiav3lli.backup.dialogs.CustomListDialogFragment
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
+import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.*
@@ -53,8 +52,7 @@ import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
-        BlacklistDialogFragment.BlacklistListener, CustomListDialogFragment.CustomListListener {
+class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() {
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding
 
@@ -73,9 +71,9 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         binding = SheetScheduleBinding.inflate(inflater, container, false)
 
         val scheduleDB = ScheduleDatabase.getInstance(requireContext()).scheduleDao
-        val blacklistDB = BlacklistDatabase.getInstance(requireContext()).blacklistDao
+        val blacklistDB = BlocklistDatabase.getInstance(requireContext()).blocklistDao
 
-        val viewModelFactory = ScheduleViewModelFactory(scheduleId, scheduleDB, blacklistDB, requireActivity().application)
+        val viewModelFactory = ScheduleViewModelFactory(scheduleId, scheduleDB, requireActivity().application)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
@@ -85,13 +83,11 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
             binding.schedMode.check(modeToId(it.mode))
             binding.enableCheckbox.isChecked = it.enabled
             binding.customListButton.setColor(it.customList)
+            binding.blocklistButton.setColor(it.blockList)
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
             toggleSecondaryButtons(binding.schedMode)
-        })
-        viewModel.blacklist.observe(viewLifecycleOwner, {
-            binding.blacklistButton.setColor(it.toSet())
         })
 
         return binding.root
@@ -140,26 +136,29 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         }
         binding.customListButton.setOnClickListener {
             val args = Bundle()
-            args.putInt("listId", viewModel.id.toInt())
-            val customList = viewModel.schedule.value?.customList?.toCollection(ArrayList())
-            args.putStringArrayList("selectedPackages", customList)
-            args.putInt("filter", viewModel.schedule.value?.filter ?: SCHED_FILTER_ALL)
+            val selectedPackages = viewModel.schedule.value?.customList?.toCollection(ArrayList())
+            args.putStringArrayList(PACKAGES_LIST_ARGS_PACKAGES, selectedPackages)
 
-            val customListDialogFragment = CustomListDialogFragment(viewModel.schedule.value?.filter
-                    ?: SCHED_FILTER_ALL, this)
-            customListDialogFragment.arguments = args
-            customListDialogFragment.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
+            val customListDialog = PackagesListDialogFragment(viewModel.schedule.value?.filter
+                    ?: SCHED_FILTER_ALL, false) { newList: Set<String> ->
+                viewModel.schedule.value?.customList = newList
+                refresh(false)
+            }
+            customListDialog.arguments = args
+            customListDialog.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
         }
-        binding.blacklistButton.setOnClickListener {
+        binding.blocklistButton.setOnClickListener {
             val args = Bundle()
-            args.putInt(BLACKLIST_ARGS_ID, viewModel.id.toInt())
-            val blacklistedPackages = viewModel.blacklist.value ?: arrayListOf()
-            args.putStringArrayList(BLACKLIST_ARGS_PACKAGES, blacklistedPackages as ArrayList<String>)
+            val blocklistedPackages = viewModel.schedule.value?.blockList?.toCollection(ArrayList())
+            args.putStringArrayList(PACKAGES_LIST_ARGS_PACKAGES, blocklistedPackages as ArrayList<String>)
 
-            val blacklistDialogFragment = BlacklistDialogFragment(viewModel.schedule.value?.filter
-                    ?: SCHED_FILTER_ALL, this)
-            blacklistDialogFragment.arguments = args
-            blacklistDialogFragment.show(requireActivity().supportFragmentManager, "BLACKLIST_DIALOG")
+            val blocklistDialog = PackagesListDialogFragment(viewModel.schedule.value?.filter
+                    ?: SCHED_FILTER_ALL, true) { newList: Set<String> ->
+                viewModel.schedule.value?.blockList = newList
+                refresh(false)
+            }
+            blocklistDialog.arguments = args
+            blocklistDialog.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
         }
         binding.enableCheckbox.setOnClickListener {
             viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
@@ -168,7 +167,6 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
             cancelAlarm(requireContext(), scheduleId.toInt())
-            viewModel.deleteBlacklist()
             dismissAllowingStateLoss()
         }
         binding.activateButton.setOnClickListener { startSchedule() }
@@ -208,15 +206,6 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment(),
     private fun refresh(rescheduleBoolean: Boolean) {
         Thread(UpdateRunnable(viewModel.schedule.value, requireActivity() as SchedulerActivityX, rescheduleBoolean))
                 .start()
-    }
-
-    override fun onCustomListChanged(newList: Set<String>, blacklistId: Long) {
-        viewModel.schedule.value?.customList = newList
-        refresh(false)
-    }
-
-    override fun onBlacklistChanged(newList: Set<String>, blacklistId: Long) {
-        viewModel.updateBlacklist(newList)
     }
 
     private fun startSchedule() {

@@ -169,7 +169,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 if (it.isDisabled)
                     binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
                 else
-                    binding.enableDisable.setImageResource(R.drawable.ic_blacklist)
+                    binding.enableDisable.setImageResource(R.drawable.ic_blocklist)
             }
             if (it.isSystem) {
                 changeVisibility(binding.uninstall, View.INVISIBLE, update)

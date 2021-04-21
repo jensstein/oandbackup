@@ -115,7 +115,7 @@
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">剩余时间：</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
-    <string name="sched_blacklist">黑名单</string>
+    <string name="sched_blocklist">黑名单</string>
     <string name="spec_accounts">账户</string>
     <string name="spec_appwidgets">应用微件</string>
     <string name="spec_bluetooth">蓝牙</string>

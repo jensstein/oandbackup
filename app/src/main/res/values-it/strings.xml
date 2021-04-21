@@ -121,7 +121,7 @@
     <string name="prefs_excludecache_summary">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
     <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment.</string>
     <string name="sched_activateButton">Inizia ora</string>
-    <string name="sched_blacklist">Lista nera</string>
+    <string name="sched_blocklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
     <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
     <string name="restart_dialog">Sembra che sia necessario riavviare l\'applicazione</string>

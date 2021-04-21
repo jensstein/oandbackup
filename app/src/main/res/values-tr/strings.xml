@@ -115,7 +115,7 @@
     <string name="sched_mode">Yedekleme modu:</string>
     <string name="sched_timeLeft">Kalan süre:</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
-    <string name="sched_blacklist">Karaliste</string>
+    <string name="sched_blocklist">Karaliste</string>
     <string name="spec_accounts">Hesaplar</string>
     <string name="spec_appwidgets">Uygulama Widgetları</string>
     <string name="spec_bluetooth">Bluetooth</string>

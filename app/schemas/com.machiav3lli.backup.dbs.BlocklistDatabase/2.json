@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "4d929a5709a481a4787c834d35e7caf9",
+    "version": 2,
+    "identityHash": "8ae22347704abafb992004c871dfb14c",
     "entities": [
       {
-        "tableName": "Blacklist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `packageName` TEXT, `blacklistId` INTEGER NOT NULL)",
+        "tableName": "Blocklist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `packageName` TEXT, `blocklistId` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,8 +21,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "blacklistId",
-            "columnName": "blacklistId",
+            "fieldPath": "blocklistId",
+            "columnName": "blocklistId",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -40,7 +40,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4d929a5709a481a4787c834d35e7caf9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8ae22347704abafb992004c871dfb14c')"
     ]
   }
 }

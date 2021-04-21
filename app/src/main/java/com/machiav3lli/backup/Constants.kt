@@ -29,10 +29,11 @@ const val BACKUP_INSTANCE_DIR = "%s-user_%s"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
-const val BLACKLIST_DB_NAME = "blacklists.db"
+const val BLOCKLIST_DB_NAME = "blocklist.db"
 
-const val BLACKLIST_ARGS_ID = "blacklistId"
-const val BLACKLIST_ARGS_PACKAGES = "blacklistedPackages"
+const val PACKAGES_LIST_ARGS_PACKAGES = "selectedPackages"
+const val PACKAGES_LIST_GLOBAL_ID = -1L
+
 const val PREFS_SORT_FILTER = "sortFilter"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
 const val PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization"

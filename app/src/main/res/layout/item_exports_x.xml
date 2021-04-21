@@ -120,6 +120,22 @@
             app:layout_constraintTop_toBottomOf="@id/schedFilter">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/blocklist"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/app_secondary"
+                app:srcCompat="@drawable/ic_blocklist" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/customlist"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/app_accent"
+                app:srcCompat="@drawable/ic_customlist" />
+
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/dataMode"
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"

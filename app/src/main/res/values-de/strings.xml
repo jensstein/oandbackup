@@ -107,7 +107,7 @@
     <string name="spec_wallpaper">Hintergrundbild</string>
     <string name="spec_wifiAccessPoints">WLAN Zugriffspunkte</string>
     <!--filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name-->
-    <string name="sched_blacklist">Ausschlussliste</string>
+    <string name="sched_blocklist">Ausschlussliste</string>
     <string name="filter_options">Filter:</string>
     <string name="sort_options">Sortieren nach:</string>
     <string name="sortPackageName">Paketname</string>

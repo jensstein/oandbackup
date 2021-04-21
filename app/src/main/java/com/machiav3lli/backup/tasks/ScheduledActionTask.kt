@@ -20,13 +20,12 @@ package com.machiav3lli.backup.tasks
 import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.SchedulerActivityX
-import com.machiav3lli.backup.dbs.BlacklistDatabase
+import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.BackendController
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
 
@@ -35,16 +34,17 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
     override fun doInBackground(vararg params: Void?): Pair<List<String>, Int>? {
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+        val blacklistDao = BlocklistDatabase.getInstance(context).blocklistDao
+
         val schedule = scheduleDao.getSchedule(scheduleId)
         val filter = schedule?.filter ?: SCHED_FILTER_ALL
         val mode = schedule?.mode ?: MODE_BOTH
-        val excludeSystem = schedule?.excludeSystem ?: false
+        val excludeSystem = schedule?.excludeSystem
+                ?: false
         val customList = schedule?.customList ?: setOf()
-
-        val blacklistDao = BlacklistDatabase.getInstance(context).blacklistDao
-        val globalBlacklist = blacklistDao.getBlacklistedPackages(SchedulerActivityX.GLOBAL_ID)
-        val customBlacklist = blacklistDao.getBlacklistedPackages(scheduleId)
-        val blackList = globalBlacklist.plus(customBlacklist).toSet()
+        val customBlocklist = schedule?.blockList
+        val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
+        val blockList = globalBlocklist.plus(customBlocklist).toSet()
 
         val list: List<AppInfo> = try {
             BackendController.getApplicationList(context)
@@ -65,7 +65,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                     .map { it.activityInfo.packageName }
         }
         val inListed = { packageName: String ->
-            (customList.isEmpty() || customList.contains(packageName)) && !blackList.contains(packageName)
+            (customList.isEmpty() || customList.contains(packageName)) && !blockList.contains(packageName)
         }
         val predicate: (AppInfo) -> Boolean = when (filter) {
             SCHED_FILTER_USER -> { appInfo: AppInfo ->

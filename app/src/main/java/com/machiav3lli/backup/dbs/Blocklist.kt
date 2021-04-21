@@ -21,46 +21,46 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Blacklist {
+class Blocklist {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
     var packageName: String? = null
 
-    var blacklistId = 0L
+    var blocklistId = 0L
 
     class Builder {
-        private val blacklist: Blacklist = Blacklist()
+        private val blocklist: Blocklist = Blocklist()
 
-        fun withId(blacklistId: Long): Builder {
-            blacklist.blacklistId = blacklistId
+        fun withId(blocklistId: Long): Builder {
+            blocklist.blocklistId = blocklistId
             return this
         }
 
         fun withPackageName(packageName: String): Builder {
-            blacklist.packageName = packageName
+            blocklist.packageName = packageName
             return this
         }
 
-        fun build(): Blacklist {
-            return blacklist
+        fun build(): Blocklist {
+            return blocklist
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val aBlacklist = other as Blacklist
-        return id == aBlacklist.id
-                && packageName == aBlacklist.packageName
-                && blacklistId == aBlacklist.blacklistId
+        val aBlocklist = other as Blocklist
+        return id == aBlocklist.id
+                && packageName == aBlocklist.packageName
+                && blocklistId == aBlocklist.blocklistId
     }
 
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + id.toInt()
         hash = 31 * hash + packageName.hashCode()
-        hash = 31 * hash + blacklistId.toInt()
+        hash = 31 * hash + blocklistId.toInt()
         return hash
     }
 
@@ -68,7 +68,7 @@ class Blacklist {
         return "Schedule{" +
                 "id=" + id +
                 ", packageName=" + packageName +
-                ", blacklistId=" + blacklistId +
+                ", blocklistId=" + blocklistId +
                 '}'
     }
 }

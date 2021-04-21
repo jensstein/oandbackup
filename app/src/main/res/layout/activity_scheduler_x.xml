@@ -58,22 +58,22 @@
                 android:text="@string/sched_title"
                 android:textAppearance="@style/TextAppearance.Headline"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/blacklistButton"
+                app:layout_constraintEnd_toStartOf="@id/blocklistButton"
                 app:layout_constraintStart_toEndOf="@id/backButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/blacklistButton"
+                android:id="@+id/blocklistButton"
                 style="@style/Button.NavBar.End"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
-                android:tooltipText="@string/sched_blacklist"
+                android:tooltipText="@string/sched_blocklist"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_blacklist" />
+                app:srcCompat="@drawable/ic_blocklist" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView

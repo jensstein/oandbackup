@@ -125,7 +125,7 @@
     <string name="sched_mode">Modo de respaldo:</string>
     <string name="sched_timeLeft">Tiempo restante:</string>
     <string name="sched_excludeSystemCheckBox">Excluir aplicaciones del sistema</string>
-    <string name="sched_blacklist">Lista negra</string>
+    <string name="sched_blocklist">Lista negra</string>
     <string name="spec_accounts">Cuentas</string>
     <string name="spec_appwidgets">Widgets de apps</string>
     <string name="spec_bluetooth">Bluetooth</string>

@@ -170,7 +170,7 @@
     <string name="permission_not_granted">Toestemming om toegang te krijgen tot externe opslag is vereist</string>
     <string name="error_updating_schedule_mode">Fout bij het updaten van %1$s van tijdschema %2$d</string>
     <string name="error_creating_notification_channel">Niet in staat om notificatie kanaal te creëren</string>
-    <string name="sched_blacklist">Weigerlijst</string>
+    <string name="sched_blocklist">Weigerlijst</string>
     <string name="sched_add">Voeg planning toe</string>
     <string name="prefs_logviewer">Bekijk de log</string>
     <string name="prefs_batchdelete_summary">Verwijder back-ups van alle apps die op het moment niet geïnstalleerd zijn.</string>
