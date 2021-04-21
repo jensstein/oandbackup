@@ -37,7 +37,6 @@ import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
-import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
@@ -69,12 +68,8 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         binding = SheetScheduleBinding.inflate(inflater, container, false)
-
         val scheduleDB = ScheduleDatabase.getInstance(requireContext()).scheduleDao
-        val blacklistDB = BlocklistDatabase.getInstance(requireContext()).blocklistDao
-
         val viewModelFactory = ScheduleViewModelFactory(scheduleId, scheduleDB, requireActivity().application)
-
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
         viewModel.schedule.observe(viewLifecycleOwner, {
@@ -87,7 +82,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
-            toggleSecondaryButtons(binding.schedMode)
+            binding.excludeSystem.setExists(viewModel.schedule.value?.filter == SCHED_FILTER_NEW_UPDATED)
         })
 
         return binding.root
@@ -109,7 +104,6 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
         binding.schedFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             viewModel.schedule.value?.filter = idToFilter(checkedId)
             refresh(false)
-            toggleSecondaryButtons(binding.schedMode)
         }
         binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             viewModel.schedule.value?.mode = idToMode(checkedId)
@@ -189,17 +183,6 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
             binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
             binding.timeLeftLine.visibility = View.VISIBLE
-        }
-    }
-
-    private fun toggleSecondaryButtons(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == R.id.schedNewUpdated) {
-            binding.excludeSystem.isChecked = viewModel.schedule.value?.excludeSystem ?: false
-            if (binding.excludeSystem.visibility != View.GONE) return
-            binding.excludeSystem.visibility = View.VISIBLE
-        } else {
-            binding.excludeSystem.visibility = View.GONE
-            viewModel.schedule.value?.excludeSystem = false
         }
     }
 
