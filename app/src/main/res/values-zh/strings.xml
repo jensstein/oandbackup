@@ -253,4 +253,21 @@
     <string name="prefs_saveappslist_summary">将应用列表写入用户备份目录中的 txt 文件</string>
     <string name="prefs_saveappslist">保存应用列表</string>
     <string name="filtered_list">过滤的列表</string>
+    <string name="dialog_import">导出</string>
+    <string name="dialog_export">导出</string>
+    <string name="schedule_failed">运行日程表失败</string>
+    <string name="shell_initproblem">无法启动外壳处理程序。缺少 toybox/busybox 或禁用了这类应用程序的 root 权限。</string>
+    <string name="no_file_manager_message">没有文件管理器来管理 SAF。也许你已经禁用了内置的文件管理器。请恢复或重新启用它。</string>
+    <string name="no_file_manager_title">无 SAF 管理器</string>
+    <string name="prefs_schedulesexportimport_summary">导出或导入你已创建的日程列表。</string>
+    <string name="prefs_schedulesexportimport">导出/导入时间表</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="other">每 %d 天</item>
+    </plurals>
+    <string name="logs_share_failed">日志文件未找到</string>
+    <string name="sched_imported">成功导入了时间表</string>
+    <string name="sched_exported">成功导出了时间表</string>
+    <string name="error_datachanged">在执行备份时，应用程序的数据已被主动更改。 尝试在备份之前杀死它的进程</string>
+    <string name="write_apps_list_all">写所有应用程序列表文件</string>
+    <string name="write_apps_list_filtered">写已过滤的应用程序列表文件</string>
 </resources>
