@@ -23,7 +23,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.*
-import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.BU_MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
@@ -67,7 +67,7 @@ open class ScheduleService : Service() {
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
             override fun onPostExecute(result: Pair<List<String>, Int>?) {
                 val selectedItems = result?.first ?: listOf()
-                val mode = result?.second ?: MODE_UNSET
+                val mode = result?.second ?: BU_MODE_UNSET
                 var errors = ""
                 var resultsSuccess = true
                 var counter = 0

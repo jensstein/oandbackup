@@ -27,6 +27,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.modeToBackupMode
 import timber.log.Timber
 
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long)
@@ -38,7 +39,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
         val schedule = scheduleDao.getSchedule(scheduleId)
         val filter = schedule?.filter ?: SCHED_FILTER_ALL
-        val mode = schedule?.mode ?: MODE_BOTH
+        val mode = modeToBackupMode(context, schedule?.mode ?: BU_MODE_UNSET)
         val excludeSystem = schedule?.excludeSystem
                 ?: false
         val customList = schedule?.customList ?: setOf()
@@ -51,11 +52,11 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            return Pair(listOf(), MODE_BOTH)
+            return Pair(listOf(), BU_MODE_UNSET)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            return Pair(listOf(), MODE_BOTH)
+            return Pair(listOf(), BU_MODE_UNSET)
         }
 
         var launchableAppsList = listOf<String>()
