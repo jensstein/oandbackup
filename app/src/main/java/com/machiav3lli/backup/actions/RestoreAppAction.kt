@@ -50,13 +50,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             preprocessPackage(app.packageName)
         }
         try {
-            if (backupMode and MODE_APK == MODE_APK) {
+            if (backupMode and BU_MODE_APK == BU_MODE_APK) {
                 restorePackage(backupLocation, backupProperties)
                 app.refreshFromPackageManager(context)
             }
-            if (backupMode and MODE_DATA == MODE_DATA) {
-                restoreAllData(app, backupProperties, backupLocation)
-            }
+            if (backupMode != BU_MODE_APK)
+                restoreAllData(app, backupProperties, backupLocation, backupMode)
         } catch (e: RestoreFailedException) {
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: CryptoSetupException) {
@@ -72,28 +71,31 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    protected open fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri) {
-        Timber.i("[${backupProperties.packageName}] Restoring app's data")
+    protected open fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int) {
         val backupDir = StorageFile.fromUri(context, backupLocation)
-        restoreData(app, backupProperties, backupDir)
-        val prefs = getDefaultSharedPreferences(context)
-        if (backupProperties.hasExternalData && prefs.getBoolean(PREFS_EXTERNALDATA, false)) {
-            Timber.i("[${backupProperties.packageName}] Restoring app's external data")
-            restoreExternalData(app, backupProperties, backupDir)
+        if (backupProperties.hasAppData && backupMode and BU_MODE_DATA == BU_MODE_DATA) {
+            Timber.i("[${backupProperties.packageName}] Restoring app's data")
+            restoreData(app, backupProperties, backupDir)
         } else {
-            Timber.i("[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or disabled")
+            Timber.i("[${backupProperties.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
-        if (backupProperties.hasObbData && prefs.getBoolean(PREFS_OBBDATA, false)) {
-            Timber.i("[${backupProperties.packageName}] Restoring app's obb files")
-            restoreObbData(app, backupProperties, backupDir)
-        } else {
-            Timber.i("[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or disabled")
-        }
-        if (backupProperties.hasDevicesProtectedData && prefs.getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) {
+        if (backupProperties.hasDevicesProtectedData && backupMode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) {
             Timber.i("[${backupProperties.packageName}] Restoring app's protected data")
             restoreDeviceProtectedData(app, backupProperties, backupDir)
         } else {
-            Timber.i("[${backupProperties.packageName}] Skip restoring app's device protected data; not part of the backup or disabled")
+            Timber.i("[${backupProperties.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
+        }
+        if (backupProperties.hasExternalData && backupMode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) {
+            Timber.i("[${backupProperties.packageName}] Restoring app's external data")
+            restoreExternalData(app, backupProperties, backupDir)
+        } else {
+            Timber.i("[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
+        }
+        if (backupProperties.hasObbData && backupMode and BU_MODE_OBB == BU_MODE_OBB) {
+            Timber.i("[${backupProperties.packageName}] Restoring app's obb files")
+            restoreObbData(app, backupProperties, backupDir)
+        } else {
+            Timber.i("[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
     }
 
