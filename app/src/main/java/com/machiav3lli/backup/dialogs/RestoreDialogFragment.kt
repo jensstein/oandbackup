@@ -24,33 +24,59 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.items.AppMetaInfo
+import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 
-class RestoreDialogFragment(private val listener: ActionListener) : DialogFragment() {
+class RestoreDialogFragment(val appInfo: AppInfo, private val properties: BackupProperties, private val listener: ActionListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val arguments = this.requireArguments()
-        val app = arguments.getParcelable<AppMetaInfo>("appinfo")
-        val isInstalled = arguments.getBoolean("isInstalled", false)
-        val properties = arguments.getParcelable<BackupProperties>("backup")
-        val showApkBtn = properties?.hasApk ?: false
-        val showDataBtn = (isInstalled || app!!.isSpecial) && properties?.hasAppData ?: false
-        val showBothBtn = showApkBtn && properties?.hasAppData ?: false
-        val builder = AlertDialog.Builder(this.requireActivity())
-        builder.setTitle(app?.packageLabel)
-        builder.setMessage(R.string.restore)
-        val actionType = ActionType.RESTORE
-        if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_APK, properties) }
+        val labels = mutableListOf<String>()
+        var selectedMode = BU_MODE_UNSET
+        val possibleModes = mutableListOf(BU_MODE_APK, BU_MODE_DATA, BU_MODE_DATA_DE, BU_MODE_DATA_EXT, BU_MODE_OBB)
+
+        if (properties.hasApk) {
+            labels.add(getString(R.string.radio_apk))
+        } else {
+            possibleModes.remove(BU_MODE_APK)
         }
-        if (showDataBtn) {
-            builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_DATA, properties) }
+        if (appInfo.isInstalled || appInfo.appMetaInfo.isSpecial) { // TODO make restoring both at once possible
+            if (properties.hasAppData) {
+                labels.add(getString(R.string.radio_data))
+            } else {
+                possibleModes.remove(BU_MODE_DATA)
+            }
+            if (properties.hasDevicesProtectedData) {
+                labels.add(getString(R.string.radio_deviceprotecteddata))
+            } else {
+                possibleModes.remove(BU_MODE_DATA_DE)
+            }
+            if (properties.hasExternalData) {
+                labels.add(getString(R.string.radio_externaldata))
+            } else {
+                possibleModes.remove(BU_MODE_DATA_EXT)
+            }
+            if (properties.hasObbData) {
+                labels.add(getString(R.string.radio_obbdata))
+            } else {
+                possibleModes.remove(BU_MODE_OBB)
+            }
+        } else {
+            possibleModes.remove(BU_MODE_DATA)
+            possibleModes.remove(BU_MODE_DATA_DE)
+            possibleModes.remove(BU_MODE_DATA_EXT)
+            possibleModes.remove(BU_MODE_OBB)
         }
-        if (showBothBtn) {
-            val textId = R.string.radio_both
-            builder.setPositiveButton(textId) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_BOTH, properties) }
-        }
-        return builder.create()
+
+        val checkedOptions = BooleanArray(possibleModes.size)
+        return AlertDialog.Builder(requireActivity())
+                .setTitle(appInfo.appMetaInfo.packageLabel)
+                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedOptions) { _: DialogInterface?, index: Int, _: Boolean ->
+                    selectedMode = selectedMode xor possibleModes[index]
+                }
+                .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
+                    listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
+                }
+                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
+                .create()
     }
 }

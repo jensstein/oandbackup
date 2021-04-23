@@ -24,29 +24,43 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.items.PackageInfo
-import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
+import com.machiav3lli.backup.items.AppInfo
 
-class BackupDialogFragment(private val listener: ActionListener) : DialogFragment() {
+class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val args = this.requireArguments()
-        val pi = args.getParcelable<PackageInfo>("package")
-        // Using packageLabel to display something for special backups. pi is null for them!
-        val packageLabel = args.getString("packageLabel")
-        val builder = AlertDialog.Builder(requireActivity())
-                .setTitle(this.context?.getString(R.string.backup) + ' ' + packageLabel)
-        if (isKillBeforeActionEnabled(requireContext())) {
-            builder.setMessage(R.string.msg_appkill_warning)
-        }
+        val labels = mutableListOf<String>()
+        var selectedMode = BU_MODE_UNSET
+        val possibleModes = mutableListOf(BU_MODE_APK, BU_MODE_DATA, BU_MODE_DATA_DE, BU_MODE_DATA_EXT, BU_MODE_OBB)
+
+        val pi = appInfo.packageInfo
         val showApkBtn = pi != null && pi.apkDir.isNotEmpty()
-        val actionType = ActionType.BACKUP
         if (showApkBtn) {
-            builder.setNegativeButton(R.string.handleApk) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_APK, null) }
-            builder.setPositiveButton(R.string.handleBoth) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_BOTH, null) }
+            labels.add(getString(R.string.radio_apk))
+        } else {
+            possibleModes.remove(BU_MODE_APK)
         }
-        // Data button (always visible)
-        builder.setNeutralButton(R.string.handleData) { _: DialogInterface?, _: Int -> listener.onActionCalled(actionType, MODE_DATA, null) }
-        return builder.create()
+        labels.add(getString(R.string.radio_data))
+        if (appInfo.isSpecial) {
+            possibleModes.remove(BU_MODE_DATA_DE)
+            possibleModes.remove(BU_MODE_DATA_EXT)
+            possibleModes.remove(BU_MODE_OBB)
+        } else {
+            labels.add(getString(R.string.radio_deviceprotecteddata))
+            labels.add(getString(R.string.radio_externaldata))
+            labels.add(getString(R.string.radio_obbdata))
+        }
+
+        val checkedOptions = BooleanArray(possibleModes.size)
+        return AlertDialog.Builder(requireActivity())
+                .setTitle(appInfo.packageLabel)
+                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedOptions) { _: DialogInterface?, index: Int, _: Boolean ->
+                    selectedMode = selectedMode xor possibleModes[index]
+                }
+                .setPositiveButton(R.string.backup) { _: DialogInterface?, _: Int ->
+                    listener.onActionCalled(ActionType.BACKUP, selectedMode, null)
+                }
+                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
+                .create()
     }
 }
