@@ -290,14 +290,14 @@
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/onlyApkBackedUp" />
+                        android:text="@string/radio_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupData"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/onlyDataBackedUp" />
+                        android:text="@string/radio_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupNone"
