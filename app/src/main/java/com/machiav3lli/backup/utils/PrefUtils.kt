@@ -20,6 +20,7 @@ package com.machiav3lli.backup.utils
 import android.Manifest
 import android.app.Activity
 import android.app.AppOpsManager
+import android.app.KeyguardManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -87,6 +88,9 @@ fun setEncryptionPasswordConfirmation(context: Context, value: String) =
 
 fun isDeviceLockEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICELOCK, false)
+
+fun isDeviceLockAvailable(context: Context): Boolean =
+        (context.getSystemService(KeyguardManager::class.java) as KeyguardManager).isDeviceSecure
 
 fun isBiometricLockEnabled(context: Context): Boolean =
         getDefaultSharedPreferences(context).getBoolean(PREFS_BIOMETRICLOCK, false)

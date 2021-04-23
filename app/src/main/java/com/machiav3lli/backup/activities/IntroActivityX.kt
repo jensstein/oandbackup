@@ -93,7 +93,7 @@ class IntroActivityX : BaseActivity() {
     private fun launchMainActivity() {
         if (isBiometricLockAvailable(this) && isBiometricLockEnabled(this)) {
             launchBiometricPrompt(true)
-        } else if (isDeviceLockEnabled(this)) {
+        } else if (isDeviceLockAvailable(this) && isDeviceLockEnabled(this)) {
             launchBiometricPrompt(false)
         } else {
             startActivity(Intent(this, MainActivityX::class.java))

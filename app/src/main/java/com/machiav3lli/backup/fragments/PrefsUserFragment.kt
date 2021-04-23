@@ -61,6 +61,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
         deviceLockPref = findPreference(PREFS_DEVICELOCK)!!
+        deviceLockPref.isVisible = isDeviceLockAvailable(requireContext())
         biometricLockPref = findPreference(PREFS_BIOMETRICLOCK)!!
         biometricLockPref.isVisible = deviceLockPref.isChecked && isBiometricLockAvailable(requireContext())
     }
