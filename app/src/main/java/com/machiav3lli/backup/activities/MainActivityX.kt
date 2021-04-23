@@ -388,22 +388,17 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {
-        val arguments = Bundle()
         val selectedList = batchItemAdapter.adapterItems
                 .filter(BatchItemX::isChecked)
                 .map { item: BatchItemX -> item.app.appMetaInfo }
                 .toCollection(ArrayList())
-        arguments.putParcelableArrayList("selectedList", selectedList)
         val selectedListModes = batchItemAdapter.adapterItems
                 .filter(BatchItemX::isChecked)
                 .map(BatchItemX::actionMode)
                 .toCollection(ArrayList())
         if (selectedList.isNotEmpty()) {
-            arguments.putIntegerArrayList("selectedListModes", selectedListModes)
-            arguments.putBoolean("backupBoolean", backupBoolean)
-            val dialog = BatchDialogFragment(this)
-            dialog.arguments = arguments
-            dialog.show(supportFragmentManager, "DialogFragment")
+            BatchDialogFragment(backupBoolean, selectedList, selectedListModes, this)
+                    .show(supportFragmentManager, "DialogFragment")
         }
     }
 
