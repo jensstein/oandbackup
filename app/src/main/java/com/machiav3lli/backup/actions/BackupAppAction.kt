@@ -65,38 +65,40 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             preprocessPackage(app.packageName)
         }
         try {
-            if (backupMode and MODE_APK == MODE_APK) {
+            if (backupMode and BU_MODE_APK == BU_MODE_APK) {
                 Timber.i("$app: Backing up package")
                 backupPackage(app, backupInstanceDir)
                 backupBuilder.setHasApk(true)
             }
-            if (backupMode and MODE_DATA == MODE_DATA) {
+            var backupCreated: Boolean
+            if (backupMode and BU_MODE_DATA == BU_MODE_DATA) {
                 Timber.i("$app: Backing up data")
-                var backupCreated = backupData(app, backupInstanceDir)
+                backupCreated = backupData(app, backupInstanceDir)
                 backupBuilder.setHasAppData(backupCreated)
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXTERNALDATA, false)) {
-                    Timber.i("$app: Backing up external data")
-                    backupCreated = backupExternalData(app, backupInstanceDir)
-                    backupBuilder.setHasExternalData(backupCreated)
-                }
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_OBBDATA, false)) {
-                    Timber.i("$app: Backing up obb files")
-                    backupCreated = backupObbData(app, backupInstanceDir)
-                    backupBuilder.setHasObbData(backupCreated)
-                }
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) {
-                    Timber.i("$app: Backing up device's protected data")
-                    backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
-                    backupBuilder.setHasDevicesProtectedData(backupCreated)
-                }
             }
+            if (backupMode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) {
+                Timber.i("$app: Backing up device's protected data")
+                backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
+                backupBuilder.setHasDevicesProtectedData(backupCreated)
+            }
+            if (backupMode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) {
+                Timber.i("$app: Backing up external data")
+                backupCreated = backupExternalData(app, backupInstanceDir)
+                backupBuilder.setHasExternalData(backupCreated)
+            }
+            if (backupMode and BU_MODE_OBB == BU_MODE_OBB) {
+                Timber.i("$app: Backing up obb files")
+                backupCreated = backupObbData(app, backupInstanceDir)
+                backupBuilder.setHasObbData(backupCreated)
+            }
+
             if (isEncryptionEnabled(context)) {
                 backupBuilder.setCipherType(CIPHER_ALGORITHM)
             }
             backupItem = backupBuilder.createBackupItem()
             saveBackupProperties(StorageFile.fromUri(context, appBackupRootUri), backupItem.backupProperties)
             app.backupHistory.add(backupItem)
-        } catch (e: BackupFailedException) {
+        } catch (e: BackupFailedException) { // TODO clean up on failed backups
             Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
