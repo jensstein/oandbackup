@@ -166,10 +166,13 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 changeVisibility(binding.forceKill, View.VISIBLE, update)
                 changeVisibility(binding.wipeCache, View.VISIBLE, update)
                 changeVisibility(binding.backup, View.VISIBLE, update)
-                if (it.isDisabled)
+                if (it.isDisabled) {
                     binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
-                else
+                    binding.enableDisable.tooltipText = getString(R.string.enablePackage)
+                } else {
                     binding.enableDisable.setImageResource(R.drawable.ic_blocklist)
+                    binding.enableDisable.tooltipText = getString(R.string.disablePackage)
+                }
             }
             if (it.isSystem) {
                 changeVisibility(binding.uninstall, View.INVISIBLE, update)
