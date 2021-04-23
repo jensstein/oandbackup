@@ -98,3 +98,11 @@ private fun applySort(list: List<AppInfo>, filter: CharSequence): List<AppInfo> 
         else -> list.sortedWith(APP_INFO_LABEL_COMPARATOR)
     }
 }
+
+fun filterToString(context: Context, filter: Int) = when (filter) {
+    SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
+    SCHED_FILTER_USER -> context.getString(R.string.radio_user)
+    SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+    SCHED_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
+    else -> context.getString(R.string.radio_all)
+}

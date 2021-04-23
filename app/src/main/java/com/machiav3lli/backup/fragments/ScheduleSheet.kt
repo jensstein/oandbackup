@@ -34,7 +34,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.PACKAGES_LIST_ARGS_PACKAGES
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SCHED_FILTER_ALL
+import com.machiav3lli.backup.SCHED_FILTER_NEW_UPDATED
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.Schedule
@@ -194,8 +197,8 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
     private fun startSchedule() {
         viewModel.schedule.value?.let {
             val message = StringBuilder()
-            message.append("\n${getModeString(it.mode, requireContext())}")
-            message.append("\n${getFilterString(it.filter, requireContext())}")
+            message.append("\n${modeToString(requireContext(), it.mode)}")
+            message.append("\n${filterToString(requireContext(), it.filter)}")
             if (it.filter == SCHED_FILTER_NEW_UPDATED)
                 message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
             message.append("\n${getString(R.string.customListTitle)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
@@ -238,26 +241,6 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
                 serviceIntent.putExtra("scheduleId", scheduleId)
                 context.startService(serviceIntent)
             }.start()
-        }
-    }
-
-    companion object {
-        private fun getModeString(mode: Int, context: Context): String {
-            return when (mode) {
-                MODE_APK -> context.getString(R.string.handleApk)
-                MODE_DATA -> context.getString(R.string.handleData)
-                else -> context.getString(R.string.handleBoth)
-            }
-        }
-
-        private fun getFilterString(filter: Int, context: Context): String {
-            return when (filter) {
-                SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
-                SCHED_FILTER_USER -> context.getString(R.string.radio_user)
-                SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
-                SCHED_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
-                else -> context.getString(R.string.radio_all)
-            }
         }
     }
 }
