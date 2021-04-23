@@ -73,6 +73,13 @@ const val MODE_APK = 1
 const val MODE_DATA = 2
 const val MODE_BOTH = 3
 
+const val BU_MODE_UNSET = 0b00000
+const val BU_MODE_APK = 0b10000
+const val BU_MODE_DATA = 0b01000
+const val BU_MODE_DATA_DE = 0b00100
+const val BU_MODE_DATA_EXT = 0b00010
+const val BU_MODE_OBB = 0b00001
+
 const val MAIN_SORT_LABEL = '0'
 const val MAIN_SORT_PACKAGENAME = '1'
 const val MAIN_SORT_DATASIZE = '2'
