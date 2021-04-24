@@ -98,7 +98,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             backupItem = backupBuilder.createBackupItem()
             saveBackupProperties(StorageFile.fromUri(context, appBackupRootUri), backupItem.backupProperties)
             app.backupHistory.add(backupItem)
-        } catch (e: BackupFailedException) { // TODO clean up on failed backups
+        } catch (e: BackupFailedException) {
             Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
@@ -112,6 +112,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, app)
+            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+            Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
             if (stopProcess) {
