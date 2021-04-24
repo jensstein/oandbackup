@@ -51,7 +51,10 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
             labels.add(getString(R.string.radio_obbdata))
         }
 
+        possibleModes.forEach { selectedMode = selectedMode or it }
         val checkedOptions = BooleanArray(possibleModes.size)
+        checkedOptions.fill(true)
+
         return AlertDialog.Builder(requireActivity())
                 .setTitle(appInfo.packageLabel)
                 .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedOptions) { _: DialogInterface?, index: Int, _: Boolean ->
