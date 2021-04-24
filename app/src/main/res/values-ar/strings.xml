@@ -263,4 +263,18 @@
     <string name="no_file_manager_title">لا يوجد مدير SAF</string>
     <string name="prefs_schedulesexportimport_summary">تصدير او استيراد قائمة الجداول التي أنشأتها .</string>
     <string name="prefs_schedulesexportimport">تصدير / استيراد المجدوله</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="zero">كل يوم</item>
+        <item quantity="one">كل يوم</item>
+        <item quantity="two">كل يومان</item>
+        <item quantity="few">كل يوم</item>
+        <item quantity="many">كل يوم</item>
+        <item quantity="other">كل يوم</item>
+    </plurals>
+    <string name="logs_share_failed">لم يتم العثور على ملف السجل</string>
+    <string name="sched_imported">تم استيراد الجدول بنجاح</string>
+    <string name="sched_exported">تم تصدير الجداول الزمنية بشكل صحيح</string>
+    <string name="error_datachanged">تم تغيير بيانات التطبيق بنشاط أثناء إجراء النسخ الاحتياطي. حاول قتل العملية قبل إجراء النسخ الاحتياطي</string>
+    <string name="write_apps_list_all">كتابة ملف قائمة جميع التطبيقات</string>
+    <string name="write_apps_list_filtered">كتب ملف قائمة التطبيقات المصفاة</string>
 </resources>
