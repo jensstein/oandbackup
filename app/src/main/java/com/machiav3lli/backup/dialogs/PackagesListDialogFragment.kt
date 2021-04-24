@@ -23,16 +23,16 @@ import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.machiav3lli.backup.PACKAGES_LIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.BackendController
 
-class PackagesListDialogFragment(val filter: Int, private val isBlocklist: Boolean, private val onPackagesListChanged: (newList: Set<String>) -> Unit) : DialogFragment() {
+class PackagesListDialogFragment(private val selectedPackages: List<String>,
+                                 val filter: Int, private val isBlocklist: Boolean,
+                                 private val onPackagesListChanged: (newList: Set<String>) -> Unit)
+    : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
-        val args = this.requireArguments()
-        val selectedPackages = args.getStringArrayList(PACKAGES_LIST_ARGS_PACKAGES) ?: arrayListOf()
 
         var packageInfoList = BackendController.getPackageInfoList(requireContext(), filter)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->

@@ -84,19 +84,12 @@ class SchedulerActivityX : BaseActivity() {
         }
         binding.blocklistButton.setOnClickListener {
             Thread {
-                val args = Bundle()
-                val blocklistedPackages = blocklistDao
-                        .getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID) as ArrayList<String>
-                args.putStringArrayList(PACKAGES_LIST_ARGS_PACKAGES, blocklistedPackages)
+                val blocklistedPackages = blocklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
 
-                val blocklistDialog = PackagesListDialogFragment(SCHED_FILTER_ALL,
+                PackagesListDialogFragment(blocklistedPackages, SCHED_FILTER_ALL,
                         true) { newList: Set<String> ->
-                    Thread {
-                        blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-                    }.start()
-                }
-                blocklistDialog.arguments = args
-                blocklistDialog.show(supportFragmentManager, "BLOCKLIST_DIALOG")
+                    Thread { blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList) }.start()
+                }.show(supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
         binding.addSchedule.setOnClickListener {

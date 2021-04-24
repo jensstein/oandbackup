@@ -34,7 +34,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.PACKAGES_LIST_ARGS_PACKAGES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.SCHED_FILTER_NEW_UPDATED
@@ -132,30 +131,20 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             refresh(false)
         }
         binding.customListButton.setOnClickListener {
-            val args = Bundle()
-            val selectedPackages = viewModel.schedule.value?.customList?.toCollection(ArrayList())
-            args.putStringArrayList(PACKAGES_LIST_ARGS_PACKAGES, selectedPackages)
-
-            val customListDialog = PackagesListDialogFragment(viewModel.schedule.value?.filter
+            val selectedPackages = viewModel.schedule.value?.customList?.toList() ?: listOf()
+            PackagesListDialogFragment(selectedPackages, viewModel.schedule.value?.filter
                     ?: SCHED_FILTER_ALL, false) { newList: Set<String> ->
                 viewModel.schedule.value?.customList = newList
                 refresh(false)
-            }
-            customListDialog.arguments = args
-            customListDialog.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
+            }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
         }
         binding.blocklistButton.setOnClickListener {
-            val args = Bundle()
-            val blocklistedPackages = viewModel.schedule.value?.blockList?.toCollection(ArrayList())
-            args.putStringArrayList(PACKAGES_LIST_ARGS_PACKAGES, blocklistedPackages as ArrayList<String>)
-
-            val blocklistDialog = PackagesListDialogFragment(viewModel.schedule.value?.filter
+            val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
+            PackagesListDialogFragment(blocklistedPackages, viewModel.schedule.value?.filter
                     ?: SCHED_FILTER_ALL, true) { newList: Set<String> ->
                 viewModel.schedule.value?.blockList = newList
                 refresh(false)
-            }
-            blocklistDialog.arguments = args
-            blocklistDialog.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+            }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
         }
         binding.enableCheckbox.setOnClickListener {
             viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
