@@ -39,31 +39,24 @@ class RestoreDialogFragment(val appInfo: AppInfo, private val properties: Backup
         } else {
             possibleModes.remove(BU_MODE_APK)
         }
-        if (appInfo.isInstalled || appInfo.appMetaInfo.isSpecial) { // TODO make restoring both at once possible
-            if (properties.hasAppData) {
-                labels.add(getString(R.string.radio_data))
-            } else {
-                possibleModes.remove(BU_MODE_DATA)
-            }
-            if (properties.hasDevicesProtectedData) {
-                labels.add(getString(R.string.radio_deviceprotecteddata))
-            } else {
-                possibleModes.remove(BU_MODE_DATA_DE)
-            }
-            if (properties.hasExternalData) {
-                labels.add(getString(R.string.radio_externaldata))
-            } else {
-                possibleModes.remove(BU_MODE_DATA_EXT)
-            }
-            if (properties.hasObbData) {
-                labels.add(getString(R.string.radio_obbdata))
-            } else {
-                possibleModes.remove(BU_MODE_OBB)
-            }
+        if (properties.hasAppData) {
+            labels.add(getString(R.string.radio_data))
         } else {
             possibleModes.remove(BU_MODE_DATA)
+        }
+        if (properties.hasDevicesProtectedData) {
+            labels.add(getString(R.string.radio_deviceprotecteddata))
+        } else {
             possibleModes.remove(BU_MODE_DATA_DE)
+        }
+        if (properties.hasExternalData) {
+            labels.add(getString(R.string.radio_externaldata))
+        } else {
             possibleModes.remove(BU_MODE_DATA_EXT)
+        }
+        if (properties.hasObbData) {
+            labels.add(getString(R.string.radio_obbdata))
+        } else {
             possibleModes.remove(BU_MODE_OBB)
         }
 
