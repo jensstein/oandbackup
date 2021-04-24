@@ -43,12 +43,12 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val excludeSystem = schedule?.excludeSystem
                 ?: false
         val customList = schedule?.customList ?: setOf()
-        val customBlocklist = schedule?.blockList
+        val customBlocklist = schedule?.blockList ?: listOf()
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
-        val blockList = globalBlocklist.plus(customBlocklist).toSet()
+        val blockList = globalBlocklist.plus(customBlocklist)
 
-        val list: List<AppInfo> = try {
-            BackendController.getApplicationList(context)
+        val unfilteredList: List<AppInfo> = try {
+            BackendController.getApplicationList(context, blockList)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
@@ -66,7 +66,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                     .map { it.activityInfo.packageName }
         }
         val inListed = { packageName: String ->
-            (customList.isEmpty() || customList.contains(packageName)) && !blockList.contains(packageName)
+            customList.isEmpty() || customList.contains(packageName)
         }
         val predicate: (AppInfo) -> Boolean = when (filter) {
             SCHED_FILTER_USER -> { appInfo: AppInfo ->
@@ -86,7 +86,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             }
             else -> { appInfo: AppInfo -> inListed(appInfo.packageName) }
         }
-        val selectedItems = list.filter(predicate)
+        val selectedItems = unfilteredList.filter(predicate)
                 .sortedWith { m1: AppInfo, m2: AppInfo ->
                     m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
                 }

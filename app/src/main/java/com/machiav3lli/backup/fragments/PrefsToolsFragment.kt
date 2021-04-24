@@ -200,7 +200,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         appInfoList = listOf()
         Thread {
             try {
-                appInfoList = getApplicationList(requireContext())
+                appInfoList = getApplicationList(requireContext(), listOf())
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

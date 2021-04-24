@@ -39,6 +39,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
+import com.machiav3lli.backup.dbs.BlocklistDao
+import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.HelpSheet
@@ -78,6 +80,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
     }
 
     private lateinit var prefs: SharedPreferences
+    private lateinit var blocklistDao: BlocklistDao
     private var navController: NavController? = null
     private var powerManager: PowerManager? = null
     private var searchViewController: SearchViewController? = null
@@ -102,11 +105,11 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        setContentView(binding.root)
+        blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs(this)
         prefs.registerOnSharedPreferenceChangeListener(this)
-        val viewModelFactory = MainViewModelFactory(this, application)
+        val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel())
         viewModel.refreshActive.observe(this, {
@@ -135,6 +138,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         initShell()
         runOnUiThread { showEncryptionDialog() }
         setupViews()
+        setContentView(binding.root)
     }
 
     override fun onStart() {
