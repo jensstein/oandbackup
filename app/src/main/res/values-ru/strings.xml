@@ -277,4 +277,6 @@
     <string name="sched_imported">Расписание импортировано успешно</string>
     <string name="sched_exported">Расписания были успешно экспортированы</string>
     <string name="error_datachanged">Данные приложения были изменены во время создания резервной копии. Попробуйте завершить процесс перед созданием резервной копии</string>
+    <string name="help_group_matrix">Наша группа в Matrix</string>
+    <string name="help_group_telegram">Наша группа в Telegram</string>
 </resources>
