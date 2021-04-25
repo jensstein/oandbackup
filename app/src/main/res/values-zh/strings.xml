@@ -267,4 +267,6 @@
     <string name="error_datachanged">在执行备份时，应用程序的数据已被主动更改。 尝试在备份之前杀死它的进程</string>
     <string name="write_apps_list_all">写所有应用程序列表文件</string>
     <string name="write_apps_list_filtered">写已过滤的应用程序列表文件</string>
+    <string name="help_group_matrix">我们的 Matrix 群组</string>
+    <string name="help_group_telegram">我们的 Telegram 群组</string>
 </resources>
