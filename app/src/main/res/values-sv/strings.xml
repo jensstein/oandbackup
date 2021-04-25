@@ -11,8 +11,6 @@
     <string name="radio_data">data</string>
     <string name="radio_both">apk + data</string>
     <string name="de_selectAll">av/markera alla</string>
-    <string name="onlyApkBackedUp">endast apk</string>
-    <string name="onlyDataBackedUp">endast data</string>
     <string name="refresh">uppdatera</string>
     <string name="batchbackup">säkerhetskopiera flera</string>
     <string name="batchrestore">återställ flera</string>

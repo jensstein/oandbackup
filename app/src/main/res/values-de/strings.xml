@@ -11,8 +11,6 @@
     <string name="radio_data">Daten</string>
     <string name="radio_both">APK und Daten</string>
     <string name="de_selectAll">Alle an-/abwählen</string>
-    <string name="onlyApkBackedUp">Nur APK</string>
-    <string name="onlyDataBackedUp">Nur Daten</string>
     <string name="refresh">Aktualisieren</string>
     <string name="batchbackup">Sicherungsstapelverarbeitung</string>
     <string name="batchrestore">Wiederherstellungsstapelverarbeitung</string>

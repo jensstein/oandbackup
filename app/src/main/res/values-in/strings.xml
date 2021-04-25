@@ -15,8 +15,6 @@
     <string name="radio_data">Data</string>
     <string name="radio_special">Backup khusus</string>
     <string name="de_selectAll">Tidak/pilih semua</string>
-    <string name="onlyApkBackedUp">Hanya APK</string>
-    <string name="onlyDataBackedUp">Hanya data</string>
     <string name="refresh">Menyegarkan</string>
     <string name="batchbackup">Batch cadangan</string>
     <string name="batchrestore">Pemulihan batch</string>

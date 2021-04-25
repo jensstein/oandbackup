@@ -11,8 +11,6 @@
     <string name="radio_data">Данные</string>
     <string name="radio_both">APK + Данные</string>
     <string name="de_selectAll">Инвертировать всё</string>
-    <string name="onlyApkBackedUp">Только APK</string>
-    <string name="onlyDataBackedUp">Только данные</string>
     <string name="refresh">Обновить</string>
     <string name="batchbackup">Пакетное резервирование</string>
     <string name="batchrestore">Пакетное восстановление</string>

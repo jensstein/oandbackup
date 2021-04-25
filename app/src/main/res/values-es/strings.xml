@@ -17,8 +17,6 @@
     <string name="radio_special">Respaldos especiales</string>
     <string name="radio_updated">Actualizadas</string>
     <string name="de_selectAll">Des/seleccionar todo</string>
-    <string name="onlyApkBackedUp">Solo APK</string>
-    <string name="onlyDataBackedUp">Solo datos</string>
     <string name="refresh">Actualizar</string>
     <string name="batchbackup">Respaldo en lote</string>
     <string name="batchrestore">Restauración en lote</string>

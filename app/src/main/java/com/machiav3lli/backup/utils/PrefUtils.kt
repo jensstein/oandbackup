@@ -147,7 +147,8 @@ fun requireStorageLocation(activity: Activity, activityResultLauncher: ActivityR
     try {
         activityResultLauncher.launch(intent)
     } catch (e: ActivityNotFoundException) {
-        showWarning(activity, activity.getString(R.string.no_file_manager_title), activity.getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
+        showWarning(activity, activity.getString(R.string.no_file_manager_title),
+                activity.getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
             activity.finishAffinity()
         }
     }
@@ -157,7 +158,8 @@ fun checkStoragePermissions(context: Context): Boolean = when {
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
         Environment.isExternalStorageManager()
     else ->
-        context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
 }
 
 fun getStoragePermission(activity: Activity) {
@@ -190,13 +192,17 @@ fun checkRootAccess(activity: Activity): Boolean {
 }
 
 private fun requireReadStoragePermission(activity: Activity) {
-    if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION)
+    if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) !=
+            PackageManager.PERMISSION_GRANTED)
+        ActivityCompat.requestPermissions(activity,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION)
 }
 
 private fun requireWriteStoragePermission(activity: Activity) {
-    if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
+    if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+            PackageManager.PERMISSION_GRANTED)
+        ActivityCompat.requestPermissions(activity,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
 }
 
 fun canAccessExternalStorage(context: Context): Boolean {
@@ -208,12 +214,15 @@ fun checkUsageStatsPermission(context: Context): Boolean {
     val appOps = (context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
     val mode = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(),
+                    context.packageName)
         else ->
-            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(),
+                    context.packageName)
     }
     return if (mode == AppOpsManager.MODE_DEFAULT) {
-        context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+        context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) ==
+                PackageManager.PERMISSION_GRANTED
     } else {
         mode == AppOpsManager.MODE_ALLOWED
     }
@@ -238,9 +247,8 @@ fun isAllowDowngrade(context: Context): Boolean =
 fun isNeedRefresh(context: Context): Boolean =
         getPrivateSharedPrefs(context).getBoolean(NEED_REFRESH, false)
 
-fun setNeedRefresh(context: Context, value: Boolean) {
-    getPrivateSharedPrefs(context).edit().putBoolean(NEED_REFRESH, value).apply()
-}
+fun setNeedRefresh(context: Context, value: Boolean) =
+        getPrivateSharedPrefs(context).edit().putBoolean(NEED_REFRESH, value).apply()
 
 fun getFilterPreferences(context: Context): SortFilterModel {
     val sortFilterModel: SortFilterModel

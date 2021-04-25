@@ -11,8 +11,6 @@
     <string name="radio_data">Data</string>
     <string name="radio_both">APK en Data</string>
     <string name="de_selectAll">De/selecteer alles</string>
-    <string name="onlyApkBackedUp">Alleen APK</string>
-    <string name="onlyDataBackedUp">Alleen data</string>
     <string name="refresh">Verversen</string>
     <string name="batchbackup">Batch back-up</string>
     <string name="batchrestore">Batch terugzetten</string>

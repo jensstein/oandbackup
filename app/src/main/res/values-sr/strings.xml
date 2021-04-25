@@ -11,8 +11,6 @@
     <string name="radio_data">Подаци</string>
     <string name="radio_both">Apk + Подаци</string>
     <string name="de_selectAll">Обележи/поништи све</string>
-    <string name="onlyApkBackedUp">Само Apk</string>
-    <string name="onlyDataBackedUp">Само подаци</string>
     <string name="refresh">Освежи</string>
     <string name="batchbackup">Групна резервна копија</string>
     <string name="batchrestore">Групно враћање</string>

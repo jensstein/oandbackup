@@ -11,8 +11,6 @@
     <string name="radio_data">データ</string>
     <string name="radio_both">apk + データ</string>
     <string name="de_selectAll">すべて選択/解除</string>
-    <string name="onlyApkBackedUp">apk のみ</string>
-    <string name="onlyDataBackedUp">データのみ</string>
     <string name="refresh">リフレッシュ</string>
     <string name="batchbackup">バッチ バックアップ</string>
     <string name="batchrestore">バッチ復元</string>

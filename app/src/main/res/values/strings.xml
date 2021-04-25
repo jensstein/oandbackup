@@ -20,8 +20,6 @@
     <string name="radio_deviceprotecteddata">Device Protected Data</string>
     <string name="radio_obbdata">OBB Data</string>
     <string name="de_selectAll">De/select all</string>
-    <string name="onlyApkBackedUp">APK only</string>
-    <string name="onlyDataBackedUp">Data only</string>
     <string name="refresh">Refresh</string>
     <string name="batchbackup">Batch backup</string>
     <string name="batchrestore">Batch restore</string>

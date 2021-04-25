@@ -11,8 +11,6 @@
     <string name="radio_data">Δεδομένα</string>
     <string name="radio_both">Εφαρμογή + Δεδομένα</string>
     <string name="de_selectAll">Από/επιλογή όλων</string>
-    <string name="onlyApkBackedUp">Εφαρμογή μόνο</string>
-    <string name="onlyDataBackedUp">Δεδομένα μόνο</string>
     <string name="refresh">Ανανέωση</string>
     <string name="batchbackup">Μαζική δημιουργία αντιγράφων ασφαλείας</string>
     <string name="batchrestore">Μαζική επαναφορά</string>

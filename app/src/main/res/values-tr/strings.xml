@@ -15,8 +15,6 @@
     <string name="radio_data">Veri</string>
     <string name="radio_special">Özel yedeklemeler</string>
     <string name="de_selectAll">Hepsini/Hiçbirini seç</string>
-    <string name="onlyApkBackedUp">Yalnızca APK</string>
-    <string name="onlyDataBackedUp">Yalnızca veri</string>
     <string name="refresh">Yenile</string>
     <string name="batchbackup">Toplu yedekleme</string>
     <string name="batchrestore">Toplu geri yükleme</string>

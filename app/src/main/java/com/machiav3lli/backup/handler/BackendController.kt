@@ -75,11 +75,7 @@ object BackendController {
     }
 
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context, blocklist: List<String>): MutableList<AppInfo> =
-            getApplicationList(context, blocklist, true)
-
-    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context, blocklist: List<String>, includeUninstalled: Boolean): MutableList<AppInfo> {
+    fun getApplicationList(context: Context, blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
         invalidateCache()
         val includeSpecial = getDefaultSharedPreferences(context).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
         val pm = context.packageManager

@@ -15,8 +15,6 @@
     <string name="radio_data">Dane</string>
     <string name="radio_special">Pokaż tylko specjalne kopie zapasowe</string>
     <string name="de_selectAll">Odznacz/zaznacz wszystko</string>
-    <string name="onlyApkBackedUp">Tylko APK</string>
-    <string name="onlyDataBackedUp">Tylko dane</string>
     <string name="refresh">Odśwież</string>
     <string name="batchbackup">Grupowa kopia zapasowa</string>
     <string name="batchrestore">Grupowe przywracanie</string>

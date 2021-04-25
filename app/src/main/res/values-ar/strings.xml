@@ -49,8 +49,6 @@
     <string name="batchrestore">استعادة متعددة</string>
     <string name="batchbackup">نسخ احتياطي متعدد</string>
     <string name="refresh">تحديث</string>
-    <string name="onlyDataBackedUp">البيانات فقط</string>
-    <string name="onlyApkBackedUp">فقط APK</string>
     <string name="prefs_housekeepingmoment">وقت تنظيف النسخ</string>
     <string name="prefs_numBackupRevisions_summary">سيتم حذف النسخة الأقدم عند إنشاء نسخة احتياطية جديدة إذا تم تجاوز الرقم. اضبطه على صفر للاحتفاظ بجميع المراجعات.</string>
     <string name="prefs_numBackupRevisions">عدد النسخ الاحتياطية</string>

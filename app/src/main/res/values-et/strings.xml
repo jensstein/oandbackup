@@ -15,8 +15,6 @@
     <string name="radio_data">Andmed</string>
     <string name="radio_special">Erilised varundused</string>
     <string name="de_selectAll">(Ära) vali kõik</string>
-    <string name="onlyApkBackedUp">Ainult APK</string>
-    <string name="onlyDataBackedUp">Ainult andmed</string>
     <string name="refresh">Värskenda</string>
     <string name="batchbackup">Massvarundus</string>
     <string name="batchrestore">Masstaaste</string>
