@@ -91,10 +91,10 @@ val versions: java.util.Properties = System.getProperties()
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions["kotlin"]}")
     // Libs
-    implementation("androidx.room:room-runtime:2.2.6")
-    implementation("androidx.room:room-ktx:2.2.6")
+    implementation("androidx.room:room-runtime:2.3.0")
+    implementation("androidx.room:room-ktx:2.3.0")
     implementation("androidx.work:work-runtime-ktx:2.5.0")
-    kapt("androidx.room:room-compiler:2.2.6")
+    kapt("androidx.room:room-compiler:2.3.0")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
@@ -108,7 +108,7 @@ dependencies {
 
     // UI
     implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.2")
+    implementation("androidx.fragment:fragment-ktx:1.3.3")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
