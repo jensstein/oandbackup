@@ -110,7 +110,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         prefs = getPrivateSharedPrefs(this)
         val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-        if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel())
+        if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel(), false)
         viewModel.refreshActive.observe(this, {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()
@@ -241,7 +241,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
-                    getFilterPreferences(this).toString()),
+                    getSortFilterModel(this).toString()),
                     getStats(viewModel.appInfoList.value ?: mutableListOf())
             )
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
@@ -532,12 +532,12 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             viewModel.apkCheckedList.clear()
             viewModel.dataCheckedList.clear()
         }
-        sheetSortFilter = SortFilterSheet(getFilterPreferences(this), getStats(viewModel.appInfoList.value
+        sheetSortFilter = SortFilterSheet(getSortFilterModel(this), getStats(viewModel.appInfoList.value
                 ?: mutableListOf()))
         Thread {
             try {
                 val filteredList = applyFilter(viewModel.appInfoList.value
-                        ?: listOf(), getFilterPreferences(this).toString(), this)
+                        ?: listOf(), getSortFilterModel(this).toString(), this)
                 when {
                     mainBoolean -> refreshMain(filteredList, backupOrAppSheetBoolean)
                     else -> refreshBatch(filteredList, backupOrAppSheetBoolean)

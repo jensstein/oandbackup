@@ -159,12 +159,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/stats" />
 
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sortAscDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sortAscDesc"
+                    app:layout_constraintBottom_toTopOf="@id/filtersTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sortBy" />
+
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/sortBy"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@id/filtersTitle"
+                    app:layout_constraintBottom_toTopOf="@id/sortAscDesc"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/sortByTitle">
@@ -201,7 +211,7 @@
                     app:layout_constraintBottom_toTopOf="@id/filters"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sortBy" />
+                    app:layout_constraintTop_toBottomOf="@id/sortAscDesc" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/filters"

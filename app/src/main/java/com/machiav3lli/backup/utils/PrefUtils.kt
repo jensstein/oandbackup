@@ -250,15 +250,19 @@ fun isNeedRefresh(context: Context): Boolean =
 fun setNeedRefresh(context: Context, value: Boolean) =
         getPrivateSharedPrefs(context).edit().putBoolean(NEED_REFRESH, value).apply()
 
-fun getFilterPreferences(context: Context): SortFilterModel {
+fun getSortFilterModel(context: Context): SortFilterModel {
     val sortFilterModel: SortFilterModel
     val sortFilterPref = getPrivateSharedPrefs(context).getString(PREFS_SORT_FILTER, "")
     sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
     return sortFilterModel
 }
 
-fun saveFilterPreferences(context: Context, filterModel: SortFilterModel) {
+fun getSortOrder(context: Context): Boolean =
+        getPrivateSharedPrefs(context).getBoolean(PREFS_SORT_ORDER, false)
+
+fun saveFilterPreferences(context: Context, filterModel: SortFilterModel, descBoolean: Boolean) {
     getPrivateSharedPrefs(context).edit().putString(PREFS_SORT_FILTER, filterModel.toString()).apply()
+    getPrivateSharedPrefs(context).edit().putBoolean(PREFS_SORT_ORDER, descBoolean).apply()
 }
 
 fun isRememberFiltering(context: Context): Boolean =

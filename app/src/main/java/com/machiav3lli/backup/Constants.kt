@@ -35,6 +35,7 @@ const val PACKAGES_LIST_ARGS_PACKAGES = "selectedPackages"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
 
 const val PREFS_SORT_FILTER = "sortFilter"
+const val PREFS_SORT_ORDER = "sortOrder"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
 const val PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization"
 const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"

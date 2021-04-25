@@ -39,7 +39,10 @@ fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): Li
         MAIN_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
         else -> { _: AppInfo -> true }
     }
-    return list.filter(predicate).applyBackupFilter(filter).applySpecialFilter(filter, context).applySort(filter)
+    return list.filter(predicate)
+            .applyBackupFilter(filter)
+            .applySpecialFilter(filter, context)
+            .applySort(filter, context)
 }
 
 private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo> {
@@ -78,13 +81,20 @@ private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Cont
     return filter(predicate)
 }
 
-private fun List<AppInfo>.applySort(filter: CharSequence): List<AppInfo> {
-    return when (filter[0]) {
-        MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
-        MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
-        else -> sortedBy { it.packageLabel }
-    }
-}
+private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): List<AppInfo> =
+        if (getSortOrder(context)) {
+            when (filter[0]) {
+                MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
+                MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
+                else -> sortedByDescending { it.packageLabel }
+            }
+        } else {
+            when (filter[0]) {
+                MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
+                MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
+                else -> sortedBy { it.packageLabel }
+            }
+        }
 
 fun filterToString(context: Context, filter: Int) = when (filter) {
     SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
@@ -93,3 +103,4 @@ fun filterToString(context: Context, filter: Int) = when (filter) {
     SCHED_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
     else -> context.getString(R.string.radio_all)
 }
+

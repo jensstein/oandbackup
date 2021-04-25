@@ -33,7 +33,8 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getFilterPreferences
+import com.machiav3lli.backup.utils.getSortFilterModel
+import com.machiav3lli.backup.utils.getSortOrder
 import com.machiav3lli.backup.utils.saveFilterPreferences
 
 class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
@@ -56,7 +57,7 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sortFilterModel = getFilterPreferences(requireContext())
+        sortFilterModel = getSortFilterModel(requireContext())
         setupOnClicks()
         setupChips()
     }
@@ -64,12 +65,12 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         binding.reset.setOnClickListener {
-            saveFilterPreferences(requireContext(), SortFilterModel("0000"))
+            saveFilterPreferences(requireContext(), SortFilterModel("0000"), false)
             requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
         binding.apply.setOnClickListener {
-            saveFilterPreferences(requireContext(), sortFilterModel)
+            saveFilterPreferences(requireContext(), sortFilterModel, binding.sortAscDesc.isChecked)
             requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
@@ -81,6 +82,7 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
     private fun setupChips() {
         binding.sortBy.check(sortFilterModel.sortById)
         binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSortBy(checkedId) }
+        binding.sortAscDesc.isChecked = getSortOrder(requireContext())
         binding.filters.check(sortFilterModel.filterId)
         binding.filters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putFilter(checkedId) }
         binding.backupFilters.check(sortFilterModel.backupFilterId)

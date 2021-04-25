@@ -263,6 +263,7 @@
     <string name="sched_exported">Schedules were exported sucessfully</string>
     <string name="sched_imported">Schedule imported successfully</string>
     <string name="logs_share_failed">Log file not found</string>
+    <string name="sortAscDesc">Ascending-Descending</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">each day</item>
         <item quantity="other">each %d days</item>
