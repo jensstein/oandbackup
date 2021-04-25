@@ -159,7 +159,6 @@
     <string name="sort_and_filter">Ordina e filtra</string>
     <string name="enable_encryption_message">Non è sicuro mantenere i dati sul dispositivo non crittografati. Per la sicurezza dei dati abilitare la crittografia e impostare una password.</string>
     <string name="enable_encryption_title">Crittografia dei dati</string>
-    <string name="help_group">Il nostro gruppo</string>
     <string name="cache_size">Dimensioni cache:</string>
     <string name="data_size">Dimensioni dati:</string>
     <string name="app_size">Dimensioni dell\'app:</string>

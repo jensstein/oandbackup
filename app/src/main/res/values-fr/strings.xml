@@ -101,7 +101,6 @@
     <string name="sort_and_filter">Trier et filtrer</string>
     <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non crypées. Pour la sécurité de vos données, activez le cryptage et définissez un mot de passe.</string>
     <string name="enable_encryption_title">Cryptage des données</string>
-    <string name="help_group">Notre groupe</string>
     <string name="help_license">Licence</string>
     <string name="cache_size">Taille du cache :</string>
     <string name="data_size">Taille des données :</string>

@@ -166,7 +166,6 @@
     <string name="cache_size">Cache-Größe:</string>
     <string name="dialogSave">Speichern</string>
     <string name="help_license">Lizenz</string>
-    <string name="help_group">Unsere Gruppe</string>
     <string name="enable_encryption_title">Datenverschlüsselung</string>
     <string name="enable_encryption_message">Es ist nicht sicher, deine Daten unverschlüsselt auf deinem Gerät zu speichern. Für die Sicherheit deiner Daten aktiviere die Verschlüsselung und setze ein Passwort.</string>
     <string name="sched_add">Geplante Sicherung hinzufügen</string>
@@ -255,4 +254,6 @@
     <string name="prefs_devicelock">Gerätesperre</string>
     <string name="wait_noappslist">Die Liste der Anwendungen wird immer noch nicht abgerufen. Warte…</string>
     <string name="prefs_enablespecial_summary">Muss noch intensiv getestet werden, da die Gefahr besteht, dass es zu Bootschleifen kommen kann. Feedback ist immer willkommen.</string>
+    <string name="help_group_telegram">Unsere Gruppe auf Telegram</string>
+    <string name="help_group_matrix">Unsere Gruppe auf Matrix</string>
 </resources>

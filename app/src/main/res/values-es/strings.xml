@@ -178,7 +178,6 @@
     <string name="cache_size">Tamaño de la caché:</string>
     <string name="logfileSavedAt" translatable="false">Archivo log guardado en %s</string>
     <string name="help_license">Licencia</string>
-    <string name="help_group">Nuestro grupo</string>
     <string name="help_legend">Leyenda:</string>
     <string name="help_appTypeHint">* El icono de tipo de aplicación es gris si la aplicación está desinstalada o gris oscuro si está desactivada.</string>
     <string name="enable_encryption_title">Cifrado de datos</string>

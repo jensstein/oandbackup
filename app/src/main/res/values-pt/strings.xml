@@ -168,7 +168,6 @@
     <string name="app_size">Tamanho da Aplicação:</string>
     <string name="data_size">Tamanho dos Dados:</string>
     <string name="cache_size">Tamanho do Cache:</string>
-    <string name="help_group">O Nosso Grupo</string>
     <string name="enable_encryption_title">Encriptação de Dados</string>
     <string name="enable_encryption_message">Não é seguro manter seus dados no dispositivo não encriptados. Para a segurança de seus dados, ative a encriptação e defina uma palavra-passe.</string>
     <string name="sort_and_filter">Ordenar e filtrar</string>

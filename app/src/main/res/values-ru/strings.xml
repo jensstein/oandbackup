@@ -153,7 +153,6 @@
     <string name="enable_encryption_message">Небезопасно хранить данные на вашем устройстве в не зашифрованном виде. Для обеспечения безопасности ваших данных включите шифрование и установите пароль.</string>
     <string name="help_appTypeHint">* Иконка приложения серая, если приложение удалено, и темно-серая, если приложение выключено.</string>
     <string name="help_legend">Легенда:</string>
-    <string name="help_group">Наша группа</string>
     <string name="grant_usage_access_message">Это необходимо для получения информации о размере файлов приложения</string>
     <string name="failed_unzipping">Ошибка извлечения данных, проверьте пароль шифрования!</string>
     <string name="ignore_battery_optimization_not_supported">К сожалению, это устройство не может игнорировать оптимизацию батареи!</string>

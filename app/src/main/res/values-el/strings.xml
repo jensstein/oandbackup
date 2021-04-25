@@ -178,7 +178,6 @@
     <string name="enable_encryption_title">Κρυπτογράφηση Δεδομένων</string>
     <string name="help_appTypeHint">* Το εικονίδιο του τύπου εφαρμογής είναι γκρι εάν η εφαρμογή είναι απεγκατεστημένη και σκούρο γκρι εάν η εφαρμογή είναι απενεργοποιημένη.</string>
     <string name="help_legend">Υπόμνημα:</string>
-    <string name="help_group">Η Ομάδα μας</string>
     <string name="cache_size">Μέγεθος μνήμης Cache:</string>
     <string name="data_size">Μέγεθος Δεδομένων:</string>
     <string name="app_size">Μέγεθος Έφαρμογης:</string>

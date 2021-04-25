@@ -174,7 +174,6 @@
     <string name="sort_and_filter">Sırala ve Filtrele</string>
     <string name="enable_encryption_message">Verilerinizi cihazınızda şifrelenmemiş halde tutmak güvenli değildir. Verilerinizin güvenliği için şifrelemeyi etkinleştirin ve bir parola belirleyin.</string>
     <string name="enable_encryption_title">Veri Şifreleme</string>
-    <string name="help_group">Grubumuz</string>
     <string name="help_license">Lisans</string>
     <string name="cache_size">Önbellek Boyutu:</string>
     <string name="data_size">Veri Boyutu:</string>

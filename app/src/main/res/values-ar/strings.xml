@@ -243,7 +243,6 @@
     <string name="enable_encryption_title">تشفير البيانات</string>
     <string name="help_legend">اسطوره:</string>
     <string name="help_faq">الأسئلة المتداولة</string>
-    <string name="help_group">مجموعتنا</string>
     <string name="help_license">الترخيص</string>
     <string name="cache_size">حجم ذاكرة التخزين المؤقت:</string>
     <string name="data_size">حجم البيانات:</string>

@@ -190,7 +190,6 @@
     <string name="enable_encryption_title">Enkripsi data</string>
     <string name="help_appTypeHint">* Ikon jenis aplikasi akan berwarna abu-abu jika aplikasi dicopot dan abu-abu tua jika aplikasi dinonaktifkan.</string>
     <string name="help_legend">Legenda:</string>
-    <string name="help_group">Grup Kami</string>
     <string name="help_license">Lisensi</string>
     <string name="apptype_special">Pencadangan khusus</string>
     <string name="sortDataSize">Ukuran data</string>

@@ -204,7 +204,8 @@
     <string name="cache_size">Cache Size:</string>
     <string name="logfileSavedAt" translatable="false">Logfile saved at %s</string>
     <string name="help_license">License</string>
-    <string name="help_group">Our Group</string>
+    <string name="help_group_telegram">Our Group on Telegram</string>
+    <string name="help_group_matrix">Our Group on Matrix</string>
     <string name="help_faq">Frequently Asked Questions</string>
     <string name="help_legend">Legend:</string>
     <string name="help_appTypeHint">* App type\'s icon would be gray if the app is uninstalled and dark gray if the app is disabled.</string>
