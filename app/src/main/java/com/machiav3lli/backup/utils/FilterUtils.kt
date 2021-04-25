@@ -55,8 +55,8 @@ private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo>
 
 private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Context): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
-    val days = getDefaultSharedPreferences(context).getString(PREFS_OLDBACKUPS, "7")?.toInt()
-            ?: 7
+    val days = getDefaultSharedPreferences(context).getInt(PREFS_OLDBACKUPS, 7)
+
     predicate = when (filter[3]) {
         MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
         MAIN_SPECIALFILTER_NOTINSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
