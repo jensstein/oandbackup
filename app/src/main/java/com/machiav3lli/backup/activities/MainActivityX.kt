@@ -63,7 +63,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
-class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, SharedPreferences.OnSharedPreferenceChangeListener {
+class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     companion object {
         var shellHandlerInstance: ShellHandler? = null
@@ -108,7 +108,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs(this)
-        prefs.registerOnSharedPreferenceChangeListener(this)
         val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering(this)) saveFilterPreferences(this, SortFilterModel())
@@ -145,6 +144,14 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
         super.onStart()
         setupOnClicks()
         setupNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isNeedRefresh(this)) {
+            viewModel.refreshList()
+            setNeedRefresh(this, false)
+        }
     }
 
     override fun onBackPressed() {
@@ -499,13 +506,6 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener, Share
                     .beginWith(worksList)
                     .then(finishWorkRequest)
                     .enqueue()
-        }
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (isNeedRefresh(this)) {
-            viewModel.refreshList()
-            setNeedRefresh(this, false)
         }
     }
 
