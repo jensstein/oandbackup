@@ -70,7 +70,8 @@ class RestoreDialogFragment(val appInfo: AppInfo, private val properties: Backup
                     selectedMode = selectedMode xor possibleModes[index]
                 }
                 .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
-                    listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
+                    if (selectedMode != BU_MODE_UNSET)
+                        listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
                 }
                 .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .create()

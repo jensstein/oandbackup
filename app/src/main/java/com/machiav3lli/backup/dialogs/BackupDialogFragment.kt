@@ -61,7 +61,8 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
                     selectedMode = selectedMode xor possibleModes[index]
                 }
                 .setPositiveButton(R.string.backup) { _: DialogInterface?, _: Int ->
-                    listener.onActionCalled(ActionType.BACKUP, selectedMode, null)
+                    if (selectedMode != BU_MODE_UNSET)
+                        listener.onActionCalled(ActionType.BACKUP, selectedMode, null)
                 }
                 .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .create()
