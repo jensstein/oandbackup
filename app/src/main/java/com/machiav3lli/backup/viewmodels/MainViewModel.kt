@@ -21,6 +21,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.dbs.Blocklist
 import com.machiav3lli.backup.dbs.BlocklistDao
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfo
@@ -38,7 +39,7 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
 
-    var blocklist = MediatorLiveData<List<String>>()
+    var blocklist = MediatorLiveData<List<Blocklist>>()
 
     private val _initial = MutableLiveData<Boolean>()
     val initial: LiveData<Boolean>
@@ -54,12 +55,12 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     init {
         _initial.value = true
+        blocklist.addSource(database.liveAll, blocklist::setValue)
         nUpdatedApps.value = 0
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            blocklist.value = loadBlocklist()
             _initial.value = false
             _refreshActive.value = true
             appInfoList.value = recreateAppInfoList()
@@ -72,12 +73,11 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         _refreshActive.value = false
     }
 
-    private suspend fun loadBlocklist(): List<String> = withContext(Dispatchers.IO) { database.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID) }
-
     private suspend fun recreateAppInfoList(): MutableList<AppInfo> {
         return withContext(Dispatchers.IO) {
+            val blockedPackagesList = blocklist.value?.map { it.packageName ?: "" } ?: listOf()
             val dataList = BackendController
-                    .getApplicationList(appContext, blocklist.value ?: listOf())
+                    .getApplicationList(appContext, blockedPackagesList)
             dataList
         }
     }

@@ -134,6 +134,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 binding.updatedBar.visibility = View.GONE
             }
         })
+        viewModel.blocklist.observe(this, {
+            viewModel.refreshList()
+        })
         initShell()
         runOnUiThread { showEncryptionDialog() }
         setupViews()
