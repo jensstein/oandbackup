@@ -25,7 +25,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 
-class ScheduleNameDialog(private var scheduleName: CharSequence, var confirmListener: (String) -> Unit) : DialogFragment() {
+class ScheduleNameDialog(private var scheduleName: CharSequence, var confirmListener: (String) -> Unit)
+    : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val nameEdit = EditText(requireContext())

@@ -20,27 +20,22 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.utils.scheduleAlarm
-import com.machiav3lli.backup.utils.timeUntilNextEvent
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.concurrent.TimeUnit
 
 class BootReceiver : BroadcastReceiver() {
-    private val currentTime: Long
-        get() = System.currentTimeMillis()
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action?.contains("BOOT_COMPLETED") == true) {
             val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
-            Thread(DatabaseRunnable(context, scheduleDao, currentTime)).start()
+            Thread(DatabaseRunnable(context, scheduleDao)).start()
         }
     }
 
-    private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao, private val currentTime: Long)
+    private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao)
         : Runnable {
         private val scheduleDaoReference: WeakReference<ScheduleDao> = WeakReference(scheduleDao)
 
@@ -49,17 +44,10 @@ class BootReceiver : BroadcastReceiver() {
             if (scheduleDao == null) {
                 Timber.w("Bootreceiver database thread resources was null")
                 return
-            }
-            val schedules: List<Schedule> = scheduleDao.all
-                    .filter { it.enabled }
-                    .toList()
-            for (schedule in schedules) {
-                val timeLeft = timeUntilNextEvent(schedule, currentTime)
-                if (timeLeft <= TimeUnit.MINUTES.toMillis(5)) {
-                    scheduleAlarm(context, schedule.id, false)
-                } else {
-                    scheduleAlarm(context, schedule.id, true)
-                }
+            } else {
+                scheduleDao.all
+                        .filter { it.enabled }
+                        .forEach { scheduleAlarm(context, it.id, false) }
             }
         }
     }

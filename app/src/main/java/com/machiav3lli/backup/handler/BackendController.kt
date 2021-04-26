@@ -75,10 +75,7 @@ object BackendController {
     }
 
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context): MutableList<AppInfo> = getApplicationList(context, true)
-
-    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context, includeUninstalled: Boolean): MutableList<AppInfo> {
+    fun getApplicationList(context: Context, blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
         invalidateCache()
         val includeSpecial = getDefaultSharedPreferences(context).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
         val pm = context.packageManager
@@ -86,7 +83,7 @@ object BackendController {
         val packageInfoList = pm.getInstalledPackages(0)
         val packageList = packageInfoList
                 .filterNotNull()
-                .filter { !ignoredPackages.contains(it.packageName) }
+                .filter { !ignoredPackages.contains(it.packageName) && !blocklist.contains(it.packageName) }
                 .map { AppInfo(context, it, backupRoot.uri) }
                 .toMutableList()
         // Special Backups must added before the uninstalled packages, because otherwise it would
@@ -106,7 +103,7 @@ object BackendController {
             // if it fails, null the object for filtering in the next step to avoid crashes
                     // filter out previously failed backups
                     directoriesInBackupRoot
-                            .filter { !installedPackageNames.contains(it.name) }
+                            .filter { !installedPackageNames.contains(it.name) && !blocklist.contains(it.name) }
                             .mapNotNull {
                                 try {
                                     AppInfo(context, it.uri, it.name)
@@ -126,7 +123,7 @@ object BackendController {
         val backupRoot = getBackupRoot(context)
         try {
             return backupRoot.listFiles()
-                    .filter { it.isDirectory && it.name != LogsHandler.LOG_FOLDER_NAME }
+                    .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }
                     .toList()
         } catch (e: FileNotFoundException) {
             Timber.e("${e.javaClass.simpleName}: ${e.message}")

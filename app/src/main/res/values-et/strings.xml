@@ -15,8 +15,6 @@
     <string name="radio_data">Andmed</string>
     <string name="radio_special">Erilised varundused</string>
     <string name="de_selectAll">(Ära) vali kõik</string>
-    <string name="onlyApkBackedUp">Ainult APK</string>
-    <string name="onlyDataBackedUp">Ainult andmed</string>
     <string name="refresh">Värskenda</string>
     <string name="batchbackup">Massvarundus</string>
     <string name="batchrestore">Masstaaste</string>
@@ -44,9 +42,7 @@
     <string name="dialogYes">Jah</string>
     <string name="dialogNo">Ei</string>
     <string name="restoreDataWithoutApkError">Andmed ei saa taastada ilma et taastaks APK-i, pakett pole paigaldatud.</string>
-    <string name="collectingData">Paketi info kogumine…</string>
     <string name="noSu">Superuseri õiguste saamine ebaõnnestus</string>
-    <string name="busyboxProblem">Busyboxi ei leitud, palun kontrolli vealogi</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Ei saanud luua faili</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -117,7 +113,7 @@
     <string name="sched_mode">Varundusrežiim:</string>
     <string name="sched_timeLeft">Aega järgmise varunduseni:</string>
     <string name="sched_excludeSystemCheckBox">Välista süsteemirakendused</string>
-    <string name="sched_blacklist">Must nimekiri</string>
+    <string name="sched_blocklist">Must nimekiri</string>
     <string name="spec_accounts">Kontod</string>
     <string name="spec_appwidgets">Rakenduste vidinad</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -175,7 +171,6 @@
     <string name="sort_and_filter">Sorteeri ja filtreeri</string>
     <string name="welcome_to_oabx">Tere tulemast OABX-i!</string>
     <string name="enable_encryption_title">Andmete krüpteering</string>
-    <string name="help_group">Meie grupp</string>
     <string name="apptype_special">Eriline varundus</string>
     <string name="sortDataSize">Andmete suurus</string>
     <string name="dialog_unlock">Lukusta lahti</string>

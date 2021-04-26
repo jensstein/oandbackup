@@ -9,8 +9,6 @@
     <string name="search">തിരയുക</string>
     <string name="batchrestore">കൂട്ടമായി റിസ്റോർ</string>
     <string name="refresh">ലോഡ്</string>
-    <string name="onlyDataBackedUp">ഡാറ്റ മാത്രം</string>
-    <string name="onlyApkBackedUp">APK മാത്രം</string>
     <string name="de_selectAll">മുഴുവൻ തിരഞ്ഞെടുക്കുക</string>
     <string name="radio_obbdata">OBB ഡാറ്റ</string>
     <string name="radio_externaldata">മറ്റ് ഡാറ്റകൾ</string>

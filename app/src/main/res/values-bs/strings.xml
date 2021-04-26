@@ -13,9 +13,8 @@
     <string name="all">Sve</string>
     <string name="applyFilter">Primjeni</string>
     <string name="shellReturnError">Greška</string>
-    <string name="sched_blacklist">Crna lista</string>
+    <string name="sched_blocklist">Crna lista</string>
     <string name="showNewAndUpdated">Nove i ažurirane aplikacije</string>
-    <string name="onlyDataBackedUp">Samo podaci</string>
     <string name="radio_updated">Ažurirano</string>
     <string name="radio_data">Podaci</string>
     <string name="radio_both">APK i Podaci</string>
@@ -26,7 +25,6 @@
     <string name="showOnlyUser">Samo korisničke aplikacije</string>
     <string name="showOnlySystem">Samo sistemske aplikacije</string>
     <string name="refresh">Osvježi</string>
-    <string name="onlyApkBackedUp">Samo APK</string>
     <string name="radio_apk">APK</string>
     <string name="radio_system">Sistemske aplikacije</string>
     <string name="radio_all">Sve aplikacije</string>
@@ -58,7 +56,6 @@
     <string name="prefs_password_summary">Ostavite prazno da bi isključili enkripciju</string>
     <string name="customListTitle">Prilagođena lista</string>
     <string name="mkfileError">Nije moguće napraviti</string>
-    <string name="busyboxProblem">BusyBox nije pronađen. Molimo provjerite zapisnik grešaka</string>
     <string name="prefs_logviewer">Pogledaj zapisnik</string>
     <string name="prefs_copyselfapk">Kopiraj lični APK</string>
     <string name="prefs_password">Šifra za enkripciju</string>
@@ -76,7 +73,6 @@
     <string name="searchHint">Traži aplikacije</string>
     <string name="radio_special">Posebne sigurnosne kopije</string>
     <string name="welcome_to_oabx">Dobro došli u OABX!</string>
-    <string name="help_group">Naša grupa</string>
     <string name="ignore_battery_optimization_title">Optimizacija baterije</string>
     <string name="deleted_backup">Sigurnosna kopija je obrisana</string>
     <string name="version_name_title">Naziv verzije:</string>
@@ -116,7 +112,6 @@
     <string name="prefs_advanced">Napredne postavke</string>
     <string name="prefs_service">Postavke usluge</string>
     <string name="batchDeleteNothingToDelete">Nema sigurnosnih kopija za obrisati</string>
-    <string name="collectingData">Prikupljam info o paketu…</string>
     <string name="deleteBackupDialogMessage">Obrisati datoteke sigurnosne kopije\?</string>
     <string name="showSplitAPKs">Podijeljeni APK</string>
     <string name="split_apks">Podijeljeni APK-ovi:</string>

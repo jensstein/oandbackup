@@ -55,7 +55,7 @@
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.Label"
                 app:layout_constraintBottom_toBottomOf="@id/logDate"
-                app:layout_constraintEnd_toStartOf="@id/delete"
+                app:layout_constraintEnd_toStartOf="@id/share"
                 app:layout_constraintStart_toEndOf="@id/logDate"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,6 +84,20 @@
                 app:layout_constraintTop_toTopOf="@id/sdkCodename" />
 
             <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/cards_spacing"
+                android:background="@drawable/bg_button_positive_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_share"
+                app:layout_constraintBottom_toBottomOf="@id/sdkCodename"
+                app:layout_constraintEnd_toStartOf="@id/delete"
+                app:layout_constraintStart_toEndOf="@id/deviceName"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -94,7 +108,7 @@
                 android:src="@drawable/ic_delete"
                 app:layout_constraintBottom_toBottomOf="@id/sdkCodename"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/deviceName"
+                app:layout_constraintStart_toEndOf="@id/share"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView

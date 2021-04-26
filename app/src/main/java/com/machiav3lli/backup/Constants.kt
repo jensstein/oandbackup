@@ -19,15 +19,23 @@ package com.machiav3lli.backup
 
 import java.time.format.DateTimeFormatter
 
-const val TAG_BASE = "OAndBackupX"
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
+const val EXPORTS_FOLDER_NAME = "EXPORTS"
+const val LOG_FOLDER_NAME = "LOGS"
+
+const val LOG_INSTANCE = "%s.log"
+const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
+const val BACKUP_INSTANCE_DIR = "%s-user_%s"
+const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
-const val BLACKLIST_DB_NAME = "blacklists.db"
+const val BLOCKLIST_DB_NAME = "blocklist.db"
 
-const val BLACKLIST_ARGS_ID = "blacklistId"
-const val BLACKLIST_ARGS_PACKAGES = "blacklistedPackages"
+const val PACKAGES_LIST_ARGS_PACKAGES = "selectedPackages"
+const val PACKAGES_LIST_GLOBAL_ID = -1L
+
 const val PREFS_SORT_FILTER = "sortFilter"
+const val PREFS_SORT_ORDER = "sortOrder"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
 const val PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization"
 const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"
@@ -57,6 +65,7 @@ const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
+const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
@@ -64,6 +73,13 @@ const val MODE_UNSET = 0
 const val MODE_APK = 1
 const val MODE_DATA = 2
 const val MODE_BOTH = 3
+
+const val BU_MODE_UNSET = 0b00000
+const val BU_MODE_APK = 0b10000
+const val BU_MODE_DATA = 0b01000
+const val BU_MODE_DATA_DE = 0b00100
+const val BU_MODE_DATA_EXT = 0b00010
+const val BU_MODE_OBB = 0b00001
 
 const val MAIN_SORT_LABEL = '0'
 const val MAIN_SORT_PACKAGENAME = '1'
@@ -106,8 +122,6 @@ const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
-
-fun classTag(tag: String): String = TAG_BASE + tag
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
 

@@ -28,6 +28,10 @@ import com.machiav3lli.backup.PREFS_ENCRYPTION
 import com.machiav3lli.backup.PREFS_PASSWORD
 import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.utils.getEncryptionPassword
+import com.machiav3lli.backup.utils.getEncryptionPasswordConfirmation
+import com.machiav3lli.backup.utils.setEncryptionPassword
+import com.machiav3lli.backup.utils.setEncryptionPasswordConfirmation
 
 class PrefsServiceFragment : PreferenceFragmentCompat() {
     private lateinit var encryptPref: CheckBoxPreference
@@ -56,11 +60,25 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
             onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref)
         }
         passwordPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            onPrefChangePassword(passwordConfirmationPref, newValue as String, passwordConfirmationPref.text)
+            setEncryptionPassword(requireContext(), newValue as String)
+            onPrefChangePassword(passwordConfirmationPref, newValue, passwordConfirmationPref.text)
         }
         passwordConfirmationPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue as String)
+            setEncryptionPasswordConfirmation(requireContext(), newValue as String)
+            onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        passwordPref.text = getEncryptionPassword(requireContext())
+        passwordConfirmationPref.text = getEncryptionPasswordConfirmation(requireContext())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        passwordPref.text = ""
+        passwordConfirmationPref.text = ""
     }
 
     private fun onPrefChangeEncryption(encryption: CheckBoxPreference, password: EditTextPreference, passwordConfirmation: EditTextPreference): Boolean {

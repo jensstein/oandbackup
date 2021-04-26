@@ -20,6 +20,8 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
+import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.dbs.BlocklistDao
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class MainViewModel(private val appContext: Application)
+class MainViewModel(val database: BlocklistDao, private val appContext: Application)
     : AndroidViewModel(appContext) {
 
     val apkCheckedList = mutableListOf<String>()
@@ -35,6 +37,8 @@ class MainViewModel(private val appContext: Application)
     val dataCheckedList = mutableListOf<String>()
 
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
+
+    var blocklist = MediatorLiveData<List<String>>()
 
     private val _initial = MutableLiveData<Boolean>()
     val initial: LiveData<Boolean>
@@ -55,6 +59,7 @@ class MainViewModel(private val appContext: Application)
 
     fun refreshList() {
         viewModelScope.launch {
+            blocklist.value = loadBlocklist()
             _initial.value = false
             _refreshActive.value = true
             appInfoList.value = recreateAppInfoList()
@@ -67,9 +72,12 @@ class MainViewModel(private val appContext: Application)
         _refreshActive.value = false
     }
 
+    private suspend fun loadBlocklist(): List<String> = withContext(Dispatchers.IO) { database.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID) }
+
     private suspend fun recreateAppInfoList(): MutableList<AppInfo> {
         return withContext(Dispatchers.IO) {
-            val dataList = BackendController.getApplicationList(appContext)
+            val dataList = BackendController
+                    .getApplicationList(appContext, blocklist.value ?: listOf())
             dataList
         }
     }

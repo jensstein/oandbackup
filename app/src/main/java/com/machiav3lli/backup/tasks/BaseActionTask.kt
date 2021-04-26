@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -61,7 +62,7 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
             showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
             showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
-            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, result?.message ?: "") })
+            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, LogsHandler.handleErrorMessages(mainActivityX,result?.message) ?: "") })
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.snackBar?.dismiss()
         }

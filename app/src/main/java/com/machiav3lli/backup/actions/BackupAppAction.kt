@@ -65,31 +65,33 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             preprocessPackage(app.packageName)
         }
         try {
-            if (backupMode and MODE_APK == MODE_APK) {
+            if (backupMode and BU_MODE_APK == BU_MODE_APK) {
                 Timber.i("$app: Backing up package")
                 backupPackage(app, backupInstanceDir)
                 backupBuilder.setHasApk(true)
             }
-            if (backupMode and MODE_DATA == MODE_DATA) {
+            var backupCreated: Boolean
+            if (backupMode and BU_MODE_DATA == BU_MODE_DATA) {
                 Timber.i("$app: Backing up data")
-                var backupCreated = backupData(app, backupInstanceDir)
+                backupCreated = backupData(app, backupInstanceDir)
                 backupBuilder.setHasAppData(backupCreated)
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXTERNALDATA, false)) {
-                    Timber.i("$app: Backing up external data")
-                    backupCreated = backupExternalData(app, backupInstanceDir)
-                    backupBuilder.setHasExternalData(backupCreated)
-                }
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_OBBDATA, false)) {
-                    Timber.i("$app: Backing up obb files")
-                    backupCreated = backupObbData(app, backupInstanceDir)
-                    backupBuilder.setHasObbData(backupCreated)
-                }
-                if (getDefaultSharedPreferences(context).getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) {
-                    Timber.i("$app: Backing up device's protected data")
-                    backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
-                    backupBuilder.setHasDevicesProtectedData(backupCreated)
-                }
             }
+            if (backupMode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) {
+                Timber.i("$app: Backing up device's protected data")
+                backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
+                backupBuilder.setHasDevicesProtectedData(backupCreated)
+            }
+            if (backupMode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) {
+                Timber.i("$app: Backing up external data")
+                backupCreated = backupExternalData(app, backupInstanceDir)
+                backupBuilder.setHasExternalData(backupCreated)
+            }
+            if (backupMode and BU_MODE_OBB == BU_MODE_OBB) {
+                Timber.i("$app: Backing up obb files")
+                backupCreated = backupObbData(app, backupInstanceDir)
+                backupBuilder.setHasObbData(backupCreated)
+            }
+
             if (isEncryptionEnabled(context)) {
                 backupBuilder.setCipherType(CIPHER_ALGORITHM)
             }
@@ -110,6 +112,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, app)
+            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+            Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
             if (stopProcess) {
@@ -123,7 +127,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(packageBackupDir: StorageFile, properties: BackupProperties) {
-        val propertiesFileName = String.format(BackupProperties.BACKUP_INSTANCE_PROPERTIES,
+        val propertiesFileName = String.format(BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId)
         val propertiesFile = packageBackupDir.createFile("application/octet-stream", propertiesFileName)
         BufferedOutputStream(context.contentResolver.openOutputStream(propertiesFile?.uri
@@ -138,10 +142,10 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupFilename = getBackupArchiveFilename(what!!, isEncryptionEnabled(context))
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
-        val password = getDefaultSharedPreferences(context).getString(PREFS_PASSWORD, "")
+        val password = getEncryptionPassword(context)
         var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
                 ?: Uri.EMPTY, "w"))
-        if (!password.isNullOrEmpty()) {
+        if (password.isNotEmpty()) {
             outStream = encryptStream(outStream, password, getCryptoSalt(context))
         }
         try {

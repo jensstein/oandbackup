@@ -21,6 +21,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.BackupProperties
@@ -42,7 +43,7 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
     private fun ensureBackupPath(backupRoot: Uri): StorageFile? {
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
-        return ensureDirectory(StorageFile.fromUri(context, backupRoot), String.format(BackupProperties.BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
+        return ensureDirectory(StorageFile.fromUri(context, backupRoot), String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
     }
 
     fun setHasApk(hasApk: Boolean) {

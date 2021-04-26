@@ -15,8 +15,6 @@
     <string name="radio_data">Dane</string>
     <string name="radio_special">Pokaż tylko specjalne kopie zapasowe</string>
     <string name="de_selectAll">Odznacz/zaznacz wszystko</string>
-    <string name="onlyApkBackedUp">Tylko APK</string>
-    <string name="onlyDataBackedUp">Tylko dane</string>
     <string name="refresh">Odśwież</string>
     <string name="batchbackup">Grupowa kopia zapasowa</string>
     <string name="batchrestore">Grupowe przywracanie</string>
@@ -44,9 +42,7 @@
     <string name="dialogYes">Tak</string>
     <string name="dialogNo">Nie</string>
     <string name="restoreDataWithoutApkError">Nie można przywrócić danych bez przywracania APK, pakiet nie jest zainstalowany.</string>
-    <string name="collectingData">Zbieranie informacji o pakiecie…</string>
     <string name="noSu">Nie można uzyskać uprawnień superuser</string>
-    <string name="busyboxProblem">Nie można znaleźć BusyBox, sprawdź dziennik błędów</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Nie można utworzyć</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -117,7 +113,7 @@
     <string name="sched_mode">Tryb tworzenia kopii zapasowych:</string>
     <string name="sched_timeLeft">Pozostały czas:</string>
     <string name="sched_excludeSystemCheckBox">Wyklucz aplikacje systemowe</string>
-    <string name="sched_blacklist">Czarna lista</string>
+    <string name="sched_blocklist">Czarna lista</string>
     <string name="spec_accounts">Konta</string>
     <string name="spec_appwidgets">Widżety aplikacji</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -189,7 +185,6 @@
     <string name="sort_and_filter">Sortowanie i filtrowanie</string>
     <string name="enable_encryption_message">Przechowywanie danych na urządzeniu nie jest bezpieczne. Dla bezpieczeństwa włącz szyfrowanie i ustaw hasło.</string>
     <string name="enable_encryption_title">Szyfrowanie danych</string>
-    <string name="help_group">Nasza grupa</string>
     <string name="cache_size">Rozmiar pamięci podręcznej:</string>
     <string name="data_size">Rozmiar danych:</string>
     <string name="app_size">Rozmiar aplikacji:</string>
@@ -247,4 +242,15 @@
     <string name="exodus_report">Raport Exodus</string>
     <string name="clear_cache">Wyczyść pamięć podręczną</string>
     <string name="sched_name">Nazwa:</string>
+    <string name="copyOwnApkFailed">Nie udało się skopiować pliku APK aplikacji do katalogu kopii zapasowej</string>
+    <string name="copyOwnApkSuccess">Skopiowano plik APK aplikacji do katalogu kopii zapasowych</string>
+    <string name="forceKillMessage">Czy na pewno chcesz wymusić zatrzymanie aplikacji\?</string>
+    <string name="app_info">Informacje o aplikacji</string>
+    <string name="prefs_saveappslist_summary">Zapisuje listę aplikacji do pliku txt w katalogu kopii zapasowej</string>
+    <string name="prefs_saveappslist">Zapisz listę aplikacji</string>
+    <string name="prefs_devicelock_summary">Zabezpiecz aplikację za pomocą blokady ekranu urządzenia</string>
+    <string name="prefs_devicelock">Blokada ekranu</string>
+    <string name="usage_notes_title">Wskazówki dotyczące użytkowania</string>
+    <string name="main">Główna</string>
+    <string name="prefs_enablespecial_summary">Nadal wymaga intensywnych testów, istnieje niebezpieczeństwo, że może to spowodować bootloops. Opinie są zawsze mile widziane.</string>
 </resources>

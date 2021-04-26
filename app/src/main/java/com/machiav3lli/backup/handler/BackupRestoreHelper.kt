@@ -51,9 +51,9 @@ object BackupRestoreHelper {
         // Select and prepare the action to use
         val action: BackupAppAction
         if (appInfo.isSpecial) {
-            if (reBackupMode and MODE_APK == MODE_APK) {
+            if (reBackupMode and BU_MODE_APK == BU_MODE_APK) {
                 Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                reBackupMode = reBackupMode and MODE_DATA
+                reBackupMode = reBackupMode and BU_MODE_DATA
                 Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
             }
             action = BackupSpecialAction(context, shell)

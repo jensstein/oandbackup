@@ -42,18 +42,6 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
         schedules.addSource(database.liveAll, schedules::setValue)
     }
 
-    fun removeSchedule(id: Long) {
-        viewModelScope.launch {
-            remove(id)
-        }
-    }
-
-    private suspend fun remove(id: Long) {
-        withContext(Dispatchers.IO) {
-            database.deleteById(id)
-        }
-    }
-
     fun addSchedule() {
         viewModelScope.launch {
             add()

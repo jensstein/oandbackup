@@ -20,8 +20,6 @@
     <string name="radio_deviceprotecteddata">Device Protected Data</string>
     <string name="radio_obbdata">OBB Data</string>
     <string name="de_selectAll">De/select all</string>
-    <string name="onlyApkBackedUp">APK only</string>
-    <string name="onlyDataBackedUp">Data only</string>
     <string name="refresh">Refresh</string>
     <string name="batchbackup">Batch backup</string>
     <string name="batchrestore">Batch restore</string>
@@ -45,10 +43,8 @@
     <string name="uninstallDialogMessage">Uninstall this app?</string>
     <string name="deleteBackupDialogMessage">Delete backup files?</string>
     <string name="restoreDataWithoutApkError">Cannot restore data without restoring the APK, the package is not installed.</string>
-    <string name="collectingData">Collecting package info…</string>
     <string name="utilboxCheck" translatable="false">Checking for BusyBox/Toybox…</string>
     <string name="noSu">Couldn\'t get superuser permissions</string>
-    <string name="busyboxProblem">Couldn\'t find BusyBox. Please check the error log</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Couldn\'t create</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -153,7 +149,7 @@
     <string name="sched_mode">Backup mode:</string>
     <string name="sched_timeLeft">Time left:</string>
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
-    <string name="sched_blacklist">Blacklist</string>
+    <string name="sched_blocklist">Blocklist</string>
     <string name="spec_accounts">Accounts</string>
     <string name="spec_appwidgets">App Widgets</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -208,7 +204,8 @@
     <string name="cache_size">Cache Size:</string>
     <string name="logfileSavedAt" translatable="false">Logfile saved at %s</string>
     <string name="help_license">License</string>
-    <string name="help_group">Our Group</string>
+    <string name="help_group_telegram">Our Group on Telegram</string>
+    <string name="help_group_matrix">Our Group on Matrix</string>
     <string name="help_faq">Frequently Asked Questions</string>
     <string name="help_legend">Legend:</string>
     <string name="help_appTypeHint">* App type\'s icon would be gray if the app is uninstalled and dark gray if the app is disabled.</string>
@@ -252,6 +249,25 @@
     <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
     <string name="wait_noappslist">Apps\' list is still not fetched. Wait…</string>
     <string name="filtered_list">Filtered list</string>
+    <string name="write_apps_list_filtered">Wrote filtered apps list file</string>
+    <string name="write_apps_list_all">Wrote all apps list file</string>
+    <string name="prefs_schedulesexportimport">Export/import schedules</string>
+    <string name="prefs_schedulesexportimport_summary">Exports or imports the list of schedules you\'ve created.</string>
+    <string name="no_file_manager_title">No SAF manager</string>
+    <string name="no_file_manager_message">There\'s no file manager to manage SAF. Maybe you\'ve disabled the built-in file manager. Please restore it or reenable it.</string>
+    <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
+    <string name="schedule_failed">Running schedule failed</string>
+    <string name="dialog_export">Export</string>
+    <string name="dialog_import">Import</string>
+    <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
+    <string name="sched_exported">Schedules were exported sucessfully</string>
+    <string name="sched_imported">Schedule imported successfully</string>
+    <string name="logs_share_failed">Log file not found</string>
+    <string name="sortAscDesc">Ascending-Descending</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">each day</item>
+        <item quantity="other">each %d days</item>
+    </plurals>
     <plurals name="days_left">
         <item quantity="one">%d day,</item>
         <item quantity="other">%d days,</item>

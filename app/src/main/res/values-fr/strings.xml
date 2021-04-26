@@ -11,8 +11,6 @@
     <string name="radio_data">Données</string>
     <string name="radio_both">APK et données</string>
     <string name="de_selectAll">tout dé/sélectionner</string>
-    <string name="onlyApkBackedUp">l\'APK seulement</string>
-    <string name="onlyDataBackedUp">Les données seulement</string>
     <string name="refresh">Rafraîchir</string>
     <string name="batchbackup">sauvegarder par lot</string>
     <string name="batchrestore">restaurer par lot</string>
@@ -40,10 +38,8 @@
     <string name="dialogYes">oui</string>
     <string name="dialogNo">non</string>
     <string name="restoreDataWithoutApkError">impossible de restaurer les données sans restaurer l\'APK car l\'application n\'est pas installée.</string>
-    <string name="collectingData">collecte des informations des paquets…</string>
     <string name="utilboxCheck">vérification de le présence de busybox/toybox…</string>
     <string name="noSu">impossible d\'acquérir les droits de super-utilisateur</string>
-    <string name="busyboxProblem">Impossible de trouver BusyBox. Référez-vous au journal des erreurs</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Impossible de créer</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
@@ -105,7 +101,6 @@
     <string name="sort_and_filter">Trier et filtrer</string>
     <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non crypées. Pour la sécurité de vos données, activez le cryptage et définissez un mot de passe.</string>
     <string name="enable_encryption_title">Cryptage des données</string>
-    <string name="help_group">Notre groupe</string>
     <string name="help_license">Licence</string>
     <string name="cache_size">Taille du cache :</string>
     <string name="data_size">Taille des données :</string>
@@ -151,7 +146,7 @@
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_appwidgets">Widgets d\'applications</string>
     <string name="spec_accounts">Comptes</string>
-    <string name="sched_blacklist">Liste noire</string>
+    <string name="sched_blocklist">Liste noire</string>
     <string name="sched_activateButton">Démarrer maintenant</string>
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>

@@ -61,6 +61,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
         deviceLockPref = findPreference(PREFS_DEVICELOCK)!!
+        deviceLockPref.isVisible = isDeviceLockAvailable(requireContext())
         biometricLockPref = findPreference(PREFS_BIOMETRICLOCK)!!
         biometricLockPref.isVisible = deviceLockPref.isChecked && isBiometricLockAvailable(requireContext())
     }
@@ -79,7 +80,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             pref.summary = getString(R.string.prefs_unset)
         }
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            requireStorageLocation(askForDirectory)
+            requireStorageLocation(requireActivity(), askForDirectory)
             true
         }
         deviceLockPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->

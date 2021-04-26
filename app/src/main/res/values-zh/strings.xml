@@ -15,8 +15,6 @@
     <string name="radio_data">数据</string>
     <string name="radio_special">特殊备份</string>
     <string name="de_selectAll">取消/全选</string>
-    <string name="onlyApkBackedUp">仅 APK</string>
-    <string name="onlyDataBackedUp">仅数据</string>
     <string name="refresh">刷新</string>
     <string name="batchbackup">批量备份</string>
     <string name="batchrestore">批量还原</string>
@@ -44,9 +42,7 @@
     <string name="dialogYes">是</string>
     <string name="dialogNo">否</string>
     <string name="restoreDataWithoutApkError">还原应用数据必须先安装或还原相应的APK.</string>
-    <string name="collectingData">正在收集安装包信息…</string>
     <string name="noSu">无法获得超级用户权限</string>
-    <string name="busyboxProblem">找不到 busybox。请检查错误日志</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">无法创建</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -117,7 +113,7 @@
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">剩余时间：</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
-    <string name="sched_blacklist">黑名单</string>
+    <string name="sched_blocklist">黑名单</string>
     <string name="spec_accounts">账户</string>
     <string name="spec_appwidgets">应用微件</string>
     <string name="spec_bluetooth">蓝牙</string>
@@ -184,7 +180,6 @@
     <string name="sort_and_filter">排序&amp;过滤</string>
     <string name="enable_encryption_message">在你的设备上不加密保存你的数据是不安全的。为了你的数据的安全，请启用加密并设置一个密码。</string>
     <string name="enable_encryption_title">数据加密</string>
-    <string name="help_group">官方群组</string>
     <string name="apptype_special">特别备份</string>
     <string name="sortDataSize">数据大小</string>
     <string name="dialog_unlock">解锁</string>
@@ -255,4 +250,21 @@
     <string name="prefs_saveappslist_summary">将应用列表写入用户备份目录中的 txt 文件</string>
     <string name="prefs_saveappslist">保存应用列表</string>
     <string name="filtered_list">过滤的列表</string>
+    <string name="dialog_import">导出</string>
+    <string name="dialog_export">导出</string>
+    <string name="schedule_failed">运行日程表失败</string>
+    <string name="shell_initproblem">无法启动外壳处理程序。缺少 toybox/busybox 或禁用了这类应用程序的 root 权限。</string>
+    <string name="no_file_manager_message">没有文件管理器来管理 SAF。也许你已经禁用了内置的文件管理器。请恢复或重新启用它。</string>
+    <string name="no_file_manager_title">无 SAF 管理器</string>
+    <string name="prefs_schedulesexportimport_summary">导出或导入你已创建的日程列表。</string>
+    <string name="prefs_schedulesexportimport">导出/导入时间表</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="other">每 %d 天</item>
+    </plurals>
+    <string name="logs_share_failed">日志文件未找到</string>
+    <string name="sched_imported">成功导入了时间表</string>
+    <string name="sched_exported">成功导出了时间表</string>
+    <string name="error_datachanged">在执行备份时，应用程序的数据已被主动更改。 尝试在备份之前杀死它的进程</string>
+    <string name="write_apps_list_all">写所有应用程序列表文件</string>
+    <string name="write_apps_list_filtered">写已过滤的应用程序列表文件</string>
 </resources>

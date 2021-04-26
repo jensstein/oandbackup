@@ -11,8 +11,6 @@
     <string name="radio_data">data</string>
     <string name="radio_both">apk + data</string>
     <string name="de_selectAll">av/markera alla</string>
-    <string name="onlyApkBackedUp">endast apk</string>
-    <string name="onlyDataBackedUp">endast data</string>
     <string name="refresh">uppdatera</string>
     <string name="batchbackup">säkerhetskopiera flera</string>
     <string name="batchrestore">återställ flera</string>
@@ -41,9 +39,7 @@
     <string name="dialogYes">ja</string>
     <string name="dialogNo">nej</string>
     <string name="restoreDataWithoutApkError">det går inte att återställa data utan att återställa apk, paketet är inte installerat.</string>
-    <string name="collectingData">samlar in paketinfo…</string>
     <string name="noSu">kunde inte få superuser-behörighet</string>
-    <string name="busyboxProblem">kunde inte hitta busybox, titta i felloggen</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">kunde inte skapa</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

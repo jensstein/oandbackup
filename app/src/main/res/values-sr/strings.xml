@@ -11,8 +11,6 @@
     <string name="radio_data">Подаци</string>
     <string name="radio_both">Apk + Подаци</string>
     <string name="de_selectAll">Обележи/поништи све</string>
-    <string name="onlyApkBackedUp">Само Apk</string>
-    <string name="onlyDataBackedUp">Само подаци</string>
     <string name="refresh">Освежи</string>
     <string name="batchbackup">Групна резервна копија</string>
     <string name="batchrestore">Групно враћање</string>
@@ -41,9 +39,7 @@
     <string name="dialogYes">Да</string>
     <string name="dialogNo">Не</string>
     <string name="restoreDataWithoutApkError">Подаци не могу бити враћени без Apk-а, пакет није инсталиран.</string>
-    <string name="collectingData">Скупљање података о пакетима…</string>
     <string name="noSu">Није могуће прибавити superuser дозволе</string>
-    <string name="busyboxProblem">Није могуће наћи busybox. Проверите записник</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Није могуће направити</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->

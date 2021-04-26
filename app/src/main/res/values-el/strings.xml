@@ -11,8 +11,6 @@
     <string name="radio_data">Δεδομένα</string>
     <string name="radio_both">Εφαρμογή + Δεδομένα</string>
     <string name="de_selectAll">Από/επιλογή όλων</string>
-    <string name="onlyApkBackedUp">Εφαρμογή μόνο</string>
-    <string name="onlyDataBackedUp">Δεδομένα μόνο</string>
     <string name="refresh">Ανανέωση</string>
     <string name="batchbackup">Μαζική δημιουργία αντιγράφων ασφαλείας</string>
     <string name="batchrestore">Μαζική επαναφορά</string>
@@ -41,9 +39,7 @@
     <string name="dialogYes">Ναι</string>
     <string name="dialogNo">Όχι</string>
     <string name="restoreDataWithoutApkError">Η επαναφορά των δεδομένων είναι αδύνατη χωρίς την επαναφορά της εφαρμογής, το πακέτο δεν είναι εγκατεστημένο.</string>
-    <string name="collectingData">Συλλογή πληροφοριών πακέτου…</string>
     <string name="noSu">Αδυναμία απόκτησης αδειών υπερχρήστη</string>
-    <string name="busyboxProblem">Αδυναμία εύρεσης ΒusyΒox. Παρακαλώ ελέγξτε το αρχείο καταγραφής σφαλμάτων</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Αδυναμία δημιουργίας</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -114,7 +110,7 @@
     <string name="sched_mode">Λειτουργία δημιουργίας αντιγράφου:</string>
     <string name="sched_timeLeft">Εναπομένων χρόνος:</string>
     <string name="sched_excludeSystemCheckBox">Εξαίρεση εφαρμογών συστήματος</string>
-    <string name="sched_blacklist">Μαύρη λίστα</string>
+    <string name="sched_blocklist">Μαύρη λίστα</string>
     <string name="spec_accounts">Λογαριασμοί</string>
     <string name="spec_appwidgets">Γραφικά στοιχεία Εφαρμογής</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -182,7 +178,6 @@
     <string name="enable_encryption_title">Κρυπτογράφηση Δεδομένων</string>
     <string name="help_appTypeHint">* Το εικονίδιο του τύπου εφαρμογής είναι γκρι εάν η εφαρμογή είναι απεγκατεστημένη και σκούρο γκρι εάν η εφαρμογή είναι απενεργοποιημένη.</string>
     <string name="help_legend">Υπόμνημα:</string>
-    <string name="help_group">Η Ομάδα μας</string>
     <string name="cache_size">Μέγεθος μνήμης Cache:</string>
     <string name="data_size">Μέγεθος Δεδομένων:</string>
     <string name="app_size">Μέγεθος Έφαρμογης:</string>

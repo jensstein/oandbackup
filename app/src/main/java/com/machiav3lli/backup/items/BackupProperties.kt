@@ -25,6 +25,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.utils.GsonUtils.instance
 import java.time.LocalDateTime
 
@@ -158,9 +159,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     }
 
     companion object {
-        const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
-        const val BACKUP_INSTANCE_DIR = "%s-user_%s"
-        val CREATOR: Parcelable.Creator<BackupProperties?> = object : Parcelable.Creator<BackupProperties?> {
+        val CREATOR = object : Parcelable.Creator<BackupProperties?> {
             override fun createFromParcel(source: Parcel): BackupProperties {
                 return BackupProperties(source)
             }

@@ -17,43 +17,102 @@
  */
 package com.machiav3lli.backup.dbs
 
+import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.MODE_BOTH
 import com.machiav3lli.backup.SCHED_FILTER_ALL
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.GsonUtils
+import org.apache.commons.io.IOUtils
+import java.io.FileNotFoundException
+import java.io.IOException
 
 @Entity
-class Schedule {
+open class Schedule() {
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
+    @Expose
     var id: Long = 0
 
+    @SerializedName("name")
+    @Expose
     var name: String? = "New Schedule"
 
     var enabled = false
 
+    @SerializedName("timeHour")
+    @Expose
     var timeHour = 0
 
+    @SerializedName("timeMinute")
+    @Expose
     var timeMinute = 0
 
+    @SerializedName("interval")
+    @Expose
     var interval = 1
 
     var timePlaced = System.currentTimeMillis()
 
+    @SerializedName("filter")
+    @Expose
     var filter: Int = SCHED_FILTER_ALL
 
+    @SerializedName("mode")
+    @Expose
     var mode: Int = MODE_BOTH
 
     var timeUntilNextEvent: Long = 0
 
+    @SerializedName("excludeSystem")
+    @Expose
     var excludeSystem = false
 
     val enableCustomList: Boolean
         get() = customList.isNotEmpty()
 
-    @TypeConverters(CustomListConverter::class)
+    @SerializedName("customList")
+    @Expose
+    @TypeConverters(AppsListConverter::class)
     var customList: Set<String> = setOf()
+
+    @SerializedName("blockList")
+    @Expose
+    @TypeConverters(AppsListConverter::class)
+    var blockList: Set<String> = setOf()
+
+    constructor(context: Context, exportFile: StorageFile) : this() {
+        try {
+            FileUtils.openFileForReading(context, exportFile.uri).use { reader ->
+                val item = fromGson(IOUtils.toString(reader))
+                this.id = item.id
+                this.name = item.name
+                this.mode = item.mode
+                this.filter = item.filter
+                this.timeHour = item.timeHour
+                this.timeMinute = item.timeMinute
+                this.interval = item.interval
+                this.excludeSystem = item.excludeSystem
+                this.customList = item.customList
+                this.blockList = item.blockList
+            }
+        } catch (e: FileNotFoundException) {
+            throw BackupItem.BrokenBackupException("Cannot open ${exportFile.name} at URI ${exportFile.uri}", e)
+        } catch (e: IOException) {
+            throw BackupItem.BrokenBackupException("Cannot read ${exportFile.name} at URI ${exportFile.uri}", e)
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, exportFile.uri)
+            throw BackupItem.BrokenBackupException("Unable to process ${exportFile.name} at URI ${exportFile.uri}. [${e.javaClass.canonicalName}] $e")
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -71,6 +130,7 @@ class Schedule {
                 && filter == schedule.filter
                 && mode == schedule.mode
                 && customList == schedule.customList
+                && blockList == schedule.blockList
     }
 
     override fun hashCode(): Int {
@@ -87,13 +147,18 @@ class Schedule {
         hash = 31 * hash + if (excludeSystem) 1 else 0
         hash = 31 * hash + if (enableCustomList) 1 else 0
         hash = 31 * hash + customList.hashCode()
+        hash = 31 * hash + blockList.hashCode()
         return hash
+    }
+
+    fun toGson(): String {
+        return GsonUtils.instance!!.toJson(this)
     }
 
     override fun toString(): String {
         return "Schedule{" +
                 "id=" + id +
-                ", name="+ name +
+                ", name=" + name +
                 ", enabled=" + enabled +
                 ", timeHour=" + timeHour +
                 ", timeMinute=" + timeMinute +
@@ -104,6 +169,7 @@ class Schedule {
                 ", excludeSystem=" + excludeSystem +
                 ", enableCustomList=" + enableCustomList +
                 ", customList=" + customList +
+                ", blockList=" + blockList +
                 '}'
     }
 
@@ -115,22 +181,40 @@ class Schedule {
             return this
         }
 
+        fun import(export: Schedule): Builder {
+            schedule.name = export.name
+            schedule.mode = export.mode
+            schedule.filter = export.filter
+            schedule.timeHour = export.timeHour
+            schedule.timeMinute = export.timeMinute
+            schedule.interval = export.interval
+            schedule.customList = export.customList
+            schedule.blockList = export.blockList
+            return this
+        }
+
         fun build(): Schedule {
             return schedule
         }
     }
 
-    class CustomListConverter {
+    class AppsListConverter {
         @TypeConverter
-        fun toCustomList(stringCustomList: String): Set<String> {
-            return if (stringCustomList == "") setOf()
-            else stringCustomList.split(",").toHashSet()
+        fun toAppsList(string: String): Set<String> {
+            return if (string == "") setOf()
+            else string.split(",").toHashSet()
         }
 
         @TypeConverter
-        fun toString(customList: Set<String?>?): String {
-            return if (customList?.isNotEmpty() == true) customList.joinToString(",")
+        fun toString(appsList: Set<String?>?): String {
+            return if (appsList?.isNotEmpty() == true) appsList.joinToString(",")
             else ""
+        }
+    }
+
+    companion object {
+        fun fromGson(gson: String?): Schedule {
+            return GsonUtils.instance!!.fromJson(gson, Schedule::class.java)
         }
     }
 }

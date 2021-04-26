@@ -15,8 +15,6 @@
     <string name="radio_data">Data</string>
     <string name="radio_special">Backup khusus</string>
     <string name="de_selectAll">Tidak/pilih semua</string>
-    <string name="onlyApkBackedUp">Hanya APK</string>
-    <string name="onlyDataBackedUp">Hanya data</string>
     <string name="refresh">Menyegarkan</string>
     <string name="batchbackup">Batch cadangan</string>
     <string name="batchrestore">Pemulihan batch</string>
@@ -44,9 +42,7 @@
     <string name="dialogYes">Iya</string>
     <string name="dialogNo">Tidak</string>
     <string name="restoreDataWithoutApkError">Tidak dapat mengembalikan data tanpa mengembalikan APK, paket tidak diinstal.</string>
-    <string name="collectingData">Mengumpulkan info paket…</string>
     <string name="noSu">Tidak bisa mendapatkan izin pengguna super</string>
-    <string name="busyboxProblem">Tidak dapat menemukan busybox. silakan periksa log kesalahan</string>
     <!-- mkfileError: kesalahan terjadi saat membuat file. format: string + " " + nama file -->
     <string name="mkfileError">Tidak dapat membuat</string>
     <!-- fallbackToDefault: menunjukkan fallback ke default untuk pembuatan file tertentu. digunakan dengan cara yang sama seperti mkfileError -->
@@ -110,14 +106,14 @@
     <string name="sched_title">Penjadwalan</string>
     <string name="sched_notificationMessage">Pencadangan terjadwal</string>
     <string name="sched_interval">Interval dalam hari:</string>
-    <string name="sched_hourOfDay">Jam hari:</string>
+    <string name="sched_hourOfDay">Waktu hari ini:</string>
     <string name="sched_checkbox">Memungkinkan</string>
-    <string name="sched_activateButton">Mulai cadangan sekarang</string>
+    <string name="sched_activateButton">Mulai sekarang</string>
     <string name="sched_startingbackup">Mulai cadangan terjadwal…</string>
     <string name="sched_mode">Mode cadangan:</string>
     <string name="sched_timeLeft">Waktu tersisa:</string>
     <string name="sched_excludeSystemCheckBox">Kecualikan aplikasi sistem</string>
-    <string name="sched_blacklist">Daftar hitam</string>
+    <string name="sched_blocklist">Daftar hitam</string>
     <string name="spec_accounts">Akun</string>
     <string name="spec_appwidgets">Widget Aplikasi</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -194,7 +190,6 @@
     <string name="enable_encryption_title">Enkripsi data</string>
     <string name="help_appTypeHint">* Ikon jenis aplikasi akan berwarna abu-abu jika aplikasi dicopot dan abu-abu tua jika aplikasi dinonaktifkan.</string>
     <string name="help_legend">Legenda:</string>
-    <string name="help_group">Grup Kami</string>
     <string name="help_license">Lisensi</string>
     <string name="apptype_special">Pencadangan khusus</string>
     <string name="sortDataSize">Ukuran data</string>
@@ -246,4 +241,13 @@
     <string name="prefs_obbdata">Cadangkan berkas obb</string>
     <string name="forceKillMessage">Apakah anda yakin untuk memaksa penghentian aplikasi\?</string>
     <string name="sched_name">Nama :</string>
+    <string name="filtered_list">Daftar yang difilter</string>
+    <string name="wait_noappslist">Daftar aplikasi masih belum diambil. Tunggu…</string>
+    <string name="copyOwnApkFailed">Gagal menyalin APK aplikasi ke direktori cadangan</string>
+    <string name="copyOwnApkSuccess">Menyalin APK aplikasi ke direktori cadangan</string>
+    <string name="prefs_saveappslist_summary">Menulis daftar aplikasi ke file txt di direktori cadangan pengguna</string>
+    <string name="prefs_saveappslist">Simpan daftar aplikasi</string>
+    <string name="prefs_enablespecial_summary">Masih perlu pengujian yang intensif, coba ketahui bahaya yang bisa menyebabkan boot loop. Umpan balik selalu diterima.</string>
+    <string name="prefs_devicelock_summary">Amankan aplikasi dengan kredensial perangkat</string>
+    <string name="prefs_devicelock">Kunci perangkat</string>
 </resources>

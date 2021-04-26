@@ -15,8 +15,6 @@
     <string name="radio_data">Veri</string>
     <string name="radio_special">Özel yedeklemeler</string>
     <string name="de_selectAll">Hepsini/Hiçbirini seç</string>
-    <string name="onlyApkBackedUp">Yalnızca APK</string>
-    <string name="onlyDataBackedUp">Yalnızca veri</string>
     <string name="refresh">Yenile</string>
     <string name="batchbackup">Toplu yedekleme</string>
     <string name="batchrestore">Toplu geri yükleme</string>
@@ -44,9 +42,7 @@
     <string name="dialogYes">Evet</string>
     <string name="dialogNo">Hayır</string>
     <string name="restoreDataWithoutApkError">APK geri yüklenmeden veriler geri yüklenemiyor, paket kurulu değil.</string>
-    <string name="collectingData">Paket bilgisi alınıyor…</string>
     <string name="noSu">superuser izinleri alınamadı</string>
-    <string name="busyboxProblem">BusyBox bulunamadı. Lütfen hata günlüğüne göz atın</string>
     <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
     <string name="mkfileError">Oluşturulamadı</string>
     <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
@@ -117,7 +113,7 @@
     <string name="sched_mode">Yedekleme modu:</string>
     <string name="sched_timeLeft">Kalan süre:</string>
     <string name="sched_excludeSystemCheckBox">Sistem uygulamalarını hariç tut</string>
-    <string name="sched_blacklist">Karaliste</string>
+    <string name="sched_blocklist">Karaliste</string>
     <string name="spec_accounts">Hesaplar</string>
     <string name="spec_appwidgets">Uygulama Widgetları</string>
     <string name="spec_bluetooth">Bluetooth</string>
@@ -178,7 +174,6 @@
     <string name="sort_and_filter">Sırala ve Filtrele</string>
     <string name="enable_encryption_message">Verilerinizi cihazınızda şifrelenmemiş halde tutmak güvenli değildir. Verilerinizin güvenliği için şifrelemeyi etkinleştirin ve bir parola belirleyin.</string>
     <string name="enable_encryption_title">Veri Şifreleme</string>
-    <string name="help_group">Grubumuz</string>
     <string name="help_license">Lisans</string>
     <string name="cache_size">Önbellek Boyutu:</string>
     <string name="data_size">Veri Boyutu:</string>

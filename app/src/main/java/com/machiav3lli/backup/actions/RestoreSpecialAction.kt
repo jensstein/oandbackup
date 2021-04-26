@@ -41,7 +41,7 @@ import java.io.IOException
 class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    override fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri) {
+    override fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int) {
         restoreData(app, backupProperties, fromUri(context, backupLocation))
     }
 

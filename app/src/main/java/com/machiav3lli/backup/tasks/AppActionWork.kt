@@ -26,13 +26,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.work.*
+import com.machiav3lli.backup.BU_MODE_UNSET
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.handler.LogsHandler
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -43,7 +44,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
     override suspend fun doWork(): Result {
         val packageName = inputData.getString("packageName")
                 ?: ""
-        val selectedMode = inputData.getInt("selectedMode", 0)
+        val selectedMode = inputData.getInt("selectedMode", BU_MODE_UNSET)
         this.backupBoolean = inputData.getBoolean("backupBoolean", true)
         this.notificationId = inputData.getInt("notificationId", 123454321)
         setForeground(createForegroundInfo())

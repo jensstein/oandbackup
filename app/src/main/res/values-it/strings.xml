@@ -11,8 +11,6 @@
     <string name="radio_data">Dati</string>
     <string name="radio_both">APK e dati</string>
     <string name="de_selectAll">De/seleziona tutto</string>
-    <string name="onlyApkBackedUp">Solo APK</string>
-    <string name="onlyDataBackedUp">Solo dati</string>
     <string name="refresh">Aggiorna</string>
     <string name="batchbackup">Backup multiplo</string>
     <string name="batchrestore">Ripristino multiplo</string>
@@ -41,10 +39,8 @@
     <string name="dialogYes">Sì</string>
     <string name="dialogNo">No</string>
     <string name="restoreDataWithoutApkError">Non è possibile ripristinare i dati senza ripristinare l\'APK, l\'applicazione non è installata.</string>
-    <string name="collectingData">Caricamento delle informazioni sulle applicazioni…</string>
     <string name="utilboxCheck">Controllo della presenza di busybox/toybox…</string>
     <string name="noSu">Impossibile ottenere i permessi da superuser</string>
-    <string name="busyboxProblem">Impossibile trovare busybox, controllare i log di errore</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Impossibile creare</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
@@ -123,7 +119,7 @@
     <string name="prefs_excludecache_summary">Cancella la cache dell\'applicazione prima di eseguire il backup dei dati</string>
     <string name="prefs_batchdelete_summary">Cancella i backup di tutte le app non installate in questo moment.</string>
     <string name="sched_activateButton">Inizia ora</string>
-    <string name="sched_blacklist">Lista nera</string>
+    <string name="sched_blocklist">Lista nera</string>
     <string name="error_creating_notification_channel">Impossibile creare canale di notifica</string>
     <string name="permission_not_granted">È richiesto il permesso per accedere alla memoria esterna</string>
     <string name="restart_dialog">Sembra che sia necessario riavviare l\'applicazione</string>
@@ -163,7 +159,6 @@
     <string name="sort_and_filter">Ordina e filtra</string>
     <string name="enable_encryption_message">Non è sicuro mantenere i dati sul dispositivo non crittografati. Per la sicurezza dei dati abilitare la crittografia e impostare una password.</string>
     <string name="enable_encryption_title">Crittografia dei dati</string>
-    <string name="help_group">Il nostro gruppo</string>
     <string name="cache_size">Dimensioni cache:</string>
     <string name="data_size">Dimensioni dati:</string>
     <string name="app_size">Dimensioni dell\'app:</string>

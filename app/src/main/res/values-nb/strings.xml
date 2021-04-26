@@ -11,8 +11,6 @@
     <string name="radio_data">Data</string>
     <string name="radio_both">APK + Data</string>
     <string name="de_selectAll">De/marker alle</string>
-    <string name="onlyApkBackedUp">Kun APK</string>
-    <string name="onlyDataBackedUp">Kun data</string>
     <string name="refresh">Gjenoppfrisk</string>
     <string name="batchbackup">Satsvis sikkerhetskopi</string>
     <string name="batchrestore">Satsvis gjenoppretting</string>
@@ -41,10 +39,8 @@
     <string name="dialogYes">Ja</string>
     <string name="dialogNo">Nei</string>
     <string name="restoreDataWithoutApkError">Data kan ikke gjenopprettes uten å gjenopprette APK-en, pakken er ikke installert.</string>
-    <string name="collectingData">Samler informasjon om pakken…</string>
     <string name="utilboxCheck">Sjekker for \'busybox/toybox\'</string>
     <string name="noSu">Fikk ikke \'superuser\'-tillatelse</string>
-    <string name="busyboxProblem">Fant ikke BusyBox. Sjekk feilrapporten</string>
     <!--mkfileError: an error occured while creating a file. format: string + " " + filename-->
     <string name="mkfileError">Kunne ikke opprette</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
@@ -117,7 +113,6 @@
     <string name="ignore_battery_optimization_not_supported">Denne enheten støtter ikke ignorering av batterioptimalisering.</string>
     <string name="ignore_battery_optimization_message">Sikkerhetskopiering kan stoppe noen ganger. For å forhindre dette bør du skru av batterioptimalisering</string>
     <string name="enable_encryption_title">Datakryptering</string>
-    <string name="help_group">Vår gruppe</string>
     <string name="cache_size">Hurtiglagerstørrelse:</string>
     <string name="data_size">Datastørrelse:</string>
     <string name="app_size">Programstørrelse:</string>
@@ -153,7 +148,7 @@
     <string name="permission_not_granted">Innvilg tilgang til eksternt lagringsmedium</string>
     <string name="error_updating_schedule_mode">Feil ved oppdatering %1$s i kjøreplanen %2$d</string>
     <string name="error_creating_notification_channel">Kunne ikke opprette merknadskanal</string>
-    <string name="sched_blacklist">Svarteliste</string>
+    <string name="sched_blocklist">Svarteliste</string>
     <string name="sched_add">Legg til kjøreplan</string>
     <string name="prefs_logviewer">Vis loggen</string>
     <string name="prefs_batchdelete_summary">Sletter sikkerhetskopier av alle programmer som ikke er installert</string>

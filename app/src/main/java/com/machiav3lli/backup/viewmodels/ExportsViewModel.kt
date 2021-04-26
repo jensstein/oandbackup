@@ -18,21 +18,23 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.content.Intent
 import androidx.lifecycle.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LogViewModel(private val appContext: Application)
+class ExportsViewModel(val database: ScheduleDao, private val appContext: Application)
     : AndroidViewModel(appContext) {
 
-    var logsList = MediatorLiveData<MutableList<LogItem>>()
+    var exportsList = MediatorLiveData<MutableList<Pair<Schedule, StorageFile>>>()
+    var schedules = MediatorLiveData<List<Schedule>>()
 
     private var _refreshActive = MutableLiveData<Boolean>()
     val refreshActive: LiveData<Boolean>
@@ -44,6 +46,7 @@ class LogViewModel(private val appContext: Application)
 
     init {
         refreshList()
+        schedules.addSource(database.liveAll, schedules::setValue)
     }
 
     fun finishRefresh() {
@@ -54,56 +57,49 @@ class LogViewModel(private val appContext: Application)
     fun refreshList() {
         viewModelScope.launch {
             _refreshActive.value = true
-            logsList.value = recreateAppInfoList()
+            exportsList.value = recreateExportsList()
             _refreshNow.value = true
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<LogItem>? {
+    private suspend fun recreateExportsList(): MutableList<Pair<Schedule, StorageFile>> {
         return withContext(Dispatchers.IO) {
-            val dataList = LogsHandler(appContext).readLogs()
+            val dataList = ExportsHandler(appContext).readExports()
             dataList
         }
     }
 
-    fun shareLog(log: LogItem) {
+    fun deleteExport(exportFile: StorageFile) {
         viewModelScope.launch {
-            share(log)
+            delete(exportFile)
             _refreshNow.value = true
         }
     }
 
-    private suspend fun share(log: LogItem) {
+    private suspend fun delete(exportFile: StorageFile) {
         withContext(Dispatchers.IO) {
-            val shareFileIntent: Intent
-            LogsHandler(appContext).getLogFile(log.logDate)?.let {
-                if (it.exists()) {
-                    shareFileIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
-                        type = "text/plain"
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    appContext.startActivity(shareFileIntent)
-                } else {
-                    showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                            appContext.getString(R.string.logs_share_failed), "", false)
-                }
+            exportsList.value?.removeIf {
+                it.second == exportFile
             }
+            exportFile.delete()
         }
     }
 
-    fun deleteLog(log: LogItem) {
+    fun importSchedule(export: Schedule) {
         viewModelScope.launch {
-            delete(log)
-            _refreshNow.value = true
+            import(export)
+            showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                    appContext.getString(R.string.sched_imported), export.name, false)
         }
     }
 
-    private suspend fun delete(log: LogItem) {
+    private suspend fun import(export: Schedule) {
         withContext(Dispatchers.IO) {
-            logsList.value?.remove(log)
-            log.delete(appContext)
+            val schedule = Schedule.Builder() // Set id to 0 to make the database generate a new id
+                    .withId(0)
+                    .import(export)
+                    .build()
+            database.insert(schedule)
         }
     }
 }

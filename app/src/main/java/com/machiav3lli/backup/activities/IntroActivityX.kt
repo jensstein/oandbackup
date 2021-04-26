@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.activities
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -34,12 +33,8 @@ import androidx.navigation.Navigation
 import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.classTag
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
-import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.utils.*
-import com.scottyab.rootbeer.RootBeer
 
 class IntroActivityX : BaseActivity() {
     private lateinit var binding: ActivityIntroXBinding
@@ -58,16 +53,19 @@ class IntroActivityX : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkRootAccess(this)
+    }
+
     private fun setupNavigation() {
         navController = Navigation.findNavController(this, R.id.introContainer)
         navController!!.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
             if (destination.id == R.id.welcomeFragment) {
                 binding.positiveButton.setText(R.string.dialog_start)
                 binding.positiveButton.setOnClickListener {
-                    if (checkRootAccess()) {
-                        prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
-                        moveTo(2)
-                    }
+                    prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
+                    moveTo(2)
                 }
             }
         }
@@ -92,29 +90,10 @@ class IntroActivityX : BaseActivity() {
         finishAffinity()
     }
 
-    private fun checkRootAccess(): Boolean {
-        val rootBeer = RootBeer(this)
-        if (!rootBeer.isRooted) {
-            showFatalUiWarning(this.getString(R.string.noSu))
-            return false
-        }
-        try {
-            ShellHandler.runAsRoot("id")
-        } catch (e: ShellCommandFailedException) {
-            showFatalUiWarning(this.getString(R.string.noSu))
-            return false
-        }
-        return true
-    }
-
-    private fun showFatalUiWarning(message: String) {
-        showWarning(this, classTag("IntroActivityX"), message) { _: DialogInterface?, _: Int -> finishAffinity() }
-    }
-
     private fun launchMainActivity() {
         if (isBiometricLockAvailable(this) && isBiometricLockEnabled(this)) {
             launchBiometricPrompt(true)
-        } else if (isDeviceLockEnabled(this)) {
+        } else if (isDeviceLockAvailable(this) && isDeviceLockEnabled(this)) {
             launchBiometricPrompt(false)
         } else {
             startActivity(Intent(this, MainActivityX::class.java))
@@ -122,7 +101,7 @@ class IntroActivityX : BaseActivity() {
         }
     }
 
-    private fun launchBiometricPrompt(withBiometric : Boolean) {
+    private fun launchBiometricPrompt(withBiometric: Boolean) {
         val biometricPrompt = createBiometricPrompt(this)
         val promptInfo = PromptInfo.Builder()
                 .setTitle(getString(R.string.prefs_biometriclock))

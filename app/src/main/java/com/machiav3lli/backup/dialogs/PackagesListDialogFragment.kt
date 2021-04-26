@@ -24,16 +24,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.handler.BackendController
 
-class CustomListDialogFragment(val filter: Int, private val listener: CustomListListener) : DialogFragment() {
+class PackagesListDialogFragment(private val selectedPackages: List<String>,
+                                 val filter: Int, private val isBlocklist: Boolean,
+                                 private val onPackagesListChanged: (newList: Set<String>) -> Unit)
+    : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
-        val pm = requireActivity().application.applicationContext.packageManager
-        val args = this.requireArguments()
-        val listId = args.getLong("listId", SchedulerActivityX.GLOBAL_ID)
-        val selectedPackages = args.getStringArrayList("selectedPackages") ?: arrayListOf()
+        val pm = requireContext().packageManager
 
         var packageInfoList = BackendController.getPackageInfoList(requireContext(), filter)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
@@ -48,35 +47,31 @@ class CustomListDialogFragment(val filter: Int, private val listener: CustomList
             }
         }
         val labels = mutableListOf<String>()
-        val packageNames = mutableListOf<String>()
+        val packagesNames = mutableListOf<String>()
         val checkedIndexes = BooleanArray(packageInfoList.size)
         val selections = mutableListOf<Int>()
         packageInfoList.forEachIndexed { i, packageInfo ->
             labels.add(packageInfo.applicationInfo.loadLabel(pm).toString())
-            packageNames.add(packageInfo.packageName)
+            packagesNames.add(packageInfo.packageName)
             if (selectedPackages.contains(packageInfo.packageName)) {
                 checkedIndexes[i] = true
                 selections.add(i)
             }
         }
         return AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.customListTitle)
+                .setTitle(if (isBlocklist) R.string.sched_blocklist else R.string.customListTitle)
                 .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedIndexes) { _: DialogInterface?, index: Int, isChecked: Boolean ->
                     if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
                 }
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(listId, packageNames, selections) }
+                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(packagesNames, selections) }
                 .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
                 .create()
     }
 
-    private fun saveSelected(listId: Long, packagesNames: List<String>, selections: List<Int>) {
+    private fun saveSelected(packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
                 .map { packagesNames[it] }
                 .toSet()
-        listener.onCustomListChanged(selectedPackages, listId)
-    }
-
-    interface CustomListListener {
-        fun onCustomListChanged(newList: Set<String>, blacklistId: Long)
+        onPackagesListChanged(selectedPackages)
     }
 }

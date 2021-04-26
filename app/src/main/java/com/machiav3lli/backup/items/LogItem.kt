@@ -18,19 +18,17 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils.instance
-import com.machiav3lli.backup.handler.LogsHandler
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.LocalDateTime
 
-open class LogItem : Parcelable {
+open class LogItem {
     @SerializedName("logDate")
     @Expose
     lateinit var logDate: LocalDateTime
@@ -80,24 +78,6 @@ open class LogItem : Parcelable {
         }
     }
 
-    protected constructor(source: Parcel) {
-        deviceName = source.readString()
-        sdkCodename = source.readString()
-        cpuArch = source.readString()
-        logText = source.readString()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(deviceName)
-        parcel.writeString(sdkCodename)
-        parcel.writeString(cpuArch)
-        parcel.writeString(logText)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
     fun toGson(): String {
         return instance!!.toJson(this)
     }
@@ -118,17 +98,6 @@ open class LogItem : Parcelable {
     }
 
     companion object {
-        const val LOG_INSTANCE = "%s.log"
-        val CREATOR: Parcelable.Creator<LogItem?> = object : Parcelable.Creator<LogItem?> {
-            override fun createFromParcel(source: Parcel): LogItem {
-                return LogItem(source)
-            }
-
-            override fun newArray(size: Int): Array<LogItem?> {
-                return arrayOfNulls(size)
-            }
-        }
-
         fun fromGson(gson: String?): LogItem {
             return instance!!.fromJson(gson, LogItem::class.java)
         }

@@ -23,7 +23,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.SCHEDULES_DB_NAME
 
-@Database(entities = [Schedule::class], version = 4)
+@Database(entities = [Schedule::class], version = 5)
 abstract class ScheduleDatabase : RoomDatabase() {
     abstract val scheduleDao: ScheduleDao
 

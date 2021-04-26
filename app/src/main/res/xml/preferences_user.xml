@@ -55,13 +55,16 @@
         android:summary="@string/prefs_biometriclock_summary"
         android:title="@string/prefs_biometriclock" />
 
-    <androidx.preference.EditTextPreference
+    <androidx.preference.SeekBarPreference
         android:defaultValue="7"
         android:icon="@drawable/ic_updated"
         android:inputType="number"
         android:key="oldBackups"
+        android:max="30"
         android:summary="@string/prefs_oldbackups_summary"
-        android:title="@string/prefs_oldbackups" />
+        android:title="@string/prefs_oldbackups"
+        app:min="1"
+        app:showSeekBarValue="true" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"

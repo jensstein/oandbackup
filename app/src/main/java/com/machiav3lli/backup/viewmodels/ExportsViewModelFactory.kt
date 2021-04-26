@@ -15,28 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-// TODO when android studio supports it: replace deprecated jcenter() with mavenCentral()
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:4.1.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${System.getProperty("kotlin")}")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5")
-        classpath("de.mannodermaus.gradle.plugins:android-junit5:1.7.0.0")
-    }
-}
+package com.machiav3lli.backup.viewmodels
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven(url = "https://jitpack.io")
-    }
-}
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.machiav3lli.backup.dbs.ScheduleDao
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+class ExportsViewModelFactory(private val dataSource: ScheduleDao, private val application: Application)
+    : ViewModelProvider.Factory {
+    @Suppress("unchecked_cast")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ExportsViewModel::class.java)) {
+            return ExportsViewModel(dataSource, application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

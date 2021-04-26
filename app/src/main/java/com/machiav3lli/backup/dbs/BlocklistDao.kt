@@ -25,41 +25,41 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface BlacklistDao {
-    @Query("SELECT COUNT(*) FROM blacklist")
+interface BlocklistDao {
+    @Query("SELECT COUNT(*) FROM blocklist")
     fun count(): Long
 
     @Insert
     @Throws(SQLException::class)
-    fun insert(vararg blacklists: Blacklist): LongArray?
+    fun insert(vararg blocklists: Blocklist): LongArray?
 
-    @get:Query("SELECT * FROM blacklist ORDER BY blacklistId ASC")
-    val all: List<Blacklist>
+    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
+    val all: List<Blocklist>
 
-    @Query("SELECT packageName FROM blacklist WHERE blacklistId = :blacklistId")
-    fun getBlacklistedPackages(blacklistId: Long): List<String>
+    @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
+    fun getBlocklistedPackages(blocklistId: Long): List<String>
 
 
-    @Query("SELECT packageName FROM blacklist WHERE blacklistId = :blacklistId")
-    fun getLiveBlacklist(blacklistId: Long): LiveData<List<String>>
+    @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
+    fun getLiveBlocklist(blocklistId: Long): LiveData<List<String>>
 
     @Update
-    fun update(blacklist: Blacklist?)
+    fun update(blocklist: Blocklist?)
 
-    fun updateList(blacklistId: Long, newList: Set<String>) {
-        deleteById(blacklistId)
+    fun updateList(blocklistId: Long, newList: Set<String>) {
+        deleteById(blocklistId)
         newList.forEach { packageName ->
-            val newBlacklist = Blacklist.Builder()
-                    .withId(blacklistId)
+            val newBlacklist = Blocklist.Builder()
+                    .withId(blocklistId)
                     .withPackageName(packageName)
                     .build()
             insert(newBlacklist)
         }
     }
 
-    @Query("DELETE FROM blacklist")
+    @Query("DELETE FROM blocklist")
     fun deleteAll()
 
-    @Query("DELETE FROM blacklist WHERE blacklistId = :blacklistId")
-    fun deleteById(blacklistId: Long)
+    @Query("DELETE FROM blocklist WHERE blocklistId = :blocklistId")
+    fun deleteById(blocklistId: Long)
 }

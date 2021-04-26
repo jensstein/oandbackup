@@ -166,10 +166,13 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 changeVisibility(binding.forceKill, View.VISIBLE, update)
                 changeVisibility(binding.wipeCache, View.VISIBLE, update)
                 changeVisibility(binding.backup, View.VISIBLE, update)
-                if (it.isDisabled)
+                if (it.isDisabled) {
                     binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
-                else
-                    binding.enableDisable.setImageResource(R.drawable.ic_blacklist)
+                    binding.enableDisable.tooltipText = getString(R.string.enablePackage)
+                } else {
+                    binding.enableDisable.setImageResource(R.drawable.ic_blocklist)
+                    binding.enableDisable.tooltipText = getString(R.string.disablePackage)
+                }
             }
             if (it.isSystem) {
                 changeVisibility(binding.uninstall, View.INVISIBLE, update)
@@ -245,12 +248,8 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 }
             }
             binding.backup.setOnClickListener {
-                val arguments = Bundle()
-                arguments.putParcelable("package", app.packageInfo)
-                arguments.putString("packageLabel", app.packageLabel)
-                val dialog = BackupDialogFragment(this)
-                dialog.arguments = arguments
-                dialog.show(requireActivity().supportFragmentManager, "backupDialog")
+                BackupDialogFragment(app, this)
+                        .show(requireActivity().supportFragmentManager, "backupDialog")
             }
             binding.deleteAll.setOnClickListener {
                 AlertDialog.Builder(requireContext())
@@ -291,13 +290,8 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         && !properties.hasApk && properties.hasAppData) {
                     showToast(requireActivity(), getString(R.string.notInstalledModeDataWarning))
                 } else {
-                    val arguments = Bundle()
-                    arguments.putParcelable("appinfo", it.appMetaInfo)
-                    arguments.putParcelable("backup", properties)
-                    arguments.putBoolean("isInstalled", it.isInstalled)
-                    val dialog = RestoreDialogFragment(this@AppSheet)
-                    dialog.arguments = arguments
-                    dialog.show(requireActivity().supportFragmentManager, "restoreDialog")
+                    RestoreDialogFragment(it, properties, this@AppSheet)
+                            .show(requireActivity().supportFragmentManager, "restoreDialog")
                 }
             }
         }
