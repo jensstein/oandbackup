@@ -82,8 +82,8 @@
                     android:background="@drawable/bg_button_info_ripple"
                     android:clickable="true"
                     android:focusable="true"
-                    android:tint="@color/ic_ext_data"
                     android:src="@drawable/ic_info"
+                    android:tint="@color/ic_ext_data"
                     app:layout_constraintBottom_toBottomOf="@id/icon"
                     app:layout_constraintEnd_toStartOf="@id/dismiss"
                     app:layout_constraintStart_toEndOf="@id/label"
@@ -138,22 +138,8 @@
                         android:src="@drawable/ic_launchable"
                         android:tooltipText="@string/launch_app"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/uninstall"
-                        app:layout_constraintStart_toEndOf="@id/exodusReport"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/uninstall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_wipe_ripple"
-                        android:paddingVertical="@dimen/med_spacing"
-                        android:src="@drawable/ic_delete"
-                        android:tooltipText="@string/uninstall"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/enableDisable"
-                        app:layout_constraintStart_toEndOf="@id/launchApp"
+                        app:layout_constraintStart_toEndOf="@id/exodusReport"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
@@ -166,8 +152,22 @@
                         android:src="@drawable/ic_blocklist"
                         android:tooltipText="@string/disablePackage"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/uninstall"
+                        app:layout_constraintStart_toEndOf="@id/launchApp"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/uninstall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:background="@drawable/bg_button_wipe_ripple"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_delete"
+                        android:tooltipText="@string/uninstall"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/addToBlocklist"
-                        app:layout_constraintStart_toEndOf="@id/uninstall"
+                        app:layout_constraintStart_toEndOf="@id/enableDisable"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
@@ -178,10 +178,10 @@
                         android:background="@drawable/bg_button_blocklist_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_add_to_blocklist"
-                        android:tooltipText="Add to the global blocklist"
+                        android:tooltipText="@string/global_blocklist_add"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/enableDisable"
+                        app:layout_constraintStart_toEndOf="@id/uninstall"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -404,7 +404,7 @@
                         style="@style/Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Force kill" />
+                        android:text="@string/forceKill" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/wipeCache"

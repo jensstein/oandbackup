@@ -264,6 +264,8 @@
     <string name="sched_imported">Schedule imported successfully</string>
     <string name="logs_share_failed">Log file not found</string>
     <string name="sortAscDesc">Ascending-Descending</string>
+    <string name="forceKill">Force kill</string>
+    <string name="global_blocklist_add">Add to the global blocklist</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">each day</item>
         <item quantity="other">each %d days</item>

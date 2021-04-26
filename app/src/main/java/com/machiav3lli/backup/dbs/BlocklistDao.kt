@@ -53,6 +53,7 @@ interface BlocklistDao {
         newList.forEach { packageName ->
             insert(
                     Blocklist.Builder()
+                            .withId(0)
                             .withBlocklistId(blocklistId)
                             .withPackageName(packageName)
                             .build()
