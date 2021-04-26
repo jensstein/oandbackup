@@ -195,12 +195,12 @@
         <item quantity="other">تطبيق للمحادث</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="zero">٪d يوم,</item>
-        <item quantity="one">٪d يوم</item>
-        <item quantity="two">٪d يومين</item>
-        <item quantity="few">٪d بعض الايام</item>
-        <item quantity="many">٪d ايام</item>
-        <item quantity="other">٪d يوما</item>
+        <item quantity="zero">%d يوم,</item>
+        <item quantity="one">%d يوم</item>
+        <item quantity="two">%d يومين</item>
+        <item quantity="few">%d بعض الايام</item>
+        <item quantity="many">%d ايام</item>
+        <item quantity="other">%d يوما</item>
     </plurals>
     <string name="filtered_list">قائمة تمت تصفيتها</string>
     <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظري…</string>
@@ -267,7 +267,7 @@
         <item quantity="zero">كل يوم</item>
         <item quantity="one">كل يوم</item>
         <item quantity="two">كل يومان</item>
-        <item quantity="few">كل يوم</item>
+        <item quantity="few">كل يوم %d</item>
         <item quantity="many">كل يوم</item>
         <item quantity="other">كل يوم</item>
     </plurals>
@@ -277,4 +277,6 @@
     <string name="error_datachanged">تم تغيير بيانات التطبيق بنشاط أثناء إجراء النسخ الاحتياطي. حاول قتل العملية قبل إجراء النسخ الاحتياطي</string>
     <string name="write_apps_list_all">كتابة ملف قائمة جميع التطبيقات</string>
     <string name="write_apps_list_filtered">كتب ملف قائمة التطبيقات المصفاة</string>
+    <string name="help_group_matrix">مجموعتنا في ماتريكس</string>
+    <string name="help_group_telegram">مجموعتنا على تيليجرام</string>
 </resources>
