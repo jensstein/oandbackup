@@ -108,6 +108,25 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         }
     }
 
+    fun addToBlocklist(packageName: String) {
+        viewModelScope.launch {
+            insertIntoBlocklist(packageName)
+            refreshNow.value = true
+        }
+    }
+
+    private suspend fun insertIntoBlocklist(packageName: String) {
+        withContext(Dispatchers.IO) {
+            database.insert(
+                    Blocklist.Builder()
+                            .withId(0)
+                            .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
+                            .withPackageName(packageName)
+                            .build()
+            )
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         _initial.value = true

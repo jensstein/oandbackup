@@ -86,7 +86,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
     private var searchViewController: SearchViewController? = null
 
     lateinit var binding: ActivityMainXBinding
-    private lateinit var viewModel: MainViewModel
+    lateinit var viewModel: MainViewModel
     val mainItemAdapter = ItemAdapter<MainItemX>()
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
     val batchItemAdapter = ItemAdapter<BatchItemX>()

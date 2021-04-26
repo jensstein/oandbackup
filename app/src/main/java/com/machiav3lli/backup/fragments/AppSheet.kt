@@ -36,14 +36,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.machiav3lli.backup.ActionListener
-import com.machiav3lli.backup.BUNDLE_USERS
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
-import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -274,6 +271,9 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         }
                         .setNegativeButton(R.string.dialogNo, null)
                         .show()
+            }
+            binding.addToBlocklist.setOnClickListener {
+                requireMainActivity().viewModel.addToBlocklist(app.packageName)
             }
         }
     }
