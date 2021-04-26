@@ -279,4 +279,5 @@
     <string name="write_apps_list_filtered">كتب ملف قائمة التطبيقات المصفاة</string>
     <string name="help_group_matrix">مجموعتنا في ماتريكس</string>
     <string name="help_group_telegram">مجموعتنا على تيليجرام</string>
+    <string name="sortAscDesc">تصاعدي-تنازلي</string>
 </resources>
