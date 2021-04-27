@@ -269,4 +269,5 @@
     <string name="write_apps_list_filtered">写已过滤的应用程序列表文件</string>
     <string name="help_group_matrix">我们的 Matrix 群组</string>
     <string name="help_group_telegram">我们的 Telegram 群组</string>
+    <string name="sortAscDesc">升序-降序</string>
 </resources>
