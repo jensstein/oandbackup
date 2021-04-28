@@ -36,9 +36,11 @@ interface BlocklistDao {
     @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
     val all: List<Blocklist>
 
+    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
+    val liveAll: LiveData<List<Blocklist>>
+
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getBlocklistedPackages(blocklistId: Long): List<String>
-
 
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getLiveBlocklist(blocklistId: Long): LiveData<List<String>>
@@ -49,11 +51,13 @@ interface BlocklistDao {
     fun updateList(blocklistId: Long, newList: Set<String>) {
         deleteById(blocklistId)
         newList.forEach { packageName ->
-            val newBlacklist = Blocklist.Builder()
-                    .withId(blocklistId)
-                    .withPackageName(packageName)
-                    .build()
-            insert(newBlacklist)
+            insert(
+                    Blocklist.Builder()
+                            .withId(0)
+                            .withBlocklistId(blocklistId)
+                            .withPackageName(packageName)
+                            .build()
+            )
         }
     }
 

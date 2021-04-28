@@ -32,7 +32,12 @@ class Blocklist {
     class Builder {
         private val blocklist: Blocklist = Blocklist()
 
-        fun withId(blocklistId: Long): Builder {
+        fun withId(id: Long): Builder {
+            blocklist.id = id
+            return this
+        }
+
+        fun withBlocklistId(blocklistId: Long): Builder {
             blocklist.blocklistId = blocklistId
             return this
         }

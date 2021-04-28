@@ -50,10 +50,11 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
 
     private suspend fun add() {
         withContext(Dispatchers.IO) {
-            val schedule = Schedule.Builder() // Set id to 0 to make the database generate a new id
-                    .withId(0)
-                    .build()
-            database.insert(schedule)
+            database.insert(
+                    Schedule.Builder() // Set id to 0 to make the database generate a new id
+                            .withId(0)
+                            .build()
+            )
         }
     }
 }

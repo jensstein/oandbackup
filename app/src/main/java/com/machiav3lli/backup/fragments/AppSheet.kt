@@ -36,14 +36,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.machiav3lli.backup.ActionListener
-import com.machiav3lli.backup.BUNDLE_USERS
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
-import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -140,7 +137,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 changeVisibility(binding.launchApp, View.INVISIBLE, update) // TODO add isLaunchable attribute to AppInfo
                 changeVisibility(binding.uninstall, View.INVISIBLE, update)
                 changeVisibility(binding.enableDisable, View.INVISIBLE, update)
-                changeVisibility(binding.appInfo, View.INVISIBLE, update)
+                changeVisibility(binding.appInfo, View.GONE, update)
                 changeVisibility(binding.appSizeLine, View.GONE, update)
                 changeVisibility(binding.dataSizeLine, View.GONE, update)
                 changeVisibility(binding.splitsLine, View.GONE, update)
@@ -207,11 +204,47 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         viewModel.appInfo.value?.let { app: AppInfo ->
+            binding.appInfo.setOnClickListener {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.fromParts("package", app.packageName, null)
+                this.startActivity(intent)
+            }
             binding.exodusReport.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(exodusUrl(app.packageName)))) }
             binding.launchApp.setOnClickListener {
                 requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
                     startActivity(it)
                 }
+            }
+            binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
+            binding.uninstall.setOnClickListener {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(app.packageLabel)
+                        .setMessage(R.string.uninstallDialogMessage)
+                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                            showToast(requireActivity(),
+                                    "${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
+                            viewModel.uninstallApp()
+                        }
+                        .setNegativeButton(R.string.dialogNo, null)
+                        .show()
+            }
+            binding.addToBlocklist.setOnClickListener {
+                requireMainActivity().viewModel.addToBlocklist(app.packageName)
+            }
+            binding.backup.setOnClickListener {
+                BackupDialogFragment(app, this)
+                        .show(requireActivity().supportFragmentManager, "backupDialog")
+            }
+            binding.deleteAll.setOnClickListener {
+                AlertDialog.Builder(requireContext())
+                        .setTitle(app.packageLabel)
+                        .setMessage(R.string.deleteBackupDialogMessage)
+                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                            showToast(requireActivity(), "${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
+                            viewModel.deleteAllBackups()
+                        }
+                        .setNegativeButton(R.string.dialogNo, null)
+                        .show()
             }
             binding.forceKill.setOnClickListener {
                 AlertDialog.Builder(requireContext())
@@ -223,11 +256,6 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         }
                         .setNegativeButton(R.string.dialogNo, null)
                         .show()
-            }
-            binding.appInfo.setOnClickListener {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.fromParts("package", app.packageName, null)
-                this.startActivity(intent)
             }
             binding.wipeCache.setOnClickListener {
                 try {
@@ -246,34 +274,6 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                     }
                     Timber.w("Cache couldn't be deleted: $errorMessage")
                 }
-            }
-            binding.backup.setOnClickListener {
-                BackupDialogFragment(app, this)
-                        .show(requireActivity().supportFragmentManager, "backupDialog")
-            }
-            binding.deleteAll.setOnClickListener {
-                AlertDialog.Builder(requireContext())
-                        .setTitle(app.packageLabel)
-                        .setMessage(R.string.deleteBackupDialogMessage)
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            showToast(requireActivity(), "${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
-                            viewModel.deleteAllBackups()
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
-            }
-            binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
-            binding.uninstall.setOnClickListener {
-                AlertDialog.Builder(requireContext())
-                        .setTitle(app.packageLabel)
-                        .setMessage(R.string.uninstallDialogMessage)
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            showToast(requireActivity(),
-                                    "${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
-                            viewModel.uninstallApp()
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
             }
         }
     }

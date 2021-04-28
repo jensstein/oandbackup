@@ -16,7 +16,7 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ic_ext_data">
+    android:color="@color/ic_updated">
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <solid android:color="?backgroundColor" />
@@ -26,6 +26,9 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/ic_updated" />
             <corners android:radius="8dp" />
             <padding
                 android:bottom="4dp"

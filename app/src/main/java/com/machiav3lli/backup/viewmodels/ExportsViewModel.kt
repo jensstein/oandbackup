@@ -34,7 +34,6 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
     : AndroidViewModel(appContext) {
 
     var exportsList = MediatorLiveData<MutableList<Pair<Schedule, StorageFile>>>()
-    var schedules = MediatorLiveData<List<Schedule>>()
 
     private var _refreshActive = MutableLiveData<Boolean>()
     val refreshActive: LiveData<Boolean>
@@ -46,7 +45,6 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     init {
         refreshList()
-        schedules.addSource(database.liveAll, schedules::setValue)
     }
 
     fun finishRefresh() {
@@ -95,11 +93,12 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     private suspend fun import(export: Schedule) {
         withContext(Dispatchers.IO) {
-            val schedule = Schedule.Builder() // Set id to 0 to make the database generate a new id
-                    .withId(0)
-                    .import(export)
-                    .build()
-            database.insert(schedule)
+            database.insert(
+                    Schedule.Builder() // Set id to 0 to make the database generate a new id
+                            .withId(0)
+                            .import(export)
+                            .build()
+            )
         }
     }
 }
