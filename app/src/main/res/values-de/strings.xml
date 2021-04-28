@@ -256,4 +256,6 @@
     <string name="prefs_enablespecial_summary">Muss noch intensiv getestet werden, da die Gefahr besteht, dass es zu Bootschleifen kommen kann. Feedback ist immer willkommen.</string>
     <string name="help_group_telegram">Unsere Gruppe auf Telegram</string>
     <string name="help_group_matrix">Unsere Gruppe auf Matrix</string>
+    <string name="write_apps_list_all">Liste aller Apps wurde erstellt</string>
+    <string name="write_apps_list_filtered">Gefilterte App Liste wurde erstellt</string>
 </resources>
