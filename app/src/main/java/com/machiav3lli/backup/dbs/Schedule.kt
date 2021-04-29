@@ -24,7 +24,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.machiav3lli.backup.MODE_BOTH
+import com.machiav3lli.backup.BU_MODE_APK
 import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.BackupItem
@@ -68,7 +68,7 @@ open class Schedule() {
 
     @SerializedName("mode")
     @Expose
-    var mode: Int = MODE_BOTH
+    var mode: Int = BU_MODE_APK
 
     var timeUntilNextEvent: Long = 0
 

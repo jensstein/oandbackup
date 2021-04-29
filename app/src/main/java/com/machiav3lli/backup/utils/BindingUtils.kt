@@ -49,19 +49,24 @@ fun idToFilter(mode: Int): Int {
     }
 }
 
-fun modeToId(subMode: Int): Int {
-    return when (subMode) {
-        1 -> R.id.schedApk
-        2 -> R.id.schedData
-        else -> R.id.schedBoth
-    }
+fun modeToIds(mode: Int): List<Int> {
+    val ids = mutableListOf<Int>()
+    if (mode and BU_MODE_APK == BU_MODE_APK) ids.add(R.id.chipApk)
+    if (mode and BU_MODE_DATA == BU_MODE_DATA) ids.add(R.id.chipData)
+    if (mode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) ids.add(R.id.chipDataDe)
+    if (mode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) ids.add(R.id.chipDataExt)
+    if (mode and BU_MODE_OBB == BU_MODE_OBB) ids.add(R.id.chipDataObb)
+    return ids
 }
 
-fun idToMode(subMode: Int): Int {
-    return when (subMode) {
-        R.id.schedApk -> MODE_APK
-        R.id.schedData -> MODE_DATA
-        else -> MODE_BOTH
+fun idToMode(id: Int): Int {
+    return when (id) {
+        R.id.chipApk -> BU_MODE_APK
+        R.id.chipData -> BU_MODE_DATA
+        R.id.chipDataDe -> BU_MODE_DATA_DE
+        R.id.chipDataExt -> BU_MODE_DATA_EXT
+        R.id.chipDataObb -> BU_MODE_OBB
+        else -> BU_MODE_UNSET
     }
 }
 

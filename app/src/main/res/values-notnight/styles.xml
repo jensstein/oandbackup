@@ -149,6 +149,16 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
+    <style name="Chip.Mode" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="checkedIconTint">?colorAccent</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
     <style name="Chip.Data" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/ic_data</item>

@@ -29,11 +29,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
+import com.machiav3lli.backup.BU_MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.SCHED_FILTER_NEW_UPDATED
@@ -77,7 +79,9 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
         viewModel.schedule.observe(viewLifecycleOwner, {
             binding.schedName.text = it.name
             binding.schedFilter.check(filterToId(it.filter))
-            binding.schedMode.check(modeToId(it.mode))
+            modeToIds(it.mode).forEach { id ->
+                binding.schedMode.check(id)
+            }
             binding.enableCheckbox.isChecked = it.enabled
             binding.customListButton.setColor(it.customList)
             binding.blocklistButton.setColor(it.blockList)
@@ -107,9 +111,13 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             viewModel.schedule.value?.filter = idToFilter(checkedId)
             refresh(false)
         }
-        binding.schedMode.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            viewModel.schedule.value?.mode = idToMode(checkedId)
-            refresh(false)
+        binding.schedMode.children.forEach {
+            it.setOnClickListener {
+                viewModel.schedule.value?.let { schedule ->
+                    schedule.mode = schedule.mode xor idToMode(it.id)
+                }
+                refresh(false)
+            }
         }
         binding.timeOfDay.setOnClickListener {
             TimePickerDialog(requireContext(), { _, hourOfDay, minute ->

@@ -31,7 +31,22 @@ fun modeToBackupMode(context: Context, mode: Int) = when (mode) {
     }
 }
 
+fun modeToModes(mode: Int): List<Int> =
+        mutableListOf(BU_MODE_APK, BU_MODE_DATA, BU_MODE_DATA_DE, BU_MODE_DATA_EXT, BU_MODE_OBB)
+                .filter { mode and it == it }
+
 fun modeToString(context: Context, mode: Int): String {
+    return when (mode) {
+        BU_MODE_APK -> context.getString(R.string.radio_apk)
+        BU_MODE_DATA -> context.getString(R.string.radio_data)
+        BU_MODE_DATA_DE -> context.getString(R.string.radio_deviceprotecteddata)
+        BU_MODE_DATA_EXT -> context.getString(R.string.radio_externaldata)
+        BU_MODE_OBB -> context.getString(R.string.radio_obbdata)
+        else -> ""
+    }
+}
+
+fun modeToStringAlt(context: Context, mode: Int): String {
     return when (mode) {
         MODE_APK -> context.getString(R.string.handleApk)
         MODE_DATA -> context.getString(R.string.handleData)
@@ -39,3 +54,6 @@ fun modeToString(context: Context, mode: Int): String {
         else -> ""
     }
 }
+
+fun modesToString(context: Context, modes: List<Int>): String =
+        modes.joinToString(", ") { modeToString(context, it) }

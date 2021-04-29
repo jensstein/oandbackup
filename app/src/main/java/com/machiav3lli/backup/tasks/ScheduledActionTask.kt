@@ -27,7 +27,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.modeToBackupMode
 import timber.log.Timber
 
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long)
@@ -39,7 +38,6 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
         val schedule = scheduleDao.getSchedule(scheduleId)
         val filter = schedule?.filter ?: SCHED_FILTER_ALL
-        val mode = modeToBackupMode(context, schedule?.mode ?: BU_MODE_UNSET)
         val excludeSystem = schedule?.excludeSystem
                 ?: false
         val customList = schedule?.customList ?: setOf()
@@ -91,6 +89,6 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                     m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
                 }
                 .map(AppInfo::packageName)
-        return Pair(selectedItems, mode)
+        return Pair(selectedItems, schedule?.mode ?: BU_MODE_UNSET)
     }
 }
