@@ -222,12 +222,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         return try {
             // Get a list of directories in the directory to backup
-            var dirsInSource = shell.suGetDetailedDirectoryContents(
-                    sourceDirectory,
-                    false,
-                    null
-            )
+            var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
+                    .filter { dir: ShellHandler.FileInfo -> dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
+
             // Excludes cache and libs, when we don't want to backup'em
+            // TODO maybe remove the option and force the exclusion?
             if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXCLUDECACHE, true)) {
                 dirsInSource = dirsInSource
                         .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
