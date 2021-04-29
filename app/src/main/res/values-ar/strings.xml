@@ -280,4 +280,6 @@
     <string name="help_group_matrix">مجموعتنا في ماتريكس</string>
     <string name="help_group_telegram">مجموعتنا على تيليجرام</string>
     <string name="sortAscDesc">تصاعدي-تنازلي</string>
+    <string name="global_blocklist_add">إضافة إلى قائمة الحظر العامة</string>
+    <string name="forceKill">قتل بالقوة</string>
 </resources>
