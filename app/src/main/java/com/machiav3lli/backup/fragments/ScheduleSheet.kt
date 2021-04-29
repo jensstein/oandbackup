@@ -194,17 +194,18 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
     private fun startSchedule() {
         viewModel.schedule.value?.let {
             val message = StringBuilder()
-            message.append("\n${modeToString(requireContext(), it.mode)}")
-            message.append("\n${filterToString(requireContext(), it.filter)}")
+            message.append("\n${getString(R.string.sched_mode)} ${modesToString(requireContext(), modeToModes(it.mode))}")
+            message.append("\n${getString(R.string.backup_filters)} ${filterToString(requireContext(), it.filter)}")
             if (it.filter == SCHED_FILTER_NEW_UPDATED)
-                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${it.excludeSystem}")
-            message.append("\n${getString(R.string.customListTitle)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
+                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
+            message.append("\n${getString(R.string.customListTitle)}:\n${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
+            message.append("\n${getString(R.string.sched_blocklist)}: ${if (it.blockList.isNotEmpty()) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
             AlertDialog.Builder(requireActivity())
                     .setTitle("${it.name}: ${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)
                     .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                        StartSchedule(requireContext(), scheduleId)
-                                .execute()
+                        if (it.mode != BU_MODE_UNSET)
+                            StartSchedule(requireContext(), scheduleId).execute()
                     }
                     .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
                     .show()

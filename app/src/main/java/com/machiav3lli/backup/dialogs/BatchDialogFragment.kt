@@ -26,7 +26,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 import com.machiav3lli.backup.utils.modeToBackupMode
-import com.machiav3lli.backup.utils.modeToString
+import com.machiav3lli.backup.utils.modeToStringAlt
 import timber.log.Timber
 
 class BatchDialogFragment(private var backupBoolean: Boolean, private val selectedApps: ArrayList<AppMetaInfo>,
@@ -42,7 +42,7 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
         }
         selectedApps.forEachIndexed { i, metaInfo ->
             message.append("${metaInfo.packageLabel}")
-            selectedModes[i].let { message.append(": ${modeToString(requireContext(), it)}\n") }
+            selectedModes[i].let { message.append(": ${modeToStringAlt(requireContext(), it)}\n") }
         }
         val selectedPackages = selectedApps.map { it.packageName }.toList()
         val selectedBackupModes = selectedModes.map { modeToBackupMode(requireContext(), it) }
@@ -57,6 +57,7 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
                     }
                 }
                 .setNegativeButton(R.string.dialogNo) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+                // TODO Add advanced options for data
                 .create()
     }
 
