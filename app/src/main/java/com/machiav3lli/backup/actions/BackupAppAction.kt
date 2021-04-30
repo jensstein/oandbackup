@@ -223,7 +223,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         return try {
             // Get a list of directories in the directory to backup
             var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
-                    .filter { dir: ShellHandler.FileInfo -> dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
+                    .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
 
             // Excludes cache and libs, when we don't want to backup'em
             // TODO maybe remove the option and force the exclusion?
