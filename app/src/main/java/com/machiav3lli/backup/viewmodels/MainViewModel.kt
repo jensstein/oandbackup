@@ -119,6 +119,7 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
                             .withPackageName(packageName)
                             .build()
             )
+            appInfoList.value?.removeIf { it.packageName == packageName }
         }
     }
 
