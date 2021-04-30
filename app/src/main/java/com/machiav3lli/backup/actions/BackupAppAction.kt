@@ -58,41 +58,41 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         }
         val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRootUri!!)
         val backupInstanceDir = backupBuilder.backupPath
-        val stopProcess = isKillBeforeActionEnabled(context)
+        val stopProcess = context.isKillBeforeActionEnabled()
         val backupItem: BackupItem
         if (stopProcess) {
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
             preprocessPackage(app.packageName)
         }
         try {
-            if (backupMode and BU_MODE_APK == BU_MODE_APK) {
+            if (backupMode and MODE_APK == MODE_APK) {
                 Timber.i("$app: Backing up package")
                 backupPackage(app, backupInstanceDir)
                 backupBuilder.setHasApk(true)
             }
             var backupCreated: Boolean
-            if (backupMode and BU_MODE_DATA == BU_MODE_DATA) {
+            if (backupMode and MODE_DATA == MODE_DATA) {
                 Timber.i("$app: Backing up data")
                 backupCreated = backupData(app, backupInstanceDir)
                 backupBuilder.setHasAppData(backupCreated)
             }
-            if (backupMode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) {
+            if (backupMode and MODE_DATA_DE == MODE_DATA_DE) {
                 Timber.i("$app: Backing up device's protected data")
                 backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
                 backupBuilder.setHasDevicesProtectedData(backupCreated)
             }
-            if (backupMode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) {
+            if (backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
                 Timber.i("$app: Backing up external data")
                 backupCreated = backupExternalData(app, backupInstanceDir)
                 backupBuilder.setHasExternalData(backupCreated)
             }
-            if (backupMode and BU_MODE_OBB == BU_MODE_OBB) {
+            if (backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
                 Timber.i("$app: Backing up obb files")
                 backupCreated = backupObbData(app, backupInstanceDir)
                 backupBuilder.setHasObbData(backupCreated)
             }
 
-            if (isEncryptionEnabled(context)) {
+            if (context.isEncryptionEnabled()) {
                 backupBuilder.setCipherType(CIPHER_ALGORITHM)
             }
             backupItem = backupBuilder.createBackupItem()
@@ -140,18 +140,18 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     protected fun createBackupArchive(backupInstanceDir: Uri?, what: String?, allFilesToBackup: List<ShellHandler.FileInfo>) {
         Timber.i("Creating $what backup")
         val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
-        val backupFilename = getBackupArchiveFilename(what!!, isEncryptionEnabled(context))
+        val backupFilename = getBackupArchiveFilename(what!!, context.isEncryptionEnabled())
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
-        val password = getEncryptionPassword(context)
+        val password = context.getEncryptionPassword()
         var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
                 ?: Uri.EMPTY, "w"))
         if (password.isNotEmpty()) {
-            outStream = encryptStream(outStream, password, getCryptoSalt(context))
+            outStream = outStream.encryptStream(password, context.getCryptoSalt())
         }
         try {
             TarArchiveOutputStream(GzipCompressorOutputStream(outStream)).use { archive ->
                 archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
-                suAddFiles(archive, allFilesToBackup)
+                archive.suAddFiles(allFilesToBackup)
             }
         } finally {
             Timber.d("Done compressing. Closing $backupFilename")
@@ -227,7 +227,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
             // Excludes cache and libs, when we don't want to backup'em
             // TODO maybe remove the option and force the exclusion?
-            if (getDefaultSharedPreferences(context).getBoolean(PREFS_EXCLUDECACHE, true)) {
+            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
                 dirsInSource = dirsInSource
                         .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
                         .toList()
@@ -238,7 +238,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             if (dirsInSource.isEmpty()) {
                 return allFilesToBackup
             }
-            for (dir in dirsInSource) {
+            dirsInSource.forEach { dir ->
                 allFilesToBackup.add(dir)
                 // Do not process files in the "root" directory of the app's data
                 if (dir.fileType === ShellHandler.FileInfo.FileType.DIRECTORY) try {

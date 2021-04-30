@@ -18,8 +18,8 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import com.machiav3lli.backup.BU_MODE_APK
-import com.machiav3lli.backup.BU_MODE_DATA
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -38,10 +38,10 @@ import kotlin.collections.ArrayList
 class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppAction(context, shell) {
 
     override fun run(app: AppInfo, backupMode: Int): ActionResult {
-        if (backupMode and BU_MODE_APK == BU_MODE_APK) {
+        if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
-        return if (backupMode and BU_MODE_DATA == BU_MODE_DATA) super.run(app, BU_MODE_DATA)
+        return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
         else ActionResult(app, null,
                 "Special backup only backups data, but data was not selected for backup", false)
     }

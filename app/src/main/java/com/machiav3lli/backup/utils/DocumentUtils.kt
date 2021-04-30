@@ -11,7 +11,7 @@ import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
-import com.machiav3lli.backup.utils.FileUtils.getBackupDir
+import com.machiav3lli.backup.utils.FileUtils.getBackupDirUri
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.io.IOUtils
@@ -21,37 +21,37 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-fun getBackupRoot(context: Context): StorageFile {
-    return StorageFile.fromUri(context, getBackupDir(context))
+fun Context.getBackupRoot(): StorageFile =
+        StorageFile.fromUri(this, getBackupDirUri(this))
+
+
+fun StorageFile.ensureDirectory(dirName: String): StorageFile? = findFile(dirName)
+        ?: createDirectory(dirName)
+
+fun Uri.deleteRecursive(context: Context): Boolean {
+    val target = StorageFile.fromUri(context, this)
+    return target.deleteRecursive()
 }
 
-fun ensureDirectory(base: StorageFile, dirName: String): StorageFile? = base.findFile(dirName)
-        ?: base.createDirectory(dirName)
-
-fun deleteRecursive(context: Context, uri: Uri): Boolean {
-    val target = StorageFile.fromUri(context, uri)
-    return deleteRecursive(target)
-}
-
-private fun deleteRecursive(target: StorageFile): Boolean {
-    if (target.isFile) {
-        target.delete()
+private fun StorageFile.deleteRecursive(): Boolean {
+    if (isFile) {
+        delete()
         return true
     }
-    if (target.isDirectory) {
+    if (isDirectory) {
         try {
-            val contents = target.listFiles()
+            val contents = listFiles()
             var result = true
             for (file in contents) {
-                result = deleteRecursive(file)
+                result = deleteRecursive()
             }
             if (result) {
-                target.delete()
+                delete()
             }
         } catch (e: FileNotFoundException) {
             return false
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, target.uri)
+            LogsHandler.unhandledException(e, this.uri)
             return false
         }
     }

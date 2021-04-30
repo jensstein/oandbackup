@@ -19,8 +19,8 @@ package com.machiav3lli.backup.items
 
 import android.content.Context
 import android.net.Uri
-import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.utils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -38,7 +38,7 @@ open class BackupItem {
 
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            FileUtils.openFileForReading(context, propertiesFile.uri).use { reader ->
+            propertiesFile.uri.openFileForReading(context).use { reader ->
                 backupProperties = BackupProperties.fromGson(IOUtils.toString(reader))
             }
         } catch (e: FileNotFoundException) {
@@ -63,9 +63,9 @@ open class BackupItem {
     }
 
     companion object {
-        const val BACKUP_FILE_DATA = "data"
-        const val BACKUP_FILE_DPD = "protecteddata"
-        const val BACKUP_FILE_EXT_DATA = "extData"
+        const val BACKUP_DIR_DATA = "data"
+        const val BACKUP_DIR_DATA_DE = "protecteddata"
+        const val BACKUP_DIR_DATA_EXT = "extData"
         const val BACKUP_DIR_OBB = "obb"
     }
 }

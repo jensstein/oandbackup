@@ -44,22 +44,22 @@ fun calculateID(backup: BackupItem): Long {
     return backup.backupProperties.backupDate.hashCode().toLong()
 }
 
-fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding, update: Boolean) {
+fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: Boolean) {
     if (app.isSpecial || !app.isInstalled) {
-        changeVisibility(binding.appSizeLine, View.GONE, update)
-        changeVisibility(binding.dataSizeLine, View.GONE, update)
-        changeVisibility(binding.splitsLine, View.GONE, update)
-        changeVisibility(binding.cacheSizeLine, View.GONE, update)
+        appSizeLine.changeVisibility(View.GONE, update)
+        dataSizeLine.changeVisibility(View.GONE, update)
+        splitsLine.changeVisibility(View.GONE, update)
+        cacheSizeLine.changeVisibility(View.GONE, update)
     } else {
         try {
-            binding.appSize.text = Formatter.formatFileSize(context, app.storageStats?.appBytes
+            appSize.text = Formatter.formatFileSize(context, app.storageStats?.appBytes
                     ?: 0)
-            binding.dataSize.text = Formatter.formatFileSize(context, app.storageStats?.dataBytes
+            dataSize.text = Formatter.formatFileSize(context, app.storageStats?.dataBytes
                     ?: 0)
-            binding.cacheSize.text = Formatter.formatFileSize(context, app.storageStats?.cacheBytes
+            cacheSize.text = Formatter.formatFileSize(context, app.storageStats?.cacheBytes
                     ?: 0)
             if (app.storageStats?.cacheBytes == 0L) {
-                changeVisibility(binding.wipeCache, View.INVISIBLE, update)
+                wipeCache.changeVisibility(View.INVISIBLE, update)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.e("Package ${app.packageName} is not installed? Exception: $e")
@@ -69,19 +69,19 @@ fun pickSheetDataSizes(context: Context, app: AppInfo, binding: SheetAppBinding,
     }
 }
 
-fun pickSheetVersionName(app: AppInfo, binding: SheetAppBinding) {
+fun SheetAppBinding.pickSheetVersionName(app: AppInfo) {
     if (app.isUpdated) {
         val latestBackupVersion = app.latestBackup?.backupProperties?.versionName
         val updatedVersionString = "$latestBackupVersion (${app.versionName})"
-        binding.versionName.text = updatedVersionString
-        binding.versionName.setTextColor(COLOR_UPDATE)
+        versionName.text = updatedVersionString
+        versionName.setTextColor(COLOR_UPDATE)
     } else {
-        binding.versionName.text = app.versionName
-        binding.versionName.setTextColor(binding.packageName.textColors)
+        versionName.text = app.versionName
+        versionName.setTextColor(packageName.textColors)
     }
 }
 
-fun pickSheetAppType(app: AppInfo, text: AppCompatTextView) {
+fun AppCompatTextView.pickSheetAppType(app: AppInfo) {
     var color: Int
     if (app.isInstalled) {
         color = when {
@@ -95,7 +95,7 @@ fun pickSheetAppType(app: AppInfo, text: AppCompatTextView) {
     } else {
         color = COLOR_UNINSTALLED
     }
-    text.setTextColor(color)
+    setTextColor(color)
 }
 
 fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {

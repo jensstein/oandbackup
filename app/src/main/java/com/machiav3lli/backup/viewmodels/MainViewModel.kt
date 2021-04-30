@@ -23,7 +23,7 @@ import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.Blocklist
 import com.machiav3lli.backup.dbs.BlocklistDao
-import com.machiav3lli.backup.handler.BackendController
+import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,13 +73,10 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         _refreshActive.value = false
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<AppInfo> {
-        return withContext(Dispatchers.IO) {
-            val blockedPackagesList = blocklist.value?.map { it.packageName ?: "" } ?: listOf()
-            val dataList = BackendController
-                    .getApplicationList(appContext, blockedPackagesList)
-            dataList
-        }
+    private suspend fun recreateAppInfoList(): MutableList<AppInfo> = withContext(Dispatchers.IO) {
+        val blockedPackagesList = blocklist.value?.map { it.packageName ?: "" } ?: listOf()
+        val dataList = appContext.getApplicationList(blockedPackagesList)
+        dataList
     }
 
     fun updatePackage(packageName: String) {
@@ -93,19 +90,17 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         }
     }
 
-    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? {
-        return withContext(Dispatchers.IO) {
-            val dataList = appInfoList.value
-            var appInfo = dataList?.find { it.packageName == packageName }
-            dataList?.removeIf { it.packageName == packageName }
-            try {
-                appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
-                dataList?.add(appInfo)
-            } catch (e: AssertionError) {
-                Timber.w(e.message ?: "")
-            }
-            dataList
+    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? = withContext(Dispatchers.IO) {
+        val dataList = appInfoList.value
+        var appInfo = dataList?.find { it.packageName == packageName }
+        dataList?.removeIf { it.packageName == packageName }
+        try {
+            appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+            dataList?.add(appInfo)
+        } catch (e: AssertionError) {
+            Timber.w(e.message ?: "")
         }
+        dataList
     }
 
     fun addToBlocklist(packageName: String) {

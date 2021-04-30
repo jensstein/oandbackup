@@ -25,62 +25,77 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.TextUtils
 import com.machiav3lli.backup.handler.LogsHandler
+import java.io.*
+import java.nio.charset.StandardCharsets
 
-fun getName(context: Context, uri: Uri): String? =
-        try {
-            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-                cursor.run {
-                    if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                    else null
-                }.also { cursor.close() }
-            }
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
-            null
-        }
 
-private fun getRawType(context: Context, uri: Uri): String? =
-        try {
-            context.contentResolver.query(uri, null, null, null, null)?.let { cursor ->
-                cursor.run {
-                    if (moveToFirst())
-                        context.contentResolver.getType(uri)
-                    else
-                        null
-                }.also { cursor.close() }
-            }
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
-            null
-        }
+@Throws(FileNotFoundException::class)
+fun Uri.openFileForReading(context: Context): BufferedReader {
+    return BufferedReader(
+            InputStreamReader(context.contentResolver.openInputStream(this), StandardCharsets.UTF_8)
+    )
+}
 
-fun getFlags(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_FLAGS)
+@Throws(FileNotFoundException::class)
+fun Uri.openFileForWriting(context: Context, mode: String?): BufferedWriter {
+    return BufferedWriter(
+            OutputStreamWriter(context.contentResolver.openOutputStream(this, mode!!), StandardCharsets.UTF_8)
+    )
+}
 
-fun isDirectory(context: Context, self: Uri): Boolean = DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context, self)
+fun Uri.getName(context: Context): String? = try {
+    context.contentResolver.query(this, null, null, null, null)?.let { cursor ->
+        cursor.run {
+            if (moveToFirst()) getString(getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+            else null
+        }.also { cursor.close() }
+    }
+} catch (e: Throwable) {
+    LogsHandler.unhandledException(e, this)
+    null
+}
 
-fun isFile(context: Context, self: Uri): Boolean {
-    val type = getRawType(context, self)
+private fun Uri.getRawType(context: Context): String? = try {
+    context.contentResolver.query(this, null, null, null, null)?.let { cursor ->
+        cursor.run {
+            if (moveToFirst())
+                context.contentResolver.getType(this@getRawType)
+            else
+                null
+        }.also { cursor.close() }
+    }
+} catch (e: Throwable) {
+    LogsHandler.unhandledException(e, this)
+    null
+}
+
+fun Uri.getFlags(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS)
+
+fun Uri.isDirectory(context: Context): Boolean = DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context)
+
+fun Uri.isFile(context: Context): Boolean {
+    val type = getRawType(context)
     return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
 }
 
-fun lastModified(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+fun Uri.lastModified(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
-fun length(context: Context, self: Uri): Long = queryForLong(context, self, DocumentsContract.Document.COLUMN_SIZE)
+fun Uri.length(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_SIZE)
 
-fun canRead(context: Context, self: Uri): Boolean = when {
-    context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
+fun Uri.canRead(context: Context): Boolean = when {
+    context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
             != PackageManager.PERMISSION_GRANTED -> false
-    else -> !TextUtils.isEmpty(getRawType(context, self))
+    else -> !TextUtils.isEmpty(getRawType(context))
 } // Ignore documents without MIME
 
-fun canWrite(context: Context, self: Uri): Boolean {
+fun Uri.canWrite(context: Context): Boolean {
     // Ignore if grant doesn't allow write
-    if (context.checkCallingOrSelfUriPermission(self, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    if (context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             != PackageManager.PERMISSION_GRANTED) {
         return false
     }
-    val type = getRawType(context, self)
-    val flags = queryForLong(context, self, DocumentsContract.Document.COLUMN_FLAGS).toInt()
+    val type = getRawType(context)
+    val flags = queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS).toInt()
     // Ignore documents without MIME
     if (TextUtils.isEmpty(type)) {
         return false
@@ -97,31 +112,31 @@ fun canWrite(context: Context, self: Uri): Boolean {
     // Writable normal files considered writable
 }
 
-fun exists(context: Context, uri: Uri?): Boolean {
+fun Uri.exists(context: Context): Boolean {
     val resolver = context.contentResolver
     var cursor: Cursor? = null
     return try {
-        cursor = resolver.query(uri!!, arrayOf(
+        cursor = resolver.query(this, arrayOf(
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
         cursor?.count ?: 0 > 0
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, uri)
+        LogsHandler.unhandledException(e, this)
         false
     } finally {
         closeQuietly(cursor)
     }
 }
 
-private fun queryForLong(context: Context, uri: Uri, column: String): Long {
+private fun Uri.queryForLong(context: Context, column: String): Long {
     val resolver = context.contentResolver
     var cursor: Cursor? = null
     return try {
-        cursor = resolver.query(uri, arrayOf(column), null, null, null)
+        cursor = resolver.query(this, arrayOf(column), null, null, null)
         if (cursor!!.moveToFirst() && !cursor.isNull(0)) {
             cursor.getLong(0)
         } else 0
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, "$uri column: $column")
+        LogsHandler.unhandledException(e, "$this column: $column")
         0
     } finally {
         closeQuietly(cursor)

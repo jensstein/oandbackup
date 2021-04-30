@@ -225,4 +225,8 @@ class ShellCommands(private var users: List<String>?) {
             }
         }
     }
+
+    interface Command {
+        fun execute()
+    }
 }

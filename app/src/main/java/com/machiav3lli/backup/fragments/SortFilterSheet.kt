@@ -57,7 +57,7 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sortFilterModel = getSortFilterModel(requireContext())
+        sortFilterModel = requireContext().getSortFilterModel()
         setupOnClicks()
         setupChips()
     }
@@ -65,12 +65,12 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
         binding.reset.setOnClickListener {
-            saveFilterPreferences(requireContext(), SortFilterModel("0000"), false)
+            requireContext().saveFilterPreferences(SortFilterModel("0000"), false)
             requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
         binding.apply.setOnClickListener {
-            saveFilterPreferences(requireContext(), sortFilterModel, binding.sortAscDesc.isChecked)
+            requireContext().saveFilterPreferences(sortFilterModel, binding.sortAscDesc.isChecked)
             requireMainActivity().refreshView()
             dismissAllowingStateLoss()
         }
@@ -82,14 +82,14 @@ class SortFilterSheet(private var sortFilterModel: SortFilterModel = SortFilterM
     private fun setupChips() {
         binding.sortBy.check(sortFilterModel.sortById)
         binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSortBy(checkedId) }
-        binding.sortAscDesc.isChecked = getSortOrder(requireContext())
+        binding.sortAscDesc.isChecked = requireContext().getSortOrder()
         binding.filters.check(sortFilterModel.filterId)
         binding.filters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putFilter(checkedId) }
         binding.backupFilters.check(sortFilterModel.backupFilterId)
         binding.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putBackupFilter(checkedId) }
         binding.specialFilters.check(sortFilterModel.specialFilterId)
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> sortFilterModel.putSpecialFilter(checkedId) }
-        if (getDefaultSharedPreferences(requireContext()).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+        if (requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
             binding.showOnlySpecial.visibility = View.VISIBLE
         } else {
             binding.showOnlySpecial.visibility = View.GONE

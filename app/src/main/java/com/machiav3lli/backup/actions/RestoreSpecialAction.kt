@@ -50,7 +50,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
         Timber.i(String.format("%s: Restore special data", app))
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
-        val isEncrypted = isEncryptionEnabled(context)
+        val isEncrypted = context.isEncryptionEnabled()
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
         val backupArchiveFile = backupLocation.findFile(backupArchiveFilename)
                 ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
@@ -58,7 +58,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
             openArchiveFile(backupArchiveFile.uri, isEncrypted).use { archive ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
-                suUncompressTo(archive, tempPath)
+                archive.suUncompressTo(tempPath)
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()

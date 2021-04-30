@@ -53,7 +53,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
             } else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
                 schedule.timeUntilNextEvent = AlarmManager.INTERVAL_FIFTEEN_MINUTES
             scheduleDao.update(schedule)
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
                     System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent)
             Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
         }.start()

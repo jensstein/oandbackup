@@ -26,11 +26,11 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.utils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
@@ -61,8 +61,11 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
             val message = getPostExecuteMessage(mainActivityX, actionType, result)
             showNotification(mainActivityX, MainActivityX::class.java,
                     System.currentTimeMillis().toInt(), app.packageLabel, message, true)
-            showActionResult(mainActivityX, this.result!!, if (this.result!!.succeeded) null
-            else { _: DialogInterface?, _: Int -> logErrors(mainActivityX, LogsHandler.handleErrorMessages(mainActivityX,result?.message) ?: "") })
+            mainActivityX.showActionResult(this.result!!, if (this.result!!.succeeded) null
+            else { _: DialogInterface?, _: Int ->
+                logErrors(mainActivityX, LogsHandler.handleErrorMessages(mainActivityX, result?.message)
+                        ?: "")
+            })
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.snackBar?.dismiss()
         }

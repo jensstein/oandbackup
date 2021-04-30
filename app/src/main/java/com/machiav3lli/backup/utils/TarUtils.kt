@@ -49,30 +49,30 @@ private const val DIR_MODE_OR_MASK = 16384
  * @throws IOException on IO related errors such as out of disk space or missing files
  */
 @Throws(IOException::class)
-fun addFilepath(archive: TarArchiveOutputStream, inputFilepath: File, parent: String) {
+fun TarArchiveOutputStream.addFilepath(inputFilepath: File, parent: String) {
     val entryName = parent + inputFilepath.name
     val archiveEntry = TarArchiveEntry(inputFilepath, entryName)
     // Interject for symlinks
     if (FileUtils.isSymlink(inputFilepath)) {
         archiveEntry.linkName = inputFilepath.canonicalPath
     }
-    archive.putArchiveEntry(archiveEntry)
+    putArchiveEntry(archiveEntry)
     if (inputFilepath.isFile && !FileUtils.isSymlink(inputFilepath)) {
         val bis = BufferedInputStream(FileInputStream(inputFilepath))
-        IOUtils.copy(bis, archive)
+        IOUtils.copy(bis, this)
     } else if (inputFilepath.isDirectory) {
-        archive.closeArchiveEntry()
+        closeArchiveEntry()
         for (nextFile in Objects.requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")) {
-            addFilepath(archive, nextFile, entryName + File.separator)
+            addFilepath(nextFile, entryName + File.separator)
         }
     } else {
         // in case of a symlink
-        archive.closeArchiveEntry()
+        closeArchiveEntry()
     }
 }
 
 @Throws(IOException::class)
-fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.FileInfo>) {
+fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
     for (file in allFiles) {
         Timber.d(String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
         var entry: TarArchiveEntry
@@ -83,34 +83,34 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode
                 entry.modTime = file.fileModTime
-                archive.putArchiveEntry(entry)
+                putArchiveEntry(entry)
                 try {
-                    ShellHandler.quirkLibsuReadFileWorkaround(file, archive)
+                    ShellHandler.quirkLibsuReadFileWorkaround(file, this)
                 } finally {
-                    archive.closeArchiveEntry()
+                    closeArchiveEntry()
                 }
             }
             FileType.DIRECTORY -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
                 entry.mode = DIR_MODE_OR_MASK or file.fileMode
-                archive.putArchiveEntry(entry)
-                archive.closeArchiveEntry()
+                putArchiveEntry(entry)
+                closeArchiveEntry()
             }
             FileType.SYMBOLIC_LINK -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_LINK)
                 entry.linkName = file.linkName
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode
-                archive.putArchiveEntry(entry)
-                archive.closeArchiveEntry()
+                putArchiveEntry(entry)
+                closeArchiveEntry()
             }
             FileType.NAMED_PIPE -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_FIFO)
                 entry.setNames(file.owner, file.group)
                 entry.mode = FILE_MODE_OR_MASK or file.fileMode
-                archive.putArchiveEntry(entry)
-                archive.closeArchiveEntry()
+                putArchiveEntry(entry)
+                closeArchiveEntry()
             }
             FileType.BLOCK_DEVICE -> Timber.w("Block devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
             FileType.CHAR_DEVICE -> Timber.w("Char devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
@@ -120,16 +120,16 @@ fun suAddFiles(archive: TarArchiveOutputStream, allFiles: List<ShellHandler.File
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
+fun TarArchiveInputStream.suUncompressTo(targetDir: File?) {
     targetDir?.let {
-        generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
+        generateSequence { nextTarEntry }.forEach { tarEntry ->
             val file = File(it, tarEntry.name)
             Timber.d("Extracting ${tarEntry.name}")
             if (tarEntry.isDirectory) {
                 ShellHandler.runAsRoot("mkdir -p ${quote(file)}")
-                suUncompressTo(archive, it)
+                suUncompressTo(it)
             } else if (tarEntry.isFile) {
-                SuFileOutputStream(SuFile.open(it, tarEntry.name)).use { fos -> IOUtils.copy(archive, fos, BUFFER_SIZE) }
+                SuFileOutputStream.open(SuFile.open(it, tarEntry.name)).use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
             } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
                 ShellHandler.runAsRoot("cd ${quote(it)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
             } else if (tarEntry.isFIFO) {
@@ -142,9 +142,9 @@ fun suUncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
 }
 
 @Throws(IOException::class)
-fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
+fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
     targetDir?.let {
-        generateSequence { archive.nextTarEntry }.forEach { tarEntry ->
+        generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetPath = File(it, tarEntry.name)
             Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
             var doChmod = true
@@ -174,7 +174,7 @@ fun uncompressTo(archive: TarArchiveInputStream, targetDir: File?) {
                     if (!parent.exists() && !parent.mkdirs()) {
                         throw IOException("Unable to create folder ${parent.absolutePath}")
                     }
-                    FileOutputStream(targetPath).use { fos -> IOUtils.copy(archive, fos) }
+                    FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }
                 }
             }
             if (doChmod) {

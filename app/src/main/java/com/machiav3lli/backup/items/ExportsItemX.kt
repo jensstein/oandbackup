@@ -49,11 +49,11 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : Abstra
         binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
         modeToModes(schedule.mode).let {
-            binding.apkMode.setExists(it.contains(BU_MODE_APK))
-            binding.dataMode.setExists(it.contains(BU_MODE_DATA))
-            binding.deDataMode.setExists(it.contains(BU_MODE_DATA_DE))
-            binding.extDataMode.setExists(it.contains(BU_MODE_DATA_EXT))
-            binding.obbMode.setExists(it.contains(BU_MODE_OBB))
+            binding.apkMode.setExists(it.contains(MODE_APK))
+            binding.dataMode.setExists(it.contains(MODE_DATA))
+            binding.deDataMode.setExists(it.contains(MODE_DATA_DE))
+            binding.extDataMode.setExists(it.contains(MODE_DATA_EXT))
+            binding.obbMode.setExists(it.contains(MODE_DATA_OBB))
         }
         binding.customlist.setExists(schedule.customList.isNotEmpty())
         binding.blocklist.setExists(schedule.blockList.isNotEmpty())

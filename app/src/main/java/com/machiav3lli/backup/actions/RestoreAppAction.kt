@@ -44,17 +44,17 @@ import java.nio.file.Path
 open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
     fun run(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int): ActionResult {
         Timber.i("Restoring up: ${app.packageName} [${app.packageLabel}]")
-        val stopProcess = isKillBeforeActionEnabled(context)
+        val stopProcess = context.isKillBeforeActionEnabled()
         if (stopProcess) {
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
             preprocessPackage(app.packageName)
         }
         try {
-            if (backupMode and BU_MODE_APK == BU_MODE_APK) {
+            if (backupMode and MODE_APK == MODE_APK) {
                 restorePackage(backupLocation, backupProperties)
                 app.refreshFromPackageManager(context)
             }
-            if (backupMode != BU_MODE_APK)
+            if (backupMode != MODE_APK)
                 restoreAllData(app, backupProperties, backupLocation, backupMode)
         } catch (e: RestoreFailedException) {
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
@@ -73,25 +73,25 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     protected open fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int) {
         val backupDir = StorageFile.fromUri(context, backupLocation)
-        if (backupProperties.hasAppData && backupMode and BU_MODE_DATA == BU_MODE_DATA) {
+        if (backupProperties.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's data")
             restoreData(app, backupProperties, backupDir)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
-        if (backupProperties.hasDevicesProtectedData && backupMode and BU_MODE_DATA_DE == BU_MODE_DATA_DE) {
+        if (backupProperties.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
             Timber.i("[${backupProperties.packageName}] Restoring app's protected data")
             restoreDeviceProtectedData(app, backupProperties, backupDir)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
         }
-        if (backupProperties.hasExternalData && backupMode and BU_MODE_DATA_EXT == BU_MODE_DATA_EXT) {
+        if (backupProperties.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
             Timber.i("[${backupProperties.packageName}] Restoring app's external data")
             restoreExternalData(app, backupProperties, backupDir)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
         }
-        if (backupProperties.hasObbData && backupMode and BU_MODE_OBB == BU_MODE_OBB) {
+        if (backupProperties.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
             Timber.i("[${backupProperties.packageName}] Restoring app's obb files")
             restoreObbData(app, backupProperties, backupDir)
         } else {
@@ -120,13 +120,13 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     protected fun uncompress(filepath: File, targetDir: File?) {
         val inputFilename = filepath.absolutePath
         Timber.d("Opening file for expansion: $inputFilename")
-        val password = getEncryptionPassword(context)
+        val password = context.getEncryptionPassword()
         var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
         if (password.isNotEmpty()) {
             Timber.d("Encryption enabled")
-            stream = decryptStream(stream, password, getCryptoSalt(context))
+            stream = stream.decryptStream(password, context.getCryptoSalt())
         }
-        uncompressTo(TarArchiveInputStream(GzipCompressorInputStream(stream)), targetDir)
+        TarArchiveInputStream(GzipCompressorInputStream(stream)).uncompressTo(targetDir)
         Timber.d("Done expansion. Closing $inputFilename")
         stream.close()
     }
@@ -203,7 +203,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 )
             }
             val sb = StringBuilder()
-            val disableVerification = isDisableVerification(context)
+            val disableVerification = context.isDisableVerification()
             // disable verify apps over usb
             if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
             // Install main package
@@ -275,12 +275,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     protected fun openArchiveFile(archiveUri: Uri, isEncrypted: Boolean): TarArchiveInputStream {
         val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
         if (isEncrypted) {
-            val password = getEncryptionPassword(context)
+            val password = context.getEncryptionPassword()
             if (password.isNotEmpty()) {
                 Timber.d("Decryption enabled")
                 return TarArchiveInputStream(
                         GzipCompressorInputStream(
-                                decryptStream(inputStream, password, getCryptoSalt(context))
+                                inputStream.decryptStream(password, context.getCryptoSalt())
                         )
                 )
             }
@@ -300,7 +300,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 // Create a temporary directory in OABX's cache directory and uncompress the data into it
                 tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
                 tempDir?.let {
-                    uncompressTo(inputStream, it.toFile())
+                    inputStream.uncompressTo(it.toFile())
                     // clear the data from the final directory
                     wipeDirectory(targetDir, DATA_EXCLUDED_DIRS) //TODO hg: isn't it inconsistent, if we keep cache*? and what about "lib", why isn't it in the backup?
                     // Move all the extracted data into the target directory
@@ -436,8 +436,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     private fun getPackageInstallCommand(apkPath: File, basePackageName: String?): String {
         return String.format("cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}",
                 if (basePackageName != null) " -p $basePackageName" else "",
-                if (isRestoreAllPermissions(context)) " -g" else "",
-                if (isAllowDowngrade(context)) " -d" else "")
+                if (context.isRestoreAllPermissions()) " -g" else "",
+                if (context.isAllowDowngrade()) " -d" else "")
     }
 
     class RestoreFailedException : AppActionFailedException {

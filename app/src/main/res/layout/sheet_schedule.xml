@@ -161,35 +161,35 @@
                     app:layout_constraintTop_toBottomOf="@id/schedFilterTitle">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedAll"
+                        android:id="@+id/chipAll"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_all" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedSystem"
+                        android:id="@+id/chipSystem"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedUser"
+                        android:id="@+id/chipUser"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedNewUpdated"
+                        android:id="@+id/chipNewUpdated"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedLaunchable"
+                        android:id="@+id/chipLaunchable"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

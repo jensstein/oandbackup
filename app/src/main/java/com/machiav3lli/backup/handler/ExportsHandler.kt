@@ -39,8 +39,8 @@ class ExportsHandler(var context: Context) {
     private var exportsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = getBackupRoot(context)
-        exportsDirectory = ensureDirectory(backupRootFolder, EXPORTS_FOLDER_NAME)
+        val backupRootFolder = context.getBackupRoot()
+        exportsDirectory = backupRootFolder.ensureDirectory(EXPORTS_FOLDER_NAME)
     }
 
     @Throws(IOException::class)

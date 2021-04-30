@@ -54,11 +54,11 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
         binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
         modeToModes(schedule.mode).let {
-            binding.apkMode.setExists(it.contains(BU_MODE_APK))
-            binding.dataMode.setExists(it.contains(BU_MODE_DATA))
-            binding.deDataMode.setExists(it.contains(BU_MODE_DATA_DE))
-            binding.extDataMode.setExists(it.contains(BU_MODE_DATA_EXT))
-            binding.obbMode.setExists(it.contains(BU_MODE_OBB))
+            binding.apkMode.setExists(it.contains(MODE_APK))
+            binding.dataMode.setExists(it.contains(MODE_DATA))
+            binding.deDataMode.setExists(it.contains(MODE_DATA_DE))
+            binding.extDataMode.setExists(it.contains(MODE_DATA_EXT))
+            binding.obbMode.setExists(it.contains(MODE_DATA_OBB))
         }
         binding.enableCheckbox.isChecked = schedule.enabled
         setTimeLeft(binding)
@@ -103,7 +103,6 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
                         && oldItem.schedule.interval == newItem.schedule.interval
                         && oldItem.schedule.timePlaced == newItem.schedule.timePlaced
                         && oldItem.schedule.excludeSystem == newItem.schedule.excludeSystem
-                        && oldItem.schedule.enableCustomList == newItem.schedule.enableCustomList
                         && oldItem.schedule.filter == newItem.schedule.filter
                         && oldItem.schedule.mode == newItem.schedule.mode
                         && oldItem.schedule.customList == newItem.schedule.customList

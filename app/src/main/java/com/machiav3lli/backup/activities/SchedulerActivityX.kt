@@ -91,7 +91,7 @@ class SchedulerActivityX : BaseActivity() {
                         true) { newList: Set<String> ->
                     Thread {
                         blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-                        setNeedRefresh(this, true)
+                        setNeedRefresh(true)
                     }.start()
                 }.show(supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()

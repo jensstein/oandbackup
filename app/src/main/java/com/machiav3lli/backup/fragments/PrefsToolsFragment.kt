@@ -29,9 +29,9 @@ import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.handler.BackendController.getApplicationList
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ExportsHandler
+import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.*
@@ -159,9 +159,13 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                         refreshAppsList()
                     }
                     .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
-                        writeAppsListFile(applyFilter(appInfoList,
-                                getSortFilterModel(requireContext()).toString(), requireContext())
-                                .map { "${it.packageLabel}: ${it.packageName}" }, true)
+                        writeAppsListFile(
+                                appInfoList.applyFilter(
+                                        requireContext().getSortFilterModel().toString(),
+                                        requireContext()
+                                ).map { "${it.packageLabel}: ${it.packageName}" },
+                                true
+                        )
                         refreshAppsList()
                     }
                     .setNegativeButton(R.string.dialogNo, null)
@@ -177,7 +181,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val date = LocalDateTime.now()
         val filesText = appsList.joinToString("\n")
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
-        val listFile = getBackupRoot(requireContext()).createFile("application/octet-stream", fileName)
+        val listFile = requireContext().getBackupRoot().createFile("application/octet-stream", fileName)
         BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
@@ -200,7 +204,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         appInfoList = listOf()
         Thread {
             try {
-                appInfoList = getApplicationList(requireContext(), listOf())
+                appInfoList = requireContext().getApplicationList(listOf())
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

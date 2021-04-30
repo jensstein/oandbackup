@@ -43,7 +43,7 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
     private fun ensureBackupPath(backupRoot: Uri): StorageFile? {
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
-        return ensureDirectory(StorageFile.fromUri(context, backupRoot), String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
+        return StorageFile.fromUri(context, backupRoot).ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
     }
 
     fun setHasApk(hasApk: Boolean) {

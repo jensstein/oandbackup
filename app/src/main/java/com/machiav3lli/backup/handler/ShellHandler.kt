@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
-import com.machiav3lli.backup.utils.iterableToString
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import timber.log.Timber
@@ -87,8 +86,7 @@ class ShellHandler {
         try {
             val command = "$utilBoxQuoted ls -dlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
-            val result = shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
-            return result
+            return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
             throw UnexpectedCommandResult("'\$command' failed", shellResult!!)
         }
@@ -98,12 +96,12 @@ class ShellHandler {
     fun setUtilBoxPath(utilBoxName: String) {
         var shellResult = runAsRoot("which $utilBoxName")
         if (shellResult.out.isNotEmpty()) {
-            utilBoxPath = iterableToString(shellResult.out)
+            utilBoxPath = shellResult.out.joinToString("")
             if (utilBoxPath.isNotEmpty()) {
                 utilBoxQuoted = quote(utilBoxPath)
                 shellResult = runAsRoot("$utilBoxQuoted --version")
                 if (shellResult.out.isNotEmpty()) {
-                    val utilBoxVersion = iterableToString(shellResult.out)
+                    val utilBoxVersion = shellResult.out.joinToString("")
                     Timber.i("Using Utilbox $utilBoxName : $utilBoxQuoted : $utilBoxVersion")
                 }
                 return

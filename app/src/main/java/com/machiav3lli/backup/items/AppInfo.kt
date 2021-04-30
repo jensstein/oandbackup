@@ -23,8 +23,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 import java.io.File
@@ -65,7 +65,7 @@ class AppInfo {
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
-        val backupDoc = getBackupRoot(context).findFile(packageName)
+        val backupDoc = context.getBackupRoot().findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
     }
@@ -74,7 +74,7 @@ class AppInfo {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
-        val backupDoc = getBackupRoot(context).findFile(packageName)
+        val backupDoc = context.getBackupRoot().findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
         refreshStorageStats(context)
@@ -123,7 +123,7 @@ class AppInfo {
 
     private fun refreshStorageStats(context: Context): Boolean {
         return try {
-            storageStats = BackendController.getPackageStorageStats(context, packageName)
+            storageStats = context.getPackageStorageStats(packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.e("Could not refresh StorageStats. Package was not found: ${e.message}")
@@ -185,7 +185,7 @@ class AppInfo {
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getAppUri(context: Context, create: Boolean): Uri {
         if (create && backupDirUri == Uri.EMPTY) {
-            backupDirUri = ensureDirectory(getBackupRoot(context), packageName)!!.uri
+            backupDirUri = context.getBackupRoot().ensureDirectory(packageName)!!.uri
         }
         return backupDirUri
     }
@@ -205,7 +205,7 @@ class AppInfo {
         val propertiesFileName = String.format(BACKUP_INSTANCE_PROPERTIES,
                 BACKUP_DATE_TIME_FORMATTER.format(backupItem.backupProperties.backupDate), backupItem.backupProperties.profileId)
         try {
-            deleteRecursive(context, backupItem.backupInstanceDirUri)
+            backupItem.backupInstanceDirUri.deleteRecursive(context)
             StorageFile.fromUri(context, backupDirUri).findFile(propertiesFileName)!!.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)

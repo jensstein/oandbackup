@@ -30,8 +30,6 @@ const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
 const val BLOCKLIST_DB_NAME = "blocklist.db"
-
-const val PACKAGES_LIST_ARGS_PACKAGES = "selectedPackages"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
 
 const val PREFS_SORT_FILTER = "sortFilter"
@@ -69,17 +67,17 @@ const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
-const val MODE_UNSET = 0
-const val MODE_APK = 1
-const val MODE_DATA = 2
-const val MODE_BOTH = 3
+const val ALT_MODE_UNSET = 0
+const val ALT_MODE_APK = 1
+const val ALT_MODE_DATA = 2
+const val ALT_MODE_BOTH = 3
 
-const val BU_MODE_UNSET = 0b00000
-const val BU_MODE_APK = 0b10000
-const val BU_MODE_DATA = 0b01000
-const val BU_MODE_DATA_DE = 0b00100
-const val BU_MODE_DATA_EXT = 0b00010
-const val BU_MODE_OBB = 0b00001
+const val MODE_UNSET = 0b00000
+const val MODE_APK = 0b10000
+const val MODE_DATA = 0b01000
+const val MODE_DATA_DE = 0b00100
+const val MODE_DATA_EXT = 0b00010
+const val MODE_DATA_OBB = 0b00001
 
 const val MAIN_SORT_LABEL = '0'
 const val MAIN_SORT_PACKAGENAME = '1'

@@ -17,10 +17,8 @@
  */
 package com.machiav3lli.backup.utils
 
-import android.animation.Animator
 import android.app.Activity
 import android.content.DialogInterface
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,69 +33,42 @@ fun setDayNightTheme(theme: String?) {
     }
 }
 
-fun showActionResult(activity: Activity, result: ActionResult, saveMethod: DialogInterface.OnClickListener?) {
-    activity.runOnUiThread {
-        val builder = AlertDialog.Builder(activity)
-                .setPositiveButton(R.string.dialogOK, null)
-        if (saveMethod != null) {
-            builder.setNegativeButton(R.string.dialogSave, saveMethod)
+fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.OnClickListener?) = runOnUiThread {
+    val builder = AlertDialog.Builder(this)
+            .setPositiveButton(R.string.dialogOK, null)
+    if (saveMethod != null) {
+        builder.setNegativeButton(R.string.dialogSave, saveMethod)
+    }
+    if (!result.succeeded) {
+        builder.setTitle(R.string.errorDialogTitle)
+                .setMessage(result.message)
+        builder.show()
+    }
+}
+
+
+fun Activity.showError(message: String?) = runOnUiThread {
+    AlertDialog.Builder(this)
+            .setTitle(R.string.errorDialogTitle)
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK, null).show()
+}
+
+fun Activity.showFatalUiWarning(message: String) =
+        showWarning(this.javaClass.simpleName, message) { _: DialogInterface?, _: Int -> finishAffinity() }
+
+fun Activity.showWarning(title: String, message: String, callback: DialogInterface.OnClickListener?) =
+        runOnUiThread {
+            AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setNeutralButton(R.string.dialogOK, callback)
+                    .setCancelable(false)
+                    .show()
         }
-        if (!result.succeeded) {
-            builder.setTitle(R.string.errorDialogTitle)
-                    .setMessage(result.message)
-            builder.show()
-        }
-    }
-}
 
-fun showError(activity: Activity, message: String?) {
-    activity.runOnUiThread {
-        AlertDialog.Builder(activity)
-                .setTitle(R.string.errorDialogTitle)
-                .setMessage(message)
-                .setPositiveButton(R.string.dialogOK, null).show()
-    }
-}
-
-fun showFatalUiWarning(activity: Activity,message: String) {
-    showWarning(activity, activity.javaClass.simpleName, message) { _: DialogInterface?, _: Int -> activity.finishAffinity() }
-}
-
-fun showWarning(activity: Activity, title: String, message: String, callback: DialogInterface.OnClickListener?) {
-    activity.runOnUiThread {
-        AlertDialog.Builder(activity)
-                .setTitle(title)
-                .setMessage(message)
-                .setNeutralButton(R.string.dialogOK, callback)
-                .setCancelable(false)
-                .show()
-    }
-}
-
-fun showToast(activity: Activity, message: String?) = activity.runOnUiThread {
-    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-}
-
-fun changeVisibility(view: View, visibility: Int, withAnimation: Boolean) {
-    view.animate().alpha(if (visibility == View.VISIBLE) 1.0f else 0.0f)
-            .setDuration(if (withAnimation) 600 else 1.toLong())
-            .setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {
-                    if (visibility == View.VISIBLE && view.visibility == View.GONE) view.visibility = View.VISIBLE
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    view.visibility = visibility
-                }
-
-                override fun onAnimationCancel(animation: Animator) {
-                    // not relevant
-                }
-
-                override fun onAnimationRepeat(animation: Animator) {
-                    // not relevant
-                }
-            })
+fun Activity.showToast(message: String?) = runOnUiThread {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 

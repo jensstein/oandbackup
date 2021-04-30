@@ -39,8 +39,8 @@ class LogsHandler(var context: Context) {
     private var logsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = getBackupRoot(context)
-        logsDirectory = ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
+        val backupRootFolder = context.getBackupRoot()
+        logsDirectory = backupRootFolder.ensureDirectory(LOG_FOLDER_NAME)
     }
 
     @Throws(IOException::class)

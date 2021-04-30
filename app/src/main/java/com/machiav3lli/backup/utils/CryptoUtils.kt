@@ -64,10 +64,7 @@ private const val ITERATION_COUNT = 2020
 private const val KEY_LENGTH = 256
 
 @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
-fun generateKeyFromPassword(password: String, salt: ByteArray?): SecretKey = generateKeyFromPassword(password, salt, DEFAULT_SECRET_KEY_FACTORY_ALGORITHM, CIPHER_ALGORITHM)
-
-@Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
-fun generateKeyFromPassword(password: String, salt: ByteArray?, keyFactoryAlgorithm: String?, cipherAlgorithm: String): SecretKey {
+fun generateKeyFromPassword(password: String, salt: ByteArray?, keyFactoryAlgorithm: String? = DEFAULT_SECRET_KEY_FACTORY_ALGORITHM, cipherAlgorithm: String = CIPHER_ALGORITHM): SecretKey {
     val factory = SecretKeyFactory.getInstance(keyFactoryAlgorithm)
     val spec: KeySpec = PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH)
     val keyBytes = factory.generateSecret(spec).encoded
@@ -75,81 +72,67 @@ fun generateKeyFromPassword(password: String, salt: ByteArray?, keyFactoryAlgori
 }
 
 @Throws(CryptoSetupException::class)
-fun encryptStream(os: OutputStream?, password: String, salt: ByteArray?): CipherOutputStream {
-    return try {
-        val secret = generateKeyFromPassword(password, salt)
-        encryptStream(os, secret)
-    } catch (e: NoSuchAlgorithmException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidKeySpecException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    }
+fun OutputStream.encryptStream(password: String, salt: ByteArray?): CipherOutputStream = try {
+    val secret = generateKeyFromPassword(password, salt)
+    this.encryptStream(secret)
+} catch (e: NoSuchAlgorithmException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidKeySpecException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
 }
 
 @Throws(CryptoSetupException::class)
-fun encryptStream(os: OutputStream?, secret: SecretKey?): CipherOutputStream = encryptStream(os, secret, CIPHER_ALGORITHM)
-
-@Throws(CryptoSetupException::class)
-fun encryptStream(os: OutputStream?, secret: SecretKey?, cipherAlgorithm: String): CipherOutputStream {
-    return try {
-        val cipher = Cipher.getInstance(cipherAlgorithm)
-        val iv = IvParameterSpec(initIv(cipherAlgorithm))
-        cipher.init(Cipher.ENCRYPT_MODE, secret, iv)
-        CipherOutputStream(os, cipher)
-    } catch (e: NoSuchAlgorithmException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidKeyException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidAlgorithmParameterException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: NoSuchPaddingException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    }
+fun OutputStream.encryptStream(secret: SecretKey?, cipherAlgorithm: String = CIPHER_ALGORITHM): CipherOutputStream = try {
+    val cipher = Cipher.getInstance(cipherAlgorithm)
+    val iv = IvParameterSpec(initIv(cipherAlgorithm))
+    cipher.init(Cipher.ENCRYPT_MODE, secret, iv)
+    CipherOutputStream(this, cipher)
+} catch (e: NoSuchAlgorithmException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidKeyException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidAlgorithmParameterException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: NoSuchPaddingException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
 }
 
 @Throws(CryptoSetupException::class)
-fun decryptStream(stream: InputStream?, password: String, salt: ByteArray?): CipherInputStream {
-    return try {
-        val secret = generateKeyFromPassword(password, salt)
-        decryptStream(stream, secret)
-    } catch (e: NoSuchAlgorithmException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidKeySpecException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    }
+fun InputStream.decryptStream(password: String, salt: ByteArray?): CipherInputStream = try {
+    val secret = generateKeyFromPassword(password, salt)
+    decryptStream(secret)
+} catch (e: NoSuchAlgorithmException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidKeySpecException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
 }
 
 @Throws(CryptoSetupException::class)
-fun decryptStream(stream: InputStream?, secret: SecretKey?): CipherInputStream = decryptStream(stream, secret, CIPHER_ALGORITHM)
-
-@Throws(CryptoSetupException::class)
-fun decryptStream(stream: InputStream?, secret: SecretKey?, cipherAlgorithm: String): CipherInputStream {
-    return try {
-        val cipher = Cipher.getInstance(cipherAlgorithm)
-        val iv = IvParameterSpec(initIv(cipherAlgorithm))
-        cipher.init(Cipher.DECRYPT_MODE, secret, iv)
-        CipherInputStream(stream, cipher)
-    } catch (e: NoSuchPaddingException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: NoSuchAlgorithmException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidAlgorithmParameterException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    } catch (e: InvalidKeyException) {
-        Timber.e("Could not setup encryption: ${e.message}")
-        throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
-    }
+fun InputStream.decryptStream(secret: SecretKey?, cipherAlgorithm: String = CIPHER_ALGORITHM): CipherInputStream = try {
+    val cipher = Cipher.getInstance(cipherAlgorithm)
+    val iv = IvParameterSpec(initIv(cipherAlgorithm))
+    cipher.init(Cipher.DECRYPT_MODE, secret, iv)
+    CipherInputStream(this, cipher)
+} catch (e: NoSuchPaddingException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: NoSuchAlgorithmException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidAlgorithmParameterException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
+} catch (e: InvalidKeyException) {
+    Timber.e("Could not setup encryption: ${e.message}")
+    throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
 }
 
 private fun initIv(cipherAlgorithm: String): ByteArray {

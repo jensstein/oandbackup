@@ -35,7 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.BU_MODE_UNSET
+import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.SCHED_FILTER_NEW_UPDATED
@@ -46,6 +46,7 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
+import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
@@ -197,14 +198,14 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             message.append("\n${getString(R.string.sched_mode)} ${modesToString(requireContext(), modeToModes(it.mode))}")
             message.append("\n${getString(R.string.backup_filters)} ${filterToString(requireContext(), it.filter)}")
             if (it.filter == SCHED_FILTER_NEW_UPDATED)
-                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
-            message.append("\n${getString(R.string.customListTitle)}:\n${if (it.enableCustomList) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
+                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${if (it.excludeSystem) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
+            message.append("\n${getString(R.string.customListTitle)}: ${if (it.customList.isNotEmpty()) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
             message.append("\n${getString(R.string.sched_blocklist)}: ${if (it.blockList.isNotEmpty()) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
             AlertDialog.Builder(requireActivity())
                     .setTitle("${it.name}: ${getString(R.string.sched_activateButton)}?")
                     .setMessage(message)
                     .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                        if (it.mode != BU_MODE_UNSET)
+                        if (it.mode != MODE_UNSET)
                             StartSchedule(requireContext(), scheduleId).execute()
                     }
                     .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
@@ -231,7 +232,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
     }
 
     internal class StartSchedule(val context: Context, private val scheduleId: Long)
-        : Command {
+        : ShellCommands.Command {
 
         override fun execute() {
             Thread {

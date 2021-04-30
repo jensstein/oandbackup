@@ -24,7 +24,7 @@ import com.machiav3lli.backup.items.AppInfo
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): List<AppInfo> {
+fun List<AppInfo>.applyFilter(filter: CharSequence, context: Context): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
     var launchableAppsList = listOf<String>()
     if (filter[1] == MAIN_FILTER_LAUNCHABLE) {
@@ -39,7 +39,7 @@ fun applyFilter(list: List<AppInfo>, filter: CharSequence, context: Context): Li
         MAIN_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
         else -> { _: AppInfo -> true }
     }
-    return list.filter(predicate)
+    return filter(predicate)
             .applyBackupFilter(filter)
             .applySpecialFilter(filter, context)
             .applySort(filter, context)
@@ -58,7 +58,7 @@ private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo>
 
 private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Context): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
-    val days = getDefaultSharedPreferences(context).getInt(PREFS_OLDBACKUPS, 7)
+    val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
 
     predicate = when (filter[3]) {
         MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
@@ -82,7 +82,7 @@ private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Cont
 }
 
 private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): List<AppInfo> =
-        if (getSortOrder(context)) {
+        if (context.getSortOrder()) {
             when (filter[0]) {
                 MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
                 MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
@@ -95,6 +95,22 @@ private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): Lis
                 else -> sortedBy { it.packageLabel }
             }
         }
+
+fun filterToId(filter: Int): Int = when (filter) {
+    SCHED_FILTER_USER -> R.id.chipUser
+    SCHED_FILTER_SYSTEM -> R.id.chipSystem
+    SCHED_FILTER_NEW_UPDATED -> R.id.chipNewUpdated
+    SCHED_FILTER_LAUNCHABLE -> R.id.chipLaunchable
+    else -> R.id.chipAll
+}
+
+fun idToFilter(id: Int): Int = when (id) {
+    R.id.chipUser -> SCHED_FILTER_USER
+    R.id.chipSystem -> SCHED_FILTER_SYSTEM
+    R.id.chipNewUpdated -> SCHED_FILTER_NEW_UPDATED
+    R.id.chipLaunchable -> SCHED_FILTER_LAUNCHABLE
+    else -> SCHED_FILTER_ALL
+}
 
 fun filterToString(context: Context, filter: Int) = when (filter) {
     SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
