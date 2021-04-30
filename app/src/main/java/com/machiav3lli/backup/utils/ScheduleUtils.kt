@@ -31,9 +31,11 @@ import java.util.concurrent.TimeUnit
 fun timeUntilNextEvent(schedule: Schedule, now: Long): Long {
     val c = Calendar.getInstance()
     c.timeInMillis = schedule.timePlaced
-    c.add(Calendar.DAY_OF_MONTH, schedule.interval)
     c[Calendar.HOUR_OF_DAY] = schedule.timeHour
     c[Calendar.MINUTE] = schedule.timeMinute
+    c[Calendar.SECOND] = 0
+    if (now >= c.timeInMillis)
+        c.add(Calendar.DAY_OF_MONTH, schedule.interval)
     return c.timeInMillis - now
 }
 
