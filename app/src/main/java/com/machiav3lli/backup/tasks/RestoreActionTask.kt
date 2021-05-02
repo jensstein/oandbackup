@@ -34,6 +34,7 @@ class RestoreActionTask(appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandl
         if (mainActivityX == null || mainActivityX.isFinishing) {
             return ActionResult(app, backupProperties, "", false)
         }
+        notificationId = System.currentTimeMillis().toInt()
         publishProgress()
         result = BackupRestoreHelper.restore(mainActivityX, shellHandler, app,
                 mode, backupProperties, backupLocation)
