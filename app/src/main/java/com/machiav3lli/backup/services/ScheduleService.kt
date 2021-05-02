@@ -71,74 +71,82 @@ open class ScheduleService : Service() {
                 var errors = ""
                 var resultsSuccess = true
                 var counter = 0
-                val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
-                selectedItems.forEach { packageName ->
-                    val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
+                if (selectedItems.isEmpty()) {
+                    showNotification(context, MainActivityX::class.java, notificationId,
+                            getString(R.string.schedule_failed), getString(R.string.empty_filtered_list), false)
+                    scheduleAlarm(context, scheduleId, true)
+                    stopService(intent)
+                } else {
+                    val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+
+                    selectedItems.forEach { packageName ->
+                        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
+                                .setInputData(workDataOf(
+                                        "packageName" to packageName,
+                                        "selectedMode" to mode,
+                                        "backupBoolean" to true,
+                                        "notificationId" to notificationId
+                                ))
+                                .build()
+
+                        worksList.add(oneTimeWorkRequest)
+
+                        val oneTimeWorkLiveData = WorkManager.getInstance(context)
+                                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+                        oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                            override fun onChanged(t: WorkInfo?) {
+                                if (t?.state == WorkInfo.State.SUCCEEDED) {
+                                    counter += 1
+                                    val succeeded = t.outputData.getBoolean("succeeded", false)
+                                    val packageLabel = t.outputData.getString("packageLabel")
+                                            ?: ""
+                                    val error = t.outputData.getString("error")
+                                            ?: ""
+                                    val message = "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
+                                    showNotification(this@ScheduleService, MainActivityX::class.java,
+                                            notificationId, message, packageLabel, false)
+                                    if (error.isNotEmpty()) errors = "$errors$packageLabel: ${LogsHandler.handleErrorMessages(this@ScheduleService, error)}\n"
+                                    resultsSuccess = resultsSuccess && succeeded
+                                    oneTimeWorkLiveData.removeObserver(this)
+                                }
+                            }
+                        })
+                    }
+
+                    val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
                             .setInputData(workDataOf(
-                                    "packageName" to packageName,
-                                    "selectedMode" to mode,
-                                    "backupBoolean" to true,
-                                    "notificationId" to notificationId
+                                    "resultsSuccess" to resultsSuccess,
+                                    "backupBoolean" to true
                             ))
                             .build()
 
-                    worksList.add(oneTimeWorkRequest)
-
-                    val oneTimeWorkLiveData = WorkManager.getInstance(context)
-                            .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-                    oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                    val finishWorkLiveData = WorkManager.getInstance(context)
+                            .getWorkInfoByIdLiveData(finishWorkRequest.id)
+                    finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                         override fun onChanged(t: WorkInfo?) {
                             if (t?.state == WorkInfo.State.SUCCEEDED) {
-                                counter += 1
-                                val succeeded = t.outputData.getBoolean("succeeded", false)
-                                val packageLabel = t.outputData.getString("packageLabel")
+                                val message = t.outputData.getString("notificationMessage")
                                         ?: ""
-                                val error = t.outputData.getString("error")
+                                val title = t.outputData.getString("notificationTitle")
                                         ?: ""
-                                val message = "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
                                 showNotification(this@ScheduleService, MainActivityX::class.java,
-                                        notificationId, message, packageLabel, false)
-                                if (error.isNotEmpty()) errors = "$errors$packageLabel: ${LogsHandler.handleErrorMessages(this@ScheduleService, error)}\n"
-                                resultsSuccess = resultsSuccess && succeeded
-                                oneTimeWorkLiveData.removeObserver(this)
+                                        notificationId, title, message, true)
+                                val overAllResult = ActionResult(null, null, errors, resultsSuccess)
+                                if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
+                                scheduleAlarm(context, scheduleId, true)
+                                setNeedRefresh(true)
+                                stopService(intent)
+                                finishWorkLiveData.removeObserver(this)
                             }
                         }
                     })
+
+                    WorkManager.getInstance(context)
+                            .beginWith(worksList)
+                            .then(finishWorkRequest)
+                            .enqueue()
                 }
-
-                val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-                        .setInputData(workDataOf(
-                                "resultsSuccess" to resultsSuccess,
-                                "backupBoolean" to true
-                        ))
-                        .build()
-
-                val finishWorkLiveData = WorkManager.getInstance(context)
-                        .getWorkInfoByIdLiveData(finishWorkRequest.id)
-                finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                    override fun onChanged(t: WorkInfo?) {
-                        if (t?.state == WorkInfo.State.SUCCEEDED) {
-                            val message = t.outputData.getString("notificationMessage")
-                                    ?: ""
-                            val title = t.outputData.getString("notificationTitle")
-                                    ?: ""
-                            showNotification(this@ScheduleService, MainActivityX::class.java,
-                                    notificationId, title, message, true)
-                            val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                            if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
-                            scheduleAlarm(context, scheduleId, true)
-                            setNeedRefresh(true)
-                            stopService(intent)
-                            finishWorkLiveData.removeObserver(this)
-                        }
-                    }
-                })
-
-                WorkManager.getInstance(context)
-                        .beginWith(worksList)
-                        .then(finishWorkRequest)
-                        .enqueue()
 
                 super.onPostExecute(result)
             }
