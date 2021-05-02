@@ -44,20 +44,23 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
         Thread {
             val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
             val schedule = scheduleDao.getSchedule(scheduleId)
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val alarmIntent = Intent(context, AlarmReceiver::class.java)
-            alarmIntent.putExtra("scheduleId", scheduleId)
-            val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
-            val timeLeft = timeUntilNextEvent(schedule!!, System.currentTimeMillis())
-            if (rescheduleBoolean) {
-                schedule.timePlaced = System.currentTimeMillis()
-                schedule.timeUntilNextEvent = timeUntilNextEvent(schedule, System.currentTimeMillis())
-            } else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
-                schedule.timeUntilNextEvent = AlarmManager.INTERVAL_FIFTEEN_MINUTES
-            scheduleDao.update(schedule)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent)
-            Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
+            if (schedule?.enabled == true) {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val alarmIntent = Intent(context, AlarmReceiver::class.java)
+                alarmIntent.putExtra("scheduleId", scheduleId)
+                val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
+                val timeLeft = timeUntilNextEvent(schedule, System.currentTimeMillis())
+                if (rescheduleBoolean) {
+                    schedule.timePlaced = System.currentTimeMillis()
+                    schedule.timeUntilNextEvent = timeUntilNextEvent(schedule, System.currentTimeMillis())
+                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
+                    schedule.timeUntilNextEvent = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                scheduleDao.update(schedule)
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent)
+                Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
+            } else
+                Timber.i("schedule is disabled. Nothing to schedule!")
         }.start()
     } else {
         Timber.e("got id: $scheduleId from $context")
