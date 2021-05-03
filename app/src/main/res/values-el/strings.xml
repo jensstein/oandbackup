@@ -251,4 +251,29 @@
     <string name="prefs_enablespecial_summary">Ακόμα χρειάζεται εντατική δοκιμή, δοκιμάστε γνωρίζοντας τον κίνδυνο πως μπορεί να προκαλέσει βρόχο εκκίνησης. Η ανατροφοδότηση είναι πάντα καλοδεχούμενη.</string>
     <string name="prefs_devicelock_summary">Ασφαλίστε την εφαρμογή με τα διαπιστευτήρια της συσκευής</string>
     <string name="prefs_devicelock">Κλείδωμα συσκευής</string>
+    <string name="sortAscDesc">Αύξουσα-Φθίνουσα ταξινόμηση</string>
+    <string name="intro_permission_storage_location_warning">Μην επιλέξετε τον φάκελο του κυρίως χώρου ή τον φάκελο Downloads, δημιουργήστε έναν φάκελο μόνο για τα αντίγραφά σας. Περισσότερα σχετικά με αυτό στο FAQ</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">κάθε μέρα</item>
+        <item quantity="other">κάθε %d μέρες</item>
+    </plurals>
+    <string name="global_blocklist_add">Προσθήκη στη γενική λίστα μπλοκαρίσματος</string>
+    <string name="forceKill">Αναγκαστικός τερματισμός</string>
+    <string name="logs_share_failed">Το αρχείο καταγραφής δε βρέθηκε</string>
+    <string name="sched_imported">Το πρόγραμμα εισήχθη επιτυχώς</string>
+    <string name="sched_exported">Τα προγράμματα εξήχθησαν επιτυχώς</string>
+    <string name="error_datachanged">Τα δεδομένα της εφαρμογής μετεβλήθησαν ενεργά κατά τη διάρκεια της δημιουργίας αντιγράφου. Δοκιμάστε να τερματίσετε τις διαδικασίες της πριν τη δημιουργία αντιγράφου</string>
+    <string name="dialog_import">Εισαγωγή</string>
+    <string name="dialog_export">Εξαγωγή</string>
+    <string name="schedule_failed">Η εκτέλεση του προγράμματος απέτυχε</string>
+    <string name="shell_initproblem">Αδυναμία εκκίνησης του διαχειριστή shell. Είτε απουσιάζει το toybox/busybox είτε η άδεια root είναι απενεργοποιημένη για την εφαρμογή.</string>
+    <string name="no_file_manager_message">Δεν υπάρχει διαχειριστής αρχείων για να διαχειριστεί το SAF. Ίσως έχετε απενεργοποιήσει τον προεγκατεστημένο διαχειριστή αρχείων. Παρακαλώ επαναφέρτε τον ή επανενεργοποιήστε τον.</string>
+    <string name="no_file_manager_title">Απουσία διαχειριστή SAF</string>
+    <string name="prefs_schedulesexportimport_summary">Εξάγει ή εισάγει τη λίστα των προγραμμάτων που έχετε δημιουργήσει.</string>
+    <string name="prefs_schedulesexportimport">Εξαγωγή/εισαγωγή προγραμμάτων</string>
+    <string name="write_apps_list_all">Εγγράφηκε το αρχείο της λίστας όλων των εφαρμογών</string>
+    <string name="write_apps_list_filtered">Εγγράφηκε το αρχείο της λίστας φιλτραρισμένων εφαρμογών</string>
+    <string name="wait_noappslist">Η λίστα εφαρμογών δεν έχει αποκτηθεί ακόμα. Περιμένετε…</string>
+    <string name="help_group_matrix">Η Ομάδα μας στο Matrix</string>
+    <string name="help_group_telegram">Η Ομάδα μας στο Telegram</string>
 </resources>
