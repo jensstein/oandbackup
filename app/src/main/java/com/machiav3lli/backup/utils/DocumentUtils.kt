@@ -28,34 +28,29 @@ fun Context.getBackupRoot(): StorageFile =
 fun StorageFile.ensureDirectory(dirName: String): StorageFile? = findFile(dirName)
         ?: createDirectory(dirName)
 
-fun Uri.deleteRecursive(context: Context): Boolean {
-    val target = StorageFile.fromUri(context, this)
-    return target.deleteRecursive()
-}
+fun Uri.deleteRecursive(context: Context): Boolean =
+        StorageFile.fromUri(context, this).deleteRecursive()
 
-private fun StorageFile.deleteRecursive(): Boolean {
-    if (isFile) {
+private fun StorageFile.deleteRecursive(): Boolean = when {
+    isFile ->
         delete()
-        return true
-    }
-    if (isDirectory) {
-        try {
-            val contents = listFiles()
-            var result = true
-            for (file in contents) {
-                result = deleteRecursive()
-            }
-            if (result) {
-                delete()
-            }
-        } catch (e: FileNotFoundException) {
-            return false
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, this.uri)
-            return false
+    isDirectory -> try {
+        val contents = listFiles()
+        var result = true
+        contents.forEach { file ->
+            result = result && file.deleteRecursive()
         }
+        if (result)
+            delete()
+        else
+            result
+    } catch (e: FileNotFoundException) {
+        false
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, this.uri)
+        false
     }
-    return false
+    else -> false
 }
 
 @Throws(IOException::class)
