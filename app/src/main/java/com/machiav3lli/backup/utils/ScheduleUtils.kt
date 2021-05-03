@@ -53,10 +53,10 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 if (rescheduleBoolean) {
                     schedule.timePlaced = System.currentTimeMillis()
                     schedule.timeUntilNextEvent = timeUntilNextEvent(schedule, System.currentTimeMillis())
-                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(5))
-                    schedule.timeUntilNextEvent = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) // give it a minute to finish what it could be handling e.g. on reboot
+                    schedule.timeUntilNextEvent = TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent)
                 Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
             } else
@@ -73,5 +73,5 @@ fun cancelAlarm(context: Context, scheduleId: Int) {
     val pendingIntent = PendingIntent.getBroadcast(context, scheduleId, alarmIntent, 0)
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
-    Timber.i("cancled backup with id: $scheduleId")
+    Timber.i("canceled backup with id: $scheduleId")
 }

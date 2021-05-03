@@ -130,10 +130,10 @@ open class ScheduleService : Service() {
                                         ?: ""
                                 val title = t.outputData.getString("notificationTitle")
                                         ?: ""
-                                showNotification(this@ScheduleService, MainActivityX::class.java,
-                                        notificationId, title, message, true)
                                 val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                                 if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
+                                showNotification(this@ScheduleService, MainActivityX::class.java,
+                                        notificationId, title, message, true)
                                 scheduleAlarm(context, scheduleId, true)
                                 setNeedRefresh(true)
                                 stopService(intent)
