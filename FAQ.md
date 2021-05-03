@@ -18,7 +18,7 @@
 
 #### What is OAndBackupX?
 
-OAndBackupX (short OABX) is a fork of the OAndBackup (which is inactive) with the aim to bring OAndBackup to 202x. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
+OAndBackupX (short OABX) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to bring it to 202x. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
 Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
 
 #### How do I use OABX?
@@ -66,11 +66,16 @@ Each backup basically consits of the two different parts:
    2.4. device protected data
    
         - Stored usually in /data/user_de/
+        - It's usual data, but can be accessed before even unlocking your phone (authentication).
+          It's usually data that is needed for the pre-start phase of your device. 
+          E.g. a preference which decides if your app should start on device boot or not. 
         - Default is set to include it in the backup
     
    2.5. cache
    
         - Default is set to not include it in backups
+
+You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with verison OABX 6.x) per schedule or even per App.
 
 #### What are Special Backups?
 
