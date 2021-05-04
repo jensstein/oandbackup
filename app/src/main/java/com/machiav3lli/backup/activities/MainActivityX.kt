@@ -110,7 +110,10 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         prefs = getPrivateSharedPrefs()
         val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-        if (!isRememberFiltering()) saveFilterPreferences(SortFilterModel(), false)
+        if (!isRememberFiltering) {
+            this.sortFilterModel = SortFilterModel()
+            this.sortOrder = false
+        }
         viewModel.refreshActive.observe(this, {
             binding.refreshLayout.isRefreshing = it
             if (it) searchViewController?.clean()
@@ -151,9 +154,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
 
     override fun onResume() {
         super.onResume()
-        if (isNeedRefresh()) {
+        if (isNeedRefresh) {
             viewModel.refreshList()
-            setNeedRefresh(false)
+            isNeedRefresh = false
         }
     }
 
@@ -165,7 +168,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         if (viewModel.initial.value != true) refreshView()
         else {
             viewModel.refreshList()
-            setNeedRefresh(false)
+            isNeedRefresh = false
         }
     }
 
@@ -244,7 +247,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
-                    getSortFilterModel().toString()),
+                    sortFilterModel.toString()),
                     getStats(viewModel.appInfoList.value ?: mutableListOf())
             )
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
@@ -535,11 +538,11 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
             viewModel.apkCheckedList.clear()
             viewModel.dataCheckedList.clear()
         }
-        sheetSortFilter = SortFilterSheet(getSortFilterModel(), getStats(viewModel.appInfoList.value
+        sheetSortFilter = SortFilterSheet(sortFilterModel, getStats(viewModel.appInfoList.value
                 ?: mutableListOf()))
         Thread {
             try {
-                val filteredList = viewModel.appInfoList.value?.applyFilter(getSortFilterModel().toString(), this)
+                val filteredList = viewModel.appInfoList.value?.applyFilter(sortFilterModel.toString(), this)
                         ?: listOf()
                 when {
                     mainBoolean -> refreshMain(filteredList, backupOrAppSheetBoolean)

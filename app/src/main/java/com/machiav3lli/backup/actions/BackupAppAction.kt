@@ -58,7 +58,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         }
         val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRootUri!!)
         val backupInstanceDir = backupBuilder.backupPath
-        val stopProcess = context.isKillBeforeActionEnabled()
+        val stopProcess = context.isKillBeforeActionEnabled
         val backupItem: BackupItem
         if (stopProcess) {
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
@@ -169,7 +169,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     @Throws(BackupFailedException::class)
     protected open fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile?) {
         Timber.i("[${app.packageName}] Backup package apks")
-        var apksToBackup = arrayOf(app.getApkPath())
+        var apksToBackup = arrayOf(app.apkPath)
         if (app.apkSplits.isEmpty()) {
             Timber.d("[${app.packageName}] The app is a normal apk")
         } else {
@@ -266,7 +266,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     protected open fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
         val backupType = BACKUP_DIR_DATA
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
-        val filesToBackup = assembleFileList(app.getDataPath())
+        val filesToBackup = assembleFileList(app.dataPath)
         return genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
     }
 
@@ -311,7 +311,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
-            val filesToBackup = assembleFileList(app.getDevicesProtectedDataPath())
+            val filesToBackup = assembleFileList(app.devicesProtectedDataPath)
             genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException

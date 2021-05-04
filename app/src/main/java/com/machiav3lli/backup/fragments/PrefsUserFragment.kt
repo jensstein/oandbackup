@@ -42,7 +42,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             result.data?.let {
                 val uri = it.data ?: return@registerForActivityResult
                 val oldDir = try {
-                    requireContext().getStorageRootDir()
+                    requireContext().backupDirPath
                 } catch (e: StorageLocationNotConfiguredException) {
                     // Can be ignored, this is about to set the path
                     ""
@@ -75,7 +75,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
-            pref.summary = requireContext().getStorageRootDir()
+            pref.summary = requireContext().backupDirPath
         } catch (e: StorageLocationNotConfiguredException) {
             pref.summary = getString(R.string.prefs_unset)
         }
@@ -108,8 +108,8 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     }
 
     private fun Context.setDefaultDir(dir: Uri) {
-        setStorageRootDir(dir)
-        setNeedRefresh(true)
+        setBackupDir(dir)
+        isNeedRefresh = true
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         pref.summary = dir.toString()
     }

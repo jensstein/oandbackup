@@ -50,7 +50,7 @@ class PermissionsFragment : Fragment() {
                 val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                requireContext().setStorageRootDir(uri)
+                requireContext().setBackupDir(uri)
             }
         }
     }
@@ -92,9 +92,9 @@ class PermissionsFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.cardStoragePermission.visibility = if (requireContext().checkStoragePermissions()) View.GONE else View.VISIBLE
-        binding.cardStorageLocation.visibility = if (requireContext().isStorageDirSetAndOk()) View.GONE else View.VISIBLE
-        binding.cardUsageAccess.visibility = if (requireContext().checkUsageStatsPermission()) View.GONE else View.VISIBLE
+        binding.cardStoragePermission.visibility = if (requireContext().hasStoragePermissions) View.GONE else View.VISIBLE
+        binding.cardStorageLocation.visibility = if (requireContext().isStorageDirSetAndOk) View.GONE else View.VISIBLE
+        binding.cardUsageAccess.visibility = if (requireContext().checkUsageStatsPermission) View.GONE else View.VISIBLE
         binding.cardBatteryOptimization.visibility = if (requireContext().checkBatteryOptimization(prefs, powerManager)) View.GONE else View.VISIBLE
     }
 
@@ -106,9 +106,9 @@ class PermissionsFragment : Fragment() {
     }
 
     private fun updateState() {
-        if (requireContext().checkStoragePermissions() &&
-                requireContext().isStorageDirSetAndOk() &&
-                requireContext().checkUsageStatsPermission() &&
+        if (requireContext().hasStoragePermissions &&
+                requireContext().isStorageDirSetAndOk &&
+                requireContext().checkUsageStatsPermission &&
                 (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))) {
             (requireActivity() as IntroActivityX).moveTo(3)
@@ -146,7 +146,7 @@ class PermissionsFragment : Fragment() {
         if (requestCode == WRITE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Timber.w("Permissions were granted: $permissions -> $grantResults")
-                if (!requireContext().canAccessExternalStorage()) {
+                if (!requireContext().canAccessExternalStorage) {
                     Toast.makeText(requireContext(), "Permissions were granted but because of an android bug you have to restart your phone",
                             Toast.LENGTH_LONG).show()
                 }

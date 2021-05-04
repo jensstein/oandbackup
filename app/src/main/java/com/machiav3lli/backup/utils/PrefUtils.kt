@@ -107,17 +107,18 @@ fun Context.isBiometricLockAvailable(): Boolean =
  * @return user configured location
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
-@Throws(StorageLocationNotConfiguredException::class)
-fun Context.getStorageRootDir(): String {
-    val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
-            ?: ""
-    if (location.isEmpty()) {
-        throw StorageLocationNotConfiguredException()
+val Context.backupDirPath: String
+    @Throws(StorageLocationNotConfiguredException::class)
+    get() {
+        val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
+                ?: ""
+        if (location.isEmpty()) {
+            throw StorageLocationNotConfiguredException()
+        }
+        return location
     }
-    return location
-}
 
-fun Context.setStorageRootDir(value: Uri) {
+fun Context.setBackupDir(value: Uri) {
     val fullUri = DocumentsContract
             .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     getPrivateSharedPrefs().edit()
@@ -125,18 +126,19 @@ fun Context.setStorageRootDir(value: Uri) {
     FileUtils.invalidateBackupLocation()
 }
 
-fun Context.isStorageDirSetAndOk(): Boolean {
-    return try {
-        val storageDirPath = getStorageRootDir()
-        if (storageDirPath.isEmpty()) {
-            return false
+val Context.isStorageDirSetAndOk: Boolean
+    get() {
+        return try {
+            val storageDirPath = backupDirPath
+            if (storageDirPath.isEmpty()) {
+                return false
+            }
+            val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
+            storageDir.exists()
+        } catch (e: StorageLocationNotConfiguredException) {
+            false
         }
-        val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
-        storageDir.exists()
-    } catch (e: StorageLocationNotConfiguredException) {
-        false
     }
-}
 
 fun Activity.requireStorageLocation(activityResultLauncher: ActivityResultLauncher<Intent>) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
@@ -154,13 +156,14 @@ fun Activity.requireStorageLocation(activityResultLauncher: ActivityResultLaunch
     }
 }
 
-fun Context.checkStoragePermissions(): Boolean = when {
-    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-        Environment.isExternalStorageManager()
-    else ->
-        checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED
-}
+val Context.hasStoragePermissions: Boolean
+    get() = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+            Environment.isExternalStorageManager()
+        else ->
+            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED
+    }
 
 fun Activity.getStoragePermission() {
     when {
@@ -205,75 +208,79 @@ private fun Activity.requireWriteStoragePermission() {
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
 }
 
-fun Context.canAccessExternalStorage(): Boolean {
-    val externalStorage = FileUtils.getExternalStorageDirectory(this)
-    return externalStorage.canRead() && externalStorage.canWrite()
-}
+val Context.canAccessExternalStorage: Boolean
+    get() {
+        val externalStorage = FileUtils.getExternalStorageDirectory(this)
+        return externalStorage.canRead() && externalStorage.canWrite()
+    }
 
-fun Context.checkUsageStatsPermission(): Boolean {
-    val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
-    val mode = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
-        else ->
-            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
+val Context.checkUsageStatsPermission: Boolean
+    get() {
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
+            else ->
+                appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) ==
+                    PackageManager.PERMISSION_GRANTED
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
     }
-    return if (mode == AppOpsManager.MODE_DEFAULT) {
-        checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) ==
-                PackageManager.PERMISSION_GRANTED
-    } else {
-        mode == AppOpsManager.MODE_ALLOWED
-    }
-}
 
 fun Context.checkBatteryOptimization(prefs: SharedPreferences, powerManager: PowerManager)
         : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
-fun Context.isBackupDeviceProtectedData(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_DEVICEPROTECTEDDATA, true)
+val Context.isBackupDeviceProtectedData: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_DEVICEPROTECTEDDATA, true)
 
-fun Context.isBackupExternalData(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_EXTERNALDATA, false)
+val Context.isBackupExternalData: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_EXTERNALDATA, false)
 
-fun Context.isBackupObbData(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, false)
+val Context.isBackupObbData: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, false)
 
-fun Context.isKillBeforeActionEnabled(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_KILLBEFOREACTION, true)
+val Context.isKillBeforeActionEnabled: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_KILLBEFOREACTION, true)
 
-fun Context.isDisableVerification(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_DISABLEVERIFICATION, true)
+val Context.isDisableVerification: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_DISABLEVERIFICATION, true)
 
-fun Context.isRestoreAllPermissions(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_RESTOREWITHALLPERMISSIONS, false)
+val Context.isRestoreAllPermissions: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_RESTOREWITHALLPERMISSIONS, false)
 
-fun Context.isAllowDowngrade(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_ALLOWDOWNGRADE, false)
+val Context.isAllowDowngrade: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_ALLOWDOWNGRADE, false)
 
-fun Context.isNeedRefresh(): Boolean =
-        getPrivateSharedPrefs().getBoolean(NEED_REFRESH, false)
-
-fun Context.setNeedRefresh(value: Boolean) =
+var Context.isNeedRefresh: Boolean
+    get() = getPrivateSharedPrefs().getBoolean(NEED_REFRESH, false)
+    set(value) {
         getPrivateSharedPrefs().edit().putBoolean(NEED_REFRESH, value).apply()
+    }
 
-fun Context.getSortFilterModel(): SortFilterModel {
-    val sortFilterModel: SortFilterModel
-    val sortFilterPref = getPrivateSharedPrefs().getString(PREFS_SORT_FILTER, "")
-    sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
-    return sortFilterModel
-}
+var Context.sortFilterModel: SortFilterModel
+    get() {
+        val sortFilterModel: SortFilterModel
+        val sortFilterPref = getPrivateSharedPrefs().getString(PREFS_SORT_FILTER, "")
+        sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
+        return sortFilterModel
+    }
+    set(value) =
+        getPrivateSharedPrefs().edit().putString(PREFS_SORT_FILTER, value.toString()).apply()
 
-fun Context.getSortOrder(): Boolean =
+
+var Context.sortOrder: Boolean
+    get() =
         getPrivateSharedPrefs().getBoolean(PREFS_SORT_ORDER, false)
+    set(value) =
+        getPrivateSharedPrefs().edit().putBoolean(PREFS_SORT_ORDER, value).apply()
 
-fun Context.saveFilterPreferences(filterModel: SortFilterModel, descBoolean: Boolean) {
-    getPrivateSharedPrefs().edit().putString(PREFS_SORT_FILTER, filterModel.toString()).apply()
-    getPrivateSharedPrefs().edit().putBoolean(PREFS_SORT_ORDER, descBoolean).apply()
-}
-
-fun Context.isRememberFiltering(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)
+val Context.isRememberFiltering: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")

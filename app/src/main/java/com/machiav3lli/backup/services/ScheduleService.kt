@@ -32,8 +32,8 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
+import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.utils.scheduleAlarm
-import com.machiav3lli.backup.utils.setNeedRefresh
 import timber.log.Timber
 
 open class ScheduleService : Service() {
@@ -135,7 +135,7 @@ open class ScheduleService : Service() {
                                 showNotification(this@ScheduleService, MainActivityX::class.java,
                                         notificationId, title, message, true)
                                 scheduleAlarm(context, scheduleId, true)
-                                setNeedRefresh(true)
+                                isNeedRefresh = true
                                 stopService(intent)
                                 finishWorkLiveData.removeObserver(this)
                             }

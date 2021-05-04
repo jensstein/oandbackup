@@ -31,7 +31,7 @@ import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupRoot
+import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
@@ -87,7 +87,7 @@ object BackupRestoreHelper {
     fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
         val filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk"
         try {
-            val backupRoot = context.getBackupRoot()
+            val backupRoot = context.getBackupDir()
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {

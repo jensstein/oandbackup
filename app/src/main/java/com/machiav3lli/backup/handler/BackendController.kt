@@ -77,7 +77,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     invalidateCache()
     val includeSpecial = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
     val pm = packageManager
-    val backupRoot = getBackupRoot()
+    val backupRoot = getBackupDir()
     val packageInfoList = pm.getInstalledPackages(0)
     val packageList = packageInfoList
             .filterNotNull()
@@ -118,7 +118,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
 
 @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
-    val backupRoot = getBackupRoot()
+    val backupRoot = getBackupDir()
     try {
         return backupRoot.listFiles()
                 .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }

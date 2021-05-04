@@ -161,7 +161,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                     .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
                         writeAppsListFile(
                                 appInfoList.applyFilter(
-                                        requireContext().getSortFilterModel().toString(),
+                                        requireContext().sortFilterModel.toString(),
                                         requireContext()
                                 ).map { "${it.packageLabel}: ${it.packageName}" },
                                 true
@@ -181,7 +181,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val date = LocalDateTime.now()
         val filesText = appsList.joinToString("\n")
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
-        val listFile = requireContext().getBackupRoot().createFile("application/octet-stream", fileName)
+        val listFile = requireContext().getBackupDir().createFile("application/octet-stream", fileName)
         BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
                 ?: Uri.EMPTY, "w"))
                 .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }

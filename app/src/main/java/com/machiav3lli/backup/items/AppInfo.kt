@@ -65,7 +65,7 @@ class AppInfo {
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
-        val backupDoc = context.getBackupRoot().findFile(packageName)
+        val backupDoc = context.getBackupDir().findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
     }
@@ -74,7 +74,7 @@ class AppInfo {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
-        val backupDoc = context.getBackupRoot().findFile(packageName)
+        val backupDoc = context.getBackupDir().findFile(packageName)
         backupDirUri = backupDoc?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
         refreshStorageStats(context)
@@ -185,7 +185,7 @@ class AppInfo {
     @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
     fun getAppUri(context: Context, create: Boolean): Uri {
         if (create && backupDirUri == Uri.EMPTY) {
-            backupDirUri = context.getBackupRoot().ensureDirectory(packageName)!!.uri
+            backupDirUri = context.getBackupDir().ensureDirectory(packageName)!!.uri
         }
         return backupDirUri
     }
@@ -237,11 +237,14 @@ class AppInfo {
     val hasBackups: Boolean
         get() = backupHistory.isNotEmpty()
 
-    fun getApkPath(): String = packageInfo?.apkDir ?: ""
+    val apkPath: String
+        get() = packageInfo?.apkDir ?: ""
 
-    fun getDataPath(): String = packageInfo?.dataDir ?: ""
+    val dataPath: String
+        get() = packageInfo?.dataDir ?: ""
 
-    fun getDevicesProtectedDataPath(): String = packageInfo?.deDataDir ?: ""
+    val devicesProtectedDataPath: String
+        get() = packageInfo?.deDataDir ?: ""
 
     // Uses the context to get own external data directory
     // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files

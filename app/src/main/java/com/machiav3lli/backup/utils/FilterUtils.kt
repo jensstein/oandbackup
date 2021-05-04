@@ -82,7 +82,7 @@ private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Cont
 }
 
 private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): List<AppInfo> =
-        if (context.getSortOrder()) {
+        if (context.sortOrder) {
             when (filter[0]) {
                 MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
                 MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }

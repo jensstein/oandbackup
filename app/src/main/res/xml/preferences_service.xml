@@ -47,6 +47,13 @@
         android:title="@string/prefs_excludecache" />
 
     <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_de_data"
+        android:key="backupDeviceProtectedData"
+        android:summary="@string/prefs_deviceprotecteddata_summary"
+        android:title="@string/prefs_deviceprotecteddata" />
+
+    <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
         android:icon="@drawable/ic_external_data"
         android:key="backupExternalData"
@@ -59,13 +66,6 @@
         android:key="backupObbData"
         android:summary="@string/prefs_obbdata_summary"
         android:title="@string/prefs_obbdata" />
-
-    <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
-        android:icon="@drawable/ic_de_data"
-        android:key="backupDeviceProtectedData"
-        android:summary="@string/prefs_deviceprotecteddata_summary"
-        android:title="@string/prefs_deviceprotecteddata" />
 
     <androidx.preference.SeekBarPreference
         android:defaultValue="2"

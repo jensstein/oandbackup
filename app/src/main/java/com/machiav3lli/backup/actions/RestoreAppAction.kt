@@ -44,7 +44,7 @@ import java.nio.file.Path
 open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
     fun run(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int): ActionResult {
         Timber.i("Restoring up: ${app.packageName} [${app.packageLabel}]")
-        val stopProcess = context.isKillBeforeActionEnabled()
+        val stopProcess = context.isKillBeforeActionEnabled
         if (stopProcess) {
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
             preprocessPackage(app.packageName)
@@ -203,7 +203,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 )
             }
             val sb = StringBuilder()
-            val disableVerification = context.isDisableVerification()
+            val disableVerification = context.isDisableVerification
             // disable verify apps over usb
             if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
             // Install main package
@@ -374,8 +374,21 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         Timber.d(String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.getDataPath(), backupProperties.isEncrypted, context.cacheDir)
-        genericRestorePermissions(BACKUP_DIR_DATA, File(app.getDataPath()))
+        genericRestoreFromArchive(backupArchive.uri, app.dataPath, backupProperties.isEncrypted, context.cacheDir)
+        genericRestorePermissions(BACKUP_DIR_DATA, File(app.dataPath))
+    }
+
+    @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    open fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
+        val backupFilename = getBackupArchiveFilename(BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted)
+        Timber.d(String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
+        val backupArchive = backupLocation.findFile(backupFilename)
+                ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
+        genericRestoreFromArchive(backupArchive.uri, app.devicesProtectedDataPath, backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
+        genericRestorePermissions(
+                BACKUP_DIR_DEVICE_PROTECTED_FILES,
+                File(app.devicesProtectedDataPath)
+        )
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
@@ -399,46 +412,23 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class)
-    open fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) {
-        genericRestoreDataByCopying(app.getObbFilesPath(context), backupLocation.uri, BACKUP_DIR_OBB_FILES)
-    }
+    open fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) =
+            genericRestoreDataByCopying(app.getObbFilesPath(context), backupLocation.uri, BACKUP_DIR_OBB_FILES)
 
-    @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    open fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
-        val backupFilename = getBackupArchiveFilename(BACKUP_DIR_DEVICE_PROTECTED_FILES, backupProperties.isEncrypted)
-        Timber.d(String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
-        val backupArchive = backupLocation.findFile(backupFilename)
-                ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.getDevicesProtectedDataPath(), backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
-        genericRestorePermissions(
-                BACKUP_DIR_DEVICE_PROTECTED_FILES,
-                File(app.getDevicesProtectedDataPath())
-        )
-    }
 
     /**
-     * Returns an installation command for abd/shell installation.
-     * Supports base packages and additional packages (split apk addons)
-     *
-     * @param apkPath path to the apk to be installed (should be in the staging dir)
-     * @return a complete shell command
-     */
-    private fun getPackageInstallCommand(apkPath: File): String = this.getPackageInstallCommand(apkPath, null)
-
-    /**
-     * Returns an installation command for abd/shell installation.
+     * Returns an installation command for adb/shell installation.
      * Supports base packages and additional packages (split apk addons)
      *
      * @param apkPath         path to the apk to be installed (should be in the staging dir)
      * @param basePackageName null, if it's a base package otherwise the name of the base package
      * @return a complete shell command
      */
-    private fun getPackageInstallCommand(apkPath: File, basePackageName: String?): String {
-        return String.format("cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}",
-                if (basePackageName != null) " -p $basePackageName" else "",
-                if (context.isRestoreAllPermissions()) " -g" else "",
-                if (context.isAllowDowngrade()) " -d" else "")
-    }
+    private fun getPackageInstallCommand(apkPath: File, basePackageName: String? = null): String = // TODO add --user $profileId
+            String.format("cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}",
+                    if (basePackageName != null) " -p $basePackageName" else "",
+                    if (context.isRestoreAllPermissions) " -g" else "",
+                    if (context.isAllowDowngrade) " -d" else "")
 
     class RestoreFailedException : AppActionFailedException {
         constructor(message: String?) : super(message)

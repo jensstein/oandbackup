@@ -36,7 +36,7 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
-        if (requireContext().isKillBeforeActionEnabled()) {
+        if (requireContext().isKillBeforeActionEnabled) {
             message.append(requireContext().getString(R.string.msg_appkill_warning))
             message.append("\n\n")
         }
