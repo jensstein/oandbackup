@@ -237,8 +237,8 @@
     <string name="help">Aide</string>
     <string name="forceKillMessage">Êtes-vous sûr·e de vouloir forcer l\'arrêt de l\'application \?</string>
     <plurals name="updated_apps">
-        <item quantity="one">%d application actualisée</item>
-        <item quantity="other">%d applications actualisées</item>
+        <item quantity="one">%d application mise à jour</item>
+        <item quantity="other">%d applications mises à jour</item>
     </plurals>
     <string name="app_info">Infos sur l\'appli</string>
     <string name="launch_app">Lancer l\'appli</string>
@@ -254,4 +254,18 @@
     <string name="prefs_enablespecial_summary">Il doit encore être testé intensivement, en sachant qu\'il peut provoquer des boucles de redémarrage. Les commentaires sont toujours les bienvenus.</string>
     <string name="prefs_devicelock_summary">Sécuriser l\'application avec les informations d\'identification de l\'appareil</string>
     <string name="prefs_devicelock">Verrouillage de l\'appareil</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">chaque jour</item>
+        <item quantity="other">tous les %d jours</item>
+    </plurals>
+    <string name="global_blocklist_add">Ajouter à la liste de blocage globale</string>
+    <string name="error_datachanged">Les données de l\'application ont été activement modifiées pendant la sauvegarde. Essayez de tuer son processus avant de faire la sauvegarde</string>
+    <string name="dialog_import">Importer</string>
+    <string name="dialog_export">Exporter</string>
+    <string name="prefs_schedulesexportimport_summary">Exporte ou importe la liste des programmes que vous avez créés.</string>
+    <string name="prefs_schedulesexportimport">Programmes d\'exportation/importation</string>
+    <string name="write_apps_list_all">Liste de toutes les applications établie</string>
+    <string name="write_apps_list_filtered">Liste des applications filtrées établie</string>
+    <string name="help_group_matrix">Notre groupe sur Matrix</string>
+    <string name="help_group_telegram">Notre groupe sur Telegram</string>
 </resources>
