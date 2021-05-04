@@ -1,0 +1,6 @@
+** OAndBackupX 1.1.0 **
+* Afegit: xifratge de còpia de seguretat de dades
+* Corregit: horaris
+* Actualitzat: format de notificacions
+* S'han modificat alguns elements de la interfície d'usuari
+* i un rendiment millorat

@@ -1,0 +1,6 @@
+**OAndBackupx 1.1.0**
+* baru: enkripsi cadangan data
+* perbaikan: jadwal
+* format notifikasi baru
+* Tweaked beberapa elemen UI
+* dan peningkatan kinerja

@@ -1,0 +1,5 @@
+<p>Feu i restaureu còpies de seguretat d'aplicacions al dispositiu i deseu les dades de l'aplicació en una ubicació accessible per a l'usuari. Admet la còpia de seguretat i la restauració d'aplicacions individuals o múltiples.</p>
+<p>Bifurcació de OAndBackup que ofereix assistència per a noves versions d'Android i aspectes actualitzats.</p>
+<p> <br> <b>Ajudeu a traduir-lo a Weblate: </b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p> <br> <b>Requereix root: </b> perquè copia fitxers de /data/data, /data/app and /system/app.</p>
+<p>Estat: beta</p>

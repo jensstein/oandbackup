@@ -1,0 +1,6 @@
+**OAndBackupX 1.0.2**
+* Menambahkan: feedback klik item
+* Diperbarui: pengalaman bergulir
+* Diperbaiki: layar meletis
+* Diperbaiki: tema bar status
+* Dan peningkatan beberapa UI
