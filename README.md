@@ -78,7 +78,7 @@ Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/autho
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-[Nils](https://github.com/Tiefkuehlpizze) & [Harald](https://github.com/hg42) for their active contribution to the project.
+[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42) and [Martin](https://github.com/Smojo) for their active contribution to the project.
 
 [Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
 

@@ -14,7 +14,7 @@
 
 - [x] Multi-Backups support
 
-- [ ] Add options upon choosing Backup from AppSheet: external/obb/cache.
+- [x] Add options upon choosing Backup from AppSheet: external/obb/cache.
 
 - [x] External Storage/SAF support: my idea on it is splitting Backup-Actions into more steps(vice versa for Restore)
 
@@ -40,7 +40,7 @@
 
   - [ ] and others…
 
-- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. NEEDS TESTING
+- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. (Next Version)
 
 - [x] Handle the error about disabling "verify apps over USB".
 
@@ -60,7 +60,7 @@
 
 - [x] Not responding to clicks after long time in background
 
-- [ ] Fix GSF push notifications' issue
+- [x] Fix GSF push notifications' issue. NEEDS SOME TESTING
 
 ## Planned Restructure
 
