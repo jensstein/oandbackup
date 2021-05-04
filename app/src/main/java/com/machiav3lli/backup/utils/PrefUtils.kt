@@ -230,6 +230,16 @@ fun Context.checkBatteryOptimization(prefs: SharedPreferences, powerManager: Pow
         : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(packageName)
 
+
+fun Context.isBackupDeviceProtectedData(): Boolean =
+        getDefaultSharedPreferences().getBoolean(PREFS_DEVICEPROTECTEDDATA, true)
+
+fun Context.isBackupExternalData(): Boolean =
+        getDefaultSharedPreferences().getBoolean(PREFS_EXTERNALDATA, false)
+
+fun Context.isBackupObbData(): Boolean =
+        getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, false)
+
 fun Context.isKillBeforeActionEnabled(): Boolean =
         getDefaultSharedPreferences().getBoolean(PREFS_KILLBEFOREACTION, true)
 

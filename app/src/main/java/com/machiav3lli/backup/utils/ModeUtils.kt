@@ -24,11 +24,20 @@ fun altModeToMode(context: Context, mode: Int) = when (mode) {
     ALT_MODE_APK -> MODE_APK
     else -> {
         var dataMode = if (mode == ALT_MODE_BOTH) 0b11000 else MODE_DATA
-        if (context.getDefaultSharedPreferences().getBoolean(PREFS_DEVICEPROTECTEDDATA, true)) dataMode = dataMode or MODE_DATA_DE
-        if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXTERNALDATA, true)) dataMode = dataMode or MODE_DATA_EXT
-        if (context.getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, true)) dataMode = dataMode or MODE_DATA_OBB
+        if (context.isBackupDeviceProtectedData()) dataMode = dataMode or MODE_DATA_DE
+        if (context.isBackupExternalData()) dataMode = dataMode or MODE_DATA_EXT
+        if (context.isBackupObbData()) dataMode = dataMode or MODE_DATA_OBB
         dataMode
     }
+}
+
+fun modeIfActive(context: Context, mode: Int) = when {
+    mode == MODE_APK -> MODE_APK
+    mode == MODE_DATA -> MODE_DATA
+    mode == MODE_DATA_DE && context.isBackupDeviceProtectedData() -> MODE_DATA_DE
+    mode == MODE_DATA_EXT && context.isBackupExternalData() -> MODE_DATA_EXT
+    mode == MODE_DATA_OBB && context.isBackupObbData() -> MODE_DATA_OBB
+    else -> MODE_UNSET
 }
 
 fun modeToModes(mode: Int): List<Int> =

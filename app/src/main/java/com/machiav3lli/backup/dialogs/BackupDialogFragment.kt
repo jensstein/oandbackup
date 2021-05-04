@@ -25,6 +25,7 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.utils.modeIfActive
 
 class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionListener) : DialogFragment() {
 
@@ -51,9 +52,12 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
             labels.add(getString(R.string.radio_obbdata))
         }
 
-        possibleModes.forEach { selectedMode = selectedMode or it }
         val checkedOptions = BooleanArray(possibleModes.size)
-        checkedOptions.fill(true)
+        possibleModes.forEachIndexed { i, mode ->
+            val activeMode = modeIfActive(requireContext(), mode)
+            selectedMode = selectedMode or activeMode
+            checkedOptions[i] = activeMode != MODE_UNSET
+        }
 
         return AlertDialog.Builder(requireActivity())
                 .setTitle(appInfo.packageLabel)
