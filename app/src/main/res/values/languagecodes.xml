@@ -21,6 +21,7 @@
         <item>@string/prefs_language_system</item>
         <item>عربي</item>
         <item>Bosanski</item>
+        <item>Català</item>
         <item>Deutsch (deutschland)</item>
         <item>Ελληνικά</item>
         <item>English</item>
@@ -47,6 +48,7 @@
         <item>system</item>
         <item>ar</item>
         <item>bs</item>
+        <item>ca</item>
         <item>de</item>
         <item>el</item>
         <item>en</item>
