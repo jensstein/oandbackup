@@ -254,4 +254,28 @@
     <string name="prefs_devicelock_summary">Difendi la app con credenziali di dispositivo</string>
     <string name="prefs_devicelock">Blocco dispositivo</string>
     <string name="filtered_list">Lista filtrata</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">ogni giorno</item>
+        <item quantity="other">ogni %d giorni</item>
+    </plurals>
+    <string name="intro_permission_storage_location_warning">Non scegliere la cartella principale o di Download, crea una cartella specifica per i backup. Maggiori info nella FAQ</string>
+    <string name="global_blocklist_add">Aggiunge alla lista globale dei bloccati</string>
+    <string name="forceKill">Forza interruzione</string>
+    <string name="sortAscDesc">Ascendente-Discendente</string>
+    <string name="logs_share_failed">File di log non trovato</string>
+    <string name="sched_imported">Programmazione importata con successo</string>
+    <string name="sched_exported">Le programmazioni sono state esportate con successo</string>
+    <string name="error_datachanged">I dati dell\'app sono stati modificati durante il backup. Interrompi il processo prima di fare il backup</string>
+    <string name="dialog_import">Importa</string>
+    <string name="dialog_export">Esporta</string>
+    <string name="schedule_failed">Programmazione in corso fallita</string>
+    <string name="shell_initproblem">Non è stato possibile attivare la shell. Toybox/busybox mancanti o permessi di root disabilitati per l\'app.</string>
+    <string name="no_file_manager_message">Non c\'è nessu gestore di file SAF. Forse hai disabilitato il gestore integrato. Riabilitalo o riattivalo.</string>
+    <string name="no_file_manager_title">Nessun gestore SAF</string>
+    <string name="prefs_schedulesexportimport_summary">Esporta o importa la lista delle programmazioni create.</string>
+    <string name="prefs_schedulesexportimport">Importa/esporta programmazioni</string>
+    <string name="write_apps_list_all">Scritto file con elenco di tutte le app</string>
+    <string name="write_apps_list_filtered">Scritto file con elenco delle app filtrate</string>
+    <string name="help_group_matrix">Il nostro gruppo su Matrix</string>
+    <string name="help_group_telegram">Il nostro gruppo su Telegram</string>
 </resources>
