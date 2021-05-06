@@ -1,0 +1,11 @@
+** OAndBackupX 3.2.0 **
+
+* Agg.: nuova navigazione
+* Agg.: badge per app aggiornate in Main
+* Risolto: salva gli elementi selezionati in batch
+* Risolto: sinc. del controllo tutto in batch
+* Risolto: comportamento imprevisto filtro di ricerca (causato dalla cache)
+* Risolto: riprendi il comportamento
+* Aggiornato: migliora le prestazioni di aggiornamento
+* Aggiornato: migliora le prestazioni visive 
+* Aggiornato: traduzioni (norvegese, olandese, turco, cinese, portoghese)
