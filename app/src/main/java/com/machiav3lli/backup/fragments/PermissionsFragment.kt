@@ -50,7 +50,7 @@ class PermissionsFragment : Fragment() {
                 val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                setStorageRootDir(this.requireContext(), uri)
+                requireContext().setBackupDir(uri)
             }
         }
     }
@@ -82,7 +82,7 @@ class PermissionsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = getPrivateSharedPrefs(requireContext())
+        prefs = requireContext().getPrivateSharedPrefs()
         powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
     }
 
@@ -92,23 +92,23 @@ class PermissionsFragment : Fragment() {
     }
 
     private fun setupViews() {
-        binding.cardStoragePermission.visibility = if (checkStoragePermissions(requireContext())) View.GONE else View.VISIBLE
-        binding.cardStorageLocation.visibility = if (isStorageDirSetAndOk(requireContext())) View.GONE else View.VISIBLE
-        binding.cardUsageAccess.visibility = if (checkUsageStatsPermission(requireContext())) View.GONE else View.VISIBLE
-        binding.cardBatteryOptimization.visibility = if (checkBatteryOptimization(requireContext(), prefs, powerManager)) View.GONE else View.VISIBLE
+        binding.cardStoragePermission.visibility = if (requireContext().hasStoragePermissions) View.GONE else View.VISIBLE
+        binding.cardStorageLocation.visibility = if (requireContext().isStorageDirSetAndOk) View.GONE else View.VISIBLE
+        binding.cardUsageAccess.visibility = if (requireContext().checkUsageStatsPermission) View.GONE else View.VISIBLE
+        binding.cardBatteryOptimization.visibility = if (requireContext().checkBatteryOptimization(prefs, powerManager)) View.GONE else View.VISIBLE
     }
 
     private fun setupOnClicks() {
-        binding.cardStoragePermission.setOnClickListener { getStoragePermission(requireActivity()) }
-        binding.cardStorageLocation.setOnClickListener { requireStorageLocation(requireActivity(), askForDirectory) }
+        binding.cardStoragePermission.setOnClickListener { requireActivity().getStoragePermission() }
+        binding.cardStorageLocation.setOnClickListener { requireActivity().requireStorageLocation(askForDirectory) }
         binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
         binding.cardBatteryOptimization.setOnClickListener { showBatteryOptimizationDialog(powerManager) }
     }
 
     private fun updateState() {
-        if (checkStoragePermissions(requireContext()) &&
-                isStorageDirSetAndOk(requireContext()) &&
-                checkUsageStatsPermission(requireContext()) &&
+        if (requireContext().hasStoragePermissions &&
+                requireContext().isStorageDirSetAndOk &&
+                requireContext().checkUsageStatsPermission &&
                 (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))) {
             (requireActivity() as IntroActivityX).moveTo(3)
@@ -146,7 +146,7 @@ class PermissionsFragment : Fragment() {
         if (requestCode == WRITE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Timber.w("Permissions were granted: $permissions -> $grantResults")
-                if (!canAccessExternalStorage(requireContext())) {
+                if (!requireContext().canAccessExternalStorage) {
                     Toast.makeText(requireContext(), "Permissions were granted but because of an android bug you have to restart your phone",
                             Toast.LENGTH_LONG).show()
                 }

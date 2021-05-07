@@ -24,9 +24,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppMetaInfo
+import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
-import com.machiav3lli.backup.utils.modeToBackupMode
-import com.machiav3lli.backup.utils.modeToString
+import com.machiav3lli.backup.utils.modeToStringAlt
 import timber.log.Timber
 
 class BatchDialogFragment(private var backupBoolean: Boolean, private val selectedApps: ArrayList<AppMetaInfo>,
@@ -36,16 +36,16 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
-        if (isKillBeforeActionEnabled(requireContext())) {
+        if (requireContext().isKillBeforeActionEnabled) {
             message.append(requireContext().getString(R.string.msg_appkill_warning))
             message.append("\n\n")
         }
         selectedApps.forEachIndexed { i, metaInfo ->
             message.append("${metaInfo.packageLabel}")
-            selectedModes[i].let { message.append(": ${modeToString(requireContext(), it)}\n") }
+            selectedModes[i].let { message.append(": ${modeToStringAlt(requireContext(), it)}\n") }
         }
         val selectedPackages = selectedApps.map { it.packageName }.toList()
-        val selectedBackupModes = selectedModes.map { modeToBackupMode(requireContext(), it) }
+        val selectedBackupModes = selectedModes.map { altModeToMode(requireContext(), it) }
         return AlertDialog.Builder(requireActivity())
                 .setTitle(title)
                 .setMessage(message.toString().trim { it <= ' ' })
@@ -57,6 +57,7 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
                     }
                 }
                 .setNegativeButton(R.string.dialogNo) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+                // TODO Add advanced options for data
                 .create()
     }
 

@@ -1,7 +1,20 @@
-<html><body>
-        <p><strong>Säkerhetskopieringslägen</strong>: En app kan säkerhetskopieras med bara dess apk, endast data eller båda. En app som inte är installerad kan inte återställas om apk-filen inte finns med i säkerhetskopian.</p>
-        <p><strong>Ta bort säkerhetskopia</strong>: Tar bort säkerhetskopian för vald app.</p>
-        <p><strong>Avinstallera</strong>: Något mer aggressiv än en normal avinstallation. Förutom att göra en normal avinstallation via androidkommandon, kommer även OAndBackupX att ta bort filer som appen kan ha lämnats kvar i /data/app-lib/. det fungerar även på systemappar.</p>
-        <p><strong>Aktivera / inaktivera</strong>: Använder android-skriptet `pm` till att aktivera eller inaktivera en app. Inaktivering av en app tar bort den från det normala användargränssnittet utan att avinstallera. detta kan användas till att aktivera eller inaktivera en app för flera användare i taget (om enheten har flera användare aktiverade). Användarna identifieras med ett ID. 0 är första användaren (ägaren).</p>
-        <p><strong>Fleranvändare</strong>: Fleranvändare är fortfarande experimentell men borde fungera. När du återställer i ett fleranvändarscenario, `pm install -r $apk` kallas och därefter appen är inaktiverad för varje användare som har appen listad i /data/system/user/$user/package-restrictions.xml (om inte appen är listad som enabled="1").<br>Detta kan skapa problem för användare som installerar samma app vid ett senare tillfälle, men är nödvändigt för att förhindra att appen installeras för alla användare samtidigt. Innehållsmenyn har ett alternativ som kan aktivera eller inaktivera appar som kan användas om andra användare inte kan använda en specifik app på grund av att den inaktiveras vid återställning.<br>Aktivering och inaktivering fungerar bara efter en installation (inte nödvändigtvis från OAndBackupX eller återställning av en app.</p>
-</body></html>
+<html>
+    <body>
+        <p><strong>Ta bort säkerhetskopia</strong>: Tar bort säkerhetskopian för vald app.
+        </p>
+        <p><strong>Aktivera / inaktivera</strong>: Använder android-skriptet `pm` till att aktivera eller inaktivera en app. Inaktivering av en app tar bort den från det normala användargränssnittet utan att avinstallera. detta kan användas till att aktivera eller inaktivera en app för flera användare i taget (om enheten har flera användare aktiverade). Användarna identifieras med ett ID. 0 är första användaren (ägaren).
+        </p>
+        <p><strong>Avinstallera a</strong>Lite mer aggressiv än en vanlig avinstallering. Förutom att göra en vanlig avinstallering via Android kommandon, avinstallerar från OAndBackupX raderar filer som appen kan ha lämnat i /data/app-lib/.
+        </p>
+        <p><strong> Aktivera / inaktivera</strong>: Använder Android `pm`skript för att aktivera eller inaktivera en app. Att inaktivera en app tar bort den från det normala användargränsitet utan att avinstallera den. Detta kan användas för att aktivera och inaktivera en app för flera användare på en gång (om enheten har fler användare). Användare identifieras med en ID. e.g. 0 är den första användaren (ägaren) 10 är oftast en jobb profil.
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

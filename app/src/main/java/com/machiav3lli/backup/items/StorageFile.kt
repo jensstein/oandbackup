@@ -16,19 +16,19 @@ import java.util.*
 open class StorageFile protected constructor(val parentFile: StorageFile?, private val context: Context, var uri: Uri) {
     var name: String? = null
         get() {
-            if (field == null) field = getName(context, uri)
+            if (field == null) field = uri.getName(context)
             return field
         }
         private set
 
     val isFile: Boolean
-        get() = isFile(context, this.uri)
+        get() = uri.isFile(context)
 
     val isPropertyFile: Boolean
-        get() = isFile(context, this.uri)
+        get() = uri.isFile(context)
 
     val isDirectory: Boolean
-        get() = isDirectory(context, this.uri)
+        get() = uri.isDirectory(context)
 
     fun createDirectory(displayName: String): StorageFile? {
         val result = createFile(context, uri, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
@@ -124,7 +124,7 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
     }
 
     fun exists(): Boolean {
-        return exists(context, uri)
+        return uri.exists(context)
     }
 
     override fun toString(): String {

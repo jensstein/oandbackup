@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemExportsXBinding
 import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import java.time.LocalTime
@@ -47,8 +48,13 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : Abstra
         binding.userFilter.setExists(schedule.filter == SCHED_FILTER_USER || schedule.filter == SCHED_FILTER_ALL)
         binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
-        binding.apkMode.setExists(schedule.mode == MODE_APK || schedule.mode == MODE_BOTH)
-        binding.dataMode.setExists(schedule.mode == MODE_DATA || schedule.mode == MODE_BOTH)
+        modeToModes(schedule.mode).let {
+            binding.apkMode.setExists(it.contains(MODE_APK))
+            binding.dataMode.setExists(it.contains(MODE_DATA))
+            binding.deDataMode.setExists(it.contains(MODE_DATA_DE))
+            binding.extDataMode.setExists(it.contains(MODE_DATA_EXT))
+            binding.obbMode.setExists(it.contains(MODE_DATA_OBB))
+        }
         binding.customlist.setExists(schedule.customList.isNotEmpty())
         binding.blocklist.setExists(schedule.blockList.isNotEmpty())
         binding.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()

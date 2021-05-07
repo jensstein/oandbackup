@@ -20,27 +20,12 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import java.io.*
-import java.nio.charset.StandardCharsets
+import java.io.File
 import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
 
 object FileUtils {
     private var backupLocation: Uri? = null
-
-    @Throws(FileNotFoundException::class)
-    fun openFileForReading(context: Context, uri: Uri): BufferedReader {
-        return BufferedReader(
-                InputStreamReader(context.contentResolver.openInputStream(uri), StandardCharsets.UTF_8)
-        )
-    }
-
-    @Throws(FileNotFoundException::class)
-    fun openFileForWriting(context: Context, uri: Uri, mode: String?): BufferedWriter {
-        return BufferedWriter(
-                OutputStreamWriter(context.contentResolver.openOutputStream(uri, mode!!), StandardCharsets.UTF_8)
-        )
-    }
 
     // TODO Change to StorageFile-based
     fun getExternalStorageDirectory(context: Context): File {
@@ -53,9 +38,9 @@ object FileUtils {
      * @return URI to OABX storage directory
      */
     @Throws(StorageLocationNotConfiguredException::class, BackupLocationIsAccessibleException::class)
-    fun getBackupDir(context: Context): Uri {
+    fun getBackupDirUri(context: Context): Uri {
         if (backupLocation == null) {
-            val storageRoot = getStorageRootDir(context)
+            val storageRoot = context.backupDirPath
             if (storageRoot.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
             }

@@ -134,35 +134,35 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
     private fun setupChips(update: Boolean) {
         viewModel.appInfo.value?.let {
             if (!it.isInstalled || it.isSpecial) {
-                changeVisibility(binding.launchApp, View.INVISIBLE, update) // TODO add isLaunchable attribute to AppInfo
-                changeVisibility(binding.uninstall, View.INVISIBLE, update)
-                changeVisibility(binding.enableDisable, View.INVISIBLE, update)
-                changeVisibility(binding.appInfo, View.GONE, update)
-                changeVisibility(binding.appSizeLine, View.GONE, update)
-                changeVisibility(binding.dataSizeLine, View.GONE, update)
-                changeVisibility(binding.splitsLine, View.GONE, update)
-                changeVisibility(binding.cacheSizeLine, View.GONE, update)
-                changeVisibility(binding.forceKill, View.GONE, update)
-                changeVisibility(binding.wipeCache, View.GONE, update)
+                binding.launchApp.changeVisibility(View.INVISIBLE, update) // TODO add isLaunchable attribute to AppInfo
+                binding.uninstall.changeVisibility(View.INVISIBLE, update)
+                binding.enableDisable.changeVisibility(View.INVISIBLE, update)
+                binding.appInfo.changeVisibility(View.GONE, update)
+                binding.appSizeLine.changeVisibility(View.GONE, update)
+                binding.dataSizeLine.changeVisibility(View.GONE, update)
+                binding.splitsLine.changeVisibility(View.GONE, update)
+                binding.cacheSizeLine.changeVisibility(View.GONE, update)
+                binding.forceKill.changeVisibility(View.GONE, update)
+                binding.wipeCache.changeVisibility(View.GONE, update)
                 if (it.isSpecial) {
-                    changeVisibility(binding.manager, View.GONE, update)
-                    changeVisibility(binding.backup, View.VISIBLE, update)
+                    binding.manager.changeVisibility(View.GONE, update)
+                    binding.backup.changeVisibility(View.VISIBLE, update)
                 } else {
-                    changeVisibility(binding.manager, View.VISIBLE, update)
-                    changeVisibility(binding.backup, View.GONE, update)
+                    binding.manager.changeVisibility(View.VISIBLE, update)
+                    binding.backup.changeVisibility(View.GONE, update)
                 }
             } else {
-                changeVisibility(binding.launchApp, View.VISIBLE, update)
-                changeVisibility(binding.uninstall, View.VISIBLE, update)
-                changeVisibility(binding.enableDisable, View.VISIBLE, update)
-                changeVisibility(binding.appInfo, View.VISIBLE, update)
-                changeVisibility(binding.appSizeLine, View.VISIBLE, update)
-                changeVisibility(binding.dataSizeLine, View.VISIBLE, update)
-                changeVisibility(binding.splitsLine, View.VISIBLE, update)
-                changeVisibility(binding.cacheSizeLine, View.VISIBLE, update)
-                changeVisibility(binding.forceKill, View.VISIBLE, update)
-                changeVisibility(binding.wipeCache, View.VISIBLE, update)
-                changeVisibility(binding.backup, View.VISIBLE, update)
+                binding.launchApp.changeVisibility(View.VISIBLE, update)
+                binding.uninstall.changeVisibility(View.VISIBLE, update)
+                binding.enableDisable.changeVisibility(View.VISIBLE, update)
+                binding.appInfo.changeVisibility(View.VISIBLE, update)
+                binding.appSizeLine.changeVisibility(View.VISIBLE, update)
+                binding.dataSizeLine.changeVisibility(View.VISIBLE, update)
+                binding.splitsLine.changeVisibility(View.VISIBLE, update)
+                binding.cacheSizeLine.changeVisibility(View.VISIBLE, update)
+                binding.forceKill.changeVisibility(View.VISIBLE, update)
+                binding.wipeCache.changeVisibility(View.VISIBLE, update)
+                binding.backup.changeVisibility(View.VISIBLE, update)
                 if (it.isDisabled) {
                     binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
                     binding.enableDisable.tooltipText = getString(R.string.enablePackage)
@@ -172,7 +172,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 }
             }
             if (it.isSystem) {
-                changeVisibility(binding.uninstall, View.INVISIBLE, update)
+                binding.uninstall.changeVisibility(View.INVISIBLE, update)
             }
         }
     }
@@ -188,16 +188,16 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
             binding.label.text = appMetaInfo.packageLabel
             binding.packageName.text = it.packageName
             binding.appType.setText(if (appMetaInfo.isSystem) R.string.apptype_system else R.string.apptype_user)
-            context?.let { context -> pickSheetDataSizes(context, it, binding, update) }
+            context?.let { context -> binding.pickSheetDataSizes(context, it, update) }
             binding.appSplits.setText(if (it.apkSplits.isNullOrEmpty()) R.string.dialogNo else R.string.dialogYes)
             binding.versionName.text = appMetaInfo.versionName
             if (it.hasBackups) {
-                pickSheetVersionName(it, binding)
+                binding.pickSheetVersionName(it)
                 binding.deleteAll.visibility = View.VISIBLE
             } else {
                 binding.deleteAll.visibility = View.GONE
             }
-            pickSheetAppType(it, binding.appType)
+            binding.appType.pickSheetAppType(it)
         }
     }
 
@@ -221,8 +221,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         .setTitle(app.packageLabel)
                         .setMessage(R.string.uninstallDialogMessage)
                         .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            showToast(requireActivity(),
-                                    "${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
+                            requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
                             viewModel.uninstallApp()
                         }
                         .setNegativeButton(R.string.dialogNo, null)
@@ -240,7 +239,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         .setTitle(app.packageLabel)
                         .setMessage(R.string.deleteBackupDialogMessage)
                         .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            showToast(requireActivity(), "${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
+                            requireActivity().showToast("${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
                             viewModel.deleteAllBackups()
                         }
                         .setNegativeButton(R.string.dialogNo, null)
@@ -288,7 +287,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
             viewModel.appInfo.value?.let {
                 if (!it.isSpecial && !it.isInstalled
                         && !properties.hasApk && properties.hasAppData) {
-                    showToast(requireActivity(), getString(R.string.notInstalledModeDataWarning))
+                    requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
                 } else {
                     RestoreDialogFragment(it, properties, this@AppSheet)
                             .show(requireActivity().supportFragmentManager, "restoreDialog")
@@ -308,7 +307,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         .setTitle(it.packageLabel)
                         .setMessage(R.string.deleteBackupDialogMessage)
                         .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                            showToast(requireActivity(), "${it.packageLabel}: ${getString(R.string.deleteBackup)}")
+                            requireActivity().showToast("${it.packageLabel}: ${getString(R.string.deleteBackup)}")
                             if (!it.hasBackups) {
                                 Timber.w("UI Issue! Tried to delete backups for app without backups.")
                                 dialog?.dismiss()
@@ -363,13 +362,13 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                         try {
                             viewModel.enableDisableApp(selectedUsers, enable)
                         } catch (e: ShellCommands.ShellActionFailedException) {
-                            showError(requireActivity(), e.message)
+                            requireActivity().showError(e.message)
                         }
                     }
                     .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
                     .show()
         } catch (e: ShellCommands.ShellActionFailedException) {
-            showError(requireActivity(), e.message)
+            requireActivity().showError(e.message)
         }
     }
 

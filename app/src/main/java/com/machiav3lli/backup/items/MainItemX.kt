@@ -43,7 +43,7 @@ class MainItemX(var app: AppInfo) : AbstractBindingItem<ItemMainXBinding>() {
         binding.icon.setIcon(app.appMetaInfo)
         binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
-        binding.lastBackup.text = getFormattedDate(app.latestBackup?.backupProperties?.backupDate, false)
+        binding.lastBackup.text = app.latestBackup?.backupProperties?.backupDate?.getFormattedDate(false)
         binding.update.setExists(app.hasBackups && app.isUpdated)
         binding.apkMode.setExists(app.hasApk)
         binding.dataMode.setExists(app.hasAppData)

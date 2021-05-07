@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists
 import com.machiav3lli.backup.utils.timeUntilNextEvent
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
@@ -52,8 +53,13 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
         binding.userFilter.setExists(schedule.filter == SCHED_FILTER_USER || schedule.filter == SCHED_FILTER_ALL)
         binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
-        binding.apkMode.setExists(schedule.mode == MODE_APK || schedule.mode == MODE_BOTH)
-        binding.dataMode.setExists(schedule.mode == MODE_DATA || schedule.mode == MODE_BOTH)
+        modeToModes(schedule.mode).let {
+            binding.apkMode.setExists(it.contains(MODE_APK))
+            binding.dataMode.setExists(it.contains(MODE_DATA))
+            binding.deDataMode.setExists(it.contains(MODE_DATA_DE))
+            binding.extDataMode.setExists(it.contains(MODE_DATA_EXT))
+            binding.obbMode.setExists(it.contains(MODE_DATA_OBB))
+        }
         binding.enableCheckbox.isChecked = schedule.enabled
         setTimeLeft(binding)
     }
@@ -97,7 +103,6 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
                         && oldItem.schedule.interval == newItem.schedule.interval
                         && oldItem.schedule.timePlaced == newItem.schedule.timePlaced
                         && oldItem.schedule.excludeSystem == newItem.schedule.excludeSystem
-                        && oldItem.schedule.enableCustomList == newItem.schedule.enableCustomList
                         && oldItem.schedule.filter == newItem.schedule.filter
                         && oldItem.schedule.mode == newItem.schedule.mode
                         && oldItem.schedule.customList == newItem.schedule.customList

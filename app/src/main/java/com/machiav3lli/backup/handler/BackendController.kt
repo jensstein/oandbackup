@@ -36,120 +36,117 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 
-object BackendController {
+/*
+List of packages to be ignored for said reasons
+ */
+val ignoredPackages = listOf(
+        "android",  // virtual package. Data directory is /data -> not a good idea to backup
+        BuildConfig.APPLICATION_ID, // ignore own package
+        "com.android.shell",
+        "com.android.systemui",
+        "com.android.externalstorage",
+        "com.android.providers.media",
+        "com.google.android.gms",
+        "com.google.android.gsf"
+)
 
-    /*
-    List of packages to be ignored for said reasons
-     */
-    val ignoredPackages = listOf(
-            "android",  // virtual package. Data directory is /data -> not a good idea to backup
-            BuildConfig.APPLICATION_ID, // ignore own package
-            "com.android.shell",
-            "com.android.systemui",
-            "com.android.externalstorage",
-            "com.android.providers.media",
-            "com.google.android.gms",
-            "com.google.android.gsf"
-    )
-
-    fun getPackageInfoList(context: Context, filter: Int): List<PackageInfo> {
-        val pm = context.packageManager
-        var launchableAppsList = listOf<String>()
-        if (filter == SCHED_FILTER_LAUNCHABLE) {
-            val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
-            launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
-                    .map { it.activityInfo.packageName }
-        }
-        return pm.getInstalledPackages(0)
-                .filter { packageInfo: PackageInfo ->
-                    val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-                    val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
-                    when (filter) {
-                        SCHED_FILTER_USER -> return@filter !isSystem && isNotIgnored
-                        SCHED_FILTER_SYSTEM -> return@filter isSystem && isNotIgnored
-                        SCHED_FILTER_LAUNCHABLE -> return@filter launchableAppsList.contains(packageInfo.packageName) && isNotIgnored
-                        else -> return@filter isNotIgnored
-                    }
+fun Context.getPackageInfoList(filter: Int): List<PackageInfo> {
+    val pm = packageManager
+    var launchableAppsList = listOf<String>()
+    if (filter == SCHED_FILTER_LAUNCHABLE) {
+        val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+        launchableAppsList = packageManager.queryIntentActivities(mainIntent, 0)
+                .map { it.activityInfo.packageName }
+    }
+    return pm.getInstalledPackages(0)
+            .filter { packageInfo: PackageInfo ->
+                val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
+                val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
+                when (filter) {
+                    SCHED_FILTER_USER -> return@filter !isSystem && isNotIgnored
+                    SCHED_FILTER_SYSTEM -> return@filter isSystem && isNotIgnored
+                    SCHED_FILTER_LAUNCHABLE -> return@filter launchableAppsList.contains(packageInfo.packageName) && isNotIgnored
+                    else -> return@filter isNotIgnored
                 }
+            }
+            .toList()
+}
+
+@Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
+    invalidateCache()
+    val includeSpecial = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
+    val pm = packageManager
+    val backupRoot = getBackupDir()
+    val packageInfoList = pm.getInstalledPackages(0)
+    val packageList = packageInfoList
+            .filterNotNull()
+            .filter { !ignoredPackages.contains(it.packageName) && !blocklist.contains(it.packageName) }
+            .map { AppInfo(this, it, backupRoot.uri) }
+            .toMutableList()
+    // Special Backups must added before the uninstalled packages, because otherwise it would
+    // discover the backup directory and run in a special case where no the directory is empty.
+    // This would mean, that no package info is available – neither from backup.properties
+    // nor from PackageManager.
+    if (includeSpecial) {
+        packageList.addAll(getSpecialPackages(this))
+    }
+    if (includeUninstalled) {
+        val installedPackageNames = packageList
+                .map(AppInfo::packageName)
                 .toList()
-    }
-
-    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getApplicationList(context: Context, blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
-        invalidateCache()
-        val includeSpecial = getDefaultSharedPreferences(context).getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
-        val pm = context.packageManager
-        val backupRoot = getBackupRoot(context)
-        val packageInfoList = pm.getInstalledPackages(0)
-        val packageList = packageInfoList
-                .filterNotNull()
-                .filter { !ignoredPackages.contains(it.packageName) && !blocklist.contains(it.packageName) }
-                .map { AppInfo(context, it, backupRoot.uri) }
-                .toMutableList()
-        // Special Backups must added before the uninstalled packages, because otherwise it would
-        // discover the backup directory and run in a special case where no the directory is empty.
-        // This would mean, that no package info is available – neither from backup.properties
-        // nor from PackageManager.
-        if (includeSpecial) {
-            packageList.addAll(getSpecialPackages(context))
-        }
-        if (includeUninstalled) {
-            val installedPackageNames = packageList
-                    .map(AppInfo::packageName)
-                    .toList()
-            val directoriesInBackupRoot = getDirectoriesInBackupRoot(context)
-            val missingAppsWithBackup: List<AppInfo> =
-            // Try to create AppInfoX objects
-            // if it fails, null the object for filtering in the next step to avoid crashes
-                    // filter out previously failed backups
-                    directoriesInBackupRoot
-                            .filter { !installedPackageNames.contains(it.name) && !blocklist.contains(it.name) }
-                            .mapNotNull {
-                                try {
-                                    AppInfo(context, it.uri, it.name)
-                                } catch (e: AssertionError) {
-                                    Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                                    null
-                                }
+        val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+        val missingAppsWithBackup: List<AppInfo> =
+        // Try to create AppInfoX objects
+        // if it fails, null the object for filtering in the next step to avoid crashes
+                // filter out previously failed backups
+                directoriesInBackupRoot
+                        .filter { !installedPackageNames.contains(it.name) && !blocklist.contains(it.name) }
+                        .mapNotNull {
+                            try {
+                                AppInfo(this, it.uri, it.name)
+                            } catch (e: AssertionError) {
+                                Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
+                                null
                             }
-                            .toList()
-            packageList.addAll(missingAppsWithBackup)
-        }
-        return packageList
+                        }
+                        .toList()
+        packageList.addAll(missingAppsWithBackup)
     }
+    return packageList
+}
 
-    @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
-    fun getDirectoriesInBackupRoot(context: Context): List<StorageFile> {
-        val backupRoot = getBackupRoot(context)
-        try {
-            return backupRoot.listFiles()
-                    .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }
-                    .toList()
-        } catch (e: FileNotFoundException) {
-            Timber.e("${e.javaClass.simpleName}: ${e.message}")
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
-        }
-        return arrayListOf()
+@Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
+    val backupRoot = getBackupDir()
+    try {
+        return backupRoot.listFiles()
+                .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }
+                .toList()
+    } catch (e: FileNotFoundException) {
+        Timber.e("${e.javaClass.simpleName}: ${e.message}")
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e)
     }
+    return arrayListOf()
+}
 
-    @Throws(PackageManager.NameNotFoundException::class)
-    fun getPackageStorageStats(context: Context, packageName: String): StorageStats? {
-        val storageUuid = context.packageManager.getApplicationInfo(packageName, 0).storageUuid
-        return getPackageStorageStats(context, packageName, storageUuid)
-    }
+@Throws(PackageManager.NameNotFoundException::class)
+fun Context.getPackageStorageStats(packageName: String): StorageStats? {
+    val storageUuid = packageManager.getApplicationInfo(packageName, 0).storageUuid
+    return getPackageStorageStats(packageName, storageUuid)
+}
 
-    @Throws(PackageManager.NameNotFoundException::class)
-    fun getPackageStorageStats(context: Context, packageName: String, storageUuid: UUID): StorageStats? {
-        val storageStatsManager = context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
-        return try {
-            storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
-        } catch (e: IOException) {
-            Timber.e("Could not retrieve storage stats of $packageName: $e")
-            null
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, packageName)
-            null
-        }
+@Throws(PackageManager.NameNotFoundException::class)
+fun Context.getPackageStorageStats(packageName: String, storageUuid: UUID): StorageStats? {
+    val storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+    return try {
+        storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
+    } catch (e: IOException) {
+        Timber.e("Could not retrieve storage stats of $packageName: $e")
+        null
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, packageName)
+        null
     }
 }

@@ -29,7 +29,7 @@ import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.items.SchedulerItemX
-import com.machiav3lli.backup.utils.setNeedRefresh
+import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
@@ -91,7 +91,7 @@ class SchedulerActivityX : BaseActivity() {
                         true) { newList: Set<String> ->
                     Thread {
                         blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-                        setNeedRefresh(this, true)
+                        isNeedRefresh = true
                     }.start()
                 }.show(supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()

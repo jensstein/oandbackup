@@ -60,19 +60,19 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
             onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref)
         }
         passwordPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            setEncryptionPassword(requireContext(), newValue as String)
+            requireContext().setEncryptionPassword(newValue as String)
             onPrefChangePassword(passwordConfirmationPref, newValue, passwordConfirmationPref.text)
         }
         passwordConfirmationPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            setEncryptionPasswordConfirmation(requireContext(), newValue as String)
+            requireContext().setEncryptionPasswordConfirmation(newValue as String)
             onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        passwordPref.text = getEncryptionPassword(requireContext())
-        passwordConfirmationPref.text = getEncryptionPasswordConfirmation(requireContext())
+        passwordPref.text = requireContext().getEncryptionPassword()
+        passwordConfirmationPref.text = requireContext().getEncryptionPasswordConfirmation()
     }
 
     override fun onPause() {

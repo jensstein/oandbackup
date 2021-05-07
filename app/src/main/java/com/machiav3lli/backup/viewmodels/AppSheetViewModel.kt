@@ -59,8 +59,8 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private
             appInfo.value?.let {
                 Timber.i("uninstalling: ${appInfo.value?.packageLabel}")
                 try {
-                    shellCommands?.uninstall(appInfo.value?.packageName, appInfo.value?.getApkPath(),
-                            appInfo.value?.getDataPath(), appInfo.value?.isSystem == true)
+                    shellCommands?.uninstall(appInfo.value?.packageName, appInfo.value?.apkPath,
+                            appInfo.value?.dataPath, appInfo.value?.isSystem == true)
                     showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
                             appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess), true)
                     it.packageInfo = null

@@ -31,33 +31,33 @@ class RestoreDialogFragment(val appInfo: AppInfo, private val properties: Backup
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val labels = mutableListOf<String>()
-        var selectedMode = BU_MODE_UNSET
-        val possibleModes = mutableListOf(BU_MODE_APK, BU_MODE_DATA, BU_MODE_DATA_DE, BU_MODE_DATA_EXT, BU_MODE_OBB)
+        var selectedMode = MODE_UNSET
+        val possibleModes = mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
 
         if (properties.hasApk) {
             labels.add(getString(R.string.radio_apk))
         } else {
-            possibleModes.remove(BU_MODE_APK)
+            possibleModes.remove(MODE_APK)
         }
         if (properties.hasAppData) {
             labels.add(getString(R.string.radio_data))
         } else {
-            possibleModes.remove(BU_MODE_DATA)
+            possibleModes.remove(MODE_DATA)
         }
         if (properties.hasDevicesProtectedData) {
             labels.add(getString(R.string.radio_deviceprotecteddata))
         } else {
-            possibleModes.remove(BU_MODE_DATA_DE)
+            possibleModes.remove(MODE_DATA_DE)
         }
         if (properties.hasExternalData) {
             labels.add(getString(R.string.radio_externaldata))
         } else {
-            possibleModes.remove(BU_MODE_DATA_EXT)
+            possibleModes.remove(MODE_DATA_EXT)
         }
         if (properties.hasObbData) {
             labels.add(getString(R.string.radio_obbdata))
         } else {
-            possibleModes.remove(BU_MODE_OBB)
+            possibleModes.remove(MODE_DATA_OBB)
         }
 
         possibleModes.forEach { selectedMode = selectedMode or it }
@@ -70,7 +70,7 @@ class RestoreDialogFragment(val appInfo: AppInfo, private val properties: Backup
                     selectedMode = selectedMode xor possibleModes[index]
                 }
                 .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
-                    if (selectedMode != BU_MODE_UNSET)
+                    if (selectedMode != MODE_UNSET)
                         listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
                 }
                 .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }

@@ -266,6 +266,7 @@
     <string name="sortAscDesc">Ascending-Descending</string>
     <string name="forceKill">Force kill</string>
     <string name="global_blocklist_add">Add to the global blocklist</string>
+    <string name="intro_permission_storage_location_warning">Don\'t pick the main storage directory or Downloads folder, create a folder only for your backups. More on this in the FAQ</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">each day</item>
         <item quantity="other">each %d days</item>

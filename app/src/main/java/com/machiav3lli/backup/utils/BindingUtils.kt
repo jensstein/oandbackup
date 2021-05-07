@@ -17,78 +17,59 @@
  */
 package com.machiav3lli.backup.utils
 
+import android.animation.Animator
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import com.google.android.material.chip.Chip
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.AppMetaInfo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-fun filterToId(mode: Int): Int {
-    return when (mode) {
-        SCHED_FILTER_USER -> R.id.schedUser
-        SCHED_FILTER_SYSTEM -> R.id.schedSystem
-        SCHED_FILTER_NEW_UPDATED -> R.id.schedNewUpdated
-        SCHED_FILTER_LAUNCHABLE -> R.id.schedLaunchable
-        else -> R.id.schedAll
-    }
-}
-
-fun idToFilter(mode: Int): Int {
-    return when (mode) {
-        R.id.schedUser -> SCHED_FILTER_USER
-        R.id.schedSystem -> SCHED_FILTER_SYSTEM
-        R.id.schedNewUpdated -> SCHED_FILTER_NEW_UPDATED
-        R.id.schedLaunchable -> SCHED_FILTER_LAUNCHABLE
-        else -> SCHED_FILTER_ALL
-    }
-}
-
-fun modeToId(subMode: Int): Int {
-    return when (subMode) {
-        1 -> R.id.schedApk
-        2 -> R.id.schedData
-        else -> R.id.schedBoth
-    }
-}
-
-fun idToMode(subMode: Int): Int {
-    return when (subMode) {
-        R.id.schedApk -> MODE_APK
-        R.id.schedData -> MODE_DATA
-        else -> MODE_BOTH
-    }
-}
-
 @BindingAdapter("exists")
 fun View.setExists(rightMode: Boolean) {
-    visibility = if (rightMode) {
-        View.VISIBLE
-    } else {
-        View.GONE
+    visibility = when {
+        rightMode -> View.VISIBLE
+        else -> View.GONE
     }
 }
 
 @BindingAdapter("visible")
 fun View.setVisible(rightMode: Boolean) {
-    visibility = if (rightMode) {
-        View.VISIBLE
-    } else {
-        View.INVISIBLE
+    visibility = when {
+        rightMode -> View.VISIBLE
+        else -> View.INVISIBLE
     }
 }
 
-fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) {
-    if (metaInfo?.hasIcon() == true) {
-        setImageDrawable(metaInfo.applicationIcon)
-    } else {
-        setImageResource(R.drawable.ic_placeholder)
-    }
+fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
+        animate().alpha(if (nVisibility == View.VISIBLE) 1.0f else 0.0f)
+                .setDuration(if (withAnimation) 600 else 1.toLong())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                        if (nVisibility == View.VISIBLE && visibility == View.GONE) visibility = View.VISIBLE
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        visibility = nVisibility
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+                        // not relevant
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+                        // not relevant
+                    }
+                })
+
+fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) = when {
+    metaInfo?.hasIcon() == true -> setImageDrawable(metaInfo.applicationIcon)
+    else -> setImageResource(R.drawable.ic_placeholder)
 }
 
 fun AppCompatImageView.setAppType(appInfo: AppInfo) {
@@ -121,27 +102,23 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     imageTintList = color
 }
 
-fun Chip.setColor(theList: Set<String>) {
-    when {
-        theList.isNotEmpty() -> {
-            this.setTextColor(this.context.getColor(R.color.app_accent))
-            this.setChipStrokeColorResource(R.color.app_accent)
-            this.setChipIconTintResource(R.color.app_accent)
-            this.setRippleColorResource(R.color.app_accent)
-        }
-        else -> {
-            this.setTextColor(this.context.getColor(R.color.app_secondary))
-            this.setChipStrokeColorResource(R.color.app_secondary)
-            this.setChipIconTintResource(R.color.app_secondary)
-            this.setRippleColorResource(R.color.app_secondary)
-        }
+fun Chip.setColor(theList: Set<String>) = when {
+    theList.isNotEmpty() -> {
+        this.setTextColor(this.context.getColor(R.color.app_accent))
+        this.setChipStrokeColorResource(R.color.app_accent)
+        this.setChipIconTintResource(R.color.app_accent)
+        this.setRippleColorResource(R.color.app_accent)
+    }
+    else -> {
+        this.setTextColor(this.context.getColor(R.color.app_secondary))
+        this.setChipStrokeColorResource(R.color.app_secondary)
+        this.setChipIconTintResource(R.color.app_secondary)
+        this.setRippleColorResource(R.color.app_secondary)
     }
 }
 
-fun getFormattedDate(lastUpdate: LocalDateTime?, withTime: Boolean): String? {
-    lastUpdate?.let {
-        val dtf = if (withTime) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) else DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-        return lastUpdate.format(dtf)
-    }
-    return null
+fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {
+    val dtf = if (withTime) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+    else DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+    return format(dtf)
 }

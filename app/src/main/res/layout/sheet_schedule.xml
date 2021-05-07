@@ -161,35 +161,35 @@
                     app:layout_constraintTop_toBottomOf="@id/schedFilterTitle">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedAll"
+                        android:id="@+id/chipAll"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_all" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedSystem"
+                        android:id="@+id/chipSystem"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedUser"
+                        android:id="@+id/chipUser"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedNewUpdated"
+                        android:id="@+id/chipNewUpdated"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedLaunchable"
+                        android:id="@+id/chipLaunchable"
                         style="@style/Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -226,28 +226,44 @@
                     app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/schedModeTitle">
+                    app:layout_constraintTop_toBottomOf="@id/schedModeTitle"
+                    app:selectionRequired="false"
+                    app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedApk"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/chipApk"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedData"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/chipData"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/schedBoth"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/chipDataDe"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_both" />
+                        android:text="@string/radio_deviceprotecteddata" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDataExt"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_externaldata" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipDataObb"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_obbdata" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

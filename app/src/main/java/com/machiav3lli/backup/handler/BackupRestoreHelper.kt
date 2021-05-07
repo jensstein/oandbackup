@@ -31,7 +31,7 @@ import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupRoot
+import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
@@ -42,7 +42,7 @@ object BackupRestoreHelper {
 
     fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
         var reBackupMode = backupMode
-        val housekeepingWhen = fromString(getDefaultSharedPreferences(context)
+        val housekeepingWhen = fromString(context.getDefaultSharedPreferences()
                 .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
                 ?: HousekeepingMoment.AFTER.value)
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
@@ -51,9 +51,9 @@ object BackupRestoreHelper {
         // Select and prepare the action to use
         val action: BackupAppAction
         if (appInfo.isSpecial) {
-            if (reBackupMode and BU_MODE_APK == BU_MODE_APK) {
+            if (reBackupMode and MODE_APK == MODE_APK) {
                 Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                reBackupMode = reBackupMode and BU_MODE_DATA
+                reBackupMode = reBackupMode and MODE_DATA
                 Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
             }
             action = BackupSpecialAction(context, shell)
@@ -87,7 +87,7 @@ object BackupRestoreHelper {
     fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
         val filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk"
         try {
-            val backupRoot = getBackupRoot(context)
+            val backupRoot = context.getBackupDir()
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {
@@ -124,7 +124,7 @@ object BackupRestoreHelper {
     }
 
     private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
-        var numBackupRevisions = getDefaultSharedPreferences(context).getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
+        var numBackupRevisions = context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")

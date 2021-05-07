@@ -1,6 +1,29 @@
 CHANGELOG
 =========
 
+6.0.0 (05.05.2021)
+------------------
+
+* Added: Encrypt private preferences including encryption password (using Android keystore)
+* Added: Export/import of schedules
+* Added: Global blocklist applies to Main
+* Added: Ascending/descending sort support
+* Added: Warning text to backup directory picker
+* Added: Direct share button for logs
+* Added: Better error handling
+* Updated: Make backup dialog checks response to the service's active options
+* Updated: Use modes' checkboxes in the backup/restore/schedule dialogs
+* Updated: Schedule action on first day if possible
+* Updated: Replace Blacklist with Blocklist
+* Fixed: Don't schedule when disabled
+* Fixed: Crash when scheduled list of apps is empty
+* Fixed: Schedules not firing on time
+* Fixed: Delayed notifications of some restored apps (exclude the push notifications' ID from backups)
+* Fixed: Backup instance folder left untouched after backup failing
+* Fixed: Hiding device lock option when there's no lock
+* Added: Catalan language
+* Updated translation: Arabic, Spanish, Indonesian, Polish, Russian, Japanese, Chinese, Dutch, French
+
 5.1.0 (18.03.2021)
 ------------------
 

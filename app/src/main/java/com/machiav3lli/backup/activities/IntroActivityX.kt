@@ -45,7 +45,7 @@ class IntroActivityX : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = getPrivateSharedPrefs(this)
+        prefs = getPrivateSharedPrefs()
         setupNavigation()
         if (intent.extras != null) {
             val fragmentNumber = intent.extras!!.getInt(classAddress(".fragmentNumber"))
@@ -55,7 +55,7 @@ class IntroActivityX : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkRootAccess(this)
+        checkRootAccess()
     }
 
     private fun setupNavigation() {
@@ -91,9 +91,9 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchMainActivity() {
-        if (isBiometricLockAvailable(this) && isBiometricLockEnabled(this)) {
+        if (isBiometricLockAvailable() && isBiometricLockEnabled()) {
             launchBiometricPrompt(true)
-        } else if (isDeviceLockAvailable(this) && isDeviceLockEnabled(this)) {
+        } else if (isDeviceLockAvailable() && isDeviceLockEnabled()) {
             launchBiometricPrompt(false)
         } else {
             startActivity(Intent(this, MainActivityX::class.java))

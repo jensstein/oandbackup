@@ -24,13 +24,13 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.machiav3lli.backup.MODE_BOTH
+import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.SCHED_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils
+import com.machiav3lli.backup.utils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -68,16 +68,13 @@ open class Schedule() {
 
     @SerializedName("mode")
     @Expose
-    var mode: Int = MODE_BOTH
+    var mode: Int = MODE_APK
 
     var timeUntilNextEvent: Long = 0
 
     @SerializedName("excludeSystem")
     @Expose
     var excludeSystem = false
-
-    val enableCustomList: Boolean
-        get() = customList.isNotEmpty()
 
     @SerializedName("customList")
     @Expose
@@ -91,7 +88,7 @@ open class Schedule() {
 
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
-            FileUtils.openFileForReading(context, exportFile.uri).use { reader ->
+            exportFile.uri.openFileForReading(context).use { reader ->
                 val item = fromGson(IOUtils.toString(reader))
                 this.id = item.id
                 this.name = item.name
@@ -126,7 +123,6 @@ open class Schedule() {
                 && interval == schedule.interval
                 && timePlaced == schedule.timePlaced
                 && excludeSystem == schedule.excludeSystem
-                && enableCustomList == schedule.enableCustomList
                 && filter == schedule.filter
                 && mode == schedule.mode
                 && customList == schedule.customList
@@ -145,7 +141,6 @@ open class Schedule() {
         hash = 31 * hash + filter.hashCode()
         hash = 31 * hash + mode.hashCode()
         hash = 31 * hash + if (excludeSystem) 1 else 0
-        hash = 31 * hash + if (enableCustomList) 1 else 0
         hash = 31 * hash + customList.hashCode()
         hash = 31 * hash + blockList.hashCode()
         return hash
@@ -167,7 +162,6 @@ open class Schedule() {
                 ", filter=" + filter +
                 ", mode=" + mode +
                 ", excludeSystem=" + excludeSystem +
-                ", enableCustomList=" + enableCustomList +
                 ", customList=" + customList +
                 ", blockList=" + blockList +
                 '}'

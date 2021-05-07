@@ -42,19 +42,19 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setDayNightTheme(getPrivateSharedPrefs(this).getString(PREFS_THEME, "system"))
+        setDayNightTheme(getPrivateSharedPrefs().getString(PREFS_THEME, "system"))
         super.onCreate(savedInstanceState)
         Shell.getShell {
             binding = ActivitySplashBinding.inflate(layoutInflater)
             setContentView(binding.root)
-            val prefs = getPrivateSharedPrefs(this)
+            val prefs = getPrivateSharedPrefs()
             val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
             val introIntent = Intent(applicationContext, IntroActivityX::class.java)
             if (prefs.getBoolean(PREFS_FIRST_LAUNCH, true)) {
                 startActivity(introIntent)
-            } else if (checkStoragePermissions(this) &&
-                    isStorageDirSetAndOk(this) &&
-                    checkUsageStatsPermission(this) &&
+            } else if (hasStoragePermissions &&
+                    isStorageDirSetAndOk &&
+                    checkUsageStatsPermission &&
                     (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                             || powerManager.isIgnoringBatteryOptimizations(packageName))) {
                 introIntent.putExtra(classAddress(".fragmentNumber"), 3)

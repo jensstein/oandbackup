@@ -29,14 +29,11 @@ class BatchItemX(var app: AppInfo, val backupBoolean: Boolean) : AbstractBinding
     var isDataChecked = false
 
     val actionMode: Int
-        get() = if (isApkChecked && isDataChecked) {
-            MODE_BOTH
-        } else if (isApkChecked) {
-            MODE_APK
-        } else if (isDataChecked) {
-            MODE_DATA
-        } else {
-            MODE_UNSET
+        get() = when {
+            isApkChecked && isDataChecked -> ALT_MODE_BOTH
+            isApkChecked -> ALT_MODE_APK
+            isDataChecked -> ALT_MODE_DATA
+            else -> ALT_MODE_UNSET
         }
 
     val isChecked: Boolean
@@ -62,7 +59,7 @@ class BatchItemX(var app: AppInfo, val backupBoolean: Boolean) : AbstractBinding
         binding.dataCheckbox.setVisible(app.hasAppData || backupBoolean)
         binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
-        binding.lastBackup.text = getFormattedDate(app.latestBackup?.backupProperties?.backupDate, false)
+        binding.lastBackup.text = app.latestBackup?.backupProperties?.backupDate?.getFormattedDate(false)
         binding.update.setExists(app.hasBackups && app.isUpdated)
         binding.apkMode.setExists(app.hasApk)
         binding.dataMode.setExists(app.hasAppData)

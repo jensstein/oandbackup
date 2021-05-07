@@ -42,7 +42,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             result.data?.let {
                 val uri = it.data ?: return@registerForActivityResult
                 val oldDir = try {
-                    getStorageRootDir(requireContext())
+                    requireContext().backupDirPath
                 } catch (e: StorageLocationNotConfiguredException) {
                     // Can be ignored, this is about to set the path
                     ""
@@ -52,7 +52,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
                             or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     requireContext().contentResolver.takePersistableUriPermission(uri, flags)
                     Timber.i("setting uri $uri")
-                    setDefaultDir(requireContext(), uri)
+                    requireContext().setDefaultDir(uri)
                 }
             }
         }
@@ -61,9 +61,9 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
         deviceLockPref = findPreference(PREFS_DEVICELOCK)!!
-        deviceLockPref.isVisible = isDeviceLockAvailable(requireContext())
+        deviceLockPref.isVisible = requireContext().isDeviceLockAvailable()
         biometricLockPref = findPreference(PREFS_BIOMETRICLOCK)!!
-        biometricLockPref.isVisible = deviceLockPref.isChecked && isBiometricLockAvailable(requireContext())
+        biometricLockPref.isVisible = deviceLockPref.isChecked && requireContext().isBiometricLockAvailable()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,12 +75,12 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
-            pref.summary = getStorageRootDir(requireContext())
+            pref.summary = requireContext().backupDirPath
         } catch (e: StorageLocationNotConfiguredException) {
             pref.summary = getString(R.string.prefs_unset)
         }
         pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            requireStorageLocation(requireActivity(), askForDirectory)
+            requireActivity().requireStorageLocation(askForDirectory)
             true
         }
         deviceLockPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
@@ -89,7 +89,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     }
 
     private fun onPrefChangeTheme(newValue: String): Boolean {
-        getPrivateSharedPrefs(requireContext()).edit().putString(PREFS_THEME, newValue).apply()
+        requireContext().getPrivateSharedPrefs().edit().putString(PREFS_THEME, newValue).apply()
         when (newValue) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -107,9 +107,9 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun setDefaultDir(context: Context, dir: Uri) {
-        setStorageRootDir(context, dir)
-        setNeedRefresh(context, true)
+    private fun Context.setDefaultDir(dir: Uri) {
+        setBackupDir(dir)
+        isNeedRefresh = true
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         pref.summary = dir.toString()
     }

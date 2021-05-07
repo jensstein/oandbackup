@@ -26,11 +26,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.work.*
-import com.machiav3lli.backup.BU_MODE_UNSET
+import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.BackendController
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
@@ -44,7 +44,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
     override suspend fun doWork(): Result {
         val packageName = inputData.getString("packageName")
                 ?: ""
-        val selectedMode = inputData.getInt("selectedMode", BU_MODE_UNSET)
+        val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
         this.backupBoolean = inputData.getBoolean("backupBoolean", true)
         this.notificationId = inputData.getInt("notificationId", 123454321)
         setForeground(createForegroundInfo())
@@ -55,8 +55,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
             val foundItem = context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
             appInfo = AppInfo(context, foundItem)
         } catch (e: PackageManager.NameNotFoundException) {
-            val backupDir = BackendController
-                    .getDirectoriesInBackupRoot(context)
+            val backupDir = context.getDirectoriesInBackupRoot()
                     .find { it.name == packageName }
             backupDir?.let {
                 try {

@@ -43,7 +43,7 @@ class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBindi
 
     override fun bindView(binding: ItemBackupXBinding, payloads: List<Any>) {
         // TODO MAYBE add the user to the info?
-        binding.backupDate.text = getFormattedDate(backup.backupProperties.backupDate, true)
+        binding.backupDate.text = backup.backupProperties.backupDate?.getFormattedDate(true)
         binding.versionName.text = backup.backupProperties.versionName
         binding.cpuArch.text = String.format("(%s)", backup.backupProperties.cpuArch)
         binding.apkMode.setExists(backup.backupProperties.hasApk)

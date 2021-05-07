@@ -40,7 +40,7 @@ class LogItemX(var log: LogItem) : AbstractBindingItem<ItemLogXBinding>() {
     }
 
     override fun bindView(binding: ItemLogXBinding, payloads: List<Any>) {
-        binding.logDate.text = getFormattedDate(log.logDate, true)
+        binding.logDate.text = log.logDate.getFormattedDate(true)
         binding.sdkCodename.text = log.sdkCodename
         binding.deviceName.text = log.deviceName
         binding.cpuArch.text = log.cpuArch

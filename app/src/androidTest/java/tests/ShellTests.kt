@@ -1,9 +1,12 @@
 package tests
-import com.machiav3lli.backup.handler.ShellHandler
+
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.utils.iterableToString
+import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.topjohnwu.superuser.Shell
 import org.jetbrains.annotations.TestOnly
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -29,7 +32,7 @@ class ShellTests {
                     shellResult = ShellHandler.runAsRoot("$commandStub \$(yes xxxxxxxxxx|tr -d \"\\n\"|head -c $length) | wc -c")
                 }
                 shellResult?.let {
-                    return iterableToString(it.out).toInt() == length
+                    return it.out.joinToString("").toInt() == length
                 }
             } catch (e: OutOfMemoryError) {
                 LogsHandler.logException(e, "length: $length")
@@ -59,45 +62,45 @@ class ShellTests {
     @DisplayName("quote")
     @ExperimentalStdlibApi
     fun test_quote() =
-        listOf(
-            """test   ,\|$&"'`[](){}=:;?<~>-+!%^#*""" + ext,
-            """test   \a\b\f\n\r\t\v\e\E\u1234\U123456""" + ext,
-            (0..32).map { it.toChar() }.filter { c -> !(c.toInt() == 0 || c in "\n\r") }
-                .joinToString("") + ext,
-            (33..127).map { it.toChar() }.filter { c -> !(c.isLetterOrDigit() || c == '/') }
-                .joinToString("") + ext,
-            // fails: (0..32).map { (128+it).toChar() }.filter { c -> ! (c.toInt() == 0 || c.toInt() == 173 || (c.toInt().and(127)).toChar() in "\t\n\r ") }.joinToString("") + ext,
-            (33..127).map { (128 + it).toChar() }.joinToString("") + ext
-        ).map { filename ->
-            dynamicTest(
-                "file '$filename' (${filename[0].toInt()})"
-            ) {
-                try {
-                    runAsRoot("toybox rm $dir/*$ext")
-                } catch (e: Throwable) {
-                }
+            listOf(
+                    """test   ,\|$&"'`[](){}=:;?<~>-+!%^#*""" + ext,
+                    """test   \a\b\f\n\r\t\v\e\E\u1234\U123456""" + ext,
+                    (0..32).map { it.toChar() }.filter { c -> !(c.toInt() == 0 || c in "\n\r") }
+                            .joinToString("") + ext,
+                    (33..127).map { it.toChar() }.filter { c -> !(c.isLetterOrDigit() || c == '/') }
+                            .joinToString("") + ext,
+                    // fails: (0..32).map { (128+it).toChar() }.filter { c -> ! (c.toInt() == 0 || c.toInt() == 173 || (c.toInt().and(127)).toChar() in "\t\n\r ") }.joinToString("") + ext,
+                    (33..127).map { (128 + it).toChar() }.joinToString("") + ext
+            ).map { filename ->
+                dynamicTest(
+                        "file '$filename' (${filename[0].toInt()})"
+                ) {
+                    try {
+                        runAsRoot("toybox rm $dir/*$ext")
+                    } catch (e: Throwable) {
+                    }
 
-                assertEquals(
-                    0,
-                    runAsRoot("toybox touch ${quote("$dir/$filename")}")
-                        .code
-                )
-                assertEquals(
-                    "$dir/$filename",
-                    runAsRoot("toybox echo $dir/*$ext")
-                        .out.joinToString(";")
-                )
-                assertEquals(
-                    "$dir/$filename",
-                    runAsRoot("toybox ls -dlZ $dir/*$ext")
-                        .out.joinToString(";").split(" ", limit = 9)[8]
-                )
-                assertEquals(
-                    0,
-                    runAsRoot("toybox rm ${quote("$dir/$filename")}")
-                        .code
-                )
+                    assertEquals(
+                            0,
+                            runAsRoot("toybox touch ${quote("$dir/$filename")}")
+                                    .code
+                    )
+                    assertEquals(
+                            "$dir/$filename",
+                            runAsRoot("toybox echo $dir/*$ext")
+                                    .out.joinToString(";")
+                    )
+                    assertEquals(
+                            "$dir/$filename",
+                            runAsRoot("toybox ls -dlZ $dir/*$ext")
+                                    .out.joinToString(";").split(" ", limit = 9)[8]
+                    )
+                    assertEquals(
+                            0,
+                            runAsRoot("toybox rm ${quote("$dir/$filename")}")
+                                    .code
+                    )
+                }
             }
-        }
 }
 

@@ -256,4 +256,26 @@
     <string name="prefs_enablespecial_summary">Muss noch intensiv getestet werden, da die Gefahr besteht, dass es zu Bootschleifen kommen kann. Feedback ist immer willkommen.</string>
     <string name="help_group_telegram">Unsere Gruppe auf Telegram</string>
     <string name="help_group_matrix">Unsere Gruppe auf Matrix</string>
+    <string name="write_apps_list_all">Liste aller Apps wurde erstellt</string>
+    <string name="write_apps_list_filtered">Gefilterte App Liste wurde erstellt</string>
+    <string name="intro_permission_storage_location_warning">Wählen Sie nicht das Hauptspeicherverzeichnis oder den Downloads-Ordner, sondern erstellen Sie einen Ordner nur für Ihre Backups. Mehr dazu in den FAQ</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">jeden Tag</item>
+        <item quantity="other">alle %d Tage</item>
+    </plurals>
+    <string name="global_blocklist_add">Zur globalen Blockliste hinzufügen</string>
+    <string name="forceKill">Beenden erzwingen</string>
+    <string name="sortAscDesc">aufsteigend-absteigend</string>
+    <string name="logs_share_failed">Protokolldatei nicht gefunden</string>
+    <string name="sched_imported">Geplante Backups wurden erfolgreich importiert</string>
+    <string name="sched_exported">Geplante Backups wurden erfolgreich exportiert</string>
+    <string name="error_datachanged">Die Daten der App wurden während des Backups aktiv geändert. Versuchen Sie, den(/die) Prozess(e) der App zu beenden, bevor Sie das Backup durchführen</string>
+    <string name="dialog_import">Import</string>
+    <string name="dialog_export">Export</string>
+    <string name="schedule_failed">Geplante Backup Ausführung fehlgeschlagen</string>
+    <string name="shell_initproblem">Konnte den Shell-Handler nicht initiieren. Entweder fehlt toybox/busybox oder die Root-Berechtigung wurde nicht erteilt.</string>
+    <string name="no_file_manager_message">Es ist kein SAF kompatibler Dateimanager vorhanden. Eventuell haben Sie den Betriebssystem-integrierten Dateimanager deaktivert. Bitte aktivieren oder stellen Sie ihn wieder her.</string>
+    <string name="no_file_manager_title">Kein SAF Dateimanager</string>
+    <string name="prefs_schedulesexportimport_summary">Export oder import einer Liste der zeitgesteuerten Backups, die du angelegt hast.</string>
+    <string name="prefs_schedulesexportimport">Export/Import zeitgesteuerter Backups</string>
 </resources>

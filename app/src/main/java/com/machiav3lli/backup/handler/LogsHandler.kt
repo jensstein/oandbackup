@@ -28,7 +28,7 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.ensureDirectory
-import com.machiav3lli.backup.utils.getBackupRoot
+import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -39,8 +39,8 @@ class LogsHandler(var context: Context) {
     private var logsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = getBackupRoot(context)
-        logsDirectory = ensureDirectory(backupRootFolder, LOG_FOLDER_NAME)
+        val backupRootFolder = context.getBackupDir()
+        logsDirectory = backupRootFolder.ensureDirectory(LOG_FOLDER_NAME)
     }
 
     @Throws(IOException::class)

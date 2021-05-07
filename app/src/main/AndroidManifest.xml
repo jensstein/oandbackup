@@ -80,15 +80,18 @@
 
         <receiver
             android:name=".services.BootReceiver"
-            android:directBootAware="true">
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".services.AlarmReceiver" />
 
-        <service android:name=".services.ScheduleService" />
+        <service
+            android:name=".services.ScheduleService"
+            android:foregroundServiceType="dataSync" />
     </application>
 </manifest>

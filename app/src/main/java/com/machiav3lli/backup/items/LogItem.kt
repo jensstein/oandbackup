@@ -21,8 +21,8 @@ import android.content.Context
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.GsonUtils.instance
+import com.machiav3lli.backup.utils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -31,7 +31,7 @@ import java.time.LocalDateTime
 open class LogItem {
     @SerializedName("logDate")
     @Expose
-    lateinit var logDate: LocalDateTime
+    var logDate: LocalDateTime
         private set
 
     @SerializedName("deviceName")
@@ -60,7 +60,7 @@ open class LogItem {
 
     constructor(context: Context, logFile: StorageFile) {
         try {
-            FileUtils.openFileForReading(context, logFile.uri).use { reader ->
+            logFile.uri.openFileForReading(context).use { reader ->
                 val item = fromGson(IOUtils.toString(reader))
                 this.logDate = item.logDate
                 this.deviceName = item.deviceName

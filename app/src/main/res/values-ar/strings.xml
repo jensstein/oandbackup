@@ -187,20 +187,20 @@
     <string name="prefs_devicelock">قفل الجهاز</string>
     <string name="batchDeleteBackupsDeleted">تم حذف النسخ الاحتياطية:</string>
     <plurals name="updated_apps">
-        <item quantity="zero">تطبيقات للمحادثات</item>
-        <item quantity="one">تطبيق المحادث</item>
-        <item quantity="two">تطبيقين للمحادثات</item>
-        <item quantity="few">بعض التطبيقات للمحادثات</item>
-        <item quantity="many">تطبيقات المحادث</item>
-        <item quantity="other">تطبيق للمحادث</item>
+        <item quantity="zero">%d تحديث التطبيق</item>
+        <item quantity="one">%d تحديث التطبيق</item>
+        <item quantity="two">%d تحديث التطبيق</item>
+        <item quantity="few">%d التطبيقات المحدثة</item>
+        <item quantity="many">%d تحديث التطبيق</item>
+        <item quantity="other">%d تحديث التطبيق</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="zero">٪d يوم,</item>
-        <item quantity="one">٪d يوم</item>
-        <item quantity="two">٪d يومين</item>
-        <item quantity="few">٪d بعض الايام</item>
-        <item quantity="many">٪d ايام</item>
-        <item quantity="other">٪d يوما</item>
+        <item quantity="zero">%d يوم,</item>
+        <item quantity="one">%d يوم</item>
+        <item quantity="two">%d يومين</item>
+        <item quantity="few">%d بعض الايام</item>
+        <item quantity="many">%d ايام</item>
+        <item quantity="other">%d يوما</item>
     </plurals>
     <string name="filtered_list">قائمة تمت تصفيتها</string>
     <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظري…</string>
@@ -263,4 +263,24 @@
     <string name="no_file_manager_title">لا يوجد مدير SAF</string>
     <string name="prefs_schedulesexportimport_summary">تصدير او استيراد قائمة الجداول التي أنشأتها .</string>
     <string name="prefs_schedulesexportimport">تصدير / استيراد المجدوله</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="zero">كل %d يوم</item>
+        <item quantity="one">كل %d يوم</item>
+        <item quantity="two">كل %d يومان</item>
+        <item quantity="few">كل %d يوم</item>
+        <item quantity="many">كل %d يوم</item>
+        <item quantity="other">كل %d يوم</item>
+    </plurals>
+    <string name="logs_share_failed">لم يتم العثور على ملف السجل</string>
+    <string name="sched_imported">تم استيراد الجدول بنجاح</string>
+    <string name="sched_exported">تم تصدير الجداول الزمنية بشكل صحيح</string>
+    <string name="error_datachanged">تم تغيير بيانات التطبيق بنشاط أثناء إجراء النسخ الاحتياطي. حاول قتل العملية قبل إجراء النسخ الاحتياطي</string>
+    <string name="write_apps_list_all">كتابة ملف قائمة جميع التطبيقات</string>
+    <string name="write_apps_list_filtered">كتب ملف قائمة التطبيقات المصفاة</string>
+    <string name="help_group_matrix">مجموعتنا في ماتريكس</string>
+    <string name="help_group_telegram">مجموعتنا على تيليجرام</string>
+    <string name="sortAscDesc">تصاعدي-تنازلي</string>
+    <string name="global_blocklist_add">إضافة إلى قائمة الحظر العامة</string>
+    <string name="forceKill">قتل بالقوة</string>
+    <string name="intro_permission_storage_location_warning">لا تختار دليل التخزين الرئيسي أو مجلد التنزيلات، قم بإنشاء مجلد للنسخ الاحتياطية فقط. للمزيد حول هذا الموضوع في قسم الأسئلة الشائعة</string>
 </resources>

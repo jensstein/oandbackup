@@ -29,10 +29,10 @@ import java.lang.ref.WeakReference
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action?.contains("BOOT_COMPLETED") == true) {
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
             Thread(DatabaseRunnable(context, scheduleDao)).start()
-        }
+        } else return
     }
 
     private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao)

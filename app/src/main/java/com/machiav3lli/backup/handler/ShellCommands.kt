@@ -189,7 +189,7 @@ class ShellCommands(private var users: List<String>?) {
             Timber.i("${app.packageName}: Wiping cache")
             val commands = mutableListOf<String>()
             // Normal app cache always exists
-            val dataPath = app.getDataPath()
+            val dataPath = app.dataPath
             if (dataPath.isNotEmpty())
                 commands.add("$utilBoxQuoted rm -rf ${quote(dataPath)}/cache/* ${quote(dataPath)}/code_cache/*")
 
@@ -201,9 +201,9 @@ class ShellCommands(private var users: List<String>?) {
             }
 
             // device protected data cache, might exist or not
-            if (app.getDevicesProtectedDataPath().isNotEmpty()) {
-                val cacheDir = File(app.getDevicesProtectedDataPath(), "cache").absolutePath
-                val codeCacheDir = File(app.getDevicesProtectedDataPath(), "code_cache").absolutePath
+            if (app.devicesProtectedDataPath.isNotEmpty()) {
+                val cacheDir = File(app.devicesProtectedDataPath, "cache").absolutePath
+                val codeCacheDir = File(app.devicesProtectedDataPath, "code_cache").absolutePath
                 commands.add(conditionalDeleteCommand(cacheDir))
                 commands.add(conditionalDeleteCommand(codeCacheDir))
             }
@@ -224,5 +224,9 @@ class ShellCommands(private var users: List<String>?) {
                 throw ShellActionFailedException(command, "unhandled exception", e)
             }
         }
+    }
+
+    interface Command {
+        fun execute()
     }
 }

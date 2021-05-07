@@ -24,7 +24,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.handler.BackendController
+import com.machiav3lli.backup.handler.getPackageInfoList
 
 class PackagesListDialogFragment(private val selectedPackages: List<String>,
                                  val filter: Int, private val isBlocklist: Boolean,
@@ -34,7 +34,7 @@ class PackagesListDialogFragment(private val selectedPackages: List<String>,
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
 
-        var packageInfoList = BackendController.getPackageInfoList(requireContext(), filter)
+        var packageInfoList = requireContext().getPackageInfoList(filter)
         packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = selectedPackages.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)

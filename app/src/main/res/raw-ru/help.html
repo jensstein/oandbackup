@@ -8,7 +8,13 @@
         </p>
         <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>Многопользовательская среда</strong>: Использование приложения в многопользовательской среде всё ещё является экспериментальным, но должно работать. Включение и отключение работает только после первоначальной установки (не обязательно из OAndBackupX) или восстановления приложения.
+        </p>
+        <p><strong>System-less приложения</strong>: Резервирование и восстановление system-less приложений, установленных в виде Magisk-модулей, не поддерживается. Попытка сделать это может привести к повреждению системы, вследствие чего придётся переформировать и переустановить её.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        </p>
+        <p><strong>Приложения, использующие Хранилище ключей</strong>: Android имеет зашифрованное хранилище для конфиденциальных данных. Приложения, которые используют его для хранения учётных данных или каких-либо ключей, не могут быть успешно восстановлены. Два примера таких приложений — это Signal и Element(Riot).
         </p>
     </body>
 </html>
