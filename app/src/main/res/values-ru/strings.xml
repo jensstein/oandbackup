@@ -281,4 +281,6 @@
     <string name="help_group_telegram">Наша группа в Telegram</string>
     <string name="intro_permission_storage_location_warning">Не выбирайте каталог основного хранилища или папку Загрузок, создайте папку только для ваших резервных копий. Подробнее об этом в FAQ (Часто задаваемые вопросы)</string>
     <string name="forceKill">Закрыть принудительно</string>
+    <string name="global_blocklist_add">Добавить в глобальный список блокировок</string>
+    <string name="sortAscDesc">По возрастанию, по убыванию</string>
 </resources>
