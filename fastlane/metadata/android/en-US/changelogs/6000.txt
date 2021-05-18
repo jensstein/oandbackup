@@ -1,3 +1,4 @@
+CLEAR DATA NEEDED
 * Added: Export/import of schedules
 * Added: Ascending/descending sort support
 * Updated: Global blocklist applies to Main

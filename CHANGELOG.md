@@ -3,6 +3,7 @@ CHANGELOG
 
 6.0.0 (05.05.2021)
 ------------------
+CLEAR DATA NEEDED
 
 * Added: Encrypt private preferences including encryption password (using Android keystore)
 * Added: Export/import of schedules
