@@ -250,4 +250,7 @@
     <string name="prefs_enablespecial_summary">Masih perlu pengujian yang intensif, coba ketahui bahaya yang bisa menyebabkan boot loop. Umpan balik selalu diterima.</string>
     <string name="prefs_devicelock_summary">Amankan aplikasi dengan kredensial perangkat</string>
     <string name="prefs_devicelock">Kunci perangkat</string>
+    <string name="write_apps_list_filtered">telah menulis aplikasi-aplikasi yang telah dipilih</string>
+    <string name="help_group_matrix">Grup kami di Matrix</string>
+    <string name="help_group_telegram">Grup kami di Telegram</string>
 </resources>
