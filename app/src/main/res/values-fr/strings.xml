@@ -268,4 +268,11 @@
     <string name="write_apps_list_filtered">Liste des applications filtrées établie</string>
     <string name="help_group_matrix">Notre groupe sur Matrix</string>
     <string name="help_group_telegram">Notre groupe sur Telegram</string>
+    <string name="sortAscDesc">Croissant-Décroissant</string>
+    <string name="logs_share_failed">Fichier de log non trouvé</string>
+    <string name="sched_imported">Planifications importées avec succès</string>
+    <string name="sched_exported">Planifications exportées avec succès</string>
+    <string name="schedule_failed">L\'exécution du programme a échoué</string>
+    <string name="shell_initproblem">Impossible de lancer le gestionnaire de shell. Soit la toybox/busybox est manquante, soit les droits root de l\'application sont désactivés.</string>
+    <string name="no_file_manager_title">Pas de gestionnaire SAF</string>
 </resources>

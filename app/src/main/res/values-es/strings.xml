@@ -254,4 +254,28 @@
     <string name="prefs_enablespecial_summary">Todavía necesita pruebas intensivas, pruébalo sabiendo que hay peligro de causar bucles de reinicios. Se agradecen comentarios de evaluación.</string>
     <string name="prefs_devicelock_summary">Bloquea la aplicación con las credenciales del dispositivo</string>
     <string name="prefs_devicelock">Bloqueo del dispositivo</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">cada día</item>
+        <item quantity="other">cada %d días</item>
+    </plurals>
+    <string name="intro_permission_storage_location_warning">No elegir el directorio principal de almacenamiento o la carpeta Downloads, crear una carpeta solo para tus respaldos. Más sobre esto en el FAQ</string>
+    <string name="global_blocklist_add">Añadir a la lista de bloqueo global</string>
+    <string name="forceKill">Forzar cierre</string>
+    <string name="sortAscDesc">Ascendente-Descendente</string>
+    <string name="logs_share_failed">Archivo de registro no encontrado</string>
+    <string name="sched_imported">Las acciones programadas han sido importadas satisfactoriamente</string>
+    <string name="sched_exported">Las acciones programadas han sido exportadas satisfactoriamente</string>
+    <string name="error_datachanged">Los datos de la aplicación han sido activamente cambiados mientras se hacía el respaldo. Prueba a detener su proceso antes de hacer el respaldo</string>
+    <string name="dialog_import">Importar</string>
+    <string name="dialog_export">Exportar</string>
+    <string name="schedule_failed">La acción programada ha fallado</string>
+    <string name="shell_initproblem">No se ha podido iniciar el manejador de shell. O falta el toybox/busybox o se ha desactivado el permiso root para la aplicación.</string>
+    <string name="no_file_manager_message">No hay explorador de archivos para gestionar el SAF. Quizás has deshabilitado el gestor de archivos preinstalado. Por favor, restaúralo o rehabilítalo.</string>
+    <string name="no_file_manager_title">No hay gestor SAF</string>
+    <string name="prefs_schedulesexportimport_summary">Exporta o importa la lista de acciones programadas que has creado.</string>
+    <string name="prefs_schedulesexportimport">Exporta/importa acciones programadas</string>
+    <string name="write_apps_list_all">Escrito archivo de lista de todas las aplicaciones</string>
+    <string name="write_apps_list_filtered">Escrito archivo de lista de aplicaciones filtradas</string>
+    <string name="help_group_matrix">Nuestro grupo de Matrix</string>
+    <string name="help_group_telegram">Nuestro grupo de Telegram</string>
 </resources>
