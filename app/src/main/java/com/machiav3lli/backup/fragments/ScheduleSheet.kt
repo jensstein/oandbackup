@@ -90,6 +90,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
             binding.excludeSystem.setExists(viewModel.schedule.value?.filter == SCHED_FILTER_NEW_UPDATED)
+            binding.excludeSystem.isChecked = it.excludeSystem
         })
 
         return binding.root
