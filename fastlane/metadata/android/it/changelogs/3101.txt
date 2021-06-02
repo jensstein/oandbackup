@@ -1,0 +1,11 @@
+** OAndBackupX 3.1.1 **
+
+* Agg.: intro
+* Agg.: campo di controllo password crittografia
+* Rimosso: preferenza del percorso Busybox
+* Risolto: mostra la data attuale invece dell'ultimo backup
+* Risolto: aggiorna il tag degli elementi dopo un nuovo backup
+* Aggiornato: traduzioni (norvegese, russo, italiano, francese, olandese, tedesco)
+* Aggiornato: valore predef. di ordin./filtro su true
+* Aggiornato: imposta il blocco biometrico predef. su off
+* Aggiornato: nascondi il visualizz. di log

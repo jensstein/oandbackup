@@ -1,0 +1,7 @@
+**OAndBackupX 1.0.2**
+* Додано: Item click feedback
+* Оновлено: scrolling eXperience
+* Виправлено: Splash screen
+* Виправлено: swipe to refresh behavior
+* Виправлено: Statusbar theme
+* and some other UI tweaks
