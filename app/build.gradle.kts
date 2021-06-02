@@ -29,8 +29,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdkVersion(26)
         targetSdkVersion(29)
-        versionCode = 6000
-        versionName = "6.0.0"
+        versionCode = 6001
+        versionName = "6.0.1"
 
         testApplicationId = "${applicationId}.tests"
 
