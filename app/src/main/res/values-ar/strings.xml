@@ -54,7 +54,7 @@
     <string name="prefs_numBackupRevisions">عدد النسخ الاحتياطية</string>
     <string name="prefs_deviceprotecteddata_summary">النسخ الاحتياطي واستعادة البيانات التي يتم وضعها في data / user_de</string>
     <string name="prefs_deviceprotecteddata">نسخ احتياطي للبيانات المحمية بالجهاز</string>
-    <string name="prefs_obbdata_summary">النسخ الاحتياطي واستعادة ملفات obb للتطبيق المحفوظة في وحدة التخزين الخارجية (على سبيل المثال / storage / emulated / 0 / Android / obb /)</string>
+    <string name="prefs_obbdata_summary">النسخ الاحتياطي واستعادة ملفات obb للتطبيق المحفوظة في وحدة التخزين الخارجية (على سبيل المثال / storage / emulated / 0 / Android / obb )</string>
     <string name="prefs_obbdata">نسخ احتياطي لملفات obb</string>
     <string name="prefs_externaldata_summary">النسخ الاحتياطي واستعادة البيانات الموضوعة على وحدة التخزين الخارجية (على سبيل المثال / storage / emulated / 0 / Android / data /)</string>
     <string name="prefs_externaldata">نسخ احتياطي للبيانات الخارجية</string>
@@ -95,15 +95,15 @@
     <string name="batchDeleteNothingToDelete">لا توجد نسخ احتياطية لحذفها</string>
     <string name="batchDeleteNotificationTitle">حذف النسخ الاحتياطية</string>
     <string name="batchDeleteMessage">جارٍ حذف النسخ الاحتياطية …</string>
-    <string name="shareTitle">شارك</string>
+    <string name="shareTitle">مشاركة</string>
     <string name="notInstalledModeDataWarning">لا يمكن استعادة التطبيق من نسخة احتياطية بدون APK</string>
-    <string name="customListTitle">قائمة خاصة</string>
+    <string name="customListTitle">قائمة مخصصة</string>
     <string name="batchFailure">إكتمل مع أخطاء</string>
     <string name="backupFolderError">الرجاء تعيين المسار الصحيح في الإعدادات والتأكد من وجوده أو إمكانية إنشائه</string>
     <string name="fallbackToDefault">الرجوع إلى الافتراضي</string>
     <string name="mkfileError">تعذر الإنشاء</string>
     <string name="searchHint">ابحث عن التطبيقات</string>
-    <string name="search">البحث</string>
+    <string name="search">بحث</string>
     <string name="de_selectAll">تحديد / إلغاء تحديد الكل</string>
     <string name="radio_obbdata">بيانات OBB</string>
     <string name="radio_deviceprotecteddata">البيانات المحمية من الجهاز</string>
@@ -149,8 +149,8 @@
     <string name="error_creating_notification_channel">تعذر إنشاء قناة التنبيه</string>
     <string name="spec_wifiAccessPoints">نقاط الوصول اللاسلكية</string>
     <string name="spec_wallpaper">الخلفية</string>
-    <string name="spec_data">استخدام و سياسة البيانات</string>
-    <string name="spec_bluetooth">بلوتوث</string>
+    <string name="spec_data">الإستخدام و سياسة البيانات</string>
+    <string name="spec_bluetooth">البلوتوث</string>
     <string name="spec_accounts">حسابات</string>
     <string name="sched_blocklist">القائمة السوداء</string>
     <string name="sched_excludeSystemCheckBox">استبعاد تطبيقات النظام</string>
@@ -161,7 +161,7 @@
     <string name="sched_checkbox">تفعيل</string>
     <string name="sched_hourOfDay">الوقت من اليوم:</string>
     <string name="sched_interval">الفاصل الزمني بالأيام:</string>
-    <string name="sched_add">إضافة جدول</string>
+    <string name="sched_add">إضافة جدولة</string>
     <string name="sched_title">الجدولة</string>
     <string name="sched_name">اسم:</string>
     <string name="prefs_unset">غير محدد</string>
@@ -182,17 +182,17 @@
     <string name="prefs_disableverification">تعطيل التحقق من التطبيقات عبر USB</string>
     <string name="prefs_acquirewakelock">منع النوم</string>
     <string name="prefs_housekeepingmoment_summary">تحديد إن وجب حذف أقدم نسخة احتياطية قبل أو بعد إنشاء نسخة احتياطية جديدة لتحرير مساحة القرص التي تستخدمها النسخة الاحتياطية.</string>
-    <string name="prefs_enablespecial_summary">لا تزال بحاجة إلى اختبار مكثف، حاول مع الأخذ الخطر بالاعتبار انه قد يتسبب فيه في حدوث حلقة بإعادة الاقلاع. الردود موضع ترحيب دائمًا.</string>
+    <string name="prefs_enablespecial_summary">لا تزال بحاجة إلى اختبار مكثف، حاول مع أخذ الأعتبار بالخطورة بانه قد يتسبب في حدوث اعادة اقلاع متكرر(بوتلوب). الردود دائمًا موضع ترحيب.</string>
     <string name="prefs_devicelock_summary">تأمين التطبيق باستخدام القفل الخاص بالجهاز</string>
     <string name="prefs_devicelock">قفل الجهاز</string>
     <string name="batchDeleteBackupsDeleted">تم حذف النسخ الاحتياطية:</string>
     <plurals name="updated_apps">
-        <item quantity="zero">%d تحديث التطبيق</item>
-        <item quantity="one">%d تحديث التطبيق</item>
-        <item quantity="two">%d تحديث التطبيق</item>
+        <item quantity="zero">%d تطبيق محدث</item>
+        <item quantity="one">%d تطبيق محدث</item>
+        <item quantity="two">%d تطبيقين محدثة</item>
         <item quantity="few">%d التطبيقات المحدثة</item>
-        <item quantity="many">%d تحديث التطبيق</item>
-        <item quantity="other">%d تحديث التطبيق</item>
+        <item quantity="many">%d الاتطبيقات المحدثة</item>
+        <item quantity="other">%d التطبيقات المحدثة</item>
     </plurals>
     <plurals name="days_left">
         <item quantity="zero">%d يوم,</item>
@@ -203,42 +203,42 @@
         <item quantity="other">%d يوما</item>
     </plurals>
     <string name="filtered_list">قائمة تمت تصفيتها</string>
-    <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظري…</string>
-    <string name="copyOwnApkFailed">فشل نسخ APK للتطبيق إلى دليل النسخ الاحتياطي</string>
-    <string name="copyOwnApkSuccess">APK التطبيق المنسوخة إلى دليل النسخ الاحتياطي</string>
+    <string name="wait_noappslist">لا تزال قائمة التطبيقات غير مُجلبة. انتظر…</string>
+    <string name="copyOwnApkFailed">فشل نسخ APK للتطبيق إلى مسار النسخ الاحتياطي</string>
+    <string name="copyOwnApkSuccess">حزم تطبيقات APK المنسوخة إلى مسار النسخ الاحتياطي</string>
     <string name="forceKillMessage">هل تريد بالتأكيد أن تقتل التطبيق بالقوة؟</string>
     <string name="app_info">معلومات التطبيق</string>
     <string name="launch_app">تشغيل التطبيق</string>
-    <string name="exodus_report">تقرير الهجرة</string>
+    <string name="exodus_report">تقرير Exodus</string>
     <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
     <string name="usage_notes_title">ملاحظات الاستخدام</string>
-    <string name="main">الرئيسيه</string>
+    <string name="main">الرئيسية</string>
     <string name="help">تعليمات</string>
-    <string name="stats_apps">تطبيقات</string>
-    <string name="stats_backups">النسخ الاحتياطي</string>
-    <string name="stats_updated">تحديث</string>
-    <string name="radio_launchable">تطبيقات قابلة للإطلاق</string>
+    <string name="stats_apps">التطبيقات</string>
+    <string name="stats_backups">النسخ الاحتياطية</string>
+    <string name="stats_updated">محدثَ</string>
+    <string name="radio_launchable">تطبيقات قابلة للتشغيل</string>
     <string name="help_issues">المشكلات المعروفة</string>
     <string name="fetching_action_list">إحضار قائمة التطبيقات ل %1$s…</string>
     <string name="logs_text_empty">لا يوجد شيء لإظهار!</string>
     <string name="delete_all_backups">حذف كافة النسخ الاحتياطية</string>
-    <string name="msg_appkill_warning">سيتم منح التطبيق (التطبيقات) المحدد إشارة التوقف، ثم يستمر بعد انتهاء المهمة. تحقق من التطبيقات التي تمت معالجتها بعد ذلك (وتجنب بدء تشغيلها أثناء استمرار تشغيل العملية).</string>
-    <string name="intro_permission_batteryoptimization">يمكن أن يواجه التطبيق بعض المشاكل القيام النسخ الاحتياطي المجدولة على بعض المدمجات التي تعتمد تحسينات البطارية العدوانية على سبيل المثال MIUI، ولكن حتى على الفانيليا AOSP مثل هذه المشكلة يمكن أن يحدث.</string>
+    <string name="msg_appkill_warning">سيتم منح التطبيق (التطبيقات) المحدد إشارة التوقف، ثم يستمر بعد انتهاء المهمة. التحقق من التطبيقات التي تمت معالجتها بعد ذلك (وتجنب بدء تشغيلها أثناء استمرار تشغيل العملية).</string>
+    <string name="intro_permission_batteryoptimization">يمكن أن يواجه التطبيق بعض المشاكل القيام النسخ الاحتياطي المجدولة على بعض الانظمة التي تعتمد تحسينات البطارية العدوانية على سبيل المثال MIUI، ولكن حتى على الفانيليا AOSP مثل هذه المشكلة يمكن أن يحدث.</string>
     <string name="intro_permission_usageaccess">يحتاج التطبيق إلى هذا الإذن ليتمكن من التحقق من الإحصائيات وأحجام البيانات وذاكرة التخزين المؤقت لتطبيقاتك.</string>
-    <string name="intro_permission_storage_location">يحتاج التطبيق إلى موقع نسخ احتياطي لتخزين النسخ الاحتياطية. قد يحتاج التطبيق إلى بضع غيغابايت من التخزين للحصول على نسخة احتياطية كاملة وياستعلام عن نظام الملفات كثيرًا. يرجى مراعاة ذلك عند اختيار مواقع التخزين القائمة على الشبكة.</string>
-    <string name="intro_permission_storage">يستخدم التطبيق إذن القراءة / الكتابة للتخزين لتكون قادرة على الوصول إلى التخزين الخارجي وتوفير إمكانية النسخ الاحتياطي للبيانات الخارجية / obb من التطبيقات الأخرى.</string>
-    <string name="intro_welcome_message">OAndBackupX هو تفرع من OAndBackup سيئ السمعة بهدف تقديمه إلى عام 2020 وما بعده. في الوقت الحالي ، تتم إعادة كتابة معظم وظائف التطبيق وواجهة المستخدم وإضافة بعضها.
+    <string name="intro_permission_storage_location">يحتاج التطبيق إلى مجلد نسخ احتياطي لتخزين النسخ الاحتياطية. قد يحتاج التطبيق إلى بضع غيغابايت من التخزين للحصول على نسخة احتياطية كاملة والاستعلام عن نظام الملفات كثيرًا. يرجى مراعاة ذلك عند اختيار مواقع التخزين المبنية على الشبكة.</string>
+    <string name="intro_permission_storage">يستخدم التطبيق إذن القراءة / الكتابة للتخزين ليكون قادرا على الوصول إلى التخزين الخارجي وتوفير إمكانية النسخ الاحتياطي للبيانات الخارجية / obb من التطبيقات الأخرى.</string>
+    <string name="intro_welcome_message">OAndBackupX هو تفرع من OAndBackup العتيق بهدف تقديمه وتطويره إلى عام 2020 وما بعده. في الوقت الحالي ، تتم إعادة كتابة معظم وظائف التطبيق وواجهة المستخدم وإضافة بعضها.
 \n لا يزال التطبيق في مراحل تجريبية ويتم إجراء الكثير من عمليات إعادة التأسيس كثيرًا. لذا يرجى قراءة سجل التغيير بعناية مع كل إصدار جديد.
 \n نرحب بجميع أنواع المساهمات سواء كانت الترجمة أو الأفكار أو الإبلاغ عن الأخطاء أو عمل التعليمات البرمجية.
 \n
 \n الآن في وظائف التطبيق لدينا:
-\n • يتطلب جذرًا ويسمح لك بعمل نسخة احتياطية من التطبيقات الفردية وبياناتها.
+\n • يتطلب صلاحية الروت ويسمح لك بعمل نسخة احتياطية من التطبيقات الفردية وبياناتها.
 \n • يتم دعم كل من النسخ الاحتياطي واستعادة البرامج الفردية في وقت واحد والنسخ الاحتياطي دفعة واستعادة برامج متعددة.
 \n • يجب أن تكون استعادة تطبيقات النظام ممكنة دون الحاجة إلى إعادة التشغيل بعد ذلك ، ولكننا ما زلنا لا ننصح بالقيام بذلك.
 \n • يمكن جدولة النسخ الاحتياطية بدون حد لعدد الجداول الفردية وهناك إمكانية لإنشاء قوائم مخصصة فريدة.</string>
-    <string name="welcome_to_oabx">مرحبا بكم في OABX!</string>
+    <string name="welcome_to_oabx">مرحبا بك في OABX!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
-    <string name="sort_and_filter">فرز وتصفية</string>
+    <string name="sort_and_filter">فرز &amp; وتصفية</string>
     <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
     <string name="enable_encryption_title">تشفير البيانات</string>
     <string name="help_legend">اسطوره:</string>
@@ -250,15 +250,15 @@
     <string name="grant_usage_access_message">هذا أمر ضروري للحصول على معلومات حول أحجام ملفات التطبيق</string>
     <string name="grant_usage_access_title">منح الوصول إلى الاستخدام</string>
     <string name="backup_filters">مرشحات النسخ الاحتياطي:</string>
-    <string name="split_apks">سبليت APKs:</string>
+    <string name="split_apks">التطبيقات المقسمة APKs:</string>
     <string name="ignore_battery_optimization_message">النسخ الاحتياطي قد تتوقف أحياناً لمنع ذلك، يجب إيقاف تشغيل تحسين البطارية</string>
     <string name="ignore_battery_optimization_title">تحسين البطارية</string>
-    <string name="spec_appwidgets">التطبيق الحاجيات</string>
+    <string name="spec_appwidgets">التطبيقات المصغرة</string>
     <string name="prefs_acquirewakelock_summary">الحصول على تنبيه أثناء عمليات التجهيز لمنع الجهاز من الإسبات. يسرع عملية النسخ الاحتياطي والاستعادة إلى حد كبير، ولكن يستهلك المزيد من الطاقة.</string>
     <string name="dialog_import">إستيراد</string>
     <string name="dialog_export">تصدير</string>
     <string name="schedule_failed">فشل تشغيل الجدولة</string>
-    <string name="shell_initproblem">تعذر بدء معالج shell. إما أن يكون toybox / busybox مفقودًا أو إذن جذر معطل للتطبيق.</string>
+    <string name="shell_initproblem">تعذر بدء معالج shell. إما أن يكون toybox / busybox مفقودًا أو صلاحية الروت معطلة للتطبيق.</string>
     <string name="no_file_manager_message">لا يوجد مدير ملفات لإدارة SAF. ربما قمت بتعطيل مدير الملفات المدمج. يرجى استعادته أو إعادة تمكينه.</string>
     <string name="no_file_manager_title">لا يوجد مدير SAF</string>
     <string name="prefs_schedulesexportimport_summary">تصدير او استيراد قائمة الجداول التي أنشأتها .</string>
@@ -274,7 +274,7 @@
     <string name="logs_share_failed">لم يتم العثور على ملف السجل</string>
     <string name="sched_imported">تم استيراد الجدول بنجاح</string>
     <string name="sched_exported">تم تصدير الجداول الزمنية بشكل صحيح</string>
-    <string name="error_datachanged">تم تغيير بيانات التطبيق بنشاط أثناء إجراء النسخ الاحتياطي. حاول قتل العملية قبل إجراء النسخ الاحتياطي</string>
+    <string name="error_datachanged">تم تغيير بيانات التطبيق بشكل مستمر أثناء إجراء النسخ الاحتياطي. حاول قتل العملية قبل إجراء النسخ الاحتياطي</string>
     <string name="write_apps_list_all">كتابة ملف قائمة جميع التطبيقات</string>
     <string name="write_apps_list_filtered">كتب ملف قائمة التطبيقات المصفاة</string>
     <string name="help_group_matrix">مجموعتنا في ماتريكس</string>

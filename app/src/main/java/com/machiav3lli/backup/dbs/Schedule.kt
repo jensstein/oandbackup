@@ -184,6 +184,7 @@ open class Schedule() {
             schedule.interval = export.interval
             schedule.customList = export.customList
             schedule.blockList = export.blockList
+            schedule.excludeSystem = export.excludeSystem
             return this
         }
 

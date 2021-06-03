@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+6.0.1 (03.06.2021)
+------------------
+* Fixed: Exclude system apps checkbox in the schedule sheet
+* Fixed: Import the val of exclude system apps on schedules' import
+* Added: Vietnamese, Hindi & Ukranian
+* Updated translations:Arabic, Spanish, Italian, Portuguese, Russian, Catalan, Turkish, Indonesian
+
 6.0.0 (05.05.2021)
 ------------------
 CLEAR DATA NEEDED

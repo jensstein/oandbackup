@@ -5,4 +5,16 @@
     <string name="radio_user">यूज़र ऐप</string>
     <string name="radio_all">सभी ऐप</string>
     <string name="handleData">डेटा</string>
+    <string name="available_actions">उपलब्ध कार्य</string>
+    <string name="apptype_special">विशेष बैकअप</string>
+    <string name="apptype_system">सिस्टम ऐप</string>
+    <string name="all">सब</string>
+    <string name="bothBackedUp">एपीके और डेटा</string>
+    <string name="app_s_icon">ऐप का आइकन</string>
+    <string name="sortPackageName">पैकेज का नाम</string>
+    <string name="sort_options">इसके अनुसार क्रमबद्ध करें</string>
+    <string name="dialogNo">नही</string>
+    <string name="dialogYes">हाँ</string>
+    <string name="dialogCancel">रोकिये</string>
+    <string name="restart_dialog">एप्प को पुनः आरम्भ करने की जरूरत पड़ सकती है</string>
 </resources>
