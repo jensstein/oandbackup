@@ -18,11 +18,34 @@
 package com.machiav3lli.backup.fragments
 
 import android.os.Bundle
+import android.view.View
+import androidx.preference.CheckBoxPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.utils.sortFilterModel
 
 class PrefsAdvancedFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_advanced, rootKey)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        findPreference<CheckBoxPreference>(PREFS_ENABLESPECIALBACKUPS)?.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _, _ ->
+                val oldFilter = requireContext().sortFilterModel.toString()
+                requireContext().sortFilterModel = SortFilterModel(
+                    oldFilter.replaceRange(
+                        1, 2,
+                        (oldFilter[1].code and MAIN_FILTER_DEFAULT).toString()
+                    )
+                )
+                true
+            }
     }
 }

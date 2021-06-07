@@ -78,11 +78,13 @@ const val MODE_DATA = 0b01000
 const val MODE_DATA_DE = 0b00100
 const val MODE_DATA_EXT = 0b00010
 const val MODE_DATA_OBB = 0b00001
+val possibleModes = mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
 
 const val MAIN_SORT_LABEL = '0'
 const val MAIN_SORT_PACKAGENAME = '1'
 const val MAIN_SORT_DATASIZE = '2'
 
+const val MAIN_FILTER_DEFAULT = 0b110
 const val MAIN_FILTER_UNSET = 0b000
 const val MAIN_FILTER_SYSTEM = 0b100
 const val MAIN_FILTER_USER = 0b010
