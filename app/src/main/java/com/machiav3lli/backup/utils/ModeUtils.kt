@@ -40,9 +40,7 @@ fun modeIfActive(context: Context, mode: Int) = when {
     else -> MODE_UNSET
 }
 
-fun modeToModes(mode: Int): List<Int> =
-        mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
-                .filter { mode and it == it }
+fun modeToModes(mode: Int): List<Int> = possibleModes.filter { mode and it == it }
 
 fun modeToIds(mode: Int): List<Int> {
     val ids = mutableListOf<Int>()
@@ -82,4 +80,4 @@ fun modeToStringAlt(context: Context, mode: Int): String = when (mode) {
 }
 
 fun modesToString(context: Context, modes: List<Int>): String =
-        modes.joinToString(", ") { modeToString(context, it) }
+    modes.joinToString(", ") { modeToString(context, it) }
