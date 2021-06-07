@@ -235,35 +235,40 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_apk" />
+                        android:text="@string/radio_apk"
+                        app:checkedIcon="@drawable/ic_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipData"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_data" />
+                        android:text="@string/radio_data"
+                        app:checkedIcon="@drawable/ic_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataDe"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_deviceprotecteddata" />
+                        android:text="@string/radio_deviceprotecteddata"
+                        app:checkedIcon="@drawable/ic_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataExt"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_externaldata" />
+                        android:text="@string/radio_externaldata"
+                        app:checkedIcon="@drawable/ic_external_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataObb"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_obbdata" />
+                        android:text="@string/radio_obbdata"
+                        app:checkedIcon="@drawable/ic_obb_data" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
