@@ -108,7 +108,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs()
-        val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
+        val viewModelFactory = MainViewModelFactory(blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
