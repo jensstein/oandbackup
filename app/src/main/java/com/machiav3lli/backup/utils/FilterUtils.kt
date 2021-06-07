@@ -25,24 +25,15 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 fun List<AppInfo>.applyFilter(filter: CharSequence, context: Context): List<AppInfo> {
-    val predicate: (AppInfo) -> Boolean
-    var launchableAppsList = listOf<String>()
-    if (filter[1] == MAIN_FILTER_LAUNCHABLE) {
-        val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
-        launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
-                .map { it.activityInfo.packageName }
-    }
-    predicate = when (filter[1]) {
-        MAIN_FILTER_SYSTEM -> { appInfo: AppInfo -> appInfo.isSystem }
-        MAIN_FILTER_USER -> { appInfo: AppInfo -> !appInfo.isSystem }
-        MAIN_FILTER_SPECIAL -> { appInfo: AppInfo -> appInfo.isSpecial }
-        MAIN_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
-        else -> { _: AppInfo -> true }
+    val predicate: (AppInfo) -> Boolean = { appInfo: AppInfo ->
+        (if (filter[1].code and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) appInfo.isSystem && !appInfo.isSpecial else false) ||
+                (if (filter[1].code and MAIN_FILTER_USER == MAIN_FILTER_USER) !appInfo.isSystem else false) ||
+                (if (filter[1].code and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) appInfo.isSpecial else false)
     }
     return filter(predicate)
-            .applyBackupFilter(filter)
-            .applySpecialFilter(filter, context)
-            .applySort(filter, context)
+        .applyBackupFilter(filter)
+        .applySpecialFilter(filter, context)
+        .applySort(filter, context)
 }
 
 private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo> {
@@ -56,10 +47,18 @@ private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo>
     return filter(predicate)
 }
 
-private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Context): List<AppInfo> {
+private fun List<AppInfo>.applySpecialFilter(
+    filter: CharSequence,
+    context: Context
+): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
+    var launchableAppsList = listOf<String>()
+    if (filter[1] == MAIN_SPECIALFILTER_LAUNCHABLE) {
+        val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+        launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
+            .map { it.activityInfo.packageName }
+    }
     val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
-
     predicate = when (filter[3]) {
         MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
         MAIN_SPECIALFILTER_NOTINSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
@@ -76,25 +75,32 @@ private fun List<AppInfo>.applySpecialFilter(filter: CharSequence, context: Cont
             }
         }
         MAIN_SPECIALFILTER_SPLIT -> { appInfo: AppInfo -> appInfo.apkSplits.isNotEmpty() }
+        MAIN_SPECIALFILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
         else -> { _: AppInfo -> true }
     }
     return filter(predicate)
 }
 
 private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): List<AppInfo> =
-        if (context.sortOrder) {
-            when (filter[0]) {
-                MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
-                MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
-                else -> sortedByDescending { it.packageLabel }
-            }
-        } else {
-            when (filter[0]) {
-                MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
-                MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
-                else -> sortedBy { it.packageLabel }
-            }
+    if (context.sortOrder) {
+        when (filter[0]) {
+            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
+            MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
+            else -> sortedByDescending { it.packageLabel }
         }
+    } else {
+        when (filter[0]) {
+            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
+            MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
+            else -> sortedBy { it.packageLabel }
+        }
+    }
+
+fun mainFilterToId(filter: Int) = when (filter) {
+    MAIN_FILTER_USER -> R.id.showUser
+    MAIN_FILTER_SPECIAL -> R.id.showSpecial
+    else -> R.id.showSystem
+}
 
 fun filterToId(filter: Int): Int = when (filter) {
     SCHED_FILTER_USER -> R.id.chipUser

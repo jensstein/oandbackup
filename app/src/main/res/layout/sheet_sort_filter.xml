@@ -218,42 +218,32 @@
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:singleSelection="false"
                     app:layout_constraintBottom_toTopOf="@id/backupFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/filtersTitle">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showAll"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlySystem"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/showSystem"
+                        style="@style/Chip.Mode"
+                        app:checkedIcon="@drawable/ic_system"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlyUser"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/showUser"
+                        style="@style/Chip.Mode"
+                        app:checkedIcon="@drawable/ic_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlyLaunchable"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_launchable" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlySpecial"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/showSpecial"
+                        style="@style/Chip.Mode"
+                        app:checkedIcon="@drawable/ic_special"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_special" />
@@ -373,6 +363,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showSplitAPKs" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialLaunchable"
+                        style="@style/Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_launchable" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton

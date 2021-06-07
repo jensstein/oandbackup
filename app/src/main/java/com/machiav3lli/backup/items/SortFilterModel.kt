@@ -18,8 +18,9 @@
 package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.utils.mainFilterToId
 
-class SortFilterModel(private var code: CharSequence = "0000") {
+class SortFilterModel(private var code: CharSequence = "0600") {
 
     val sortById: Int
         get() = when (code[0]) {
@@ -28,13 +29,18 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             else -> R.id.sortByLabel
         }
 
-    val filterId: Int
-        get() = when (code[1]) {
-            MAIN_FILTER_SYSTEM -> R.id.showOnlySystem
-            MAIN_FILTER_USER -> R.id.showOnlyUser
-            MAIN_FILTER_SPECIAL -> R.id.showOnlySpecial
-            MAIN_FILTER_LAUNCHABLE -> R.id.showOnlyLaunchable
-            else -> R.id.showAll
+    var filterIds: List<Int>
+        get() = possibleMainFilters.filter {
+            it and code[1].code == it
+        }.map {
+            mainFilterToId(it)
+        }
+        set(value) {
+            var filter = MAIN_FILTER_UNSET
+            if (value.contains(R.id.showSystem)) filter = filter or MAIN_FILTER_SYSTEM
+            if (value.contains(R.id.showUser)) filter = filter or MAIN_FILTER_USER
+            if (value.contains(R.id.showSpecial)) filter = filter or MAIN_FILTER_SPECIAL
+            code = code[0].toString() + filter + code[2] + code[3]
         }
 
     val backupFilterId: Int
@@ -52,6 +58,7 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             MAIN_SPECIALFILTER_NOTINSTALLED -> R.id.specialNotInstalled
             MAIN_SPECIALFILTER_OLD -> R.id.specialOld
             MAIN_SPECIALFILTER_SPLIT -> R.id.specialSplit
+            MAIN_SPECIALFILTER_LAUNCHABLE -> R.id.specialLaunchable
             else -> R.id.specialAll
         }
 
@@ -62,17 +69,6 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             else -> MAIN_SORT_LABEL
         }
         code = sortBy.toString() + code[1] + code[2] + code[3]
-    }
-
-    fun putFilter(id: Int) {
-        val filter: Char = when (id) {
-            R.id.showOnlySystem -> MAIN_FILTER_SYSTEM
-            R.id.showOnlyUser -> MAIN_FILTER_USER
-            R.id.showOnlySpecial -> MAIN_FILTER_SPECIAL
-            R.id.showOnlyLaunchable -> MAIN_FILTER_LAUNCHABLE
-            else -> MAIN_FILTER_ALL
-        }
-        code = code[0].toString() + filter + code[2] + code[3]
     }
 
     fun putBackupFilter(id: Int) {
@@ -92,6 +88,7 @@ class SortFilterModel(private var code: CharSequence = "0000") {
             R.id.specialNotInstalled -> MAIN_SPECIALFILTER_NOTINSTALLED
             R.id.specialOld -> MAIN_SPECIALFILTER_OLD
             R.id.specialSplit -> MAIN_SPECIALFILTER_SPLIT
+            R.id.specialLaunchable -> MAIN_SPECIALFILTER_LAUNCHABLE
             else -> MAIN_SPECIALFILTER_ALL
         }
         code = code[0].toString() + code[1] + code[2] + specialFilter
