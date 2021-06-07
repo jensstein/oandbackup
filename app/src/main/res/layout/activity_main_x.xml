@@ -117,12 +117,14 @@
                 app:rippleColor="@color/app_accent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/updatedBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/cards_spacing"
+            android:background="@drawable/bg_bar_static_round"
             android:elevation="2dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/refreshLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -132,12 +134,23 @@
                 android:id="@+id/updatedRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_bar_static_round"
                 android:orientation="horizontal"
                 android:padding="@dimen/buttons_spacing"
                 android:scrollbars="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_updated_x" />
-        </FrameLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/updateAllAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/buttons_spacing"
+                android:background="@drawable/bg_button_positive_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/update_all"
+                android:textColor="?colorAccent" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"

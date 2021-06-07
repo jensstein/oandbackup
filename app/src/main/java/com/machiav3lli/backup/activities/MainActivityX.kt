@@ -294,6 +294,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 else -> View.VISIBLE
             }
         }
+        binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
         binding.apkBatch.setOnClickListener {
             binding.apkBatch.isChecked = (it as AppCompatCheckBox).isChecked
             onCheckedApkClicked()
@@ -419,9 +420,34 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         }
     }
 
-    override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
+    private fun onClickUpdateAllAction() {
+        val selectedList = updatedItemAdapter.adapterItems
+            .map { it.app.appMetaInfo }
+            .toCollection(ArrayList())
+        val selectedListModes = updatedItemAdapter.adapterItems
+            .mapNotNull {
+                it.app.latestBackup?.backupProperties?.let { bp ->
+                    when {
+                        bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
+                        bp.hasApk -> ALT_MODE_APK
+                        bp.hasAppData -> ALT_MODE_DATA
+                        else -> ALT_MODE_UNSET
+                    }
+                }
+            }
+            .toCollection(ArrayList())
+        if (selectedList.isNotEmpty()) {
+            BatchDialogFragment(true, selectedList, selectedListModes, this)
+                .show(supportFragmentManager, "DialogFragment")
+        }
+    }
+
+    override fun onConfirmed(
+        backupBoolean: Boolean,
+        selectedPackages: List<String?>,
+        selectedModes: List<Int>
+    ) {
         val notificationId = System.currentTimeMillis()
-        val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
         val notificationMessage = String.format(getString(R.string.fetching_action_list),
                 (if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)))
         showNotification(this, MainActivityX::class.java, notificationId.toInt(),
