@@ -20,10 +20,22 @@ package com.machiav3lli.backup.items
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.utils.mainFilterToId
 
-class SortFilterModel(private var code: CharSequence = "0600") {
+class SortFilterModel(
+    var sort: Char = '0',
+    var mainFilter: Int = MAIN_FILTER_DEFAULT,
+    var backupFilter: Char = '0',
+    var specialFilter: Char = '0'
+) {
+
+    constructor(sortFilterCode: String) : this() {
+        sort = sortFilterCode[0]
+        mainFilter = sortFilterCode[1].code
+        backupFilter = sortFilterCode[2]
+        specialFilter = sortFilterCode[3]
+    }
 
     val sortById: Int
-        get() = when (code[0]) {
+        get() = when (sort) {
             MAIN_SORT_PACKAGENAME -> R.id.sortByPackageName
             MAIN_SORT_DATASIZE -> R.id.sortByDataSize
             else -> R.id.sortByLabel
@@ -31,7 +43,7 @@ class SortFilterModel(private var code: CharSequence = "0600") {
 
     var filterIds: List<Int>
         get() = possibleMainFilters.filter {
-            it and code[1].code == it
+            it and mainFilter == it
         }.map {
             mainFilterToId(it)
         }
@@ -40,11 +52,11 @@ class SortFilterModel(private var code: CharSequence = "0600") {
             if (value.contains(R.id.showSystem)) filter = filter or MAIN_FILTER_SYSTEM
             if (value.contains(R.id.showUser)) filter = filter or MAIN_FILTER_USER
             if (value.contains(R.id.showSpecial)) filter = filter or MAIN_FILTER_SPECIAL
-            code = code[0].toString() + filter + code[2] + code[3]
+            mainFilter = filter
         }
 
     val backupFilterId: Int
-        get() = when (code[2]) {
+        get() = when (backupFilter) {
             MAIN_BACKUPFILTER_BOTH -> R.id.backupBoth
             MAIN_BACKUPFILTER_APK -> R.id.backupApk
             MAIN_BACKUPFILTER_DATA -> R.id.backupData
@@ -53,7 +65,7 @@ class SortFilterModel(private var code: CharSequence = "0600") {
         }
 
     val specialFilterId: Int
-        get() = when (code[3]) {
+        get() = when (specialFilter) {
             MAIN_SPECIALFILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
             MAIN_SPECIALFILTER_NOTINSTALLED -> R.id.specialNotInstalled
             MAIN_SPECIALFILTER_OLD -> R.id.specialOld
@@ -68,22 +80,22 @@ class SortFilterModel(private var code: CharSequence = "0600") {
             R.id.sortByDataSize -> MAIN_SORT_DATASIZE
             else -> MAIN_SORT_LABEL
         }
-        code = sortBy.toString() + code[1] + code[2] + code[3]
+        sort = sortBy
     }
 
     fun putBackupFilter(id: Int) {
-        val backupFilter: Char = when (id) {
+        val backupFilterBy: Char = when (id) {
             R.id.backupBoth -> MAIN_BACKUPFILTER_BOTH
             R.id.backupApk -> MAIN_BACKUPFILTER_APK
             R.id.backupData -> MAIN_BACKUPFILTER_DATA
             R.id.backupNone -> MAIN_BACKUPFILTER_NONE
             else -> MAIN_BACKUPFILTER_ALL
         }
-        code = code[0].toString() + code[1] + backupFilter + code[3]
+        backupFilter = backupFilterBy
     }
 
     fun putSpecialFilter(id: Int) {
-        val specialFilter: Char = when (id) {
+        val specialFilterBy: Char = when (id) {
             R.id.specialNewAndUpdated -> MAIN_SPECIALFILTER_NEW_UPDATED
             R.id.specialNotInstalled -> MAIN_SPECIALFILTER_NOTINSTALLED
             R.id.specialOld -> MAIN_SPECIALFILTER_OLD
@@ -91,10 +103,9 @@ class SortFilterModel(private var code: CharSequence = "0600") {
             R.id.specialLaunchable -> MAIN_SPECIALFILTER_LAUNCHABLE
             else -> MAIN_SPECIALFILTER_ALL
         }
-        code = code[0].toString() + code[1] + code[2] + specialFilter
+        specialFilter = specialFilterBy
     }
 
-    override fun toString(): String {
-        return code.toString()
-    }
+    override fun toString(): String =
+        "$sort${Char(mainFilter)}$backupFilter$specialFilter"
 }
