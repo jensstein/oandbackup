@@ -21,23 +21,24 @@ import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.SortFilterModel
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-fun List<AppInfo>.applyFilter(filter: CharSequence, context: Context): List<AppInfo> {
-    val predicate: (AppInfo) -> Boolean = { appInfo: AppInfo ->
-        (if (filter[1].code and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) appInfo.isSystem && !appInfo.isSpecial else false) ||
-                (if (filter[1].code and MAIN_FILTER_USER == MAIN_FILTER_USER) !appInfo.isSystem else false) ||
-                (if (filter[1].code and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) appInfo.isSpecial else false)
+fun List<AppInfo>.applyFilter(filter: SortFilterModel, context: Context): List<AppInfo> {
+    val predicate: (AppInfo) -> Boolean = {
+        (if (filter.mainFilter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem && !it.isSpecial else false) ||
+                (if (filter.mainFilter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false) ||
+                (if (filter.mainFilter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) it.isSpecial else false)
     }
     return filter(predicate)
-        .applyBackupFilter(filter)
-        .applySpecialFilter(filter, context)
-        .applySort(filter, context)
+        .applyBackupFilter(filter.backupFilter)
+        .applySpecialFilter(filter.specialFilter, context)
+        .applySort(filter.sort, context)
 }
 
-private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo> {
-    val predicate: (AppInfo) -> Boolean = when (filter[2]) {
+private fun List<AppInfo>.applyBackupFilter(backupFilter: Char): List<AppInfo> {
+    val predicate: (AppInfo) -> Boolean = when (backupFilter) {
         MAIN_BACKUPFILTER_BOTH -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
         MAIN_BACKUPFILTER_APK -> { appInfo: AppInfo -> appInfo.hasApk }
         MAIN_BACKUPFILTER_DATA -> { appInfo: AppInfo -> appInfo.hasAppData }
@@ -48,18 +49,18 @@ private fun List<AppInfo>.applyBackupFilter(filter: CharSequence): List<AppInfo>
 }
 
 private fun List<AppInfo>.applySpecialFilter(
-    filter: CharSequence,
+    specialFilter: Char,
     context: Context
 ): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
     var launchableAppsList = listOf<String>()
-    if (filter[1] == MAIN_SPECIALFILTER_LAUNCHABLE) {
+    if (specialFilter == MAIN_SPECIALFILTER_LAUNCHABLE) {
         val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
         launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
             .map { it.activityInfo.packageName }
     }
     val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
-    predicate = when (filter[3]) {
+    predicate = when (specialFilter) {
         MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
         MAIN_SPECIALFILTER_NOTINSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
         MAIN_SPECIALFILTER_OLD -> {
@@ -81,15 +82,15 @@ private fun List<AppInfo>.applySpecialFilter(
     return filter(predicate)
 }
 
-private fun List<AppInfo>.applySort(filter: CharSequence, context: Context): List<AppInfo> =
+private fun List<AppInfo>.applySort(sort: Char, context: Context): List<AppInfo> =
     if (context.sortOrder) {
-        when (filter[0]) {
+        when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
             else -> sortedByDescending { it.packageLabel }
         }
     } else {
-        when (filter[0]) {
+        when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
             else -> sortedBy { it.packageLabel }

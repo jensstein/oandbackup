@@ -542,7 +542,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 ?: mutableListOf()))
         Thread {
             try {
-                val filteredList = viewModel.appInfoList.value?.applyFilter(sortFilterModel.toString(), this)
+                val filteredList = viewModel.appInfoList.value?.applyFilter(sortFilterModel, this)
                         ?: listOf()
                 when {
                     mainBoolean -> refreshMain(filteredList, backupOrAppSheetBoolean)
