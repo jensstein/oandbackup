@@ -37,11 +37,11 @@ const val COLOR_DISABLED = Color.DKGRAY
 const val COLOR_UNINSTALLED = Color.GRAY
 
 fun calculateID(app: AppInfo): Long {
-    return app.packageName.hashCode().toLong()
+    return app.hashCode().toLong()
 }
 
 fun calculateID(backup: BackupItem): Long {
-    return backup.backupProperties.backupDate.hashCode().toLong()
+    return backup.hashCode().toLong()
 }
 
 fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: Boolean) {
