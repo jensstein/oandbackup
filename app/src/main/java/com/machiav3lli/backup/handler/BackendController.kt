@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import android.app.usage.StorageStats
 import android.app.usage.StorageStatsManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -50,27 +49,16 @@ val ignoredPackages = listOf(
         "com.google.android.gsf"
 )
 
-fun Context.getPackageInfoList(filter: Int): List<PackageInfo> {
-    val pm = packageManager
-    var launchableAppsList = listOf<String>()
-    if (filter == SCHED_FILTER_LAUNCHABLE) {
-        val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
-        launchableAppsList = packageManager.queryIntentActivities(mainIntent, 0)
-                .map { it.activityInfo.packageName }
-    }
-    return pm.getInstalledPackages(0)
-            .filter { packageInfo: PackageInfo ->
-                val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-                val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
-                when (filter) {
-                    SCHED_FILTER_USER -> return@filter !isSystem && isNotIgnored
-                    SCHED_FILTER_SYSTEM -> return@filter isSystem && isNotIgnored
-                    SCHED_FILTER_LAUNCHABLE -> return@filter launchableAppsList.contains(packageInfo.packageName) && isNotIgnored
-                    else -> return@filter isNotIgnored
-                }
-            }
-            .toList()
-}
+// TODO respect special filter
+fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
+    packageManager.getInstalledPackages(0)
+        .filter { packageInfo: PackageInfo ->
+            val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
+            val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
+            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && isNotIgnored else false)
+                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && isNotIgnored else false)
+        }
+        .toList()
 
 @Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {

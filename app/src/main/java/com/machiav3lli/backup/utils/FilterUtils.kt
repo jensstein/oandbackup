@@ -103,27 +103,43 @@ fun mainFilterToId(filter: Int) = when (filter) {
     else -> R.id.showSystem
 }
 
-fun filterToId(filter: Int): Int = when (filter) {
-    SCHED_FILTER_USER -> R.id.chipUser
-    SCHED_FILTER_SYSTEM -> R.id.chipSystem
-    SCHED_FILTER_NEW_UPDATED -> R.id.chipNewUpdated
-    SCHED_FILTER_LAUNCHABLE -> R.id.chipLaunchable
+fun filterToIds(filter: Int): List<Int> {
+    val ids = mutableListOf<Int>()
+    if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) ids.add(R.id.chipSystem)
+    if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) ids.add(R.id.chipUser)
+    return ids
+}
+
+fun specialFilterToId(filter: Int): Int = when (filter) {
+    SCHED_SPECIALFILTER_LAUNCHABLE -> R.id.chipLaunchable
+    SCHED_SPECIALFILTER_NEW_UPDATED -> R.id.chipNewUpdated
+    SCHED_SPECIALFILTER_OLD -> R.id.chipOld
     else -> R.id.chipAll
 }
 
 fun idToFilter(id: Int): Int = when (id) {
-    R.id.chipUser -> SCHED_FILTER_USER
-    R.id.chipSystem -> SCHED_FILTER_SYSTEM
-    R.id.chipNewUpdated -> SCHED_FILTER_NEW_UPDATED
-    R.id.chipLaunchable -> SCHED_FILTER_LAUNCHABLE
-    else -> SCHED_FILTER_ALL
+    R.id.chipUser -> MAIN_FILTER_USER
+    R.id.chipSystem -> MAIN_FILTER_SYSTEM
+    else -> SCHED_SPECIALFILTER_ALL
+}
+
+fun idToSpecialFilter(id: Int): Int = when (id) {
+    R.id.chipLaunchable -> SCHED_SPECIALFILTER_LAUNCHABLE
+    R.id.chipNewUpdated -> SCHED_SPECIALFILTER_NEW_UPDATED
+    R.id.chipOld -> SCHED_SPECIALFILTER_OLD
+    else -> SCHED_SPECIALFILTER_ALL
 }
 
 fun filterToString(context: Context, filter: Int) = when (filter) {
-    SCHED_FILTER_SYSTEM -> context.getString(R.string.radio_system)
-    SCHED_FILTER_USER -> context.getString(R.string.radio_user)
-    SCHED_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
-    SCHED_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
+    MAIN_FILTER_SYSTEM -> context.getString(R.string.radio_system)
+    MAIN_FILTER_USER -> context.getString(R.string.radio_user)
+    else -> context.getString(R.string.radio_all)
+}
+
+fun specialFilterToString(context: Context, specialFilter: Int) = when (specialFilter) {
+    SCHED_SPECIALFILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
+    SCHED_SPECIALFILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+    SCHED_SPECIALFILTER_OLD -> context.getString(R.string.showOldBackups)
     else -> context.getString(R.string.radio_all)
 }
 

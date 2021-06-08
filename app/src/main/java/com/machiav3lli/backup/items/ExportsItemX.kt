@@ -44,10 +44,10 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : Abstra
 
     override fun bindView(binding: ItemExportsXBinding, payloads: List<Any>) {
         binding.schedName.text = schedule.name
-        binding.systemFilter.setExists(schedule.filter == SCHED_FILTER_SYSTEM || schedule.filter == SCHED_FILTER_ALL)
-        binding.userFilter.setExists(schedule.filter == SCHED_FILTER_USER || schedule.filter == SCHED_FILTER_ALL)
-        binding.updatedFilter.setExists(schedule.filter == SCHED_FILTER_NEW_UPDATED)
-        binding.launchableFilter.setExists(schedule.filter == SCHED_FILTER_LAUNCHABLE)
+        binding.systemFilter.setExists(schedule.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM)
+        binding.userFilter.setExists(schedule.filter and MAIN_FILTER_USER == MAIN_FILTER_USER)
+        binding.updatedFilter.setExists(schedule.specialFilter == SCHED_SPECIALFILTER_NEW_UPDATED)
+        binding.launchableFilter.setExists(schedule.specialFilter == SCHED_SPECIALFILTER_LAUNCHABLE)
         modeToModes(schedule.mode).let {
             binding.apkMode.setExists(it.contains(MODE_APK))
             binding.dataMode.setExists(it.contains(MODE_DATA))
