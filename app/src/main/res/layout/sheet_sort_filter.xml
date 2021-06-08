@@ -340,6 +340,15 @@
                         android:text="@string/radio_all" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/specialLaunchable"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_launchable"
+                        app:checkedIcon="@drawable/ic_launchable"
+                        app:checkedIconTint="@color/ic_obb" />
+
+                    <com.google.android.material.chip.Chip
                         android:id="@+id/specialNewAndUpdated"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
@@ -347,15 +356,6 @@
                         android:text="@string/showNewAndUpdated"
                         app:checkedIcon="@drawable/ic_updated"
                         app:checkedIconTint="@color/ic_updated" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/specialNotInstalled"
-                        style="@style/Chip.Mode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/showNotInstalled"
-                        app:checkedIcon="@drawable/ic_delete"
-                        app:checkedIconTint="@color/app_secondary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
@@ -367,13 +367,13 @@
                         app:checkedIconTint="@color/ic_exodus" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/specialLaunchable"
+                        android:id="@+id/specialNotInstalled"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_launchable"
-                        app:checkedIcon="@drawable/ic_launchable"
-                        app:checkedIconTint="@color/ic_obb" />
+                        android:text="@string/showNotInstalled"
+                        app:checkedIcon="@drawable/ic_delete"
+                        app:checkedIconTint="@color/app_secondary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton

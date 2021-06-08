@@ -36,6 +36,7 @@ import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.utils.sortOrder
+import com.machiav3lli.backup.utils.specialFilterToId
 
 class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding
@@ -93,7 +94,7 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
         }
         binding.backupFilters.check(mSortFilterModel.backupFilterId)
         binding.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putBackupFilter(checkedId) }
-        binding.specialFilters.check(mSortFilterModel.specialFilterId)
+        binding.specialFilters.check(specialFilterToId(mSortFilterModel.specialFilter))
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putSpecialFilter(checkedId) }
         if (requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
             binding.showSpecial.visibility = View.VISIBLE

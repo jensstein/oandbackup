@@ -21,17 +21,17 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.utils.mainFilterToId
 
 class SortFilterModel(
-    var sort: Char = '0',
+    var sort: Char = MAIN_SORT_LABEL,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
-    var backupFilter: Char = '0',
-    var specialFilter: Char = '0'
+    var backupFilter: Char = MAIN_BACKUPFILTER_ALL,
+    var specialFilter: Int = SPECIAL_FILTER_ALL
 ) {
 
     constructor(sortFilterCode: String) : this() {
         sort = sortFilterCode[0]
         mainFilter = sortFilterCode[1].code
         backupFilter = sortFilterCode[2]
-        specialFilter = sortFilterCode[3]
+        specialFilter = sortFilterCode[3].code
     }
 
     val sortById: Int
@@ -64,15 +64,6 @@ class SortFilterModel(
             else -> R.id.backupAll
         }
 
-    val specialFilterId: Int
-        get() = when (specialFilter) {
-            MAIN_SPECIALFILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
-            MAIN_SPECIALFILTER_NOTINSTALLED -> R.id.specialNotInstalled
-            MAIN_SPECIALFILTER_OLD -> R.id.specialOld
-            MAIN_SPECIALFILTER_LAUNCHABLE -> R.id.specialLaunchable
-            else -> R.id.specialAll
-        }
-
     fun putSortBy(id: Int) {
         val sortBy: Char = when (id) {
             R.id.sortByPackageName -> MAIN_SORT_PACKAGENAME
@@ -94,16 +85,16 @@ class SortFilterModel(
     }
 
     fun putSpecialFilter(id: Int) {
-        val specialFilterBy: Char = when (id) {
-            R.id.specialNewAndUpdated -> MAIN_SPECIALFILTER_NEW_UPDATED
-            R.id.specialNotInstalled -> MAIN_SPECIALFILTER_NOTINSTALLED
-            R.id.specialOld -> MAIN_SPECIALFILTER_OLD
-            R.id.specialLaunchable -> MAIN_SPECIALFILTER_LAUNCHABLE
-            else -> MAIN_SPECIALFILTER_ALL
+        val specialFilterBy = when (id) {
+            R.id.specialNewAndUpdated -> SPECIAL_FILTER_NEW_UPDATED
+            R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
+            R.id.specialOld -> SPECIAL_FILTER_OLD
+            R.id.specialLaunchable -> SPECIAL_FILTER_LAUNCHABLE
+            else -> SPECIAL_FILTER_ALL
         }
         specialFilter = specialFilterBy
     }
 
     override fun toString(): String =
-        "$sort${Char(mainFilter)}$backupFilter$specialFilter"
+        "$sort${Char(mainFilter)}$backupFilter${Char(specialFilter)}"
 }

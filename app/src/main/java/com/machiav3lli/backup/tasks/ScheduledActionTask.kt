@@ -41,7 +41,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
         val schedule = scheduleDao.getSchedule(scheduleId)
         val filter = schedule?.filter ?: MAIN_FILTER_DEFAULT
-        val specialFilter = schedule?.specialFilter ?: SCHED_SPECIALFILTER_ALL
+        val specialFilter = schedule?.specialFilter ?: SPECIAL_FILTER_ALL
         val customList = schedule?.customList ?: setOf()
         val customBlocklist = schedule?.blockList ?: listOf()
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
@@ -60,7 +60,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         }
 
         var launchableAppsList = listOf<String>()
-        if (specialFilter == SCHED_SPECIALFILTER_LAUNCHABLE) {
+        if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
             val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
                     .map { it.activityInfo.packageName }
@@ -74,16 +74,16 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         }
         val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (AppInfo) -> Boolean = when (specialFilter) {
-            SCHED_SPECIALFILTER_LAUNCHABLE -> { appInfo: AppInfo ->
+            SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
                 launchableAppsList.contains(appInfo.packageName)
                         && inListed(appInfo.packageName)
             }
-            SCHED_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo ->
+            SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
                 appInfo.isInstalled
                         && (!appInfo.hasBackups || appInfo.isUpdated)
                         && inListed(appInfo.packageName)
             }
-            SCHED_SPECIALFILTER_OLD -> {
+            SPECIAL_FILTER_OLD -> {
                 { appInfo: AppInfo ->
                     if (appInfo.hasBackups) {
                         val lastBackup = appInfo.latestBackup?.backupProperties?.backupDate

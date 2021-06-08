@@ -26,7 +26,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.SCHED_SPECIALFILTER_ALL
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
@@ -73,7 +73,7 @@ open class Schedule() {
 
     @SerializedName("specialFilter")
     @Expose
-    var specialFilter: Int = SCHED_SPECIALFILTER_ALL
+    var specialFilter: Int = SPECIAL_FILTER_ALL
 
     var timeUntilNextEvent: Long = 0
 

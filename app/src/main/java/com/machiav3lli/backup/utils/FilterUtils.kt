@@ -49,21 +49,21 @@ private fun List<AppInfo>.applyBackupFilter(backupFilter: Char): List<AppInfo> {
 }
 
 private fun List<AppInfo>.applySpecialFilter(
-    specialFilter: Char,
+    specialFilter: Int,
     context: Context
 ): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean
     var launchableAppsList = listOf<String>()
-    if (specialFilter == MAIN_SPECIALFILTER_LAUNCHABLE) {
+    if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
         val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
         launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
             .map { it.activityInfo.packageName }
     }
     val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
     predicate = when (specialFilter) {
-        MAIN_SPECIALFILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
-        MAIN_SPECIALFILTER_NOTINSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
-        MAIN_SPECIALFILTER_OLD -> {
+        SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
+        SPECIAL_FILTER_NOT_INSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
+        SPECIAL_FILTER_OLD -> {
             { appInfo: AppInfo ->
                 when {
                     appInfo.hasBackups -> {
@@ -75,7 +75,7 @@ private fun List<AppInfo>.applySpecialFilter(
                 }
             }
         }
-        MAIN_SPECIALFILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
+        SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
         else -> { _: AppInfo -> true }
     }
     return filter(predicate)
@@ -109,24 +109,25 @@ fun filterToIds(filter: Int): List<Int> {
     return ids
 }
 
-fun specialFilterToId(filter: Int): Int = when (filter) {
-    SCHED_SPECIALFILTER_LAUNCHABLE -> R.id.chipLaunchable
-    SCHED_SPECIALFILTER_NEW_UPDATED -> R.id.chipNewUpdated
-    SCHED_SPECIALFILTER_OLD -> R.id.chipOld
-    else -> R.id.chipAll
+fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
+    SPECIAL_FILTER_LAUNCHABLE -> R.id.specialLaunchable
+    SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
+    SPECIAL_FILTER_OLD -> R.id.specialOld
+    SPECIAL_FILTER_NOT_INSTALLED -> R.id.specialNotInstalled
+    else -> R.id.specialAll
 }
 
 fun idToFilter(id: Int): Int = when (id) {
     R.id.chipUser -> MAIN_FILTER_USER
     R.id.chipSystem -> MAIN_FILTER_SYSTEM
-    else -> SCHED_SPECIALFILTER_ALL
+    else -> SPECIAL_FILTER_ALL
 }
 
 fun idToSpecialFilter(id: Int): Int = when (id) {
-    R.id.chipLaunchable -> SCHED_SPECIALFILTER_LAUNCHABLE
-    R.id.chipNewUpdated -> SCHED_SPECIALFILTER_NEW_UPDATED
-    R.id.chipOld -> SCHED_SPECIALFILTER_OLD
-    else -> SCHED_SPECIALFILTER_ALL
+    R.id.specialLaunchable -> SPECIAL_FILTER_LAUNCHABLE
+    R.id.specialNewUpdated -> SPECIAL_FILTER_NEW_UPDATED
+    R.id.specialOld -> SPECIAL_FILTER_OLD
+    else -> SPECIAL_FILTER_ALL
 }
 
 fun filterToString(context: Context, filter: Int) = when (filter) {
@@ -136,9 +137,9 @@ fun filterToString(context: Context, filter: Int) = when (filter) {
 }
 
 fun specialFilterToString(context: Context, specialFilter: Int) = when (specialFilter) {
-    SCHED_SPECIALFILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
-    SCHED_SPECIALFILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
-    SCHED_SPECIALFILTER_OLD -> context.getString(R.string.showOldBackups)
+    SPECIAL_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
+    SPECIAL_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
+    SPECIAL_FILTER_OLD -> context.getString(R.string.showOldBackups)
     else -> context.getString(R.string.radio_all)
 }
 
