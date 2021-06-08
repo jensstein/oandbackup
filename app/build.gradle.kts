@@ -96,17 +96,16 @@ dependencies {
     implementation("androidx.room:room-ktx:2.3.0")
     implementation("androidx.work:work-runtime-ktx:2.7.0-alpha04")
     kapt("androidx.room:room-compiler:2.3.0")
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("com.google.code.gson:gson:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("org.apache.commons:commons-compress:1.20")
-    val commonsio = "2.8.0"
-    implementation("commons-io:commons-io:$commonsio")
+    implementation("commons-io:commons-io:2.9.0")
     val libsu = "3.1.2"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
-    implementation("com.scottyab:rootbeer-lib:0.0.8")
+    implementation("com.scottyab:rootbeer-lib:0.1.0")
     implementation("com.jakewharton.timber:timber:4.7.1")
 
     // UI
