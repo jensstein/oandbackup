@@ -281,24 +281,30 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipLaunchable"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_launchable" />
+                        android:text="@string/radio_launchable"
+                        app:checkedIcon="@drawable/ic_launchable"
+                        app:checkedIconTint="@color/ic_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipNewUpdated"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showNewAndUpdated" />
+                        android:text="@string/showNewAndUpdated"
+                        app:checkedIcon="@drawable/ic_updated"
+                        app:checkedIconTint="@color/ic_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipOld"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showOldBackups" />
+                        android:text="@string/showOldBackups"
+                        app:checkedIcon="@drawable/ic_old"
+                        app:checkedIconTint="@color/ic_exodus" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

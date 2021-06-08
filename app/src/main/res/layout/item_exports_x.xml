@@ -72,7 +72,6 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/ic_special"
                 app:srcCompat="@drawable/ic_launchable" />
 
             <androidx.appcompat.widget.AppCompatImageView
