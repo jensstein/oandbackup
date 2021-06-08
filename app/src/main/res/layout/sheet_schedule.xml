@@ -167,7 +167,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system"
-                        app:checkedIcon="@drawable/ic_system" />
+                        app:checkedIcon="@drawable/ic_system"
+                        app:checkedIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipUser"
@@ -175,7 +176,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user"
-                        app:checkedIcon="@drawable/ic_user" />
+                        app:checkedIcon="@drawable/ic_user"
+                        app:checkedIconTint="@color/ic_user" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -208,7 +210,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk"
-                        app:checkedIcon="@drawable/ic_apk" />
+                        app:checkedIcon="@drawable/ic_apk"
+                        app:checkedIconTint="@color/ic_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipData"
@@ -216,7 +219,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data"
-                        app:checkedIcon="@drawable/ic_data" />
+                        app:checkedIcon="@drawable/ic_data"
+                        app:checkedIconTint="@color/ic_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataDe"
@@ -224,7 +228,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_deviceprotecteddata"
-                        app:checkedIcon="@drawable/ic_de_data" />
+                        app:checkedIcon="@drawable/ic_de_data"
+                        app:checkedIconTint="@color/ic_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataExt"
@@ -232,7 +237,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_externaldata"
-                        app:checkedIcon="@drawable/ic_external_data" />
+                        app:checkedIcon="@drawable/ic_external_data"
+                        app:checkedIconTint="@color/ic_ext_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipDataObb"
@@ -240,7 +246,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_obbdata"
-                        app:checkedIcon="@drawable/ic_obb_data" />
+                        app:checkedIcon="@drawable/ic_obb_data"
+                        app:checkedIconTint="@color/ic_obb" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView

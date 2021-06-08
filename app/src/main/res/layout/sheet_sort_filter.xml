@@ -218,35 +218,38 @@
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:singleSelection="false"
                     app:layout_constraintBottom_toTopOf="@id/backupFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/filtersTitle">
+                    app:layout_constraintTop_toBottomOf="@id/filtersTitle"
+                    app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showSystem"
                         style="@style/Chip.Mode"
-                        app:checkedIcon="@drawable/ic_system"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_system" />
+                        android:text="@string/radio_system"
+                        app:checkedIcon="@drawable/ic_system"
+                        app:checkedIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showUser"
                         style="@style/Chip.Mode"
-                        app:checkedIcon="@drawable/ic_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_user" />
+                        android:text="@string/radio_user"
+                        app:checkedIcon="@drawable/ic_user"
+                        app:checkedIconTint="@color/ic_user" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/showSpecial"
                         style="@style/Chip.Mode"
-                        app:checkedIcon="@drawable/ic_special"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_special" />
+                        android:text="@string/radio_special"
+                        app:checkedIcon="@drawable/ic_special"
+                        app:checkedIconTint="@color/ic_special" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
