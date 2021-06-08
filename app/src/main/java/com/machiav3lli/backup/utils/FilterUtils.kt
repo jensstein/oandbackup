@@ -75,7 +75,6 @@ private fun List<AppInfo>.applySpecialFilter(
                 }
             }
         }
-        MAIN_SPECIALFILTER_SPLIT -> { appInfo: AppInfo -> appInfo.apkSplits.isNotEmpty() }
         MAIN_SPECIALFILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
         else -> { _: AppInfo -> true }
     }

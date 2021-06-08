@@ -69,7 +69,6 @@ class SortFilterModel(
             MAIN_SPECIALFILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
             MAIN_SPECIALFILTER_NOTINSTALLED -> R.id.specialNotInstalled
             MAIN_SPECIALFILTER_OLD -> R.id.specialOld
-            MAIN_SPECIALFILTER_SPLIT -> R.id.specialSplit
             MAIN_SPECIALFILTER_LAUNCHABLE -> R.id.specialLaunchable
             else -> R.id.specialAll
         }
@@ -99,7 +98,6 @@ class SortFilterModel(
             R.id.specialNewAndUpdated -> MAIN_SPECIALFILTER_NEW_UPDATED
             R.id.specialNotInstalled -> MAIN_SPECIALFILTER_NOTINSTALLED
             R.id.specialOld -> MAIN_SPECIALFILTER_OLD
-            R.id.specialSplit -> MAIN_SPECIALFILTER_SPLIT
             R.id.specialLaunchable -> MAIN_SPECIALFILTER_LAUNCHABLE
             else -> MAIN_SPECIALFILTER_ALL
         }
