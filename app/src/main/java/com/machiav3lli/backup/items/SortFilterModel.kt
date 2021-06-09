@@ -18,8 +18,8 @@
 package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.utils.backupFilterToId
 import com.machiav3lli.backup.utils.mainFilterToId
+import com.machiav3lli.backup.utils.modeToId
 
 class SortFilterModel(
     var sort: Int = MAIN_SORT_LABEL,
@@ -50,7 +50,7 @@ class SortFilterModel(
     val backupFilterIds: List<Int>
         get() = possibleBackupFilters
             .filter { it and backupFilter == it }
-            .map { backupFilterToId(it) }
+            .map { modeToId(it) }
 
     fun putSortBy(id: Int) {
         sort = when (id) {

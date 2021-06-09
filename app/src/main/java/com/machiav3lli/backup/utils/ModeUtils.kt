@@ -52,6 +52,7 @@ fun modeToId(mode: Int) = when (mode) {
 }
 
 fun idToMode(id: Int) = when (id) {
+    R.id.backupNone -> MODE_NONE
     R.id.backupApk -> MODE_APK
     R.id.backupData -> MODE_DATA
     R.id.backupDataDe -> MODE_DATA_DE

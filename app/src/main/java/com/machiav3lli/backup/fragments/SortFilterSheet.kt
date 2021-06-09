@@ -94,7 +94,7 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
         mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it)}
         binding.backupFilters.children.forEach {
             it.setOnClickListener { view ->
-                mSortFilterModel.backupFilter = mSortFilterModel.backupFilter xor idToBackupFilter(view.id)
+                mSortFilterModel.backupFilter = mSortFilterModel.backupFilter xor idToMode(view.id)
             }
         }
         binding.specialFilters.check(specialFilterToId(mSortFilterModel.specialFilter))
