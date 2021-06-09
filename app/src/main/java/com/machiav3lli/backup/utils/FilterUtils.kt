@@ -125,10 +125,13 @@ fun idToSpecialFilter(id: Int): Int = when (id) {
     else -> SPECIAL_FILTER_ALL
 }
 
-fun filterToString(context: Context, filter: Int) = when (filter) {
-    MAIN_FILTER_SYSTEM -> context.getString(R.string.radio_system)
-    MAIN_FILTER_USER -> context.getString(R.string.radio_user)
-    else -> context.getString(R.string.radio_all)
+fun filterToString(context: Context, filter: Int): String {
+    val activeFilters = possibleSchedFilters.filter { it and filter == it }
+    return when {
+        activeFilters.size == 2 -> context.getString(R.string.radio_all)
+        activeFilters.contains(MAIN_FILTER_USER) -> context.getString(R.string.radio_user)
+        else -> context.getString(R.string.radio_system)
+    }
 }
 
 fun specialFilterToString(context: Context, specialFilter: Int) = when (specialFilter) {
