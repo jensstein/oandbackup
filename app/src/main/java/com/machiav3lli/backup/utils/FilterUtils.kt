@@ -27,9 +27,9 @@ import java.time.temporal.ChronoUnit
 
 fun List<AppInfo>.applyFilter(filter: SortFilterModel, context: Context): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean = {
-        (if (filter.mainFilter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem && !it.isSpecial else false) ||
-                (if (filter.mainFilter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false) ||
-                (if (filter.mainFilter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) it.isSpecial else false)
+        (if (filter.mainFilter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem && !it.isSpecial else false)
+                || (if (filter.mainFilter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
+                || (if (filter.mainFilter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) it.isSpecial else false)
     }
     return filter(predicate)
         .applyBackupFilter(filter.backupFilter)
@@ -62,8 +62,12 @@ private fun List<AppInfo>.applySpecialFilter(
     }
     val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
     predicate = when (specialFilter) {
-        SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo -> !appInfo.hasBackups || appInfo.isUpdated }
-        SPECIAL_FILTER_NOT_INSTALLED -> { appInfo: AppInfo -> !appInfo.isInstalled }
+        SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
+            !appInfo.hasBackups || appInfo.isUpdated
+        }
+        SPECIAL_FILTER_NOT_INSTALLED -> { appInfo: AppInfo ->
+            !appInfo.isInstalled
+        }
         SPECIAL_FILTER_OLD -> {
             { appInfo: AppInfo ->
                 when {
@@ -76,7 +80,9 @@ private fun List<AppInfo>.applySpecialFilter(
                 }
             }
         }
-        SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo -> launchableAppsList.contains(appInfo.packageName) }
+        SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
+            launchableAppsList.contains(appInfo.packageName)
+        }
         else -> { _: AppInfo -> true }
     }
     return filter(predicate)

@@ -246,9 +246,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
         binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
-                    sortFilterModel.toString()),
-                    getStats(viewModel.appInfoList.value ?: mutableListOf())
+            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+                SortFilterModel(sortFilterModel.toString()),
+                getStats(viewModel.appInfoList.value ?: mutableListOf())
             )
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
         }
