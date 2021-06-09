@@ -21,17 +21,17 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.utils.mainFilterToId
 
 class SortFilterModel(
-    var sort: Char = MAIN_SORT_LABEL,
+    var sort: Int = MAIN_SORT_LABEL,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
-    var backupFilter: Char = MAIN_BACKUPFILTER_ALL,
+    var backupFilter: Int = MAIN_BACKUPFILTER_ALL,
     var specialFilter: Int = SPECIAL_FILTER_ALL
 ) {
 
     constructor(sortFilterCode: String) : this() {
-        sort = sortFilterCode[0]
-        mainFilter = sortFilterCode[1].code
-        backupFilter = sortFilterCode[2]
-        specialFilter = sortFilterCode[3].code
+        sort = sortFilterCode[0].digitToInt()
+        mainFilter = sortFilterCode[1].digitToInt()
+        backupFilter = sortFilterCode[2].digitToInt()
+        specialFilter = sortFilterCode[3].digitToInt()
     }
 
     val sortById: Int
@@ -65,7 +65,7 @@ class SortFilterModel(
         }
 
     fun putSortBy(id: Int) {
-        val sortBy: Char = when (id) {
+        val sortBy = when (id) {
             R.id.sortByPackageName -> MAIN_SORT_PACKAGENAME
             R.id.sortByDataSize -> MAIN_SORT_DATASIZE
             else -> MAIN_SORT_LABEL
@@ -74,7 +74,7 @@ class SortFilterModel(
     }
 
     fun putBackupFilter(id: Int) {
-        val backupFilterBy: Char = when (id) {
+        val backupFilterBy = when (id) {
             R.id.backupBoth -> MAIN_BACKUPFILTER_BOTH
             R.id.backupApk -> MAIN_BACKUPFILTER_APK
             R.id.backupData -> MAIN_BACKUPFILTER_DATA
@@ -96,5 +96,5 @@ class SortFilterModel(
     }
 
     override fun toString(): String =
-        "$sort${Char(mainFilter)}$backupFilter${Char(specialFilter)}"
+        "$sort$mainFilter$backupFilter$specialFilter"
 }

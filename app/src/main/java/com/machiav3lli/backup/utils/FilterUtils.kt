@@ -37,7 +37,7 @@ fun List<AppInfo>.applyFilter(filter: SortFilterModel, context: Context): List<A
         .applySort(filter.sort, context)
 }
 
-private fun List<AppInfo>.applyBackupFilter(backupFilter: Char): List<AppInfo> {
+private fun List<AppInfo>.applyBackupFilter(backupFilter: Int): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean = when (backupFilter) {
         MAIN_BACKUPFILTER_BOTH -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
         MAIN_BACKUPFILTER_APK -> { appInfo: AppInfo -> appInfo.hasApk }
@@ -81,7 +81,7 @@ private fun List<AppInfo>.applySpecialFilter(
     return filter(predicate)
 }
 
-private fun List<AppInfo>.applySort(sort: Char, context: Context): List<AppInfo> =
+private fun List<AppInfo>.applySort(sort: Int, context: Context): List<AppInfo> =
     if (context.sortOrder) {
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
