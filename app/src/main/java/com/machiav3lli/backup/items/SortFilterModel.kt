@@ -19,7 +19,6 @@ package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.utils.backupFilterToId
-import com.machiav3lli.backup.utils.idToBackupFilter
 import com.machiav3lli.backup.utils.mainFilterToId
 
 class SortFilterModel(
@@ -43,49 +42,22 @@ class SortFilterModel(
             else -> R.id.sortByLabel
         }
 
-    var filterIds: List<Int>
-        get() = possibleMainFilters.filter {
-            it and mainFilter == it
-        }.map {
-            mainFilterToId(it)
-        }
-        set(value) {
-            var filter = MAIN_FILTER_UNSET
-            if (value.contains(R.id.showSystem)) filter = filter or MAIN_FILTER_SYSTEM
-            if (value.contains(R.id.showUser)) filter = filter or MAIN_FILTER_USER
-            if (value.contains(R.id.showSpecial)) filter = filter or MAIN_FILTER_SPECIAL
-            mainFilter = filter
-        }
+    val filterIds: List<Int>
+        get() = possibleMainFilters
+            .filter { it and mainFilter == it }
+            .map { mainFilterToId(it) }
 
-    var backupFilterIds: List<Int>
+    val backupFilterIds: List<Int>
         get() = possibleBackupFilters
             .filter { it and backupFilter == it }
             .map { backupFilterToId(it) }
-        set(value) {
-            backupFilter = BACKUP_FILTER_UNSET
-            value.forEach {
-                backupFilter = backupFilter or idToBackupFilter(it)
-            }
-        }
 
     fun putSortBy(id: Int) {
-        val sortBy = when (id) {
+        sort = when (id) {
             R.id.sortByPackageName -> MAIN_SORT_PACKAGENAME
             R.id.sortByDataSize -> MAIN_SORT_DATASIZE
             else -> MAIN_SORT_LABEL
         }
-        sort = sortBy
-    }
-
-    fun putSpecialFilter(id: Int) {
-        val specialFilterBy = when (id) {
-            R.id.specialNewAndUpdated -> SPECIAL_FILTER_NEW_UPDATED
-            R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
-            R.id.specialOld -> SPECIAL_FILTER_OLD
-            R.id.specialLaunchable -> SPECIAL_FILTER_LAUNCHABLE
-            else -> SPECIAL_FILTER_ALL
-        }
-        specialFilter = specialFilterBy
     }
 
     override fun toString(): String =

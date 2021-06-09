@@ -78,7 +78,7 @@ const val MODE_DATA = 0b01000
 const val MODE_DATA_DE = 0b00100
 const val MODE_DATA_EXT = 0b00010
 const val MODE_DATA_OBB = 0b00001
-val possibleModes = mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
+val possibleSchedModes = mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
 
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
@@ -93,7 +93,6 @@ val possibleMainFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MA
 val possibleSchedFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER)
 
 const val BACKUP_FILTER_DEFAULT = 0b111111
-const val BACKUP_FILTER_UNSET = 0b000000
 const val BACKUP_FILTER_NONE = 0b100000
 const val BACKUP_FILTER_APK = 0b010000
 const val BACKUP_FILTER_DATA = 0b001000

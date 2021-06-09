@@ -98,16 +98,9 @@ private fun List<AppInfo>.applySort(sort: Int, context: Context): List<AppInfo> 
     }
 
 fun mainFilterToId(filter: Int) = when (filter) {
-    MAIN_FILTER_USER -> R.id.showUser
-    MAIN_FILTER_SPECIAL -> R.id.showSpecial
-    else -> R.id.showSystem
-}
-
-fun filterToIds(filter: Int): List<Int> {
-    val ids = mutableListOf<Int>()
-    if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) ids.add(R.id.chipSystem)
-    if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) ids.add(R.id.chipUser)
-    return ids
+    MAIN_FILTER_USER -> R.id.filterUser
+    MAIN_FILTER_SPECIAL -> R.id.filterSpecial
+    else -> R.id.filterSystem
 }
 
 fun backupFilterToId(filter: Int) = when (filter) {
@@ -121,16 +114,16 @@ fun backupFilterToId(filter: Int) = when (filter) {
 
 fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
     SPECIAL_FILTER_LAUNCHABLE -> R.id.specialLaunchable
-    SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
+    SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewUpdated
     SPECIAL_FILTER_OLD -> R.id.specialOld
     SPECIAL_FILTER_NOT_INSTALLED -> R.id.specialNotInstalled
     else -> R.id.specialAll
 }
 
 fun idToFilter(id: Int): Int = when (id) {
-    R.id.chipUser -> MAIN_FILTER_USER
-    R.id.chipSystem -> MAIN_FILTER_SYSTEM
-    else -> SPECIAL_FILTER_ALL
+    R.id.filterUser -> MAIN_FILTER_USER
+    R.id.filterSpecial -> MAIN_FILTER_SPECIAL
+    else -> MAIN_FILTER_SYSTEM
 }
 
 fun idToBackupFilter(id: Int): Int = when (id) {
@@ -146,6 +139,7 @@ fun idToSpecialFilter(id: Int): Int = when (id) {
     R.id.specialLaunchable -> SPECIAL_FILTER_LAUNCHABLE
     R.id.specialNewUpdated -> SPECIAL_FILTER_NEW_UPDATED
     R.id.specialOld -> SPECIAL_FILTER_OLD
+    R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
     else -> SPECIAL_FILTER_ALL
 }
 

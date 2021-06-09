@@ -76,10 +76,10 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
 
         viewModel.schedule.observe(viewLifecycleOwner, {
             binding.schedName.text = it.name
-            filterToIds(it.filter).forEach { id ->
+            it.filterIds.forEach { id ->
                 binding.schedFilter.check(id)
             }
-            modeToIds(it.mode).forEach { id ->
+            it.modeIds.forEach { id ->
                 binding.schedMode.check(id)
             }
             binding.schedSpecialFilter.check(specialFilterToId(it.specialFilter))

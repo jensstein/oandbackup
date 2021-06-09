@@ -33,10 +33,7 @@ import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.sortFilterModel
-import com.machiav3lli.backup.utils.sortOrder
-import com.machiav3lli.backup.utils.specialFilterToId
+import com.machiav3lli.backup.utils.*
 
 class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding
@@ -84,26 +81,30 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
 
     private fun setupChips() {
         binding.sortBy.check(mSortFilterModel.sortById)
-        binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putSortBy(checkedId) }
+        binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+            mSortFilterModel.putSortBy(checkedId)
+        }
         binding.sortAscDesc.isChecked = requireContext().sortOrder
         mSortFilterModel.filterIds.forEach { binding.filters.check(it)}
         binding.filters.children.forEach {
-            it.setOnClickListener {
-                mSortFilterModel.filterIds = binding.filters.checkedChipIds
+            it.setOnClickListener { view ->
+                mSortFilterModel.mainFilter = mSortFilterModel.mainFilter xor idToFilter(view.id)
             }
         }
         mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it)}
         binding.backupFilters.children.forEach {
-            it.setOnClickListener {
-                mSortFilterModel.backupFilterIds = binding.backupFilters.checkedChipIds
+            it.setOnClickListener { view ->
+                mSortFilterModel.backupFilter = mSortFilterModel.backupFilter xor idToBackupFilter(view.id)
             }
         }
         binding.specialFilters.check(specialFilterToId(mSortFilterModel.specialFilter))
-        binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putSpecialFilter(checkedId) }
+        binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+            mSortFilterModel.specialFilter = idToSpecialFilter(checkedId)
+        }
         if (requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
-            binding.showSpecial.visibility = View.VISIBLE
+            binding.filterSpecial.visibility = View.VISIBLE
         } else {
-            binding.showSpecial.visibility = View.GONE
+            binding.filterSpecial.visibility = View.GONE
         }
     }
 

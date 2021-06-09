@@ -225,7 +225,7 @@
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showSystem"
+                        android:id="@+id/filterSystem"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                         app:checkedIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showUser"
+                        android:id="@+id/filterUser"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
                         app:checkedIconTint="@color/ic_user" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showSpecial"
+                        android:id="@+id/filterSpecial"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -367,7 +367,7 @@
                         app:checkedIconTint="@color/ic_obb" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/specialNewAndUpdated"
+                        android:id="@+id/specialNewUpdated"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

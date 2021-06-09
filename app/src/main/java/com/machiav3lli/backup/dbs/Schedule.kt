@@ -24,13 +24,13 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.SPECIAL_FILTER_ALL
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.GsonUtils
+import com.machiav3lli.backup.utils.mainFilterToId
+import com.machiav3lli.backup.utils.modeToId
 import com.machiav3lli.backup.utils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
@@ -86,6 +86,16 @@ open class Schedule() {
     @Expose
     @TypeConverters(AppsListConverter::class)
     var blockList: Set<String> = setOf()
+
+    val filterIds: List<Int>
+        get() = possibleSchedFilters
+            .filter { it and filter == it }
+            .map { mainFilterToId(it) }
+
+    val modeIds: List<Int>
+        get() = possibleSchedModes
+            .filter { it and mode == it }
+            .map { modeToId(it) }
 
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {

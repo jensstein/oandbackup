@@ -162,7 +162,7 @@
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSystem"
+                        android:id="@+id/filterSystem"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -171,7 +171,7 @@
                         app:checkedIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipUser"
+                        android:id="@+id/filterUser"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipApk"
+                        android:id="@+id/backupApk"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
                         app:checkedIconTint="@color/ic_apk" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipData"
+                        android:id="@+id/backupData"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                         app:checkedIconTint="@color/ic_data" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipDataDe"
+                        android:id="@+id/backupDataDe"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,7 +232,7 @@
                         app:checkedIconTint="@color/ic_de_data" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipDataExt"
+                        android:id="@+id/backupDataExt"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -241,7 +241,7 @@
                         app:checkedIconTint="@color/ic_ext_data" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipDataObb"
+                        android:id="@+id/backupDataObb"
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
