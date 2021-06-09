@@ -92,8 +92,12 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
                 mSortFilterModel.filterIds = binding.filters.checkedChipIds
             }
         }
-        binding.backupFilters.check(mSortFilterModel.backupFilterId)
-        binding.backupFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putBackupFilter(checkedId) }
+        mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it)}
+        binding.backupFilters.children.forEach {
+            it.setOnClickListener {
+                mSortFilterModel.backupFilterIds = binding.backupFilters.checkedChipIds
+            }
+        }
         binding.specialFilters.check(specialFilterToId(mSortFilterModel.specialFilter))
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int -> mSortFilterModel.putSpecialFilter(checkedId) }
         if (requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {

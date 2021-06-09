@@ -38,12 +38,13 @@ fun List<AppInfo>.applyFilter(filter: SortFilterModel, context: Context): List<A
 }
 
 private fun List<AppInfo>.applyBackupFilter(backupFilter: Int): List<AppInfo> {
-    val predicate: (AppInfo) -> Boolean = when (backupFilter) {
-        MAIN_BACKUPFILTER_BOTH -> { appInfo: AppInfo -> appInfo.hasApk && appInfo.hasAppData }
-        MAIN_BACKUPFILTER_APK -> { appInfo: AppInfo -> appInfo.hasApk }
-        MAIN_BACKUPFILTER_DATA -> { appInfo: AppInfo -> appInfo.hasAppData }
-        MAIN_BACKUPFILTER_NONE -> { appInfo: AppInfo -> !appInfo.hasBackups }
-        else -> { _: AppInfo -> true }
+    val predicate: (AppInfo) -> Boolean = {
+        (if (backupFilter and BACKUP_FILTER_NONE == BACKUP_FILTER_NONE) !it.hasBackups else false)
+                || (if (backupFilter and BACKUP_FILTER_APK == BACKUP_FILTER_APK) it.hasApk else false)
+                || (if (backupFilter and BACKUP_FILTER_DATA == BACKUP_FILTER_DATA) it.hasAppData else false)
+                || (if (backupFilter and BACKUP_FILTER_DATA_DE == BACKUP_FILTER_DATA_DE) it.hasDevicesProtectedData else false)
+                || (if (backupFilter and BACKUP_FILTER_DATA_EXT == BACKUP_FILTER_DATA_EXT) it.hasExternalData else false)
+                || (if (backupFilter and BACKUP_FILTER_DATA_OBB == BACKUP_FILTER_DATA_OBB) it.hasObbData else false)
     }
     return filter(predicate)
 }
@@ -109,6 +110,15 @@ fun filterToIds(filter: Int): List<Int> {
     return ids
 }
 
+fun backupFilterToId(filter: Int) = when (filter) {
+    BACKUP_FILTER_APK -> R.id.backupApk
+    BACKUP_FILTER_DATA -> R.id.backupData
+    BACKUP_FILTER_DATA_DE -> R.id.backupDataDe
+    BACKUP_FILTER_DATA_EXT -> R.id.backupDataExt
+    BACKUP_FILTER_DATA_OBB -> R.id.backupDataObb
+    else -> R.id.backupNone
+}
+
 fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
     SPECIAL_FILTER_LAUNCHABLE -> R.id.specialLaunchable
     SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewAndUpdated
@@ -121,6 +131,15 @@ fun idToFilter(id: Int): Int = when (id) {
     R.id.chipUser -> MAIN_FILTER_USER
     R.id.chipSystem -> MAIN_FILTER_SYSTEM
     else -> SPECIAL_FILTER_ALL
+}
+
+fun idToBackupFilter(id: Int): Int = when (id) {
+    R.id.backupApk -> BACKUP_FILTER_APK
+    R.id.backupData -> BACKUP_FILTER_DATA
+    R.id.backupDataDe -> BACKUP_FILTER_DATA_DE
+    R.id.backupDataExt -> BACKUP_FILTER_DATA_EXT
+    R.id.backupDataObb -> BACKUP_FILTER_DATA_OBB
+    else -> BACKUP_FILTER_NONE
 }
 
 fun idToSpecialFilter(id: Int): Int = when (id) {

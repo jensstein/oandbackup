@@ -268,6 +268,7 @@
                     android:id="@+id/backupFilters"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
+                    app:singleSelection="false"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@id/specialFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -275,39 +276,56 @@
                     app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/backupAll"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupBoth"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/bothBackedUp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupApk"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_apk" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupData"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_data" />
-
-                    <com.google.android.material.chip.Chip
                         android:id="@+id/backupNone"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotBackedup" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupApk"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_apk"
+                        app:checkedIcon="@drawable/ic_apk"
+                        app:checkedIconTint="@color/ic_apk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupData"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_data"
+                        app:checkedIcon="@drawable/ic_data"
+                        app:checkedIconTint="@color/ic_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataDe"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_deviceprotecteddata"
+                        app:checkedIcon="@drawable/ic_de_data"
+                        app:checkedIconTint="@color/ic_de_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataExt"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_externaldata"
+                        app:checkedIcon="@drawable/ic_external_data"
+                        app:checkedIconTint="@color/ic_ext_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataObb"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_obbdata"
+                        app:checkedIcon="@drawable/ic_obb_data"
+                        app:checkedIconTint="@color/ic_obb" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView

@@ -18,20 +18,22 @@
 package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.utils.backupFilterToId
+import com.machiav3lli.backup.utils.idToBackupFilter
 import com.machiav3lli.backup.utils.mainFilterToId
 
 class SortFilterModel(
     var sort: Int = MAIN_SORT_LABEL,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
-    var backupFilter: Int = MAIN_BACKUPFILTER_ALL,
+    var backupFilter: Int = BACKUP_FILTER_DEFAULT,
     var specialFilter: Int = SPECIAL_FILTER_ALL
 ) {
 
     constructor(sortFilterCode: String) : this() {
         sort = sortFilterCode[0].digitToInt()
         mainFilter = sortFilterCode[1].digitToInt()
-        backupFilter = sortFilterCode[2].digitToInt()
-        specialFilter = sortFilterCode[3].digitToInt()
+        specialFilter = sortFilterCode[2].digitToInt()
+        backupFilter = sortFilterCode.substring(3).toInt()
     }
 
     val sortById: Int
@@ -55,13 +57,15 @@ class SortFilterModel(
             mainFilter = filter
         }
 
-    val backupFilterId: Int
-        get() = when (backupFilter) {
-            MAIN_BACKUPFILTER_BOTH -> R.id.backupBoth
-            MAIN_BACKUPFILTER_APK -> R.id.backupApk
-            MAIN_BACKUPFILTER_DATA -> R.id.backupData
-            MAIN_BACKUPFILTER_NONE -> R.id.backupNone
-            else -> R.id.backupAll
+    var backupFilterIds: List<Int>
+        get() = possibleBackupFilters
+            .filter { it and backupFilter == it }
+            .map { backupFilterToId(it) }
+        set(value) {
+            backupFilter = BACKUP_FILTER_UNSET
+            value.forEach {
+                backupFilter = backupFilter or idToBackupFilter(it)
+            }
         }
 
     fun putSortBy(id: Int) {
@@ -71,17 +75,6 @@ class SortFilterModel(
             else -> MAIN_SORT_LABEL
         }
         sort = sortBy
-    }
-
-    fun putBackupFilter(id: Int) {
-        val backupFilterBy = when (id) {
-            R.id.backupBoth -> MAIN_BACKUPFILTER_BOTH
-            R.id.backupApk -> MAIN_BACKUPFILTER_APK
-            R.id.backupData -> MAIN_BACKUPFILTER_DATA
-            R.id.backupNone -> MAIN_BACKUPFILTER_NONE
-            else -> MAIN_BACKUPFILTER_ALL
-        }
-        backupFilter = backupFilterBy
     }
 
     fun putSpecialFilter(id: Int) {
@@ -96,5 +89,5 @@ class SortFilterModel(
     }
 
     override fun toString(): String =
-        "$sort$mainFilter$backupFilter$specialFilter"
+        "$sort$mainFilter$specialFilter$backupFilter"
 }
