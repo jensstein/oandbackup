@@ -24,12 +24,13 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.SCHED_FILTER_ALL
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.GsonUtils
+import com.machiav3lli.backup.utils.mainFilterToId
+import com.machiav3lli.backup.utils.modeToId
 import com.machiav3lli.backup.utils.openFileForReading
 import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
@@ -64,17 +65,17 @@ open class Schedule() {
 
     @SerializedName("filter")
     @Expose
-    var filter: Int = SCHED_FILTER_ALL
+    var filter: Int = MAIN_FILTER_DEFAULT
 
     @SerializedName("mode")
     @Expose
     var mode: Int = MODE_APK
 
-    var timeUntilNextEvent: Long = 0
-
-    @SerializedName("excludeSystem")
+    @SerializedName("specialFilter")
     @Expose
-    var excludeSystem = false
+    var specialFilter: Int = SPECIAL_FILTER_ALL
+
+    var timeUntilNextEvent: Long = 0
 
     @SerializedName("customList")
     @Expose
@@ -86,18 +87,28 @@ open class Schedule() {
     @TypeConverters(AppsListConverter::class)
     var blockList: Set<String> = setOf()
 
+    val filterIds: List<Int>
+        get() = possibleSchedFilters
+            .filter { it and filter == it }
+            .map { mainFilterToId(it) }
+
+    val modeIds: List<Int>
+        get() = possibleSchedModes
+            .filter { it and mode == it }
+            .map { modeToId(it) }
+
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
             exportFile.uri.openFileForReading(context).use { reader ->
                 val item = fromGson(IOUtils.toString(reader))
                 this.id = item.id
                 this.name = item.name
-                this.mode = item.mode
                 this.filter = item.filter
+                this.mode = item.mode
+                this.specialFilter = item.specialFilter
                 this.timeHour = item.timeHour
                 this.timeMinute = item.timeMinute
                 this.interval = item.interval
-                this.excludeSystem = item.excludeSystem
                 this.customList = item.customList
                 this.blockList = item.blockList
             }
@@ -122,9 +133,9 @@ open class Schedule() {
                 && timeMinute == schedule.timeMinute
                 && interval == schedule.interval
                 && timePlaced == schedule.timePlaced
-                && excludeSystem == schedule.excludeSystem
                 && filter == schedule.filter
                 && mode == schedule.mode
+                && specialFilter == schedule.specialFilter
                 && customList == schedule.customList
                 && blockList == schedule.blockList
     }
@@ -140,7 +151,7 @@ open class Schedule() {
         hash = 31 * hash + timePlaced.toInt()
         hash = 31 * hash + filter.hashCode()
         hash = 31 * hash + mode.hashCode()
-        hash = 31 * hash + if (excludeSystem) 1 else 0
+        hash = 31 * hash + specialFilter.hashCode()
         hash = 31 * hash + customList.hashCode()
         hash = 31 * hash + blockList.hashCode()
         return hash
@@ -161,7 +172,7 @@ open class Schedule() {
                 ", timePlaced=" + timePlaced +
                 ", filter=" + filter +
                 ", mode=" + mode +
-                ", excludeSystem=" + excludeSystem +
+                ", specialFilter=" + specialFilter +
                 ", customList=" + customList +
                 ", blockList=" + blockList +
                 '}'
@@ -177,14 +188,14 @@ open class Schedule() {
 
         fun import(export: Schedule): Builder {
             schedule.name = export.name
-            schedule.mode = export.mode
             schedule.filter = export.filter
+            schedule.mode = export.mode
+            schedule.specialFilter = export.specialFilter
             schedule.timeHour = export.timeHour
             schedule.timeMinute = export.timeMinute
             schedule.interval = export.interval
             schedule.customList = export.customList
             schedule.blockList = export.blockList
-            schedule.excludeSystem = export.excludeSystem
             return this
         }
 

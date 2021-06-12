@@ -43,8 +43,6 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
         encryptPref = findPreference(PREFS_ENCRYPTION)!!
         passwordPref = findPreference(PREFS_PASSWORD)!!
         passwordConfirmationPref = findPreference(PREFS_PASSWORD_CONFIRMATION)!!
-        passwordPref.isVisible = encryptPref.isChecked
-        passwordConfirmationPref.isVisible = encryptPref.isChecked
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,8 +84,6 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
             password.text = ""
             passwordConfirmation.text = ""
         }
-        password.isVisible = !encryption.isChecked
-        passwordConfirmation.isVisible = !encryption.isChecked
         return true
     }
 

@@ -108,7 +108,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
         powerManager = getSystemService(POWER_SERVICE) as PowerManager
         prefs = getPrivateSharedPrefs()
-        val viewModelFactory = MainViewModelFactory(this, blocklistDao, application)
+        val viewModelFactory = MainViewModelFactory(blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
@@ -246,9 +246,9 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         binding.buttonSettings.setOnClickListener { startActivity(Intent(applicationContext, PrefsActivity::class.java)) }
         binding.buttonScheduler.setOnClickListener { startActivity(Intent(applicationContext, SchedulerActivityX::class.java)) }
         binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(SortFilterModel(
-                    sortFilterModel.toString()),
-                    getStats(viewModel.appInfoList.value ?: mutableListOf())
+            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+                SortFilterModel(sortFilterModel.toString()),
+                getStats(viewModel.appInfoList.value ?: mutableListOf())
             )
             sheetSortFilter?.show(supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -294,6 +294,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 else -> View.VISIBLE
             }
         }
+        binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
         binding.apkBatch.setOnClickListener {
             binding.apkBatch.isChecked = (it as AppCompatCheckBox).isChecked
             onCheckedApkClicked()
@@ -419,9 +420,34 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
         }
     }
 
-    override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
+    private fun onClickUpdateAllAction() {
+        val selectedList = updatedItemAdapter.adapterItems
+            .map { it.app.appMetaInfo }
+            .toCollection(ArrayList())
+        val selectedListModes = updatedItemAdapter.adapterItems
+            .mapNotNull {
+                it.app.latestBackup?.backupProperties?.let { bp ->
+                    when {
+                        bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
+                        bp.hasApk -> ALT_MODE_APK
+                        bp.hasAppData -> ALT_MODE_DATA
+                        else -> ALT_MODE_UNSET
+                    }
+                }
+            }
+            .toCollection(ArrayList())
+        if (selectedList.isNotEmpty()) {
+            BatchDialogFragment(true, selectedList, selectedListModes, this)
+                .show(supportFragmentManager, "DialogFragment")
+        }
+    }
+
+    override fun onConfirmed(
+        backupBoolean: Boolean,
+        selectedPackages: List<String?>,
+        selectedModes: List<Int>
+    ) {
         val notificationId = System.currentTimeMillis()
-        val backupBoolean = backupBoolean  // use a copy because the variable can change while running this task
         val notificationMessage = String.format(getString(R.string.fetching_action_list),
                 (if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)))
         showNotification(this, MainActivityX::class.java, notificationId.toInt(),
@@ -542,7 +568,7 @@ class MainActivityX : BaseActivity(), BatchDialogFragment.ConfirmListener {
                 ?: mutableListOf()))
         Thread {
             try {
-                val filteredList = viewModel.appInfoList.value?.applyFilter(sortFilterModel.toString(), this)
+                val filteredList = viewModel.appInfoList.value?.applyFilter(sortFilterModel, this)
                         ?: listOf()
                 when {
                     mainBoolean -> refreshMain(filteredList, backupOrAppSheetBoolean)

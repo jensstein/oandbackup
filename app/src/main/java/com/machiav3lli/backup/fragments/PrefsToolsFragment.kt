@@ -161,7 +161,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                     .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
                         writeAppsListFile(
                                 appInfoList.applyFilter(
-                                        requireContext().sortFilterModel.toString(),
+                                        requireContext().sortFilterModel,
                                         requireContext()
                                 ).map { "${it.packageLabel}: ${it.packageName}" },
                                 true

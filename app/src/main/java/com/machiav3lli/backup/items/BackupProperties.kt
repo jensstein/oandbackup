@@ -145,6 +145,19 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType.isNotEmpty()
 
+    override fun hashCode(): Int {
+        var hash = 7
+        hash = 31 * hash + backupDate.hashCode()
+        hash = 31 * hash + if (hasApk) 1 else 0
+        hash = 31 * hash + if (hasAppData) 1 else 0
+        hash = 31 * hash + if (hasDevicesProtectedData) 1 else 0
+        hash = 31 * hash + if (hasExternalData) 1 else 0
+        hash = 31 * hash + if (hasObbData) 1 else 0
+        hash = 31 * hash + cipherType.hashCode()
+        hash = 31 * hash + cpuArch.hashCode()
+        return hash
+    }
+
     override fun toString(): String {
         return "BackupProperties{" +
                 "backupDate=" + backupDate +

@@ -62,6 +62,14 @@ open class BackupItem {
         )
     }
 
+    override fun hashCode(): Int {
+        var hash = 7
+        hash = 31 * hash + backupProperties.hashCode()
+        hash = 31 * hash + backupInstance.hashCode()
+        hash = 31 * hash + backupInstanceDirUri.hashCode()
+        return hash
+    }
+
     companion object {
         const val BACKUP_DIR_DATA = "data"
         const val BACKUP_DIR_DATA_DE = "protecteddata"

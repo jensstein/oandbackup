@@ -30,9 +30,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class MainViewModel(val database: BlocklistDao, private val appContext: Application)
-    : AndroidViewModel(appContext) {
-
+class MainViewModel(val database: BlocklistDao, private val appContext: Application) :
+    AndroidViewModel(appContext) {
     val apkCheckedList = mutableListOf<String>()
 
     val dataCheckedList = mutableListOf<String>()
@@ -90,18 +89,19 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         }
     }
 
-    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? = withContext(Dispatchers.IO) {
-        val dataList = appInfoList.value
-        var appInfo = dataList?.find { it.packageName == packageName }
-        dataList?.removeIf { it.packageName == packageName }
-        try {
-            appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
-            dataList?.add(appInfo)
-        } catch (e: AssertionError) {
-            Timber.w(e.message ?: "")
+    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? =
+        withContext(Dispatchers.IO) {
+            val dataList = appInfoList.value
+            var appInfo = dataList?.find { it.packageName == packageName }
+            dataList?.removeIf { it.packageName == packageName }
+            try {
+                appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+                dataList?.add(appInfo)
+            } catch (e: AssertionError) {
+                Timber.w(e.message ?: "")
+            }
+            dataList
         }
-        dataList
-    }
 
     fun addToBlocklist(packageName: String) {
         viewModelScope.launch {
@@ -113,11 +113,11 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
     private suspend fun insertIntoBlocklist(packageName: String) {
         withContext(Dispatchers.IO) {
             database.insert(
-                    Blocklist.Builder()
-                            .withId(0)
-                            .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
-                            .withPackageName(packageName)
-                            .build()
+                Blocklist.Builder()
+                    .withId(0)
+                    .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
+                    .withPackageName(packageName)
+                    .build()
             )
             appInfoList.value?.removeIf { it.packageName == packageName }
         }

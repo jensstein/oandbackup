@@ -30,6 +30,7 @@
         android:icon="@drawable/ic_password"
         android:inputType="textPassword"
         android:key="password"
+        android:dependency="encryption"
         android:summary="@string/prefs_password_summary"
         android:title="@string/prefs_password" />
 
@@ -37,6 +38,7 @@
         android:defaultValue=""
         android:inputType="textPassword"
         android:key="passwordConfirmation"
+        android:dependency="encryption"
         android:title="@string/prefs_passwordconfirmation" />
 
     <androidx.preference.CheckBoxPreference

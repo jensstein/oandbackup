@@ -51,7 +51,7 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
                 .setMessage(message.toString().trim { it <= ' ' })
                 .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
                     try {
-                        confirmListener.onConfirmed(selectedPackages, selectedBackupModes)
+                        confirmListener.onConfirmed(backupBoolean, selectedPackages, selectedBackupModes)
                     } catch (e: ClassCastException) {
                         Timber.e("BatchConfirmDialog: $e")
                     }
@@ -62,6 +62,10 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
     }
 
     interface ConfirmListener {
-        fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>)
+        fun onConfirmed(
+            backupBoolean: Boolean,
+            selectedPackages: List<String?>,
+            selectedModes: List<Int>
+        )
     }
 }

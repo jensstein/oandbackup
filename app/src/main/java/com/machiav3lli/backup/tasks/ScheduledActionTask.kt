@@ -27,7 +27,10 @@ import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long)
     : CoroutinesAsyncTask<Void?, String, Pair<List<String>, Int>>() {
@@ -37,9 +40,8 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val blacklistDao = BlocklistDatabase.getInstance(context).blocklistDao
 
         val schedule = scheduleDao.getSchedule(scheduleId)
-        val filter = schedule?.filter ?: SCHED_FILTER_ALL
-        val excludeSystem = schedule?.excludeSystem
-                ?: false
+        val filter = schedule?.filter ?: MAIN_FILTER_DEFAULT
+        val specialFilter = schedule?.specialFilter ?: SPECIAL_FILTER_ALL
         val customList = schedule?.customList ?: setOf()
         val customBlocklist = schedule?.blockList ?: listOf()
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
@@ -58,7 +60,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         }
 
         var launchableAppsList = listOf<String>()
-        if (filter == SCHED_FILTER_LAUNCHABLE) {
+        if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
             val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
                     .map { it.activityInfo.packageName }
@@ -66,29 +68,40 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val inListed = { packageName: String ->
             customList.isEmpty() || customList.contains(packageName)
         }
-        val predicate: (AppInfo) -> Boolean = when (filter) {
-            SCHED_FILTER_USER -> { appInfo: AppInfo ->
-                appInfo.isInstalled && !appInfo.isSystem && inListed(appInfo.packageName)
-            }
-            SCHED_FILTER_SYSTEM -> { appInfo: AppInfo ->
-                appInfo.isInstalled && appInfo.isSystem && inListed(appInfo.packageName)
-            }
-            SCHED_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
-                (appInfo.isInstalled && (!excludeSystem || !appInfo.isSystem)
-                        && (!appInfo.hasBackups || appInfo.isUpdated)
-                        && inListed(appInfo.packageName))
-            }
-            SCHED_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
+        val predicate: (AppInfo) -> Boolean = {
+            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem && !it.isSpecial else false)
+                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
+        }
+        val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
+        val specialPredicate: (AppInfo) -> Boolean = when (specialFilter) {
+            SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
                 launchableAppsList.contains(appInfo.packageName)
                         && inListed(appInfo.packageName)
             }
+            SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
+                appInfo.isInstalled
+                        && (!appInfo.hasBackups || appInfo.isUpdated)
+                        && inListed(appInfo.packageName)
+            }
+            SPECIAL_FILTER_OLD -> {
+                { appInfo: AppInfo ->
+                    if (appInfo.hasBackups) {
+                        val lastBackup = appInfo.latestBackup?.backupProperties?.backupDate
+                        val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
+                        diff >= days && inListed(appInfo.packageName)
+                    } else
+                        false
+                }
+            }
             else -> { appInfo: AppInfo -> inListed(appInfo.packageName) }
         }
-        val selectedItems = unfilteredList.filter(predicate)
-                .sortedWith { m1: AppInfo, m2: AppInfo ->
-                    m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
-                }
-                .map(AppInfo::packageName)
+        val selectedItems = unfilteredList
+            .filter(predicate)
+            .filter(specialPredicate)
+            .sortedWith { m1: AppInfo, m2: AppInfo ->
+                m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
+            }
+            .map(AppInfo::packageName)
         return Pair(selectedItems, schedule?.mode ?: MODE_UNSET)
     }
 }

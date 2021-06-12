@@ -40,29 +40,25 @@ fun modeIfActive(context: Context, mode: Int) = when {
     else -> MODE_UNSET
 }
 
-fun modeToModes(mode: Int): List<Int> =
-        mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
-                .filter { mode and it == it }
+fun modeToModes(mode: Int): List<Int> = possibleSchedModes.filter { mode and it == it }
 
-fun modeToIds(mode: Int): List<Int> {
-    val ids = mutableListOf<Int>()
-    if (mode and MODE_APK == MODE_APK) ids.add(R.id.chipApk)
-    if (mode and MODE_DATA == MODE_DATA) ids.add(R.id.chipData)
-    if (mode and MODE_DATA_DE == MODE_DATA_DE) ids.add(R.id.chipDataDe)
-    if (mode and MODE_DATA_EXT == MODE_DATA_EXT) ids.add(R.id.chipDataExt)
-    if (mode and MODE_DATA_OBB == MODE_DATA_OBB) ids.add(R.id.chipDataObb)
-    return ids
+fun modeToId(mode: Int) = when (mode) {
+    MODE_APK -> R.id.backupApk
+    MODE_DATA -> R.id.backupData
+    MODE_DATA_DE -> R.id.backupDataDe
+    MODE_DATA_EXT -> R.id.backupDataExt
+    MODE_DATA_OBB -> R.id.backupDataObb
+    else -> R.id.backupNone
 }
 
-fun idToMode(id: Int): Int {
-    return when (id) {
-        R.id.chipApk -> MODE_APK
-        R.id.chipData -> MODE_DATA
-        R.id.chipDataDe -> MODE_DATA_DE
-        R.id.chipDataExt -> MODE_DATA_EXT
-        R.id.chipDataObb -> MODE_DATA_OBB
-        else -> MODE_UNSET
-    }
+fun idToMode(id: Int) = when (id) {
+    R.id.backupNone -> MODE_NONE
+    R.id.backupApk -> MODE_APK
+    R.id.backupData -> MODE_DATA
+    R.id.backupDataDe -> MODE_DATA_DE
+    R.id.backupDataExt -> MODE_DATA_EXT
+    R.id.backupDataObb -> MODE_DATA_OBB
+    else -> MODE_UNSET
 }
 
 fun modeToString(context: Context, mode: Int): String = when (mode) {
@@ -82,4 +78,4 @@ fun modeToStringAlt(context: Context, mode: Int): String = when (mode) {
 }
 
 fun modesToString(context: Context, modes: List<Int>): String =
-        modes.joinToString(", ") { modeToString(context, it) }
+    modes.joinToString(", ") { modeToString(context, it) }

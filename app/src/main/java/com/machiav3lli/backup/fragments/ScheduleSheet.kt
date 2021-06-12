@@ -35,10 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.MODE_UNSET
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.SCHED_FILTER_ALL
-import com.machiav3lli.backup.SCHED_FILTER_NEW_UPDATED
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.Schedule
@@ -79,18 +76,19 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
 
         viewModel.schedule.observe(viewLifecycleOwner, {
             binding.schedName.text = it.name
-            binding.schedFilter.check(filterToId(it.filter))
-            modeToIds(it.mode).forEach { id ->
+            it.filterIds.forEach { id ->
+                binding.schedFilter.check(id)
+            }
+            it.modeIds.forEach { id ->
                 binding.schedMode.check(id)
             }
+            binding.schedSpecialFilter.check(specialFilterToId(it.specialFilter))
             binding.enableCheckbox.isChecked = it.enabled
             binding.customListButton.setColor(it.customList)
             binding.blocklistButton.setColor(it.blockList)
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
-            binding.excludeSystem.setExists(viewModel.schedule.value?.filter == SCHED_FILTER_NEW_UPDATED)
-            binding.excludeSystem.isChecked = it.excludeSystem
         })
 
         return binding.root
@@ -109,9 +107,17 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
                 refresh(false)
             }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
         }
-        binding.schedFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            viewModel.schedule.value?.filter = idToFilter(checkedId)
+        binding.schedSpecialFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
+            viewModel.schedule.value?.specialFilter = idToSpecialFilter(checkedId)
             refresh(false)
+        }
+        binding.schedFilter.children.forEach {
+            it.setOnClickListener {
+                viewModel.schedule.value?.let { schedule ->
+                    schedule.filter = schedule.filter xor idToFilter(it.id)
+                }
+                refresh(false)
+            }
         }
         binding.schedMode.children.forEach {
             it.setOnClickListener {
@@ -136,14 +142,10 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
                 refresh(true)
             }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
         }
-        binding.excludeSystem.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.schedule.value?.excludeSystem = isChecked
-            refresh(false)
-        }
         binding.customListButton.setOnClickListener {
             val selectedPackages = viewModel.schedule.value?.customList?.toList() ?: listOf()
             PackagesListDialogFragment(selectedPackages, viewModel.schedule.value?.filter
-                    ?: SCHED_FILTER_ALL, false) { newList: Set<String> ->
+                    ?: MAIN_FILTER_DEFAULT, false) { newList: Set<String> ->
                 viewModel.schedule.value?.customList = newList
                 refresh(false)
             }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
@@ -151,7 +153,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
         binding.blocklistButton.setOnClickListener {
             val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
             PackagesListDialogFragment(blocklistedPackages, viewModel.schedule.value?.filter
-                    ?: SCHED_FILTER_ALL, true) { newList: Set<String> ->
+                    ?: MAIN_FILTER_DEFAULT, true) { newList: Set<String> ->
                 viewModel.schedule.value?.blockList = newList
                 refresh(false)
             }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
@@ -198,8 +200,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
             val message = StringBuilder()
             message.append("\n${getString(R.string.sched_mode)} ${modesToString(requireContext(), modeToModes(it.mode))}")
             message.append("\n${getString(R.string.backup_filters)} ${filterToString(requireContext(), it.filter)}")
-            if (it.filter == SCHED_FILTER_NEW_UPDATED)
-                message.append("\n${getString(R.string.sched_excludeSystemCheckBox)}: ${if (it.excludeSystem) getString(R.string.dialogYes) else getString(R.string.dialogNo)}")
+            message.append("\n${getString(R.string.other_filters_options)} ${specialFilterToString(requireContext(), it.specialFilter)}")
             message.append("\n${getString(R.string.customListTitle)}: ${if (it.customList.isNotEmpty()) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
             message.append("\n${getString(R.string.sched_blocklist)}: ${if (it.blockList.isNotEmpty()) getString(R.string.dialogYes) else getString(R.string.dialogNo)}") // TODO list the packages
             AlertDialog.Builder(requireActivity())

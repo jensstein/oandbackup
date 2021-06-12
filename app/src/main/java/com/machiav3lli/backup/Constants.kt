@@ -73,51 +73,49 @@ const val ALT_MODE_DATA = 2
 const val ALT_MODE_BOTH = 3
 
 const val MODE_UNSET = 0b00000
-const val MODE_APK = 0b10000
-const val MODE_DATA = 0b01000
-const val MODE_DATA_DE = 0b00100
-const val MODE_DATA_EXT = 0b00010
-const val MODE_DATA_OBB = 0b00001
+const val MODE_NONE = 0b100000
+const val MODE_APK = 0b010000
+const val MODE_DATA = 0b001000
+const val MODE_DATA_DE = 0b000100
+const val MODE_DATA_EXT = 0b000010
+const val MODE_DATA_OBB = 0b000001
+const val BACKUP_FILTER_DEFAULT = 0b111111
+val possibleSchedModes =
+    mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
+val possibleBackupFilters =
+    mutableListOf(MODE_NONE, MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB)
 
-const val MAIN_SORT_LABEL = '0'
-const val MAIN_SORT_PACKAGENAME = '1'
-const val MAIN_SORT_DATASIZE = '2'
+const val MAIN_SORT_LABEL = 0
+const val MAIN_SORT_PACKAGENAME = 1
+const val MAIN_SORT_DATASIZE = 2
 
-const val MAIN_FILTER_ALL = '0'
-const val MAIN_FILTER_SYSTEM = '1'
-const val MAIN_FILTER_USER = '2'
-const val MAIN_FILTER_SPECIAL = '3'
-const val MAIN_FILTER_LAUNCHABLE = '4'
+const val MAIN_FILTER_DEFAULT = 0b110
+const val MAIN_FILTER_UNSET = 0b000
+const val MAIN_FILTER_SYSTEM = 0b100
+const val MAIN_FILTER_USER = 0b010
+const val MAIN_FILTER_SPECIAL = 0b001
+val possibleMainFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILTER_SPECIAL)
+val possibleSchedFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER)
 
-const val MAIN_BACKUPFILTER_ALL = '0'
-const val MAIN_BACKUPFILTER_BOTH = '1'
-const val MAIN_BACKUPFILTER_APK = '2'
-const val MAIN_BACKUPFILTER_DATA = '3'
-const val MAIN_BACKUPFILTER_NONE = '4'
-
-const val MAIN_SPECIALFILTER_ALL = '0'
-const val MAIN_SPECIALFILTER_NEW_UPDATED = '1'
-const val MAIN_SPECIALFILTER_NOTINSTALLED = '2'
-const val MAIN_SPECIALFILTER_OLD = '3'
-const val MAIN_SPECIALFILTER_SPLIT = '4'
-
-const val SCHED_FILTER_ALL = 0
-const val SCHED_FILTER_USER = 1
-const val SCHED_FILTER_SYSTEM = 2
-const val SCHED_FILTER_NEW_UPDATED = 3
-const val SCHED_FILTER_LAUNCHABLE = 4
+const val SPECIAL_FILTER_ALL = 0
+const val SPECIAL_FILTER_LAUNCHABLE = 1
+const val SPECIAL_FILTER_NEW_UPDATED = 2
+const val SPECIAL_FILTER_OLD = 3
+const val SPECIAL_FILTER_NOT_INSTALLED = 4
 
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"
 
 const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/OAndBackupX"
-const val HELP_ELEMENT = "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
+const val HELP_ELEMENT =
+    "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
 const val HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/machiav3lli/oandbackupx/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md"
 
-val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
+val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 

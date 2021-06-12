@@ -221,42 +221,35 @@
                     app:layout_constraintBottom_toTopOf="@id/backupFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/filtersTitle">
+                    app:layout_constraintTop_toBottomOf="@id/filtersTitle"
+                    app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showAll"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/filterSystem"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
+                        android:text="@string/radio_system"
+                        app:checkedIcon="@drawable/ic_system"
+                        app:checkedIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlySystem"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/filterUser"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_system" />
+                        android:text="@string/radio_user"
+                        app:checkedIcon="@drawable/ic_user"
+                        app:checkedIconTint="@color/ic_user" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlyUser"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/filterSpecial"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_user" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlyLaunchable"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_launchable" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/showOnlySpecial"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_special" />
+                        android:text="@string/radio_special"
+                        app:checkedIcon="@drawable/ic_special"
+                        app:checkedIconTint="@color/ic_special" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -275,6 +268,7 @@
                     android:id="@+id/backupFilters"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
+                    app:singleSelection="false"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@id/specialFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -282,39 +276,56 @@
                     app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle">
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/backupAll"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupBoth"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/bothBackedUp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupApk"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_apk" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backupData"
-                        style="@style/Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/radio_data" />
-
-                    <com.google.android.material.chip.Chip
                         android:id="@+id/backupNone"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotBackedup" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupApk"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_apk"
+                        app:checkedIcon="@drawable/ic_apk"
+                        app:checkedIconTint="@color/ic_apk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupData"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_data"
+                        app:checkedIcon="@drawable/ic_data"
+                        app:checkedIconTint="@color/ic_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataDe"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_deviceprotecteddata"
+                        app:checkedIcon="@drawable/ic_de_data"
+                        app:checkedIconTint="@color/ic_de_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataExt"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_externaldata"
+                        app:checkedIcon="@drawable/ic_external_data"
+                        app:checkedIconTint="@color/ic_ext_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataObb"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_obbdata"
+                        app:checkedIcon="@drawable/ic_obb_data"
+                        app:checkedIconTint="@color/ic_obb" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -341,38 +352,46 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialAll"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_all" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/specialNewAndUpdated"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/specialLaunchable"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showNewAndUpdated" />
+                        android:text="@string/radio_launchable"
+                        app:checkedIcon="@drawable/ic_launchable"
+                        app:checkedIconTint="@color/ic_obb" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/specialNotInstalled"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/specialNewUpdated"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showNotInstalled" />
+                        android:text="@string/showNewAndUpdated"
+                        app:checkedIcon="@drawable/ic_updated"
+                        app:checkedIconTint="@color/ic_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showOldBackups" />
+                        android:text="@string/showOldBackups"
+                        app:checkedIcon="@drawable/ic_old"
+                        app:checkedIconTint="@color/ic_exodus" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/specialSplit"
-                        style="@style/Chip.Filter"
+                        android:id="@+id/specialNotInstalled"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showSplitAPKs" />
+                        android:text="@string/showNotInstalled"
+                        app:checkedIcon="@drawable/ic_delete"
+                        app:checkedIconTint="@color/app_secondary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton

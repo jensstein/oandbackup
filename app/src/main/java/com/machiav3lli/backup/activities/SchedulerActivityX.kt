@@ -87,7 +87,7 @@ class SchedulerActivityX : BaseActivity() {
             Thread {
                 val blocklistedPackages = blocklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
 
-                PackagesListDialogFragment(blocklistedPackages, SCHED_FILTER_ALL,
+                PackagesListDialogFragment(blocklistedPackages, MAIN_FILTER_DEFAULT,
                         true) { newList: Set<String> ->
                     Thread {
                         blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)

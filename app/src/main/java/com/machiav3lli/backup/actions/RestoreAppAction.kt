@@ -374,8 +374,16 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         Timber.d(String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.dataPath, backupProperties.isEncrypted, context.cacheDir)
-        genericRestorePermissions(BACKUP_DIR_DATA, File(app.dataPath))
+        genericRestoreFromArchive(
+            backupArchive.uri,
+            app.dataPath,
+            backupProperties.isEncrypted,
+            context.cacheDir
+        )
+        genericRestorePermissions(
+            BACKUP_DIR_DATA,
+            File(app.dataPath)
+        )
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
@@ -384,10 +392,15 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         Timber.d(String.format(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename))
         val backupArchive = backupLocation.findFile(backupFilename)
                 ?: throw RestoreFailedException(String.format(LOG_BACKUP_ARCHIVE_MISSING, backupFilename))
-        genericRestoreFromArchive(backupArchive.uri, app.devicesProtectedDataPath, backupProperties.isEncrypted, deviceProtectedStorageContext.cacheDir)
+        genericRestoreFromArchive(
+            backupArchive.uri,
+            app.devicesProtectedDataPath,
+            backupProperties.isEncrypted,
+            deviceProtectedStorageContext.cacheDir
+        )
         genericRestorePermissions(
-                BACKUP_DIR_DEVICE_PROTECTED_FILES,
-                File(app.devicesProtectedDataPath)
+            BACKUP_DIR_DEVICE_PROTECTED_FILES,
+            File(app.devicesProtectedDataPath)
         )
     }
 
@@ -408,7 +421,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         runAsRoot("$utilBoxQuoted mkdir -p ${quote(externalDataDir)}")
         if (!externalDataDir.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
             throw RestoreFailedException("Could not create external data directory at $externalDataDir")
-        genericRestoreFromArchive(backupArchive.uri, externalDataDir.absolutePath, backupProperties.isEncrypted, context.externalCacheDir)
+        genericRestoreFromArchive(
+            backupArchive.uri,
+            externalDataDir.absolutePath,
+            backupProperties.isEncrypted,
+            context.externalCacheDir
+        )
     }
 
     @Throws(RestoreFailedException::class)

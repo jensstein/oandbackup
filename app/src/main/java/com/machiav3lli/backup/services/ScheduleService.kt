@@ -173,7 +173,7 @@ open class ScheduleService : Service() {
                 .setContentTitle(getString(R.string.sched_notificationMessage))
                 .setSmallIcon(R.drawable.ic_app)
                 .setOngoing(true)
-                .setNotificationSilent()
+                .setSilent(true)
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
