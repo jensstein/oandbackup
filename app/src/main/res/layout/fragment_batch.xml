@@ -113,17 +113,29 @@
             app:layout_constraintTop_toBottomOf="@id/progressBar">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/updatedApps"
-                style="@style/Chip.Action.Filled.Positive"
+                android:id="@+id/apkBatch"
+                style="@style/Chip.Apk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="150dp"
-                android:text="@string/place_holder"
-                android:textAppearance="@style/TextAppearance.Label"
-                android:visibility="invisible"
+                android:text="@string/radio_apk"
+                android:textAppearance="@style/TextAppearance.Lines"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dataBatch"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/ic_apk" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/dataBatch"
+                style="@style/Chip.Data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/buttons_spacing"
+                android:text="@string/radio_data"
+                android:textAppearance="@style/TextAppearance.Lines"
+                app:layout_constraintStart_toEndOf="@id/apkBatch"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/ic_data" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/buttonSortFilter"
@@ -143,51 +155,16 @@
                 app:rippleColor="@color/app_accent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/updatedBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/cards_spacing"
-            android:background="@drawable/bg_bar_static_round"
-            android:elevation="2dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/refreshLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/modeBar">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/updatedRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/buttons_spacing"
-                android:scrollbars="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_updated_x" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/updateAllAction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/buttons_spacing"
-                android:background="@drawable/bg_button_positive_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/update_all"
-                android:textColor="?colorAccent" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="top"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/updatedBar">
+            app:layout_constraintTop_toBottomOf="@id/modeBar">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -197,6 +174,29 @@
                 app:fastScrollEnabled="true"
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/buttonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient_alpha_top_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/refreshLayout">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:layout_marginVertical="@dimen/buttons_spacing"
+                android:background="@drawable/bg_button_positive_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/place_holder"
+                android:textColor="?colorAccent" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

@@ -48,7 +48,7 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getProgressMessage(mainActivityX, actionType)
             UiThreadStatement.runOnUiThread {
-                mainActivityX.snackBar = Snackbar.make(mainActivityX.binding.refreshLayout,
+                mainActivityX.snackBar = Snackbar.make(mainActivityX.binding.fragmentContainer,
                         "${app.packageLabel}: $message", Snackbar.LENGTH_INDEFINITE)
                 mainActivityX.snackBar?.view?.translationY = -64F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
                 mainActivityX.snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round)
