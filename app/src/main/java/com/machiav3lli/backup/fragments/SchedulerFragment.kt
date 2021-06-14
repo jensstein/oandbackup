@@ -26,16 +26,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
-import com.machiav3lli.backup.dbs.BlocklistDao
-import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SchedulerItemX
-import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
@@ -49,7 +45,6 @@ class SchedulerFragment : NavigationFragment() {
     private lateinit var binding: FragmentSchedulerBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
-    private lateinit var blocklistDao: BlocklistDao // TODO delegate this to the MainActivity's VM
     override var appInfoList: MutableList<AppInfo>
         get() =
             requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
@@ -69,7 +64,6 @@ class SchedulerFragment : NavigationFragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentSchedulerBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        blocklistDao = BlocklistDatabase.getInstance(requireContext()).blocklistDao
         val dataSource = ScheduleDatabase.getInstance(requireContext()).scheduleDao
         val viewModelFactory = SchedulerViewModelFactory(dataSource, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SchedulerViewModel::class.java)
@@ -119,17 +113,16 @@ class SchedulerFragment : NavigationFragment() {
             }
         binding.blocklistButton.setOnClickListener {
             Thread {
-                val blocklistedPackages =
-                    blocklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
+                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
+                    ?.mapNotNull { it.packageName }
+                    ?: listOf()
 
                 PackagesListDialogFragment(
-                    blocklistedPackages, MAIN_FILTER_DEFAULT,
+                    blocklistedPackages,
+                    MAIN_FILTER_DEFAULT,
                     true
                 ) { newList: Set<String> ->
-                    Thread {
-                        blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-                        requireContext().isNeedRefresh = true
-                    }.start()
+                    requireMainActivity().viewModel.updateBlocklist(newList)
                 }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
