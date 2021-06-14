@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
@@ -321,9 +320,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
+    // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        // TODO abstract this to fit for Main- & BatchFragment
         val notificationId = System.currentTimeMillis()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
@@ -347,18 +346,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            // TODO create Request from class AppActionWork directly
-            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-                .setInputData(
-                    workDataOf(
-                        "packageName" to packageName,
-                        "selectedMode" to mode,
-                        "backupBoolean" to backupBoolean,
-                        "notificationId" to notificationId.toInt()
-                    )
-                )
-                .build()
-
+            val oneTimeWorkRequest = AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -393,15 +381,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             })
         }
 
-        // TODO create Request from class FinishWork directly
-        val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-            .setInputData(
-                workDataOf(
-                    "resultsSuccess" to resultsSuccess,
-                    "backupBoolean" to backupBoolean
-                )
-            )
-            .build()
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean)
 
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)

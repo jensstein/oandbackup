@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.tasks
 
 import android.content.Context
+import androidx.work.OneTimeWorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -41,5 +42,19 @@ class FinishWork(val context: Context, workerParams: WorkerParameters) : Worker(
                 "notificationMessage" to notificationMessage,
                 "notificationTitle" to notificationTitle
         ))
+    }
+
+    companion object {
+        fun Request(
+            resultsSuccess: Boolean,
+            backupBoolean: Boolean
+        ) = OneTimeWorkRequest.Builder(FinishWork::class.java)
+            .setInputData(
+                workDataOf(
+                    "resultsSuccess" to resultsSuccess,
+                    "backupBoolean" to backupBoolean
+                )
+            )
+            .build()
     }
 }

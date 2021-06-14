@@ -243,6 +243,7 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
+    // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(
         selectedPackages: List<String?>,
@@ -271,18 +272,7 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            // TODO create Request from class AppActionWork directly
-            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-                .setInputData(
-                    workDataOf(
-                        "packageName" to packageName,
-                        "selectedMode" to mode,
-                        "backupBoolean" to true,
-                        "notificationId" to notificationId.toInt()
-                    )
-                )
-                .build()
-
+            val oneTimeWorkRequest = AppActionWork.Request(packageName, mode, true, notificationId.toInt())
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -316,15 +306,7 @@ class HomeFragment : NavigationFragment(),
             })
         }
 
-        // TODO create Request from class FinishWork directly
-        val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-            .setInputData(
-                workDataOf(
-                    "resultsSuccess" to resultsSuccess,
-                    "backupBoolean" to true
-                )
-            )
-            .build()
+        val finishWorkRequest = FinishWork.Request(resultsSuccess,true)
 
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)

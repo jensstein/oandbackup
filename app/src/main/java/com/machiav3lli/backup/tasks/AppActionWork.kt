@@ -146,5 +146,21 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) : Coro
 
     companion object {
         private val CHANNEL_ID = AppActionWork::class.java.name
+
+        fun Request(
+            packageName: String,
+            mode: Int,
+            backupBoolean: Boolean,
+            notificationId : Int
+        ) = OneTimeWorkRequest.Builder(AppActionWork::class.java)
+            .setInputData(
+                workDataOf(
+                    "packageName" to packageName,
+                    "selectedMode" to mode,
+                    "backupBoolean" to backupBoolean,
+                    "notificationId" to notificationId
+                )
+            )
+            .build()
     }
 }
