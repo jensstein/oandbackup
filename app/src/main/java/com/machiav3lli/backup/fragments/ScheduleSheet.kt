@@ -36,7 +36,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.SchedulerActivityX
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDatabase
@@ -191,7 +190,7 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
     }
 
     private fun refresh(rescheduleBoolean: Boolean) {
-        Thread(UpdateRunnable(viewModel.schedule.value, requireActivity() as SchedulerActivityX, rescheduleBoolean))
+        Thread(UpdateRunnable(viewModel.schedule.value, requireContext(), rescheduleBoolean))
                 .start()
     }
 
@@ -215,13 +214,13 @@ class ScheduleSheet(private val scheduleId: Long) : BottomSheetDialogFragment() 
         }
     }
 
-    class UpdateRunnable(private val schedule: Schedule?, scheduler: SchedulerActivityX?, private val rescheduleBoolean: Boolean)
+    class UpdateRunnable(private val schedule: Schedule?, context: Context?, private val rescheduleBoolean: Boolean)
         : Runnable {
-        private val activityReference: WeakReference<SchedulerActivityX?> = WeakReference(scheduler)
+        private val contextReference: WeakReference<Context?> = WeakReference(context)
 
         override fun run() {
-            val scheduler = activityReference.get()
-            if (scheduler != null && !scheduler.isFinishing) {
+            val scheduler = contextReference.get()
+            if (scheduler != null) {
                 val scheduleDatabase = ScheduleDatabase.getInstance(scheduler)
                 val scheduleDao = scheduleDatabase.scheduleDao
                 schedule?.let {

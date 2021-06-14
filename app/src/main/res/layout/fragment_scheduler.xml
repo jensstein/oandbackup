@@ -34,19 +34,6 @@
             android:background="@drawable/bg_bar_static_round"
             android:elevation="@dimen/small_spacing">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="@drawable/bg_ripple_click"
-                android:contentDescription=""
-                android:padding="@dimen/cards_spacing"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back" />
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/pageHeadline"
                 android:layout_width="0dp"
@@ -59,7 +46,7 @@
                 android:textAppearance="@style/TextAppearance.Headline"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/blocklistButton"
-                app:layout_constraintStart_toEndOf="@id/backButton"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageButton

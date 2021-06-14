@@ -132,14 +132,6 @@ class MainActivityX : BaseActivity() {
                 )
             )
         }
-        binding.buttonScheduler.setOnClickListener {
-            startActivity(
-                Intent(
-                    applicationContext,
-                    SchedulerActivityX::class.java
-                )
-            )
-        }
     }
 
     private fun showEncryptionDialog() {
