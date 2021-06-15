@@ -18,11 +18,13 @@
 package com.machiav3lli.backup.activities
 
 import android.os.Bundle
-import androidx.preference.PreferenceFragmentCompat
+import android.view.MenuItem
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
-import com.machiav3lli.backup.fragments.PrefsServiceFragment
 
 class PrefsActivity : BaseActivity() {
     private lateinit var binding: ActivityPrefsBinding
@@ -32,24 +34,43 @@ class PrefsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrefsBinding.inflate(layoutInflater)
-        if (intent.extras != null && intent.extras!!.getBoolean(".toEncryption", false)) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.prefsFragment, PrefsServiceFragment()).commit()
-        } else {
-            supportFragmentManager.beginTransaction().replace(R.id.prefsFragment, PrefsFragment())
-                .commit()
-        }
+        setContentView(binding.root)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupOnClicks()
+        setupNavigation()
+    }
+
+    private fun setupOnClicks() {
         binding.backButton.setOnClickListener { if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
         binding.helpButton.setOnClickListener {
             if (sheetHelp == null) sheetHelp = HelpSheet()
             sheetHelp!!.showNow(supportFragmentManager, "HELPSHEET")
         }
-        setContentView(binding.root)
     }
 
-    class PrefsFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.preferences, rootKey)
+    private fun setupNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
+            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
+            navController.navigate(item.itemId)
+            true
+        }
+        navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
+            binding.pageHeadline.text = when (destination.id) {
+                R.id.userFragment -> getString(R.string.prefs_user)
+                R.id.serviceFragment -> getString(R.string.prefs_service)
+                R.id.advancedFragment -> getString(R.string.prefs_advanced)
+                R.id.toolsFragment -> getString(R.string.prefs_tools)
+                else -> getString(R.string.prefs_title)
+            }
+        }
+        if (intent.extras != null && intent.extras!!.getBoolean(".toEncryption", false)) {
+            navController.navigate(R.id.serviceFragment)
         }
     }
 }
