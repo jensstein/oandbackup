@@ -234,7 +234,7 @@
     </plurals>
     <plurals name="sched_interval_formal">
         <item quantity="one">cada dia</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">cada %d dias</item>
     </plurals>
     <string name="backup_all_updated">Backup de todas as aplicações atualizadas</string>
