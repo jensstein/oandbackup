@@ -32,44 +32,27 @@ import timber.log.Timber
 
 class MainViewModel(val database: BlocklistDao, private val appContext: Application) :
     AndroidViewModel(appContext) {
-    val apkCheckedList = mutableListOf<String>()
-
-    val dataCheckedList = mutableListOf<String>()
 
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
-
     var blocklist = MediatorLiveData<List<Blocklist>>()
 
     private val _initial = MutableLiveData<Boolean>()
     val initial: LiveData<Boolean>
         get() = _initial
 
-    private var _refreshActive = MutableLiveData<Boolean>()
-    val refreshActive: LiveData<Boolean>
-        get() = _refreshActive
-
     val refreshNow = MutableLiveData<Boolean>()
-
-    val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
 
     init {
         _initial.value = true
         blocklist.addSource(database.liveAll, blocklist::setValue)
-        nUpdatedApps.value = 0
     }
 
     fun refreshList() {
         viewModelScope.launch {
             _initial.value = false
-            _refreshActive.value = true
             appInfoList.value = recreateAppInfoList()
             refreshNow.value = true
         }
-    }
-
-    fun finishRefresh() {
-        refreshNow.value = false
-        _refreshActive.value = false
     }
 
     private suspend fun recreateAppInfoList(): MutableList<AppInfo> = withContext(Dispatchers.IO) {
@@ -80,7 +63,6 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            _refreshActive.value = true
             val appInfo = appInfoList.value?.find { it.packageName == packageName }
             appInfo?.let {
                 appInfoList.value = updateListWith(packageName)

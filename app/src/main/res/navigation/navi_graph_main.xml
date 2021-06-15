@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.machiav3lli.backup.fragments.MainFragment"
+        android:name="com.machiav3lli.backup.fragments.HomeFragment"
         tools:layout="@layout/fragment_main" />
 
     <fragment
