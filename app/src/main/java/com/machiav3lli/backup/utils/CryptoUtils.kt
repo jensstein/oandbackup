@@ -64,7 +64,12 @@ private const val ITERATION_COUNT = 2020
 private const val KEY_LENGTH = 256
 
 @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
-fun generateKeyFromPassword(password: String, salt: ByteArray?, keyFactoryAlgorithm: String? = DEFAULT_SECRET_KEY_FACTORY_ALGORITHM, cipherAlgorithm: String = CIPHER_ALGORITHM): SecretKey {
+fun generateKeyFromPassword(
+    password: String,
+    salt: ByteArray?,
+    keyFactoryAlgorithm: String? = DEFAULT_SECRET_KEY_FACTORY_ALGORITHM,
+    cipherAlgorithm: String = CIPHER_ALGORITHM
+): SecretKey {
     val factory = SecretKeyFactory.getInstance(keyFactoryAlgorithm)
     val spec: KeySpec = PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH)
     val keyBytes = factory.generateSecret(spec).encoded
@@ -84,7 +89,10 @@ fun OutputStream.encryptStream(password: String, salt: ByteArray?): CipherOutput
 }
 
 @Throws(CryptoSetupException::class)
-fun OutputStream.encryptStream(secret: SecretKey?, cipherAlgorithm: String = CIPHER_ALGORITHM): CipherOutputStream = try {
+fun OutputStream.encryptStream(
+    secret: SecretKey?,
+    cipherAlgorithm: String = CIPHER_ALGORITHM
+): CipherOutputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
     val iv = IvParameterSpec(initIv(cipherAlgorithm))
     cipher.init(Cipher.ENCRYPT_MODE, secret, iv)
@@ -116,7 +124,10 @@ fun InputStream.decryptStream(password: String, salt: ByteArray?): CipherInputSt
 }
 
 @Throws(CryptoSetupException::class)
-fun InputStream.decryptStream(secret: SecretKey?, cipherAlgorithm: String = CIPHER_ALGORITHM): CipherInputStream = try {
+fun InputStream.decryptStream(
+    secret: SecretKey?,
+    cipherAlgorithm: String = CIPHER_ALGORITHM
+): CipherInputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
     val iv = IvParameterSpec(initIv(cipherAlgorithm))
     cipher.init(Cipher.DECRYPT_MODE, secret, iv)
@@ -150,7 +161,7 @@ private fun initIv(cipherAlgorithm: String): ByteArray {
     // IV is nothing secret. Could also be constant, but why not spend a few cpu cycles to have
     // it dynamic, if the algorithm changes?
     val iv = ByteArray(blockSize)
-    for (i in 0 until blockSize) {
+    (0 until blockSize).forEach { i ->
         iv[i] = 0
     }
     return iv

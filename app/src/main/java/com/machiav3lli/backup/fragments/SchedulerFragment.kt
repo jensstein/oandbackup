@@ -46,8 +46,8 @@ class SchedulerFragment : NavigationFragment() {
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
     override var appInfoList: MutableList<AppInfo>
-        get() =
-            requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
+        get() = requireMainActivity().viewModel.appInfoList.value
+            ?: mutableListOf()
         set(value) {
             requireMainActivity().viewModel.appInfoList.value = value
         }

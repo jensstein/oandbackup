@@ -25,7 +25,12 @@ import java.util.*
  * Backup item for either a newly created backup or the original item of the restored backup.
  * Can be null, if succeeded is set to false
  */
-class ActionResult(val app: AppInfo?, val backupProperties: BackupProperties?, val message: String, val succeeded: Boolean) {
+class ActionResult(
+    val app: AppInfo?,
+    val backupProperties: BackupProperties?,
+    val message: String,
+    val succeeded: Boolean
+) {
     private val occurrence: LocalDateTime = LocalDateTime.now()
 
     override fun toString(): String {

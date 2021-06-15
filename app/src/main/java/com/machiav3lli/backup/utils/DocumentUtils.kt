@@ -22,14 +22,13 @@ import java.io.IOException
 
 @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getBackupDir(): StorageFile =
-        StorageFile.fromUri(this, getBackupDirUri(this))
-
+    StorageFile.fromUri(this, getBackupDirUri(this))
 
 fun StorageFile.ensureDirectory(dirName: String): StorageFile? = findFile(dirName)
-        ?: createDirectory(dirName)
+    ?: createDirectory(dirName)
 
 fun Uri.deleteRecursive(context: Context): Boolean =
-        StorageFile.fromUri(context, this).deleteRecursive()
+    StorageFile.fromUri(context, this).deleteRecursive()
 
 private fun StorageFile.deleteRecursive(): Boolean = when {
     isFile ->
@@ -54,14 +53,22 @@ private fun StorageFile.deleteRecursive(): Boolean = when {
 }
 
 @Throws(IOException::class)
-fun suRecursiveCopyFileToDocument(context: Context, filesToBackup: List<ShellHandler.FileInfo>, targetUri: Uri) {
+fun suRecursiveCopyFileToDocument(
+    context: Context,
+    filesToBackup: List<ShellHandler.FileInfo>,
+    targetUri: Uri
+) {
     val resolver = context.contentResolver
     for (file in filesToBackup) {
         try {
-            val parentUri = targetUri.buildUpon().appendEncodedPath(File(file.filePath).parent).build()
+            val parentUri = targetUri
+                .buildUpon()
+                .appendEncodedPath(File(file.filePath).parent)
+                .build()
             val parentFile = StorageFile.fromUri(context, parentUri)
             when (file.fileType) {
-                FileType.REGULAR_FILE -> suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
+                FileType.REGULAR_FILE ->
+                    suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
                 FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
                 else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
@@ -85,17 +92,24 @@ fun suCopyFileToDocument(resolver: ContentResolver, sourcePath: String, targetDi
     SuFileInputStream.open(sourcePath).use { inputFile ->
         val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)
         if (newFile != null)
-            resolver.openOutputStream(newFile.uri).use { outputFile -> IOUtils.copy(inputFile, outputFile) }
+            resolver.openOutputStream(newFile.uri)
+                .use { outputFile -> IOUtils.copy(inputFile, outputFile) }
         else
             throw IOException()
     }
 }
 
 @Throws(IOException::class)
-fun suCopyFileToDocument(resolver: ContentResolver, sourceFile: ShellHandler.FileInfo, targetDir: StorageFile) {
+fun suCopyFileToDocument(
+    resolver: ContentResolver,
+    sourceFile: ShellHandler.FileInfo,
+    targetDir: StorageFile
+) {
     val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)
     if (newFile != null)
-        resolver.openOutputStream(newFile.uri).use { outputFile -> ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!) }
+        resolver.openOutputStream(newFile.uri).use { outputFile ->
+            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!)
+        }
     else
         throw IOException()
 }
@@ -109,12 +123,15 @@ fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri, targetPath
             runAsRoot("mkdir -p ${quote(File(targetPath, sourceDoc.name!!))}")
         } else if (sourceDoc.isFile) {
             suCopyFileFromDocument(
-                    resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath)
+                resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath
+            )
         }
     }
 }
 
 @Throws(IOException::class)
 fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri, targetPath: String) {
-    SuFileOutputStream.open(targetPath).use { outputFile -> resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) } }
+    SuFileOutputStream.open(targetPath).use { outputFile ->
+        resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) }
+    }
 }

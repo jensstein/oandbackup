@@ -46,13 +46,19 @@ class HelpSheet : BottomSheetDialogFragment() {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            val bottomSheet =
+                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state =
+                BottomSheetBehavior.STATE_EXPANDED
         }
         return sheet
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = SheetHelpBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -65,23 +71,43 @@ class HelpSheet : BottomSheetDialogFragment() {
 
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_CHANGELOG))) }
-        binding.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_TELEGRAM))) }
-        binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT))) }
-        binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE))) }
-        binding.issues.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES))) }
-        binding.faq.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ))) }
-        binding.usageNotesTitle.setOnClickListener { usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE) }
-        binding.extendShrink.setOnClickListener { usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE) }
+        binding.changelog.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_CHANGELOG)))
+        }
+        binding.telegram.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_TELEGRAM)))
+        }
+        binding.element.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT)))
+        }
+        binding.license.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE)))
+        }
+        binding.issues.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES)))
+        }
+        binding.faq.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ)))
+        }
+        binding.usageNotesTitle.setOnClickListener {
+            usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE)
+        }
+        binding.extendShrink.setOnClickListener {
+            usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE)
+        }
     }
 
     private fun setupViews() {
         try {
-            binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
+            binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(
+                requireActivity().packageName,
+                0
+            ).versionName
             val stream = resources.openRawResource(R.raw.help)
             val htmlString = convertStreamToString(stream)
             stream.close()
-            binding.usageNotesHtml.text = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.usageNotesHtml.text =
+                HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
             binding.usageNotesHtml.movementMethod = LinkMovementMethod.getInstance()
         } catch (e: IOException) {
             binding.usageNotesHtml.text = e.toString()

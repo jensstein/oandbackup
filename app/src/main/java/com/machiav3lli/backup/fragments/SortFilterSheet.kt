@@ -35,20 +35,30 @@ import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.*
 
-class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilterModel(), private val stats: Triple<Int, Int, Int>) : BottomSheetDialogFragment() {
+class SortFilterSheet(
+    private var mSortFilterModel: SortFilterModel = SortFilterModel(),
+    private val stats: Triple<Int, Int, Int>
+) :
+    BottomSheetDialogFragment() {
     private lateinit var binding: SheetSortFilterBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            val bottomSheet =
+                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state =
+                BottomSheetBehavior.STATE_EXPANDED
         }
         return sheet
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = SheetSortFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -85,13 +95,13 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
             mSortFilterModel.putSortBy(checkedId)
         }
         binding.sortAscDesc.isChecked = requireContext().sortOrder
-        mSortFilterModel.filterIds.forEach { binding.filters.check(it)}
+        mSortFilterModel.filterIds.forEach { binding.filters.check(it) }
         binding.filters.children.forEach {
             it.setOnClickListener { view ->
                 mSortFilterModel.mainFilter = mSortFilterModel.mainFilter xor idToFilter(view.id)
             }
         }
-        mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it)}
+        mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it) }
         binding.backupFilters.children.forEach {
             it.setOnClickListener { view ->
                 mSortFilterModel.backupFilter = mSortFilterModel.backupFilter xor idToMode(view.id)
@@ -101,7 +111,9 @@ class SortFilterSheet(private var mSortFilterModel: SortFilterModel = SortFilter
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             mSortFilterModel.specialFilter = idToSpecialFilter(checkedId)
         }
-        if (requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+        if (requireContext().getDefaultSharedPreferences()
+                .getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
+        ) {
             binding.filterSpecial.visibility = View.VISIBLE
         } else {
             binding.filterSpecial.visibility = View.GONE

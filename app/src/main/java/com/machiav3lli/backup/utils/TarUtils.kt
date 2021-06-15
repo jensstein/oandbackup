@@ -62,9 +62,11 @@ fun TarArchiveOutputStream.addFilepath(inputFilepath: File, parent: String) {
         IOUtils.copy(bis, this)
     } else if (inputFilepath.isDirectory) {
         closeArchiveEntry()
-        for (nextFile in Objects.requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")) {
-            addFilepath(nextFile, entryName + File.separator)
-        }
+        Objects
+            .requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")
+            .forEach {
+                addFilepath(it, entryName + File.separator)
+            }
     } else {
         // in case of a symlink
         closeArchiveEntry()
@@ -129,7 +131,8 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: File?) {
                 ShellHandler.runAsRoot("mkdir -p ${quote(file)}")
                 suUncompressTo(it)
             } else if (tarEntry.isFile) {
-                SuFileOutputStream.open(SuFile.open(it, tarEntry.name)).use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
+                SuFileOutputStream.open(SuFile.open(it, tarEntry.name))
+                    .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
             } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
                 ShellHandler.runAsRoot("cd ${quote(it)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
             } else if (tarEntry.isFIFO) {
@@ -146,7 +149,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
     targetDir?.let {
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetPath = File(it, tarEntry.name)
-            Timber.d(String.format("Uncompressing %s (filesize: %d)", tarEntry.name, tarEntry.realSize))
+            Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
             var doChmod = true
             when {
                 tarEntry.isDirectory -> {
@@ -154,7 +157,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                         throw IOException("Unable to create folder ${targetPath.absolutePath}")
                     }
                 }
-                tarEntry.isLink || tarEntry.isSymbolicLink -> {
+                tarEntry.isLink or tarEntry.isSymbolicLink -> {
                     try {
                         Os.symlink(tarEntry.linkName, targetPath.absolutePath)
                     } catch (e: ErrnoException) {
@@ -171,7 +174,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                 }
                 else -> {
                     val parent = targetPath.parentFile!!
-                    if (!parent.exists() && !parent.mkdirs()) {
+                    if (!parent.exists() and !parent.mkdirs()) {
                         throw IOException("Unable to create folder ${parent.absolutePath}")
                     }
                     FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }

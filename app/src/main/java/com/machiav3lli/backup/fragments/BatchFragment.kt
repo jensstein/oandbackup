@@ -326,7 +326,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val notificationId = System.currentTimeMillis()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
-            if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)
+            getString(if (backupBoolean) R.string.backup else R.string.restore)
         )
         showNotification(
             requireContext(), MainActivityX::class.java, notificationId.toInt(),
@@ -346,7 +346,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            val oneTimeWorkRequest = AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
+            val oneTimeWorkRequest =
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -356,13 +357,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
                         binding.progressBar.progress = counter
                         counter += 1
-                        val succeeded = t.outputData.getBoolean("succeeded", false)
-                        val packageLabel = t.outputData.getString("packageLabel")
-                            ?: ""
-                        val error = t.outputData.getString("error")
-                            ?: ""
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
                         val message = "${
-                            if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)
+                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress)
                         } ($counter/${selectedItems.size})"
                         showNotification(
                             requireContext(), MainActivityX::class.java, notificationId.toInt(),
@@ -374,7 +372,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 error
                             )
                         }\n"
-                        resultsSuccess = resultsSuccess && succeeded
+
+                        resultsSuccess = resultsSuccess and succeeded
                         oneTimeWorkLiveData.removeObserver(this)
                     }
                 }
@@ -388,22 +387,16 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
             override fun onChanged(t: WorkInfo?) {
                 if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    val message = t.outputData.getString("notificationMessage")
-                        ?: ""
-                    val title = t.outputData.getString("notificationTitle")
-                        ?: ""
+                    val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
                         notificationId.toInt(), title, message, true
                     )
-
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                    requireActivity().showActionResult(overAllResult,
-                        if (overAllResult.succeeded) null
-                        else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
-                            LogsHandler.logErrors(requireContext(), errors.dropLast(2))
-                        }
-                    )
+                    requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
+                        LogsHandler.logErrors(requireContext(), errors.dropLast(2))
+                    }
+
                     binding.progressBar.visibility = View.GONE
                     requireMainActivity().viewModel.refreshList()
                     finishWorkLiveData.removeObserver(this)

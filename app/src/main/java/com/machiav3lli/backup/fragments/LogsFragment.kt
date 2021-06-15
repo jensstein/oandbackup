@@ -41,8 +41,10 @@ class LogsFragment : Fragment() {
     private var logFastAdapter: FastAdapter<LogItemX>? = null
     private lateinit var viewModel: LogViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
@@ -85,7 +87,12 @@ class LogsFragment : Fragment() {
             return viewHolder.itemView.findViewById(R.id.share)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<LogItemX>, item: LogItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<LogItemX>,
+            item: LogItemX
+        ) {
             viewModel.shareLog(item.log)
         }
     }
@@ -95,7 +102,12 @@ class LogsFragment : Fragment() {
             return viewHolder.itemView.findViewById(R.id.delete)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<LogItemX>, item: LogItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<LogItemX>,
+            item: LogItemX
+        ) {
             viewModel.deleteLog(item.log)
         }
     }

@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentMainBinding
@@ -125,16 +124,10 @@ class HomeFragment : NavigationFragment(),
 
     override fun setupViews() {
         binding.refreshLayout.setColorSchemeColors(
-            resources.getColor(
-                R.color.app_accent,
-                requireActivity().theme
-            )
+            resources.getColor(R.color.app_accent, requireActivity().theme)
         )
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
-            resources.getColor(
-                R.color.app_primary_base,
-                requireActivity().theme
-            )
+            resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
         mainFastAdapter = FastAdapter.with(mainItemAdapter)
@@ -272,7 +265,8 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            val oneTimeWorkRequest = AppActionWork.Request(packageName, mode, true, notificationId.toInt())
+            val oneTimeWorkRequest =
+                AppActionWork.Request(packageName, mode, true, notificationId.toInt())
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -282,11 +276,8 @@ class HomeFragment : NavigationFragment(),
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
                         binding.progressBar.progress = counter
                         counter += 1
-                        val succeeded = t.outputData.getBoolean("succeeded", false)
-                        val packageLabel = t.outputData.getString("packageLabel")
-                            ?: ""
-                        val error = t.outputData.getString("error")
-                            ?: ""
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
                         val message =
                             "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
                         showNotification(
@@ -299,36 +290,31 @@ class HomeFragment : NavigationFragment(),
                                 error
                             )
                         }\n"
-                        resultsSuccess = resultsSuccess && succeeded
+
+                        resultsSuccess = resultsSuccess and succeeded
                         oneTimeWorkLiveData.removeObserver(this)
                     }
                 }
             })
         }
 
-        val finishWorkRequest = FinishWork.Request(resultsSuccess,true)
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, true)
 
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
             override fun onChanged(t: WorkInfo?) {
                 if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    val message = t.outputData.getString("notificationMessage")
-                        ?: ""
-                    val title = t.outputData.getString("notificationTitle")
-                        ?: ""
+                    val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
                         notificationId.toInt(), title, message, true
                     )
-
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                    requireActivity().showActionResult(overAllResult,
-                        if (overAllResult.succeeded) null
-                        else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
-                            LogsHandler.logErrors(requireContext(), errors.dropLast(2))
-                        }
-                    )
+                    requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
+                        LogsHandler.logErrors(requireContext(), errors.dropLast(2))
+                    }
+
                     binding.progressBar.visibility = View.GONE
                     viewModel.refreshList()
                     finishWorkLiveData.removeObserver(this)

@@ -31,7 +31,11 @@ import com.machiav3lli.backup.databinding.FragmentWelcomeBinding
 class WelcomeFragment : Fragment() {
     private lateinit var binding: FragmentWelcomeBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         super.onCreate(savedInstanceState)
         binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,17 +48,31 @@ class WelcomeFragment : Fragment() {
     }
 
     private fun setupOnClicks() {
-        binding.changelog.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_CHANGELOG))) }
-        binding.telegram.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_TELEGRAM))) }
-        binding.element.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT))) }
-        binding.license.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE))) }
-        binding.issues.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES))) }
-        binding.faq.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ))) }
+        binding.changelog.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_CHANGELOG)))
+        }
+        binding.telegram.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_TELEGRAM)))
+        }
+        binding.element.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT)))
+        }
+        binding.license.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE)))
+        }
+        binding.issues.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES)))
+        }
+        binding.faq.setOnClickListener {
+            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ)))
+        }
     }
 
     private fun setupViews() {
         try {
-            binding.versionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
+            binding.versionName.text = requireActivity().packageManager
+                .getPackageInfo(requireActivity().packageName, 0)
+                .versionName
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
     }

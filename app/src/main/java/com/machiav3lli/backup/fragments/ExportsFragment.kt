@@ -42,8 +42,11 @@ class ExportsFragment : Fragment() {
     private var schedulesFastAdapter: FastAdapter<ExportsItemX>? = null
     private lateinit var viewModel: ExportsViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
@@ -87,7 +90,12 @@ class ExportsFragment : Fragment() {
             return viewHolder.itemView.findViewById(R.id.restore)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExportsItemX>, item: ExportsItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<ExportsItemX>,
+            item: ExportsItemX
+        ) {
             viewModel.importSchedule(item.schedule)
         }
     }
@@ -97,7 +105,12 @@ class ExportsFragment : Fragment() {
             return viewHolder.itemView.findViewById(R.id.delete)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExportsItemX>, item: ExportsItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<ExportsItemX>,
+            item: ExportsItemX
+        ) {
             viewModel.deleteExport(item.exportFile)
         }
     }

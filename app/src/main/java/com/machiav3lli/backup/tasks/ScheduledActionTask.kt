@@ -32,18 +32,22 @@ import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-open class ScheduledActionTask(val context: Context, private val scheduleId: Long)
-    : CoroutinesAsyncTask<Void?, String, Pair<List<String>, Int>>() {
+open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
+    CoroutinesAsyncTask<Void?, String, Pair<List<String>, Int>>() {
 
     override fun doInBackground(vararg params: Void?): Pair<List<String>, Int>? {
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
         val blacklistDao = BlocklistDatabase.getInstance(context).blocklistDao
 
         val schedule = scheduleDao.getSchedule(scheduleId)
-        val filter = schedule?.filter ?: MAIN_FILTER_DEFAULT
-        val specialFilter = schedule?.specialFilter ?: SPECIAL_FILTER_ALL
-        val customList = schedule?.customList ?: setOf()
-        val customBlocklist = schedule?.blockList ?: listOf()
+        val filter = schedule?.filter
+            ?: MAIN_FILTER_DEFAULT
+        val specialFilter = schedule?.specialFilter
+            ?: SPECIAL_FILTER_ALL
+        val customList = schedule?.customList
+            ?: setOf()
+        val customBlocklist = schedule?.blockList
+            ?: listOf()
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
         val blockList = globalBlocklist.plus(customBlocklist)
 
@@ -51,11 +55,17 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             context.getApplicationList(blockList)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            LogsHandler.logErrors(
+                context,
+                "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
+            )
             return Pair(listOf(), MODE_UNSET)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
-            LogsHandler.logErrors(context, "Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
+            LogsHandler.logErrors(
+                context,
+                "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
+            )
             return Pair(listOf(), MODE_UNSET)
         }
 
@@ -63,32 +73,32 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
             val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
-                    .map { it.activityInfo.packageName }
+                .map { it.activityInfo.packageName }
         }
         val inListed = { packageName: String ->
-            customList.isEmpty() || customList.contains(packageName)
+            customList.isEmpty() or customList.contains(packageName)
         }
         val predicate: (AppInfo) -> Boolean = {
-            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem && !it.isSpecial else false)
+            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem and !it.isSpecial else false)
                     || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
         }
         val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (AppInfo) -> Boolean = when (specialFilter) {
             SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
-                launchableAppsList.contains(appInfo.packageName)
-                        && inListed(appInfo.packageName)
+                launchableAppsList.contains(appInfo.packageName) and
+                        inListed(appInfo.packageName)
             }
             SPECIAL_FILTER_NEW_UPDATED -> { appInfo: AppInfo ->
-                appInfo.isInstalled
-                        && (!appInfo.hasBackups || appInfo.isUpdated)
-                        && inListed(appInfo.packageName)
+                appInfo.isInstalled and
+                        (!appInfo.hasBackups or appInfo.isUpdated) and
+                        inListed(appInfo.packageName)
             }
             SPECIAL_FILTER_OLD -> {
                 { appInfo: AppInfo ->
                     if (appInfo.hasBackups) {
                         val lastBackup = appInfo.latestBackup?.backupProperties?.backupDate
                         val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
-                        diff >= days && inListed(appInfo.packageName)
+                        (diff >= days) and inListed(appInfo.packageName)
                     } else
                         false
                 }

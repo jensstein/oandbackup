@@ -40,7 +40,8 @@ fun modeIfActive(context: Context, mode: Int) = when {
     else -> MODE_UNSET
 }
 
-fun modeToModes(mode: Int): List<Int> = possibleSchedModes.filter { mode and it == it }
+fun modeToModes(mode: Int): List<Int> = possibleSchedModes
+    .filter { mode and it == it }
 
 fun modeToId(mode: Int) = when (mode) {
     MODE_APK -> R.id.backupApk

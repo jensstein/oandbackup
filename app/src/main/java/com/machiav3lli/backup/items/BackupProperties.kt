@@ -63,15 +63,22 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     @Expose
     val cpuArch: String?
 
-    fun getBackupLocation(appBackupDir: StorageFile?): Uri = appBackupDir?.findFile(backupFolderName)?.uri
+    fun getBackupLocation(appBackupDir: StorageFile?): Uri =
+        appBackupDir?.findFile(backupFolderName)?.uri
             ?: Uri.EMPTY
 
     private val backupFolderName
-        get() = String.format(BACKUP_INSTANCE_DIR, BACKUP_DATE_TIME_FORMATTER.format(backupDate), profileId)
+        get() = String.format(
+            BACKUP_INSTANCE_DIR,
+            BACKUP_DATE_TIME_FORMATTER.format(backupDate),
+            profileId
+        )
 
-    constructor(context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
-                hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-                hasObbData: Boolean, cipherType: String?, cpuArch: String?)
+    constructor(
+        context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
+        hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
+        hasObbData: Boolean, cipherType: String?, cpuArch: String?
+    )
             : super(context, pi) {
         this.backupDate = backupDate
         this.hasApk = hasApk
@@ -83,12 +90,15 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.cpuArch = cpuArch
     }
 
-    constructor(base: AppMetaInfo, backupDate: LocalDateTime?, hasApk: Boolean,
-                hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-                hasObbData: Boolean, cipherType: String?, cpuArch: String?)
-            : super(base.packageName, base.packageLabel, base.versionName,
-            base.versionCode, base.profileId, base.sourceDir,
-            base.splitSourceDirs, base.isSystem) {
+    constructor(
+        base: AppMetaInfo, backupDate: LocalDateTime?, hasApk: Boolean,
+        hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
+        hasObbData: Boolean, cipherType: String?, cpuArch: String?
+    ) : super(
+        base.packageName, base.packageLabel, base.versionName,
+        base.versionCode, base.profileId, base.sourceDir,
+        base.splitSourceDirs, base.isSystem
+    ) {
         this.backupDate = backupDate
         this.hasApk = hasApk
         this.hasAppData = hasAppData
@@ -99,11 +109,16 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.cpuArch = cpuArch
     }
 
-    constructor(packageName: String?, packageLabel: String?, versionName: String?, versionCode: Int,
-                profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean,
-                backupDate: LocalDateTime?, hasApk: Boolean, hasAppData: Boolean, hasDevicesProtectedData: Boolean,
-                hasExternalData: Boolean, hasObbData: Boolean, cipherType: String?, cpuArch: String?)
-            : super(packageName, packageLabel, versionName, versionCode, profileId, sourceDir, splitSourceDirs, isSystem) {
+    constructor(
+        packageName: String?, packageLabel: String?, versionName: String?, versionCode: Int,
+        profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean,
+        backupDate: LocalDateTime?, hasApk: Boolean, hasAppData: Boolean,
+        hasDevicesProtectedData: Boolean, hasExternalData: Boolean, hasObbData: Boolean,
+        cipherType: String?, cpuArch: String?
+    ) : super(
+        packageName, packageLabel, versionName, versionCode, profileId,
+        sourceDir, splitSourceDirs, isSystem
+    ) {
         this.backupDate = backupDate
         this.hasApk = hasApk
         this.hasAppData = hasAppData

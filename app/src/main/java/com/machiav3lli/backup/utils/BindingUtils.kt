@@ -47,25 +47,26 @@ fun View.setVisible(rightMode: Boolean) {
 }
 
 fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
-        animate().alpha(if (nVisibility == View.VISIBLE) 1.0f else 0.0f)
-                .setDuration(if (withAnimation) 600 else 1.toLong())
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                        if (nVisibility == View.VISIBLE && visibility == View.GONE) visibility = View.VISIBLE
-                    }
+    animate().alpha(if (nVisibility == View.VISIBLE) 1.0f else 0.0f)
+        .setDuration(if (withAnimation) 600 else 1.toLong())
+        .setListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                if (nVisibility == View.VISIBLE && visibility == View.GONE)
+                    visibility = View.VISIBLE
+            }
 
-                    override fun onAnimationEnd(animation: Animator) {
-                        visibility = nVisibility
-                    }
+            override fun onAnimationEnd(animation: Animator) {
+                visibility = nVisibility
+            }
 
-                    override fun onAnimationCancel(animation: Animator) {
-                        // not relevant
-                    }
+            override fun onAnimationCancel(animation: Animator) {
+                // not relevant
+            }
 
-                    override fun onAnimationRepeat(animation: Animator) {
-                        // not relevant
-                    }
-                })
+            override fun onAnimationRepeat(animation: Animator) {
+                // not relevant
+            }
+        })
 
 fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) = when {
     metaInfo?.hasIcon() == true -> setImageDrawable(metaInfo.applicationIcon)

@@ -104,29 +104,32 @@ class IntroActivityX : BaseActivity() {
     private fun launchBiometricPrompt(withBiometric: Boolean) {
         val biometricPrompt = createBiometricPrompt(this)
         val promptInfo = PromptInfo.Builder()
-                .setTitle(getString(R.string.prefs_biometriclock))
-                .setConfirmationRequired(true)
-                .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
-                .build()
+            .setTitle(getString(R.string.prefs_biometriclock))
+            .setConfirmationRequired(true)
+            .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
+            .build()
         biometricPrompt.authenticate(promptInfo)
     }
 
     private fun createBiometricPrompt(activity: Activity): BiometricPrompt {
-        return BiometricPrompt(this, ContextCompat.getMainExecutor(this), object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                startActivity(Intent(activity, MainActivityX::class.java))
-            }
-
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                if (errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
-                    binding.positiveButton.setText(R.string.dialog_unlock)
-                    binding.positiveButton.visibility = View.VISIBLE
-                } else {
-                    binding.positiveButton.visibility = View.GONE
+        return BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    startActivity(Intent(activity, MainActivityX::class.java))
                 }
-            }
-        })
+
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    if (errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
+                        binding.positiveButton.setText(R.string.dialog_unlock)
+                        binding.positiveButton.visibility = View.VISIBLE
+                    } else {
+                        binding.positiveButton.visibility = View.GONE
+                    }
+                }
+            })
     }
 }

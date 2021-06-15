@@ -27,7 +27,8 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.modeIfActive
 
-class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionListener) : DialogFragment() {
+class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionListener) :
+    DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val labels = mutableListOf<String>()
@@ -60,15 +61,18 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
         }
 
         return AlertDialog.Builder(requireActivity())
-                .setTitle(appInfo.packageLabel)
-                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedOptions) { _: DialogInterface?, index: Int, _: Boolean ->
-                    selectedMode = selectedMode xor possibleModes[index]
-                }
-                .setPositiveButton(R.string.backup) { _: DialogInterface?, _: Int ->
-                    if (selectedMode != MODE_UNSET)
-                        listener.onActionCalled(ActionType.BACKUP, selectedMode, null)
-                }
-                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
-                .create()
+            .setTitle(appInfo.packageLabel)
+            .setMultiChoiceItems(
+                labels.toTypedArray<CharSequence>(),
+                checkedOptions
+            ) { _: DialogInterface?, index: Int, _: Boolean ->
+                selectedMode = selectedMode xor possibleModes[index]
+            }
+            .setPositiveButton(R.string.backup) { _: DialogInterface?, _: Int ->
+                if (selectedMode != MODE_UNSET)
+                    listener.onActionCalled(ActionType.BACKUP, selectedMode, null)
+            }
+            .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
+            .create()
     }
 }

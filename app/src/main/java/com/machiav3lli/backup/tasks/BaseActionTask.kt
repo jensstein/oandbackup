@@ -35,9 +35,10 @@ import com.machiav3lli.backup.utils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
 
-abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
-                              val mode: Int, private val actionType: ActionType)
-    : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
+abstract class BaseActionTask(
+    val app: AppInfo, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
+    val mode: Int, private val actionType: ActionType
+) : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
     private var signal: CountDownLatch? = null
     protected var result: ActionResult? = null
@@ -48,15 +49,25 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getProgressMessage(mainActivityX, actionType)
             UiThreadStatement.runOnUiThread {
-                mainActivityX.snackBar = Snackbar.make(mainActivityX.binding.fragmentContainer,
-                        "${app.packageLabel}: $message", Snackbar.LENGTH_INDEFINITE)
-                mainActivityX.snackBar?.view?.translationY = -64F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
+                mainActivityX.snackBar = Snackbar.make(
+                    mainActivityX.binding.fragmentContainer,
+                    "${app.packageLabel}: $message", Snackbar.LENGTH_INDEFINITE
+                )
+                mainActivityX.snackBar?.view?.translationY =
+                    -64F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
                 mainActivityX.snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round)
-                mainActivityX.snackBar?.setTextColor(mainActivityX.resources.getColor(R.color.app_primary_inverse, mainActivityX.theme))
+                mainActivityX.snackBar?.setTextColor(
+                    mainActivityX.resources.getColor(
+                        R.color.app_primary_inverse,
+                        mainActivityX.theme
+                    )
+                )
                 mainActivityX.snackBar?.show()
             }
-            showNotification(mainActivityX, MainActivityX::class.java,
-                    notificationId, app.packageLabel, message, true)
+            showNotification(
+                mainActivityX, MainActivityX::class.java,
+                notificationId, app.packageLabel, message, true
+            )
         }
     }
 
@@ -64,13 +75,16 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getPostExecuteMessage(mainActivityX, actionType, result)
-            showNotification(mainActivityX, MainActivityX::class.java,
-                    notificationId, app.packageLabel, message, true)
-            mainActivityX.showActionResult(this.result!!, if (this.result!!.succeeded) null
-            else { _: DialogInterface?, _: Int ->
-                logErrors(mainActivityX, LogsHandler.handleErrorMessages(mainActivityX, result?.message)
-                        ?: "")
-            })
+            showNotification(
+                mainActivityX, MainActivityX::class.java,
+                notificationId, app.packageLabel, message, true
+            )
+            mainActivityX.showActionResult(this.result!!) { _: DialogInterface?, _: Int ->
+                logErrors(
+                    mainActivityX, LogsHandler.handleErrorMessages(mainActivityX, result?.message)
+                        ?: ""
+                )
+            }
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.snackBar?.dismiss()
         }
@@ -80,9 +94,13 @@ abstract class BaseActionTask(val app: AppInfo, oAndBackupX: MainActivityX, val 
     }
 
     private fun getProgressMessage(context: Context, actionType: ActionType): String =
-            context.getString(if (actionType == ActionType.BACKUP) R.string.backupProgress else R.string.restoreProgress)
+        context.getString(if (actionType == ActionType.BACKUP) R.string.backupProgress else R.string.restoreProgress)
 
-    private fun getPostExecuteMessage(context: Context, actionType: ActionType, result: ActionResult?): String? {
+    private fun getPostExecuteMessage(
+        context: Context,
+        actionType: ActionType,
+        result: ActionResult?
+    ): String? {
         return result?.let {
             if (it.succeeded) {
                 if (actionType == ActionType.BACKUP) {
