@@ -25,8 +25,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 
-class ScheduleNameDialog(private var scheduleName: CharSequence, var confirmListener: (String) -> Unit)
-    : DialogFragment() {
+class ScheduleNameDialog(
+    private var scheduleName: CharSequence,
+    var confirmListener: (String) -> Unit
+) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val nameEdit = EditText(requireContext())
@@ -34,7 +36,9 @@ class ScheduleNameDialog(private var scheduleName: CharSequence, var confirmList
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle(requireContext().getString(R.string.sched_name))
         builder.setView(nameEdit)
-        builder.setPositiveButton(requireContext().getString(R.string.dialogSave)) { _: DialogInterface?, _: Int -> confirmListener(nameEdit.text.toString()) }
+        builder.setPositiveButton(requireContext().getString(R.string.dialogSave)) { _: DialogInterface?, _: Int ->
+            confirmListener(nameEdit.text.toString())
+        }
         builder.setNegativeButton(requireContext().getString(R.string.dialogCancel)) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
         return builder.create()
     }

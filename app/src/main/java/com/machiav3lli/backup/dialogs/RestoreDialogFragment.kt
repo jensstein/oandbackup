@@ -27,7 +27,11 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 
-class RestoreDialogFragment(val appInfo: AppInfo, private val properties: BackupProperties, private val listener: ActionListener) : DialogFragment() {
+class RestoreDialogFragment(
+    val appInfo: AppInfo,
+    private val properties: BackupProperties,
+    private val listener: ActionListener
+) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val labels = mutableListOf<String>()
@@ -65,15 +69,18 @@ class RestoreDialogFragment(val appInfo: AppInfo, private val properties: Backup
         checkedOptions.fill(true)
 
         return AlertDialog.Builder(requireActivity())
-                .setTitle(appInfo.appMetaInfo.packageLabel)
-                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedOptions) { _: DialogInterface?, index: Int, _: Boolean ->
-                    selectedMode = selectedMode xor possibleModes[index]
-                }
-                .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
-                    if (selectedMode != MODE_UNSET)
-                        listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
-                }
-                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
-                .create()
+            .setTitle(appInfo.appMetaInfo.packageLabel)
+            .setMultiChoiceItems(
+                labels.toTypedArray<CharSequence>(),
+                checkedOptions
+            ) { _: DialogInterface?, index: Int, _: Boolean ->
+                selectedMode = selectedMode xor possibleModes[index]
+            }
+            .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
+                if (selectedMode != MODE_UNSET)
+                    listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
+            }
+            .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
+            .create()
     }
 }

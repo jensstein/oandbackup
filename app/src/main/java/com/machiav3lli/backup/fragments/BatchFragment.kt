@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
@@ -321,13 +320,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
+    // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        // TODO abstract this to fit for Main- & BatchFragment
         val notificationId = System.currentTimeMillis()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
-            if (backupBoolean) getString(R.string.backup) else getString(R.string.restore)
+            getString(if (backupBoolean) R.string.backup else R.string.restore)
         )
         showNotification(
             requireContext(), MainActivityX::class.java, notificationId.toInt(),
@@ -347,18 +346,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
-            // TODO create Request from class AppActionWork directly
-            val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-                .setInputData(
-                    workDataOf(
-                        "packageName" to packageName,
-                        "selectedMode" to mode,
-                        "backupBoolean" to backupBoolean,
-                        "notificationId" to notificationId.toInt()
-                    )
-                )
-                .build()
-
+            val oneTimeWorkRequest =
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -368,13 +357,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
                         binding.progressBar.progress = counter
                         counter += 1
-                        val succeeded = t.outputData.getBoolean("succeeded", false)
-                        val packageLabel = t.outputData.getString("packageLabel")
-                            ?: ""
-                        val error = t.outputData.getString("error")
-                            ?: ""
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
                         val message = "${
-                            if (backupBoolean) getString(R.string.backupProgress) else getString(R.string.restoreProgress)
+                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress)
                         } ($counter/${selectedItems.size})"
                         showNotification(
                             requireContext(), MainActivityX::class.java, notificationId.toInt(),
@@ -386,44 +372,31 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 error
                             )
                         }\n"
-                        resultsSuccess = resultsSuccess && succeeded
+
+                        resultsSuccess = resultsSuccess and succeeded
                         oneTimeWorkLiveData.removeObserver(this)
                     }
                 }
             })
         }
 
-        // TODO create Request from class FinishWork directly
-        val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-            .setInputData(
-                workDataOf(
-                    "resultsSuccess" to resultsSuccess,
-                    "backupBoolean" to backupBoolean
-                )
-            )
-            .build()
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean)
 
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
             override fun onChanged(t: WorkInfo?) {
                 if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    val message = t.outputData.getString("notificationMessage")
-                        ?: ""
-                    val title = t.outputData.getString("notificationTitle")
-                        ?: ""
+                    val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
                         notificationId.toInt(), title, message, true
                     )
-
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                    requireActivity().showActionResult(overAllResult,
-                        if (overAllResult.succeeded) null
-                        else DialogInterface.OnClickListener { _: DialogInterface?, _: Int ->
-                            LogsHandler.logErrors(requireContext(), errors.dropLast(2))
-                        }
-                    )
+                    requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
+                        LogsHandler.logErrors(requireContext(), errors.dropLast(2))
+                    }
+
                     binding.progressBar.visibility = View.GONE
                     requireMainActivity().viewModel.refreshList()
                     finishWorkLiveData.removeObserver(this)

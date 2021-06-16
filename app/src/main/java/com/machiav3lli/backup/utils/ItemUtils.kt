@@ -52,12 +52,18 @@ fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: B
         cacheSizeLine.changeVisibility(View.GONE, update)
     } else {
         try {
-            appSize.text = Formatter.formatFileSize(context, app.storageStats?.appBytes
-                    ?: 0)
-            dataSize.text = Formatter.formatFileSize(context, app.storageStats?.dataBytes
-                    ?: 0)
-            cacheSize.text = Formatter.formatFileSize(context, app.storageStats?.cacheBytes
-                    ?: 0)
+            appSize.text = Formatter.formatFileSize(
+                context, app.storageStats?.appBytes
+                    ?: 0
+            )
+            dataSize.text = Formatter.formatFileSize(
+                context, app.storageStats?.dataBytes
+                    ?: 0
+            )
+            cacheSize.text = Formatter.formatFileSize(
+                context, app.storageStats?.cacheBytes
+                    ?: 0
+            )
             if (app.storageStats?.cacheBytes == 0L) {
                 wipeCache.changeVisibility(View.INVISIBLE, update)
             }

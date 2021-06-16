@@ -77,9 +77,9 @@ object FileUtils {
 
     fun translatePosixPermissionToMode(permissions: Set<PosixFilePermission?>): Int {
         var mode = 0
-        for (action in PosixFilePermission.values()) {
+        PosixFilePermission.values().forEach {
             mode = mode shl 1
-            mode += if (permissions.contains(action)) 1 else 0
+            mode += if (permissions.contains(it)) 1 else 0
         }
         return mode
     }

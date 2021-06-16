@@ -32,14 +32,17 @@ import java.nio.charset.StandardCharsets
 @Throws(FileNotFoundException::class)
 fun Uri.openFileForReading(context: Context): BufferedReader {
     return BufferedReader(
-            InputStreamReader(context.contentResolver.openInputStream(this), StandardCharsets.UTF_8)
+        InputStreamReader(context.contentResolver.openInputStream(this), StandardCharsets.UTF_8)
     )
 }
 
 @Throws(FileNotFoundException::class)
 fun Uri.openFileForWriting(context: Context, mode: String?): BufferedWriter {
     return BufferedWriter(
-            OutputStreamWriter(context.contentResolver.openOutputStream(this, mode!!), StandardCharsets.UTF_8)
+        OutputStreamWriter(
+            context.contentResolver.openOutputStream(this, mode!!),
+            StandardCharsets.UTF_8
+        )
     )
 }
 
@@ -69,21 +72,28 @@ private fun Uri.getRawType(context: Context): String? = try {
     null
 }
 
-fun Uri.getFlags(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS)
+fun Uri.getFlags(context: Context): Long =
+    queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS)
 
-fun Uri.isDirectory(context: Context): Boolean = DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context)
+fun Uri.isDirectory(context: Context): Boolean =
+    DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context)
 
 fun Uri.isFile(context: Context): Boolean {
     val type = getRawType(context)
-    return !(DocumentsContract.Document.MIME_TYPE_DIR == type || TextUtils.isEmpty(type))
+    return !TextUtils.isEmpty(type) && type != DocumentsContract.Document.MIME_TYPE_DIR
 }
 
-fun Uri.lastModified(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+fun Uri.lastModified(context: Context): Long =
+    queryForLong(context, DocumentsContract.Document.COLUMN_LAST_MODIFIED)
 
-fun Uri.length(context: Context): Long = queryForLong(context, DocumentsContract.Document.COLUMN_SIZE)
+fun Uri.length(context: Context): Long =
+    queryForLong(context, DocumentsContract.Document.COLUMN_SIZE)
 
 fun Uri.canRead(context: Context): Boolean = when {
-    context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_READ_URI_PERMISSION) // Ignore if grant doesn't allow read
+    context.checkCallingOrSelfUriPermission(
+        this,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION
+    ) // Ignore if grant doesn't allow read
             != PackageManager.PERMISSION_GRANTED -> false
     else -> !TextUtils.isEmpty(getRawType(context))
 } // Ignore documents without MIME
@@ -91,7 +101,8 @@ fun Uri.canRead(context: Context): Boolean = when {
 fun Uri.canWrite(context: Context): Boolean {
     // Ignore if grant doesn't allow write
     if (context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            != PackageManager.PERMISSION_GRANTED) {
+        != PackageManager.PERMISSION_GRANTED
+    ) {
         return false
     }
     val type = getRawType(context)
@@ -116,8 +127,11 @@ fun Uri.exists(context: Context): Boolean {
     val resolver = context.contentResolver
     var cursor: Cursor? = null
     return try {
-        cursor = resolver.query(this, arrayOf(
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID), null, null, null)
+        cursor = resolver.query(
+            this, arrayOf(
+                DocumentsContract.Document.COLUMN_DOCUMENT_ID
+            ), null, null, null
+        )
         cursor?.count ?: 0 > 0
     } catch (e: Throwable) {
         LogsHandler.unhandledException(e, this)

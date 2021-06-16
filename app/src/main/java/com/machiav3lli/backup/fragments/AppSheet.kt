@@ -56,7 +56,8 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragment(), ActionListener {
+class AppSheet(val appInfo: AppInfo, val position: Int) :
+    BottomSheetDialogFragment(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -69,17 +70,26 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.setOnShowListener { d: DialogInterface ->
             val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let { BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED }
+            val bottomSheet =
+                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
         return sheet
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = SheetAppBinding.inflate(inflater, container, false)
-        val users = if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
+        val users =
+            if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
-        val viewModelFactory = AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
+        val viewModelFactory =
+            AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
         viewModel.refreshNow.observe(viewLifecycleOwner, { refreshBoolean ->
@@ -134,7 +144,8 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
     private fun setupChips(update: Boolean) {
         viewModel.appInfo.value?.let {
             if (!it.isInstalled || it.isSpecial) {
-                binding.launchApp.changeVisibility(View.INVISIBLE, update) // TODO add isLaunchable attribute to AppInfo
+                // TODO add isLaunchable attribute to AppInfo
+                binding.launchApp.changeVisibility(View.INVISIBLE, update)
                 binding.uninstall.changeVisibility(View.INVISIBLE, update)
                 binding.enableDisable.changeVisibility(View.INVISIBLE, update)
                 binding.appInfo.changeVisibility(View.GONE, update)
@@ -209,7 +220,14 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 intent.data = Uri.fromParts("package", app.packageName, null)
                 this.startActivity(intent)
             }
-            binding.exodusReport.setOnClickListener { requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(exodusUrl(app.packageName)))) }
+            binding.exodusReport.setOnClickListener {
+                requireContext().startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(exodusUrl(app.packageName))
+                    )
+                )
+            }
             binding.launchApp.setOnClickListener {
                 requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
                     startActivity(it)
@@ -218,43 +236,43 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
             binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
             binding.uninstall.setOnClickListener {
                 AlertDialog.Builder(requireContext())
-                        .setTitle(app.packageLabel)
-                        .setMessage(R.string.uninstallDialogMessage)
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
-                            viewModel.uninstallApp()
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
+                    .setTitle(app.packageLabel)
+                    .setMessage(R.string.uninstallDialogMessage)
+                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                        requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
+                        viewModel.uninstallApp()
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
             }
             binding.addToBlocklist.setOnClickListener {
                 requireMainActivity().viewModel.addToBlocklist(app.packageName)
             }
             binding.backup.setOnClickListener {
                 BackupDialogFragment(app, this)
-                        .show(requireActivity().supportFragmentManager, "backupDialog")
+                    .show(requireActivity().supportFragmentManager, "backupDialog")
             }
             binding.deleteAll.setOnClickListener {
                 AlertDialog.Builder(requireContext())
-                        .setTitle(app.packageLabel)
-                        .setMessage(R.string.deleteBackupDialogMessage)
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            requireActivity().showToast("${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
-                            viewModel.deleteAllBackups()
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
+                    .setTitle(app.packageLabel)
+                    .setMessage(R.string.deleteBackupDialogMessage)
+                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                        requireActivity().showToast("${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
+                        viewModel.deleteAllBackups()
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
             }
             binding.forceKill.setOnClickListener {
                 AlertDialog.Builder(requireContext())
-                        .setTitle(app.packageLabel)
-                        .setMessage(R.string.forceKillMessage)
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-                                    .killBackgroundProcesses(app.packageName)
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
+                    .setTitle(app.packageLabel)
+                    .setMessage(R.string.forceKillMessage)
+                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                        (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                            .killBackgroundProcesses(app.packageName)
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
             }
             binding.wipeCache.setOnClickListener {
                 try {
@@ -265,7 +283,9 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                     // Not a critical issue
                     val errorMessage: String? = when (e.cause) {
                         is ShellHandler.ShellCommandFailedException -> {
-                            (e.cause as ShellHandler.ShellCommandFailedException?)?.shellResult?.err?.joinToString(" ")
+                            (e.cause as ShellHandler.ShellCommandFailedException?)?.shellResult?.err?.joinToString(
+                                " "
+                            )
                         }
                         else -> {
                             e.cause?.message
@@ -282,15 +302,21 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
             return viewHolder.itemView.findViewById(R.id.restore)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<BackupItemX>, item: BackupItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<BackupItemX>,
+            item: BackupItemX
+        ) {
             val properties = item.backup.backupProperties
             viewModel.appInfo.value?.let {
                 if (!it.isSpecial && !it.isInstalled
-                        && !properties.hasApk && properties.hasAppData) {
+                    && !properties.hasApk && properties.hasAppData
+                ) {
                     requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
                 } else {
                     RestoreDialogFragment(it, properties, this@AppSheet)
-                            .show(requireActivity().supportFragmentManager, "restoreDialog")
+                        .show(requireActivity().supportFragmentManager, "restoreDialog")
                 }
             }
         }
@@ -301,37 +327,57 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
             return viewHolder.itemView.findViewById(R.id.delete)
         }
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<BackupItemX>, item: BackupItemX) {
+        override fun onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<BackupItemX>,
+            item: BackupItemX
+        ) {
             viewModel.appInfo.value?.let {
                 AlertDialog.Builder(requireContext())
-                        .setTitle(it.packageLabel)
-                        .setMessage(R.string.deleteBackupDialogMessage)
-                        .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                            requireActivity().showToast("${it.packageLabel}: ${getString(R.string.deleteBackup)}")
-                            if (!it.hasBackups) {
-                                Timber.w("UI Issue! Tried to delete backups for app without backups.")
-                                dialog?.dismiss()
-                            }
-                            viewModel.deleteBackup(item.backup)
-
+                    .setTitle(it.packageLabel)
+                    .setMessage(R.string.deleteBackupDialogMessage)
+                    .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                        requireActivity().showToast("${it.packageLabel}: ${getString(R.string.deleteBackup)}")
+                        if (!it.hasBackups) {
+                            Timber.w("UI Issue! Tried to delete backups for app without backups.")
+                            dialog?.dismiss()
                         }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
+                        viewModel.deleteBackup(item.backup)
+
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
             }
         }
     }
 
-    override fun onActionCalled(actionType: ActionType?, mode: Int, backupProps: BackupProperties?) {
+    override fun onActionCalled(
+        actionType: ActionType?,
+        mode: Int,
+        backupProps: BackupProperties?
+    ) {
         viewModel.appInfo.value?.let {
             when {
                 actionType === ActionType.BACKUP -> {
-                    BackupActionTask(it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode).execute()
+                    BackupActionTask(
+                        it,
+                        requireMainActivity(),
+                        MainActivityX.shellHandlerInstance!!,
+                        mode
+                    ).execute()
                 }
                 actionType === ActionType.RESTORE -> {
                     backupProps?.let { backupProps: BackupProperties ->
-                        RestoreActionTask(it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
-                                backupProps, backupProps.getBackupLocation(StorageFile.fromUri(requireContext(),
-                                viewModel.appInfo.value?.backupDirUri ?: Uri.EMPTY))).execute()
+                        RestoreActionTask(
+                            it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                            backupProps, backupProps.getBackupLocation(
+                                StorageFile.fromUri(
+                                    requireContext(),
+                                    viewModel.appInfo.value?.backupDirUri ?: Uri.EMPTY
+                                )
+                            )
+                        ).execute()
                     }
                 }
                 else -> {
@@ -342,7 +388,8 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
     }
 
     private fun displayDialogEnableDisable(enable: Boolean) {
-        val title = if (enable) getString(R.string.enablePackageTitle) else getString(R.string.disablePackageTitle)
+        val title =
+            if (enable) getString(R.string.enablePackageTitle) else getString(R.string.disablePackageTitle)
         try {
             val userList = viewModel.getUsers()
             val selectedUsers = mutableListOf<String>()
@@ -352,21 +399,24 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BottomSheetDialogFragm
                 return
             }
             AlertDialog.Builder(requireContext())
-                    .setTitle(title)
-                    .setMultiChoiceItems(userList, null) { _: DialogInterface?, chosen: Int, checked: Boolean ->
-                        if (checked) {
-                            selectedUsers.add(userList[chosen])
-                        } else selectedUsers.remove(userList[chosen])
+                .setTitle(title)
+                .setMultiChoiceItems(
+                    userList,
+                    null
+                ) { _: DialogInterface?, chosen: Int, checked: Boolean ->
+                    if (checked) {
+                        selectedUsers.add(userList[chosen])
+                    } else selectedUsers.remove(userList[chosen])
+                }
+                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                    try {
+                        viewModel.enableDisableApp(selectedUsers, enable)
+                    } catch (e: ShellCommands.ShellActionFailedException) {
+                        requireActivity().showError(e.message)
                     }
-                    .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                        try {
-                            viewModel.enableDisableApp(selectedUsers, enable)
-                        } catch (e: ShellCommands.ShellActionFailedException) {
-                            requireActivity().showError(e.message)
-                        }
-                    }
-                    .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
-                    .show()
+                }
+                .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+                .show()
         } catch (e: ShellCommands.ShellActionFailedException) {
             requireActivity().showError(e.message)
         }

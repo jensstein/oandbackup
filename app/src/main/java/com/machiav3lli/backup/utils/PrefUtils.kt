@@ -47,21 +47,22 @@ const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
 
 fun Context.getDefaultSharedPreferences(): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(this)
+    PreferenceManager.getDefaultSharedPreferences(this)
 
 fun Context.getPrivateSharedPrefs(): SharedPreferences {
     val masterKey = MasterKey.Builder(this).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
-    return EncryptedSharedPreferences.create(this,
-            PREFS_SHARED_PRIVATE,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    return EncryptedSharedPreferences.create(
+        this,
+        PREFS_SHARED_PRIVATE,
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 }
 
 fun Context.getCryptoSalt(): ByteArray {
     val userSalt = getDefaultSharedPreferences().getString(PREFS_SALT, "")
-            ?: ""
+        ?: ""
     return if (userSalt.isNotEmpty()) {
         userSalt.toByteArray(StandardCharsets.UTF_8)
     } else FALLBACK_SALT
@@ -69,35 +70,35 @@ fun Context.getCryptoSalt(): ByteArray {
 
 
 fun Context.isEncryptionEnabled(): Boolean =
-        getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
-                ?: false
+    getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
+        ?: false
 
 fun Context.getEncryptionPassword(): String =
-        getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
-                ?: ""
+    getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
+        ?: ""
 
 fun Context.setEncryptionPassword(value: String) =
-        getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD, value).commit()
+    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD, value).commit()
 
 fun Context.getEncryptionPasswordConfirmation(): String =
-        getPrivateSharedPrefs().getString(PREFS_PASSWORD_CONFIRMATION, "")
-                ?: ""
+    getPrivateSharedPrefs().getString(PREFS_PASSWORD_CONFIRMATION, "")
+        ?: ""
 
 fun Context.setEncryptionPasswordConfirmation(value: String) =
-        getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
+    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
 fun Context.isDeviceLockEnabled(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_DEVICELOCK, false)
+    getDefaultSharedPreferences().getBoolean(PREFS_DEVICELOCK, false)
 
 fun Context.isDeviceLockAvailable(): Boolean =
-        (getSystemService(KeyguardManager::class.java) as KeyguardManager).isDeviceSecure
+    (getSystemService(KeyguardManager::class.java) as KeyguardManager).isDeviceSecure
 
 fun Context.isBiometricLockEnabled(): Boolean =
-        getDefaultSharedPreferences().getBoolean(PREFS_BIOMETRICLOCK, false)
+    getDefaultSharedPreferences().getBoolean(PREFS_BIOMETRICLOCK, false)
 
 fun Context.isBiometricLockAvailable(): Boolean =
-        BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
-                BiometricManager.BIOMETRIC_SUCCESS
+    BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
+            BiometricManager.BIOMETRIC_SUCCESS
 
 /**
  * Returns the user selected location. Go for `FileUtil.getBackupDir` to get the actual
@@ -111,18 +112,16 @@ val Context.backupDirPath: String
     @Throws(StorageLocationNotConfiguredException::class)
     get() {
         val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
-                ?: ""
-        if (location.isEmpty()) {
-            throw StorageLocationNotConfiguredException()
-        }
+            ?: ""
+        if (location.isEmpty()) { throw StorageLocationNotConfiguredException() }
         return location
     }
 
 fun Context.setBackupDir(value: Uri) {
     val fullUri = DocumentsContract
-            .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
+        .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     getPrivateSharedPrefs().edit()
-            .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
+        .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
     FileUtils.invalidateBackupLocation()
 }
 
@@ -142,15 +141,17 @@ val Context.isStorageDirSetAndOk: Boolean
 
 fun Activity.requireStorageLocation(activityResultLauncher: ActivityResultLauncher<Intent>) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-            .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
+        .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
     try {
         activityResultLauncher.launch(intent)
     } catch (e: ActivityNotFoundException) {
-        showWarning(getString(R.string.no_file_manager_title),
-                getString(R.string.no_file_manager_message)) { _: DialogInterface?, _: Int ->
+        showWarning(
+            getString(R.string.no_file_manager_title),
+            getString(R.string.no_file_manager_message)
+        ) { _: DialogInterface?, _: Int ->
             finishAffinity()
         }
     }
@@ -196,16 +197,22 @@ fun Activity.checkRootAccess(): Boolean {
 
 private fun Activity.requireReadStoragePermission() {
     if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) !=
-            PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION)
+        PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_PERMISSION
+        )
 }
 
 private fun Activity.requireWriteStoragePermission() {
     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-            PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION)
+        PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION
+        )
 }
 
 val Context.canAccessExternalStorage: Boolean
@@ -219,9 +226,17 @@ val Context.checkUsageStatsPermission: Boolean
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
+                appOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    Process.myUid(),
+                    packageName
+                )
             else ->
-                appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName)
+                appOps.checkOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    Process.myUid(),
+                    packageName
+                )
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) ==
@@ -267,7 +282,9 @@ var Context.sortFilterModel: SortFilterModel
     get() {
         val sortFilterModel: SortFilterModel
         val sortFilterPref = getPrivateSharedPrefs().getString(PREFS_SORT_FILTER, "")
-        sortFilterModel = if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref) else SortFilterModel()
+        sortFilterModel =
+            if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref)
+            else SortFilterModel()
         return sortFilterModel
     }
     set(value) =

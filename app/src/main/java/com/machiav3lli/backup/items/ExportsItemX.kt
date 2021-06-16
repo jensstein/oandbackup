@@ -27,7 +27,8 @@ import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import java.time.LocalTime
 
-class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : AbstractBindingItem<ItemExportsXBinding>() {
+class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) :
+    AbstractBindingItem<ItemExportsXBinding>() {
 
     override var identifier: Long
         get() = schedule.id
@@ -60,7 +61,11 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) : Abstra
         binding.blocklist.setExists(schedule.blockList.isNotEmpty())
         binding.timeOfDay.text = LocalTime.of(schedule.timeHour, schedule.timeMinute).toString()
         binding.interval.text = binding.root.context.resources
-                .getQuantityString(R.plurals.sched_interval_formal, schedule.interval, schedule.interval)
+            .getQuantityString(
+                R.plurals.sched_interval_formal,
+                schedule.interval,
+                schedule.interval
+            )
     }
 
     override fun unbindView(binding: ItemExportsXBinding) {

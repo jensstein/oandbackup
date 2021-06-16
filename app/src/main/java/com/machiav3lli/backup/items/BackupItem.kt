@@ -42,23 +42,36 @@ open class BackupItem {
                 backupProperties = BackupProperties.fromGson(IOUtils.toString(reader))
             }
         } catch (e: FileNotFoundException) {
-            throw BrokenBackupException("Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
+            throw BrokenBackupException(
+                "Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}",
+                e
+            )
         } catch (e: IOException) {
-            throw BrokenBackupException("Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}", e)
+            throw BrokenBackupException(
+                "Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}",
+                e
+            )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, propertiesFile.uri)
             throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
-        backupInstance = StorageFile.fromUri(context, backupProperties.getBackupLocation(propertiesFile.parentFile))
+        backupInstance = StorageFile.fromUri(
+            context,
+            backupProperties.getBackupLocation(propertiesFile.parentFile)
+        )
     }
 
-    class BrokenBackupException @JvmOverloads internal constructor(message: String?, cause: Throwable? = null) : Exception(message, cause)
+    class BrokenBackupException @JvmOverloads internal constructor(
+        message: String?,
+        cause: Throwable? = null
+    ) : Exception(message, cause)
 
     override fun toString(): String {
-        return String.format("BackupItem{ packageName=\"%s\", packageLabel=\"%s\", backupDate=\"%s\" }",
-                backupProperties.packageName,
-                backupProperties.packageLabel,
-                backupProperties.backupDate
+        return String.format(
+            "BackupItem{ packageName=\"%s\", packageLabel=\"%s\", backupDate=\"%s\" }",
+            backupProperties.packageName,
+            backupProperties.packageLabel,
+            backupProperties.backupDate
         )
     }
 
@@ -68,12 +81,5 @@ open class BackupItem {
         hash = 31 * hash + backupInstance.hashCode()
         hash = 31 * hash + backupInstanceDirUri.hashCode()
         return hash
-    }
-
-    companion object {
-        const val BACKUP_DIR_DATA = "data"
-        const val BACKUP_DIR_DATA_DE = "protecteddata"
-        const val BACKUP_DIR_DATA_EXT = "extData"
-        const val BACKUP_DIR_OBB = "obb"
     }
 }

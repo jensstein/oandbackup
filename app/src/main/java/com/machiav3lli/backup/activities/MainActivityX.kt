@@ -125,19 +125,9 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
+            // TODO cache appInfoList
             startActivity(
-                Intent(
-                    applicationContext,
-                    PrefsActivity::class.java
-                )
-            )
-        }
-        binding.buttonScheduler.setOnClickListener {
-            startActivity(
-                Intent(
-                    applicationContext,
-                    SchedulerActivityX::class.java
-                )
+                Intent(applicationContext, PrefsActivity::class.java)
             )
         }
     }

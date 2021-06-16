@@ -25,9 +25,13 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 
-class RestoreActionTask(appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
-                        private val backupProperties: BackupProperties, private val backupLocation: Uri)
-    : BaseActionTask(appInfo, oAndBackupX, shellHandler, restoreMode, BackupRestoreHelper.ActionType.RESTORE) {
+class RestoreActionTask(
+    appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
+    private val backupProperties: BackupProperties, private val backupLocation: Uri
+) : BaseActionTask(
+    appInfo, oAndBackupX, shellHandler, restoreMode,
+    BackupRestoreHelper.ActionType.RESTORE
+) {
 
     override fun doInBackground(vararg params: Void?): ActionResult? {
         val mainActivityX = mainActivityXReference.get()
@@ -36,8 +40,10 @@ class RestoreActionTask(appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandl
         }
         notificationId = System.currentTimeMillis().toInt()
         publishProgress()
-        result = BackupRestoreHelper.restore(mainActivityX, shellHandler, app,
-                mode, backupProperties, backupLocation)
+        result = BackupRestoreHelper.restore(
+            mainActivityX, shellHandler, app,
+            mode, backupProperties, backupLocation
+        )
         return result
     }
 }

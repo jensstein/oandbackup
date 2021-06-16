@@ -43,7 +43,10 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
     override val type: Int
         get() = R.id.fastadapter_item
 
-    override fun createBinding(inflater: LayoutInflater, parent: ViewGroup?): ItemSchedulerXBinding {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ItemSchedulerXBinding {
         return ItemSchedulerXBinding.inflate(inflater, parent, false)
     }
 
@@ -81,7 +84,11 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
                 binding.daysLeft.visibility = View.GONE
             } else {
                 binding.daysLeft.visibility = View.VISIBLE
-                binding.daysLeft.text = binding.root.context.resources.getQuantityString(R.plurals.days_left, days, days)
+                binding.daysLeft.text = binding.root.context.resources.getQuantityString(
+                    R.plurals.days_left,
+                    days,
+                    days
+                )
             }
             val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
             val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
@@ -92,11 +99,17 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
 
     companion object {
         class SchedulerDiffCallback : DiffCallback<SchedulerItemX> {
-            override fun areContentsTheSame(oldItem: SchedulerItemX, newItem: SchedulerItemX): Boolean {
+            override fun areContentsTheSame(
+                oldItem: SchedulerItemX,
+                newItem: SchedulerItemX
+            ): Boolean {
                 return oldItem.schedule.id == newItem.schedule.id
             }
 
-            override fun areItemsTheSame(oldItem: SchedulerItemX, newItem: SchedulerItemX): Boolean {
+            override fun areItemsTheSame(
+                oldItem: SchedulerItemX,
+                newItem: SchedulerItemX
+            ): Boolean {
                 return oldItem.schedule.enabled == newItem.schedule.enabled
                         && oldItem.schedule.name == newItem.schedule.name
                         && oldItem.schedule.timeHour == newItem.schedule.timeHour
@@ -110,7 +123,12 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
                         && oldItem.schedule.blockList == newItem.schedule.blockList
             }
 
-            override fun getChangePayload(oldItem: SchedulerItemX, oldItemPosition: Int, newItem: SchedulerItemX, newItemPosition: Int): Any? {
+            override fun getChangePayload(
+                oldItem: SchedulerItemX,
+                oldItemPosition: Int,
+                newItem: SchedulerItemX,
+                newItemPosition: Int
+            ): Any? {
                 return null
             }
         }

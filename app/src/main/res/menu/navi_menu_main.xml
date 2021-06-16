@@ -14,4 +14,9 @@
         android:id="@+id/restoreFragment"
         android:icon="@drawable/ic_restore"
         android:title="@string/restore" />
+
+    <item
+        android:id="@+id/schedulerFragment"
+        android:icon="@drawable/ic_scheduler"
+        android:title="@string/sched_title" />
 </menu>

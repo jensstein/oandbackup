@@ -69,9 +69,15 @@ open class LogItem {
                 this.logText = item.logText
             }
         } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException("Cannot open ${logFile.name} at URI ${logFile.uri}", e)
+            throw BackupItem.BrokenBackupException(
+                "Cannot open ${logFile.name} at URI ${logFile.uri}",
+                e
+            )
         } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException("Cannot read ${logFile.name} at URI ${logFile.uri}", e)
+            throw BackupItem.BrokenBackupException(
+                "Cannot read ${logFile.name} at URI ${logFile.uri}",
+                e
+            )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, logFile.uri)
             throw BackupItem.BrokenBackupException("Unable to process ${logFile.name} at URI ${logFile.uri}. [${e.javaClass.canonicalName}] $e")

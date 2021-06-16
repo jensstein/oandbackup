@@ -26,10 +26,11 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.getPackageInfoList
 
-class PackagesListDialogFragment(private val selectedPackages: List<String>,
-                                 val filter: Int, private val isBlocklist: Boolean,
-                                 private val onPackagesListChanged: (newList: Set<String>) -> Unit)
-    : DialogFragment() {
+class PackagesListDialogFragment(
+    private val selectedPackages: List<String>,
+    val filter: Int, private val isBlocklist: Boolean,
+    private val onPackagesListChanged: (newList: Set<String>) -> Unit
+) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
@@ -59,19 +60,24 @@ class PackagesListDialogFragment(private val selectedPackages: List<String>,
             }
         }
         return AlertDialog.Builder(requireActivity())
-                .setTitle(if (isBlocklist) R.string.sched_blocklist else R.string.customListTitle)
-                .setMultiChoiceItems(labels.toTypedArray<CharSequence>(), checkedIndexes) { _: DialogInterface?, index: Int, isChecked: Boolean ->
-                    if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
-                }
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int -> saveSelected(packagesNames, selections) }
-                .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
-                .create()
+            .setTitle(if (isBlocklist) R.string.sched_blocklist else R.string.customListTitle)
+            .setMultiChoiceItems(
+                labels.toTypedArray<CharSequence>(),
+                checkedIndexes
+            ) { _: DialogInterface?, index: Int, isChecked: Boolean ->
+                if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
+            }
+            .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                saveSelected(packagesNames, selections)
+            }
+            .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
+            .create()
     }
 
     private fun saveSelected(packagesNames: List<String>, selections: List<Int>) {
         val selectedPackages = selections
-                .map { packagesNames[it] }
-                .toSet()
+            .map { packagesNames[it] }
+            .toSet()
         onPackagesListChanged(selectedPackages)
     }
 }

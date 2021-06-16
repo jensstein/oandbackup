@@ -47,24 +47,34 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        passwordConfirmationPref.summary = if (passwordPref.text == passwordConfirmationPref.text) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
+        passwordConfirmationPref.summary =
+            if (passwordPref.text == passwordConfirmationPref.text) getString(R.string.prefs_password_match_true) else getString(
+                R.string.prefs_password_match_false
+            )
         passwordPref.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         passwordConfirmationPref.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
-        encryptPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
-            onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref)
-        }
-        passwordPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            requireContext().setEncryptionPassword(newValue as String)
-            onPrefChangePassword(passwordConfirmationPref, newValue, passwordConfirmationPref.text)
-        }
-        passwordConfirmationPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-            requireContext().setEncryptionPasswordConfirmation(newValue as String)
-            onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue)
-        }
+        encryptPref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
+                onPrefChangeEncryption(encryptPref, passwordPref, passwordConfirmationPref)
+            }
+        passwordPref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                requireContext().setEncryptionPassword(newValue as String)
+                onPrefChangePassword(
+                    passwordConfirmationPref,
+                    newValue,
+                    passwordConfirmationPref.text
+                )
+            }
+        passwordConfirmationPref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                requireContext().setEncryptionPasswordConfirmation(newValue as String)
+                onPrefChangePassword(passwordConfirmationPref, passwordPref.text, newValue)
+            }
     }
 
     override fun onResume() {
@@ -79,7 +89,11 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
         passwordConfirmationPref.text = ""
     }
 
-    private fun onPrefChangeEncryption(encryption: CheckBoxPreference, password: EditTextPreference, passwordConfirmation: EditTextPreference): Boolean {
+    private fun onPrefChangeEncryption(
+        encryption: CheckBoxPreference,
+        password: EditTextPreference,
+        passwordConfirmation: EditTextPreference
+    ): Boolean {
         if (encryption.isChecked) {
             password.text = ""
             passwordConfirmation.text = ""
@@ -87,8 +101,15 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun onPrefChangePassword(passwordConfirmation: EditTextPreference, password: String, passwordCheck: String): Boolean {
-        passwordConfirmation.summary = if (password == passwordCheck) getString(R.string.prefs_password_match_true) else getString(R.string.prefs_password_match_false)
+    private fun onPrefChangePassword(
+        passwordConfirmation: EditTextPreference,
+        password: String,
+        passwordCheck: String
+    ): Boolean {
+        passwordConfirmation.summary =
+            if (password == passwordCheck) getString(R.string.prefs_password_match_true) else getString(
+                R.string.prefs_password_match_false
+            )
         return true
     }
 }

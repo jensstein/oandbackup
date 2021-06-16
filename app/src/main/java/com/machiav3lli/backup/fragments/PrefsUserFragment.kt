@@ -37,42 +37,53 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     private lateinit var deviceLockPref: CheckBoxPreference
     private lateinit var biometricLockPref: CheckBoxPreference
 
-    private val askForDirectory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.data != null && result.resultCode == Activity.RESULT_OK) {
-            result.data?.let {
-                val uri = it.data ?: return@registerForActivityResult
-                val oldDir = try {
-                    requireContext().backupDirPath
-                } catch (e: StorageLocationNotConfiguredException) {
-                    // Can be ignored, this is about to set the path
-                    ""
-                }
-                if (oldDir != uri.toString()) {
-                    val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                    requireContext().contentResolver.takePersistableUriPermission(uri, flags)
-                    Timber.i("setting uri $uri")
-                    requireContext().setDefaultDir(uri)
+    private val askForDirectory =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.data != null && result.resultCode == Activity.RESULT_OK) {
+                result.data?.let {
+                    val uri = it.data ?: return@registerForActivityResult
+                    val oldDir = try {
+                        requireContext().backupDirPath
+                    } catch (e: StorageLocationNotConfiguredException) {
+                        // Can be ignored, this is about to set the path
+                        ""
+                    }
+                    if (oldDir != uri.toString()) {
+                        val flags = it.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+                        Timber.i("setting uri $uri")
+                        requireContext().setDefaultDir(uri)
+                    }
                 }
             }
         }
-    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_user, rootKey)
         deviceLockPref = findPreference(PREFS_DEVICELOCK)!!
         deviceLockPref.isVisible = requireContext().isDeviceLockAvailable()
         biometricLockPref = findPreference(PREFS_BIOMETRICLOCK)!!
-        biometricLockPref.isVisible = deviceLockPref.isChecked && requireContext().isBiometricLockAvailable()
+        biometricLockPref.isVisible =
+            deviceLockPref.isChecked && requireContext().isBiometricLockAvailable()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_THEME)!!
-        pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeTheme(newValue.toString()) }
+        pref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                onPrefChangeTheme(newValue.toString())
+            }
         pref = findPreference(PREFS_LANGUAGES)!!
         val oldLang = (findPreference<Preference>(PREFS_LANGUAGES) as ListPreference?)!!.value
-        pref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any -> onPrefChangeLanguage(oldLang, newValue.toString()) }
+        pref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                onPrefChangeLanguage(
+                    oldLang,
+                    newValue.toString()
+                )
+            }
         pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
         try {
             pref.summary = requireContext().backupDirPath
@@ -83,9 +94,10 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             requireActivity().requireStorageLocation(askForDirectory)
             true
         }
-        deviceLockPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
-            onPrefChangeDeviceLock(deviceLockPref, biometricLockPref)
-        }
+        deviceLockPref.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
+                onPrefChangeDeviceLock(deviceLockPref, biometricLockPref)
+            }
     }
 
     private fun onPrefChangeTheme(newValue: String): Boolean {
@@ -114,7 +126,10 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         pref.summary = dir.toString()
     }
 
-    private fun onPrefChangeDeviceLock(deviceLock: CheckBoxPreference, biometricLock: CheckBoxPreference)
+    private fun onPrefChangeDeviceLock(
+        deviceLock: CheckBoxPreference,
+        biometricLock: CheckBoxPreference
+    )
             : Boolean {
         if (deviceLock.isChecked) biometricLock.isChecked = false
         biometricLock.isVisible = !deviceLock.isChecked

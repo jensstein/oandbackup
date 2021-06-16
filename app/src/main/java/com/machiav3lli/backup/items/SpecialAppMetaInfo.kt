@@ -17,7 +17,13 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
     @SerializedName("specialFiles")
     var fileList: Array<String?>
 
-    constructor(packageName: String?, label: String?, versionName: String?, versionCode: Int, fileList: Array<String?>)
+    constructor(
+        packageName: String?,
+        label: String?,
+        versionName: String?,
+        versionCode: Int,
+        fileList: Array<String?>
+    )
             : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
         this.fileList = fileList
     }
@@ -40,15 +46,16 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<SpecialAppMetaInfo?> = object : Parcelable.Creator<SpecialAppMetaInfo?> {
-            override fun createFromParcel(source: Parcel): SpecialAppMetaInfo? {
-                return SpecialAppMetaInfo(source)
-            }
+        val CREATOR: Parcelable.Creator<SpecialAppMetaInfo?> =
+            object : Parcelable.Creator<SpecialAppMetaInfo?> {
+                override fun createFromParcel(source: Parcel): SpecialAppMetaInfo? {
+                    return SpecialAppMetaInfo(source)
+                }
 
-            override fun newArray(size: Int): Array<SpecialAppMetaInfo?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<SpecialAppMetaInfo?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
         private val specialPackages: MutableList<AppInfo> = mutableListOf()
 
         /**
@@ -59,7 +66,10 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          * @throws BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
          * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
-        @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+        @Throws(
+            BackupLocationIsAccessibleException::class,
+            StorageLocationNotConfiguredException::class
+        )
         fun getSpecialPackages(context: Context): List<AppInfo> {
             // Careful: It is possible to specify whole directories, but there are two rules:
             // 1. Directories must end with a slash e.g. "/data/system/netstats/"
@@ -76,55 +86,85 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 val specPrefix = "$ "
 
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.accounts",
                                 specPrefix + context.getString(R.string.spec_accounts),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "/data/system_ce/$userId/accounts_ce.db"
-                        ))))
+                                    "/data/system_ce/$userId/accounts_ce.db"
+                                )
+                            )
+                        )
+                    )
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.appwidgets",
                                 specPrefix + context.getString(R.string.spec_appwidgets),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "$userDir/appwidgets.xml"
-                        ))))
+                                    "$userDir/appwidgets.xml"
+                                )
+                            )
+                        )
+                    )
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.bluetooth",
                                 specPrefix + context.getString(R.string.spec_bluetooth),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "/data/misc/bluedroid/"
-                        ))))
+                                    "/data/misc/bluedroid/"
+                                )
+                            )
+                        )
+                    )
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.data.usage.policy",
                                 specPrefix + context.getString(R.string.spec_data),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "/data/system/netpolicy.xml",
-                                "/data/system/netstats/"
-                        ))))
+                                    "/data/system/netpolicy.xml",
+                                    "/data/system/netstats/"
+                                )
+                            )
+                        )
+                    )
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.wallpaper",
                                 specPrefix + context.getString(R.string.spec_wallpaper),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "$userDir/wallpaper",
-                                "$userDir/wallpaper_info.xml"
-                        ))))
+                                    "$userDir/wallpaper",
+                                    "$userDir/wallpaper_info.xml"
+                                )
+                            )
+                        )
+                    )
                 specialPackages
-                        .add(AppInfo(context, SpecialAppMetaInfo(
+                    .add(
+                        AppInfo(
+                            context, SpecialAppMetaInfo(
                                 "special.wifi.access.points",
                                 specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                "/data/misc/wifi/WifiConfigStore.xml"
-                        ))))
+                                    "/data/misc/wifi/WifiConfigStore.xml"
+                                )
+                            )
+                        )
+                    )
             }
             return specialPackages
         }

@@ -12,10 +12,15 @@
     <fragment
         android:id="@+id/backupFragment"
         android:name="com.machiav3lli.backup.fragments.BatchFragment$BackupFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_batch" />
 
     <fragment
         android:id="@+id/restoreFragment"
         android:name="com.machiav3lli.backup.fragments.BatchFragment$RestoreFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_batch" />
+
+    <fragment
+        android:id="@+id/schedulerFragment"
+        android:name="com.machiav3lli.backup.fragments.SchedulerFragment"
+        tools:layout="@layout/fragment_scheduler" />
 </navigation>

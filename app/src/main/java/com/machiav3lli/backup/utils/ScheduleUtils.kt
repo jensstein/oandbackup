@@ -48,16 +48,21 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("scheduleId", scheduleId)
-                val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
                 val timeLeft = timeUntilNextEvent(schedule, System.currentTimeMillis())
                 if (rescheduleBoolean) {
                     schedule.timePlaced = System.currentTimeMillis()
-                    schedule.timeUntilNextEvent = timeUntilNextEvent(schedule, System.currentTimeMillis())
+                    schedule.timeUntilNextEvent =
+                        timeUntilNextEvent(schedule, System.currentTimeMillis())
                 } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) // give it a minute to finish what it could be handling e.g. on reboot
                     schedule.timeUntilNextEvent = TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent)
+                // TODO get more precision
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + schedule.timeUntilNextEvent, pendingIntent
+                )
                 Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
             } else
                 Timber.i("schedule is disabled. Nothing to schedule!")

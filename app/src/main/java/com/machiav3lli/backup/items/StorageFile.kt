@@ -13,7 +13,11 @@ import java.io.FileNotFoundException
 import java.util.*
 
 // TODO MAYBE migrate at some point to FuckSAF
-open class StorageFile protected constructor(val parentFile: StorageFile?, private val context: Context, var uri: Uri) {
+open class StorageFile protected constructor(
+    val parentFile: StorageFile?,
+    private val context: Context,
+    var uri: Uri
+) {
     var name: String? = null
         get() {
             if (field == null) field = uri.getName(context)
@@ -80,19 +84,24 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         if (cache[uriString].isNullOrEmpty()) {
             val resolver = context.contentResolver
             val childrenUri = try {
-                DocumentsContract.buildChildDocumentsUriUsingTree(this.uri,
-                        DocumentsContract.getDocumentId(this.uri))
+                DocumentsContract.buildChildDocumentsUriUsingTree(
+                    this.uri,
+                    DocumentsContract.getDocumentId(this.uri)
+                )
             } catch (e: IllegalArgumentException) {
                 return arrayOf()
             }
             val results = ArrayList<Uri>()
             var cursor: Cursor? = null
             try {
-                cursor = resolver.query(childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                        null, null, null)
+                cursor = resolver.query(
+                    childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                    null, null, null
+                )
                 var documentUri: Uri
                 while (cursor?.moveToNext() == true) {
-                    documentUri = DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0))
+                    documentUri =
+                        DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0))
                     results.add(documentUri)
                 }
             } catch (e: Throwable) {
@@ -111,7 +120,8 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
         // noinspection OverlyBroadCatchBlock
         return try {
             val result = DocumentsContract.renameDocument(
-                    context.contentResolver, uri, displayName)
+                context.contentResolver, uri, displayName
+            )
             if (result != null) {
                 uri = result
                 return true
@@ -143,7 +153,12 @@ open class StorageFile protected constructor(val parentFile: StorageFile?, priva
 
         fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
             return try {
-                DocumentsContract.createDocument(context.contentResolver, uri, mimeType, displayName)
+                DocumentsContract.createDocument(
+                    context.contentResolver,
+                    uri,
+                    mimeType,
+                    displayName
+                )
             } catch (e: FileNotFoundException) {
                 null
             } catch (e: Throwable) {

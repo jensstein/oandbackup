@@ -56,15 +56,20 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pref = findPreference(PREFS_BATCH_DELETE)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickUninstalledBackupsDelete() }
+        pref.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener { onClickUninstalledBackupsDelete() }
         pref = findPreference(PREFS_COPYSELF)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickCopySelf() }
+        pref.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener { onClickCopySelf() }
         pref = findPreference(PREFS_SCHEDULESEXPORTIMPORT)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickSchedulesExportImport() }
+        pref.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener { onClickSchedulesExportImport() }
         pref = findPreference(PREFS_SAVEAPPSLIST)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { onClickSaveAppsList() }
+        pref.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener { onClickSaveAppsList() }
         pref = findPreference(PREFS_LOGVIEWER)!!
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
+        pref.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
 
     override fun onResume() {
@@ -86,19 +91,27 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         if (appInfoList.isNotEmpty()) {
             if (deleteList.isNotEmpty()) {
                 AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.prefs_batchdelete)
-                        .setMessage(message.toString().trim { it <= ' ' })
-                        .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                            deleteBackups(deleteList)
-                            refreshAppsList()
-                        }
-                        .setNegativeButton(R.string.dialogNo, null)
-                        .show()
+                    .setTitle(R.string.prefs_batchdelete)
+                    .setMessage(message.toString().trim { it <= ' ' })
+                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                        deleteBackups(deleteList)
+                        refreshAppsList()
+                    }
+                    .setNegativeButton(R.string.dialogNo, null)
+                    .show()
             } else {
-                Toast.makeText(requireActivity(), getString(R.string.batchDeleteNothingToDelete), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.batchDeleteNothingToDelete),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         } else {
-            Toast.makeText(requireActivity(), getString(R.string.wait_noappslist), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.wait_noappslist),
+                Toast.LENGTH_LONG
+            ).show()
         }
         return true
     }
@@ -106,24 +119,52 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     private fun deleteBackups(deleteList: List<AppInfo>) {
         val notificationId = System.currentTimeMillis().toInt()
         deleteList.forEachIndexed { i, ai ->
-            showNotification(requireContext(), PrefsActivity::class.java, notificationId,
-                    "${getString(R.string.batchDeleteMessage)} ($i/${deleteList.size})", ai.packageLabel, false)
+            showNotification(
+                requireContext(),
+                PrefsActivity::class.java,
+                notificationId,
+                "${getString(R.string.batchDeleteMessage)} ($i/${deleteList.size})",
+                ai.packageLabel,
+                false
+            )
             Timber.i("deleting backups of ${ai.packageLabel}")
             ai.deleteAllBackups(requireContext())
         }
-        showNotification(requireContext(), PrefsActivity::class.java, notificationId,
-                getString(R.string.batchDeleteNotificationTitle), "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}", false)
+        showNotification(
+            requireContext(),
+            PrefsActivity::class.java,
+            notificationId,
+            getString(R.string.batchDeleteNotificationTitle),
+            "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}",
+            false
+        )
     }
 
     private fun onClickCopySelf(): Boolean {
         try {
             GlobalScope.launch(Dispatchers.IO) {
-                if (BackupRestoreHelper.copySelfApk(requireContext(), MainActivityX.shellHandlerInstance!!))
-                    showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                            getString(R.string.copyOwnApkSuccess), "", false)
+                if (BackupRestoreHelper.copySelfApk(
+                        requireContext(),
+                        MainActivityX.shellHandlerInstance!!
+                    )
+                )
+                    showNotification(
+                        requireContext(),
+                        PrefsActivity::class.java,
+                        System.currentTimeMillis().toInt(),
+                        getString(R.string.copyOwnApkSuccess),
+                        "",
+                        false
+                    )
                 else
-                    showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                            getString(R.string.copyOwnApkFailed), "", false)
+                    showNotification(
+                        requireContext(),
+                        PrefsActivity::class.java,
+                        System.currentTimeMillis().toInt(),
+                        getString(R.string.copyOwnApkFailed),
+                        "",
+                        false
+                    )
             }
         } catch (e: IOException) {
             Timber.e("${getString(R.string.copyOwnApkFailed)}: $e")
@@ -134,44 +175,49 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     private fun onClickSchedulesExportImport(): Boolean {
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.prefs_schedulesexportimport)
-                .setPositiveButton(R.string.dialog_export) { _: DialogInterface, _: Int ->
-                    GlobalScope.launch(Dispatchers.IO) {
-                        ExportsHandler(requireContext()).exportSchedules()
-                    }
+            .setTitle(R.string.prefs_schedulesexportimport)
+            .setPositiveButton(R.string.dialog_export) { _: DialogInterface, _: Int ->
+                GlobalScope.launch(Dispatchers.IO) {
+                    ExportsHandler(requireContext()).exportSchedules()
                 }
-                .setNeutralButton(R.string.dialog_import) { _: DialogInterface, _: Int ->
-                    launchFragment(ExportsFragment())
-                }
-                .setNegativeButton(R.string.dialogNo, null)
-                .show()
+            }
+            .setNeutralButton(R.string.dialog_import) { _: DialogInterface, _: Int ->
+                launchFragment(ExportsFragment())
+            }
+            .setNegativeButton(R.string.dialogNo, null)
+            .show()
         return true
     }
 
     private fun onClickSaveAppsList(): Boolean {
         if (appInfoList.isNotEmpty()) {
             AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.prefs_saveappslist)
-                    .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
-                        writeAppsListFile(appInfoList
-                                .filter { it.isSystem }
-                                .map { "${it.packageLabel}: ${it.packageName}" }, false)
-                        refreshAppsList()
-                    }
-                    .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
-                        writeAppsListFile(
-                                appInfoList.applyFilter(
-                                        requireContext().sortFilterModel,
-                                        requireContext()
-                                ).map { "${it.packageLabel}: ${it.packageName}" },
-                                true
-                        )
-                        refreshAppsList()
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
+                .setTitle(R.string.prefs_saveappslist)
+                .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
+                    writeAppsListFile(appInfoList
+                        .filter { it.isSystem }
+                        .map { "${it.packageLabel}: ${it.packageName}" }, false
+                    )
+                    refreshAppsList()
+                }
+                .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
+                    writeAppsListFile(
+                        appInfoList.applyFilter(
+                            requireContext().sortFilterModel,
+                            requireContext()
+                        ).map { "${it.packageLabel}: ${it.packageName}" },
+                        true
+                    )
+                    refreshAppsList()
+                }
+                .setNegativeButton(R.string.dialogNo, null)
+                .show()
         } else {
-            Toast.makeText(requireActivity(), getString(R.string.wait_noappslist), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.wait_noappslist),
+                Toast.LENGTH_LONG
+            ).show()
         }
         return true
     }
@@ -181,22 +227,31 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val date = LocalDateTime.now()
         val filesText = appsList.joinToString("\n")
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
-        val listFile = requireContext().getBackupDir().createFile("application/octet-stream", fileName)
-        BufferedOutputStream(requireContext().contentResolver.openOutputStream(listFile?.uri
-                ?: Uri.EMPTY, "w"))
-                .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
-        showNotification(requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                getString(if (filteredBoolean) R.string.write_apps_list_filtered
-                else R.string.write_apps_list_all), null, false)
+        val listFile =
+            requireContext().getBackupDir().createFile("application/octet-stream", fileName)
+        BufferedOutputStream(
+            requireContext().contentResolver.openOutputStream(
+                listFile?.uri
+                    ?: Uri.EMPTY, "w"
+            )
+        )
+            .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
+        showNotification(
+            requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+            getString(
+                if (filteredBoolean) R.string.write_apps_list_filtered
+                else R.string.write_apps_list_all
+            ), null, false
+        )
         Timber.i("Wrote apps\' list file at $date")
     }
 
     private fun launchFragment(fragment: Fragment): Boolean {
         requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.prefsFragment, fragment)
-                .addToBackStack(null)
-                .commit()
+            .beginTransaction()
+            .replace(R.id.prefsFragment, fragment)
+            .addToBackStack(null)
+            .commit()
         return true
     }
 

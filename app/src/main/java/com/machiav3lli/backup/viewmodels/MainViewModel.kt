@@ -105,6 +105,18 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         }
     }
 
+    fun updateBlocklist(newList: Set<String>) {
+        viewModelScope.launch {
+            insertIntoBlocklist(newList)
+            refreshNow.value = true
+        }
+    }
+
+    private suspend fun insertIntoBlocklist(newList: Set<String>) = withContext(Dispatchers.IO) {
+        database.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+        appInfoList.value?.removeIf { newList.contains(it.packageName)}
+    }
+
     override fun onCleared() {
         super.onCleared()
         _initial.value = true

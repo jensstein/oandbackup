@@ -23,8 +23,12 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 
-class BackupActionTask(appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandler: ShellHandler, backupMode: Int)
-    : BaseActionTask(appInfo, oAndBackupX, shellHandler, backupMode, BackupRestoreHelper.ActionType.BACKUP) {
+class BackupActionTask(
+    appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandler: ShellHandler, backupMode: Int
+) : BaseActionTask(
+    appInfo, oAndBackupX, shellHandler, backupMode,
+    BackupRestoreHelper.ActionType.BACKUP
+) {
 
     override fun doInBackground(vararg params: Void?): ActionResult? {
         val mainActivityX = mainActivityXReference.get()

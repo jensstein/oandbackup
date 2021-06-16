@@ -25,8 +25,10 @@ import java.util.*
 class ContextWraperX(base: Context) : ContextWrapper(base) {
     companion object {
         fun wrap(context: Context): ContextWrapper {
-            var setLanguageCode = context.getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
-                    ?: PREFS_LANGUAGES_DEFAULT
+            // TODO handle different language variants
+            var setLanguageCode = context.getDefaultSharedPreferences()
+                .getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
+                ?: PREFS_LANGUAGES_DEFAULT
             if (setLanguageCode == PREFS_LANGUAGES_DEFAULT) {
                 setLanguageCode = Locale.getDefault().language
             }

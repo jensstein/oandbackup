@@ -29,12 +29,14 @@ import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 import com.machiav3lli.backup.utils.modeToStringAlt
 import timber.log.Timber
 
-class BatchDialogFragment(private var backupBoolean: Boolean, private val selectedApps: ArrayList<AppMetaInfo>,
-                          private val selectedModes: ArrayList<Int>, private val confirmListener: ConfirmListener)
-    : DialogFragment() {
+class BatchDialogFragment(
+    private var backupBoolean: Boolean, private val selectedApps: ArrayList<AppMetaInfo>,
+    private val selectedModes: ArrayList<Int>, private val confirmListener: ConfirmListener
+) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val title = if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
+        val title =
+            if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
         if (requireContext().isKillBeforeActionEnabled) {
             message.append(requireContext().getString(R.string.msg_appkill_warning))
@@ -47,18 +49,18 @@ class BatchDialogFragment(private var backupBoolean: Boolean, private val select
         val selectedPackages = selectedApps.map { it.packageName }.toList()
         val selectedBackupModes = selectedModes.map { altModeToMode(requireContext(), it) }
         return AlertDialog.Builder(requireActivity())
-                .setTitle(title)
-                .setMessage(message.toString().trim { it <= ' ' })
-                .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                    try {
-                        confirmListener.onConfirmed(selectedPackages, selectedBackupModes)
-                    } catch (e: ClassCastException) {
-                        Timber.e("BatchConfirmDialog: $e")
-                    }
+            .setTitle(title)
+            .setMessage(message.toString().trim { it <= ' ' })
+            .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                try {
+                    confirmListener.onConfirmed(selectedPackages, selectedBackupModes)
+                } catch (e: ClassCastException) {
+                    Timber.e("BatchConfirmDialog: $e")
                 }
-                .setNegativeButton(R.string.dialogNo) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-                // TODO Add advanced options for data
-                .create()
+            }
+            .setNegativeButton(R.string.dialogNo) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+            // TODO Add advanced options for data
+            .create()
     }
 
     interface ConfirmListener {
