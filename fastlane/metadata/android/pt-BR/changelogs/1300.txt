@@ -6,4 +6,4 @@
 * Corrigido: cache não encontrado/erros de links simbólicos
 * Adicionado: suporte OBB (precisa de testes)
 * Idiomas adicionados: Italiano, Chinês, Turco, Polonês (Créditos @Urnyx05 @tuchit @scrubjay55 @Antyradek)
-* Outros: melhorias de UI e desempenho
+* Outros: melhorias de interface e desempenho
