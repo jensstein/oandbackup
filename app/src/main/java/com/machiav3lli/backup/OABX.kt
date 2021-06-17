@@ -18,9 +18,13 @@
 package com.machiav3lli.backup
 
 import android.app.Application
+import android.util.LruCache
+import com.machiav3lli.backup.items.AppInfo
 import timber.log.Timber
 
 class OABX : Application() {
+    var cache: LruCache<String, MutableList<AppInfo>> = LruCache(4000)
+
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())

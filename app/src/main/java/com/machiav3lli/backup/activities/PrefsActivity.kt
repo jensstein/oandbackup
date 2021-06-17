@@ -25,16 +25,22 @@ import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
+import com.machiav3lli.backup.handler.getApplicationList
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 
 class PrefsActivity : BaseActivity() {
     private lateinit var binding: ActivityPrefsBinding
     private var sheetHelp: HelpSheet? = null
-    // TODO read cache for appInfoList
+    var appInfoList: List<AppInfo> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        appInfoList = oabx.cache.get("appInfoList") ?: mutableListOf()
+        if (appInfoList.isNullOrEmpty()) refreshAppsList()
     }
 
     override fun onStart() {
@@ -44,7 +50,10 @@ class PrefsActivity : BaseActivity() {
     }
 
     private fun setupOnClicks() {
-        binding.backButton.setOnClickListener { if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed() else supportFragmentManager.popBackStack() }
+        binding.backButton.setOnClickListener {
+            if (supportFragmentManager.backStackEntryCount == 0) super.onBackPressed()
+            else supportFragmentManager.popBackStack()
+        }
         binding.helpButton.setOnClickListener {
             if (sheetHelp == null) sheetHelp = HelpSheet()
             sheetHelp!!.showNow(supportFragmentManager, "HELPSHEET")
@@ -72,5 +81,18 @@ class PrefsActivity : BaseActivity() {
         if (intent.extras != null && intent.extras!!.getBoolean(".toEncryption", false)) {
             navController.navigate(R.id.serviceFragment)
         }
+    }
+
+    fun refreshAppsList() {
+        appInfoList = listOf()
+        Thread {
+            try {
+                appInfoList = getApplicationList(listOf())
+            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+                e.printStackTrace()
+            } catch (e: StorageLocationNotConfiguredException) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 }

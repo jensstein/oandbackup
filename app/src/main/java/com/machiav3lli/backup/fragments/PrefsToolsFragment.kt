@@ -31,10 +31,11 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ExportsHandler
-import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,8 +47,6 @@ import java.time.LocalDateTime
 
 // TODO hide navBar on launching tools' fragments
 class PrefsToolsFragment : PreferenceFragmentCompat() {
-    private var appInfoList: List<AppInfo> = ArrayList()
-
     private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -75,28 +74,28 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        refreshAppsList()
+        requirePrefsActivity().refreshAppsList()
     }
 
     private fun onClickUninstalledBackupsDelete(): Boolean {
         val deleteList = ArrayList<AppInfo>()
         val message = StringBuilder()
-        if (appInfoList.isNotEmpty()) {
-            for (appInfo in appInfoList) {
+        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
+            for (appInfo in requirePrefsActivity().appInfoList) {
                 if (!appInfo.isInstalled) {
                     deleteList.add(appInfo)
                     message.append(appInfo.packageLabel).append("\n")
                 }
             }
         }
-        if (appInfoList.isNotEmpty()) {
+        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
             if (deleteList.isNotEmpty()) {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.prefs_batchdelete)
                     .setMessage(message.toString().trim { it <= ' ' })
                     .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
                         deleteBackups(deleteList)
-                        refreshAppsList()
+                        requirePrefsActivity().refreshAppsList()
                     }
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
@@ -191,25 +190,25 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onClickSaveAppsList(): Boolean {
-        if (appInfoList.isNotEmpty()) {
+        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.prefs_saveappslist)
                 .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
-                    writeAppsListFile(appInfoList
+                    writeAppsListFile(requirePrefsActivity().appInfoList
                         .filter { it.isSystem }
                         .map { "${it.packageLabel}: ${it.packageName}" }, false
                     )
-                    refreshAppsList()
+                    requirePrefsActivity().refreshAppsList()
                 }
                 .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
                     writeAppsListFile(
-                        appInfoList.applyFilter(
+                        requirePrefsActivity().appInfoList.applyFilter(
                             requireContext().sortFilterModel,
                             requireContext()
                         ).map { "${it.packageLabel}: ${it.packageName}" },
                         true
                     )
-                    refreshAppsList()
+                    requirePrefsActivity().refreshAppsList()
                 }
                 .setNegativeButton(R.string.dialogNo, null)
                 .show()
@@ -256,16 +255,5 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun refreshAppsList() {
-        appInfoList = listOf()
-        Thread {
-            try {
-                appInfoList = requireContext().getApplicationList(listOf())
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
-                e.printStackTrace()
-            } catch (e: StorageLocationNotConfiguredException) {
-                e.printStackTrace()
-            }
-        }.start()
-    }
+    private fun requirePrefsActivity(): PrefsActivity = requireActivity() as PrefsActivity
 }

@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
@@ -124,7 +123,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            // TODO cache appInfoList
+            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList",it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )
