@@ -2,12 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/homeFragment"
         android:name="com.machiav3lli.backup.fragments.HomeFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/backupFragment"
