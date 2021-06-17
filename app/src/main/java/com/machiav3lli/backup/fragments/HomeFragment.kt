@@ -174,6 +174,15 @@ class HomeFragment : NavigationFragment(),
             }
         }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
+        binding.searchBar.seton
+        binding.helpButton.setOnClickListener {
+            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
+                HelpSheet()
+            requireMainActivity().sheetHelp!!.showNow(
+                requireActivity().supportFragmentManager,
+                "HELPSHEET"
+            )
+        }
     }
 
     fun setupSearch() {
@@ -204,14 +213,6 @@ class HomeFragment : NavigationFragment(),
                 return true
             }
         })
-        binding.helpButton.setOnClickListener {
-            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
-                HelpSheet()
-            requireMainActivity().sheetHelp!!.showNow(
-                requireActivity().supportFragmentManager,
-                "HELPSHEET"
-            )
-        }
     }
 
     private fun onClickUpdateAllAction() {

@@ -178,6 +178,14 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
         batchFastAdapter?.addEventHook(OnApkCheckBoxClickHook())
         batchFastAdapter?.addEventHook(OnDataCheckBoxClickHook())
+        binding.helpButton.setOnClickListener {
+            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
+                HelpSheet()
+            requireMainActivity().sheetHelp!!.showNow(
+                requireActivity().supportFragmentManager,
+                "HELPSHEET"
+            )
+        }
     }
 
     fun setupSearch() {
@@ -208,14 +216,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 return true
             }
         })
-        binding.helpButton.setOnClickListener {
-            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
-                HelpSheet()
-            requireMainActivity().sheetHelp!!.showNow(
-                requireActivity().supportFragmentManager,
-                "HELPSHEET"
-            )
-        }
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {
