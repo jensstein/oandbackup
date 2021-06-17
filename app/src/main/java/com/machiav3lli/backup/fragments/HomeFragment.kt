@@ -95,7 +95,6 @@ class HomeFragment : NavigationFragment(),
         viewModel.refreshActive.observe(requireActivity(), {
             binding.refreshLayout.isRefreshing = it
             if (it) binding.searchBar.setQuery("", false)
-            viewModel.nUpdatedApps.value = updatedItemAdapter.adapterItems.size
         })
 
         viewModel.nUpdatedApps.observe(requireActivity(), {
@@ -174,7 +173,6 @@ class HomeFragment : NavigationFragment(),
             }
         }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
-        binding.searchBar.seton
         binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
                 HelpSheet()
@@ -361,6 +359,7 @@ class HomeFragment : NavigationFragment(),
             try {
                 mainItemAdapter.set(mainList)
                 updatedItemAdapter.set(updatedList)
+                viewModel.nUpdatedApps.value = updatedList.size
                 if (mainList.isEmpty())
                     Toast.makeText(
                         requireContext(),
