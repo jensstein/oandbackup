@@ -117,7 +117,7 @@ class HomeFragment : NavigationFragment(),
 
     override fun onResume() {
         super.onResume()
-        setupOnClick()
+        setupOnClicks()
         setupSearch()
         requireMainActivity().setRefreshViewController(this)
     }
@@ -141,7 +141,7 @@ class HomeFragment : NavigationFragment(),
         binding.updatedRecycler.adapter = updatedFastAdapter
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,

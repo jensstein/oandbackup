@@ -108,7 +108,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onResume() {
         super.onResume()
         setupSearch()
-        setupOnClick()
+        setupOnClicks()
         requireMainActivity().setRefreshViewController(this)
     }
 
@@ -139,7 +139,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,

@@ -60,7 +60,6 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var blocklistDao: BlocklistDao
-    private var navController: NavController? = null
     private lateinit var refreshViewController: RefreshViewController
 
     lateinit var binding: ActivityMainXBinding
@@ -115,10 +114,10 @@ class MainActivityX : BaseActivity() {
     private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        navController = navHostFragment.navController
+        val navController = navHostFragment.navController
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
             if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
-            navController?.navigate(item.itemId)
+            navController.navigate(item.itemId)
             true
         }
     }

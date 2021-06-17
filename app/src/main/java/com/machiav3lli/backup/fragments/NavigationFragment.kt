@@ -26,7 +26,7 @@ abstract class NavigationFragment : Fragment() {
     protected var sheetSortFilter: SortFilterSheet? = null
 
     abstract fun setupViews()
-    abstract fun setupOnClick()
+    abstract fun setupOnClicks()
 
     fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

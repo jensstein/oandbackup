@@ -88,7 +88,7 @@ class SchedulerFragment : NavigationFragment() {
 
     override fun onResume() {
         super.onResume()
-        setupOnClick()
+        setupOnClicks()
     }
 
     override fun setupViews() {
@@ -98,7 +98,7 @@ class SchedulerFragment : NavigationFragment() {
 
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         schedulerFastAdapter.onClickListener =
             { _: View?, _: IAdapter<SchedulerItemX>, item: SchedulerItemX?, _: Int? ->
                 sheetSchedule?.dismissAllowingStateLoss()

@@ -44,6 +44,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
+// TODO hide navBar on launching tools' fragments
 class PrefsToolsFragment : PreferenceFragmentCompat() {
     private var appInfoList: List<AppInfo> = ArrayList()
 
@@ -249,7 +250,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     private fun launchFragment(fragment: Fragment): Boolean {
         requireActivity().supportFragmentManager
             .beginTransaction()
-            .replace(R.id.prefsFragment, fragment)
+            .replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
         return true
