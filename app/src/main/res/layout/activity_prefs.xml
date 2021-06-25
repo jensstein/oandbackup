@@ -22,7 +22,7 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -30,21 +30,11 @@
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
             android:background="@drawable/bg_bar_static_round"
-            android:elevation="@dimen/small_spacing">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="@drawable/bg_ripple_click"
-                android:contentDescription=""
-                android:padding="@dimen/cards_spacing"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back" />
-
+            android:elevation="@dimen/small_spacing"
+            app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/pageHeadline"
@@ -58,7 +48,7 @@
                 android:textAppearance="@style/TextAppearance.Headline"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/helpButton"
-                app:layout_constraintStart_toEndOf="@id/backButton"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -76,9 +66,47 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/prefsFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?actionBarSize" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:id="@+id/fragmentContainer"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/navigationBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
+            app:navGraph="@navigation/navi_graph_prefs" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/navigationBar"
+            style="@style/Bar.Bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bar_static_round"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragmentContainer">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                style="@style/Bar.BottomNavigation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@drawable/bg_button_middle_navbar"
+                app:itemRippleColor="?colorAccent"
+                app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                app:menu="@menu/navi_menu_prefs" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/backButton"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_arrow_back" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

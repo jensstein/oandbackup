@@ -88,7 +88,7 @@ class SchedulerFragment : NavigationFragment() {
 
     override fun onResume() {
         super.onResume()
-        setupOnClick()
+        setupOnClicks()
     }
 
     override fun setupViews() {
@@ -98,7 +98,7 @@ class SchedulerFragment : NavigationFragment() {
 
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         schedulerFastAdapter.onClickListener =
             { _: View?, _: IAdapter<SchedulerItemX>, item: SchedulerItemX?, _: Int? ->
                 sheetSchedule?.dismissAllowingStateLoss()
@@ -125,6 +125,14 @@ class SchedulerFragment : NavigationFragment() {
                     requireMainActivity().viewModel.updateBlocklist(newList)
                 }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
+        }
+        binding.helpButton.setOnClickListener {
+            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
+                HelpSheet()
+            requireMainActivity().sheetHelp!!.showNow(
+                requireActivity().supportFragmentManager,
+                "HELPSHEET"
+            )
         }
         binding.addSchedule.setOnClickListener {
             viewModel.addSchedule()

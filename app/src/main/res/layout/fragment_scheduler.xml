@@ -51,16 +51,31 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/blocklistButton"
-                style="@style/Button.NavBar.End"
+                style="@style/Button.NavBar.Middle"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
                 android:tooltipText="@string/sched_blocklist"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/helpButton"
+                app:layout_constraintStart_toEndOf="@id/pageHeadline"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_blocklist" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/helpButton"
+                style="@style/Button.NavBar.End"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:tooltipText="@string/help"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/blocklistButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_help" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView

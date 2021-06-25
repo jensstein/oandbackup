@@ -33,7 +33,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.databinding.FragmentMainBinding
+import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
@@ -53,7 +53,7 @@ import timber.log.Timber
 
 class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
     override var appInfoList: MutableList<AppInfo>
         get() =
@@ -74,7 +74,7 @@ class HomeFragment : NavigationFragment(),
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val viewModelFactory = HomeViewModelFactory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
@@ -95,7 +95,6 @@ class HomeFragment : NavigationFragment(),
         viewModel.refreshActive.observe(requireActivity(), {
             binding.refreshLayout.isRefreshing = it
             if (it) binding.searchBar.setQuery("", false)
-            viewModel.nUpdatedApps.value = updatedItemAdapter.adapterItems.size
         })
 
         viewModel.nUpdatedApps.observe(requireActivity(), {
@@ -117,7 +116,7 @@ class HomeFragment : NavigationFragment(),
 
     override fun onResume() {
         super.onResume()
-        setupOnClick()
+        setupOnClicks()
         setupSearch()
         requireMainActivity().setRefreshViewController(this)
     }
@@ -141,7 +140,7 @@ class HomeFragment : NavigationFragment(),
         binding.updatedRecycler.adapter = updatedFastAdapter
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
@@ -174,6 +173,14 @@ class HomeFragment : NavigationFragment(),
             }
         }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
+        binding.helpButton.setOnClickListener {
+            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
+                HelpSheet()
+            requireMainActivity().sheetHelp!!.showNow(
+                requireActivity().supportFragmentManager,
+                "HELPSHEET"
+            )
+        }
     }
 
     fun setupSearch() {
@@ -204,14 +211,6 @@ class HomeFragment : NavigationFragment(),
                 return true
             }
         })
-        binding.helpButton.setOnClickListener {
-            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
-                HelpSheet()
-            requireMainActivity().sheetHelp!!.showNow(
-                requireActivity().supportFragmentManager,
-                "HELPSHEET"
-            )
-        }
     }
 
     private fun onClickUpdateAllAction() {
@@ -360,6 +359,7 @@ class HomeFragment : NavigationFragment(),
             try {
                 mainItemAdapter.set(mainList)
                 updatedItemAdapter.set(updatedList)
+                viewModel.nUpdatedApps.value = updatedList.size
                 if (mainList.isEmpty())
                     Toast.makeText(
                         requireContext(),

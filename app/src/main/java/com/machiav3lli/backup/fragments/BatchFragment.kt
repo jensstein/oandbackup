@@ -108,7 +108,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onResume() {
         super.onResume()
         setupSearch()
-        setupOnClick()
+        setupOnClicks()
         requireMainActivity().setRefreshViewController(this)
     }
 
@@ -139,7 +139,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
-    override fun setupOnClick() {
+    override fun setupOnClicks() {
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
@@ -178,6 +178,14 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
         batchFastAdapter?.addEventHook(OnApkCheckBoxClickHook())
         batchFastAdapter?.addEventHook(OnDataCheckBoxClickHook())
+        binding.helpButton.setOnClickListener {
+            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
+                HelpSheet()
+            requireMainActivity().sheetHelp!!.showNow(
+                requireActivity().supportFragmentManager,
+                "HELPSHEET"
+            )
+        }
     }
 
     fun setupSearch() {
@@ -208,14 +216,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 return true
             }
         })
-        binding.helpButton.setOnClickListener {
-            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
-                HelpSheet()
-            requireMainActivity().sheetHelp!!.showNow(
-                requireActivity().supportFragmentManager,
-                "HELPSHEET"
-            )
-        }
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {
