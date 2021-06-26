@@ -42,6 +42,7 @@ class IntroActivityX : BaseActivity() {
     private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setCustomTheme()
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
         setContentView(binding.root)

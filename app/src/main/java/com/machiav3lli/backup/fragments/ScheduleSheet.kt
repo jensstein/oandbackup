@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -26,14 +25,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
@@ -54,22 +49,9 @@ import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-class ScheduleSheet(private val scheduleId: Long) :
-    BottomSheetDialogFragment() {
+class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        sheet.setOnShowListener {
-            val bottomSheetDialog = it as BottomSheetDialog
-            val bottomSheet =
-                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state =
-                BottomSheetBehavior.STATE_EXPANDED
-        }
-        return sheet
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

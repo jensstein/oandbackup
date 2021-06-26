@@ -29,6 +29,7 @@ import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.setCustomTheme
 
 class PrefsActivity : BaseActivity() {
     private lateinit var binding: ActivityPrefsBinding
@@ -36,6 +37,7 @@ class PrefsActivity : BaseActivity() {
     var appInfoList: List<AppInfo> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setCustomTheme()
         super.onCreate(savedInstanceState)
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         setContentView(binding.root)

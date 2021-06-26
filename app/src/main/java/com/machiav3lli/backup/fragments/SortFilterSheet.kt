@@ -17,20 +17,13 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.core.view.children
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.*
@@ -38,21 +31,8 @@ import com.machiav3lli.backup.utils.*
 class SortFilterSheet(
     private var mSortFilterModel: SortFilterModel = SortFilterModel(),
     private val stats: Triple<Int, Int, Int>
-) :
-    BottomSheetDialogFragment() {
+) : BaseSheet() {
     private lateinit var binding: SheetSortFilterBinding
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        sheet.setOnShowListener { d: DialogInterface ->
-            val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet =
-                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state =
-                BottomSheetBehavior.STATE_EXPANDED
-        }
-        return sheet
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -119,6 +99,4 @@ class SortFilterSheet(
             binding.filterSpecial.visibility = View.GONE
         }
     }
-
-    private fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }

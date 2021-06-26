@@ -67,6 +67,7 @@ class MainActivityX : BaseActivity() {
     var snackBar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
@@ -83,7 +84,7 @@ class MainActivityX : BaseActivity() {
             viewModel.refreshList()
         })
         viewModel.refreshNow.observe(this, {
-            if (it) {
+            if (it && refreshViewController != null) {
                 refreshView()
             }
         })
