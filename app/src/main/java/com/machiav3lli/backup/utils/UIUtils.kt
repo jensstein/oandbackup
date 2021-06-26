@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.utils
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -77,4 +78,19 @@ fun Activity.showToast(message: String?) = runOnUiThread {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
+val Context.colorAccent: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorAccent))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
+val Context.colorSecondary: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorSecondary))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
 

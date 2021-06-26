@@ -119,12 +119,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun setupViews() {
         binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
-        binding.refreshLayout.setColorSchemeColors(
-            resources.getColor(
-                R.color.app_accent,
-                requireActivity().theme
-            )
-        )
+        binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
             resources.getColor(
                 R.color.app_primary_base,

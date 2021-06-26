@@ -122,9 +122,7 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun setupViews() {
-        binding.refreshLayout.setColorSchemeColors(
-            resources.getColor(R.color.app_accent, requireActivity().theme)
-        )
+        binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
             resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )

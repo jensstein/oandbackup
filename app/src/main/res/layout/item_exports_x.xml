@@ -130,7 +130,7 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/app_secondary"
+                android:tint="?colorSecondary"
                 app:srcCompat="@drawable/ic_blocklist" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -138,7 +138,7 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/app_accent"
+                android:tint="?colorAccent"
                 app:srcCompat="@drawable/ic_customlist" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -185,7 +185,7 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_restore"
-            android:tint="@color/app_accent"
+            android:tint="?colorAccent"
             app:layout_constraintBottom_toBottomOf="@id/delete"
             app:layout_constraintEnd_toStartOf="@id/delete"
             app:layout_constraintStart_toStartOf="parent"

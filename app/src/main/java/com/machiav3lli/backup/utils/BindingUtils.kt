@@ -103,19 +103,16 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     imageTintList = color
 }
 
-fun Chip.setColor(theList: Set<String>) = when {
-    theList.isNotEmpty() -> {
-        this.setTextColor(this.context.getColor(R.color.app_accent))
-        this.setChipStrokeColorResource(R.color.app_accent)
-        this.setChipIconTintResource(R.color.app_accent)
-        this.setRippleColorResource(R.color.app_accent)
-    }
-    else -> {
-        this.setTextColor(this.context.getColor(R.color.app_secondary))
-        this.setChipStrokeColorResource(R.color.app_secondary)
-        this.setChipIconTintResource(R.color.app_secondary)
-        this.setRippleColorResource(R.color.app_secondary)
-    }
+fun Chip.setColor(theList: Set<String>) {
+    val color =
+        ColorStateList.valueOf(
+            if (theList.isNotEmpty()) context.colorAccent
+            else context.colorSecondary
+        )
+    this.setTextColor(color)
+    this.chipStrokeColor = color
+    this.chipIconTint = color
+    this.rippleColor = color
 }
 
 fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {

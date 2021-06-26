@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
                         android:text="@string/intro_permission_storage_location_warning"
-                        android:textColor="@color/app_accent" />
+                        android:textColor="?colorAccent" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

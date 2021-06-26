@@ -192,23 +192,23 @@
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
-        <item name="chipStrokeColor">@color/app_secondary</item>
-        <item name="rippleColor">@color/app_secondary</item>
+        <item name="chipStrokeColor">?colorSecondary</item>
+        <item name="rippleColor">?colorSecondary</item>
         <item name="chipSurfaceColor">?android:windowBackground</item>
-        <item name="android:textColor">@color/app_secondary</item>
+        <item name="android:textColor">?colorSecondary</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
-        <item name="chipStrokeColor">@color/app_accent</item>
-        <item name="rippleColor">@color/app_accent</item>
+        <item name="chipStrokeColor">?colorAccent</item>
+        <item name="rippleColor">?colorAccent</item>
         <item name="chipSurfaceColor">?android:windowBackground</item>
-        <item name="android:textColor">@color/app_accent</item>
+        <item name="android:textColor">?colorAccent</item>
     </style>
 
     <style name="Chip.Action.Filled.Positive" parent="Chip.Action">
-        <item name="chipStrokeColor">@color/app_accent</item>
+        <item name="chipStrokeColor">?colorAccent</item>
         <item name="rippleColor">@color/app_primary_base</item>
-        <item name="chipSurfaceColor">@color/app_accent</item>
+        <item name="chipSurfaceColor">?colorAccent</item>
         <item name="android:textColor">?colorControlNormal</item>
     </style>
 </resources>
