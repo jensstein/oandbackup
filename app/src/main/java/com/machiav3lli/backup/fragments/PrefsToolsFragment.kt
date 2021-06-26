@@ -47,7 +47,6 @@ import java.time.LocalDateTime
 
 // TODO hide navBar on launching tools' fragments
 class PrefsToolsFragment : PreferenceFragmentCompat() {
-    private lateinit var pref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_tools, rootKey)
@@ -55,20 +54,15 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pref = findPreference(PREFS_BATCH_DELETE)!!
-        pref.onPreferenceClickListener =
+        findPreference<Preference>(PREFS_BATCH_DELETE)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { onClickUninstalledBackupsDelete() }
-        pref = findPreference(PREFS_COPYSELF)!!
-        pref.onPreferenceClickListener =
+        findPreference<Preference>(PREFS_COPYSELF)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { onClickCopySelf() }
-        pref = findPreference(PREFS_SCHEDULESEXPORTIMPORT)!!
-        pref.onPreferenceClickListener =
+        findPreference<Preference>(PREFS_SCHEDULESEXPORTIMPORT)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { onClickSchedulesExportImport() }
-        pref = findPreference(PREFS_SAVEAPPSLIST)!!
-        pref.onPreferenceClickListener =
+        findPreference<Preference>(PREFS_SAVEAPPSLIST)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { onClickSaveAppsList() }
-        pref = findPreference(PREFS_LOGVIEWER)!!
-        pref.onPreferenceClickListener =
+        findPreference<Preference>(PREFS_LOGVIEWER)?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { launchFragment(LogsFragment()) }
     }
 
