@@ -17,7 +17,7 @@
  -->
 <resources>
 
-    <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
         <item name="colorAccent">@color/accent_0</item>
@@ -37,7 +37,7 @@
         <item name="fastScrollVerticalTrackDrawable">@drawable/fastscroll_track</item>
     </style>
 
-    <style name="AppTheme.Splash" parent="AppTheme.DayNight">
+    <style name="AppTheme.Splash" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 

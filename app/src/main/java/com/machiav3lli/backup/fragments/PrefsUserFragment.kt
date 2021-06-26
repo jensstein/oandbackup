@@ -24,7 +24,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R

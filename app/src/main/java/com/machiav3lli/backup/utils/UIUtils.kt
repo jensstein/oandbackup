@@ -23,9 +23,6 @@ import android.content.DialogInterface
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
-import com.machiav3lli.backup.PREFS_ACCENT_COLOR
-import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
-import com.machiav3lli.backup.PREFS_THEME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.ActionResult
 
@@ -95,18 +92,6 @@ val Context.colorSecondary: Int
         tA.recycle()
         return color
     }
-
-var Context.themeStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_THEME, "system") ?: "system"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_THEME, value).apply()
-
-var Context.accentStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_ACCENT_COLOR, value).apply()
-
-var Context.secondaryStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
 
 fun getThemeStyle(theme: String) = when (theme) {
     "light" -> AppCompatDelegate.MODE_NIGHT_NO

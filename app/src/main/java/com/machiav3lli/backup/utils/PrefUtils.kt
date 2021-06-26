@@ -113,7 +113,9 @@ val Context.backupDirPath: String
     get() {
         val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
             ?: ""
-        if (location.isEmpty()) { throw StorageLocationNotConfiguredException() }
+        if (location.isEmpty()) {
+            throw StorageLocationNotConfiguredException()
+        }
         return location
     }
 
@@ -301,3 +303,15 @@ val Context.isRememberFiltering: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
+
+var Context.themeStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_THEME, "system") ?: "system"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_THEME, value).apply()
+
+var Context.accentStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_ACCENT_COLOR, value).apply()
+
+var Context.secondaryStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
