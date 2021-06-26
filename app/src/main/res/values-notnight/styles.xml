@@ -18,10 +18,10 @@
 <resources>
 
     <style name="AppTheme.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/app_accent</item>
+        <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
-        <item name="colorAccent">@color/app_accent</item>
-        <item name="colorSecondary">@color/app_secondary</item>
+        <item name="colorAccent">@color/accent_0</item>
+        <item name="colorSecondary">@color/secondary_0</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:strokeColor">@android:color/black</item>
@@ -52,10 +52,10 @@
 
     <style name="Sheet.Bottom" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Sheet.Bottom.Style</item>
-        <item name="colorPrimary">@color/app_accent</item>
+        <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
-        <item name="colorSecondary">@color/app_secondary</item>
-        <item name="colorAccent">@color/app_accent</item>
+        <item name="colorSecondary">@color/secondary_0</item>
+        <item name="colorAccent">@color/accent_0</item>
     </style>
 
     <!-- Bars -->

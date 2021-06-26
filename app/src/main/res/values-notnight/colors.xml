@@ -16,20 +16,8 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <resources>
-    <color name="app_accent">#FF8098</color>
     <color name="app_primary_base">#E9ECEF</color>
     <color name="app_primary_inverse">#323639</color>
-    <color name="app_secondary">#163DE0</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="ic_background_alpha">#55FFFFFF</color>
-    <color name="ic_exodus">#AB47BC</color>
-    <color name="ic_system">#4590FE</color>
-    <color name="ic_user">#FE9045</color>
-    <color name="ic_special">#9045FE</color>
-    <color name="ic_apk">#3AEA85</color>
-    <color name="ic_data">#f445B0</color>
-    <color name="ic_ext_data">#B3CDFF</color>
-    <color name="ic_de_data">#FADB18</color>
-    <color name="ic_obb">#CAFB68</color>
-    <color name="ic_updated">#FF0000</color>
 </resources>

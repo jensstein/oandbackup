@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_exodus">#AB47BC</color>
+    <color name="ic_system">#4590FE</color>
+    <color name="ic_user">#FE9045</color>
+    <color name="ic_special">#9045FE</color>
+    <color name="ic_apk">#3AEA85</color>
+    <color name="ic_data">#F445B0</color>
+    <color name="ic_ext_data">#B3CDFF</color>
+    <color name="ic_de_data">#FADB18</color>
+    <color name="ic_obb">#CAFB68</color>
+    <color name="ic_updated">#FF0000</color>
+
+    <color name="accent_0">#E0163D</color>
+    <color name="accent_1">#7B1FA2</color>
+    <color name="accent_2">#303F9F</color>
+    <color name="accent_3">#00E5FF</color>
+    <color name="accent_4">#00E676</color>
+    <color name="accent_5">#C6FF00</color>
+    <color name="accent_6">#FFEA00</color>
+    <color name="accent_7">#FF9100</color>
+
+    <color name="secondary_0">#80FFE7</color>
+    <color name="secondary_1">#4DB6AC</color>
+    <color name="secondary_2">#AEEA00</color>
+    <color name="secondary_3">#FFC400</color>
+    <color name="secondary_4">#FF3D00</color>
+    <color name="secondary_5">#FF8098</color>
+    <color name="secondary_6">#37474F</color>
+    <color name="secondary_7">#163DE0</color>
+</resources>
