@@ -23,15 +23,17 @@ import android.content.DialogInterface
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_THEME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.ActionResult
 
-fun setDayNightTheme(theme: String?) {
-    when (theme) {
-        "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-    }
+fun Context.setCustomTheme() {
+    AppCompatDelegate.setDefaultNightMode(getThemeStyle(themeStyle))
+    setTheme(R.style.AppTheme)
+    theme.applyStyle(getAccentStyle(accentStyle), true)
+    theme.applyStyle(getSecondaryStyle(secondaryStyle), true)
 }
 
 fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.OnClickListener) =
@@ -94,3 +96,42 @@ val Context.colorSecondary: Int
         return color
     }
 
+var Context.themeStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_THEME, "system") ?: "system"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_THEME, value).apply()
+
+var Context.accentStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_ACCENT_COLOR, value).apply()
+
+var Context.secondaryStyle: String
+    get() = getPrivateSharedPrefs().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
+    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
+
+fun getThemeStyle(theme: String) = when (theme) {
+    "light" -> AppCompatDelegate.MODE_NIGHT_NO
+    "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+}
+
+fun getAccentStyle(accent: String) = when (accent.last().digitToInt()) {
+    1 -> R.style.Accent1
+    2 -> R.style.Accent2
+    3 -> R.style.Accent3
+    4 -> R.style.Accent4
+    5 -> R.style.Accent5
+    6 -> R.style.Accent6
+    7 -> R.style.Accent7
+    else -> R.style.Accent0
+}
+
+fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) {
+    1 -> R.style.Secondary1
+    2 -> R.style.Secondary2
+    3 -> R.style.Secondary3
+    4 -> R.style.Secondary4
+    5 -> R.style.Secondary5
+    6 -> R.style.Secondary6
+    7 -> R.style.Secondary7
+    else -> R.style.Secondary0
+}

@@ -79,7 +79,19 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(PREFS_THEME)?.apply {
             onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-                    onPrefChangeTheme(newValue.toString())
+                    onThemeChanged(theme = newValue.toString())
+                }
+        }
+        findPreference<ListPreference>(PREFS_ACCENT_COLOR)?.apply {
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onThemeChanged(accent = newValue.toString())
+                }
+        }
+        findPreference<ListPreference>(PREFS_SECONDARY_COLOR)?.apply {
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onThemeChanged(secondary = newValue.toString())
                 }
         }
         findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.apply {
@@ -99,22 +111,27 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
             }
     }
 
-    private fun onPrefChangeTheme(newValue: String): Boolean {
-        requireContext().getPrivateSharedPrefs().edit().putString(PREFS_THEME, newValue).apply()
-        when (newValue) {
-            "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-        return true
-    }
-
     private fun onPrefChangeLanguage(oldLang: String, newLang: String): Boolean {
         if (oldLang != newLang) {
             val refresh = Intent(requireActivity(), MainActivityX::class.java)
             requireActivity().finish()
             startActivity(refresh)
         }
+        return true
+    }
+
+    private fun onThemeChanged(
+        theme: String = "",
+        accent: String = "",
+        secondary: String = ""
+    ): Boolean {
+        if (theme.isNotEmpty()) requireContext().themeStyle = theme
+        if (accent.isNotEmpty()) requireContext().accentStyle = accent
+        if (secondary.isNotEmpty()) requireContext().secondaryStyle = secondary
+        requireContext().setCustomTheme()
+        val refresh = Intent(requireActivity(), MainActivityX::class.java)
+        requireActivity().finish()
+        startActivity(refresh)
         return true
     }
 

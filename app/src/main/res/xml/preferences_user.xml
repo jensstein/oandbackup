@@ -20,6 +20,15 @@
 
     <androidx.preference.ListPreference
         android:defaultValue="system"
+        android:entries="@array/languageEntries"
+        android:entryValues="@array/languageEntryValues"
+        android:icon="@drawable/ic_languages"
+        android:key="languages"
+        android:title="@string/prefs_languages"
+        app:useSimpleSummaryProvider="true" />
+
+    <androidx.preference.ListPreference
+        android:defaultValue="system"
         android:entries="@array/themeEntries"
         android:entryValues="@array/themeEntryValues"
         android:icon="@drawable/ic_theme"
@@ -28,12 +37,21 @@
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.ListPreference
-        android:defaultValue="system"
-        android:entries="@array/languageEntries"
-        android:entryValues="@array/languageEntryValues"
-        android:icon="@drawable/ic_languages"
-        android:key="languages"
-        android:title="@string/prefs_languages"
+        android:defaultValue="accent_0"
+        android:entries="@array/accentEntries"
+        android:entryValues="@array/accentEntryValues"
+        android:icon="@drawable/ic_color_accent"
+        android:key="themeAccentColor"
+        android:title="@string/prefs_accent_color"
+        app:useSimpleSummaryProvider="true" />
+
+    <androidx.preference.ListPreference
+        android:defaultValue="secondary_0"
+        android:entries="@array/secondaryEntries"
+        android:entryValues="@array/secondaryEntryValues"
+        android:icon="@drawable/ic_color_secondary"
+        android:key="themeSecondaryColor"
+        android:title="@string/prefs_secondary_color"
         app:useSimpleSummaryProvider="true" />
 
     <androidx.preference.Preference

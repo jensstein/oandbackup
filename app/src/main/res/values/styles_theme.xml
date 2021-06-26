@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Accent0">
+        <item name="colorAccent">@color/accent_0</item>
+        <item name="colorPrimary">@color/accent_0</item>
+    </style>
+
+    <style name="Accent1">
+        <item name="colorAccent">@color/accent_1</item>
+        <item name="colorPrimary">@color/accent_1</item>
+    </style>
+
+    <style name="Accent2">
+        <item name="colorAccent">@color/accent_2</item>
+        <item name="colorPrimary">@color/accent_2</item>
+    </style>
+
+    <style name="Accent3">
+        <item name="colorAccent">@color/accent_3</item>
+        <item name="colorPrimary">@color/accent_3</item>
+    </style>
+
+    <style name="Accent4">
+        <item name="colorAccent">@color/accent_4</item>
+        <item name="colorPrimary">@color/accent_4</item>
+    </style>
+
+    <style name="Accent5">
+        <item name="colorAccent">@color/accent_5</item>
+        <item name="colorPrimary">@color/accent_5</item>
+    </style>
+
+    <style name="Accent6">
+        <item name="colorAccent">@color/accent_6</item>
+        <item name="colorPrimary">@color/accent_6</item>
+    </style>
+
+    <style name="Accent7">
+        <item name="colorAccent">@color/accent_7</item>
+        <item name="colorPrimary">@color/accent_7</item>
+    </style>
+
+    <style name="Secondary0">
+        <item name="colorSecondary">@color/secondary_0</item>
+    </style>
+
+    <style name="Secondary1">
+        <item name="colorSecondary">@color/secondary_1</item>
+    </style>
+
+    <style name="Secondary2">
+        <item name="colorSecondary">@color/secondary_2</item>
+    </style>
+
+    <style name="Secondary3">
+        <item name="colorSecondary">@color/secondary_3</item>
+    </style>
+
+    <style name="Secondary4">
+        <item name="colorSecondary">@color/secondary_4</item>
+    </style>
+
+    <style name="Secondary5">
+        <item name="colorSecondary">@color/secondary_5</item>
+    </style>
+
+    <style name="Secondary6">
+        <item name="colorSecondary">@color/secondary_6</item>
+    </style>
+
+    <style name="Secondary7">
+        <item name="colorSecondary">@color/secondary_7</item>
+    </style>
+</resources>
