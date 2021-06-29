@@ -42,7 +42,7 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setDayNightTheme(getPrivateSharedPrefs().getString(PREFS_THEME, "system"))
+        setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell {
             binding = ActivitySplashBinding.inflate(layoutInflater)

@@ -391,7 +391,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/showNotInstalled"
                         app:checkedIcon="@drawable/ic_delete"
-                        app:checkedIconTint="@color/app_secondary" />
+                        app:checkedIconTint="?colorSecondary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton

@@ -352,7 +352,7 @@
                     app:layout_constraintEnd_toStartOf="@id/blocklistButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock"
-                    app:rippleColor="@color/app_accent" />
+                    app:rippleColor="?colorAccent" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/blocklistButton"
@@ -370,7 +370,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/customListButton"
                     app:layout_constraintTop_toTopOf="@id/customListButton"
-                    app:rippleColor="@color/app_accent" />
+                    app:rippleColor="?colorAccent" />
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/enableCheckbox"

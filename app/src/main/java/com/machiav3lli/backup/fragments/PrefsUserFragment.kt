@@ -24,7 +24,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
@@ -33,7 +32,6 @@ import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
-    private lateinit var pref: Preference
     private lateinit var deviceLockPref: CheckBoxPreference
     private lateinit var biometricLockPref: CheckBoxPreference
 
@@ -70,44 +68,46 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pref = findPreference(PREFS_THEME)!!
-        pref.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-                onPrefChangeTheme(newValue.toString())
-            }
-        pref = findPreference(PREFS_LANGUAGES)!!
-        val oldLang = (findPreference<Preference>(PREFS_LANGUAGES) as ListPreference?)!!.value
-        pref.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
-                onPrefChangeLanguage(
-                    oldLang,
-                    newValue.toString()
-                )
-            }
-        pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
-        try {
-            pref.summary = requireContext().backupDirPath
-        } catch (e: StorageLocationNotConfiguredException) {
-            pref.summary = getString(R.string.prefs_unset)
+        findPreference<ListPreference>(PREFS_LANGUAGES)?.apply {
+            val oldLang = value
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onPrefChangeLanguage(oldLang, newValue.toString())
+                }
         }
-        pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            requireActivity().requireStorageLocation(askForDirectory)
-            true
+        findPreference<ListPreference>(PREFS_THEME)?.apply {
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onThemeChanged(theme = newValue.toString())
+                }
+        }
+        findPreference<ListPreference>(PREFS_ACCENT_COLOR)?.apply {
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onThemeChanged(accent = newValue.toString())
+                }
+        }
+        findPreference<ListPreference>(PREFS_SECONDARY_COLOR)?.apply {
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any ->
+                    onThemeChanged(secondary = newValue.toString())
+                }
+        }
+        findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.apply {
+            summary = try {
+                requireContext().backupDirPath
+            } catch (e: StorageLocationNotConfiguredException) {
+                getString(R.string.prefs_unset)
+            }
+            onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                requireActivity().requireStorageLocation(askForDirectory)
+                true
+            }
         }
         deviceLockPref.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, _: Any? ->
                 onPrefChangeDeviceLock(deviceLockPref, biometricLockPref)
             }
-    }
-
-    private fun onPrefChangeTheme(newValue: String): Boolean {
-        requireContext().getPrivateSharedPrefs().edit().putString(PREFS_THEME, newValue).apply()
-        when (newValue) {
-            "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-        return true
     }
 
     private fun onPrefChangeLanguage(oldLang: String, newLang: String): Boolean {
@@ -119,11 +119,25 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         return true
     }
 
+    private fun onThemeChanged(
+        theme: String = "",
+        accent: String = "",
+        secondary: String = ""
+    ): Boolean {
+        if (theme.isNotEmpty()) requireContext().themeStyle = theme
+        if (accent.isNotEmpty()) requireContext().accentStyle = accent
+        if (secondary.isNotEmpty()) requireContext().secondaryStyle = secondary
+        requireContext().setCustomTheme()
+        val refresh = Intent(requireActivity(), MainActivityX::class.java)
+        requireActivity().finish()
+        startActivity(refresh)
+        return true
+    }
+
     private fun Context.setDefaultDir(dir: Uri) {
         setBackupDir(dir)
         isNeedRefresh = true
-        pref = findPreference(PREFS_PATH_BACKUP_DIRECTORY)!!
-        pref.summary = dir.toString()
+        findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.summary = dir.toString()
     }
 
     private fun onPrefChangeDeviceLock(

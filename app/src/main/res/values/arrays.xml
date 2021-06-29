@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  ~ OAndBackupX: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
@@ -27,6 +26,50 @@
         <item>light</item>
         <item>dark</item>
         <item>system</item>
+    </string-array>
+
+    <string-array name="accentEntries">
+        <item>@string/prefs_accent_0</item>
+        <item>@string/prefs_accent_1</item>
+        <item>@string/prefs_accent_2</item>
+        <item>@string/prefs_accent_3</item>
+        <item>@string/prefs_accent_4</item>
+        <item>@string/prefs_accent_5</item>
+        <item>@string/prefs_accent_6</item>
+        <item>@string/prefs_accent_7</item>
+    </string-array>
+
+    <string-array name="accentEntryValues">
+        <item>accent_0</item>
+        <item>accent_1</item>
+        <item>accent_2</item>
+        <item>accent_3</item>
+        <item>accent_4</item>
+        <item>accent_5</item>
+        <item>accent_6</item>
+        <item>accent_7</item>
+    </string-array>
+
+    <string-array name="secondaryEntries">
+        <item>@string/prefs_secondary_0</item>
+        <item>@string/prefs_secondary_1</item>
+        <item>@string/prefs_secondary_2</item>
+        <item>@string/prefs_secondary_3</item>
+        <item>@string/prefs_secondary_4</item>
+        <item>@string/prefs_secondary_5</item>
+        <item>@string/prefs_secondary_6</item>
+        <item>@string/prefs_secondary_7</item>
+    </string-array>
+
+    <string-array name="secondaryEntryValues">
+        <item>secondary_0</item>
+        <item>secondary_1</item>
+        <item>secondary_2</item>
+        <item>secondary_3</item>
+        <item>secondary_4</item>
+        <item>secondary_5</item>
+        <item>secondary_6</item>
+        <item>secondary_7</item>
     </string-array>
 
     <string-array name="housekeepingMomentEntries">

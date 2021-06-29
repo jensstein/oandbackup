@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.fragments
 
 import android.app.ActivityManager
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -28,14 +27,10 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
@@ -56,8 +51,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, val position: Int) :
-    BottomSheetDialogFragment(), ActionListener {
+class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -65,19 +59,6 @@ class AppSheet(val appInfo: AppInfo, val position: Int) :
 
     val packageName: String?
         get() = viewModel.appInfo.value?.packageName
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        sheet.setOnShowListener { d: DialogInterface ->
-            val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet =
-                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-        return sheet
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -420,9 +401,5 @@ class AppSheet(val appInfo: AppInfo, val position: Int) :
         } catch (e: ShellCommands.ShellActionFailedException) {
             requireActivity().showError(e.message)
         }
-    }
-
-    private fun requireMainActivity(): MainActivityX {
-        return requireActivity() as MainActivityX
     }
 }

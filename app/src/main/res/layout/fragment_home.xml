@@ -95,7 +95,7 @@
             android:layout_height="@dimen/large_spacing"
             android:layout_margin="@dimen/cards_spacing"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/modeBar"
+            app:layout_constraintBottom_toTopOf="@id/updatedBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appBar" />
@@ -108,9 +108,10 @@
             android:elevation="@dimen/small_spacing"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/cards_spacing"
+            app:layout_constraintBottom_toTopOf="@id/refreshLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar">
+            app:layout_constraintTop_toBottomOf="@id/updatedBar">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/updatedApps"
@@ -140,7 +141,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="@color/app_accent" />
+                app:rippleColor="?colorAccent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -148,13 +149,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/cards_spacing"
+            android:layout_marginTop="@dimen/cards_spacing"
             android:background="@drawable/bg_bar_static_round"
             android:elevation="2dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/refreshLayout"
+            app:layout_constraintBottom_toTopOf="@id/modeBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/modeBar">
+            app:layout_constraintTop_toBottomOf="@id/progressBar">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/updatedRecycler"
@@ -162,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/buttons_spacing"
-                android:scrollbars="horizontal"
+                android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_updated_x" />
 
@@ -194,6 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:paddingTop="@dimen/icon_large"
                 app:fastScrollEnabled="true"
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
