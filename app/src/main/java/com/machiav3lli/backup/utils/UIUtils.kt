@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
 
 fun Context.setCustomTheme() {
@@ -42,7 +43,7 @@ fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.
         }
         if (!result.succeeded) {
             builder.setTitle(R.string.errorDialogTitle)
-                .setMessage(result.message)
+                .setMessage(LogsHandler.handleErrorMessages(this, result.message))
             builder.show()
         }
     }
