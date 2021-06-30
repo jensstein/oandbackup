@@ -77,16 +77,30 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
                 val expectedFiles = metaInfo.fileList
-                        .map { pathname: String? -> File(pathname ?: "") }
-                        .toTypedArray()
-                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
-                    val errorMessage = "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
+                    .map { pathname: String? -> File(pathname ?: "") }
+                    .toTypedArray()
+                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(
+                        expectedFiles,
+                        filesInBackup
+                    ))
+                ) {
+                    val errorMessage =
+                        "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
                 val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
-                    commands.add("$utilBoxQuoted mv -f ${quote(File(tempPath, restoreFile.name))} ${quote(restoreFile)}")
+                    commands.add(
+                        "$utilBoxQuoted mv -f ${
+                            quote(
+                                File(
+                                    tempPath,
+                                    restoreFile.name
+                                )
+                            )
+                        } ${quote(restoreFile)}"
+                    )
                 }
                 val command = commands.joinToString(" ; ")  // no dependency
                 runAsRoot(command)
@@ -110,22 +124,35 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
         // stub
     }
 
-    override fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreDeviceProtectedData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
-    override fun restoreExternalData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreExternalData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
-    override fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) {
+    override fun restoreObbData(
+        app: AppInfo,
+        backupProperties: BackupProperties?,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
     companion object {
         private fun areBasefilesSubsetOf(set: Array<File>, subsetList: Array<File>): Boolean {
             val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
-            val subsetCollection: Collection<String> = subsetList.map { obj: File -> obj.name }.toHashSet()
+            val subsetCollection: Collection<String> =
+                subsetList.map { obj: File -> obj.name }.toHashSet()
             return baseCollection.containsAll(subsetCollection)
         }
     }

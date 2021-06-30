@@ -34,7 +34,8 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
-class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
+class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
+    RestoreAppAction(context, shell) {
 
     @Throws(RestoreFailedException::class)
     override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
@@ -46,7 +47,12 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) : RestoreApp
         val tempPath = File(context.cacheDir, apkTargetPath.name)
         try {
             val inputStream = context.contentResolver.openInputStream(apkLocation!!.uri)
-            FileOutputStream(tempPath).use { outputStream -> IOUtils.copy(inputStream, outputStream) }
+            FileOutputStream(tempPath).use { outputStream ->
+                IOUtils.copy(
+                    inputStream,
+                    outputStream
+                )
+            }
         } catch (e: FileNotFoundException) {
             throw RestoreFailedException("Could not find main apk in backup", e)
         } catch (e: IOException) {

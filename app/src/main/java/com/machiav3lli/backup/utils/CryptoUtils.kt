@@ -78,7 +78,11 @@ fun generateKeyFromPassword(
 }
 
 @Throws(CryptoSetupException::class)
-fun OutputStream.encryptStream(password: String, salt: ByteArray?, iv : ByteArray?): CipherOutputStream = try {
+fun OutputStream.encryptStream(
+    password: String,
+    salt: ByteArray?,
+    iv: ByteArray?
+): CipherOutputStream = try {
     val secret = generateKeyFromPassword(password, salt)
     this.encryptStream(secret, iv)
 } catch (e: NoSuchAlgorithmException) {
@@ -92,7 +96,7 @@ fun OutputStream.encryptStream(password: String, salt: ByteArray?, iv : ByteArra
 @Throws(CryptoSetupException::class)
 fun OutputStream.encryptStream(
     secret: SecretKey?,
-    iv : ByteArray?,
+    iv: ByteArray?,
     cipherAlgorithm: String = CIPHER_ALGORITHM
 ): CipherOutputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
@@ -114,7 +118,11 @@ fun OutputStream.encryptStream(
 }
 
 @Throws(CryptoSetupException::class)
-fun InputStream.decryptStream(password: String, salt: ByteArray?, iv : ByteArray?): CipherInputStream = try {
+fun InputStream.decryptStream(
+    password: String,
+    salt: ByteArray?,
+    iv: ByteArray?
+): CipherInputStream = try {
     val secret = generateKeyFromPassword(password, salt)
     decryptStream(secret, iv)
 } catch (e: NoSuchAlgorithmException) {
