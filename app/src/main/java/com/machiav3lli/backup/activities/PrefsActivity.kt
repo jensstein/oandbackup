@@ -40,6 +40,7 @@ class PrefsActivity : BaseActivity() {
         setCustomTheme()
         super.onCreate(savedInstanceState)
         binding = ActivityPrefsBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
         appInfoList = oabx.cache.get("appInfoList") ?: mutableListOf()
         if (appInfoList.isNullOrEmpty()) refreshAppsList()

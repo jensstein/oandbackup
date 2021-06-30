@@ -84,11 +84,11 @@ class HomeFragment : NavigationFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refresh()
+        refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
             if (it) {
-                refresh()
+                refreshView()
             }
         })
 
@@ -327,7 +327,7 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    override fun refresh() {
+    override fun refreshView() {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(
             requireActivity().sortFilterModel, getStats(

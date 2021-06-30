@@ -85,10 +85,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refresh()
+        refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
-            if (it) refresh()
+            if (it) refreshView()
         })
 
         viewModel.refreshActive.observe(requireActivity(), {
@@ -114,7 +114,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onInflate(context: Context, attrs: AttributeSet, savedInstanceState: Bundle?) {
         super.onInflate(context, attrs, savedInstanceState)
-        refresh()
+        refreshView()
     }
 
     override fun setupViews() {
@@ -393,7 +393,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     }
 
                     binding.progressBar.visibility = View.GONE
-                    requireMainActivity().viewModel.refreshList()
+                    binding.refreshLayout.isRefreshing = true
+                    // requireMainActivity().viewModel.refreshList()
                     finishWorkLiveData.removeObserver(this)
                 }
             }
@@ -407,7 +408,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    override fun refresh() {
+    override fun refreshView() {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(appInfoList))
         Thread {

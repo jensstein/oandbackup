@@ -32,5 +32,5 @@ abstract class NavigationFragment : Fragment() {
 }
 
 interface RefreshViewController {
-    fun refresh()
+    fun refreshView()
 }

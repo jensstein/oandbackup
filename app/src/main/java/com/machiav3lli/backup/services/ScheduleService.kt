@@ -51,12 +51,25 @@ open class ScheduleService : Service() {
         this.notificationId = System.currentTimeMillis().toInt()
         if (MainActivityX.initShellHandler()) {
             createNotificationChannel()
-            showNotification(this, MainActivityX::class.java, notificationId,
-                    String.format(getString(R.string.fetching_action_list), getString(R.string.backup)), "", true)
+            showNotification(
+                this,
+                MainActivityX::class.java,
+                notificationId,
+                String.format(getString(R.string.fetching_action_list), getString(R.string.backup)),
+                "",
+                true
+            )
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
         } else {
-            showNotification(this, MainActivityX::class.java, notificationId, getString(R.string.schedule_failed), getString(R.string.shell_initproblem), false)
+            showNotification(
+                this,
+                MainActivityX::class.java,
+                notificationId,
+                getString(R.string.schedule_failed),
+                getString(R.string.shell_initproblem),
+                false
+            )
             stopSelf()
         }
     }
@@ -73,40 +86,57 @@ open class ScheduleService : Service() {
                 var counter = 0
 
                 if (selectedItems.isEmpty()) {
-                    showNotification(context, MainActivityX::class.java, notificationId,
-                            getString(R.string.schedule_failed), getString(R.string.empty_filtered_list), false)
+                    showNotification(
+                        context,
+                        MainActivityX::class.java,
+                        notificationId,
+                        getString(R.string.schedule_failed),
+                        getString(R.string.empty_filtered_list),
+                        false
+                    )
                     scheduleAlarm(context, scheduleId, true)
                     stopService(intent)
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
                     selectedItems.forEach { packageName ->
-                        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-                                .setInputData(workDataOf(
+                        val oneTimeWorkRequest =
+                            OneTimeWorkRequest.Builder(AppActionWork::class.java)
+                                .setInputData(
+                                    workDataOf(
                                         "packageName" to packageName,
                                         "selectedMode" to mode,
                                         "backupBoolean" to true,
                                         "notificationId" to notificationId
-                                ))
+                                    )
+                                )
                                 .build()
 
                         worksList.add(oneTimeWorkRequest)
 
                         val oneTimeWorkLiveData = WorkManager.getInstance(context)
-                                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+                            .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
                         oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                             override fun onChanged(t: WorkInfo?) {
                                 if (t?.state == WorkInfo.State.SUCCEEDED) {
                                     counter += 1
                                     val succeeded = t.outputData.getBoolean("succeeded", false)
                                     val packageLabel = t.outputData.getString("packageLabel")
-                                            ?: ""
+                                        ?: ""
                                     val error = t.outputData.getString("error")
-                                            ?: ""
-                                    val message = "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
-                                    showNotification(this@ScheduleService, MainActivityX::class.java,
-                                            notificationId, message, packageLabel, false)
-                                    if (error.isNotEmpty()) errors = "$errors$packageLabel: ${LogsHandler.handleErrorMessages(this@ScheduleService, error)}\n"
+                                        ?: ""
+                                    val message =
+                                        "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
+                                    showNotification(
+                                        this@ScheduleService, MainActivityX::class.java,
+                                        notificationId, message, packageLabel, false
+                                    )
+                                    if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
+                                        LogsHandler.handleErrorMessages(
+                                            this@ScheduleService,
+                                            error
+                                        )
+                                    }\n"
                                     resultsSuccess = resultsSuccess && succeeded
                                     oneTimeWorkLiveData.removeObserver(this)
                                 }
@@ -115,25 +145,29 @@ open class ScheduleService : Service() {
                     }
 
                     val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-                            .setInputData(workDataOf(
-                                    "resultsSuccess" to resultsSuccess,
-                                    "backupBoolean" to true
-                            ))
-                            .build()
+                        .setInputData(
+                            workDataOf(
+                                "resultsSuccess" to resultsSuccess,
+                                "backupBoolean" to true
+                            )
+                        )
+                        .build()
 
                     val finishWorkLiveData = WorkManager.getInstance(context)
-                            .getWorkInfoByIdLiveData(finishWorkRequest.id)
+                        .getWorkInfoByIdLiveData(finishWorkRequest.id)
                     finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                         override fun onChanged(t: WorkInfo?) {
                             if (t?.state == WorkInfo.State.SUCCEEDED) {
                                 val message = t.outputData.getString("notificationMessage")
-                                        ?: ""
+                                    ?: ""
                                 val title = t.outputData.getString("notificationTitle")
-                                        ?: ""
+                                    ?: ""
                                 val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                                 if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
-                                showNotification(this@ScheduleService, MainActivityX::class.java,
-                                        notificationId, title, message, true)
+                                showNotification(
+                                    this@ScheduleService, MainActivityX::class.java,
+                                    notificationId, title, message, true
+                                )
                                 scheduleAlarm(context, scheduleId, true)
                                 isNeedRefresh = true
                                 stopService(intent)
@@ -143,9 +177,9 @@ open class ScheduleService : Service() {
                     })
 
                     WorkManager.getInstance(context)
-                            .beginWith(worksList)
-                            .then(finishWorkRequest)
-                            .enqueue()
+                        .beginWith(worksList)
+                        .then(finishWorkRequest)
+                        .enqueue()
                 }
 
                 super.onPostExecute(result)
@@ -161,29 +195,34 @@ open class ScheduleService : Service() {
     }
 
     private fun createForegroundInfo() {
-        val contentPendingIntent = PendingIntent.getActivity(this, 0,
-                Intent(this, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+        val contentPendingIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
-        val closeIntent = PendingIntent.getActivity(this, 0,
-                Intent(this, MainActivityX::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .setAction("CLOSE_ACTION"), 0)
+        val closeIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivityX::class.java)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .setAction("CLOSE_ACTION"), 0
+        )
 
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.sched_notificationMessage))
-                .setSmallIcon(R.drawable.ic_app)
-                .setOngoing(true)
-                .setSilent(true)
-                .setContentIntent(contentPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .addAction(R.drawable.ic_wipe, getString(R.string.dialogCancel), closeIntent)
-                .build()
+            .setContentTitle(getString(R.string.sched_notificationMessage))
+            .setSmallIcon(R.drawable.ic_app)
+            .setOngoing(true)
+            .setSilent(true)
+            .setContentIntent(contentPendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .addAction(R.drawable.ic_wipe, getString(R.string.dialogCancel), closeIntent)
+            .build()
     }
 
     open fun createNotificationChannel() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_HIGH)
+        val notificationChannel =
+            NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_HIGH)
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
     }

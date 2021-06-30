@@ -84,9 +84,7 @@ class MainActivityX : BaseActivity() {
             viewModel.refreshList()
         })
         viewModel.refreshNow.observe(this, {
-            if (it && refreshViewController != null) {
-                refreshView()
-            }
+            if (it) refreshView()
         })
         initShell()
         runOnUiThread { showEncryptionDialog() }
@@ -124,7 +122,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList",it) }
+            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList", it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )
@@ -171,5 +169,5 @@ class MainActivityX : BaseActivity() {
         this.refreshViewController = refreshViewController
     }
 
-    fun refreshView() = refreshViewController.refresh()
+    fun refreshView() = refreshViewController.refreshView()
 }
