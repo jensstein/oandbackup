@@ -117,14 +117,14 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(IOException::class, CryptoSetupException::class)
-    protected fun uncompress(filepath: File, targetDir: File?) {
+    protected fun uncompress(filepath: File, targetDir: File?, iv : ByteArray) {
         val inputFilename = filepath.absolutePath
         Timber.d("Opening file for expansion: $inputFilename")
         val password = context.getEncryptionPassword()
         var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
         if (password.isNotEmpty()) {
             Timber.d("Encryption enabled")
-            stream = stream.decryptStream(password, context.getCryptoSalt())
+            stream = stream.decryptStream(password, context.getCryptoSalt(), iv)
         }
         TarArchiveInputStream(GzipCompressorInputStream(stream)).uncompressTo(targetDir)
         Timber.d("Done expansion. Closing $inputFilename")
@@ -272,7 +272,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, IOException::class)
-    protected fun openArchiveFile(archiveUri: Uri, isEncrypted: Boolean): TarArchiveInputStream {
+    protected fun openArchiveFile(archiveUri: Uri, isEncrypted: Boolean, iv : ByteArray?): TarArchiveInputStream {
         val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
         if (isEncrypted) {
             val password = context.getEncryptionPassword()
@@ -280,7 +280,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 Timber.d("Decryption enabled")
                 return TarArchiveInputStream(
                         GzipCompressorInputStream(
-                                inputStream.decryptStream(password, context.getCryptoSalt())
+                                inputStream.decryptStream(password, context.getCryptoSalt(), iv)
                         )
                 )
             }
@@ -289,14 +289,14 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    private fun genericRestoreFromArchive(archiveUri: Uri, targetDir: String, isEncrypted: Boolean, cachePath: File?) {
+    private fun genericRestoreFromArchive(archiveUri: Uri, targetDir: String, isEncrypted: Boolean, cachePath: File?, iv : ByteArray?) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
         if (!StorageFile.fromUri(context, archiveUri).exists()) {
             throw RestoreFailedException("Backup archive at $archiveUri is missing")
         }
         var tempDir: Path? = null
         try {
-            openArchiveFile(archiveUri, isEncrypted).use { inputStream ->
+            openArchiveFile(archiveUri, isEncrypted, iv).use { inputStream ->
                 // Create a temporary directory in OABX's cache directory and uncompress the data into it
                 tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
                 tempDir?.let {
@@ -378,7 +378,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             backupArchive.uri,
             app.dataPath,
             backupProperties.isEncrypted,
-            context.cacheDir
+            context.cacheDir,
+            backupProperties.iv
         )
         genericRestorePermissions(
             BACKUP_DIR_DATA,
@@ -396,7 +397,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             backupArchive.uri,
             app.devicesProtectedDataPath,
             backupProperties.isEncrypted,
-            deviceProtectedStorageContext.cacheDir
+            deviceProtectedStorageContext.cacheDir,
+            backupProperties.iv
         )
         genericRestorePermissions(
             BACKUP_DIR_DEVICE_PROTECTED_FILES,
@@ -425,7 +427,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             backupArchive.uri,
             externalDataDir.absolutePath,
             backupProperties.isEncrypted,
-            context.externalCacheDir
+            context.externalCacheDir,
+            backupProperties.iv
         )
     }
 

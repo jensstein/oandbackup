@@ -38,24 +38,38 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
+class RestoreSpecialAction(context: Context, shell: ShellHandler) :
+    RestoreAppAction(context, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    override fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int) {
+    override fun restoreAllData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: Uri,
+        backupMode: Int
+    ) {
         restoreData(app, backupProperties, fromUri(context, backupLocation))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    override fun restoreData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
-        Timber.i(String.format("%s: Restore special data", app))
+    override fun restoreData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
+        Timber.i("%s: Restore special data", app)
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = context.isEncryptionEnabled()
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
         val backupArchiveFile = backupLocation.findFile(backupArchiveFilename)
-                ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
+            ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
-            openArchiveFile(backupArchiveFile.uri, isEncrypted).use { archive ->
+            openArchiveFile(
+                backupArchiveFile.uri,
+                isEncrypted,
+                backupProperties.iv
+            ).use { archive ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
                 archive.suUncompressTo(tempPath)

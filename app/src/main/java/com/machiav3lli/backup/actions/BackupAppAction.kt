@@ -64,6 +64,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
             preprocessPackage(app.packageName)
         }
+        val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
+        backupBuilder.setIv(iv)
         try {
             if (backupMode and MODE_APK == MODE_APK) {
                 Timber.i("$app: Backing up package")
@@ -73,22 +75,22 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             var backupCreated: Boolean
             if (backupMode and MODE_DATA == MODE_DATA) {
                 Timber.i("$app: Backing up data")
-                backupCreated = backupData(app, backupInstanceDir)
+                backupCreated = backupData(app, backupInstanceDir, iv)
                 backupBuilder.setHasAppData(backupCreated)
             }
             if (backupMode and MODE_DATA_DE == MODE_DATA_DE) {
                 Timber.i("$app: Backing up device's protected data")
-                backupCreated = backupDeviceProtectedData(app, backupInstanceDir)
+                backupCreated = backupDeviceProtectedData(app, backupInstanceDir, iv)
                 backupBuilder.setHasDevicesProtectedData(backupCreated)
             }
             if (backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
                 Timber.i("$app: Backing up external data")
-                backupCreated = backupExternalData(app, backupInstanceDir)
+                backupCreated = backupExternalData(app, backupInstanceDir, iv)
                 backupBuilder.setHasExternalData(backupCreated)
             }
             if (backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
                 Timber.i("$app: Backing up obb files")
-                backupCreated = backupObbData(app, backupInstanceDir)
+                backupCreated = backupObbData(app, backupInstanceDir, iv)
                 backupBuilder.setHasObbData(backupCreated)
             }
 
@@ -137,7 +139,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(IOException::class, CryptoSetupException::class)
-    protected fun createBackupArchive(backupInstanceDir: Uri?, what: String?, allFilesToBackup: List<ShellHandler.FileInfo>) {
+    protected fun createBackupArchive(backupInstanceDir: Uri?, what: String?, allFilesToBackup: List<ShellHandler.FileInfo>, iv: ByteArray?) {
         Timber.i("Creating $what backup")
         val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
         val backupFilename = getBackupArchiveFilename(what!!, context.isEncryptionEnabled())
@@ -146,7 +148,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         var outStream: OutputStream = BufferedOutputStream(context.contentResolver.openOutputStream(backupFile?.uri
                 ?: Uri.EMPTY, "w"))
         if (password.isNotEmpty()) {
-            outStream = outStream.encryptStream(password, context.getCryptoSalt())
+            outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
         try {
             TarArchiveOutputStream(GzipCompressorOutputStream(outStream)).use { archive ->
@@ -193,7 +195,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupData(backupType: String?, backupInstanceDir: Uri?, filesToBackup: List<ShellHandler.FileInfo>, compress: Boolean): Boolean {
+    protected fun genericBackupData(backupType: String?, backupInstanceDir: Uri?, filesToBackup: List<ShellHandler.FileInfo>, compress: Boolean, iv : ByteArray?): Boolean {
         Timber.i(String.format("Backing up %s got %d files to backup", backupType, filesToBackup.size))
         if (filesToBackup.isEmpty()) {
             Timber.i("Nothing to backup for $backupType. Skipping")
@@ -201,7 +203,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         }
         try {
             if (compress) {
-                createBackupArchive(backupInstanceDir, backupType, filesToBackup)
+                createBackupArchive(backupInstanceDir, backupType, filesToBackup, iv)
             } else {
                 copyToBackupArchive(backupInstanceDir, backupType, filesToBackup)
             }
@@ -263,20 +265,20 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupData(app: AppInfo, backupInstanceDir: StorageFile?, iv : ByteArray?): Boolean {
         val backupType = BACKUP_DIR_DATA
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
         val filesToBackup = assembleFileList(app.dataPath)
-        return genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
+        return genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true, iv)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?, iv : ByteArray?): Boolean {
         val backupType = BACKUP_DIR_EXTERNAL_FILES
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
             val filesToBackup = assembleFileList(app.getExternalDataPath(context))
-            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
@@ -289,12 +291,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?, iv : ByteArray?): Boolean {
         val backupType = BACKUP_DIR_OBB_FILES
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
             val filesToBackup = assembleFileList(app.getObbFilesPath(context))
-            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, false)
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {
@@ -307,12 +309,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected open fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    protected open fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?, iv : ByteArray?): Boolean {
         val backupType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Timber.i(String.format(LOG_START_BACKUP, app.packageName, backupType))
         return try {
             val filesToBackup = assembleFileList(app.devicesProtectedDataPath)
-            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true)
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException
                     && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)) {

@@ -47,7 +47,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    override fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupData(app: AppInfo, backupInstanceDir: StorageFile?, iv : ByteArray?): Boolean {
         Timber.i("$app: Backup special data")
         require(app.appMetaInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
         val appInfo = app.appMetaInfo as SpecialAppMetaInfo
@@ -84,7 +84,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true, iv)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")
@@ -101,17 +101,17 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
         // stub
     }
 
-    override fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?, iv: ByteArray?): Boolean {
         // stub
         return false
     }
 
-    override fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?, iv: ByteArray?): Boolean {
         // stub
         return false
     }
 
-    override fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?, iv: ByteArray?): Boolean {
         // stub
         return false
     }

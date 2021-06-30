@@ -29,8 +29,13 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.ensureDirectory
 import java.time.LocalDateTime
 
-class BackupBuilder(private val context: Context, private val appInfo: AppMetaInfo, backupRoot: Uri) {
+class BackupBuilder(
+    private val context: Context,
+    private val appInfo: AppMetaInfo,
+    backupRoot: Uri
+) {
     private val backupDate: LocalDateTime = LocalDateTime.now()
+    private var iv = byteArrayOf()
     private var hasApk = false
     private var hasAppData = false
     private var hasDevicesProtectedData = false
@@ -43,7 +48,12 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
     private fun ensureBackupPath(backupRoot: Uri): StorageFile? {
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
-        return StorageFile.fromUri(context, backupRoot).ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
+        return StorageFile.fromUri(context, backupRoot)
+            .ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
+    }
+
+    fun setIv(iv: ByteArray) {
+        this.iv = iv
     }
 
     fun setHasApk(hasApk: Boolean) {
@@ -72,13 +82,18 @@ class BackupBuilder(private val context: Context, private val appInfo: AppMetaIn
 
     fun createBackupItem(): BackupItem {
         return BackupItem(
-                BackupProperties(appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
-                        hasExternalData, hasObbData, cipherType, cpuArch),
-                backupPath!!)
+            BackupProperties(
+                appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
+                hasExternalData, hasObbData, cipherType, iv, cpuArch
+            ),
+            backupPath!!
+        )
     }
 
     fun createBackupProperties(): BackupProperties {
-        return BackupProperties(appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
-                hasExternalData, hasObbData, cipherType, cpuArch)
+        return BackupProperties(
+            appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
+            hasExternalData, hasObbData, cipherType, iv, cpuArch
+        )
     }
 }

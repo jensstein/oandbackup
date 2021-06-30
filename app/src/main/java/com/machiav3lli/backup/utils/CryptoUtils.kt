@@ -31,6 +31,7 @@ import javax.crypto.*
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.random.Random
 
 /**
  * Crypto. The class to handle encryption and decryption of streams.
@@ -77,9 +78,9 @@ fun generateKeyFromPassword(
 }
 
 @Throws(CryptoSetupException::class)
-fun OutputStream.encryptStream(password: String, salt: ByteArray?): CipherOutputStream = try {
+fun OutputStream.encryptStream(password: String, salt: ByteArray?, iv : ByteArray?): CipherOutputStream = try {
     val secret = generateKeyFromPassword(password, salt)
-    this.encryptStream(secret)
+    this.encryptStream(secret, iv)
 } catch (e: NoSuchAlgorithmException) {
     Timber.e("Could not setup encryption: ${e.message}")
     throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
@@ -91,11 +92,12 @@ fun OutputStream.encryptStream(password: String, salt: ByteArray?): CipherOutput
 @Throws(CryptoSetupException::class)
 fun OutputStream.encryptStream(
     secret: SecretKey?,
+    iv : ByteArray?,
     cipherAlgorithm: String = CIPHER_ALGORITHM
 ): CipherOutputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
-    val iv = IvParameterSpec(initIv(cipherAlgorithm))
-    cipher.init(Cipher.ENCRYPT_MODE, secret, iv)
+    val ivParams = IvParameterSpec(iv)
+    cipher.init(Cipher.ENCRYPT_MODE, secret, ivParams)
     CipherOutputStream(this, cipher)
 } catch (e: NoSuchAlgorithmException) {
     Timber.e("Could not setup encryption: ${e.message}")
@@ -112,9 +114,9 @@ fun OutputStream.encryptStream(
 }
 
 @Throws(CryptoSetupException::class)
-fun InputStream.decryptStream(password: String, salt: ByteArray?): CipherInputStream = try {
+fun InputStream.decryptStream(password: String, salt: ByteArray?, iv : ByteArray?): CipherInputStream = try {
     val secret = generateKeyFromPassword(password, salt)
-    decryptStream(secret)
+    decryptStream(secret, iv)
 } catch (e: NoSuchAlgorithmException) {
     Timber.e("Could not setup encryption: ${e.message}")
     throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
@@ -126,11 +128,12 @@ fun InputStream.decryptStream(password: String, salt: ByteArray?): CipherInputSt
 @Throws(CryptoSetupException::class)
 fun InputStream.decryptStream(
     secret: SecretKey?,
+    iv: ByteArray?,
     cipherAlgorithm: String = CIPHER_ALGORITHM
 ): CipherInputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
-    val iv = IvParameterSpec(initIv(cipherAlgorithm))
-    cipher.init(Cipher.DECRYPT_MODE, secret, iv)
+    val ivParams = IvParameterSpec(iv)
+    cipher.init(Cipher.DECRYPT_MODE, secret, ivParams)
     CipherInputStream(this, cipher)
 } catch (e: NoSuchPaddingException) {
     Timber.e("Could not setup encryption: ${e.message}")
@@ -146,7 +149,7 @@ fun InputStream.decryptStream(
     throw CryptoSetupException(ENCRYPTION_SETUP_FAILED, e)
 }
 
-private fun initIv(cipherAlgorithm: String): ByteArray {
+fun initIv(cipherAlgorithm: String): ByteArray {
     val blockSize: Int = try {
         val cipher = Cipher.getInstance(cipherAlgorithm)
         cipher.blockSize
@@ -160,11 +163,7 @@ private fun initIv(cipherAlgorithm: String): ByteArray {
     }
     // IV is nothing secret. Could also be constant, but why not spend a few cpu cycles to have
     // it dynamic, if the algorithm changes?
-    val iv = ByteArray(blockSize)
-    (0 until blockSize).forEach { i ->
-        iv[i] = 0
-    }
-    return iv
+    return Random.nextBytes(blockSize)
 }
 
 class CryptoSetupException(message: String?, cause: Throwable?) : Exception(message, cause)
