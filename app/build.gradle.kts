@@ -49,23 +49,27 @@ android {
 
     buildTypes {
         named("release") {
-            minifyEnabled(true)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         named("debug") {
             applicationIdSuffix = ".debug"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
             versionNameSuffix = "-neo"
-            minifyEnabled(false)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
     }
     buildFeatures {
