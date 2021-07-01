@@ -35,6 +35,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
+import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -98,13 +99,41 @@ class HomeFragment : NavigationFragment(),
         })
 
         viewModel.nUpdatedApps.observe(requireActivity(), {
+            binding.buttonUpdated.text =
+                binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
-                binding.updatedApps.text =
-                    binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
-                binding.updatedApps.visibility = View.VISIBLE
+                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.ic_arrow_up,
+                    0,
+                    0,
+                    0
+                )
+                binding.buttonUpdated.setOnClickListener {
+                    binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
+                        View.VISIBLE -> {
+                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                R.drawable.ic_arrow_up,
+                                0,
+                                0,
+                                0
+                            )
+                            View.GONE
+                        }
+                        else -> {
+                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                R.drawable.ic_arrow_down,
+                                0,
+                                0,
+                                0
+                            )
+                            View.VISIBLE
+                        }
+                    }
+                }
             } else {
-                binding.updatedApps.visibility = View.GONE
                 binding.updatedBar.visibility = View.GONE
+                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                binding.buttonUpdated.setOnClickListener(null)
             }
         })
     }
@@ -139,6 +168,21 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun setupOnClicks() {
+        binding.buttonBlocklist.setOnClickListener {
+            Thread {
+                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
+                    ?.mapNotNull { it.packageName }
+                    ?: listOf()
+
+                PackagesListDialogFragment(
+                    blocklistedPackages,
+                    MAIN_FILTER_DEFAULT,
+                    true
+                ) { newList: Set<String> ->
+                    requireMainActivity().viewModel.updateBlocklist(newList)
+                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+            }.start()
+        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
@@ -164,12 +208,6 @@ class HomeFragment : NavigationFragment(),
                 }
                 false
             }
-        binding.updatedApps.setOnClickListener {
-            binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
-                View.VISIBLE -> View.GONE
-                else -> View.VISIBLE
-            }
-        }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
         binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =

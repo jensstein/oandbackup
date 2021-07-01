@@ -74,7 +74,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             binding.schedSpecialFilter.check(specialFilterToId(it.specialFilter))
             binding.enableCheckbox.isChecked = it.enabled
             binding.customListButton.setColor(it.customList)
-            binding.blocklistButton.setColor(it.blockList)
+            binding.buttonBlocklist.setColor(it.blockList)
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
@@ -143,7 +143,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 refresh(false)
             }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
         }
-        binding.blocklistButton.setOnClickListener {
+        binding.buttonBlocklist.setOnClickListener {
             val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
             PackagesListDialogFragment(
                 blocklistedPackages, viewModel.schedule.value?.filter

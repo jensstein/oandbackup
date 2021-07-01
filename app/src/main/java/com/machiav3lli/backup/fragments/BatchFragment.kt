@@ -34,10 +34,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
+import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -135,6 +137,21 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun setupOnClicks() {
+        binding.buttonBlocklist.setOnClickListener {
+            Thread {
+                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
+                    ?.mapNotNull { it.packageName }
+                    ?: listOf()
+
+                PackagesListDialogFragment(
+                    blocklistedPackages,
+                    MAIN_FILTER_DEFAULT,
+                    true
+                ) { newList: Set<String> ->
+                    requireMainActivity().viewModel.updateBlocklist(newList)
+                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+            }.start()
+        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,

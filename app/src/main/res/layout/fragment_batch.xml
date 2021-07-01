@@ -113,44 +113,31 @@
             app:layout_constraintTop_toBottomOf="@id/progressBar">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/apkBatch"
-                style="@style/Chip.Apk"
+                android:id="@+id/buttonBlocklist"
+                style="@style/Chip.Action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_apk"
-                android:textAppearance="@style/TextAppearance.Lines"
+                android:text="@string/sched_blocklist"
+                android:textAppearance="@style/TextAppearance.Label"
+                app:chipIcon="@drawable/ic_blocklist"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/dataBatch"
+                app:layout_constraintEnd_toStartOf="@id/buttonSortFilter"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="@color/ic_apk" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/dataBatch"
-                style="@style/Chip.Data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/buttons_spacing"
-                android:text="@string/radio_data"
-                android:textAppearance="@style/TextAppearance.Lines"
-                app:layout_constraintStart_toEndOf="@id/apkBatch"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="@color/ic_data" />
+                app:rippleColor="?colorSecondary" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/buttonSortFilter"
                 style="@style/Chip.Action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_neutral_ripple"
-                android:clickable="true"
-                android:contextClickable="true"
-                android:focusable="true"
                 android:text="@string/sort_and_filter"
                 android:textAppearance="@style/TextAppearance.Label"
                 app:chipIcon="@drawable/ic_filter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/buttonBlocklist"
                 app:layout_constraintTop_toTopOf="parent"
                 app:rippleColor="?colorAccent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -177,27 +164,47 @@
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <FrameLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/buttonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_gradient_alpha_top_bottom"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/cards_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/apkBatch"
+                style="@style/Chip.Apk"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/radio_apk"
+                android:textAppearance="@style/TextAppearance.Lines"
+                app:rippleColor="@color/ic_apk" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/dataBatch"
+                style="@style/Chip.Data"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/cards_spacing"
+                android:text="@string/radio_data"
+                android:textAppearance="@style/TextAppearance.Lines"
+                app:rippleColor="@color/ic_data" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonAction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
                 android:layout_marginVertical="@dimen/buttons_spacing"
                 android:background="@drawable/bg_button_positive_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/place_holder"
                 android:textColor="?colorAccent" />
-        </FrameLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

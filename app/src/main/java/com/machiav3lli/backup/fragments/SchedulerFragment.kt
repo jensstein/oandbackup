@@ -111,7 +111,7 @@ class SchedulerFragment : NavigationFragment() {
                 }
                 false
             }
-        binding.blocklistButton.setOnClickListener {
+        binding.buttonBlocklist.setOnClickListener {
             Thread {
                 val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
                     ?.mapNotNull { it.packageName }
