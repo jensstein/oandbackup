@@ -191,6 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/appSizeLine"
                     app:layout_constraintEnd_toStartOf="@id/divider"
                     app:layout_constraintStart_toStartOf="parent"
@@ -204,10 +205,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appType"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
+                        android:layout_gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
                         android:textStyle="bold" />
@@ -230,10 +230,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="@id/appTypeLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/divider"
-                    app:layout_constraintTop_toTopOf="@id/appTypeLine">
+                    app:layout_constraintTop_toTopOf="@id/appTypeLine"
+                    app:layout_constraintVertical_bias="0.526">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -243,9 +245,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/versionName"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
@@ -258,6 +260,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/splitsLine"
                     app:layout_constraintEnd_toEndOf="@id/appTypeLine"
                     app:layout_constraintStart_toStartOf="parent"
@@ -271,9 +274,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appSize"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
@@ -285,6 +288,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="@id/appSizeLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/versionNameLine"
@@ -300,7 +304,7 @@
                         android:id="@+id/dataSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
@@ -313,6 +317,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/actionsTitle"
                     app:layout_constraintEnd_toEndOf="@id/appTypeLine"
                     app:layout_constraintStart_toStartOf="parent"
@@ -326,9 +331,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appSplits"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
@@ -340,6 +345,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="@id/splitsLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/versionNameLine"
@@ -353,9 +359,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cacheSize"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="end"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.Lines"
