@@ -41,7 +41,7 @@ In case of any problems report it in [the Telegram group](https://github.com/mac
 
 #### What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?  
   
-Each backup basically consits of the two different parts:  
+Each backup basically consists of the two different parts:  
     
 1. the software itself (stored in a so called APK file) and  
     
@@ -95,7 +95,7 @@ More Details?:<br/>
 You need access to the data directories of the apps. Android creates user accounts for each installed app and assigns the permissions to the data directory just to the user and some system user(s). If the ROM doesn't bring a feature or interface to do backups like the deprecated adb backup or Google Cloud Backup does, it's impossible due to the security model.
 
 Even more detailed?:<br/>
-It's differently...depending on the app and probably also for diffenrent ROMs.
+It's differently...depending on the app and probably also for different ROMs.
 
 E.g. for one of the devs ROMs:
 /data/app/* all belong to system:system, while
@@ -110,17 +110,17 @@ Naturally system apps and services run as several system users.
 On a A10 ROM a user (in the terminal) cannot access /data/app and /data/data itself. Reading an app's apk directory is possible (normal read access for others via r attribute) if you know the name, e.g. You can do
 ls -l /data/app/<app_package_name>-VP8zj7n2sqzHID5Oqfh88w== but I have no chance to find out the name because of the random code that changes on each installation (which also invalidates links to inside). Some directories cannot be read, but only be opened (only x attribute)
 
-You cannot acccess /data/data/* at all, so app data is protected between apps.
+You cannot access /data/data/* at all, so app data is protected between apps.
 
 #### Why is OABX so slow?  
   
 Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide. 
-Needless to say: This is how much love this framework recieves from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)  
+Needless to say: This is how much love this framework receives from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)  
 
 #### So why use SAF then?
   
 [Access documents and other files from shared storage](https://developer.android.com/training/data-storage/shared/documents-files)  
-In the next Android Versoins Google will (most probably) force apps more and more to access the storage via SAF.  
+In the next Android versions Google will (most probably) force apps more and more to access the storage via SAF.  
   
 <ins>***Pro:***</ins>
 
