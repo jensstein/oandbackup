@@ -164,47 +164,54 @@
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <FrameLayout
             android:id="@+id/buttonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_gradient_alpha_top_bottom"
-            android:orientation="horizontal"
             android:paddingHorizontal="@dimen/cards_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/apkBatch"
-                style="@style/Chip.Apk"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/radio_apk"
-                android:textAppearance="@style/TextAppearance.Lines"
-                app:rippleColor="@color/ic_apk" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/dataBatch"
-                style="@style/Chip.Data"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:text="@string/radio_data"
-                android:textAppearance="@style/TextAppearance.Lines"
-                app:rippleColor="@color/ic_data" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonAction"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/buttons_spacing"
-                android:background="@drawable/bg_button_positive_ripple"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/place_holder"
-                android:textColor="?colorAccent" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                android:layout_marginBottom="@dimen/buttons_spacing"
+                android:background="@drawable/bg_frame_positive"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/cards_spacing">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/apkBatch"
+                    style="@style/Chip.Apk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/radio_apk"
+                    android:textAppearance="@style/TextAppearance.Lines"
+                    app:rippleColor="@color/ic_apk" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/dataBatch"
+                    style="@style/Chip.Data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/buttons_spacing"
+                    android:text="@string/radio_data"
+                    android:textAppearance="@style/TextAppearance.Lines"
+                    app:rippleColor="@color/ic_data" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_positive_ripple_no_stroke"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/place_holder"
+                    android:textColor="?colorAccent" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
