@@ -60,16 +60,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     BatchDialogFragment.ConfirmListener, RefreshViewController {
     private lateinit var binding: FragmentBatchBinding
     lateinit var viewModel: BatchViewModel
-    override var appInfoList: MutableList<AppInfo>
-        get() =
-            requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
-        }
 
     val batchItemAdapter = ItemAdapter<BatchItemX>()
     private var batchFastAdapter: FastAdapter<BatchItemX>? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

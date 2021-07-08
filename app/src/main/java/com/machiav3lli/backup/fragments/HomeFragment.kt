@@ -56,12 +56,6 @@ class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
     private lateinit var binding: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
-    override var appInfoList: MutableList<AppInfo>
-        get() =
-            requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
-        }
     private var appSheet: AppSheet? = null
 
     val mainItemAdapter = ItemAdapter<MainItemX>()

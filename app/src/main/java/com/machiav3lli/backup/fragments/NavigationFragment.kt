@@ -22,8 +22,13 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.items.AppInfo
 
 abstract class NavigationFragment : Fragment() {
-    abstract var appInfoList: MutableList<AppInfo>
     protected var sheetSortFilter: SortFilterSheet? = null
+    var appInfoList: MutableList<AppInfo>
+        get() = requireMainActivity().viewModel.appInfoList.value
+            ?: mutableListOf()
+        set(value) {
+            requireMainActivity().viewModel.appInfoList.value = value
+        }
 
     abstract fun setupViews()
     abstract fun setupOnClicks()
