@@ -30,6 +30,7 @@ const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
 const val BLOCKLIST_DB_NAME = "blocklist.db"
+const val APPEXTRAS_DB_NAME = "appextras.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
 
 const val PREFS_SORT_FILTER = "sortFilter"
