@@ -21,6 +21,8 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.AppExtrasDao
 import com.machiav3lli.backup.dbs.Blocklist
 import com.machiav3lli.backup.dbs.BlocklistDao
 import com.machiav3lli.backup.handler.getApplicationList
@@ -30,10 +32,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class MainViewModel(val database: BlocklistDao, private val appContext: Application) :
+class MainViewModel(
+    private val appExtrasDao: AppExtrasDao,
+    private val blocklistDao: BlocklistDao,
+    private val appContext: Application
+) :
     AndroidViewModel(appContext) {
 
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
+    var appExtrasList = MediatorLiveData<List<AppExtras>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
 
     private val _initial = MutableLiveData<Boolean>()
@@ -44,7 +51,8 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     init {
         _initial.value = true
-        blocklist.addSource(database.liveAll, blocklist::setValue)
+        appExtrasList.addSource(appExtrasDao.liveAll, appExtrasList::setValue)
+        blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
     }
 
     fun refreshList() {
@@ -94,7 +102,7 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     private suspend fun insertIntoBlocklist(packageName: String) {
         withContext(Dispatchers.IO) {
-            database.insert(
+            blocklistDao.insert(
                 Blocklist.Builder()
                     .withId(0)
                     .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
@@ -113,8 +121,8 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
     }
 
     private suspend fun insertIntoBlocklist(newList: Set<String>) = withContext(Dispatchers.IO) {
-        database.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-        appInfoList.value?.removeIf { newList.contains(it.packageName)}
+        blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+        appInfoList.value?.removeIf { newList.contains(it.packageName) }
     }
 
     override fun onCleared() {

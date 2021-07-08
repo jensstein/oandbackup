@@ -30,7 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
-import com.machiav3lli.backup.dbs.BlocklistDao
+import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.RefreshViewController
@@ -58,7 +58,6 @@ class MainActivityX : BaseActivity() {
     }
 
     private lateinit var prefs: SharedPreferences
-    private lateinit var blocklistDao: BlocklistDao
     private lateinit var refreshViewController: RefreshViewController
 
     lateinit var binding: ActivityMainXBinding
@@ -72,9 +71,10 @@ class MainActivityX : BaseActivity() {
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
+        val blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
+        val appExtrasDao = AppExtrasDatabase.getInstance(this).appExtrasDao
         prefs = getPrivateSharedPrefs()
-        val viewModelFactory = MainViewModelFactory(blocklistDao, application)
+        val viewModelFactory = MainViewModelFactory(appExtrasDao, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
