@@ -24,6 +24,7 @@ import android.text.format.Formatter
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.databinding.SheetAppBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
@@ -115,3 +116,5 @@ fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {
     }
     return Triple(appsList.size, backupsNumber, updatedNumber)
 }
+
+fun List<AppExtras>.get(packageName: String) = find {it.packageName == packageName} ?: AppExtras(packageName)

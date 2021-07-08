@@ -188,7 +188,7 @@ class HomeFragment : NavigationFragment(),
             { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, position ?: -1)
+                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
@@ -197,7 +197,7 @@ class HomeFragment : NavigationFragment(),
             { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, position ?: -1)
+                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
@@ -408,12 +408,12 @@ class HomeFragment : NavigationFragment(),
 
     private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<MainItemX> =
         filteredList
-            .map { MainItemX(it) }.toMutableList()
+            .map { MainItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> =
         filteredList
             .filter { it.isUpdated }
-            .map { UpdatedItemX(it) }.toMutableList()
+            .map { UpdatedItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun refreshAppSheet() {
         try {

@@ -21,10 +21,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class BatchItemX(var app: AppInfo, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
+class BatchItemX(var app: AppInfo, var appExtras: AppExtras, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
     var isApkChecked = false
     var isDataChecked = false
 

@@ -464,7 +464,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 if (backupBoolean) it.isInstalled
                 else it.hasBackups
             }.map {
-                val item = BatchItemX(it, backupBoolean)
+                val item = BatchItemX(it, appExtrasList.get(it.packageName), backupBoolean)
                 item.isApkChecked = viewModel.apkCheckedList.contains(it.packageName)
                 item.isDataChecked = viewModel.dataCheckedList.contains(it.packageName)
                 item

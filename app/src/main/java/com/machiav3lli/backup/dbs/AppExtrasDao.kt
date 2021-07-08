@@ -26,7 +26,7 @@ import androidx.room.Update
 
 @Dao
 interface AppExtrasDao {
-    @Query("SELECT COUNT(*) FROM blocklist")
+    @Query("SELECT COUNT(*) FROM appextras")
     fun count(): Long
 
     @Insert

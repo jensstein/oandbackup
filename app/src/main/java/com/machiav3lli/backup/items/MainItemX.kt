@@ -21,10 +21,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemMainXBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class MainItemX(var app: AppInfo) : AbstractBindingItem<ItemMainXBinding>() {
+class MainItemX(var app: AppInfo, var appExtras: AppExtras) : AbstractBindingItem<ItemMainXBinding>() {
 
     override var identifier: Long
         get() = calculateID(app)

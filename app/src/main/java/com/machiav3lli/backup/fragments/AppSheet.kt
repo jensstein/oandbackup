@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
@@ -51,7 +52,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionListener {
+class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) : BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
