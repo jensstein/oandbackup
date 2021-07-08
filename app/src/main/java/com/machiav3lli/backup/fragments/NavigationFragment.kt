@@ -19,6 +19,7 @@ package com.machiav3lli.backup.fragments
 
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.items.AppInfo
 
 abstract class NavigationFragment : Fragment() {
@@ -28,6 +29,12 @@ abstract class NavigationFragment : Fragment() {
             ?: mutableListOf()
         set(value) {
             requireMainActivity().viewModel.appInfoList.value = value
+        }
+    var appExtrasList: List<AppExtras>
+        get() = requireMainActivity().viewModel.appExtrasList.value
+            ?: mutableListOf()
+        set(value) {
+            requireMainActivity().viewModel.appExtrasList.value = value
         }
 
     abstract fun setupViews()
