@@ -192,7 +192,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    fun setupSearch() {
+    private fun setupSearch() {
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 batchItemAdapter.filter(newText)

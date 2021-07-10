@@ -19,7 +19,10 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDao
@@ -36,28 +39,19 @@ class MainViewModel(
     private val appExtrasDao: AppExtrasDao,
     private val blocklistDao: BlocklistDao,
     private val appContext: Application
-) :
-    AndroidViewModel(appContext) {
-
+) : AndroidViewModel(appContext) {
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
     var appExtrasList = MediatorLiveData<List<AppExtras>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
-
-    private val _initial = MutableLiveData<Boolean>()
-    val initial: LiveData<Boolean>
-        get() = _initial
-
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
-        _initial.value = true
         appExtrasList.addSource(appExtrasDao.liveAll, appExtrasList::setValue)
         blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            _initial.value = false
             appInfoList.value = recreateAppInfoList()
             refreshNow.value = true
         }
@@ -123,10 +117,5 @@ class MainViewModel(
     private suspend fun insertIntoBlocklist(newList: Set<String>) = withContext(Dispatchers.IO) {
         blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
         appInfoList.value?.removeIf { newList.contains(it.packageName) }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        _initial.value = true
     }
 }

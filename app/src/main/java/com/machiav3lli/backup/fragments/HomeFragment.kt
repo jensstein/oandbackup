@@ -210,7 +210,7 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    fun setupSearch() {
+    private fun setupSearch() {
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 mainItemAdapter.filter(newText)
