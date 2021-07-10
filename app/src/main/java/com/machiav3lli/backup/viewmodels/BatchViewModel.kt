@@ -19,25 +19,10 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 
 class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val apkCheckedList = mutableListOf<String>()
     val dataCheckedList = mutableListOf<String>()
-
-    private var _refreshActive = MutableLiveData<Boolean>()
-    val refreshActive: LiveData<Boolean>
-        get() = _refreshActive
-
     val refreshNow = MutableLiveData<Boolean>()
-
-    fun refreshList() {
-        viewModelScope.launch {
-            _refreshActive.value = true
-            refreshNow.value = true
-        }
-    }
 }

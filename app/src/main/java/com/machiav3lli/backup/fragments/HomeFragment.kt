@@ -79,17 +79,14 @@ class HomeFragment : NavigationFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refreshView()
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
-            if (it) {
-                refreshView()
-            }
-        })
-
-        viewModel.refreshActive.observe(requireActivity(), {
             binding.refreshLayout.isRefreshing = it
-            if (it) binding.searchBar.setQuery("", false)
+            if (it) {
+                binding.searchBar.setQuery("", false)
+                requireMainActivity().viewModel.refreshList()
+            }
         })
 
         viewModel.nUpdatedApps.observe(requireActivity(), {
@@ -345,7 +342,7 @@ class HomeFragment : NavigationFragment(),
                     }
 
                     binding.progressBar.visibility = View.GONE
-                    viewModel.refreshList()
+                    viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
@@ -371,7 +368,6 @@ class HomeFragment : NavigationFragment(),
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshMain(filteredList, appSheet != null)
-                binding.refreshLayout.isRefreshing = false
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
@@ -397,9 +393,8 @@ class HomeFragment : NavigationFragment(),
                         Toast.LENGTH_SHORT
                     ).show()
                 setupSearch()
-                //mainFastAdapter?.notifyAdapterDataSetChanged()
-                //updatedFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
+                viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
             }

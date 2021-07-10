@@ -80,15 +80,14 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refreshView()
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
-            if (it) refreshView()
-        })
-
-        viewModel.refreshActive.observe(requireActivity(), {
             binding.refreshLayout.isRefreshing = it
-            if (it) binding.searchBar.setQuery("", false)
+            if (it) {
+                binding.searchBar.setQuery("", false)
+                requireMainActivity().viewModel.refreshList()
+            }
         })
     }
 
@@ -403,8 +402,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     }
 
                     binding.progressBar.visibility = View.GONE
-                    binding.refreshLayout.isRefreshing = true
-                    // requireMainActivity().viewModel.refreshList()
+                    viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
@@ -426,7 +424,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshBatch(filteredList)
-                binding.refreshLayout.isRefreshing = false
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
@@ -449,9 +446,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         Toast.LENGTH_SHORT
                     ).show()
                 setupSearch()
-                //batchFastAdapter?.notifyAdapterDataSetChanged()
                 updateApkChecks()
                 updateDataChecks()
+                viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
             }
