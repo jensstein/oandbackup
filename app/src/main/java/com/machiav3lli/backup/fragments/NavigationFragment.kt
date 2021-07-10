@@ -30,11 +30,10 @@ abstract class NavigationFragment : Fragment() {
         set(value) {
             requireMainActivity().viewModel.appInfoList.value = value
         }
-    var appExtrasList: List<AppExtras>
-        get() = requireMainActivity().viewModel.appExtrasList.value
-            ?: mutableListOf()
+    var appExtrasList: MutableList<AppExtras>
+        get() = requireMainActivity().viewModel.appExtrasList
         set(value) {
-            requireMainActivity().viewModel.appExtrasList.value = value
+            requireMainActivity().viewModel.appExtrasList = value
         }
 
     abstract fun setupViews()

@@ -21,6 +21,7 @@ import android.database.SQLException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 
@@ -31,16 +32,16 @@ interface AppExtrasDao {
 
     @Insert
     @Throws(SQLException::class)
-    fun insert(vararg blocklists: AppExtras): LongArray?
+    fun insert(vararg appExtras: AppExtras): LongArray?
 
     @get:Query("SELECT * FROM appextras ORDER BY packageName ASC")
-    val all: List<AppExtras>
+    val all: MutableList<AppExtras>
 
     @get:Query("SELECT * FROM appextras ORDER BY packageName ASC")
-    val liveAll: LiveData<List<AppExtras>>
+    val liveAll: LiveData<MutableList<AppExtras>>
 
     @Query("SELECT packageName FROM appextras WHERE packageName = :packageName")
-    fun get(packageName: String): List<String>
+    fun get(packageName: String): MutableList<String>
 
     @Query("SELECT packageName FROM appextras WHERE packageName = :packageName")
     fun getLive(packageName: String): LiveData<List<String>>

@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.fragments.HelpSheet
@@ -163,6 +164,10 @@ class MainActivityX : BaseActivity() {
     fun updatePackage(packageName: String) {
         StorageFile.invalidateCache()
         viewModel.updatePackage(packageName)
+    }
+
+    fun updateAppExtras(appExtras: AppExtras) {
+        viewModel.updateExtras(appExtras)
     }
 
     fun setRefreshViewController(refreshViewController: RefreshViewController) {

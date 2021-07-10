@@ -41,12 +41,18 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
-    var appExtrasList = MediatorLiveData<List<AppExtras>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
+    var appExtrasList: MutableList<AppExtras>
+        get() = appExtrasDao.all
+        set(value) {
+            appExtrasDao.deleteAll()
+            value.forEach {
+                appExtrasDao.insert(it)
+            }
+        }
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
-        appExtrasList.addSource(appExtrasDao.liveAll, appExtrasList::setValue)
         blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
     }
 
@@ -87,6 +93,24 @@ class MainViewModel(
             dataList
         }
 
+    fun updateExtras(appExtras: AppExtras) {
+        viewModelScope.launch {
+            updateExtrasWith(appExtras)
+        }
+    }
+
+    private suspend fun updateExtrasWith(appExtras: AppExtras) {
+        withContext(Dispatchers.IO) {
+            val oldExtras = appExtrasDao.all.find { it.packageName == appExtras.packageName }
+            if (oldExtras != null) {
+                appExtras.id = oldExtras.id
+                appExtrasDao.update(appExtras)
+            } else
+                appExtrasDao.insert(appExtras)
+            true
+        }
+    }
+
     fun addToBlocklist(packageName: String) {
         viewModelScope.launch {
             insertIntoBlocklist(packageName)
@@ -114,8 +138,10 @@ class MainViewModel(
         }
     }
 
-    private suspend fun insertIntoBlocklist(newList: Set<String>) = withContext(Dispatchers.IO) {
-        blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-        appInfoList.value?.removeIf { newList.contains(it.packageName) }
-    }
+    private suspend fun insertIntoBlocklist(newList: Set<String>) =
+        withContext(Dispatchers.IO) {
+            blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+            appInfoList.value?.removeIf { newList.contains(it.packageName) }
+        }
 }
+
