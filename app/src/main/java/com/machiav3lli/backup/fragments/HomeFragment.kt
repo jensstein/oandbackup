@@ -211,30 +211,22 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun setupSearch() {
+        val filterPredicate = { item: MainItemX, cs: CharSequence? ->
+            item.appExtras.customTags
+                .plus(item.app.packageName)
+                .plus(item.app.packageLabel)
+                .find { it.contains(cs.toString(), true) } != null
+        }
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 mainItemAdapter.filter(newText)
-                mainItemAdapter.itemFilter.filterPredicate =
-                    { mainItemX: MainItemX, charSequence: CharSequence? ->
-                        (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || mainItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 mainItemAdapter.filter(query)
-                mainItemAdapter.itemFilter.filterPredicate =
-                    { mainItemX: MainItemX, charSequence: CharSequence? ->
-                        (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || mainItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })

@@ -193,30 +193,22 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun setupSearch() {
+        val filterPredicate = { item: BatchItemX, cs: CharSequence? ->
+            item.appExtras.customTags
+                .plus(item.app.packageName)
+                .plus(item.app.packageLabel)
+                .find { it.contains(cs.toString(), true) } != null
+        }
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 batchItemAdapter.filter(newText)
-                batchItemAdapter.itemFilter.filterPredicate =
-                    { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                        (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || batchItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                batchItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 batchItemAdapter.filter(query)
-                batchItemAdapter.itemFilter.filterPredicate =
-                    { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                        (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || batchItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                batchItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })
