@@ -19,13 +19,16 @@ package com.machiav3lli.backup.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class MainItemX(var app: AppInfo, var appExtras: AppExtras) : AbstractBindingItem<ItemMainXBinding>() {
+class MainItemX(var app: AppInfo, var appExtras: AppExtras) :
+    AbstractBindingItem<ItemMainXBinding>() {
 
     override var identifier: Long
         get() = calculateID(app)
@@ -53,6 +56,21 @@ class MainItemX(var app: AppInfo, var appExtras: AppExtras) : AbstractBindingIte
         binding.deDataMode.setExists(app.hasDevicesProtectedData)
         binding.obbMode.setExists(app.hasObbData)
         binding.appType.setAppType(app)
+        appExtras.customTags.forEach {
+            val chip = Chip(binding.root.context)
+            chip.text = it
+            chip.setChipDrawable(
+                ChipDrawable.createFromAttributes(
+                    binding.root.context,
+                    null,
+                    0,
+                    R.style.Chip_Tag
+                )
+            )
+            chip.isClickable = false
+            chip.stateListAnimator = null
+            binding.tagsGroup.addView(chip)
+        }
     }
 
     override fun unbindView(binding: ItemMainXBinding) {
@@ -61,5 +79,6 @@ class MainItemX(var app: AppInfo, var appExtras: AppExtras) : AbstractBindingIte
         binding.packageName.text = null
         binding.lastBackup.text = null
         binding.icon.setImageDrawable(null)
+        binding.tagsGroup.removeAllViews()
     }
 }

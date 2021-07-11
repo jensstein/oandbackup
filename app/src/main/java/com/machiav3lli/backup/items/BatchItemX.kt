@@ -19,13 +19,16 @@ package com.machiav3lli.backup.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemBatchXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class BatchItemX(var app: AppInfo, var appExtras: AppExtras, val backupBoolean: Boolean) : AbstractBindingItem<ItemBatchXBinding>() {
+class BatchItemX(var app: AppInfo, var appExtras: AppExtras, val backupBoolean: Boolean) :
+    AbstractBindingItem<ItemBatchXBinding>() {
     var isApkChecked = false
     var isDataChecked = false
 
@@ -60,7 +63,8 @@ class BatchItemX(var app: AppInfo, var appExtras: AppExtras, val backupBoolean: 
         binding.dataCheckbox.setVisible(app.hasAppData || backupBoolean)
         binding.label.text = app.packageLabel
         binding.packageName.text = app.packageName
-        binding.lastBackup.text = app.latestBackup?.backupProperties?.backupDate?.getFormattedDate(false)
+        binding.lastBackup.text =
+            app.latestBackup?.backupProperties?.backupDate?.getFormattedDate(false)
         binding.update.setExists(app.hasBackups && app.isUpdated)
         binding.apkMode.setExists(app.hasApk)
         binding.dataMode.setExists(app.hasAppData)
@@ -68,11 +72,27 @@ class BatchItemX(var app: AppInfo, var appExtras: AppExtras, val backupBoolean: 
         binding.deDataMode.setExists(app.hasDevicesProtectedData)
         binding.obbMode.setExists(app.hasObbData)
         binding.appType.setAppType(app)
+        appExtras.customTags.forEach {
+            val chip = Chip(binding.root.context)
+            chip.text = it
+            chip.setChipDrawable(
+                ChipDrawable.createFromAttributes(
+                    binding.root.context,
+                    null,
+                    0,
+                    R.style.Chip_Tag
+                )
+            )
+            chip.isClickable = false
+            chip.stateListAnimator = null
+            binding.tagsGroup.addView(chip)
+        }
     }
 
     override fun unbindView(binding: ItemBatchXBinding) {
         binding.label.text = null
         binding.packageName.text = null
         binding.lastBackup.text = null
+        binding.tagsGroup.removeAllViews()
     }
 }

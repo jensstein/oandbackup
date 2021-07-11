@@ -56,8 +56,8 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) : BaseSheet(),
-    ActionListener {
+class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) :
+    BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -212,15 +212,17 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     requireContext(),
                     null,
                     0,
-                    R.style.Chip_Action_Positive
+                    R.style.Chip_Tag
                 )
             )
+            chip.isClickable = false
             chip.setCloseIconResource(R.drawable.ic_close)
             val typedValue = TypedValue()
             requireContext().theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
             chip.closeIconTint = ColorStateList.valueOf(typedValue.data)
             chip.isCloseIconVisible = true
             chip.setOnCloseIconClickListener {
+                binding.tagsGroup.removeView(it)
                 appExtras.customTags = appExtras.customTags.minus(pn)
                 viewModel.refreshNow.value = true
             }
