@@ -40,7 +40,7 @@
                 android:layout_marginEnd="@dimen/cards_spacing"
                 android:contentDescription="@string/app_s_icon"
                 android:src="@drawable/ic_placeholder"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tagsGroup"
                 app:layout_constraintEnd_toStartOf="@id/label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -124,7 +124,7 @@
                 android:layout_height="0dp"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.Secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tagsGroup"
                 app:layout_constraintEnd_toStartOf="@id/lastBackup"
                 app:layout_constraintStart_toStartOf="@id/label"
                 app:layout_constraintTop_toBottomOf="@id/label" />
@@ -136,10 +136,20 @@
                 android:layout_height="0dp"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.Secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tagsGroup"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/packageName"
                 app:layout_constraintTop_toBottomOf="@id/label" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagsGroup"
+                style="@style/Chip.Group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/icon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>

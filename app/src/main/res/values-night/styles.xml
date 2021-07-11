@@ -134,11 +134,6 @@
         <item name="singleSelection">true</item>
     </style>
 
-    <style name="Chip.Group.Tags" parent="Widget.MaterialComponents.ChipGroup">
-        <item name="chipSpacingHorizontal">@dimen/small_spacing</item>
-        <item name="selectable">false</item>
-    </style>
-
     <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
@@ -210,5 +205,14 @@
         <item name="rippleColor">@color/app_primary_base</item>
         <item name="chipSurfaceColor">?colorAccent</item>
         <item name="android:textColor">?colorControlNormal</item>
+    </style>
+
+    <style name="Chip.Tag" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">?colorControlNormal</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="android:textColor">?colorControlNormal</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="chipStrokeWidth">1dp</item>
     </style>
 </resources>

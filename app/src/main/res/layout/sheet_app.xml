@@ -394,7 +394,6 @@
                         style="@style/Chip.Group"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/small_spacing"
                         app:layout_constraintBottom_toTopOf="@id/newTag"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
