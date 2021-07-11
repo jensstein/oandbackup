@@ -60,6 +60,7 @@ private const val ENCRYPTION_SETUP_FAILED = "Could not setup encryption"
  */
 private const val DEFAULT_SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2withHmacSHA256"
 const val CIPHER_ALGORITHM = "AES/GCM/NoPadding"
+val DEFAULT_IV = ByteArray(Cipher.getInstance(CIPHER_ALGORITHM).blockSize) { 0 }
 private const val DEFAULT_IV_BLOCK_SIZE = 32 // 256 bit
 private const val ITERATION_COUNT = 2020
 private const val KEY_LENGTH = 256
@@ -140,7 +141,7 @@ fun InputStream.decryptStream(
     cipherAlgorithm: String = CIPHER_ALGORITHM
 ): CipherInputStream = try {
     val cipher = Cipher.getInstance(cipherAlgorithm)
-    val ivParams = IvParameterSpec(iv)
+    val ivParams = IvParameterSpec(iv ?: DEFAULT_IV)
     cipher.init(Cipher.DECRYPT_MODE, secret, ivParams)
     CipherInputStream(this, cipher)
 } catch (e: NoSuchPaddingException) {
