@@ -34,10 +34,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
+import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -58,16 +60,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     BatchDialogFragment.ConfirmListener, RefreshViewController {
     private lateinit var binding: FragmentBatchBinding
     lateinit var viewModel: BatchViewModel
-    override var appInfoList: MutableList<AppInfo>
-        get() =
-            requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
-        }
 
     val batchItemAdapter = ItemAdapter<BatchItemX>()
     private var batchFastAdapter: FastAdapter<BatchItemX>? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,15 +80,14 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refresh()
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
-            if (it) refresh()
-        })
-
-        viewModel.refreshActive.observe(requireActivity(), {
             binding.refreshLayout.isRefreshing = it
-            if (it) binding.searchBar.setQuery("", false)
+            if (it) {
+                binding.searchBar.setQuery("", false)
+                requireMainActivity().viewModel.refreshList()
+            }
         })
     }
 
@@ -114,7 +108,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onInflate(context: Context, attrs: AttributeSet, savedInstanceState: Bundle?) {
         super.onInflate(context, attrs, savedInstanceState)
-        refresh()
+        refreshView()
     }
 
     override fun setupViews() {
@@ -135,6 +129,21 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun setupOnClicks() {
+        binding.buttonBlocklist.setOnClickListener {
+            Thread {
+                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
+                    ?.mapNotNull { it.packageName }
+                    ?: listOf()
+
+                PackagesListDialogFragment(
+                    blocklistedPackages,
+                    MAIN_FILTER_DEFAULT,
+                    true
+                ) { newList: Set<String> ->
+                    requireMainActivity().viewModel.updateBlocklist(newList)
+                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+            }.start()
+        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
@@ -183,31 +192,23 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    fun setupSearch() {
+    private fun setupSearch() {
+        val filterPredicate = { item: BatchItemX, cs: CharSequence? ->
+            item.appExtras.customTags
+                .plus(item.app.packageName)
+                .plus(item.app.packageLabel)
+                .find { it.contains(cs.toString(), true) } != null
+        }
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 batchItemAdapter.filter(newText)
-                batchItemAdapter.itemFilter.filterPredicate =
-                    { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                        (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || batchItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                batchItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 batchItemAdapter.filter(query)
-                batchItemAdapter.itemFilter.filterPredicate =
-                    { batchItemX: BatchItemX, charSequence: CharSequence? ->
-                        (batchItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || batchItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                batchItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })
@@ -393,7 +394,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     }
 
                     binding.progressBar.visibility = View.GONE
-                    requireMainActivity().viewModel.refreshList()
+                    viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
@@ -407,7 +408,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    override fun refresh() {
+    override fun refreshView() {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(appInfoList))
         Thread {
@@ -415,7 +416,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshBatch(filteredList)
-                binding.refreshLayout.isRefreshing = false
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
@@ -438,9 +438,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         Toast.LENGTH_SHORT
                     ).show()
                 setupSearch()
-                //batchFastAdapter?.notifyAdapterDataSetChanged()
                 updateApkChecks()
                 updateDataChecks()
+                viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
             }
@@ -453,7 +453,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 if (backupBoolean) it.isInstalled
                 else it.hasBackups
             }.map {
-                val item = BatchItemX(it, backupBoolean)
+                val item = BatchItemX(it, appExtrasList.get(it.packageName), backupBoolean)
                 item.isApkChecked = viewModel.apkCheckedList.contains(it.packageName)
                 item.isDataChecked = viewModel.dataCheckedList.contains(it.packageName)
                 item

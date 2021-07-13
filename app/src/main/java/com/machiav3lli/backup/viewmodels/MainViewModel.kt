@@ -19,8 +19,13 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.AppExtrasDao
 import com.machiav3lli.backup.dbs.Blocklist
 import com.machiav3lli.backup.dbs.BlocklistDao
 import com.machiav3lli.backup.handler.getApplicationList
@@ -30,26 +35,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class MainViewModel(val database: BlocklistDao, private val appContext: Application) :
-    AndroidViewModel(appContext) {
-
+class MainViewModel(
+    private val appExtrasDao: AppExtrasDao,
+    private val blocklistDao: BlocklistDao,
+    private val appContext: Application
+) : AndroidViewModel(appContext) {
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
-
-    private val _initial = MutableLiveData<Boolean>()
-    val initial: LiveData<Boolean>
-        get() = _initial
-
+    var appExtrasList: MutableList<AppExtras>
+        get() = appExtrasDao.all
+        set(value) {
+            appExtrasDao.deleteAll()
+            value.forEach {
+                appExtrasDao.insert(it)
+            }
+        }
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
-        _initial.value = true
-        blocklist.addSource(database.liveAll, blocklist::setValue)
+        blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            _initial.value = false
             appInfoList.value = recreateAppInfoList()
             refreshNow.value = true
         }
@@ -85,6 +93,24 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
             dataList
         }
 
+    fun updateExtras(appExtras: AppExtras) {
+        viewModelScope.launch {
+            updateExtrasWith(appExtras)
+        }
+    }
+
+    private suspend fun updateExtrasWith(appExtras: AppExtras) {
+        withContext(Dispatchers.IO) {
+            val oldExtras = appExtrasDao.all.find { it.packageName == appExtras.packageName }
+            if (oldExtras != null) {
+                appExtras.id = oldExtras.id
+                appExtrasDao.update(appExtras)
+            } else
+                appExtrasDao.insert(appExtras)
+            true
+        }
+    }
+
     fun addToBlocklist(packageName: String) {
         viewModelScope.launch {
             insertIntoBlocklist(packageName)
@@ -94,7 +120,7 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
 
     private suspend fun insertIntoBlocklist(packageName: String) {
         withContext(Dispatchers.IO) {
-            database.insert(
+            blocklistDao.insert(
                 Blocklist.Builder()
                     .withId(0)
                     .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
@@ -112,13 +138,10 @@ class MainViewModel(val database: BlocklistDao, private val appContext: Applicat
         }
     }
 
-    private suspend fun insertIntoBlocklist(newList: Set<String>) = withContext(Dispatchers.IO) {
-        database.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-        appInfoList.value?.removeIf { newList.contains(it.packageName)}
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        _initial.value = true
-    }
+    private suspend fun insertIntoBlocklist(newList: Set<String>) =
+        withContext(Dispatchers.IO) {
+            blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+            appInfoList.value?.removeIf { newList.contains(it.packageName) }
+        }
 }
+

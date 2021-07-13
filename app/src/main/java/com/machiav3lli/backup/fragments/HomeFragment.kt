@@ -35,6 +35,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
+import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -55,12 +56,6 @@ class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
     private lateinit var binding: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
-    override var appInfoList: MutableList<AppInfo>
-        get() =
-            requireMainActivity().viewModel.appInfoList.value ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
-        }
     private var appSheet: AppSheet? = null
 
     val mainItemAdapter = ItemAdapter<MainItemX>()
@@ -84,27 +79,52 @@ class HomeFragment : NavigationFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        refresh()
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity(), {
+            binding.refreshLayout.isRefreshing = it
             if (it) {
-                refresh()
+                binding.searchBar.setQuery("", false)
+                requireMainActivity().viewModel.refreshList()
             }
         })
 
-        viewModel.refreshActive.observe(requireActivity(), {
-            binding.refreshLayout.isRefreshing = it
-            if (it) binding.searchBar.setQuery("", false)
-        })
-
         viewModel.nUpdatedApps.observe(requireActivity(), {
+            binding.buttonUpdated.text =
+                binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
-                binding.updatedApps.text =
-                    binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
-                binding.updatedApps.visibility = View.VISIBLE
+                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.ic_arrow_up,
+                    0,
+                    0,
+                    0
+                )
+                binding.buttonUpdated.setOnClickListener {
+                    binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
+                        View.VISIBLE -> {
+                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                R.drawable.ic_arrow_up,
+                                0,
+                                0,
+                                0
+                            )
+                            View.GONE
+                        }
+                        else -> {
+                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                R.drawable.ic_arrow_down,
+                                0,
+                                0,
+                                0
+                            )
+                            View.VISIBLE
+                        }
+                    }
+                }
             } else {
-                binding.updatedApps.visibility = View.GONE
                 binding.updatedBar.visibility = View.GONE
+                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                binding.buttonUpdated.setOnClickListener(null)
             }
         })
     }
@@ -139,6 +159,21 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun setupOnClicks() {
+        binding.buttonBlocklist.setOnClickListener {
+            Thread {
+                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
+                    ?.mapNotNull { it.packageName }
+                    ?: listOf()
+
+                PackagesListDialogFragment(
+                    blocklistedPackages,
+                    MAIN_FILTER_DEFAULT,
+                    true
+                ) { newList: Set<String> ->
+                    requireMainActivity().viewModel.updateBlocklist(newList)
+                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+            }.start()
+        }
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
@@ -150,7 +185,7 @@ class HomeFragment : NavigationFragment(),
             { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, position ?: -1)
+                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
@@ -159,17 +194,11 @@ class HomeFragment : NavigationFragment(),
             { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, position ?: -1)
+                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
             }
-        binding.updatedApps.setOnClickListener {
-            binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
-                View.VISIBLE -> View.GONE
-                else -> View.VISIBLE
-            }
-        }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
         binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
@@ -181,31 +210,23 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    fun setupSearch() {
+    private fun setupSearch() {
+        val filterPredicate = { item: MainItemX, cs: CharSequence? ->
+            item.appExtras.customTags
+                .plus(item.app.packageName)
+                .plus(item.app.packageLabel)
+                .find { it.contains(cs.toString(), true) } != null
+        }
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 mainItemAdapter.filter(newText)
-                mainItemAdapter.itemFilter.filterPredicate =
-                    { mainItemX: MainItemX, charSequence: CharSequence? ->
-                        (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || mainItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 mainItemAdapter.filter(query)
-                mainItemAdapter.itemFilter.filterPredicate =
-                    { mainItemX: MainItemX, charSequence: CharSequence? ->
-                        (mainItemX.app.packageLabel.contains(charSequence.toString(), true)
-                                || mainItemX.app.packageName.contains(
-                            charSequence.toString(),
-                            true
-                        ))
-                    }
+                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })
@@ -313,7 +334,7 @@ class HomeFragment : NavigationFragment(),
                     }
 
                     binding.progressBar.visibility = View.GONE
-                    viewModel.refreshList()
+                    viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
@@ -327,7 +348,7 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    override fun refresh() {
+    override fun refreshView() {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(
             requireActivity().sortFilterModel, getStats(
@@ -339,7 +360,6 @@ class HomeFragment : NavigationFragment(),
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshMain(filteredList, appSheet != null)
-                binding.refreshLayout.isRefreshing = false
             } catch (e: FileUtils.BackupLocationIsAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
@@ -365,9 +385,8 @@ class HomeFragment : NavigationFragment(),
                         Toast.LENGTH_SHORT
                     ).show()
                 setupSearch()
-                //mainFastAdapter?.notifyAdapterDataSetChanged()
-                //updatedFastAdapter?.notifyAdapterDataSetChanged()
                 if (appSheetBoolean) refreshAppSheet()
+                viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
             }
@@ -376,12 +395,12 @@ class HomeFragment : NavigationFragment(),
 
     private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<MainItemX> =
         filteredList
-            .map { MainItemX(it) }.toMutableList()
+            .map { MainItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> =
         filteredList
             .filter { it.isUpdated }
-            .map { UpdatedItemX(it) }.toMutableList()
+            .map { UpdatedItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun refreshAppSheet() {
         try {

@@ -349,13 +349,13 @@
                     android:textAppearance="@style/TextAppearance.Label"
                     app:chipIcon="@drawable/ic_customlist"
                     app:layout_constraintBottom_toTopOf="@id/schedFilterTitle"
-                    app:layout_constraintEnd_toStartOf="@id/blocklistButton"
+                    app:layout_constraintEnd_toStartOf="@id/buttonBlocklist"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock"
                     app:rippleColor="?colorAccent" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/blocklistButton"
+                    android:id="@+id/buttonBlocklist"
                     style="@style/Chip.Action"
                     android:layout_width="0dp"
                     android:layout_height="0dp"

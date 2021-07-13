@@ -21,9 +21,11 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +33,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
+import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
@@ -51,7 +56,8 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionListener {
+class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) :
+    BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
     private val backupItemAdapter = ItemAdapter<BackupItemX>()
@@ -73,8 +79,9 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionLis
             AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
-        viewModel.refreshNow.observe(viewLifecycleOwner, { refreshBoolean ->
-            if (refreshBoolean) {
+        viewModel.refreshNow.observe(viewLifecycleOwner, {
+            if (it) {
+                requireMainActivity().updateAppExtras(appExtras)
                 requireMainActivity().updatePackage(viewModel.appInfo.value?.packageName ?: "")
                 viewModel.refreshNow.value = false
             }
@@ -97,6 +104,7 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionLis
         setupOnClicks()
         setupChips(update)
         setupAppInfo(update)
+        setupExtras()
         setupBackupList()
     }
 
@@ -193,8 +201,46 @@ class AppSheet(val appInfo: AppInfo, val position: Int) : BaseSheet(), ActionLis
         }
     }
 
+    private fun setupExtras() {
+        binding.noteText.setText(appExtras.note.toCharArray(), 0, appExtras.note.length)
+        binding.tagsGroup.removeAllViews()
+        appExtras.customTags.forEach { pn ->
+            val chip = Chip(requireContext())
+            chip.text = pn
+            chip.setChipDrawable(
+                ChipDrawable.createFromAttributes(
+                    requireContext(),
+                    null,
+                    0,
+                    R.style.Chip_Tag
+                )
+            )
+            chip.isClickable = false
+            chip.setCloseIconResource(R.drawable.ic_close)
+            val typedValue = TypedValue()
+            requireContext().theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
+            chip.closeIconTint = ColorStateList.valueOf(typedValue.data)
+            chip.isCloseIconVisible = true
+            chip.setOnCloseIconClickListener {
+                binding.tagsGroup.removeView(it)
+                appExtras.customTags = appExtras.customTags.minus(pn)
+                viewModel.refreshNow.value = true
+            }
+            binding.tagsGroup.addView(chip)
+        }
+    }
+
     private fun setupOnClicks() {
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+        binding.addTag.setOnClickListener {
+            appExtras.customTags = appExtras.customTags.plus(binding.newTag.text.toString())
+            binding.newTag.text = null
+            viewModel.refreshNow.value = true
+        }
+        binding.saveNote.setOnClickListener {
+            appExtras.note = binding.noteText.text.toString()
+            viewModel.refreshNow.value = true
+        }
         viewModel.appInfo.value?.let { app: AppInfo ->
             binding.appInfo.setOnClickListener {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

@@ -30,7 +30,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
 import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
-import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
@@ -45,12 +44,6 @@ class SchedulerFragment : NavigationFragment() {
     private lateinit var binding: FragmentSchedulerBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
-    override var appInfoList: MutableList<AppInfo>
-        get() = requireMainActivity().viewModel.appInfoList.value
-            ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
-        }
 
     private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
     private var schedulerFastAdapter: FastAdapter<SchedulerItemX> =
@@ -111,7 +104,7 @@ class SchedulerFragment : NavigationFragment() {
                 }
                 false
             }
-        binding.blocklistButton.setOnClickListener {
+        binding.buttonBlocklist.setOnClickListener {
             Thread {
                 val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
                     ?.mapNotNull { it.packageName }

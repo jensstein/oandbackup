@@ -38,24 +38,38 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAction(context, shell) {
+class RestoreSpecialAction(context: Context, shell: ShellHandler) :
+    RestoreAppAction(context, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    override fun restoreAllData(app: AppInfo, backupProperties: BackupProperties, backupLocation: Uri, backupMode: Int) {
+    override fun restoreAllData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: Uri,
+        backupMode: Int
+    ) {
         restoreData(app, backupProperties, fromUri(context, backupLocation))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    override fun restoreData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
-        Timber.i(String.format("%s: Restore special data", app))
+    override fun restoreData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
+        Timber.i("%s: Restore special data", app)
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = context.isEncryptionEnabled()
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
         val backupArchiveFile = backupLocation.findFile(backupArchiveFilename)
-                ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
+            ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
-            openArchiveFile(backupArchiveFile.uri, isEncrypted).use { archive ->
+            openArchiveFile(
+                backupArchiveFile.uri,
+                isEncrypted,
+                backupProperties.iv
+            ).use { archive ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
                 archive.suUncompressTo(tempPath)
@@ -63,16 +77,30 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
                 val expectedFiles = metaInfo.fileList
-                        .map { pathname: String? -> File(pathname ?: "") }
-                        .toTypedArray()
-                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(expectedFiles, filesInBackup))) {
-                    val errorMessage = "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
+                    .map { pathname: String? -> File(pathname ?: "") }
+                    .toTypedArray()
+                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(
+                        expectedFiles,
+                        filesInBackup
+                    ))
+                ) {
+                    val errorMessage =
+                        "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
                 val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
-                    commands.add("$utilBoxQuoted mv -f ${quote(File(tempPath, restoreFile.name))} ${quote(restoreFile)}")
+                    commands.add(
+                        "$utilBoxQuoted mv -f ${
+                            quote(
+                                File(
+                                    tempPath,
+                                    restoreFile.name
+                                )
+                            )
+                        } ${quote(restoreFile)}"
+                    )
                 }
                 val command = commands.joinToString(" ; ")  // no dependency
                 runAsRoot(command)
@@ -96,22 +124,35 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) : RestoreAppAc
         // stub
     }
 
-    override fun restoreDeviceProtectedData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreDeviceProtectedData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
-    override fun restoreExternalData(app: AppInfo, backupProperties: BackupProperties, backupLocation: StorageFile) {
+    override fun restoreExternalData(
+        app: AppInfo,
+        backupProperties: BackupProperties,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
-    override fun restoreObbData(app: AppInfo, backupProperties: BackupProperties?, backupLocation: StorageFile) {
+    override fun restoreObbData(
+        app: AppInfo,
+        backupProperties: BackupProperties?,
+        backupLocation: StorageFile
+    ) {
         // stub
     }
 
     companion object {
         private fun areBasefilesSubsetOf(set: Array<File>, subsetList: Array<File>): Boolean {
             val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
-            val subsetCollection: Collection<String> = subsetList.map { obj: File -> obj.name }.toHashSet()
+            val subsetCollection: Collection<String> =
+                subsetList.map { obj: File -> obj.name }.toHashSet()
             return baseCollection.containsAll(subsetCollection)
         }
     }

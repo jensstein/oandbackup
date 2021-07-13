@@ -20,16 +20,18 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.machiav3lli.backup.dbs.AppExtrasDao
 import com.machiav3lli.backup.dbs.BlocklistDao
 
 class MainViewModelFactory(
-    private val database: BlocklistDao,
+    private val appExtrasDao: AppExtrasDao,
+    private val blocklistDao: BlocklistDao,
     private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(database, application) as T
+            return MainViewModel(appExtrasDao, blocklistDao, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

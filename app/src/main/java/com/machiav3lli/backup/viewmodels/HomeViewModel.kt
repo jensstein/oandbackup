@@ -19,28 +19,13 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
-
-    private var _refreshActive = MutableLiveData<Boolean>()
-    val refreshActive: LiveData<Boolean>
-        get() = _refreshActive
-
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
         nUpdatedApps.value = 0
-    }
-
-    fun refreshList() {
-        viewModelScope.launch {
-            _refreshActive.value = true
-            refreshNow.value = true
-        }
     }
 }

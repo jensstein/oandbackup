@@ -47,12 +47,18 @@ class LogsHandler(var context: Context) {
     fun writeToLogFile(logText: String) {
         val date = LocalDateTime.now()
         val logItem = LogItem(logText, date)
-        val logFileName = String.format(LOG_INSTANCE,
-                BACKUP_DATE_TIME_FORMATTER.format(date))
+        val logFileName = String.format(
+            LOG_INSTANCE,
+            BACKUP_DATE_TIME_FORMATTER.format(date)
+        )
         val logFile = logsDirectory?.createFile("application/octet-stream", logFileName)
-        BufferedOutputStream(context.contentResolver.openOutputStream(logFile?.uri
-                ?: Uri.EMPTY, "w"))
-                .use { logOut -> logOut.write(logItem.toGson().toByteArray(StandardCharsets.UTF_8)) }
+        BufferedOutputStream(
+            context.contentResolver.openOutputStream(
+                logFile?.uri
+                    ?: Uri.EMPTY, "w"
+            )
+        )
+            .use { logOut -> logOut.write(logItem.toGson().toByteArray(StandardCharsets.UTF_8)) }
         Timber.i("Wrote $logFile file for $logItem")
     }
 
@@ -63,11 +69,13 @@ class LogsHandler(var context: Context) {
             if (it.isFile) try {
                 logs.add(LogItem(context, it))
             } catch (e: NullPointerException) {
-                val message = "(Null) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
+                val message =
+                    "(Null) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
                 Timber.w(message)
                 logErrors(context, message)
             } catch (e: Throwable) {
-                val message = "(catchall) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
+                val message =
+                    "(catchall) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
                 unhandledException(e, it.uri)
                 logErrors(context, message)
             }
@@ -76,8 +84,10 @@ class LogsHandler(var context: Context) {
     }
 
     fun getLogFile(date: LocalDateTime): StorageFile? {
-        val logFileName = String.format(LOG_INSTANCE,
-                BACKUP_DATE_TIME_FORMATTER.format(date))
+        val logFileName = String.format(
+            LOG_INSTANCE,
+            BACKUP_DATE_TIME_FORMATTER.format(date)
+        )
         return logsDirectory?.findFile(logFileName)
     }
 
@@ -117,7 +127,9 @@ class LogsHandler(var context: Context) {
         fun handleErrorMessages(context: Context, errorText: String?): String? {
             return when {
                 errorText?.contains("bytes specified in the header were written")
-                        ?: false -> context.getString(R.string.error_datachanged)
+                    ?: false -> context.getString(R.string.error_datachanged)
+                errorText?.contains("Input is not in the .gz format")
+                    ?: false -> context.getString(R.string.error_encryptionpassword)
                 else -> errorText
             }
         }

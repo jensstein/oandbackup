@@ -30,7 +30,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
-import com.machiav3lli.backup.dbs.BlocklistDao
+import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.RefreshViewController
@@ -58,7 +59,6 @@ class MainActivityX : BaseActivity() {
     }
 
     private lateinit var prefs: SharedPreferences
-    private lateinit var blocklistDao: BlocklistDao
     private lateinit var refreshViewController: RefreshViewController
 
     lateinit var binding: ActivityMainXBinding
@@ -72,9 +72,10 @@ class MainActivityX : BaseActivity() {
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
+        val blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
+        val appExtrasDao = AppExtrasDatabase.getInstance(this).appExtrasDao
         prefs = getPrivateSharedPrefs()
-        val viewModelFactory = MainViewModelFactory(blocklistDao, application)
+        val viewModelFactory = MainViewModelFactory(appExtrasDao, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
@@ -84,9 +85,7 @@ class MainActivityX : BaseActivity() {
             viewModel.refreshList()
         })
         viewModel.refreshNow.observe(this, {
-            if (it && refreshViewController != null) {
-                refreshView()
-            }
+            if (it) refreshView()
         })
         initShell()
         runOnUiThread { showEncryptionDialog() }
@@ -115,8 +114,8 @@ class MainActivityX : BaseActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         val navController = navHostFragment.navController
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
-            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
+        binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
+            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
             navController.navigate(item.itemId)
             true
         }
@@ -124,7 +123,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList",it) }
+            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList", it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )
@@ -167,9 +166,13 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
+    fun updateAppExtras(appExtras: AppExtras) {
+        viewModel.updateExtras(appExtras)
+    }
+
     fun setRefreshViewController(refreshViewController: RefreshViewController) {
         this.refreshViewController = refreshViewController
     }
 
-    fun refreshView() = refreshViewController.refresh()
+    fun refreshView() = refreshViewController.refreshView()
 }

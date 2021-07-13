@@ -286,6 +286,9 @@
     <string name="prefs_secondary_7">Azure Blue</string>
     <string name="prefs_accent_color">Accent color</string>
     <string name="prefs_secondary_color">Secondary color</string>
+    <string name="error_encryptionpassword">The encryption password is either not set or wrong!</string>
+    <string name="title_note">Note:</string>
+    <string name="title_tags">Tags:</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">each day</item>
         <item quantity="other">each %d days</item>

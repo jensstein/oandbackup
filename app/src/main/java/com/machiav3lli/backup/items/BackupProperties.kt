@@ -28,6 +28,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.utils.GsonUtils.instance
 import java.time.LocalDateTime
+import javax.crypto.Cipher
 
 open class BackupProperties : AppMetaInfo, Parcelable {
     @SerializedName("backupDate")
@@ -59,6 +60,10 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     @Expose
     val cipherType: String?
 
+    @SerializedName("iv")
+    @Expose
+    val iv: ByteArray?
+
     @SerializedName("cpuArch")
     @Expose
     val cpuArch: String?
@@ -77,7 +82,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     constructor(
         context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
         hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, cipherType: String?, cpuArch: String?
+        hasObbData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
     )
             : super(context, pi) {
         this.backupDate = backupDate
@@ -87,13 +92,14 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
         this.cipherType = cipherType
+        this.iv = iv
         this.cpuArch = cpuArch
     }
 
     constructor(
         base: AppMetaInfo, backupDate: LocalDateTime?, hasApk: Boolean,
         hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, cipherType: String?, cpuArch: String?
+        hasObbData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
     ) : super(
         base.packageName, base.packageLabel, base.versionName,
         base.versionCode, base.profileId, base.sourceDir,
@@ -106,6 +112,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
         this.cipherType = cipherType
+        this.iv = iv
         this.cpuArch = cpuArch
     }
 
@@ -114,7 +121,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean,
         backupDate: LocalDateTime?, hasApk: Boolean, hasAppData: Boolean,
         hasDevicesProtectedData: Boolean, hasExternalData: Boolean, hasObbData: Boolean,
-        cipherType: String?, cpuArch: String?
+        cipherType: String?, iv: ByteArray?, cpuArch: String?
     ) : super(
         packageName, packageLabel, versionName, versionCode, profileId,
         sourceDir, splitSourceDirs, isSystem
@@ -126,6 +133,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
         this.cipherType = cipherType
+        this.iv = iv
         this.cpuArch = cpuArch
     }
 
@@ -136,6 +144,8 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hasExternalData = source.readByte().toInt() != 0
         hasObbData = source.readByte().toInt() != 0
         cipherType = source.readString()
+        iv = ByteArray(Cipher.getInstance(cipherType).blockSize)
+        source.readByteArray(iv)
         cpuArch = source.readString()
     }
 
@@ -146,6 +156,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         parcel.writeByte((if (hasExternalData) 1 else 0).toByte())
         parcel.writeByte((if (hasObbData) 1 else 0).toByte())
         parcel.writeString(cipherType)
+        parcel.writeByteArray(iv)
         parcel.writeString(cpuArch)
     }
 
@@ -169,6 +180,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hash = 31 * hash + if (hasExternalData) 1 else 0
         hash = 31 * hash + if (hasObbData) 1 else 0
         hash = 31 * hash + cipherType.hashCode()
+        hash = 31 * hash + iv.hashCode()
         hash = 31 * hash + cpuArch.hashCode()
         return hash
     }
@@ -182,6 +194,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
                 ", hasExternalData=" + hasExternalData +
                 ", hasObbData=" + hasObbData +
                 ", cipherType='" + cipherType + '\'' +
+                ", iv='" + iv + '\'' +
                 ", cpuArch='" + cpuArch + '\'' +
                 '}'
     }

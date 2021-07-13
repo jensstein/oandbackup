@@ -27,9 +27,13 @@ import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
-abstract class BaseAppAction protected constructor(protected val context: Context, protected val shell: ShellHandler) {
+abstract class BaseAppAction protected constructor(
+    protected val context: Context,
+    protected val shell: ShellHandler
+) {
 
-    protected val deviceProtectedStorageContext: Context = context.createDeviceProtectedStorageContext()
+    protected val deviceProtectedStorageContext: Context =
+        context.createDeviceProtectedStorageContext()
 
     fun getBackupArchiveFilename(what: String, isEncrypted: Boolean): String {
         return "$what.tar.gz${if (isEncrypted) ".enc" else ""}"
@@ -44,7 +48,7 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            Timber.i(String.format("package %s uid %d", packageName, applicationInfo.uid))
+            Timber.i("package %s uid %d", packageName, applicationInfo.uid)
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Requested to kill processes of UID < 10000. Refusing to kill system's processes!")
                 return
@@ -55,11 +59,11 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
                 //ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill -STOP", applicationInfo.uid));
                 //   try to exclude essential services android.* via grep
                 runAsRoot(
-                        "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
-                                + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                                + " while read pid user name; do"
-                                + " kill -STOP \$pid ;"
-                                + " done"
+                    "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                            + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                            + " while read pid user name; do"
+                            + " kill -STOP \$pid ;"
+                            + " done"
                 )
             }
         } catch (e: PackageManager.NameNotFoundException) {
@@ -76,11 +80,11 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             runAsRoot(
-                    "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
-                            + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                            + " while read pid user name; do"
-                            + " kill -CONT \$pid ;"
-                            + " done"
+                "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
+                        + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
+                        + " while read pid user name; do"
+                        + " kill -CONT \$pid ;"
+                        + " done"
             )
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.w("$packageName does not exist. Cannot preprocess!")
@@ -103,12 +107,12 @@ abstract class BaseAppAction protected constructor(protected val context: Contex
          */
         val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")
         private val doNotStop = listOf(
-                "com.android.shell",  // don't remove this
-                "com.android.systemui",
-                "com.android.externalstorage",
-                "com.android.providers.media",
-                "com.google.android.gms",
-                "com.google.android.gsf"
+            "com.android.shell",  // don't remove this
+            "com.android.systemui",
+            "com.android.externalstorage",
+            "com.android.providers.media",
+            "com.google.android.gms",
+            "com.google.android.gsf"
         )
 
         fun extractErrorMessage(shellResult: Shell.Result): String {

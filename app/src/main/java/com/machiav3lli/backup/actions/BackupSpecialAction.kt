@@ -42,12 +42,18 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
         return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
-        else ActionResult(app, null,
-                "Special backup only backups data, but data was not selected for backup", false)
+        else ActionResult(
+            app, null,
+            "Special backup only backups data, but data was not selected for backup", false
+        )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    override fun backupData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupData(
+        app: AppInfo,
+        backupInstanceDir: StorageFile?,
+        iv: ByteArray?
+    ): Boolean {
         Timber.i("$app: Backup special data")
         require(app.appMetaInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
         val appInfo = app.appMetaInfo as SpecialAppMetaInfo
@@ -63,7 +69,11 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 val parent = if (isDirSource) file.name else null
                 var fileInfos: List<ShellHandler.FileInfo>
                 try {
-                    fileInfos = shell.suGetDetailedDirectoryContents(filePath.removeSuffix("/"), isDirSource, parent)
+                    fileInfos = shell.suGetDetailedDirectoryContents(
+                        filePath.removeSuffix("/"),
+                        isDirSource,
+                        parent
+                    )
                 } catch (e: ShellCommandFailedException) {
                     continue  //TODO hg42: avoid checking the error message text for now
                     //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
@@ -74,17 +84,31 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 if (isDirSource) {
                     // also add directory
                     filesToBackup.add(
-                            ShellHandler.FileInfo(
-                                    parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
-                                    file.parent!!,
-                                    Files.getAttribute(file.toPath(), "unix:owner", LinkOption.NOFOLLOW_LINKS).toString(),
-                                    Files.getAttribute(file.toPath(), "unix:group", LinkOption.NOFOLLOW_LINKS).toString(),
-                                    Files.getAttribute(file.toPath(), "unix:mode", LinkOption.NOFOLLOW_LINKS) as Int,
-                                    0, Date(file.lastModified())))
+                        ShellHandler.FileInfo(
+                            parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
+                            file.parent!!,
+                            Files.getAttribute(
+                                file.toPath(),
+                                "unix:owner",
+                                LinkOption.NOFOLLOW_LINKS
+                            ).toString(),
+                            Files.getAttribute(
+                                file.toPath(),
+                                "unix:group",
+                                LinkOption.NOFOLLOW_LINKS
+                            ).toString(),
+                            Files.getAttribute(
+                                file.toPath(),
+                                "unix:mode",
+                                LinkOption.NOFOLLOW_LINKS
+                            ) as Int,
+                            0, Date(file.lastModified())
+                        )
+                    )
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true, iv)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")
@@ -101,17 +125,29 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
         // stub
     }
 
-    override fun backupDeviceProtectedData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupDeviceProtectedData(
+        app: AppInfo,
+        backupInstanceDir: StorageFile?,
+        iv: ByteArray?
+    ): Boolean {
         // stub
         return false
     }
 
-    override fun backupExternalData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupExternalData(
+        app: AppInfo,
+        backupInstanceDir: StorageFile?,
+        iv: ByteArray?
+    ): Boolean {
         // stub
         return false
     }
 
-    override fun backupObbData(app: AppInfo, backupInstanceDir: StorageFile?): Boolean {
+    override fun backupObbData(
+        app: AppInfo,
+        backupInstanceDir: StorageFile?,
+        iv: ByteArray?
+    ): Boolean {
         // stub
         return false
     }

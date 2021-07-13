@@ -104,7 +104,6 @@ fun Context.isBiometricLockAvailable(): Boolean =
  * Returns the user selected location. Go for `FileUtil.getBackupDir` to get the actual
  * backup dir's path
  *
- * @param context application context
  * @return user configured location
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
