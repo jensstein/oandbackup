@@ -293,4 +293,6 @@
     <string name="prefs_accent_1">紫色</string>
     <string name="prefs_accent_0">红慧星</string>
     <string name="error_encryptionpassword">加密密码要么没有设置要么错误！</string>
+    <string name="title_tags">标签：</string>
+    <string name="title_note">附注：</string>
 </resources>
