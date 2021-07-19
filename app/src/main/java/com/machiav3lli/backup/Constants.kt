@@ -91,6 +91,7 @@ val possibleBackupFilters =
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
 const val MAIN_SORT_DATASIZE = 2
+const val MAIN_SORT_BACKUPDATE = 3
 
 const val MAIN_FILTER_DEFAULT = 0b110
 const val MAIN_FILTER_UNSET = 0b000

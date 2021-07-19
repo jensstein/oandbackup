@@ -301,4 +301,5 @@
         <item quantity="one">%d updated app</item>
         <item quantity="other">%d updated apps</item>
     </plurals>
+    <string name="sortBackupDate">Backup Date</string>
 </resources>
