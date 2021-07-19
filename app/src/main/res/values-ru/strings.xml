@@ -303,4 +303,6 @@
     <string name="prefs_accent_2">Спокойный индиго</string>
     <string name="prefs_accent_1">Утончённый фиолетовый</string>
     <string name="prefs_accent_0">Красная комета</string>
+    <string name="title_tags">Теги:</string>
+    <string name="title_note">Заметка:</string>
 </resources>
