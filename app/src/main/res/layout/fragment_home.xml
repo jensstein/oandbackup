@@ -224,7 +224,7 @@
                 android:background="@drawable/bg_button_positive_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="@string/update_all"
+                android:text="@string/backup_all"
                 android:textColor="?colorAccent" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>

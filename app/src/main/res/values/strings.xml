@@ -267,7 +267,7 @@
     <string name="forceKill">Force kill</string>
     <string name="global_blocklist_add">Add to the global blocklist</string>
     <string name="intro_permission_storage_location_warning">Don\'t pick the main storage directory or Downloads folder, create a folder only for your backups. More on this in the FAQ</string>
-    <string name="update_all">Update all</string>
+    <string name="backup_all">Backup all</string>
     <string name="prefs_accent_0">Red Comet</string>
     <string name="prefs_accent_1">Fine Purple</string>
     <string name="prefs_accent_2">Calm Indigo</string>
