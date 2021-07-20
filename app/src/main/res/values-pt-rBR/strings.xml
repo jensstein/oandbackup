@@ -272,4 +272,25 @@
     <string name="ignore_battery_optimization_title">Otimização de Bateria</string>
     <string name="empty_filtered_list">A lista de filtros está vazia.</string>
     <string name="other_filters_options">Filtros especiais:</string>
+    <string name="error_encryptionpassword">A senha de criptografia não está definida ou está errada!</string>
+    <string name="title_tags">Tags:</string>
+    <string name="title_note">Observe:</string>
+    <string name="prefs_secondary_color">Cor secundária</string>
+    <string name="prefs_accent_color">Cor principal</string>
+    <string name="prefs_secondary_7">Azul Azure</string>
+    <string name="prefs_secondary_6">Lousa</string>
+    <string name="prefs_secondary_5">Rosa Flamingo</string>
+    <string name="prefs_secondary_4">Laranja Cor-de-Lava</string>
+    <string name="prefs_secondary_3">Âmbar de Tigre</string>
+    <string name="prefs_secondary_2">Lima</string>
+    <string name="prefs_secondary_1">Azul-Petróleo</string>
+    <string name="prefs_secondary_0">Ciano Ártico</string>
+    <string name="prefs_accent_7">Laranja Damasco</string>
+    <string name="prefs_accent_6">Amarelo Trovão</string>
+    <string name="prefs_accent_5">Verde-Limão</string>
+    <string name="prefs_accent_4">Verde Escuro</string>
+    <string name="prefs_accent_3">Turquesa</string>
+    <string name="prefs_accent_2">Indigo Calmo</string>
+    <string name="prefs_accent_1">Roxo Fino</string>
+    <string name="prefs_accent_0">Cometa Vermelho</string>
 </resources>
