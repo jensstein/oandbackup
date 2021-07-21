@@ -298,4 +298,6 @@
     <string name="prefs_accent_2">Ruhiges Indigo</string>
     <string name="prefs_accent_1">Feines Violett</string>
     <string name="prefs_accent_0">Roter Komet</string>
+    <string name="title_tags">Tags:</string>
+    <string name="title_note">Hinweis:</string>
 </resources>
