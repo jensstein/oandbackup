@@ -277,5 +277,5 @@
         <item quantity="many">%d днів,</item>
         <item quantity="other">%d днів,</item>
     </plurals>
-    <string name="update_all">Оновити все</string>
+    <string name="backup_all_updated">Оновити все</string>
 </resources>

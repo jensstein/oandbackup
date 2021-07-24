@@ -268,7 +268,7 @@
     <string name="backupConfirmation">Sao lưu\?</string>
     <string name="restore">Khôi phục</string>
     <string name="backup">Sao lưu</string>
-    <string name="update_all">Cập nhật tất cả</string>
+    <string name="backup_all_updated">Cập nhật tất cả</string>
     <string name="prefs_accent_3">Ngọc lam</string>
     <string name="prefs_secondary_color">Màu phụ</string>
     <string name="prefs_accent_color">Màu nổi bật</string>

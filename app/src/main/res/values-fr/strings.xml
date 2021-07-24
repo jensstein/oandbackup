@@ -293,7 +293,7 @@
     <string name="prefs_accent_2">Indigo calme</string>
     <string name="prefs_accent_1">Violet fin</string>
     <string name="prefs_accent_0">Comète rouge</string>
-    <string name="update_all">Tout mettre à jour</string>
+    <string name="backup_all_updated">Tout mettre à jour</string>
     <string name="intro_permission_storage_location_warning">Ne choisissez pas le répertoire de stockage principal ou le dossier Téléchargements, créez un dossier uniquement pour vos sauvegardes. Plus à ce sujet dans la FAQ</string>
     <string name="forceKill">Forcer l\'arrêt</string>
     <string name="no_file_manager_message">Il n\'y a pas de gestionnaire de fichiers pour gérer SAF. Vous avez peut-être désactivé le gestionnaire de fichiers intégré. Veuillez le restaurer ou le réactiver.</string>

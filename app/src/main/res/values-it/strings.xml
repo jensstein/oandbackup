@@ -297,5 +297,5 @@
     <string name="prefs_accent_2">Indaco calmo</string>
     <string name="prefs_accent_1">Viola fine</string>
     <string name="prefs_accent_0">Cometa rossa</string>
-    <string name="update_all">Aggiorna tutti</string>
+    <string name="backup_all_updated">Aggiorna tutti</string>
 </resources>

@@ -283,7 +283,7 @@
     <string name="global_blocklist_add">إضافة إلى قائمة الحظر العامة</string>
     <string name="forceKill">قتل بالقوة</string>
     <string name="intro_permission_storage_location_warning">لا تختار دليل التخزين الرئيسي أو مجلد التنزيلات، قم بإنشاء مجلد للنسخ الاحتياطية فقط. للمزيد حول هذا الموضوع في قسم الأسئلة الشائعة</string>
-    <string name="update_all">تحديث الكل</string>
+    <string name="backup_all_updated">تحديث الكل</string>
     <string name="prefs_secondary_color">اللون الثانوي</string>
     <string name="prefs_accent_color">لون اللكنة</string>
     <string name="prefs_secondary_7">الأزرق السماوي</string>

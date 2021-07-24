@@ -283,7 +283,7 @@
     <string name="forceKill">Закрыть принудительно</string>
     <string name="global_blocklist_add">Добавить в глобальный список блокировок</string>
     <string name="sortAscDesc">По возрастанию, по убыванию</string>
-    <string name="update_all">Обновить всё</string>
+    <string name="backup_all_updated">Обновить всё</string>
     <string name="prefs_accent_color">Акцент</string>
     <string name="error_encryptionpassword">Пароль шифрования либо не установлен, либо неверен!</string>
     <string name="prefs_secondary_color">Второстепенный цвет</string>

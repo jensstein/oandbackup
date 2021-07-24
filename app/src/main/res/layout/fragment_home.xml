@@ -194,14 +194,13 @@
                 android:textColor="?colorAccent" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/updatedBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/cards_spacing"
             android:layout_marginBottom="@dimen/cards_spacing"
             android:elevation="2dp"
-            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -209,24 +208,67 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/updatedRecycler"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:padding="@dimen/buttons_spacing"
+                android:paddingVertical="@dimen/buttons_spacing"
+                android:paddingStart="?actionBarSize"
+                android:paddingEnd="@dimen/buttons_spacing"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/item_updated_x" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <FrameLayout
                 android:id="@+id/updateAllAction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_positive_ripple"
+                android:layout_width="?actionBarSize"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_gradient_alpha_right_left"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="@string/backup_all"
-                android:textColor="?colorAccent" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_button_positive_ripple"
+                    android:tooltipText="@string/backup_all_updated">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/cards_spacing"
+                        android:layout_marginTop="@dimen/cards_spacing"
+                        android:contentDescription="@string/app_s_icon"
+                        android:src="@drawable/ic_update"
+                        app:layout_constraintBottom_toTopOf="@id/label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/label"
+                        style="@style/TextViewWrapped"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/small_spacing"
+                        android:gravity="center_horizontal"
+                        android:text="@string/all"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/icon" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

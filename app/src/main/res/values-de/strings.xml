@@ -278,7 +278,7 @@
     <string name="no_file_manager_title">Kein SAF Dateimanager</string>
     <string name="prefs_schedulesexportimport_summary">Export oder import einer Liste der zeitgesteuerten Backups, die du angelegt hast.</string>
     <string name="prefs_schedulesexportimport">Export/Import zeitgesteuerter Backups</string>
-    <string name="update_all">Alle aktualisieren</string>
+    <string name="backup_all_updated">Alle aktualisieren</string>
     <string name="error_encryptionpassword">Das Verschlüsselungspasswort ist entweder nicht gesetzt oder falsch!</string>
     <string name="prefs_secondary_color">Sekundäre Farbe</string>
     <string name="prefs_accent_color">Akzentfarbe</string>

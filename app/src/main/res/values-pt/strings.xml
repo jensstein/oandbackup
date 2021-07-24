@@ -239,7 +239,7 @@
         <item quantity="one">cada dia</item>
         <item quantity="other">cada %d dias</item>
     </plurals>
-    <string name="update_all">Atualizar tudo</string>
+    <string name="backup_all_updated">Atualizar tudo</string>
     <string name="intro_permission_storage_location_warning">Não escolha o diretório principal de armazenamento ou a pasta de Downloads, crie uma pasta apenas para seus backups. Mais sobre isso no FAQ</string>
     <string name="global_blocklist_add">Adicionar a lista de bloqueio global</string>
     <string name="forceKill">Forçar parada</string>
