@@ -23,12 +23,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
-        minSdkVersion(26)
-        targetSdkVersion(29)
+        minSdk = 26
+        targetSdk = 29
         versionCode = 6001
         versionName = "6.0.1"
 
@@ -79,14 +79,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
     }
-    lintOptions {
+    lint {
         isAbortOnError = false
     }
 }
