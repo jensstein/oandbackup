@@ -254,4 +254,8 @@
     <string name="prefs_devicelock_summary">Sikre programmet med enhetsidentietsdetaljer</string>
     <string name="prefs_devicelock">Enhetslås</string>
     <string name="filtered_list">Filtrert liste</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">hver dag</item>
+        <item quantity="other">hver %d dag</item>
+    </plurals>
 </resources>
