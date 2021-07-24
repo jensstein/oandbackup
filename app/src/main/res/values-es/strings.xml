@@ -278,4 +278,26 @@
     <string name="write_apps_list_filtered">Escrito archivo de lista de aplicaciones filtradas</string>
     <string name="help_group_matrix">Nuestro grupo de Matrix</string>
     <string name="help_group_telegram">Nuestro grupo de Telegram</string>
+    <string name="title_note">Nota:</string>
+    <string name="title_tags">Etiquetas:</string>
+    <string name="error_encryptionpassword">¡La contraseña de cifrado no está configurada o es incorrecta!</string>
+    <string name="prefs_secondary_color">Color secundario</string>
+    <string name="prefs_accent_color">Color de acento</string>
+    <string name="prefs_secondary_7">Azul celeste</string>
+    <string name="prefs_secondary_6">Pizarra</string>
+    <string name="prefs_secondary_5">Rosa Flamingo</string>
+    <string name="prefs_secondary_4">Naranja lava</string>
+    <string name="prefs_secondary_3">Ámbar tigre</string>
+    <string name="prefs_secondary_2">Limette</string>
+    <string name="prefs_secondary_1">Verde azulado océano</string>
+    <string name="prefs_secondary_0">Cían ártico</string>
+    <string name="prefs_accent_7">Naranja albaricoque</string>
+    <string name="prefs_accent_6">Amarillo tormenta</string>
+    <string name="prefs_accent_5">Verde amarillento</string>
+    <string name="prefs_accent_4">Verde intenso</string>
+    <string name="prefs_accent_3">Turquesa</string>
+    <string name="prefs_accent_2">Índigo tranquilo</string>
+    <string name="prefs_accent_1">Púrpura fino</string>
+    <string name="prefs_accent_0">Rojo cometa</string>
+    <string name="update_all">Actualizar todo</string>
 </resources>
