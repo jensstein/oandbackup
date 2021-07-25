@@ -295,4 +295,5 @@
     <string name="error_encryptionpassword">加密密码要么没有设置要么错误！</string>
     <string name="title_tags">标签：</string>
     <string name="title_note">附注：</string>
+    <string name="sortBackupDate">备份日期</string>
 </resources>
