@@ -305,4 +305,5 @@
     <string name="error_encryptionpassword">كلمة مرور التشفير إما غير محددة أو خاطئة!</string>
     <string name="title_tags">العلامات:</string>
     <string name="title_note">ملحوظة:</string>
+    <string name="sortBackupDate">تاريخ النسخ الاحتياطي</string>
 </resources>
