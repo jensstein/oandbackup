@@ -293,4 +293,5 @@
     <string name="prefs_accent_2">Indigo Calmo</string>
     <string name="prefs_accent_1">Roxo Fino</string>
     <string name="prefs_accent_0">Cometa Vermelho</string>
+    <string name="sortBackupDate">Data do Backup</string>
 </resources>
