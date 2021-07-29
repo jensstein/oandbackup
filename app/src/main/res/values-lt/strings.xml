@@ -1,2 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="prefs_secondary_7">Žydrai mėlyna</string>
+    <string name="prefs_accent_color">Akcento spalva</string>
+    <string name="prefs_secondary_color">Antrinė spalva</string>
+    <string name="error_encryptionpassword">Šifravimo slaptažodis nenustatytas arba neteisingas!</string>
+    <string name="title_note">Pastaba:</string>
+    <string name="title_tags">Žymos:</string>
+    <string name="sortBackupDate">Atsarginės kopijos sukūrimo data</string>
+    <string name="handleBoth">Abu</string>
+    <string name="handleData">Duomenis</string>
+    <string name="handleApk">APK</string>
+    <string name="restoreConfirmation">Atkurti\?</string>
+    <string name="backupConfirmation">Padaryti atsarginę kopiją\?</string>
+    <string name="restore">Atkurti</string>
+    <string name="backup">Atsarginė kopija</string>
+</resources>
