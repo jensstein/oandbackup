@@ -300,4 +300,6 @@
     <string name="prefs_accent_1">Púrpura fino</string>
     <string name="prefs_accent_0">Rojo cometa</string>
     <string name="update_all">Actualizar todo</string>
+    <string name="sortBackupDate">Fecha de respaldo</string>
+    <string name="backup_all_updated">Respaldar todas las aplicaciones actualizadas</string>
 </resources>
