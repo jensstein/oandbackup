@@ -69,6 +69,13 @@
         android:summary="@string/prefs_obbdata_summary"
         android:title="@string/prefs_obbdata" />
 
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/ic_media_data"
+        android:key="backupMediaData"
+        android:summary="@string/prefs_mediadata_summary"
+        android:title="@string/prefs_mediadata" />
+
     <androidx.preference.SeekBarPreference
         android:defaultValue="2"
         android:icon="@drawable/ic_revisions"
