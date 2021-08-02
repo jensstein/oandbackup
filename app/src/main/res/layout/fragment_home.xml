@@ -213,8 +213,8 @@
                 android:clipToPadding="false"
                 android:orientation="horizontal"
                 android:paddingVertical="@dimen/buttons_spacing"
-                android:paddingStart="?actionBarSize"
-                android:paddingEnd="@dimen/buttons_spacing"
+                android:paddingEnd="?actionBarSize"
+                android:paddingStart="@dimen/buttons_spacing"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -227,11 +227,11 @@
                 android:id="@+id/updateAllAction"
                 android:layout_width="?actionBarSize"
                 android:layout_height="0dp"
-                android:background="@drawable/bg_gradient_alpha_right_left"
+                android:background="@drawable/bg_gradient_alpha_left_right"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
