@@ -55,6 +55,7 @@ class MainItemX(var app: AppInfo, var appExtras: AppExtras) :
         binding.extDataMode.setExists(app.hasExternalData)
         binding.deDataMode.setExists(app.hasDevicesProtectedData)
         binding.obbMode.setExists(app.hasObbData)
+        binding.mediaMode.setExists(app.hasMediaData)
         binding.appType.setAppType(app)
         appExtras.customTags.forEach {
             val chip = Chip(binding.root.context)

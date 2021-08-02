@@ -56,6 +56,10 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     @Expose
     val hasObbData: Boolean
 
+    @SerializedName("hasMediaData")
+    @Expose
+    val hasMediaData: Boolean
+
     @SerializedName("cipherType")
     @Expose
     val cipherType: String?
@@ -82,7 +86,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     constructor(
         context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
         hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
+        hasObbData: Boolean, hasMediaData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
     )
             : super(context, pi) {
         this.backupDate = backupDate
@@ -91,6 +95,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasDevicesProtectedData = hasDevicesProtectedData
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
+        this.hasMediaData = hasMediaData
         this.cipherType = cipherType
         this.iv = iv
         this.cpuArch = cpuArch
@@ -99,7 +104,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     constructor(
         base: AppMetaInfo, backupDate: LocalDateTime?, hasApk: Boolean,
         hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
+        hasObbData: Boolean, hasMediaData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
     ) : super(
         base.packageName, base.packageLabel, base.versionName,
         base.versionCode, base.profileId, base.sourceDir,
@@ -111,6 +116,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasDevicesProtectedData = hasDevicesProtectedData
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
+        this.hasMediaData = hasMediaData
         this.cipherType = cipherType
         this.iv = iv
         this.cpuArch = cpuArch
@@ -121,7 +127,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean,
         backupDate: LocalDateTime?, hasApk: Boolean, hasAppData: Boolean,
         hasDevicesProtectedData: Boolean, hasExternalData: Boolean, hasObbData: Boolean,
-        cipherType: String?, iv: ByteArray?, cpuArch: String?
+        hasMediaData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
     ) : super(
         packageName, packageLabel, versionName, versionCode, profileId,
         sourceDir, splitSourceDirs, isSystem
@@ -132,6 +138,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.hasDevicesProtectedData = hasDevicesProtectedData
         this.hasExternalData = hasExternalData
         this.hasObbData = hasObbData
+        this.hasMediaData = hasMediaData
         this.cipherType = cipherType
         this.iv = iv
         this.cpuArch = cpuArch
@@ -143,6 +150,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hasDevicesProtectedData = source.readByte().toInt() != 0
         hasExternalData = source.readByte().toInt() != 0
         hasObbData = source.readByte().toInt() != 0
+        hasMediaData = source.readByte().toInt() != 0
         cipherType = source.readString()
         iv = ByteArray(Cipher.getInstance(cipherType).blockSize)
         source.readByteArray(iv)
@@ -155,6 +163,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         parcel.writeByte((if (hasDevicesProtectedData) 1 else 0).toByte())
         parcel.writeByte((if (hasExternalData) 1 else 0).toByte())
         parcel.writeByte((if (hasObbData) 1 else 0).toByte())
+        parcel.writeByte((if (hasMediaData) 1 else 0).toByte())
         parcel.writeString(cipherType)
         parcel.writeByteArray(iv)
         parcel.writeString(cpuArch)
@@ -179,6 +188,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hash = 31 * hash + if (hasDevicesProtectedData) 1 else 0
         hash = 31 * hash + if (hasExternalData) 1 else 0
         hash = 31 * hash + if (hasObbData) 1 else 0
+        hash = 31 * hash + if (hasMediaData) 1 else 0
         hash = 31 * hash + cipherType.hashCode()
         hash = 31 * hash + iv.hashCode()
         hash = 31 * hash + cpuArch.hashCode()
@@ -193,6 +203,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
                 ", hasDevicesProtectedData=" + hasDevicesProtectedData +
                 ", hasExternalData=" + hasExternalData +
                 ", hasObbData=" + hasObbData +
+                ", hasMediaData=" + hasMediaData +
                 ", cipherType='" + cipherType + '\'' +
                 ", iv='" + iv + '\'' +
                 ", cpuArch='" + cpuArch + '\'' +

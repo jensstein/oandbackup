@@ -108,6 +108,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 backupCreated = backupObbData(app, backupInstanceDir, iv)
                 backupBuilder.setHasObbData(backupCreated)
             }
+            if (backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
+                Timber.i("$app: Backing up media files")
+                backupCreated = backupMediaData(app, backupInstanceDir, iv)
+                backupBuilder.setHasMediaData(backupCreated)
+            }
 
             if (context.isEncryptionEnabled()) {
                 backupBuilder.setCipherType(CIPHER_ALGORITHM)
@@ -366,6 +371,29 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
         return try {
             val filesToBackup = assembleFileList(app.getObbFilesPath(context))
+            genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, false, iv)
+        } catch (ex: BackupFailedException) {
+            if (ex.cause is ShellCommandFailedException
+                && isFileNotFoundException((ex.cause as ShellCommandFailedException?)!!)
+            ) {
+                // no such data found
+                Timber.i(LOG_NO_THING_TO_BACKUP, backupType, app.packageName)
+                return false
+            }
+            throw ex
+        }
+    }
+
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected open fun backupMediaData(
+        app: AppInfo,
+        backupInstanceDir: StorageFile?,
+        iv: ByteArray?
+    ): Boolean {
+        val backupType = BACKUP_DIR_MEDIA_FILES
+        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
+        return try {
+            val filesToBackup = assembleFileList(app.getMediaFilesPath(context))
             genericBackupData(backupType, backupInstanceDir?.uri, filesToBackup, false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException

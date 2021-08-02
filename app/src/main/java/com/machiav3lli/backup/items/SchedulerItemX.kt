@@ -63,6 +63,7 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
             binding.deDataMode.setExists(it.contains(MODE_DATA_DE))
             binding.extDataMode.setExists(it.contains(MODE_DATA_EXT))
             binding.obbMode.setExists(it.contains(MODE_DATA_OBB))
+            binding.mediaMode.setExists(it.contains(MODE_DATA_MEDIA))
         }
         binding.enableCheckbox.isChecked = schedule.enabled
         setTimeLeft(binding)

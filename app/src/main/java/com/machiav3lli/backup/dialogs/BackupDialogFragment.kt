@@ -47,10 +47,12 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
             possibleModes.remove(MODE_DATA_DE)
             possibleModes.remove(MODE_DATA_EXT)
             possibleModes.remove(MODE_DATA_OBB)
+            possibleModes.remove(MODE_DATA_MEDIA)
         } else {
             labels.add(getString(R.string.radio_deviceprotecteddata))
             labels.add(getString(R.string.radio_externaldata))
             labels.add(getString(R.string.radio_obbdata))
+            labels.add(getString(R.string.radio_mediadata))
         }
 
         val checkedOptions = BooleanArray(possibleModes.size)

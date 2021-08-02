@@ -41,6 +41,7 @@ class BackupBuilder(
     private var hasDevicesProtectedData = false
     private var hasExternalData = false
     private var hasObbData = false
+    private var hasMediaData = false
     private var cipherType: String? = null
     private val cpuArch: String = Build.SUPPORTED_ABIS[0]
     val backupPath = ensureBackupPath(backupRoot)
@@ -76,6 +77,10 @@ class BackupBuilder(
         this.hasObbData = hasObbData
     }
 
+    fun setHasMediaData(hasMediaData: Boolean) {
+        this.hasMediaData = hasMediaData
+    }
+
     fun setCipherType(cipherType: String?) {
         this.cipherType = cipherType
     }
@@ -84,7 +89,7 @@ class BackupBuilder(
         return BackupItem(
             BackupProperties(
                 appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
-                hasExternalData, hasObbData, cipherType, iv, cpuArch
+                hasExternalData, hasObbData, hasMediaData, cipherType, iv, cpuArch
             ),
             backupPath!!
         )
@@ -93,7 +98,7 @@ class BackupBuilder(
     fun createBackupProperties(): BackupProperties {
         return BackupProperties(
             appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
-            hasExternalData, hasObbData, cipherType, iv, cpuArch
+            hasExternalData, hasObbData, hasMediaData, cipherType, iv, cpuArch
         )
     }
 }

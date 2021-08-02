@@ -289,6 +289,23 @@ class AppInfo {
         return File(obbFilesPath, packageName).absolutePath
     }
 
+    // Uses the context to get own media directory
+    // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
+    // Goes to the parent two times to the leave obb directory
+    // e.g. /storage/emulated/0/Android
+    // Access the child folder named "media"
+    // e.g. /storage/emulated/0/Android/media
+    fun getMediaFilesPath(context: Context): String {
+        // Uses the context to get own obb data directory
+        // e.g. /storage/emulated/0/Android/media/com.machiav3lli.backup
+        // Goes to the parent two times to the leave own directory
+        // e.g. /storage/emulated/0/Android/media
+        val mediaFilesPath : File = File(context.obbDir.parentFile!!.parentFile!!, "media")
+        // Add the package name to the path assuming that if the name of dataDir does not equal the
+        // package name and has a prefix or a suffix to use it.
+        return File(mediaFilesPath, packageName).absolutePath
+    }
+
     /**
      * Returns the list of additional apks (excluding the main apk), if the app is installed
      *
@@ -316,6 +333,9 @@ class AppInfo {
 
     val hasObbData: Boolean
         get() = backupHistory.any { it.backupProperties.hasObbData }
+
+    val hasMediaData: Boolean
+        get() = backupHistory.any { it.backupProperties.hasMediaData }
 
     val dataBytes: Long
         get() = if (appMetaInfo.isSpecial) 0 else storageStats!!.dataBytes

@@ -27,6 +27,7 @@ fun altModeToMode(context: Context, mode: Int) = when (mode) {
         if (context.isBackupDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
         if (context.isBackupExternalData) dataMode = dataMode or MODE_DATA_EXT
         if (context.isBackupObbData) dataMode = dataMode or MODE_DATA_OBB
+        if (context.isBackupMediaData) dataMode = dataMode or MODE_DATA_MEDIA
         dataMode
     }
 }
@@ -37,6 +38,7 @@ fun modeIfActive(context: Context, mode: Int) = when {
     mode == MODE_DATA_DE && context.isBackupDeviceProtectedData -> MODE_DATA_DE
     mode == MODE_DATA_EXT && context.isBackupExternalData -> MODE_DATA_EXT
     mode == MODE_DATA_OBB && context.isBackupObbData -> MODE_DATA_OBB
+    mode == MODE_DATA_MEDIA && context.isBackupMediaData -> MODE_DATA_MEDIA
     else -> MODE_UNSET
 }
 
@@ -49,6 +51,7 @@ fun modeToId(mode: Int) = when (mode) {
     MODE_DATA_DE -> R.id.backupDataDe
     MODE_DATA_EXT -> R.id.backupDataExt
     MODE_DATA_OBB -> R.id.backupDataObb
+    MODE_DATA_MEDIA -> R.id.backupDataMedia
     else -> R.id.backupNone
 }
 
@@ -59,6 +62,7 @@ fun idToMode(id: Int) = when (id) {
     R.id.backupDataDe -> MODE_DATA_DE
     R.id.backupDataExt -> MODE_DATA_EXT
     R.id.backupDataObb -> MODE_DATA_OBB
+    R.id.backupDataMedia -> MODE_DATA_MEDIA
     else -> MODE_UNSET
 }
 
@@ -68,6 +72,7 @@ fun modeToString(context: Context, mode: Int): String = when (mode) {
     MODE_DATA_DE -> context.getString(R.string.radio_deviceprotecteddata)
     MODE_DATA_EXT -> context.getString(R.string.radio_externaldata)
     MODE_DATA_OBB -> context.getString(R.string.radio_obbdata)
+    MODE_DATA_MEDIA -> context.getString(R.string.radio_mediadata)
     else -> ""
 }
 
