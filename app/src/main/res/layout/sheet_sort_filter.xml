@@ -333,6 +333,15 @@
                         android:text="@string/radio_obbdata"
                         app:checkedIcon="@drawable/ic_obb_data"
                         app:checkedIconTint="@color/ic_obb" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataMedia"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_mediadata"
+                        app:checkedIcon="@drawable/ic_media_data"
+                        app:checkedIconTint="@color/ic_media" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView

@@ -68,6 +68,13 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/mediaMode"
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_media_data" />
+
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/obbMode"
                     android:layout_width="@dimen/icon_small"
                     android:layout_height="@dimen/icon_small"

@@ -9,6 +9,7 @@
     <color name="ic_ext_data">#B3CDFF</color>
     <color name="ic_de_data">#FADB18</color>
     <color name="ic_obb">#CAFB68</color>
+    <color name="ic_media">#FF8098</color>
     <color name="ic_updated">#FF0000</color>
 
     <color name="accent_0">#E0163D</color>
