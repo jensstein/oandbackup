@@ -305,4 +305,5 @@
     <string name="prefs_accent_0">Красная комета</string>
     <string name="title_tags">Теги:</string>
     <string name="title_note">Заметка:</string>
+    <string name="sortBackupDate">Дата резервной копии</string>
 </resources>
