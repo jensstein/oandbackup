@@ -296,4 +296,7 @@
     <string name="title_tags">标签：</string>
     <string name="title_note">附注：</string>
     <string name="sortBackupDate">备份日期</string>
+    <string name="prefs_mediadata_summary">备份和恢复放置在外部存储设备上的应用程序媒体文件（例如 /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">备份媒体文件</string>
+    <string name="radio_mediadata">媒体数据</string>
 </resources>
