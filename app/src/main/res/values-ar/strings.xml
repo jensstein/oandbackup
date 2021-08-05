@@ -306,4 +306,7 @@
     <string name="title_tags">العلامات:</string>
     <string name="title_note">ملحوظة:</string>
     <string name="sortBackupDate">تاريخ النسخ الاحتياطي</string>
+    <string name="prefs_mediadata_summary">نسخ ملفات الوسائط الخاصة بالتطبيق التي يتم وضعها في التخزين الخارجي واستعادتها (على سبيل المثال /storage/emulated/0/Android/media / )</string>
+    <string name="prefs_mediadata">نسخ ملفات الوسائط احتياطيًا</string>
+    <string name="radio_mediadata">بيانات الوسائط</string>
 </resources>
