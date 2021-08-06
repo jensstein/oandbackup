@@ -302,4 +302,7 @@
     <string name="update_all">Actualizar todo</string>
     <string name="sortBackupDate">Fecha de respaldo</string>
     <string name="backup_all_updated">Respaldar todas las aplicaciones actualizadas</string>
+    <string name="prefs_mediadata_summary">Respalda y restaura los archivos de medios de la aplicación que estén situados en el almacenamiento externo (ej. /storage/emulated/0/Android/media/)</string>
+    <string name="radio_mediadata">Datos de medios</string>
+    <string name="prefs_mediadata">Respaldar archivos de medios</string>
 </resources>
