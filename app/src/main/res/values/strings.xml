@@ -19,6 +19,7 @@
     <string name="radio_externaldata">External Data</string>
     <string name="radio_deviceprotecteddata">Device Protected Data</string>
     <string name="radio_obbdata">OBB Data</string>
+    <string name="radio_mediadata">Media Data</string>
     <string name="de_selectAll">De/select all</string>
     <string name="refresh">Refresh</string>
     <string name="batchbackup">Batch backup</string>
@@ -113,6 +114,8 @@
     <string name="prefs_externaldata_summary">Backs up and restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_obbdata">Back up obb files</string>
     <string name="prefs_obbdata_summary">Backs up and restores the app\'s obb files that is placed on the external storage (e.g. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_mediadata">Back up media files</string>
+    <string name="prefs_mediadata_summary">Backs up and restores the app\'s media files that is placed on the external storage (e.g. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_deviceprotecteddata">Back up device-protected data</string>
     <string name="prefs_deviceprotecteddata_summary">Backs up and restores data that is placed in data/user_de</string>
     <string name="prefs_numBackupRevisions">Number of backup revisions</string>
@@ -267,7 +270,7 @@
     <string name="forceKill">Force kill</string>
     <string name="global_blocklist_add">Add to the global blocklist</string>
     <string name="intro_permission_storage_location_warning">Don\'t pick the main storage directory or Downloads folder, create a folder only for your backups. More on this in the FAQ</string>
-    <string name="update_all">Update all</string>
+    <string name="backup_all_updated">Backup all updated apps</string>
     <string name="prefs_accent_0">Red Comet</string>
     <string name="prefs_accent_1">Fine Purple</string>
     <string name="prefs_accent_2">Calm Indigo</string>
@@ -301,4 +304,5 @@
         <item quantity="one">%d updated app</item>
         <item quantity="other">%d updated apps</item>
     </plurals>
+    <string name="sortBackupDate">Backup Date</string>
 </resources>

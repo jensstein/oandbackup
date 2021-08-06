@@ -39,6 +39,7 @@ class SortFilterModel(
         get() = when (sort) {
             MAIN_SORT_PACKAGENAME -> R.id.sortByPackageName
             MAIN_SORT_DATASIZE -> R.id.sortByDataSize
+            MAIN_SORT_BACKUPDATE -> R.id.sortByBackupDate
             else -> R.id.sortByLabel
         }
 
@@ -56,6 +57,7 @@ class SortFilterModel(
         sort = when (id) {
             R.id.sortByPackageName -> MAIN_SORT_PACKAGENAME
             R.id.sortByDataSize -> MAIN_SORT_DATASIZE
+            R.id.sortByBackupDate -> MAIN_SORT_BACKUPDATE
             else -> MAIN_SORT_LABEL
         }
     }

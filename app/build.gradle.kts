@@ -19,16 +19,15 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
-    id("androidx.navigation.safeargs")
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
-        minSdkVersion(26)
-        targetSdkVersion(29)
+        minSdk = 26
+        targetSdk = 29
         versionCode = 6001
         versionName = "6.0.1"
 
@@ -79,14 +78,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
     }
-    lintOptions {
+    lint {
         isAbortOnError = false
     }
 }
@@ -94,18 +90,18 @@ android {
 
 val versions: java.util.Properties = System.getProperties()
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions["kotlin"]}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21")
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha04")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
     kapt("androidx.room:room-compiler:2.3.0")
     implementation("com.google.code.gson:gson:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.1.0")
-    implementation("org.apache.commons:commons-compress:1.20")
-    implementation("commons-io:commons-io:2.9.0")
+    implementation("org.apache.commons:commons-compress:1.21")
+    implementation("commons-io:commons-io:2.11.0")
     val libsu = "3.1.2"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
@@ -113,9 +109,9 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
 
     // UI
-    implementation("androidx.appcompat:appcompat:1.3.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.4")
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
@@ -126,8 +122,8 @@ dependencies {
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
 
     // Tests
-    implementation("androidx.test:rules:1.3.0")
-    androidTestImplementation("androidx.test:runner:1.3.0")
+    implementation("androidx.test:rules:1.4.0")
+    androidTestImplementation("androidx.test:runner:1.4.0")
     val junitJupiter = "5.7.1"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")

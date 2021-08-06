@@ -100,6 +100,7 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"
         const val BACKUP_DIR_EXTERNAL_FILES = "external_files"
         const val BACKUP_DIR_OBB_FILES = "obb_files"
+        const val BACKUP_DIR_MEDIA_FILES = "media_files"
 
         /* TODO @hg42 why exclude lib? how is it restored?
          @machiav3lli libs are generally created while installing the app. Backing them up

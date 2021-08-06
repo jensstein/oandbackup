@@ -107,6 +107,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
+        if (backupProperties.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
+            Timber.i("[${backupProperties.packageName}] Restoring app's media files")
+            restoreMediaData(app, backupProperties, backupDir)
+        } else {
+            Timber.i("[${backupProperties.packageName}] Skip restoring app's media files; not part of the backup or restore mode")
+        }
     }
 
     @Throws(ShellCommandFailedException::class)
@@ -543,6 +549,17 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             BACKUP_DIR_OBB_FILES
         )
 
+    @Throws(RestoreFailedException::class)
+    open fun restoreMediaData(
+        app: AppInfo,
+        backupProperties: BackupProperties?,
+        backupLocation: StorageFile
+    ) =
+        genericRestoreDataByCopying(
+            app.getMediaFilesPath(context),
+            backupLocation.uri,
+            BACKUP_DIR_MEDIA_FILES
+        )
 
     /**
      * Returns an installation command for adb/shell installation.

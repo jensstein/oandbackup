@@ -261,6 +261,9 @@ val Context.isBackupExternalData: Boolean
 val Context.isBackupObbData: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, false)
 
+val Context.isBackupMediaData: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_MEDIADATA, false)
+
 val Context.isKillBeforeActionEnabled: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_KILLBEFOREACTION, true)
 

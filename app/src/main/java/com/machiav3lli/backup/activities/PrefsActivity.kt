@@ -67,8 +67,8 @@ class PrefsActivity : BaseActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         val navController = navHostFragment.navController
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item: MenuItem ->
-            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnNavigationItemSelectedListener false
+        binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
+            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
             navController.navigate(item.itemId)
             true
         }

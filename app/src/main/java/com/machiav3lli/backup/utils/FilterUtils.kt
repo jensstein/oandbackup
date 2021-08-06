@@ -45,6 +45,7 @@ private fun List<AppInfo>.applyBackupFilter(backupFilter: Int): List<AppInfo> {
                 || (if (backupFilter and MODE_DATA_DE == MODE_DATA_DE) it.hasDevicesProtectedData else false)
                 || (if (backupFilter and MODE_DATA_EXT == MODE_DATA_EXT) it.hasExternalData else false)
                 || (if (backupFilter and MODE_DATA_OBB == MODE_DATA_OBB) it.hasObbData else false)
+                || (if (backupFilter and MODE_DATA_MEDIA == MODE_DATA_MEDIA) it.hasMediaData else false)
     }
     return filter(predicate)
 }
@@ -93,12 +94,14 @@ private fun List<AppInfo>.applySort(sort: Int, context: Context): List<AppInfo> 
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
             else -> sortedByDescending { it.packageLabel }
         }
     } else {
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
             else -> sortedBy { it.packageLabel }
         }
     }

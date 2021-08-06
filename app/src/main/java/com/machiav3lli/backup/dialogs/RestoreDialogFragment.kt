@@ -63,6 +63,11 @@ class RestoreDialogFragment(
         } else {
             possibleModes.remove(MODE_DATA_OBB)
         }
+        if (properties.hasMediaData) {
+            labels.add(getString(R.string.radio_mediadata))
+        } else {
+            possibleModes.remove(MODE_DATA_MEDIA)
+        }
 
         possibleModes.forEach { selectedMode = selectedMode or it }
         val checkedOptions = BooleanArray(possibleModes.size)

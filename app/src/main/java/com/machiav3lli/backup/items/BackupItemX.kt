@@ -51,6 +51,7 @@ class BackupItemX(var backup: BackupItem) : AbstractBindingItem<ItemBackupXBindi
         binding.extDataMode.setExists(backup.backupProperties.hasExternalData)
         binding.deDataMode.setExists(backup.backupProperties.hasDevicesProtectedData)
         binding.obbMode.setExists(backup.backupProperties.hasObbData)
+        binding.mediaMode.setExists(backup.backupProperties.hasMediaData)
         if (backup.backupProperties.isEncrypted) {
             binding.encrypted.text = backup.backupProperties.cipherType
         }
