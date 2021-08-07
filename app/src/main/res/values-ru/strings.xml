@@ -28,7 +28,7 @@
     <string name="showOldBackups">Показать старые р.к.</string>
     <string name="showOnlyApkBackedUp">Показать приложения только с р.к. APK</string>
     <string name="showOnlyDataBackedUp">Показать приложения только с р.к. данных</string>
-    <string name="radio_special">Показать только специальные р.к.</string>
+    <string name="radio_special">Специальные резервные копии</string>
     <string name="sortByLabel">Сортировать по названию</string>
     <string name="sortByPackageName">Сортировать по пакетам</string>
     <string name="sort">Сортировка и фильтр</string>
@@ -306,4 +306,7 @@
     <string name="title_tags">Теги:</string>
     <string name="title_note">Заметка:</string>
     <string name="sortBackupDate">Дата резервной копии</string>
+    <string name="prefs_mediadata_summary">Резервное копирование и восстановление медиа файлов приложения хранятся на внешнем накопителе (как /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">Резервное копирование медиа файлов</string>
+    <string name="radio_mediadata">Медиа-данные</string>
 </resources>
