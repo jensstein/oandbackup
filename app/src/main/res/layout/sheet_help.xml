@@ -517,6 +517,21 @@
                             android:text="@string/radio_deviceprotecteddata"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_media_data" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:singleLine="true"
+                            android:text="@string/radio_mediadata"
+                            android:textAppearance="@style/TextAppearance.Lines"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatTextView
