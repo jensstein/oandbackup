@@ -36,8 +36,11 @@ class SplashActivity : BaseActivity() {
             * The followings are some examples, check Javadoc for more details
             */
             Shell.enableVerboseLogging = BuildConfig.DEBUG
-            Shell.setDefaultBuilder(Shell.Builder.create()
-                    .setTimeout(20))
+            Shell.setDefaultBuilder(
+                Shell.Builder.create()
+                    .setFlags(Shell.FLAG_MOUNT_MASTER)
+                    .setTimeout(20)
+            )
         }
     }
 
