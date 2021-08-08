@@ -258,6 +258,8 @@ class AppInfo {
     val devicesProtectedDataPath: String
         get() = packageInfo?.deDataDir ?: ""
 
+    // TODO don't use File for protected data under A11+,
+    // - [] 1.Try?
     // Uses the context to get own external data directory
     // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
     // Goes to the parent two times to the leave own directory
@@ -267,26 +269,23 @@ class AppInfo {
         // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
         // Goes to the parent two times to the leave own directory
         // e.g. /storage/emulated/0/Android/data
-        val externalFilesPath =
-            context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.absolutePath
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return File(externalFilesPath, packageName).absolutePath
+        return "${context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.absolutePath}${File.separator}$packageName"
     }
 
     // Uses the context to get own obb data directory
     // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
-    // Goes to the parent two times to the leave own directory
+    // Goes to the parent to the leave the app-specific directory
     // e.g. /storage/emulated/0/Android/obb
     fun getObbFilesPath(context: Context): String {
         // Uses the context to get own obb data directory
         // e.g. /storage/emulated/0/Android/obb/com.machiav3lli.backup
         // Goes to the parent two times to the leave own directory
         // e.g. /storage/emulated/0/Android/obb
-        val obbFilesPath = context.obbDir.parentFile!!.absolutePath
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return File(obbFilesPath, packageName).absolutePath
+        return "${context.obbDir.parentFile!!.absolutePath}${File.separator}$packageName"
     }
 
     // Uses the context to get own media directory
@@ -300,10 +299,9 @@ class AppInfo {
         // e.g. /storage/emulated/0/Android/media/com.machiav3lli.backup
         // Goes to the parent two times to the leave own directory
         // e.g. /storage/emulated/0/Android/media
-        val mediaFilesPath : File = File(context.obbDir.parentFile!!.parentFile!!, "media")
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return File(mediaFilesPath, packageName).absolutePath
+        return "${context.obbDir.parentFile!!.parentFile!!.absolutePath}${File.separator}media${File.separator}$packageName"
     }
 
     /**
