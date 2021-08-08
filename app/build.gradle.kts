@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
-        targetSdk = 29
+        targetSdk = 30
         versionCode = 6001
         versionName = "6.0.1"
 
