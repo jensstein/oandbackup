@@ -309,4 +309,5 @@
     <string name="prefs_mediadata_summary">Резервное копирование и восстановление медиа файлов приложения хранятся на внешнем накопителе (как /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Резервное копирование медиа файлов</string>
     <string name="radio_mediadata">Медиа-данные</string>
+    <string name="help_changelog">Список изменений</string>
 </resources>
