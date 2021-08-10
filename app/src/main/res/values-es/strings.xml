@@ -305,4 +305,5 @@
     <string name="prefs_mediadata_summary">Respalda y restaura los archivos de medios de la aplicación que estén situados en el almacenamiento externo (ej. /storage/emulated/0/Android/media/)</string>
     <string name="radio_mediadata">Datos de medios</string>
     <string name="prefs_mediadata">Respaldar archivos de medios</string>
+    <string name="help_changelog">Registro de cambios</string>
 </resources>
