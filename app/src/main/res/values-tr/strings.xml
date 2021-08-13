@@ -277,4 +277,26 @@
     <string name="prefs_devicelock_summary">Uygulamayı aygıt kimlik bilgileriyle güvenli hale getirin</string>
     <string name="prefs_devicelock">Aygıt kilidi</string>
     <string name="backup_all_updated">Tümünü güncelle</string>
+    <string name="prefs_accent_6">Tufan Sarısı</string>
+    <string name="prefs_secondary_5">Flamingo Pembesi</string>
+    <string name="prefs_secondary_4">Lav Turuncusu</string>
+    <string name="prefs_secondary_3">Kehribar Kaplan</string>
+    <string name="error_encryptionpassword">Şifreleme parolası ya ayarlanmadı ya da yanlış!</string>
+    <string name="prefs_secondary_color">İkincil renk</string>
+    <string name="prefs_accent_color">Vurgu rengi</string>
+    <string name="prefs_secondary_7">Masmavi</string>
+    <string name="prefs_secondary_6">Kayrak</string>
+    <string name="prefs_secondary_2">Misket Limonu</string>
+    <string name="prefs_secondary_1">Okyanus Mavisi</string>
+    <string name="prefs_secondary_0">Soğuk Camgöbeği</string>
+    <string name="prefs_accent_7">Kayısı Rengi</string>
+    <string name="prefs_accent_5">Açık Yeşil</string>
+    <string name="title_tags">Etiketler:</string>
+    <string name="title_note">Not:</string>
+    <string name="sortBackupDate">Yedekleme Tarihi</string>
+    <string name="prefs_accent_4">Koyu Yeşil</string>
+    <string name="prefs_accent_3">Turkuaz</string>
+    <string name="prefs_accent_2">Sakin Çivit Mavisi</string>
+    <string name="prefs_accent_1">İnce Mor</string>
+    <string name="prefs_accent_0">Kırmızı Kuyruklu Yıldız</string>
 </resources>

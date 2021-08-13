@@ -300,4 +300,8 @@
     <string name="prefs_accent_0">Roter Komet</string>
     <string name="title_tags">Tags:</string>
     <string name="title_note">Hinweis:</string>
+    <string name="sortBackupDate">Sicherungsdatum</string>
+    <string name="prefs_mediadata_summary">Sichert und stellt die Mediendateien der App wieder her, die sich auf dem externen Speicher befinden (z. B. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">Mediendateien sichern</string>
+    <string name="radio_mediadata">Mediendaten</string>
 </resources>
