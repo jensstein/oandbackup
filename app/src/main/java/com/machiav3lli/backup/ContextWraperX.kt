@@ -19,26 +19,12 @@ package com.machiav3lli.backup
 
 import android.content.Context
 import android.content.ContextWrapper
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import java.util.*
+import com.machiav3lli.backup.utils.setLanguage
 
 class ContextWraperX(base: Context) : ContextWrapper(base) {
     companion object {
         fun wrap(context: Context): ContextWrapper {
-            // TODO handle different language variants
-            var setLanguageCode = context.getDefaultSharedPreferences()
-                .getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
-                ?: PREFS_LANGUAGES_DEFAULT
-            if (setLanguageCode == PREFS_LANGUAGES_DEFAULT) {
-                setLanguageCode = Locale.getDefault().language
-            }
-            val config = context.resources.configuration
-            val sysLocale = config.locales[0]
-            if (setLanguageCode != sysLocale.language) {
-                val newLocale = Locale(setLanguageCode)
-                Locale.setDefault(newLocale)
-                config.setLocale(newLocale)
-            }
+            val config = context.setLanguage()
             return ContextWraperX(context.createConfigurationContext(config))
         }
     }
