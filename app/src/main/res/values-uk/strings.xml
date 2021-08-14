@@ -100,7 +100,7 @@
     <string name="dialogSave">Зберегти</string>
     <string name="dialogNo">Ні</string>
     <string name="dialogYes">Так</string>
-    <string name="dialogCancel">Відміна</string>
+    <string name="dialogCancel">Скасувати</string>
     <string name="dialogOK">OK</string>
     <string name="restart_dialog">Здається, додаток треба перезавантажити</string>
     <string name="permission_not_granted">Потрібен дозвіл на доступ до зовнішнього сховища</string>
