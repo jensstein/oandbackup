@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.handler
 
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -31,6 +32,15 @@ import java.util.*
 import java.util.regex.Pattern
 
 class ShellHandler {
+
+    init {
+        Shell.enableVerboseLogging = BuildConfig.DEBUG
+        Shell.setDefaultBuilder(
+            Shell.Builder.create()
+                .setFlags(Shell.FLAG_MOUNT_MASTER)
+                .setTimeout(20)
+        )
+    }
 
     val UTILBOX_NAMES = listOf("toybox", "busybox")
 
