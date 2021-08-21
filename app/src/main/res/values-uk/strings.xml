@@ -278,4 +278,30 @@
         <item quantity="other">%d днів,</item>
     </plurals>
     <string name="backup_all_updated">Оновити все</string>
+    <string name="help_changelog">Список змін</string>
+    <string name="sortBackupDate">Дата резервного копіювання</string>
+    <string name="title_tags">Теґи:</string>
+    <string name="title_note">Примітка:</string>
+    <string name="error_encryptionpassword">Пароль шифрування не встановлено або він неправильний!</string>
+    <string name="prefs_secondary_color">Вторинний колір</string>
+    <string name="prefs_accent_color">Колір акценту</string>
+    <string name="prefs_secondary_7">Лазурний синій</string>
+    <string name="prefs_secondary_6">Шифер</string>
+    <string name="prefs_secondary_5">Рожевий фламінго</string>
+    <string name="prefs_secondary_4">Лава Помаранчевий</string>
+    <string name="prefs_secondary_3">Тигровий бурштин</string>
+    <string name="prefs_secondary_2">Ліметт</string>
+    <string name="prefs_secondary_1">Океанічна бірюза</string>
+    <string name="prefs_secondary_0">Арктичний блакитний</string>
+    <string name="prefs_accent_7">Абрикосовий апельсин</string>
+    <string name="prefs_accent_6">Грім жовтий</string>
+    <string name="prefs_accent_5">Шартрезовий лайм</string>
+    <string name="prefs_accent_4">Жирний зелений</string>
+    <string name="prefs_accent_3">Бірюзовий</string>
+    <string name="prefs_accent_2">Спокійний індиго</string>
+    <string name="prefs_accent_1">Тонкий фіолетовий</string>
+    <string name="prefs_accent_0">Червона комета</string>
+    <string name="prefs_mediadata_summary">Резервне копіювання та відновлення медіафайлів застосунку, які розміщуються на зовнішньому сховищі (наприклад /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">Резервне копіювання медіафайлів</string>
+    <string name="radio_mediadata">Медіадані</string>
 </resources>
