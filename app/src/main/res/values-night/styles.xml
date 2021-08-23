@@ -21,6 +21,7 @@
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
         <item name="colorAccent">@color/accent_0</item>
+        <item name="colorOnPrimary">@color/accent_0_trans</item>
         <item name="colorSecondary">@color/secondary_0</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
@@ -116,16 +117,12 @@
         <item name="android:textColor">?colorSecondary</item>
     </style>
 
-    <style name="Button.NavBar.Start" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/bg_button_start_navbar</item>
-    </style>
-
     <style name="Button.NavBar.Middle" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/bg_button_middle_navbar</item>
+        <item name="android:background">@drawable/bg_button_navbar_middle</item>
     </style>
 
     <style name="Button.NavBar.End" parent="android:Widget.Material.Button">
-        <item name="android:background">@drawable/bg_button_end_navbar</item>
+        <item name="android:background">@drawable/bg_button_navbar_end</item>
     </style>
 
     <style name="Chip.Group" parent="Widget.MaterialComponents.ChipGroup">

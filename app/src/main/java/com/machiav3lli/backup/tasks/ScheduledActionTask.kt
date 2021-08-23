@@ -52,7 +52,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val blockList = globalBlocklist.plus(customBlocklist)
 
         val unfilteredList: List<AppInfo> = try {
-            context.getApplicationList(blockList)
+            context.getApplicationList(blockList, false)
         } catch (e: FileUtils.BackupLocationIsAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(

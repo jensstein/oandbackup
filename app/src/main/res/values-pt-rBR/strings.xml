@@ -293,4 +293,8 @@
     <string name="prefs_accent_2">Indigo Calmo</string>
     <string name="prefs_accent_1">Roxo Fino</string>
     <string name="prefs_accent_0">Cometa Vermelho</string>
+    <string name="sortBackupDate">Data do Backup</string>
+    <string name="prefs_mediadata_summary">Faz um backup e restaura os arquivos de mídia do aplicativo em um armazenamento externo (e.g./storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">Backup de arquivos de mídia</string>
+    <string name="radio_mediadata">Dados de mídia</string>
 </resources>

@@ -48,29 +48,22 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/changelog"
+                        android:id="@+id/app_name_version"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_ripple"
                         android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
-                        app:layout_constraintBottom_toTopOf="@+id/telegram"
+                        android:padding="@dimen/buttons_spacing"
+                        app:layout_constraintBottom_toTopOf="@+id/links"
                         app:layout_constraintEnd_toStartOf="@id/dismiss"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_release" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/cards_spacing"
                             android:text="@string/app_name"
-                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textAppearance="@style/TextAppearance.Headline"
                             android:textStyle="bold" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -89,144 +82,155 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:src="@drawable/ic_arrow_down"
-                        app:layout_constraintBottom_toBottomOf="@id/changelog"
+                        app:layout_constraintBottom_toBottomOf="@id/app_name_version"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/changelog"
+                        app:layout_constraintStart_toEndOf="@id/app_name_version"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/telegram"
+                        android:id="@+id/links"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/cards_spacing"
                         android:background="@drawable/bg_card_ripple"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
-                        app:layout_constraintBottom_toTopOf="@+id/element"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/element"
-                        app:layout_constraintTop_toBottomOf="@+id/changelog">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_telegram" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/help_group_telegram"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/element"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_card_ripple"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
-                        app:layout_constraintBottom_toTopOf="@+id/license"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/telegram">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_element" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/help_group_matrix"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/license"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_card_ripple"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
-                        app:layout_constraintBottom_toTopOf="@id/issues"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/element"
-                        app:layout_constraintTop_toBottomOf="@+id/element">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_info" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/help_license"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/issues"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_card_ripple"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
-                        app:layout_constraintBottom_toTopOf="@id/faq"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/element"
-                        app:layout_constraintTop_toBottomOf="@+id/license">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_issue" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/help_issues"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/faq"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_card_ripple"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cards_spacing"
+                        android:clickable="false"
+                        android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/element"
-                        app:layout_constraintTop_toBottomOf="@+id/issues">
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/changelog">
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_faq" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/changelog"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/help_faq"
-                            android:textAppearance="@style/TextAppearance.Label"
-                            android:textStyle="bold" />
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_update" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_changelog"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/telegram"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_telegram" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_group_telegram"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/element"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_element" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_group_matrix"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/license"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_info" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_license"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/issues"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_issue" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_issues"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/faq"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_ripple_click"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cards_spacing">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="@dimen/cards_spacing"
+                                app:srcCompat="@drawable/ic_faq" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help_faq"
+                                android:textAppearance="@style/TextAppearance.Label"
+                                android:textStyle="bold" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -515,6 +519,21 @@
                             android:layout_weight="4"
                             android:singleLine="true"
                             android:text="@string/radio_deviceprotecteddata"
+                            android:textAppearance="@style/TextAppearance.Lines"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/cards_spacing"
+                            app:srcCompat="@drawable/ic_media_data" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:singleLine="true"
+                            android:text="@string/radio_mediadata"
                             android:textAppearance="@style/TextAppearance.Lines"
                             android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

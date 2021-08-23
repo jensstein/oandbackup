@@ -96,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:background="@drawable/bg_bar_static_round"
+                app:itemBackground="@drawable/bg_card_navbar"
                 app:itemRippleColor="?colorAccent"
                 app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
                 app:menu="@menu/navi_menu_prefs" />

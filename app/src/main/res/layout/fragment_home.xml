@@ -224,20 +224,20 @@
                 tools:listitem="@layout/item_updated_x" />
 
             <FrameLayout
-                android:id="@+id/updateAllAction"
                 android:layout_width="?actionBarSize"
                 android:layout_height="0dp"
                 android:background="@drawable/bg_gradient_alpha_left_right"
-                android:clickable="true"
-                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/updateAllAction"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_button_positive_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:tooltipText="@string/backup_all_updated">
 
                     <androidx.appcompat.widget.AppCompatImageView

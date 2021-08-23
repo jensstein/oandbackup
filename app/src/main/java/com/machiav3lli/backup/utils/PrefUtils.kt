@@ -42,6 +42,7 @@ import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
 import com.scottyab.rootbeer.RootBeer
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
@@ -317,3 +318,17 @@ var Context.accentStyle: String
 var Context.secondaryStyle: String
     get() = getPrivateSharedPrefs().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
     set(value) = getPrivateSharedPrefs().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
+
+var Context.language: String
+    get() = getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
+        ?: PREFS_LANGUAGES_DEFAULT
+    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_LANGUAGES, value).apply()
+
+fun Context.getLocaleOfCode(localeCode: String): Locale = when {
+    localeCode.isEmpty() -> resources.configuration.locales[0]
+    localeCode.contains("-r") -> Locale(
+        localeCode.substring(0, 2),
+        localeCode.substring(4)
+    )
+    else -> Locale(localeCode)
+}

@@ -20,18 +20,36 @@ package com.machiav3lli.backup.utils
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
+import java.util.*
 
 fun Context.setCustomTheme() {
     AppCompatDelegate.setDefaultNightMode(getThemeStyle(themeStyle))
     setTheme(R.style.AppTheme)
     theme.applyStyle(getAccentStyle(accentStyle), true)
     theme.applyStyle(getSecondaryStyle(secondaryStyle), true)
+}
+
+fun Context.setLanguage(): Configuration {
+    var setLocalCode = language
+    if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
+        setLocalCode = Locale.getDefault().language
+    }
+    val config = resources.configuration
+    val sysLocale = config.locales[0]
+    if (setLocalCode != sysLocale.language || setLocalCode != "${sysLocale.language}-r${sysLocale.country}") {
+        val newLocale = getLocaleOfCode(setLocalCode)
+        Locale.setDefault(newLocale)
+        config.setLocale(newLocale)
+    }
+    return config
 }
 
 fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.OnClickListener) =

@@ -18,14 +18,10 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.ListPreference
-        android:defaultValue="system"
-        android:entries="@array/languageEntries"
-        android:entryValues="@array/languageEntryValues"
+    <com.machiav3lli.backup.prefs.LangListPreference
         android:icon="@drawable/ic_languages"
         android:key="languages"
-        android:title="@string/prefs_languages"
-        app:useSimpleSummaryProvider="true" />
+        android:title="@string/prefs_languages" />
 
     <androidx.preference.ListPreference
         android:defaultValue="system"
