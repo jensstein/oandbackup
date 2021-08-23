@@ -1,20 +1,20 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present. Three special types of data is supported extra to the main data: device protected data, external data and obb data.
+        <p><strong>Atsarginės kopijos režimai</strong>: Programėlės atsarginę kopiją galima kurti tik su jos apk, tik su jos duomenimis arba su abiem. Šiuo metu neįdiegtą programėlę galima atkurti tik tada, jei yra jos apk. Papildomai prie pagrindinių duomenų palaikomi trys specialūs duomenų tipai: įrenginio apsaugoti duomenys, išoriniai duomenys ir obb duomenys.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for a specific backup instance. While "delete backups" delete all of the backups of the chosen app.
+        <p><strong>Ištrinti atsarginę kopiją</strong>: Ištrina konkretaus atsarginių kopijų egzemplioriaus atsargines kopijas. O „Ištrinti atsargines kopijas“ ištrina visas pasirinktos programėlės atsargines kopijas.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via Android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        <p><strong>Pašalinti</strong>: Šiek tiek agresyvesnis nei įprastas pašalinimas. Be įprasto pašalinimo naudojant „Android“ komandas, pašalinant iš OAndBackupX ištrinami failai, kuriuos programėlė galėjo palikti /data/app-lib/.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the Android `pm` script to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users). Users are identified with an ID e.g. 0 is the first user (owner) 10 is usually the work profile.
+        <p><strong>Įjungti / išjungti</strong>: Naudoja „Android“ `pm` scenarijų programėlei įjungti arba išjungti. Išjungus programėlę, ji pašalinama iš įprastinės naudotojo sąsajos, bet neišinstaliuojama. Tai galima naudoti įjungiant arba išjungiant programėlę keliems vartotojams vienu metu (jei įrenginyje yra keli vartotojai). Vartotojai identifikuojami ID, pvz., 0 yra pirmasis naudotojas (savininkas). 10 paprastai yra darbo profilis.
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>Keli vartotojai</strong>: Kelių vartotojų funkcija vis dar eksperimentinė, bet turėtų veikti. Įjungimas ir išjungimas veikia tik po pirminio įdiegimo (nebūtinai iš OAndBackupx) arba programėlės atkūrimo.
         </p>
-        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        <p><strong>Programėlės be sistemos</strong>: „Magisk“ moduliais įdiegtų programėlių be sistemos atsarginės kopijos kūrimas ir atkūrimas nepalaikomas, todėl bandymas gali sukelti sistemos gedimą ir priverčiant jus formatuoti bei atnaujinti sistemos vaizdą iš naujo.
         </p>
-        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        <p><strong>Naršymas</strong>: naršymo juostoje yra „Nustatymai“, „Pagrindinis“, „Paketo atsarginė kopija“, „Paketinis atkūrimas“ ir „Tvarkaraščio atsarginės kopijos“ (tokia tvarka). Programėlių, atnaujintų po paskutinės atsarginės kopijos, skaičius bus pateiktas kaip pranešimas „Pagrindinis“ mygtuke.
         </p>
-        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        <p><strong>Programos, naudojančios „Keystore“</strong>: „Android“ turi užšifruotą slaptų duomenų saugyklą. Negalima sėkmingai atkurti programėlių, kurios tai naudoja prisijungimo duomenims arba kai kuriems jos funkcijos raktams saugoti. Du tokių programėlių pavyzdžiai yra „Signal“ ir „Element“ („Riot“).
         </p>
     </body>
 </html>
