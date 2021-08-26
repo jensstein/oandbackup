@@ -222,7 +222,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             val sb = StringBuilder()
             val disableVerification = context.isDisableVerification
             // disable verify apps over usb
-            if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
+            if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 ; ")
             // Install main package
             sb.append(
                 getPackageInstallCommand(
@@ -256,7 +256,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             }"
             )
             // re-enable verify apps over usb
-            if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
+            if (disableVerification) sb.append(" ; settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
             runAsRoot(command)
             success = true
