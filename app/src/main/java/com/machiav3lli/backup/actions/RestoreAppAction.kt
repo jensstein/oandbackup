@@ -207,7 +207,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             Timber.w("Weird configuration. Expecting that the system does not allow installing from OABX's own data directory. Copying the apk to $stagingApkPath")
         }
         var success = false
-        success = try {
+        try {
             // Try it with a staging path. This is usually the way to go.
             // copy apks to staging dir
             apksToRestore.forEach {
@@ -259,7 +259,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
             runAsRoot(command)
-            true
+            success = true
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
             val error = e.shellResult.err.joinToString("\n")
