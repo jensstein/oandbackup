@@ -243,18 +243,6 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 }
             }
 
-            // append cleanup command
-            sb.append(" ; $utilBoxQuoted rm ${
-                quoteMultiple(
-                    apksToRestore.map {
-                        File(
-                            stagingApkPath,
-                            "$packageName.${it.name}"
-                        ).absolutePath
-                    }
-                )
-            }"
-            )
             // re-enable verify apps over usb
             if (disableVerification) sb.append(" ; settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
@@ -269,30 +257,29 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException("Could not copy apk to staging directory", e)
         } finally {
             // Cleanup only in case of failure, otherwise it's already included
-            if (!success) {
-                Timber.i("[$packageName] Restore unsuccessful. Removing possible leftovers in staging directory")
-                val command =
-                    "$utilBoxQuoted rm ${
-                        quoteMultiple(
-                            apksToRestore.map {
-                                File(
-                                    stagingApkPath,
-                                    "$packageName.${it.name}"
-                                ).absolutePath
-                            }
+            if (!success)
+                Timber.i("[$packageName] Restore unsuccessful")
+            val command =
+                "$utilBoxQuoted rm ${
+                    quoteMultiple(
+                        apksToRestore.map {
+                            File(
+                                stagingApkPath,
+                                "$packageName.${it.name}"
+                            ).absolutePath
+                        }
+                    )
+                }"
+            try {
+                runAsRoot(command)
+            } catch (e: ShellCommandFailedException) {
+                Timber.w(
+                    "[$packageName] Cleanup after failure failed: ${
+                        e.shellResult.err.joinToString(
+                            "; "
                         )
                     }"
-                try {
-                    runAsRoot(command)
-                } catch (e: ShellCommandFailedException) {
-                    Timber.w(
-                        "[$packageName] Cleanup after failure failed: ${
-                            e.shellResult.err.joinToString(
-                                "; "
-                            )
-                        }"
-                    )
-                }
+                )
             }
         }
     }
