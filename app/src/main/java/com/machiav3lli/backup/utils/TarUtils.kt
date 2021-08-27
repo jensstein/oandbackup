@@ -150,6 +150,10 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetPath = File(it, tarEntry.name)
             Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
+            val parent = targetPath.parentFile!!
+            if (!parent.exists() and !parent.mkdirs()) {
+                throw IOException("Unable to create parent folder ${parent.absolutePath}")
+            }
             var doChmod = true
             when {
                 tarEntry.isDirectory -> {
@@ -173,10 +177,6 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                     }
                 }
                 else -> {
-                    val parent = targetPath.parentFile!!
-                    if (!parent.exists() and !parent.mkdirs()) {
-                        throw IOException("Unable to create folder ${parent.absolutePath}")
-                    }
                     FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }
                 }
             }
