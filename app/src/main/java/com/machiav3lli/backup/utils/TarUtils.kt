@@ -177,7 +177,11 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                     }
                 }
                 else -> {
-                    FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }
+                    try {
+                        FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }
+                    } catch (e: ErrnoException) {
+                        throw IOException("Unable to create file ${targetPath.absolutePath}: $e")
+                    }
                 }
             }
             if (doChmod) {
