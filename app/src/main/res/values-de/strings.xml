@@ -304,4 +304,5 @@
     <string name="prefs_mediadata_summary">Sichert und stellt die Mediendateien der App wieder her, die sich auf dem externen Speicher befinden (z. B. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Mediendateien sichern</string>
     <string name="radio_mediadata">Mediendaten</string>
+    <string name="help_changelog">Änderungsprotokoll</string>
 </resources>
