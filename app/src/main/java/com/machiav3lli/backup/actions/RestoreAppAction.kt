@@ -416,7 +416,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             command += if (uidgidcon[2] == "?") //TODO hg42: when does it happen?
                 " ; restorecon -RF -v ${quote(targetDir)}"
             else
-                " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
+                " ; chcon -R -h -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"
