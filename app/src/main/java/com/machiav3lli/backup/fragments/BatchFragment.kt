@@ -42,9 +42,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BatchItemX
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
@@ -63,6 +61,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     val batchItemAdapter = ItemAdapter<BatchItemX>()
     private var batchFastAdapter: FastAdapter<BatchItemX>? = null
+    private val placeholderItemAdapter = ItemAdapter<BatchPlaceholderItemX>()
+    private var batchPlaceholderFastAdapter: FastAdapter<BatchPlaceholderItemX>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,7 +124,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         batchFastAdapter?.setHasStableIds(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = batchFastAdapter
+        //binding.recyclerView.adapter = batchFastAdapter
+        batchPlaceholderFastAdapter = FastAdapter.with(placeholderItemAdapter)
+        binding.recyclerView.adapter = batchPlaceholderFastAdapter
+        placeholderItemAdapter.set(MutableList(10) { BatchPlaceholderItemX() })
         binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
@@ -430,6 +433,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val batchList = createBatchAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
+                binding.recyclerView.adapter = batchFastAdapter
                 batchItemAdapter.set(batchList)
                 if (batchList.isEmpty())
                     Toast.makeText(

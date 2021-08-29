@@ -38,10 +38,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.MainItemX
-import com.machiav3lli.backup.items.UpdatedItemX
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
@@ -60,6 +57,8 @@ class HomeFragment : NavigationFragment(),
 
     val mainItemAdapter = ItemAdapter<MainItemX>()
     private var mainFastAdapter: FastAdapter<MainItemX>? = null
+    private val homePlaceholderItemAdapter = ItemAdapter<HomePlaceholderItemX>()
+    private var homePlaceholderFastAdapter: FastAdapter<HomePlaceholderItemX>? = null
     private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
     private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
 
@@ -151,7 +150,10 @@ class HomeFragment : NavigationFragment(),
         updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
         mainFastAdapter?.setHasStableIds(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = mainFastAdapter
+        //binding.recyclerView.adapter = mainFastAdapter
+        homePlaceholderFastAdapter = FastAdapter.with(homePlaceholderItemAdapter)
+        binding.recyclerView.adapter = homePlaceholderFastAdapter
+        homePlaceholderItemAdapter.set(MutableList(10) { HomePlaceholderItemX() })
         updatedFastAdapter?.setHasStableIds(true)
         binding.updatedRecycler.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -375,6 +377,7 @@ class HomeFragment : NavigationFragment(),
         val updatedList = createUpdatedAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
+                binding.recyclerView.adapter = mainFastAdapter
                 mainItemAdapter.set(mainList)
                 updatedItemAdapter.set(updatedList)
                 viewModel.nUpdatedApps.value = updatedList.size

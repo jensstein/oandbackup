@@ -122,6 +122,7 @@ dependencies {
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     // Tests
     implementation("androidx.test:rules:1.4.0")
