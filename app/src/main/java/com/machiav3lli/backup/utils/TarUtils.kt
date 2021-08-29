@@ -43,7 +43,6 @@ private const val DIR_MODE_OR_MASK = 16384
  * Adds a filepath to the given archive.
  * If it's a directory, it'll be added cursively
  *
- * @param archive       an opened tar archive to write to
  * @param inputFilepath the filepath to add to the archive
  * @param parent        the parent directory in the archive, use "" to add it to the root directory
  * @throws IOException on IO related errors such as out of disk space or missing files
@@ -76,7 +75,7 @@ fun TarArchiveOutputStream.addFilepath(inputFilepath: File, parent: String) {
 @Throws(IOException::class)
 fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
     for (file in allFiles) {
-        Timber.d(String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
+        Timber.d("Adding ${file.filePath} to archive (filesize: ${file.fileSize})")
         var entry: TarArchiveEntry
         when (file.fileType) {
             FileType.REGULAR_FILE -> {
@@ -147,6 +146,7 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: File?) {
 @Throws(IOException::class)
 fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
     targetDir?.let {
+        val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetPath = File(it, tarEntry.name)
             Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
@@ -155,11 +155,14 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                 throw IOException("Unable to create parent folder ${parent.absolutePath}")
             }
             var doChmod = true
+            var postponeChmod = false
             when {
                 tarEntry.isDirectory -> {
                     if (!targetPath.mkdirs()) {
                         throw IOException("Unable to create folder ${targetPath.absolutePath}")
                     }
+                    // write protection would prevent creating files inside, so chmod at end
+                    postponeChmod = true
                 }
                 tarEntry.isLink or tarEntry.isSymbolicLink -> {
                     try {
@@ -185,16 +188,28 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                 }
             }
             if (doChmod) {
-                try {
-                    Os.chmod(targetPath.absolutePath, tarEntry.mode)
-                } catch (e: ErrnoException) {
-                    throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
+                if (postponeChmod) {
+                    postponeModes.put(targetPath.absolutePath, tarEntry.mode)
+                } else {
+                    try {
+                        Os.chmod(targetPath.absolutePath, tarEntry.mode)
+                    } catch (e: ErrnoException) {
+                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${tarEntry.mode}: $e")
+                    }
                 }
+
             }
             try {
                 targetPath.setLastModified(tarEntry.modTime.time)
             } catch (e: ErrnoException) {
                 throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+            }
+        }
+        postponeModes.forEach { fileMode ->
+            try {
+                Os.chmod(fileMode.key, fileMode.value)
+            } catch (e: ErrnoException) {
+                throw IOException("Unable to chmod ${fileMode.key} to ${fileMode.value}: $e")
             }
         }
     }
