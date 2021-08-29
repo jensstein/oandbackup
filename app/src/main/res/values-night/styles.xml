@@ -157,6 +157,8 @@
         <item name="rippleColor">@color/ic_data</item>
         <item name="chipSurfaceColor">@color/chip_surface_data</item>
         <item name="android:textColor">@color/chip_text_data</item>
+        <item name="chipIconTint">@color/chip_text_data</item>
+        <item name="chipIcon">@drawable/ic_data</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipCornerRadius">8dp</item>
@@ -168,6 +170,8 @@
         <item name="rippleColor">@color/ic_apk</item>
         <item name="chipSurfaceColor">@color/chip_surface_apk</item>
         <item name="android:textColor">@color/chip_text_apk</item>
+        <item name="chipIconTint">@color/chip_text_apk</item>
+        <item name="chipIcon">@drawable/ic_apk</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipCornerRadius">8dp</item>

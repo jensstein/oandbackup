@@ -184,17 +184,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/buttons_spacing"
                 android:background="@drawable/bg_frame_positive"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/cards_spacing">
+                android:orientation="horizontal">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/apkBatch"
                     style="@style/Chip.Apk"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/radio_apk"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    app:rippleColor="@color/ic_apk" />
+                    android:layout_marginStart="@dimen/cards_spacing"
+                    app:chipIconEnabled="true" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/dataBatch"
@@ -202,9 +200,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:text="@string/radio_data"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    app:rippleColor="@color/ic_data" />
+                    app:chipIconEnabled="true" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonAction"
