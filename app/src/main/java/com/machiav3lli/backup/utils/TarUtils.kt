@@ -76,7 +76,7 @@ fun TarArchiveOutputStream.addFilepath(inputFilepath: File, parent: String) {
 @Throws(IOException::class)
 fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
     for (file in allFiles) {
-        Timber.d(String.format("Adding %s to archive (filesize: %d)", file.filePath, file.fileSize))
+        Timber.d("Adding ${file.filePath} to archive (filesize: ${file.fileSize})")
         var entry: TarArchiveEntry
         when (file.fileType) {
             FileType.REGULAR_FILE -> {
@@ -147,6 +147,7 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: File?) {
 @Throws(IOException::class)
 fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
     targetDir?.let {
+        val fileModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetPath = File(it, tarEntry.name)
             Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
@@ -185,16 +186,20 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
                 }
             }
             if (doChmod) {
-                try {
-                    Os.chmod(targetPath.absolutePath, tarEntry.mode)
-                } catch (e: ErrnoException) {
-                    throw IOException("Unable to chmod $targetPath to ${tarEntry.mode}: $e")
-                }
+                // postpone chmod, access restrictions on parent may prevent creating files
+                fileModes.put(targetPath.absolutePath, tarEntry.mode)
             }
             try {
                 targetPath.setLastModified(tarEntry.modTime.time)
             } catch (e: ErrnoException) {
                 throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+            }
+        }
+        fileModes.forEach { fileMode ->
+            try {
+                Os.chmod(fileMode.key, fileMode.value)
+            } catch (e: ErrnoException) {
+                throw IOException("Unable to chmod ${fileMode.key} to ${fileMode.value}: $e")
             }
         }
     }
