@@ -24,6 +24,8 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.LogsHandler
@@ -139,3 +141,23 @@ fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) 
     7 -> R.style.Secondary7
     else -> R.style.Secondary0
 }
+
+fun NavController.navigateRight(itemId: Int) = this.navigate(
+    itemId,
+    null,
+    NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .setExitAnim(R.anim.slide_out_left)
+        .setEnterAnim(R.anim.slide_in_right)
+        .build()
+)
+
+fun NavController.navigateLeft(itemId: Int) = this.navigate(
+    itemId,
+    null,
+    NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .setExitAnim(R.anim.slide_out_right)
+        .setEnterAnim(R.anim.slide_in_left)
+        .build()
+)

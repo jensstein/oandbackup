@@ -23,6 +23,7 @@ import android.graphics.Color
 import android.text.format.Formatter
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
@@ -118,3 +119,10 @@ fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {
 }
 
 fun List<AppExtras>.get(packageName: String) = find {it.packageName == packageName} ?: AppExtras(packageName)
+
+fun Int.itemIdToOrder(): Int = when (this) {
+    R.id.backupFragment, R.id.serviceFragment -> 1
+    R.id.restoreFragment, R.id.advancedFragment -> 2
+    R.id.schedulerFragment, R.id.toolsFragment -> 3
+    else -> 0 // R.id.homeFragment, R.id.userFragment
+}

@@ -116,7 +116,10 @@ class MainActivityX : BaseActivity() {
         val navController = navHostFragment.navController
         binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
             if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-            navController.navigate(item.itemId)
+            if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
+                navController.navigateRight(item.itemId)
+            else
+                navController.navigateLeft(item.itemId)
             true
         }
     }
