@@ -200,14 +200,14 @@ class HomeFragment : NavigationFragment(),
                 false
             }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
-        binding.helpButton.setOnClickListener {
+        /*binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
                 HelpSheet()
             requireMainActivity().sheetHelp!!.showNow(
                 requireActivity().supportFragmentManager,
                 "HELPSHEET"
             )
-        }
+        }*/
     }
 
     private fun setupSearch() {

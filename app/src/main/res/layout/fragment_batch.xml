@@ -44,7 +44,7 @@
                 android:background="@drawable/bg_bar_static_round"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/helpButton"
+                app:layout_constraintEnd_toStartOf="@id/searchBar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -59,39 +59,29 @@
                     android:singleLine="true"
                     android:text="@string/place_holder"
                     android:textAppearance="@style/TextAppearance.Headline" />
-
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchBar"
-                    style="@android:style/Widget.Material.SearchView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:autofillHints="@string/searchHint"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foregroundGravity="center_horizontal"
-                    android:imeOptions="flagNoExtractUi|actionSearch"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    app:closeIcon="@drawable/ic_close"
-                    app:queryBackground="@android:color/transparent"
-                    app:queryHint="@string/searchHint"
-                    app:searchIcon="@drawable/ic_search" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/helpButton"
-                style="@style/Button.NavBar.End"
-                android:layout_width="52dp"
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchBar"
+                style="@android:style/Widget.Material.SearchView"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:autofillHints="@string/searchHint"
                 android:clickable="true"
                 android:focusable="true"
-                android:tooltipText="@string/help"
+                android:foregroundGravity="center_horizontal"
+                android:imeOptions="flagNoExtractUi|actionSearch"
+                android:inputType="text"
+                android:paddingHorizontal="@dimen/small_spacing"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Title"
+                app:closeIcon="@drawable/ic_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/mainBar"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_help" />
+                app:queryBackground="@android:color/transparent"
+                app:queryHint="@string/searchHint"
+                app:searchIcon="@drawable/ic_search" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -166,7 +156,7 @@
                 android:paddingTop="@dimen/icon_large"
                 android:paddingBottom="?actionBarSize"
                 app:fastScrollEnabled="true"
-                tools:listitem="@layout/item_main_x" />
+                tools:listitem="@layout/item_batch_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <FrameLayout
