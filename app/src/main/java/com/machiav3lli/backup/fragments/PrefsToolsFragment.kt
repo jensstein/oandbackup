@@ -35,6 +35,7 @@ import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.setExists
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,7 +46,6 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
-// TODO hide navBar on launching tools' fragments
 class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -68,6 +68,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
+        (requireActivity() as PrefsActivity).binding.navigationBar.setExists(true)
         requirePrefsActivity().refreshAppsList()
     }
 
@@ -241,6 +242,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun launchFragment(fragment: Fragment): Boolean {
+        (requireActivity() as PrefsActivity).binding.navigationBar.setExists(false)
         requireActivity().supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
