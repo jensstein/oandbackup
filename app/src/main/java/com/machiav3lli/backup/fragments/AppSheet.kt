@@ -95,7 +95,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
         setup(false)
     }
 
-    fun updateApp(item: MainItemX) {
+    fun updateApp(item: HomeItemX) {
         viewModel.appInfo.value = item.app
         setup(true)
     }

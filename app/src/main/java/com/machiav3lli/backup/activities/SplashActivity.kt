@@ -56,10 +56,11 @@ class SplashActivity : BaseActivity() {
             if (prefs.getBoolean(PREFS_FIRST_LAUNCH, true)) {
                 startActivity(introIntent)
             } else if (hasStoragePermissions &&
-                    isStorageDirSetAndOk &&
-                    checkUsageStatsPermission &&
-                    (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
-                            || powerManager.isIgnoringBatteryOptimizations(packageName))) {
+                isStorageDirSetAndOk &&
+                checkUsageStatsPermission &&
+                (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+                        || powerManager.isIgnoringBatteryOptimizations(packageName))
+            ) {
                 introIntent.putExtra(classAddress(".fragmentNumber"), 3)
                 startActivity(introIntent)
             } else {

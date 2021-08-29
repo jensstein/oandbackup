@@ -27,7 +27,7 @@ import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 
-class MainItemX(var app: AppInfo, var appExtras: AppExtras) :
+class HomeItemX(var app: AppInfo, var appExtras: AppExtras) :
     AbstractBindingItem<ItemMainXBinding>() {
 
     override var identifier: Long

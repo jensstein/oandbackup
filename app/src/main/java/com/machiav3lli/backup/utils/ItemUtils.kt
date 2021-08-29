@@ -118,7 +118,8 @@ fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {
     return Triple(appsList.size, backupsNumber, updatedNumber)
 }
 
-fun List<AppExtras>.get(packageName: String) = find {it.packageName == packageName} ?: AppExtras(packageName)
+fun List<AppExtras>.get(packageName: String) =
+    find { it.packageName == packageName } ?: AppExtras(packageName)
 
 fun Int.itemIdToOrder(): Int = when (this) {
     R.id.backupFragment, R.id.serviceFragment -> 1

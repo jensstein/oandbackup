@@ -306,4 +306,5 @@
     </plurals>
     <string name="sortBackupDate">Backup Date</string>
     <string name="help_changelog">Changelog</string>
+    <string name="home">Homepage</string>
 </resources>

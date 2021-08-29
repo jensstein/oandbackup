@@ -42,7 +42,10 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.ActionResult
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.BatchItemX
+import com.machiav3lli.backup.items.BatchPlaceholderItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
@@ -124,7 +127,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         batchFastAdapter?.setHasStableIds(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        //binding.recyclerView.adapter = batchFastAdapter
         batchPlaceholderFastAdapter = FastAdapter.with(placeholderItemAdapter)
         binding.recyclerView.adapter = batchPlaceholderFastAdapter
         placeholderItemAdapter.set(MutableList(10) { BatchPlaceholderItemX() })

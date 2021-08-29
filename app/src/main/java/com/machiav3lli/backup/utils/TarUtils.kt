@@ -189,7 +189,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             }
             if (doChmod) {
                 if (postponeChmod) {
-                    postponeModes.put(targetPath.absolutePath, tarEntry.mode)
+                    postponeModes[targetPath.absolutePath] = tarEntry.mode
                 } else {
                     try {
                         Os.chmod(targetPath.absolutePath, tarEntry.mode)
