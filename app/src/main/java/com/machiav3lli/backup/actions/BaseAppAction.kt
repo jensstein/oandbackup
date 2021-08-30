@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.actions
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.handler.LogsHandler
@@ -44,7 +43,6 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    @SuppressLint("DefaultLocale")
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
@@ -61,8 +59,8 @@ abstract class BaseAppAction protected constructor(
                 runAsRoot(
                     "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
                             + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                            + " while read pid user name; do"
-                            + " kill -STOP \$pid ;"
+                            + " while read pid user name;"
+                            + " do kill -STOP \$pid ;"
                             + " done"
                 )
             }
@@ -75,19 +73,18 @@ abstract class BaseAppAction protected constructor(
         }
     }
 
-    @SuppressLint("DefaultLocale")
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             runAsRoot(
                 "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
                         + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                        + " while read pid user name; do"
-                        + " kill -CONT \$pid ;"
+                        + " while read pid user name;"
+                        + " do kill -CONT \$pid ;"
                         + " done"
             )
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$packageName does not exist. Cannot preprocess!")
+            Timber.w("$packageName does not exist. Cannot post-process!")
         } catch (e: ShellCommandFailedException) {
             Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {

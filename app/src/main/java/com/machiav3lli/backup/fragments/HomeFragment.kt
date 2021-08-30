@@ -38,10 +38,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.MainItemX
-import com.machiav3lli.backup.items.UpdatedItemX
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
@@ -58,8 +55,10 @@ class HomeFragment : NavigationFragment(),
     lateinit var viewModel: HomeViewModel
     private var appSheet: AppSheet? = null
 
-    val mainItemAdapter = ItemAdapter<MainItemX>()
-    private var mainFastAdapter: FastAdapter<MainItemX>? = null
+    val homeItemAdapter = ItemAdapter<HomeItemX>()
+    private var homeFastAdapter: FastAdapter<HomeItemX>? = null
+    private val placeholderItemAdapter = ItemAdapter<HomePlaceholderItemX>()
+    private var placeholderFastAdapter: FastAdapter<HomePlaceholderItemX>? = null
     private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
     private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
 
@@ -147,11 +146,13 @@ class HomeFragment : NavigationFragment(),
             resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
-        mainFastAdapter = FastAdapter.with(mainItemAdapter)
+        homeFastAdapter = FastAdapter.with(homeItemAdapter)
         updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
-        mainFastAdapter?.setHasStableIds(true)
+        homeFastAdapter?.setHasStableIds(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = mainFastAdapter
+        placeholderFastAdapter = FastAdapter.with(placeholderItemAdapter)
+        binding.recyclerView.adapter = placeholderFastAdapter
+        placeholderItemAdapter.set(MutableList(10) { HomePlaceholderItemX() })
         updatedFastAdapter?.setHasStableIds(true)
         binding.updatedRecycler.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -181,11 +182,11 @@ class HomeFragment : NavigationFragment(),
             )
             sheetSortFilter?.show(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
-        mainFastAdapter?.onClickListener =
-            { _: View?, _: IAdapter<MainItemX>?, item: MainItemX?, position: Int? ->
+        homeFastAdapter?.onClickListener =
+            { _: View?, _: IAdapter<HomeItemX>?, item: HomeItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
+                    appSheet = AppSheet(it.app, it.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
@@ -194,24 +195,24 @@ class HomeFragment : NavigationFragment(),
             { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 item?.let {
-                    appSheet = AppSheet(item.app, item.appExtras, position ?: -1)
+                    appSheet = AppSheet(it.app, it.appExtras, position ?: -1)
                     appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
                 }
                 false
             }
         binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
-        binding.helpButton.setOnClickListener {
+        /*binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
                 HelpSheet()
             requireMainActivity().sheetHelp!!.showNow(
                 requireActivity().supportFragmentManager,
                 "HELPSHEET"
             )
-        }
+        }*/
     }
 
     private fun setupSearch() {
-        val filterPredicate = { item: MainItemX, cs: CharSequence? ->
+        val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
             item.appExtras.customTags
                 .plus(item.app.packageName)
                 .plus(item.app.packageLabel)
@@ -219,14 +220,14 @@ class HomeFragment : NavigationFragment(),
         }
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                mainItemAdapter.filter(newText)
-                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
+                homeItemAdapter.filter(newText)
+                homeItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                mainItemAdapter.filter(query)
-                mainItemAdapter.itemFilter.filterPredicate = filterPredicate
+                homeItemAdapter.filter(query)
+                homeItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })
@@ -375,7 +376,8 @@ class HomeFragment : NavigationFragment(),
         val updatedList = createUpdatedAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
-                mainItemAdapter.set(mainList)
+                binding.recyclerView.adapter = homeFastAdapter
+                homeItemAdapter.set(mainList)
                 updatedItemAdapter.set(updatedList)
                 viewModel.nUpdatedApps.value = updatedList.size
                 if (mainList.isEmpty())
@@ -393,9 +395,9 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<MainItemX> =
+    private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<HomeItemX> =
         filteredList
-            .map { MainItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
+            .map { HomeItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> =
         filteredList
@@ -405,11 +407,11 @@ class HomeFragment : NavigationFragment(),
     private fun refreshAppSheet() {
         try {
             val position = appSheet?.position ?: -1
-            if (mainItemAdapter.itemList.size() > position && position != -1) {
-                val sheetAppInfo = mainFastAdapter?.getItem(position)?.app
+            if (homeItemAdapter.itemList.size() > position && position != -1) {
+                val sheetAppInfo = homeFastAdapter?.getItem(position)?.app
                 sheetAppInfo?.let {
                     if (appSheet?.packageName == sheetAppInfo.packageName) {
-                        mainFastAdapter?.getItem(position)?.let { appSheet?.updateApp(it) }
+                        homeFastAdapter?.getItem(position)?.let { appSheet?.updateApp(it) }
                     } else
                         appSheet?.dismissAllowingStateLoss()
                 }

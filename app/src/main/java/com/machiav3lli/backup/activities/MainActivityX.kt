@@ -33,7 +33,6 @@ import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
-import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.*
@@ -63,7 +62,8 @@ class MainActivityX : BaseActivity() {
 
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
-    var sheetHelp: HelpSheet? = null
+
+    // var sheetHelp: HelpSheet? = null
     var snackBar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +116,10 @@ class MainActivityX : BaseActivity() {
         val navController = navHostFragment.navController
         binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
             if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-            navController.navigate(item.itemId)
+            if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
+                navController.navigateRight(item.itemId)
+            else
+                navController.navigateLeft(item.itemId)
             true
         }
     }

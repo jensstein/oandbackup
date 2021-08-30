@@ -207,7 +207,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             Timber.w("Weird configuration. Expecting that the system does not allow installing from OABX's own data directory. Copying the apk to $stagingApkPath")
         }
         var success = false
-        success = try {
+        try {
             // Try it with a staging path. This is usually the way to go.
             // copy apks to staging dir
             apksToRestore.forEach {
@@ -222,7 +222,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             val sb = StringBuilder()
             val disableVerification = context.isDisableVerification
             // disable verify apps over usb
-            if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 && ")
+            if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 ; ")
             // Install main package
             sb.append(
                 getPackageInstallCommand(
@@ -243,23 +243,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 }
             }
 
-            // append cleanup command
-            sb.append(" ; $utilBoxQuoted rm ${
-                quoteMultiple(
-                    apksToRestore.map {
-                        File(
-                            stagingApkPath,
-                            "$packageName.${it.name}"
-                        ).absolutePath
-                    }
-                )
-            }"
-            )
             // re-enable verify apps over usb
-            if (disableVerification) sb.append(" && settings put global verifier_verify_adb_installs 1")
+            if (disableVerification) sb.append(" ; settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
             runAsRoot(command)
-            true
+            success = true
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
             val error = e.shellResult.err.joinToString("\n")
@@ -269,30 +257,29 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException("Could not copy apk to staging directory", e)
         } finally {
             // Cleanup only in case of failure, otherwise it's already included
-            if (!success) {
-                Timber.i("[$packageName] Restore unsuccessful. Removing possible leftovers in staging directory")
-                val command =
-                    "$utilBoxQuoted rm ${
-                        quoteMultiple(
-                            apksToRestore.map {
-                                File(
-                                    stagingApkPath,
-                                    "$packageName.${it.name}"
-                                ).absolutePath
-                            }
+            if (!success)
+                Timber.i("[$packageName] Restore unsuccessful")
+            val command =
+                "$utilBoxQuoted rm ${
+                    quoteMultiple(
+                        apksToRestore.map {
+                            File(
+                                stagingApkPath,
+                                "$packageName.${it.name}"
+                            ).absolutePath
+                        }
+                    )
+                }"
+            try {
+                runAsRoot(command)
+            } catch (e: ShellCommandFailedException) {
+                Timber.w(
+                    "[$packageName] Cleanup after failure failed: ${
+                        e.shellResult.err.joinToString(
+                            "; "
                         )
                     }"
-                try {
-                    runAsRoot(command)
-                } catch (e: ShellCommandFailedException) {
-                    Timber.w(
-                        "[$packageName] Cleanup after failure failed: ${
-                            e.shellResult.err.joinToString(
-                                "; "
-                            )
-                        }"
-                    )
-                }
+                )
             }
         }
     }
@@ -429,7 +416,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             command += if (uidgidcon[2] == "?") //TODO hg42: when does it happen?
                 " ; restorecon -RF -v ${quote(targetDir)}"
             else
-                " ; chcon -R -v '${uidgidcon[2]}' ${quote(targetDir)}"
+                " ; chcon -R -h -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $type"

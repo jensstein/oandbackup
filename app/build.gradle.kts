@@ -92,13 +92,13 @@ android {
 
 val versions: java.util.Properties = System.getProperties()
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30")
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
     implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
     kapt("androidx.room:room-compiler:2.3.0")
-    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("com.google.code.gson:gson:2.8.8")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.1.0")
@@ -108,7 +108,7 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     implementation("com.scottyab:rootbeer-lib:0.1.0")
-    implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
     implementation("androidx.appcompat:appcompat:1.3.1")
@@ -122,6 +122,7 @@ dependencies {
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     // Tests
     implementation("androidx.test:rules:1.4.0")

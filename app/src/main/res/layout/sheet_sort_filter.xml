@@ -275,12 +275,12 @@
                     android:id="@+id/backupFilters"
                     style="@style/Chip.Group"
                     android:layout_width="0dp"
-                    app:singleSelection="false"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@id/specialFiltersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle">
+                    app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle"
+                    app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupNone"

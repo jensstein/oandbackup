@@ -51,7 +51,11 @@ class ShellHandler {
     }
 
     @Throws(ShellCommandFailedException::class)
-    fun suGetDetailedDirectoryContents(path: String, recursive: Boolean, parent: String? = null): List<FileInfo> {
+    fun suGetDetailedDirectoryContents(
+        path: String,
+        recursive: Boolean,
+        parent: String? = null
+    ): List<FileInfo> {
         // was incomplete time, without seconds and without time zone:
         //// -Al : "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
         //// -Al : "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
@@ -62,19 +66,22 @@ class ShellHandler {
         val shellResult = runAsRoot("$utilBoxQuoted ls -All ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
-                .filter { line: String -> line.isNotEmpty() }
-                .filter { line: String -> !line.startsWith("total") }
-                .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
-                .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
-                .toMutableList()
+            .filter { line: String -> line.isNotEmpty() }
+            .filter { line: String -> !line.startsWith("total") }
+            .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
+            .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
+            .toMutableList()
         if (recursive) {
             val directories = result
-                    .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
-                    .toTypedArray()
+                .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
+                .toTypedArray()
             directories.forEach { dir ->
-                result.addAll(suGetDetailedDirectoryContents(dir.absolutePath, true,
+                result.addAll(
+                    suGetDetailedDirectoryContents(
+                        dir.absolutePath, true,
                         if (parent != null) parent + '/' + dir.filename else dir.filename
-                ))
+                    )
+                )
             }
         }
         return result
@@ -124,24 +131,26 @@ class ShellHandler {
 
     class ShellCommandFailedException(@field:Transient val shellResult: Shell.Result) : Exception()
 
-    class UnexpectedCommandResult(message: String?, val shellResult: Shell.Result) : Exception(message)
+    class UnexpectedCommandResult(message: String?, val shellResult: Shell.Result) :
+        Exception(message)
 
-    class UtilboxNotAvailableException(val triedBinaries: String, cause: Throwable?) : Exception(cause)
+    class UtilboxNotAvailableException(val triedBinaries: String, cause: Throwable?) :
+        Exception(cause)
 
     class FileInfo(
-            /**
-             * Returns the filepath, relative to the original location
-             *
-             * @return relative filepath
-             */
-            val filePath: String,
-            val fileType: FileType,
-            absoluteParent: String,
-            val owner: String,
-            val group: String,
-            var fileMode: Int,
-            var fileSize: Long,
-            var fileModTime: Date
+        /**
+         * Returns the filepath, relative to the original location
+         *
+         * @return relative filepath
+         */
+        val filePath: String,
+        val fileType: FileType,
+        absoluteParent: String,
+        val owner: String,
+        val group: String,
+        var fileMode: Int,
+        var fileSize: Long,
+        var fileModTime: Date
     ) {
         enum class FileType {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
@@ -183,7 +192,11 @@ class ShellHandler {
              * @param lsLine single output line of `ls -Al`
              * @return an instance of FileInfo
              */
-            fun fromLsOOutput(lsLine: String, parentPath: String?, absoluteParent: String): FileInfo {
+            fun fromLsOOutput(
+                lsLine: String,
+                parentPath: String?,
+                absoluteParent: String
+            ): FileInfo {
                 // Format
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
@@ -195,7 +208,8 @@ class ShellHandler {
                 val group = tokens[3]
                 // 2020-11-26 04:35:21.543772855 +0100
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
-                val fileModTime = formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
+                val fileModTime =
+                    formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
@@ -204,11 +218,11 @@ class ShellHandler {
                     tokens[8] = tokens[8].substring(parent.length + 1)
                 }
                 filePath =
-                        if (parentPath == null || parentPath.isEmpty()) {
-                            tokens[8]
-                        } else {
-                            parentPath + '/' + tokens[8]
-                        }
+                    if (parentPath == null || parentPath.isEmpty()) {
+                        tokens[8]
+                    } else {
+                        parentPath + '/' + tokens[8]
+                    }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
                     fileMode = translatePosixPermissionToMode(tokens[0].substring(1))
@@ -225,14 +239,17 @@ class ShellHandler {
                         fileMode = translatePosixPermissionToMode("rwxrws--x")
                     } else {
                         fileMode =
-                                if (tokens[0][0] == 'd') {
-                                    FALLBACK_MODE_FOR_DIR
-                                } else {
-                                    FALLBACK_MODE_FOR_FILE
-                                }
-                        Timber.w(String.format(
+                            if (tokens[0][0] == 'd') {
+                                FALLBACK_MODE_FOR_DIR
+                            } else {
+                                FALLBACK_MODE_FOR_FILE
+                            }
+                        Timber.w(
+                            String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
-                                tokens[0], fileMode, filePath, parent))
+                                tokens[0], fileMode, filePath, parent
+                            )
+                        )
                     }
                 } catch (e: Throwable) {
                     LogsHandler.unhandledException(e, filePath)
@@ -257,7 +274,16 @@ class ShellHandler {
                         fileSize = tokens[4].toLong()
                     }
                 }
-                val result = FileInfo(filePath!!, type, parent, owner, group, fileMode, fileSize, fileModTime!!)
+                val result = FileInfo(
+                    filePath!!,
+                    type,
+                    parent,
+                    owner,
+                    group,
+                    fileMode,
+                    fileSize,
+                    fileModTime!!
+                )
                 result.linkName = linkName
                 return result
             }
@@ -292,7 +318,10 @@ class ShellHandler {
         }
 
         @Throws(ShellCommandFailedException::class)
-        private fun runShellCommand(shell: RunnableShellCommand, vararg commands: String): Shell.Result {
+        private fun runShellCommand(
+            shell: RunnableShellCommand,
+            vararg commands: String
+        ): Shell.Result {
             // defining stdout and stderr on our own
             // otherwise we would have to set set the flag redirect stderr to stdout:
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
@@ -319,7 +348,8 @@ class ShellHandler {
         }
 
         //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
-        val charactersToBeEscaped = Regex("""[\\$"`]""")   // blacklist, only escape those that are necessary
+        val charactersToBeEscaped =
+            Regex("""[\\$"`]""")   // blacklist, only escape those that are necessary
 
         fun quote(parameter: String): String {
             return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""
@@ -330,7 +360,7 @@ class ShellHandler {
         }
 
         fun quoteMultiple(parameters: Collection<String>): String =
-                parameters.joinToString(" ", transform = ::quote)
+            parameters.joinToString(" ", transform = ::quote)
 
         fun isFileNotFoundException(ex: ShellCommandFailedException): Boolean {
             val err = ex.shellResult.err
@@ -357,15 +387,25 @@ class ShellHandler {
                     // the written amount of bytes, too because it needs to match the header)
                     // As side effect the archives slightly differ in size because of the flushing mechanism.
                     if (0 >= retriesLeft) {
-                        Timber.e(String.format("Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?",
-                                maxRetries))
-                        throw IOException(String.format("Could not read expected amount of input bytes %d; stopped after %d tries at %d",
+                        Timber.e(
+                            String.format(
+                                "Could not recover after %d tries. Seems like there is a bigger issue. Maybe the file has changed?",
+                                maxRetries
+                            )
+                        )
+                        throw IOException(
+                            String.format(
+                                "Could not read expected amount of input bytes %d; stopped after %d tries at %d",
                                 filesize, maxRetries, readOverall
-                        ))
+                            )
+                        )
                     }
-                    Timber.w(String.format("SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
+                    Timber.w(
+                        String.format(
+                            "SuFileInputStream EOF before expected after %d bytes (%d are missing). Trying to recover. %d retries lef",
                             readOverall, filesize - readOverall, retriesLeft
-                    ))
+                        )
+                    )
                     // Reopen the file to reset eof flag
                     stream.close()
                     stream = SuRandomAccessFile.open(filepath, "r")

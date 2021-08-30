@@ -69,7 +69,6 @@ fun Context.getCryptoSalt(): ByteArray {
     } else FALLBACK_SALT
 }
 
-
 fun Context.isEncryptionEnabled(): Boolean =
     getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
         ?: false

@@ -27,12 +27,10 @@ import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.setCustomTheme
+import com.machiav3lli.backup.utils.*
 
 class PrefsActivity : BaseActivity() {
-    private lateinit var binding: ActivityPrefsBinding
+    lateinit var binding: ActivityPrefsBinding
     private var sheetHelp: HelpSheet? = null
     var appInfoList: List<AppInfo> = mutableListOf()
 
@@ -69,7 +67,10 @@ class PrefsActivity : BaseActivity() {
         val navController = navHostFragment.navController
         binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
             if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-            navController.navigate(item.itemId)
+            if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
+                navController.navigateRight(item.itemId)
+            else
+                navController.navigateLeft(item.itemId)
             true
         }
         navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
