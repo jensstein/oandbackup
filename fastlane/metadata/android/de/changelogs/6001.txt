@@ -1,0 +1,4 @@
+* Behoben: Checkbox Systemanwendungen ausschließen im geplanten Tasks
+* Behoben: Importieren des Wertes der auszuschließenden Systemanwendungen beim Import von geplanten Backup Tasks
+* Hinzugefügt: Vietnamesisch, Hindi & Ukrainisch
+* Hktualisierte Übersetzungen: Arabisch, Spanisch, Italienisch, Portugiesisch, Russisch, Katalanisch, Türkisch, Indonesisch
