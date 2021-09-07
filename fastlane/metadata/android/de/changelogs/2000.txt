@@ -1,8 +1,8 @@
 **OAndBackupX 2.0.0**
 * Auf sulib umgeschaltet (Danke @Tiefkuehlpizze)
-* Entfernt (entgültig):  oab-utils (Danke  @Tiefkuehlpizze)
+* Entfernt (entgültig): oab-utils (Danke @Tiefkuehlpizze)
 * Neue Benutzeroberflächen-Elemente für App-, Filter- & ScheduleSheet
-* Repariert: geplante Backups für (nur) Daten 
+* Repariert: geplante Backups für (nur) Daten
 * Repariert: Zippen external/deData/obb gemäß Prefs
 * Repariert: Zippen leerer Ordner unter external/deData/obb
 * Aktualisiert: saubere Zwischenspeicher Funktion
