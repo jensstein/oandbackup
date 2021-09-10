@@ -167,7 +167,8 @@
                     app:layout_constraintBottom_toTopOf="@id/filtersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sortBy" />
+                    app:layout_constraintTop_toBottomOf="@id/sortBy"
+                    app:trackTint="@color/switch_track" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/sortBy"
