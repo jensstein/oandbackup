@@ -57,6 +57,7 @@ class HomeItemX(var app: AppInfo, var appExtras: AppExtras) :
         binding.obbMode.setExists(app.hasObbData)
         binding.mediaMode.setExists(app.hasMediaData)
         binding.appType.setAppType(app)
+        binding.tagsGroup.removeAllViews()
         appExtras.customTags.forEach {
             val chip = Chip(binding.root.context)
             chip.text = it
