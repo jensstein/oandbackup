@@ -177,5 +177,7 @@ class MainActivityX : BaseActivity() {
         this.refreshViewController = refreshViewController
     }
 
-    fun refreshView() = refreshViewController.refreshView()
+    fun refreshView() {
+        if (::refreshViewController.isInitialized) refreshViewController.refreshView()
+    }
 }
