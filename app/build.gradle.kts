@@ -24,12 +24,12 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 6001
         versionName = "6.0.1"
 
