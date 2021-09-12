@@ -17,7 +17,7 @@
  -->
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
         <item name="colorAccent">@color/accent_0</item>
@@ -51,7 +51,7 @@
         <item name="android:paddingBottom">?actionBarSize</item>
     </style>
 
-    <style name="Sheet.Bottom" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="Sheet.Bottom" parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Sheet.Bottom.Style</item>
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>
@@ -63,26 +63,31 @@
     <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginHorizontal">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:elevation">2dp</item>
+        <item name="android:elevation">0dp</item>
     </style>
 
-    <style name="Bar.BottomNavigation" parent="@style/Widget.MaterialComponents.BottomNavigationView">
+    <style name="Bar.BottomNavigation" parent="@style/Widget.Material3.BottomNavigationView">
         <item name="itemIconTint">@color/chip_text</item>
-        <item name="labelVisibilityMode">unlabeled</item>
+        <item name="labelVisibilityMode">selected</item>
+        <item name="itemRippleColor">?colorAccent</item>
+        <item name="itemActiveIndicatorStyle">@style/Bar.Bottom.ActiveIndicator</item>
         <item name="itemIconSize">32dp</item>
+        <item name="elevation">0dp</item>
     </style>
 
-    <style name="AppTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+    <style name="Bar.Bottom.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">?colorOnPrimary</item>
+    </style>
 
-    <style name="Widget.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Light" />
+
+    <style name="Widget.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:background">?android:windowBackground</item>
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Title</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
     </style>
 
-    <style name="Bar.AppBar" parent="@style/Widget.Design.AppBarLayout">
+    <style name="Bar.AppBar" parent="Widget.Design.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginHorizontal">8dp</item>
@@ -99,7 +104,7 @@
         <item name="android:padding">@dimen/cards_spacing</item>
     </style>
 
-    <style name="Button.Positive" parent="Widget.MaterialComponents.Button">
+    <style name="Button.Positive" parent="Widget.Material3.Button">
         <item name="strokeWidth">3dp</item>
         <item name="strokeColor">?colorAccent</item>
         <item name="cornerRadius">8dp</item>
@@ -108,7 +113,7 @@
         <item name="android:textColor">?colorAccent</item>
     </style>
 
-    <style name="Button.Negative" parent="Widget.MaterialComponents.Button">
+    <style name="Button.Negative" parent="Widget.Material3.Button">
         <item name="strokeWidth">3dp</item>
         <item name="strokeColor">?colorSecondary</item>
         <item name="cornerRadius">8dp</item>
@@ -117,21 +122,21 @@
         <item name="android:textColor">?colorSecondary</item>
     </style>
 
-    <style name="Button.NavBar.Middle" parent="android:Widget.Material.Button">
+    <style name="Button.NavBar.Middle" parent="Widget.Material3.Button">
         <item name="android:background">@drawable/bg_button_navbar_middle</item>
     </style>
 
-    <style name="Button.NavBar.End" parent="android:Widget.Material.Button">
+    <style name="Button.NavBar.End" parent="Widget.Material3.Button">
         <item name="android:background">@drawable/bg_button_navbar_end</item>
     </style>
 
-    <style name="Chip.Group" parent="Widget.MaterialComponents.ChipGroup">
+    <style name="Chip.Group" parent="Widget.Material3.ChipGroup">
         <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
         <item name="selectionRequired">true</item>
         <item name="singleSelection">true</item>
     </style>
 
-    <style name="Chip.Filter" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Chip.Filter" parent="Widget.Material3.Chip.Suggestion">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
         <item name="chipSurfaceColor">@android:color/transparent</item>
@@ -141,7 +146,7 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
-    <style name="Chip.Mode" parent="Widget.MaterialComponents.Chip.Filter">
+    <style name="Chip.Mode" parent="Widget.Material3.Chip.Filter">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
         <item name="chipSurfaceColor">@android:color/transparent</item>
@@ -151,7 +156,7 @@
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
-    <style name="Chip.Data" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Chip.Data" parent="Widget.Material3.Chip.Suggestion">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/ic_data</item>
         <item name="rippleColor">@color/ic_data</item>
@@ -162,9 +167,11 @@
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipCornerRadius">8dp</item>
+        <item name="textEndPadding">0dp</item>
+        <item name="textStartPadding">0dp</item>
     </style>
 
-    <style name="Chip.Apk" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Chip.Apk" parent="Widget.Material3.Chip.Suggestion">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/ic_apk</item>
         <item name="rippleColor">@color/ic_apk</item>
@@ -175,9 +182,11 @@
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipCornerRadius">8dp</item>
+        <item name="textEndPadding">0dp</item>
+        <item name="textStartPadding">0dp</item>
     </style>
 
-    <style name="Chip.Action" parent="Widget.MaterialComponents.Chip.Action">
+    <style name="Chip.Action" parent="Widget.Material3.Chip.Assist">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">@color/chip_stroke</item>
         <item name="chipSurfaceColor">?android:windowBackground</item>
@@ -208,7 +217,7 @@
         <item name="android:textColor">?colorControlNormal</item>
     </style>
 
-    <style name="Chip.Tag" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeColor">?colorControlNormal</item>
         <item name="chipSurfaceColor">@android:color/transparent</item>
