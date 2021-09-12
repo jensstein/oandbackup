@@ -54,8 +54,8 @@ abstract class BaseActionTask(
                     "${app.packageLabel}: $message", Snackbar.LENGTH_INDEFINITE
                 )
                 mainActivityX.snackBar?.view?.translationY =
-                    -64F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
-                mainActivityX.snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round)
+                    -128F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
+                mainActivityX.snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round_accent)
                 mainActivityX.snackBar?.setTextColor(
                     mainActivityX.resources.getColor(
                         R.color.app_primary_inverse,
