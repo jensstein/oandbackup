@@ -190,33 +190,24 @@
 
     <style name="Chip.Action" parent="Widget.Material3.Chip.Assist">
         <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">?android:windowBackground</item>
-        <item name="android:textColor">@color/chip_text</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipCornerRadius">8dp</item>
-        <item name="chipStrokeWidth">1dp</item>
-    </style>
-
-    <style name="Chip.Action.Negative" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorSecondary</item>
-        <item name="rippleColor">?colorSecondary</item>
-        <item name="chipSurfaceColor">?android:windowBackground</item>
-        <item name="android:textColor">?colorSecondary</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="rippleColor">?colorAccent</item>
+        <item name="chipSurfaceColor">?colorPrimaryDark</item>
+        <item name="android:textColor">?colorControlNormal</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
         <item name="chipStrokeColor">?colorAccent</item>
-        <item name="rippleColor">?colorAccent</item>
-        <item name="chipSurfaceColor">?android:windowBackground</item>
-        <item name="android:textColor">?colorAccent</item>
+        <item name="rippleColor">?colorPrimaryDark</item>
+        <item name="chipSurfaceColor">?colorAccent</item>
     </style>
 
-    <style name="Chip.Action.Filled.Positive" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorAccent</item>
-        <item name="rippleColor">@color/app_primary_base</item>
-        <item name="chipSurfaceColor">?colorAccent</item>
-        <item name="android:textColor">?colorControlNormal</item>
+    <style name="Chip.Action.Negative" parent="Chip.Action">
+        <item name="chipStrokeColor">?colorSecondary</item>
+        <item name="rippleColor">?colorPrimaryDark</item>
+        <item name="chipSurfaceColor">?colorSecondary</item>
     </style>
 
     <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">

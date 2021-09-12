@@ -110,8 +110,7 @@
                 app:layout_constraintEnd_toStartOf="@id/buttonSortFilter"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="?colorSecondary" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/buttonSortFilter"
@@ -124,8 +123,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/buttonBlocklist"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="?colorAccent" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
