@@ -90,13 +90,12 @@ android {
 }
 
 
-val versions: java.util.Properties = System.getProperties()
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30")
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
     kapt("androidx.room:room-compiler:2.3.0")
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
@@ -118,7 +117,7 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
-    val fastadapter = "5.4.1"
+    val fastadapter = "5.5.0"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
