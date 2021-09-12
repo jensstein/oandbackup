@@ -299,4 +299,8 @@
     <string name="prefs_accent_2">Sakin Çivit Mavisi</string>
     <string name="prefs_accent_1">İnce Mor</string>
     <string name="prefs_accent_0">Kırmızı Kuyruklu Yıldız</string>
+    <string name="help_changelog">Değişim günlüğü</string>
+    <string name="prefs_mediadata_summary">Uygulamanın harici depolama birimine yerleştirilen medya dosyalarını yedekler ve geri yükler (Ör. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata">Medya dosyalarını yedekleyin</string>
+    <string name="radio_mediadata">Medya Verileri</string>
 </resources>
