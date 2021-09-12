@@ -258,7 +258,6 @@ class AppInfo {
     val devicesProtectedDataPath: String
         get() = packageInfo?.deDataDir ?: ""
 
-    // TODO don't use File for protected data under A11+,
     // - [] 1.Try?
     // Uses the context to get own external data directory
     // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
