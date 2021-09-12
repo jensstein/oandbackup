@@ -22,7 +22,7 @@
 
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -30,8 +30,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
-            android:background="@drawable/bg_bar_static_round"
-            android:elevation="@dimen/small_spacing">
+            android:elevation="@dimen/small_spacing"
+            app:layout_constraintBottom_toTopOf="@id/introContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/icon_large"
@@ -45,8 +48,9 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:autofillHints="@string/searchHint"
+                android:gravity="center"
                 android:singleLine="true"
                 android:text="@string/welcome_to_oabx"
                 android:textAppearance="@style/TextAppearance.Title"
@@ -62,23 +66,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:layout_constraintBottom_toTopOf="@id/positiveButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
             app:navGraph="@navigation/navi_graph_intro" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/positiveButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="24dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/positiveButton"
-                style="@style/Button.Positive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="@string/dialog_start" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:background="@drawable/bg_button_rectangular"
+            android:gravity="center"
+            android:text="@string/dialog_start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/introContainer" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
