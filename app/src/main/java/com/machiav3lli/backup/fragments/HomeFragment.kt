@@ -92,14 +92,16 @@ class HomeFragment : NavigationFragment(),
             binding.buttonUpdated.text =
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
+                binding.updatedBar.visibility = View.VISIBLE
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_arrow_up,
                     0,
                     0,
                     0
                 )
+                binding.buttonUpdateAll.visibility = View.VISIBLE
                 binding.buttonUpdated.setOnClickListener {
-                    binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
+                    binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
                         View.VISIBLE -> {
                             binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
                                 R.drawable.ic_arrow_up,
@@ -122,6 +124,8 @@ class HomeFragment : NavigationFragment(),
                 }
             } else {
                 binding.updatedBar.visibility = View.GONE
+                binding.updatedRecycler.visibility = View.GONE
+                binding.buttonUpdateAll.visibility = View.GONE
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
@@ -200,7 +204,7 @@ class HomeFragment : NavigationFragment(),
                 }
                 false
             }
-        binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
+        binding.buttonUpdateAll.setOnClickListener { onClickUpdateAllAction() }
         /*binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
                 HelpSheet()
