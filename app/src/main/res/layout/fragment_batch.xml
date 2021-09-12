@@ -163,8 +163,7 @@
             android:id="@+id/buttonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_gradient_alpha_top_bottom"
-            android:paddingHorizontal="@dimen/cards_spacing"
+            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -172,8 +171,6 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/buttons_spacing"
-                android:background="@drawable/bg_frame_positive"
                 android:orientation="horizontal">
 
                 <com.google.android.material.chip.Chip
@@ -189,14 +186,13 @@
                     style="@style/Chip.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
                     app:chipIconEnabled="true" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonAction"
+                    style="@style/Button.Rectangular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_positive_ripple_no_stroke"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/place_holder"

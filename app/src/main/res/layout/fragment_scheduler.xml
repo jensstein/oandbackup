@@ -64,7 +64,7 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/buttonBlocklist"
-                style="@style/Button.NavBar.End"
+                style="@style/Button.Round"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"

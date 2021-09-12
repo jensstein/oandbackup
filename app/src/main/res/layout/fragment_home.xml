@@ -154,47 +154,36 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/icon_large"
-                android:paddingBottom="?actionBarSize"
+                android:scrollIndicators="right"
                 app:fastScrollEnabled="true"
                 tools:listitem="@layout/item_main_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/updatedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_gradient_alpha_top_bottom"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/updatedBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonUpdated"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginBottom="@dimen/buttons_spacing"
-                android:background="@drawable/bg_button_positive_ripple"
-                android:clickable="true"
-                android:drawableStart="@drawable/ic_arrow_down"
-                android:drawableTint="?colorAccent"
-                android:focusable="true"
-                android:text="@string/place_holder"
-                android:textColor="?colorAccent" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/updatedBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/cards_spacing"
-            android:layout_marginBottom="@dimen/cards_spacing"
-            android:elevation="2dp"
+            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refreshLayout">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonUpdated"
+                style="@style/Button.Rectangular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_arrow_down"
+                android:drawableTint="?colorAccent"
+                android:focusable="true"
+                android:text="@string/place_holder"
+                android:textColor="?colorAccent"
+                app:layout_constraintBottom_toTopOf="@id/updatedRecycler"
+                app:layout_constraintEnd_toStartOf="@id/buttonUpdateAll"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/updatedRecycler"
@@ -202,62 +191,28 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:paddingVertical="@dimen/buttons_spacing"
-                android:paddingStart="@dimen/buttons_spacing"
-                android:paddingEnd="?actionBarSize"
+                android:paddingHorizontal="@dimen/buttons_spacing"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/buttonUpdated"
                 tools:listitem="@layout/item_updated_x" />
 
-            <FrameLayout
-                android:layout_width="?actionBarSize"
-                android:layout_height="0dp"
-                android:background="@drawable/bg_gradient_alpha_left_right"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonUpdateAll"
+                style="@style/Button.Rectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_s_icon"
+                android:drawableStart="@drawable/ic_update"
+                android:text="@string/backup_all_updated"
+                android:textColor="?colorAccent"
+                app:layout_constraintBottom_toTopOf="@id/updatedRecycler"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/updateAllAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_button_positive_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tooltipText="@string/backup_all_updated">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/cards_spacing"
-                        android:layout_marginTop="@dimen/cards_spacing"
-                        android:contentDescription="@string/app_s_icon"
-                        android:src="@drawable/ic_update"
-                        app:layout_constraintBottom_toTopOf="@id/label"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/label"
-                        style="@style/TextViewWrapped"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/small_spacing"
-                        android:gravity="center_horizontal"
-                        android:text="@string/all"
-                        android:textAppearance="@style/TextAppearance.Lines"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/icon" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </FrameLayout>
+                app:layout_constraintStart_toEndOf="@id/buttonUpdated"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
