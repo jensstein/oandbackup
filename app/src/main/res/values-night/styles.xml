@@ -92,6 +92,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginHorizontal">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:elevation">2dp</item>
@@ -122,8 +123,9 @@
         <item name="android:textColor">?colorSecondary</item>
     </style>
 
-    <style name="Button.Round" parent="Widget.Material3.Button">
+    <style name="Button.Round" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/bg_button_round_accent</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <style name="Button.Rectangular" parent="Widget.Material3.Button">

@@ -30,36 +30,25 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
-            android:background="@drawable/bg_bar_static_round_accent"
-            android:elevation="@dimen/small_spacing"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/mainBar"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/pageHeadline"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/bg_bar_static_round"
-                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/place_holder"
+                android:textAppearance="@style/TextAppearance.Headline"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/searchBar"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/pageHeadline"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/cards_spacing"
-                    android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@string/place_holder"
-                    android:textAppearance="@style/TextAppearance.Headline" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchBar"
@@ -67,7 +56,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:autofillHints="@string/searchHint"
+                android:background="@drawable/bg_bar_static_round_accent"
                 android:clickable="true"
+                android:elevation="2dp"
                 android:focusable="true"
                 android:foregroundGravity="center_horizontal"
                 android:imeOptions="flagNoExtractUi|actionSearch"
@@ -143,7 +134,7 @@
             android:layout_height="0dp"
             android:layout_gravity="top"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progressBar">
@@ -154,7 +145,6 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/icon_large"
-                android:paddingBottom="?actionBarSize"
                 app:fastScrollEnabled="true"
                 tools:listitem="@layout/item_batch_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
