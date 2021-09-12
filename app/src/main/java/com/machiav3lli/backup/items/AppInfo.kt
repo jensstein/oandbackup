@@ -336,7 +336,7 @@ class AppInfo {
         get() = backupHistory.any { it.backupProperties.hasMediaData }
 
     val dataBytes: Long
-        get() = if (appMetaInfo.isSpecial) 0 else storageStats!!.dataBytes
+        get() = if (appMetaInfo.isSpecial) 0 else storageStats?.dataBytes ?: 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
