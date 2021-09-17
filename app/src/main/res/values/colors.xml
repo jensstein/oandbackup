@@ -13,28 +13,36 @@
     <color name="ic_updated">#FF0000</color>
 
     <color name="accent_0">#E0163D</color>
-    <color name="accent_0_trans">#55E0163D</color>
+    <color name="accent_0_trans">#80E0163D</color>
     <color name="accent_1">#7B1FA2</color>
-    <color name="accent_1_trans">#557B1FA2</color>
+    <color name="accent_1_trans">#807B1FA2</color>
     <color name="accent_2">#303F9F</color>
-    <color name="accent_2_trans">#55303F9F</color>
+    <color name="accent_2_trans">#80303F9F</color>
     <color name="accent_3">#00E5FF</color>
-    <color name="accent_3_trans">#5500E5FF</color>
+    <color name="accent_3_trans">#8000E5FF</color>
     <color name="accent_4">#00E676</color>
-    <color name="accent_4_trans">#5500E676</color>
+    <color name="accent_4_trans">#8000E676</color>
     <color name="accent_5">#C6FF00</color>
-    <color name="accent_5_trans">#55C6FF00</color>
+    <color name="accent_5_trans">#80C6FF00</color>
     <color name="accent_6">#FFEA00</color>
-    <color name="accent_6_trans">#55FFEA00</color>
+    <color name="accent_6_trans">#80FFEA00</color>
     <color name="accent_7">#FF9100</color>
-    <color name="accent_7_trans">#55FF9100</color>
+    <color name="accent_7_trans">#80FF9100</color>
 
     <color name="secondary_0">#80FFE7</color>
+    <color name="secondary_0_trans">#8080FFE7</color>
     <color name="secondary_1">#4DB6AC</color>
+    <color name="secondary_1_trans">#804DB6AC</color>
     <color name="secondary_2">#AEEA00</color>
+    <color name="secondary_2_trans">#80AEEA00</color>
     <color name="secondary_3">#FFC400</color>
+    <color name="secondary_3_trans">#80FFC400</color>
     <color name="secondary_4">#FF3D00</color>
+    <color name="secondary_4_trans">#80FF3D00</color>
     <color name="secondary_5">#FF8098</color>
+    <color name="secondary_5_trans">#80FF8098</color>
     <color name="secondary_6">#37474F</color>
+    <color name="secondary_6_trans">#8037474F</color>
     <color name="secondary_7">#163DE0</color>
+    <color name="secondary_7_trans">#80163DE0</color>
 </resources>
