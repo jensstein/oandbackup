@@ -106,9 +106,25 @@ val Context.colorAccent: Int
         return color
     }
 
+val Context.colorOnPrimary: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnPrimary))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
 val Context.colorSecondary: Int
     get() {
         val tA = obtainStyledAttributes(intArrayOf(R.attr.colorSecondary))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
+val Context.colorOnSecondary: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnSecondary))
         val color = tA.getColor(0, 0)
         tA.recycle()
         return color
