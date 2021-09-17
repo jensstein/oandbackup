@@ -106,7 +106,6 @@ dependencies {
     val libsu = "3.1.2"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
-    implementation("com.scottyab:rootbeer-lib:0.1.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
