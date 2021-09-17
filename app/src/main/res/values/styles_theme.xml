@@ -51,33 +51,41 @@
 
     <style name="Secondary0">
         <item name="colorSecondary">@color/secondary_0</item>
+        <item name="colorOnSecondary">@color/secondary_0_trans</item>
     </style>
 
     <style name="Secondary1">
         <item name="colorSecondary">@color/secondary_1</item>
+        <item name="colorOnSecondary">@color/secondary_1_trans</item>
     </style>
 
     <style name="Secondary2">
         <item name="colorSecondary">@color/secondary_2</item>
+        <item name="colorOnSecondary">@color/secondary_2_trans</item>
     </style>
 
     <style name="Secondary3">
         <item name="colorSecondary">@color/secondary_3</item>
+        <item name="colorOnSecondary">@color/secondary_3_trans</item>
     </style>
 
     <style name="Secondary4">
         <item name="colorSecondary">@color/secondary_4</item>
+        <item name="colorOnSecondary">@color/secondary_4_trans</item>
     </style>
 
     <style name="Secondary5">
         <item name="colorSecondary">@color/secondary_5</item>
+        <item name="colorOnSecondary">@color/secondary_5_trans</item>
     </style>
 
     <style name="Secondary6">
         <item name="colorSecondary">@color/secondary_6</item>
+        <item name="colorOnSecondary">@color/secondary_6_trans</item>
     </style>
 
     <style name="Secondary7">
         <item name="colorSecondary">@color/secondary_7</item>
+        <item name="colorOnSecondary">@color/secondary_7_trans</item>
     </style>
 </resources>
