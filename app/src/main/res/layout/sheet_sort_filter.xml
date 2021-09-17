@@ -238,8 +238,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system"
-                        app:checkedIcon="@drawable/ic_system"
-                        app:checkedIconTint="@color/ic_system" />
+                        app:chipIcon="@drawable/ic_system"
+                        app:chipIconTint="@color/ic_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterUser"
@@ -247,8 +247,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user"
-                        app:checkedIcon="@drawable/ic_user"
-                        app:checkedIconTint="@color/ic_user" />
+                        app:chipIcon="@drawable/ic_user"
+                        app:chipIconTint="@color/ic_user" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterSpecial"
@@ -256,8 +256,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_special"
-                        app:checkedIcon="@drawable/ic_special"
-                        app:checkedIconTint="@color/ic_special" />
+                        app:chipIcon="@drawable/ic_special"
+                        app:chipIconTint="@color/ic_special" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -288,7 +288,9 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showNotBackedup" />
+                        android:text="@string/showNotBackedup"
+                        app:chipIcon="@drawable/ic_empty"
+                        app:chipIconTint="?colorPrimary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupApk"
@@ -296,8 +298,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk"
-                        app:checkedIcon="@drawable/ic_apk"
-                        app:checkedIconTint="@color/ic_apk" />
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/ic_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupData"
@@ -305,8 +307,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data"
-                        app:checkedIcon="@drawable/ic_data"
-                        app:checkedIconTint="@color/ic_data" />
+                        app:chipIcon="@drawable/ic_data"
+                        app:chipIconTint="@color/ic_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataDe"
@@ -314,8 +316,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_deviceprotecteddata"
-                        app:checkedIcon="@drawable/ic_de_data"
-                        app:checkedIconTint="@color/ic_de_data" />
+                        app:chipIcon="@drawable/ic_de_data"
+                        app:chipIconTint="@color/ic_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataExt"
@@ -323,8 +325,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_externaldata"
-                        app:checkedIcon="@drawable/ic_external_data"
-                        app:checkedIconTint="@color/ic_ext_data" />
+                        app:chipIcon="@drawable/ic_external_data"
+                        app:chipIconTint="@color/ic_ext_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataObb"
@@ -332,8 +334,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_obbdata"
-                        app:checkedIcon="@drawable/ic_obb_data"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_obb_data"
+                        app:chipIconTint="@color/ic_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataMedia"
@@ -341,8 +343,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_mediadata"
-                        app:checkedIcon="@drawable/ic_media_data"
-                        app:checkedIconTint="@color/ic_media" />
+                        app:chipIcon="@drawable/ic_media_data"
+                        app:chipIconTint="@color/ic_media" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -372,7 +374,9 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
+                        android:text="@string/radio_all"
+                        app:chipIcon="@drawable/ic_all"
+                        app:chipIconTint="?colorPrimary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialLaunchable"
@@ -380,8 +384,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_launchable"
-                        app:checkedIcon="@drawable/ic_launchable"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_launchable"
+                        app:chipIconTint="@color/ic_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNewUpdated"
@@ -389,8 +393,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated"
-                        app:checkedIcon="@drawable/ic_updated"
-                        app:checkedIconTint="@color/ic_updated" />
+                        app:chipIcon="@drawable/ic_updated"
+                        app:chipIconTint="@color/ic_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
@@ -398,8 +402,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups"
-                        app:checkedIcon="@drawable/ic_old"
-                        app:checkedIconTint="@color/ic_exodus" />
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/ic_exodus" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNotInstalled"
@@ -407,8 +411,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotInstalled"
-                        app:checkedIcon="@drawable/ic_delete"
-                        app:checkedIconTint="?colorSecondary" />
+                        app:chipIcon="@drawable/ic_delete"
+                        app:chipIconTint="?colorSecondary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton
