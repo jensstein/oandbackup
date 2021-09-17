@@ -68,7 +68,7 @@
                     android:id="@+id/dismiss"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large"
-                    android:background="@drawable/bg_ripple_click"
+                    android:background="@drawable/bg_ripple_click_negative"
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/ic_arrow_down"

@@ -137,7 +137,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="end"
                         android:layout_marginStart="@dimen/cards_spacing"
-                        android:background="@drawable/bg_ripple_click"
+                        android:background="@drawable/bg_ripple_click_negative"
                         android:clickable="true"
                         android:focusable="true"
                         android:src="@drawable/ic_arrow_down"
