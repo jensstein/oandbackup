@@ -427,7 +427,7 @@
                     android:id="@+id/reset"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:layout_marginTop="@dimen/cards_spacing"
                     android:background="@drawable/bg_button_negative_ripple"
                     android:clickable="true"
                     android:focusable="true"
