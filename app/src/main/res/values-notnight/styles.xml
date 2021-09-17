@@ -193,20 +193,20 @@
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipCornerRadius">8dp</item>
         <item name="chipStrokeWidth">0dp</item>
-        <item name="rippleColor">?colorAccent</item>
+        <item name="rippleColor">?backgroundColor</item>
         <item name="chipSurfaceColor">?colorPrimaryDark</item>
         <item name="android:textColor">?colorControlNormal</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
         <item name="chipStrokeColor">?colorOnPrimary</item>
-        <item name="rippleColor">?colorPrimaryDark</item>
+        <item name="rippleColor">?colorPrimary</item>
         <item name="chipSurfaceColor">?colorOnPrimary</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
         <item name="chipStrokeColor">?colorOnSecondary</item>
-        <item name="rippleColor">?colorPrimaryDark</item>
+        <item name="rippleColor">?colorSecondary</item>
         <item name="chipSurfaceColor">?colorOnSecondary</item>
     </style>
 
