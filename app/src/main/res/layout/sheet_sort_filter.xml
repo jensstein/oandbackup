@@ -182,31 +182,39 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByLabel"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortLabel" />
+                        android:text="@string/sortLabel"
+                        app:chipIcon="@drawable/ic_label"
+                        app:chipIconTint="?colorPrimary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByPackageName"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortPackageName" />
+                        android:text="@string/sortPackageName"
+                        app:chipIcon="@drawable/ic_special"
+                        app:chipIconTint="?colorPrimary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByDataSize"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortDataSize" />
+                        android:text="@string/sortDataSize"
+                        app:chipIcon="@drawable/ic_sizes"
+                        app:chipIconTint="?colorPrimary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByBackupDate"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortBackupDate" />
+                        android:text="@string/sortBackupDate"
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="?colorPrimary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
