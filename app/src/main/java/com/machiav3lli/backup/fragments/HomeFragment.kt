@@ -180,7 +180,8 @@ class HomeFragment : NavigationFragment(),
             }.start()
         }
         binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+            if (sheetSortFilter != null && sheetSortFilter!!.isVisible) sheetSortFilter?.dismissAllowingStateLoss()
+            sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
                 getStats(appInfoList)
             )
