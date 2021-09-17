@@ -168,7 +168,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system"
                         app:chipIcon="@drawable/ic_system"
-                        app:chipIconTint="@color/ic_system" />
+                        app:chipIconTint="@color/chip_icon_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterUser"
@@ -177,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user"
                         app:chipIcon="@drawable/ic_user"
-                        app:chipIconTint="@color/ic_user" />
+                        app:chipIconTint="@color/chip_icon_user" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -211,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk"
                         app:chipIcon="@drawable/ic_apk"
-                        app:chipIconTint="@color/ic_apk" />
+                        app:chipIconTint="@color/chip_icon_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupData"
@@ -220,7 +220,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data"
                         app:chipIcon="@drawable/ic_data"
-                        app:chipIconTint="@color/ic_data" />
+                        app:chipIconTint="@color/chip_icon_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataDe"
@@ -229,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_deviceprotecteddata"
                         app:chipIcon="@drawable/ic_de_data"
-                        app:chipIconTint="@color/ic_de_data" />
+                        app:chipIconTint="@color/chip_icon_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataExt"
@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_externaldata"
                         app:chipIcon="@drawable/ic_external_data"
-                        app:chipIconTint="@color/ic_ext_data" />
+                        app:chipIconTint="@color/chip_icon_ext_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataObb"
@@ -247,7 +247,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_obbdata"
                         app:chipIcon="@drawable/ic_obb_data"
-                        app:chipIconTint="@color/ic_obb" />
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataMedia"
@@ -256,7 +256,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_mediadata"
                         app:chipIcon="@drawable/ic_media_data"
-                        app:chipIconTint="@color/ic_media" />
+                        app:chipIconTint="@color/chip_icon_media" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -288,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_all"
                         app:chipIcon="@drawable/ic_all"
-                        app:chipIconTint="?colorPrimary" />
+                        app:chipIconTint="@color/chip_icon_accent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialLaunchable"
@@ -297,7 +297,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/radio_launchable"
                         app:chipIcon="@drawable/ic_launchable"
-                        app:chipIconTint="@color/ic_obb" />
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNewUpdated"
@@ -306,7 +306,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated"
                         app:chipIcon="@drawable/ic_updated"
-                        app:chipIconTint="@color/ic_updated" />
+                        app:chipIconTint="@color/chip_icon_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
@@ -315,7 +315,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups"
                         app:chipIcon="@drawable/ic_old"
-                        app:chipIconTint="@color/ic_exodus" />
+                        app:chipIconTint="@color/chip_icon_exodus" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
