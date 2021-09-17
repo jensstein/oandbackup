@@ -199,15 +199,15 @@
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorAccent</item>
+        <item name="chipStrokeColor">?colorOnPrimary</item>
         <item name="rippleColor">?colorPrimaryDark</item>
-        <item name="chipSurfaceColor">?colorAccent</item>
+        <item name="chipSurfaceColor">?colorOnPrimary</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorSecondary</item>
+        <item name="chipStrokeColor">?colorOnSecondary</item>
         <item name="rippleColor">?colorPrimaryDark</item>
-        <item name="chipSurfaceColor">?colorSecondary</item>
+        <item name="chipSurfaceColor">?colorOnSecondary</item>
     </style>
 
     <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">
