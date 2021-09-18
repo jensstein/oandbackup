@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_exodus">#AB47BC</color>
+    <color name="ic_exodus_trans">#80AB47BC</color>
     <color name="ic_system">#4590FE</color>
+    <color name="ic_system_trans">#804590FE</color>
     <color name="ic_user">#FE9045</color>
+    <color name="ic_user_trans">#80FE9045</color>
     <color name="ic_special">#9045FE</color>
+    <color name="ic_special_trans">#809045FE</color>
     <color name="ic_apk">#3AEA85</color>
+    <color name="ic_apk_trans">#803AEA85</color>
     <color name="ic_data">#F445B0</color>
+    <color name="ic_data_trans">#80F445B0</color>
     <color name="ic_ext_data">#B3CDFF</color>
+    <color name="ic_ext_data_trans">#80B3CDFF</color>
     <color name="ic_de_data">#FADB18</color>
+    <color name="ic_de_data_trans">#80FADB18</color>
     <color name="ic_obb">#CAFB68</color>
+    <color name="ic_obb_trans">#80CAFB68</color>
     <color name="ic_media">#FF8098</color>
+    <color name="ic_media_trans">#80FF8098</color>
     <color name="ic_updated">#FF0000</color>
+    <color name="ic_updated_trans">#80FF0000</color>
 
     <color name="accent_0">#E0163D</color>
     <color name="accent_0_trans">#80E0163D</color>
