@@ -25,6 +25,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingTop="@dimen/small_spacing">
 
@@ -41,6 +43,7 @@
                 android:layout_marginTop="@dimen/cards_spacing"
                 android:background="@drawable/bg_card_ripple"
                 android:clickable="false"
+                android:elevation="8dp"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat

@@ -26,6 +26,7 @@
         android:id="@+id/shimmer_frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:paddingHorizontal="@dimen/cards_spacing"
         android:paddingVertical="4dp"
         app:shimmer_base_alpha="0.25">
@@ -33,7 +34,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/ItemLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:elevation="8dp">
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/apkCheckbox"

@@ -26,11 +26,13 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
+            android:clipChildren="false"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +58,7 @@
                 style="@style/Button.Round"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:elevation="2dp"
+                android:elevation="8dp"
                 android:tooltipText="@string/sched_blocklist"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +76,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView

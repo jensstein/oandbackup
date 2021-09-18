@@ -25,6 +25,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:paddingHorizontal="@dimen/cards_spacing"
         android:paddingVertical="4dp">
 
@@ -39,6 +40,7 @@
                 android:layout_height="@dimen/icon_large"
                 android:layout_marginEnd="@dimen/cards_spacing"
                 android:contentDescription="@string/app_s_icon"
+                android:elevation="8dp"
                 android:src="@drawable/ic_placeholder"
                 app:layout_constraintBottom_toTopOf="@id/tagsGroup"
                 app:layout_constraintEnd_toStartOf="@id/label"

@@ -25,13 +25,16 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:paddingHorizontal="@dimen/cards_spacing"
-        android:paddingVertical="4dp">
+        android:paddingVertical="@dimen/buttons_spacing">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/ItemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_ripple"
+            android:clipChildren="false"
             android:paddingHorizontal="@dimen/cards_spacing"
             android:paddingVertical="4dp">
 

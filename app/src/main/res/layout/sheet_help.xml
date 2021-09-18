@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_static"
+            android:clipChildren="false"
             android:scrollbars="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +42,7 @@
                     android:id="@+id/help_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipToPadding="false"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@id/help_legend"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +96,7 @@
                         android:layout_marginTop="@dimen/cards_spacing"
                         android:background="@drawable/bg_card_ripple"
                         android:clickable="false"
+                        android:elevation="8dp"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -238,6 +241,7 @@
                     android:id="@+id/help_legend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     android:paddingBottom="@dimen/cards_spacing"
@@ -551,6 +555,8 @@
                     android:layout_marginHorizontal="@dimen/cards_spacing"
                     android:layout_marginBottom="@dimen/cards_spacing"
                     android:background="@drawable/bg_card_ripple"
+                    android:clipToPadding="false"
+                    android:elevation="8dp"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     app:layout_constraintBottom_toBottomOf="parent"

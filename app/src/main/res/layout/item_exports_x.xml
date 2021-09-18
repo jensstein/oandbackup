@@ -26,8 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/cards_spacing"
-        android:layout_marginVertical="4dp"
+        android:layout_marginVertical="@dimen/buttons_spacing"
         android:background="@drawable/bg_card_static"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="8dp"
         android:padding="@dimen/cards_spacing">
 
         <androidx.appcompat.widget.AppCompatTextView

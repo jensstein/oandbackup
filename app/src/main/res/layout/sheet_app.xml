@@ -36,6 +36,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:padding="@dimen/cards_spacing">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -44,6 +46,7 @@
                     android:layout_height="@dimen/icon_large"
                     android:layout_marginEnd="@dimen/cards_spacing"
                     android:contentDescription="@string/app_s_icon"
+                    android:elevation="8dp"
                     android:src="@drawable/ic_placeholder"
                     app:layout_constraintBottom_toTopOf="@id/manager"
                     app:layout_constraintEnd_toStartOf="@id/label"
@@ -107,6 +110,8 @@
                     android:id="@+id/manager"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@id/appTypeLine"
@@ -530,10 +535,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_spacing"
+                    android:clipChildren="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/actions"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_backup_x" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

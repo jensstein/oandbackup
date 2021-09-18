@@ -25,11 +25,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
+            android:clipChildren="false"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:autofillHints="@string/searchHint"
                 android:background="@drawable/bg_bar_static_round_accent"
-                android:elevation="2dp"
+                android:elevation="8dp"
                 android:foregroundGravity="center_horizontal"
                 android:imeOptions="flagNoExtractUi|actionSearch"
                 android:inputType="text"
@@ -139,6 +141,7 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/icon_large"
                 app:fastScrollEnabled="true"
