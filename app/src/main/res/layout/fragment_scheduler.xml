@@ -88,11 +88,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/addSchedule"
+                    style="@style/ImageButton.Positive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/cards_spacing"
                     android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:background="@drawable/bg_button_positive_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingVertical="@dimen/large_spacing"

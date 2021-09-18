@@ -116,10 +116,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/exodusReport"
+                        style="@style/ImageButton.Exodus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_exodus_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_exodus"
                         android:tooltipText="@string/exodus_report"
@@ -130,10 +130,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/launchApp"
+                        style="@style/ImageButton.Launch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_launch_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_launchable"
                         android:tooltipText="@string/launch_app"
@@ -144,10 +144,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/enableDisable"
+                        style="@style/ImageButton.Neutral"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_neutral_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_blocklist"
                         android:tooltipText="@string/disablePackage"
@@ -158,10 +158,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/uninstall"
+                        style="@style/ImageButton.Negative"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_wipe_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_delete"
                         android:tooltipText="@string/uninstall"
@@ -172,10 +172,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/addToBlocklist"
+                        style="@style/ImageButton.Blocklist"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_blocklist_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_add_to_blocklist"
                         android:tooltipText="@string/global_blocklist_add"

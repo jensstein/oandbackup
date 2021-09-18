@@ -105,22 +105,31 @@
         <item name="android:padding">@dimen/cards_spacing</item>
     </style>
 
-    <style name="Button.Positive" parent="Widget.Material3.Button">
-        <item name="strokeWidth">3dp</item>
-        <item name="strokeColor">?colorAccent</item>
-        <item name="cornerRadius">8dp</item>
+    <style name="ImageButton.Positive" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/bg_button_positive_ripple</item>
+        <item name="android:tint">?colorControlNormal</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="backgroundTint">@android:color/transparent</item>
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">?colorControlNormal</item>
     </style>
 
-    <style name="Button.Negative" parent="Widget.Material3.Button">
-        <item name="strokeWidth">3dp</item>
-        <item name="strokeColor">?colorSecondary</item>
-        <item name="cornerRadius">8dp</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="backgroundTint">@android:color/transparent</item>
-        <item name="android:textColor">?colorSecondary</item>
+    <style name="ImageButton.Negative" parent="ImageButton.Positive">
+        <item name="android:background">@drawable/bg_button_negative_ripple</item>
+    </style>
+
+    <style name="ImageButton.Exodus" parent="ImageButton.Positive">
+        <item name="android:background">@drawable/bg_button_exodus_ripple</item>
+    </style>
+
+    <style name="ImageButton.Launch" parent="ImageButton.Positive">
+        <item name="android:background">@drawable/bg_button_launch_ripple</item>
+    </style>
+
+    <style name="ImageButton.Neutral" parent="ImageButton.Positive">
+        <item name="android:background">@drawable/bg_button_neutral_ripple</item>
+    </style>
+
+    <style name="ImageButton.Blocklist" parent="ImageButton.Positive">
+        <item name="android:background">@drawable/bg_button_blocklist_ripple</item>
     </style>
 
     <style name="Button.Round" parent="Widget.MaterialComponents.Button">

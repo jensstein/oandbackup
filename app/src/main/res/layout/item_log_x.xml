@@ -85,10 +85,10 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/share"
+                style="@style/ImageButton.Positive"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/cards_spacing"
-                android:background="@drawable/bg_button_positive_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_share"
@@ -99,10 +99,10 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/delete"
+                style="@style/ImageButton.Negative"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/cards_spacing"
-                android:background="@drawable/bg_button_negative_ripple"
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_delete"

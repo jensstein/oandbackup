@@ -396,12 +396,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/removeButton"
+                    style="@style/ImageButton.Negative"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/cards_spacing"
-                    android:background="@drawable/bg_button_negative_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:src="@drawable/ic_delete"
                     app:layout_constraintBottom_toBottomOf="@id/enableCheckbox"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -415,7 +413,6 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/sched_activateButton"
-                    android:textColor="?colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
