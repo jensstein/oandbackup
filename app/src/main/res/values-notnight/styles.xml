@@ -67,7 +67,7 @@
     </style>
 
     <style name="Bar.BottomNavigation" parent="@style/Widget.Material3.BottomNavigationView">
-        <item name="itemIconTint">@color/chip_text</item>
+        <item name="itemIconTint">@color/button_navbar</item>
         <item name="labelVisibilityMode">selected</item>
         <item name="itemRippleColor">?colorAccent</item>
         <item name="itemActiveIndicatorStyle">@style/Bar.Bottom.ActiveIndicator</item>
@@ -76,7 +76,7 @@
     </style>
 
     <style name="Bar.Bottom.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">?colorOnPrimary</item>
+        <item name="android:color">?colorPrimary</item>
     </style>
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Light" />
