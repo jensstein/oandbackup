@@ -241,6 +241,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/filtersTitle"
+                    app:selectionRequired="false"
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
@@ -292,6 +293,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle"
+                    app:selectionRequired="false"
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
