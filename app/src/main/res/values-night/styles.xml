@@ -91,12 +91,12 @@
     <style name="Bar.AppBar" parent="Widget.Design.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginHorizontal">8dp</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:padding">8dp</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:elevation">2dp</item>
+        <item name="android:clipToPadding">false</item>
     </style>
 
     <!-- Buttons, Chips & Widgets -->
