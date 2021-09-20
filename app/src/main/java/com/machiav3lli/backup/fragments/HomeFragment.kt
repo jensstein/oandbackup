@@ -149,6 +149,7 @@ class HomeFragment : NavigationFragment(),
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
             resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )
+        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
         homeFastAdapter = FastAdapter.with(homeItemAdapter)
         updatedFastAdapter = FastAdapter.with(updatedItemAdapter)

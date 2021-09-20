@@ -123,6 +123,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 requireActivity().theme
             )
         )
+        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         batchFastAdapter?.setHasStableIds(true)
