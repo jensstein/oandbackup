@@ -211,25 +211,23 @@
     </style>
 
     <style name="Chip.Action" parent="Widget.Material3.Chip.Assist">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipBackgroundColor">?colorPrimaryDark</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipCornerRadius">8dp</item>
         <item name="chipStrokeWidth">0dp</item>
         <item name="rippleColor">?backgroundColor</item>
-        <item name="chipSurfaceColor">?colorPrimaryDark</item>
         <item name="android:textColor">?colorControlNormal</item>
+        <item name="android:elevation">8dp</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorOnPrimary</item>
         <item name="rippleColor">?colorPrimary</item>
-        <item name="chipSurfaceColor">?colorOnPrimary</item>
+        <item name="chipBackgroundColor">?colorOnPrimary</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
-        <item name="chipStrokeColor">?colorOnSecondary</item>
         <item name="rippleColor">?colorSecondary</item>
-        <item name="chipSurfaceColor">?colorOnSecondary</item>
+        <item name="chipBackgroundColor">?colorOnSecondary</item>
     </style>
 
     <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">
