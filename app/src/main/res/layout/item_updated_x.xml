@@ -22,43 +22,39 @@
 
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_ripple_click"
         android:clickable="true"
+        android:clipChildren="false"
         android:focusable="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/icon_large"
+            android:layout_height="@dimen/icon_large"
+            android:layout_marginHorizontal="@dimen/cards_spacing"
+            android:layout_marginTop="@dimen/cards_spacing"
+            android:contentDescription="@string/app_s_icon"
+            android:elevation="8dp"
+            android:src="@drawable/ic_placeholder"
+            app:layout_constraintBottom_toTopOf="@id/label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/icon"
-                android:layout_width="@dimen/icon_large"
-                android:layout_height="@dimen/icon_large"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:layout_marginTop="@dimen/cards_spacing"
-                android:contentDescription="@string/app_s_icon"
-                android:elevation="8dp"
-                android:src="@drawable/ic_placeholder"
-                app:layout_constraintBottom_toTopOf="@id/label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/label"
-                style="@style/TextViewWrapped"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/small_spacing"
-                android:gravity="center_horizontal"
-                android:textAppearance="@style/TextAppearance.Lines"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/icon" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/label"
+            style="@style/TextViewWrapped"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/small_spacing"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.Lines"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
