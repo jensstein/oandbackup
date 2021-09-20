@@ -191,4 +191,4 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 
 #### How can I open encrypted backups on my computer?  
   
-You can find the encryption algorithm and setup in this class: [oandbackupx/Crypto.kt at master · machiav3lli/oandbackupx · GitHub](https://github.com/machiav3lli/oandbackupx/blob/master/app/src/main/java/com/machiav3lli/backup/handler/Crypto.kt) . The rest depends on the version you used.
+You can find the encryption algorithm and setup in this class: [oandbackupx/Crypto.kt at master · machiav3lli/oandbackupx · GitHub](https://github.com/machiav3lli/oandbackupx/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
