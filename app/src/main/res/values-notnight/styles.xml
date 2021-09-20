@@ -36,6 +36,7 @@
         <item name="fastScrollHorizontalTrackDrawable">@drawable/fastscroll_track</item>
         <item name="fastScrollVerticalThumbDrawable">@drawable/fastscroll_thumb</item>
         <item name="fastScrollVerticalTrackDrawable">@drawable/fastscroll_track</item>
+        <item name="autoCompleteTextViewStyle">@style/Cursor.Drawable</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">
@@ -105,6 +106,10 @@
         <item name="android:padding">@dimen/cards_spacing</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="Cursor.Drawable" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
 
     <style name="ImageButton.Positive" parent="Widget.AppCompat.ImageButton">
