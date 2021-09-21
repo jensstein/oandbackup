@@ -116,7 +116,7 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
-    val fastadapter = "5.5.0"
+    val fastadapter = "5.5.1"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
@@ -125,7 +125,7 @@ dependencies {
     // Tests
     implementation("androidx.test:rules:1.4.0")
     androidTestImplementation("androidx.test:runner:1.4.0")
-    val junitJupiter = "5.7.1"
+    val junitJupiter = "5.8.0"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
