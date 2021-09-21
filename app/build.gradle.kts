@@ -91,7 +91,7 @@ android {
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31")
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
