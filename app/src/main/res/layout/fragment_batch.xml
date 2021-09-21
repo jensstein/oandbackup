@@ -25,13 +25,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
-            android:clipChildren="false"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_gradient_alpha_bottom_top"
+            android:clipToPadding="false"
             android:elevation="@dimen/small_spacing"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/cards_spacing"
