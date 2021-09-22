@@ -77,7 +77,7 @@
             android:id="@+id/progressBar"
             android:layout_width="0dp"
             android:layout_height="@dimen/large_spacing"
-            android:layout_margin="@dimen/cards_spacing"
+            android:layout_marginHorizontal="@dimen/cards_spacing"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/modeBar"
             app:layout_constraintEnd_toEndOf="parent"
