@@ -283,8 +283,6 @@ class HomeFragment : NavigationFragment(),
             }
             .filterNotNull()
 
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = selectedItems.size
         var errors = ""
         var resultsSuccess = true
         var counter = 0
@@ -299,7 +297,7 @@ class HomeFragment : NavigationFragment(),
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        binding.progressBar.progress = counter
+                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
@@ -340,7 +338,7 @@ class HomeFragment : NavigationFragment(),
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    binding.progressBar.visibility = View.GONE
+                    requireMainActivity().hideProgress()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
@@ -426,5 +424,15 @@ class HomeFragment : NavigationFragment(),
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
+    }
+
+    override fun updateProgress(progress: Int, max: Int) {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.max = max
+        binding.progressBar.progress = progress
+    }
+
+    override fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
     }
 }

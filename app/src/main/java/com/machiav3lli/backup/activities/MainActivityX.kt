@@ -34,6 +34,7 @@ import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
+import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.*
@@ -60,6 +61,7 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var refreshViewController: RefreshViewController
+    private lateinit var progressViewController: ProgressViewController
 
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
@@ -180,6 +182,20 @@ class MainActivityX : BaseActivity() {
 
     fun refreshView() {
         if (::refreshViewController.isInitialized) refreshViewController.refreshView()
+    }
+
+    fun setProgressViewController(progressViewController: ProgressViewController) {
+        this.progressViewController = progressViewController
+    }
+
+    fun updateProgress(progress: Int, max: Int) {
+        if (::progressViewController.isInitialized)
+            this.progressViewController.updateProgress(progress, max)
+    }
+
+    fun hideProgress() {
+        if (::progressViewController.isInitialized)
+            this.progressViewController.hideProgress()
     }
 
     fun showSnackBar(message: String) {
