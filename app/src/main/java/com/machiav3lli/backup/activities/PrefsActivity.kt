@@ -56,7 +56,8 @@ class PrefsActivity : BaseActivity() {
             else supportFragmentManager.popBackStack()
         }
         binding.helpButton.setOnClickListener {
-            if (sheetHelp == null) sheetHelp = HelpSheet()
+            if (sheetHelp != null && sheetHelp!!.isVisible) sheetHelp?.dismissAllowingStateLoss()
+            sheetHelp = HelpSheet()
             sheetHelp!!.showNow(supportFragmentManager, "HELPSHEET")
         }
     }
