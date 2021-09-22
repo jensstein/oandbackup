@@ -177,7 +177,7 @@ class HomeFragment : NavigationFragment(),
                     true
                 ) { newList: Set<String> ->
                     requireMainActivity().viewModel.updateBlocklist(newList)
-                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+                }.showNow(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
         binding.buttonSortFilter.setOnClickListener {
@@ -186,7 +186,7 @@ class HomeFragment : NavigationFragment(),
                 requireActivity().sortFilterModel,
                 getStats(appInfoList)
             )
-            sheetSortFilter?.show(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
+            sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
         homeFastAdapter?.onClickListener =
             { _: View?, _: IAdapter<HomeItemX>?, item: HomeItemX?, position: Int? ->

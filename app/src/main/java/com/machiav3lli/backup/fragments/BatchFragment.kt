@@ -147,7 +147,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     true
                 ) { newList: Set<String> ->
                     requireMainActivity().viewModel.updateBlocklist(newList)
-                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+                }.showNow(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
         binding.buttonSortFilter.setOnClickListener {
@@ -155,7 +155,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 requireActivity().sortFilterModel,
                 getStats(appInfoList)
             )
-            sheetSortFilter?.show(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
+            sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
         batchFastAdapter?.onClickListener =
             { _: View?, _: IAdapter<BatchItemX>?, item: BatchItemX, _: Int? ->
