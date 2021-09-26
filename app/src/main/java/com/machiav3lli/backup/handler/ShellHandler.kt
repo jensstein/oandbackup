@@ -46,7 +46,7 @@ class ShellHandler {
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
-        val shellResult = runAsRoot("$utilBoxQuoted ls ${quote(path)}")
+        val shellResult = runAsRoot("$utilBoxQuoted ls -bA1 ${quote(path)}")
         return shellResult.out.toTypedArray()
     }
 
@@ -63,13 +63,13 @@ class ShellHandler {
         // "drwxrwx--x 4 u0_a627 u0_a627 4096 2020-11-26 04:35:21.543772855 +0100 files"
         // Special case:
         // "lrwxrwxrwx 1 root    root      64 2020-11-24 19:41:09.569333987 +0100 lib -> /data/app/com.almalence.opencam-SekQMXi3UuGHZ_CVtPxhCA==/lib/arm"
-        val shellResult = runAsRoot("$utilBoxQuoted ls -All ${quote(path)}")
+        val shellResult = runAsRoot("$utilBoxQuoted ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
             .filter { line: String -> line.isNotEmpty() }
             .filter { line: String -> !line.startsWith("total") }
             .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
-            .map { line: String -> FileInfo.fromLsOOutput(line, relativeParent, path) }
+            .map { line: String -> FileInfo.fromLsOutput(line, relativeParent, path) }
             .toMutableList()
         if (recursive) {
             val directories = result
@@ -101,7 +101,7 @@ class ShellHandler {
         // apparently uid/gid is less tested than names
         var shellResult: Shell.Result? = null
         try {
-            val command = "$utilBoxQuoted ls -dlZ ${quote(filepath)}"
+            val command = "$utilBoxQuoted ls -bdAlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
             return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
@@ -181,18 +181,51 @@ class ShellHandler {
         }
 
         companion object {
-            private val PATTERN_LINKSPLIT = Pattern.compile(" -> ")
-            private val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
-            private val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
+            private val PATTERN_LINKSPLIT       = Pattern.compile(" -> ")
+            private val FALLBACK_MODE_FOR_DIR   = translatePosixPermissionToMode("rwxrwx--x")
+            private val FALLBACK_MODE_FOR_FILE  = translatePosixPermissionToMode("rw-rw----")
+            private val FALLBACK_MODE_FOR_CACHE = translatePosixPermissionToMode("rwxrws--x")
+
+            /*  from toybox ls.c
+
+                  for (i = 0; i<len; i++) {
+                    *to++ = '\\';
+                    if (strchr(TT.escmore, from[i])) *to++ = from[i];
+                    else if (-1 != (j = stridx("\\\a\b\033\f\n\r\t\v", from[i])))
+                      *to++ = "\\abefnrtv"[j];
+                    else to += sprintf(to, "%03o", from[i]);
+                  }
+            */
+
+            fun unescapeLsOutput(str : String) : String {
+                val is_escaped = Regex("""\\([\\abefnrtv ]|\d\d\d)""")
+                return str.replace(
+                            is_escaped
+                        ) { match: MatchResult ->
+                            val matched = match.groups[1]!!.value
+                            when (matched) {
+                                """\""" -> """\"""
+                                "a" -> "\u0007"
+                                "b" -> "\u0008"
+                                "e" -> "\u001b"
+                                "f" -> "\u000c"
+                                "n" -> "\u000a"
+                                "r" -> "\u000d"
+                                "t" -> "\u0009"
+                                "v" -> "\u000b"
+                                " " -> " "
+                                else -> (((matched[0].digitToInt() * 8) + matched[1].digitToInt()) * 8 + matched[2].digitToInt()).toChar().toString()
+                            }
+                        }
+            }
 
             /**
-             * Create an instance of FileInfo from a line of the output from
-             * `ls -AofF`
+             * Create an instance of FileInfo from a line of ls output
              *
-             * @param lsLine single output line of `ls -Al`
+             * @param lsLine single output line from ls -bAll
              * @return an instance of FileInfo
              */
-            fun fromLsOOutput(
+            fun fromLsOutput(
                 lsLine: String,
                 parentPath: String?,
                 absoluteParent: String
@@ -217,11 +250,12 @@ class ShellHandler {
                     parent = File(parent).parent!!
                     tokens[8] = tokens[8].substring(parent.length + 1)
                 }
+                val fileName = unescapeLsOutput(tokens[8])
                 filePath =
                     if (parentPath == null || parentPath.isEmpty()) {
-                        tokens[8]
+                        fileName
                     } else {
-                        parentPath + '/' + tokens[8]
+                        parentPath + '/' + fileName
                     }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
@@ -236,7 +270,7 @@ class ShellHandler {
                     // make any sense.
                     if (filePath == "cache" || filePath == "code_cache") {
                         // Fall back to the known value of these directories
-                        fileMode = translatePosixPermissionToMode("rwxrws--x")
+                        fileMode = FALLBACK_MODE_FOR_CACHE
                     } else {
                         fileMode =
                             if (tokens[0][0] == 'd') {
@@ -288,8 +322,8 @@ class ShellHandler {
                 return result
             }
 
-            fun fromLsOOutput(lsLine: String, absoluteParent: String): FileInfo {
-                return fromLsOOutput(lsLine, "", absoluteParent)
+            fun fromLsOutput(lsLine: String, absoluteParent: String): FileInfo {
+                return fromLsOutput(lsLine, "", absoluteParent)
             }
         }
     }
@@ -347,12 +381,21 @@ class ShellHandler {
             return runShellCommand(SuRunnableShellCommand(), *commands)
         }
 
-        //val charactersToBeEscaped = Regex("""[^-~+!^%,./_a-zA-Z0-9]""")  // whitelist inside [^...], doesn't work, shell e.g. does not like "\=" and others, so use blacklist instead
+        // the Android command line shell is mksh
+        // mksh quoting
+        //   '...'  single quotes would do well, but single quotes cannot be used
+        //   $'...' dollar + single quotes need many escapes
+        //   "..."  needs only a few escaped chars (backslash, dollar, double quote, back tick)
+        //   from mksh man page:
+        //      double quote quotes all characters,
+        //          except '$' , '`' and '\' ,
+        //          up to the next unquoted double quote
         val charactersToBeEscaped =
-            Regex("""[\\$"`]""")   // blacklist, only escape those that are necessary
+            Regex("""[\\${'$'}"`]""")   // blacklist, only escape those that are necessary
 
         fun quote(parameter: String): String {
-            return "\"${parameter.replace(charactersToBeEscaped) { c -> "\\${c.value}" }}\""
+            return "\"${parameter.replace(charactersToBeEscaped) { "\\${it.value}" }}\""
+            //return "\"${parameter.replace(charactersToBeEscaped) { "\\${(0xFF and it.value[0].code).toString(8).padStart(3, '0')}" }}\""
         }
 
         fun quote(parameter: File): String {
