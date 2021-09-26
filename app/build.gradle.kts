@@ -34,6 +34,7 @@ android {
         versionName = "6.0.1"
 
         testApplicationId = "${applicationId}.tests"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -80,6 +81,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -87,11 +93,16 @@ android {
     lint {
         isAbortOnError = false
     }
+    packagingOptions {
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
+    }
 }
 
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31")
+
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
@@ -122,15 +133,14 @@ dependencies {
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
-    // Tests
-    implementation("androidx.test:rules:1.4.0")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    val junitJupiter = "5.8.0"
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    // (Optional) If "Parameterized Tests" are needed
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiter")
+    //// Testing
+
+    val androidxTest = "1.4.0"
+
+    // junit4
+
+    implementation("androidx.test:rules:$androidxTest")
+    androidTestImplementation("androidx.test:runner:$androidxTest")
 }
 
 // using a task as a preBuild dependency instead of a function that takes some time insures that it runs
@@ -154,11 +164,8 @@ tasks.preBuild.dependsOn("detectAndroidLocals")
 
 // tells all test tasks to use Gradle's built-in JUnit 5 support
 tasks.withType<Test> {
-    useJUnitPlatform()
-
-    // tells the test runner to display results of all tests,
-    // not just failed ones
-    testLogging {
-        events("passed", "skipped", "failed")
-    }
+    useJUnit()
+    //useTestNG()
+    //useJUnitPlatform()
 }
+
