@@ -19,7 +19,6 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.DialogInterface
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
@@ -46,7 +45,8 @@ abstract class BaseActionTask(
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getProgressMessage(mainActivityX, actionType)
-            UiThreadStatement.runOnUiThread {
+            // UiThreadStatement.runOnUiThread {
+            mainActivityX.runOnUiThread {
                 mainActivityX.showSnackBar("${app.packageLabel}: $message")
             }
             showNotification(
