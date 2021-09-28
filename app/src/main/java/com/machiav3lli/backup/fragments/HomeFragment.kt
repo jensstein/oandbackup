@@ -177,7 +177,7 @@ class HomeFragment : NavigationFragment(),
                     true
                 ) { newList: Set<String> ->
                     requireMainActivity().viewModel.updateBlocklist(newList)
-                }.showNow(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
+                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
         binding.buttonSortFilter.setOnClickListener {
