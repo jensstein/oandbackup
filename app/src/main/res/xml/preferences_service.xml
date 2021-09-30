@@ -43,7 +43,7 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
-        android:icon="@drawable/ic_blocklist"
+        android:icon="@drawable/ic_exclude"
         android:key="excludeCache"
         android:summary="@string/prefs_excludecache_summary"
         android:title="@string/prefs_excludecache" />

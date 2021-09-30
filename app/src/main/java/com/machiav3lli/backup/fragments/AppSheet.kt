@@ -167,7 +167,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
                     binding.enableDisable.tooltipText = getString(R.string.enablePackage)
                 } else {
-                    binding.enableDisable.setImageResource(R.drawable.ic_blocklist)
+                    binding.enableDisable.setImageResource(R.drawable.ic_exclude)
                     binding.enableDisable.tooltipText = getString(R.string.disablePackage)
                 }
             }

@@ -154,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
                         android:paddingVertical="@dimen/med_spacing"
-                        android:src="@drawable/ic_blocklist"
+                        android:src="@drawable/ic_exclude"
                         android:tooltipText="@string/disablePackage"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/uninstall"

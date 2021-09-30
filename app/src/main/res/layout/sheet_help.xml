@@ -311,7 +311,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_blocklist" />
+                            app:srcCompat="@drawable/ic_exclude" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="0dp"
