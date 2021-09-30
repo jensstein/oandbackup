@@ -36,7 +36,7 @@
         android:title="@string/prefs_schedulesexportimport" />
 
     <androidx.preference.Preference
-        android:icon="@drawable/ic_revisions"
+        android:icon="@drawable/ic_list_ordered"
         android:key="saveAppsList"
         android:summary="@string/prefs_saveappslist_summary"
         android:title="@string/prefs_saveappslist" />

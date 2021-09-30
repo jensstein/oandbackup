@@ -57,11 +57,12 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
+                android:tint="?colorControlNormal"
                 android:tooltipText="@string/help"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_help" />
+                app:srcCompat="@drawable/ic_info" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
