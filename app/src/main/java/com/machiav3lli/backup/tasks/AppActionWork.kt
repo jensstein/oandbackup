@@ -132,7 +132,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     private fun createForegroundInfo(): ForegroundInfo {
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
-            Intent(context, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+            Intent(context, MainActivityX::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val cancelIntent = WorkManager.getInstance(applicationContext)
