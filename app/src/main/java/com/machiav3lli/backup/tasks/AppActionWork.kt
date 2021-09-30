@@ -154,7 +154,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .addAction(
-                com.machiav3lli.backup.R.drawable.ic_wipe,
+                com.machiav3lli.backup.R.drawable.ic_close,
                 context.getString(com.machiav3lli.backup.R.string.dialogCancel), cancelIntent
             )
             .build()

@@ -215,7 +215,7 @@ open class ScheduleService : Service() {
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(R.drawable.ic_wipe, getString(R.string.dialogCancel), closeIntent)
+            .addAction(R.drawable.ic_close, getString(R.string.dialogCancel), closeIntent)
             .build()
     }
 

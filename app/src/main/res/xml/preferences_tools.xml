@@ -18,7 +18,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.Preference
-        android:icon="@drawable/ic_wipe"
+        android:icon="@drawable/ic_delete"
         android:key="batchDelete"
         android:summary="@string/prefs_batchdelete_summary"
         android:title="@string/prefs_batchdelete" />
