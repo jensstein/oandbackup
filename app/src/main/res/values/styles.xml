@@ -21,7 +21,7 @@
     </style>
 
     <!-- Sheets & Dialogs -->
-    <style name="Sheet.Bottom.Style" parent="Widget.Design.BottomSheet.Modal">
+    <style name="Sheet.Bottom.Style" parent="Widget.Material3.BottomSheet.Modal">
         <item name="chipStyle">@style/Chip.Filter</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingStart">@dimen/cards_spacing</item>
@@ -57,7 +57,7 @@
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
     </style>
 
-    <style name="Bar.AppBar" parent="Widget.Design.AppBarLayout">
+    <style name="Bar.AppBar" parent="Widget.Material3.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">8dp</item>
