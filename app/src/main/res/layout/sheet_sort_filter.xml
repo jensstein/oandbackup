@@ -198,7 +198,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sortPackageName"
-                        app:chipIcon="@drawable/ic_special"
+                        app:chipIcon="@drawable/ic_apk"
                         app:chipIconTint="@color/chip_icon_apk" />
 
                     <com.google.android.material.chip.Chip
