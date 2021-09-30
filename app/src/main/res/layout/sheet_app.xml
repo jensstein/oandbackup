@@ -182,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/buttons_spacing"
                         android:paddingVertical="@dimen/med_spacing"
-                        android:src="@drawable/ic_add_to_blocklist"
+                        android:src="@drawable/ic_blocklist"
                         android:tooltipText="@string/global_blocklist_add"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
