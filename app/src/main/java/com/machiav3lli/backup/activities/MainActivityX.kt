@@ -20,6 +20,7 @@ package com.machiav3lli.backup.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.MenuItem
@@ -207,7 +208,7 @@ class MainActivityX : BaseActivity() {
             if (viewModel.appInfoList.value?.filter { it.isUpdated }?.size ?: 0 > 0) -128F else -80F
         snackBar?.view?.translationY =
             bottomMargin * resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
-        snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round_accent)
+        snackBar?.view?.backgroundTintList = ColorStateList.valueOf(colorPrimaryDark)
         snackBar?.setTextColor(
             resources.getColor(
                 R.color.app_primary_inverse,

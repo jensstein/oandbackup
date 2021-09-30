@@ -114,6 +114,14 @@ val Context.colorOnPrimary: Int
         return color
     }
 
+val Context.colorPrimaryDark: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorPrimaryDark))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
 val Context.colorSecondary: Int
     get() {
         val tA = obtainStyledAttributes(intArrayOf(R.attr.colorSecondary))
