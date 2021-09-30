@@ -115,7 +115,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="@dimen/cards_spacing"
-                                app:srcCompat="@drawable/ic_update" />
+                                app:srcCompat="@drawable/ic_changelog" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
