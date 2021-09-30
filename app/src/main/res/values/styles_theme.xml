@@ -49,6 +49,12 @@
         <item name="colorOnPrimary">@color/accent_7_trans</item>
     </style>
 
+    <style name="Accent8">
+        <item name="colorAccent">@color/accent_8</item>
+        <item name="colorPrimary">@color/accent_8</item>
+        <item name="colorOnPrimary">@color/accent_8_trans</item>
+    </style>
+
     <style name="Secondary0">
         <item name="colorSecondary">@color/secondary_0</item>
         <item name="colorOnSecondary">@color/secondary_0_trans</item>
@@ -87,5 +93,10 @@
     <style name="Secondary7">
         <item name="colorSecondary">@color/secondary_7</item>
         <item name="colorOnSecondary">@color/secondary_7_trans</item>
+    </style>
+
+    <style name="Secondary8">
+        <item name="colorSecondary">@color/secondary_8</item>
+        <item name="colorOnSecondary">@color/secondary_8_trans</item>
     </style>
 </resources>

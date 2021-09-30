@@ -279,6 +279,7 @@
     <string name="prefs_accent_5">Chartreuse Lime</string>
     <string name="prefs_accent_6">Thunder Yellow</string>
     <string name="prefs_accent_7">Apricot Orange</string>
+    <string name="prefs_accent_8">Pumpkin Perano</string>
     <string name="prefs_secondary_0">Arctic Cyan</string>
     <string name="prefs_secondary_1">Ocean Teal</string>
     <string name="prefs_secondary_2">Limette</string>
@@ -287,6 +288,7 @@
     <string name="prefs_secondary_5">Flamingo Pink</string>
     <string name="prefs_secondary_6">Slate</string>
     <string name="prefs_secondary_7">Azure Blue</string>
+    <string name="prefs_secondary_8">Mint</string>
     <string name="prefs_accent_color">Accent color</string>
     <string name="prefs_secondary_color">Secondary color</string>
     <string name="error_encryptionpassword">The encryption password is either not set or wrong!</string>

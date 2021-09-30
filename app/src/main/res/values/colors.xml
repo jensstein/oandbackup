@@ -39,6 +39,8 @@
     <color name="accent_6_trans">#80FFEA00</color>
     <color name="accent_7">#FF9100</color>
     <color name="accent_7_trans">#80FF9100</color>
+    <color name="accent_8">#AAAAFF</color>
+    <color name="accent_8_trans">#80AAAAFF</color>
 
     <color name="secondary_0">#80FFE7</color>
     <color name="secondary_0_trans">#8080FFE7</color>
@@ -56,4 +58,6 @@
     <color name="secondary_6_trans">#8037474F</color>
     <color name="secondary_7">#163DE0</color>
     <color name="secondary_7_trans">#80163DE0</color>
+    <color name="secondary_8">#AAFFAA</color>
+    <color name="secondary_8_trans">#80AAFFAA</color>
 </resources>
