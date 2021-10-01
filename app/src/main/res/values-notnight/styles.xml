@@ -41,7 +41,7 @@
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Light" />
 
-    <style name="Sheet.Bottom" parent="Theme.Material3.Light.BottomSheetDialog">
+    <style name="Sheet.Bottom" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Sheet.Bottom.Style</item>
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorPrimaryDark">@color/app_primary_base</item>

@@ -23,10 +23,11 @@
     <!-- Sheets & Dialogs -->
     <style name="Sheet.Bottom.Style" parent="Widget.Material3.BottomSheet.Modal">
         <item name="chipStyle">@style/Chip.Filter</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:paddingStart">@dimen/cards_spacing</item>
-        <item name="android:paddingEnd">@dimen/cards_spacing</item>
-        <item name="android:paddingBottom">?actionBarSize</item>
+        <item name="android:minHeight">750dp</item>
+        <item name="backgroundTint">?backgroundColor</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="behavior_peekHeight">400dp</item>
+        <item name="behavior_fitToContents">true</item>
     </style>
 
     <!-- Bars -->
