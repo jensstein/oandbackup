@@ -24,7 +24,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainer"
@@ -42,7 +44,9 @@
             style="@style/Bar.Bottom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_bar_static_round_accent"
+            android:background="?colorPrimaryDark"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,15 +59,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:background="@drawable/bg_bar_static_round"
-                app:itemBackground="@drawable/bg_card_navbar"
-                app:itemRippleColor="?colorAccent"
-                app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                android:background="@android:color/transparent"
                 app:menu="@menu/navi_menu_main" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/buttonSettings"
-                style="@style/Button.NavBar.End"
+                style="@style/Button.Rectangular"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"

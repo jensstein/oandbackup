@@ -24,13 +24,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
-            android:background="@drawable/bg_bar_static_round_accent"
-            android:elevation="@dimen/small_spacing"
             app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,10 +40,8 @@
                 android:id="@+id/pageHeadline"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/bg_bar_static_round"
                 android:ellipsize="marquee"
                 android:gravity="center_vertical"
-                android:paddingStart="@dimen/cards_spacing"
                 android:singleLine="true"
                 android:text="@string/prefs_title"
                 android:textAppearance="@style/TextAppearance.Headline"
@@ -54,16 +52,17 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/helpButton"
-                style="@style/Button.NavBar.End"
+                style="@style/Button.Round"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
+                android:tint="?colorControlNormal"
                 android:tooltipText="@string/help"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_help" />
+                app:srcCompat="@drawable/ic_info" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -82,7 +81,8 @@
             style="@style/Bar.Bottom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_bar_static_round_accent"
+            android:background="?colorPrimaryDark"
+            android:clipChildren="false"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -95,15 +95,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:background="@drawable/bg_bar_static_round"
-                app:itemBackground="@drawable/bg_card_navbar"
-                app:itemRippleColor="?colorAccent"
-                app:itemTextAppearanceInactive="@style/TextAppearance.Secondary"
+                android:background="@android:color/transparent"
                 app:menu="@menu/navi_menu_prefs" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/backButton"
-                style="@style/Button.NavBar.End"
+                style="@style/Button.Rectangular"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:clickable="true"

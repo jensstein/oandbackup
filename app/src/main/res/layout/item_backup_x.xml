@@ -22,149 +22,147 @@
 
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="4dp">
+        android:layout_marginVertical="@dimen/buttons_spacing"
+        android:background="@drawable/bg_card_ripple"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="8dp"
+        android:padding="@dimen/cards_spacing">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/versionName"
+            style="@style/TextViewWrapped"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_ripple"
-            android:padding="@dimen/cards_spacing">
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.Label"
+            app:layout_constraintBottom_toBottomOf="@id/tags"
+            app:layout_constraintEnd_toStartOf="@id/cpuArch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tags" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/versionName"
-                style="@style/TextViewWrapped"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cpuArch"
+            style="@style/TextViewWrapped"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.Secondary"
+            app:layout_constraintBottom_toBottomOf="@id/tags"
+            app:layout_constraintEnd_toStartOf="@id/tags"
+            app:layout_constraintStart_toEndOf="@id/versionName"
+            app:layout_constraintTop_toTopOf="@id/tags" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/versionName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cpuArch"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/mediaMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_media_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/obbMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_obb_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/deDataMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_de_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/extDataMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_external_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/dataMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_data" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/apkMode"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_apk" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/backupDate"
+            style="@style/TextViewWrapped"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.Secondary"
+            app:layout_constraintBottom_toTopOf="@id/actions"
+            app:layout_constraintEnd_toStartOf="@id/encrypted"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/versionName" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/encrypted"
+            style="@style/TextViewWrapped"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:gravity="center_vertical|end"
+            android:padding="@dimen/small_spacing"
+            android:textAppearance="@style/TextAppearance.Secondary"
+            app:layout_constraintBottom_toBottomOf="@id/backupDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/backupDate"
+            app:layout_constraintTop_toTopOf="@id/backupDate" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/actions"
+            style="@style/Chip.Group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_spacing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/backupDate">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/restore"
+                style="@style/Chip.Action.Positive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.Label"
-                app:layout_constraintBottom_toBottomOf="@id/tags"
-                app:layout_constraintEnd_toStartOf="@id/cpuArch"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tags" />
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/restore" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/cpuArch"
-                style="@style/TextViewWrapped"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.Secondary"
-                app:layout_constraintBottom_toBottomOf="@id/tags"
-                app:layout_constraintEnd_toStartOf="@id/tags"
-                app:layout_constraintStart_toEndOf="@id/versionName"
-                app:layout_constraintTop_toTopOf="@id/tags" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/tags"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/delete"
+                style="@style/Chip.Action.Negative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@id/versionName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cpuArch"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/mediaMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_media_data" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/obbMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_obb_data" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/deDataMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_de_data" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/extDataMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_external_data" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/dataMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_data" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/apkMode"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_apk" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/backupDate"
-                style="@style/TextViewWrapped"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.Secondary"
-                app:layout_constraintBottom_toTopOf="@id/actions"
-                app:layout_constraintEnd_toStartOf="@id/encrypted"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/versionName" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/encrypted"
-                style="@style/TextViewWrapped"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:gravity="center_vertical|end"
-                android:padding="@dimen/small_spacing"
-                android:textAppearance="@style/TextAppearance.Secondary"
-                app:layout_constraintBottom_toBottomOf="@id/backupDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/backupDate"
-                app:layout_constraintTop_toTopOf="@id/backupDate" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/actions"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_spacing"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/backupDate">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/restore"
-                    style="@style/Chip.Action.Positive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/restore" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/delete"
-                    style="@style/Chip.Action.Negative"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/deleteBackup" />
-            </com.google.android.material.chip.ChipGroup>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/deleteBackup" />
+        </com.google.android.material.chip.ChipGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,9 +2,18 @@
     android:width="@dimen/icon_medium"
     android:height="@dimen/icon_medium"
     android:tint="@color/ic_data"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="32"
+    android:viewportHeight="32">
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M19,15v4H5v-4h14m1,-2H4c-0.55,0 -1,0.45 -1,1v6c0,0.55 0.45,1 1,1h16c0.55,0 1,-0.45 1,-1v-6c0,-0.55 -0.45,-1 -1,-1zM7,18.5c-0.82,0 -1.5,-0.67 -1.5,-1.5s0.68,-1.5 1.5,-1.5 1.5,0.67 1.5,1.5 -0.67,1.5 -1.5,1.5zM19,5v4H5V5h14m1,-2H4c-0.55,0 -1,0.45 -1,1v6c0,0.55 0.45,1 1,1h16c0.55,0 1,-0.45 1,-1V4c0,-0.55 -0.45,-1 -1,-1zM7,8.5c-0.82,0 -1.5,-0.67 -1.5,-1.5S6.18,5.5 7,5.5s1.5,0.68 1.5,1.5S7.83,8.5 7,8.5z" />
+        android:pathData="M24,3L8,3A2,2 0,0 0,6 5L6,27a2,2 0,0 0,2 2L24,29a2,2 0,0 0,2 -2L26,5A2,2 0,0 0,24 3ZM24,5v6L8,11L8,5ZM8,19L8,13L24,13v6ZM8,27L8,21L24,21v6Z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M11,8m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M11,16m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M11,24m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
 </vector>

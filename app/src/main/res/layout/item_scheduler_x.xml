@@ -44,7 +44,7 @@
             android:id="@+id/schedName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PLACE HOLDER"
+            android:text="@string/place_holder"
             android:textAppearance="@style/TextAppearance.Label"
             app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
             app:layout_constraintEnd_toStartOf="@id/schedFilter"

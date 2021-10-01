@@ -32,7 +32,7 @@
         android:fillAlpha="0.998901"
         android:fillColor="@android:color/transparent"
         android:pathData="M76.738,297.152a228.824,226.571 90,1 0,453.141 0a228.824,226.571 90,1 0,-453.141 0z"
-        android:strokeWidth="39.0857"
+        android:strokeWidth="32"
         android:strokeColor="@android:color/white"
         android:strokeLineCap="butt" />
 </vector>

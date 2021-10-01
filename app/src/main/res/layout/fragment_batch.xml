@@ -30,36 +30,25 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
-            android:background="@drawable/bg_bar_static_round_accent"
-            android:elevation="@dimen/small_spacing"
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/mainBar"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/pageHeadline"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/bg_bar_static_round"
-                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/place_holder"
+                android:textAppearance="@style/TextAppearance.Headline"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/searchBar"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/pageHeadline"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/cards_spacing"
-                    android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@string/place_holder"
-                    android:textAppearance="@style/TextAppearance.Headline" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchBar"
@@ -67,8 +56,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:autofillHints="@string/searchHint"
-                android:clickable="true"
-                android:focusable="true"
+                android:background="@drawable/bg_bar_static_round_accent"
+                android:elevation="8dp"
                 android:foregroundGravity="center_horizontal"
                 android:imeOptions="flagNoExtractUi|actionSearch"
                 android:inputType="text"
@@ -88,7 +77,7 @@
             android:id="@+id/progressBar"
             android:layout_width="0dp"
             android:layout_height="@dimen/large_spacing"
-            android:layout_margin="@dimen/cards_spacing"
+            android:layout_marginHorizontal="@dimen/cards_spacing"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/modeBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -100,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_gradient_alpha_bottom_top"
+            android:clipToPadding="false"
             android:elevation="@dimen/small_spacing"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/cards_spacing"
@@ -119,8 +109,7 @@
                 app:layout_constraintEnd_toStartOf="@id/buttonSortFilter"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="?colorSecondary" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/buttonSortFilter"
@@ -133,8 +122,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/buttonBlocklist"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="?colorAccent" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -143,7 +131,7 @@
             android:layout_height="0dp"
             android:layout_gravity="top"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progressBar">
@@ -152,9 +140,9 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/icon_large"
-                android:paddingBottom="?actionBarSize"
                 app:fastScrollEnabled="true"
                 tools:listitem="@layout/item_batch_x" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -163,8 +151,7 @@
             android:id="@+id/buttonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_gradient_alpha_top_bottom"
-            android:paddingHorizontal="@dimen/cards_spacing"
+            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -172,8 +159,6 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/buttons_spacing"
-                android:background="@drawable/bg_frame_positive"
                 android:orientation="horizontal">
 
                 <com.google.android.material.chip.Chip
@@ -189,16 +174,13 @@
                     style="@style/Chip.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
                     app:chipIconEnabled="true" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonAction"
+                    style="@style/Button.Rectangular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_positive_ripple_no_stroke"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:text="@string/place_holder"
                     android:textColor="?colorAccent" />
             </androidx.appcompat.widget.LinearLayoutCompat>

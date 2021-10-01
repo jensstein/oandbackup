@@ -123,6 +123,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 requireActivity().theme
             )
         )
+        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
         batchFastAdapter = FastAdapter.with(batchItemAdapter)
         batchFastAdapter?.setHasStableIds(true)
@@ -154,7 +155,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 requireActivity().sortFilterModel,
                 getStats(appInfoList)
             )
-            sheetSortFilter?.show(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
+            sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
         batchFastAdapter?.onClickListener =
             { _: View?, _: IAdapter<BatchItemX>?, item: BatchItemX, _: Int? ->
@@ -340,8 +341,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             }
             .filterNotNull()
 
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = selectedItems.size
         var errors = ""
         var resultsSuccess = true
         var counter = 0
@@ -356,6 +355,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
+                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         binding.progressBar.progress = counter
                         counter += 1
 
@@ -398,7 +398,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    binding.progressBar.visibility = View.GONE
+                    requireMainActivity().hideProgress()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
@@ -475,6 +475,16 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val possibleDataChecked: Int =
             batchItemAdapter.itemList.items.filter { it.app.hasAppData || backupBoolean }.size
         binding.dataBatch.isChecked = viewModel.dataCheckedList.size == possibleDataChecked
+    }
+
+    override fun updateProgress(progress: Int, max: Int) {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.max = max
+        binding.progressBar.progress = progress
+    }
+
+    override fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
     }
 
     class BackupFragment : BatchFragment(true)

@@ -19,9 +19,6 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.DialogInterface
-import android.util.DisplayMetrics
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
-import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
@@ -48,21 +45,9 @@ abstract class BaseActionTask(
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX != null && !mainActivityX.isFinishing) {
             val message = getProgressMessage(mainActivityX, actionType)
-            UiThreadStatement.runOnUiThread {
-                mainActivityX.snackBar = Snackbar.make(
-                    mainActivityX.binding.fragmentContainer,
-                    "${app.packageLabel}: $message", Snackbar.LENGTH_INDEFINITE
-                )
-                mainActivityX.snackBar?.view?.translationY =
-                    -64F * mainActivityX.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
-                mainActivityX.snackBar?.view?.setBackgroundResource(R.drawable.bg_bar_static_round)
-                mainActivityX.snackBar?.setTextColor(
-                    mainActivityX.resources.getColor(
-                        R.color.app_primary_inverse,
-                        mainActivityX.theme
-                    )
-                )
-                mainActivityX.snackBar?.show()
+            // UiThreadStatement.runOnUiThread {
+            mainActivityX.runOnUiThread {
+                mainActivityX.showSnackBar("${app.packageLabel}: $message")
             }
             showNotification(
                 mainActivityX, MainActivityX::class.java,
@@ -86,7 +71,7 @@ abstract class BaseActionTask(
                 )
             }
             mainActivityX.updatePackage(app.packageName)
-            mainActivityX.snackBar?.dismiss()
+            mainActivityX.dismissSnackBar()
         }
         if (signal != null) {
             signal!!.countDown()

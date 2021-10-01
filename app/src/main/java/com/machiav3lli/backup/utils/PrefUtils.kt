@@ -40,7 +40,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
-import com.scottyab.rootbeer.RootBeer
+import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -182,8 +182,8 @@ fun Activity.getStoragePermission() {
 }
 
 fun Activity.checkRootAccess(): Boolean {
-    val rootBeer = RootBeer(this)
-    if (!rootBeer.isRooted) {
+    val isRooted = Shell.getShell().isRoot
+    if (!isRooted) {
         showFatalUiWarning(getString(R.string.noSu))
         return false
     }

@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_static"
+            android:clipChildren="false"
             android:scrollbars="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +42,7 @@
                     android:id="@+id/help_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipToPadding="false"
                     android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@id/help_legend"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +80,7 @@
                         android:layout_width="@dimen/icon_large"
                         android:layout_height="0dp"
                         android:layout_marginStart="@dimen/cards_spacing"
-                        android:background="@drawable/bg_ripple_click"
+                        android:background="@drawable/bg_ripple_click_negative"
                         android:clickable="true"
                         android:focusable="true"
                         android:src="@drawable/ic_arrow_down"
@@ -94,11 +96,12 @@
                         android:layout_marginTop="@dimen/cards_spacing"
                         android:background="@drawable/bg_card_ripple"
                         android:clickable="false"
+                        android:elevation="8dp"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/changelog">
+                        app:layout_constraintTop_toBottomOf="@id/app_name_version">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/changelog"
@@ -112,7 +115,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="@dimen/cards_spacing"
-                                app:srcCompat="@drawable/ic_update" />
+                                app:srcCompat="@drawable/ic_changelog" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
@@ -238,6 +241,7 @@
                     android:id="@+id/help_legend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     android:paddingBottom="@dimen/cards_spacing"
@@ -307,7 +311,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/cards_spacing"
-                            app:srcCompat="@drawable/ic_blocklist" />
+                            app:srcCompat="@drawable/ic_exclude" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="0dp"
@@ -551,6 +555,8 @@
                     android:layout_marginHorizontal="@dimen/cards_spacing"
                     android:layout_marginBottom="@dimen/cards_spacing"
                     android:background="@drawable/bg_card_ripple"
+                    android:clipToPadding="false"
+                    android:elevation="8dp"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/cards_spacing"
                     app:layout_constraintBottom_toBottomOf="parent"

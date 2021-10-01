@@ -78,9 +78,10 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val inListed = { packageName: String ->
             customList.isEmpty() or customList.contains(packageName)
         }
-        val predicate: (AppInfo) -> Boolean = {
-            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem and !it.isSpecial else false)
-                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
+        val predicate: (AppInfo) -> Boolean = when {
+            filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM -> { it -> it.isSystem and !it.isSpecial }
+            filter and MAIN_FILTER_USER == MAIN_FILTER_USER -> { it -> !it.isSystem }
+            else -> { _ -> false }
         }
         val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (AppInfo) -> Boolean = when (specialFilter) {

@@ -196,15 +196,17 @@ open class ScheduleService : Service() {
 
     private fun createForegroundInfo() {
         val contentPendingIntent = PendingIntent.getActivity(
-            this, 0,
-            Intent(this, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+            this,
+            0,
+            Intent(this, MainActivityX::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val closeIntent = PendingIntent.getActivity(
             this, 0,
             Intent(this, MainActivityX::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .setAction("CLOSE_ACTION"), 0
+                .setAction("CLOSE_ACTION"), PendingIntent.FLAG_IMMUTABLE
         )
 
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -215,7 +217,7 @@ open class ScheduleService : Service() {
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(R.drawable.ic_wipe, getString(R.string.dialogCancel), closeIntent)
+            .addAction(R.drawable.ic_close, getString(R.string.dialogCancel), closeIntent)
             .build()
     }
 

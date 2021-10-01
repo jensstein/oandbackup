@@ -35,6 +35,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:padding="@dimen/cards_spacing">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -68,9 +70,7 @@
                     android:id="@+id/dismiss"
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="@dimen/icon_large"
-                    android:background="@drawable/bg_ripple_click"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:background="@drawable/bg_ripple_click_negative"
                     android:src="@drawable/ic_arrow_down"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -159,6 +159,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/schedFilterTitle"
+                    app:selectionRequired="false"
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
@@ -167,8 +168,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system"
-                        app:checkedIcon="@drawable/ic_system"
-                        app:checkedIconTint="@color/ic_system" />
+                        app:chipIcon="@drawable/ic_system"
+                        app:chipIconTint="@color/chip_icon_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterUser"
@@ -176,8 +177,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user"
-                        app:checkedIcon="@drawable/ic_user"
-                        app:checkedIconTint="@color/ic_user" />
+                        app:chipIcon="@drawable/ic_user"
+                        app:chipIconTint="@color/chip_icon_user" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -210,8 +211,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk"
-                        app:checkedIcon="@drawable/ic_apk"
-                        app:checkedIconTint="@color/ic_apk" />
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupData"
@@ -219,8 +220,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data"
-                        app:checkedIcon="@drawable/ic_data"
-                        app:checkedIconTint="@color/ic_data" />
+                        app:chipIcon="@drawable/ic_data"
+                        app:chipIconTint="@color/chip_icon_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataDe"
@@ -228,8 +229,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_deviceprotecteddata"
-                        app:checkedIcon="@drawable/ic_de_data"
-                        app:checkedIconTint="@color/ic_de_data" />
+                        app:chipIcon="@drawable/ic_de_data"
+                        app:chipIconTint="@color/chip_icon_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataExt"
@@ -237,8 +238,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_externaldata"
-                        app:checkedIcon="@drawable/ic_external_data"
-                        app:checkedIconTint="@color/ic_ext_data" />
+                        app:chipIcon="@drawable/ic_external_data"
+                        app:chipIconTint="@color/chip_icon_ext_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataObb"
@@ -246,8 +247,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_obbdata"
-                        app:checkedIcon="@drawable/ic_obb_data"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_obb_data"
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataMedia"
@@ -255,8 +256,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_mediadata"
-                        app:checkedIcon="@drawable/ic_media_data"
-                        app:checkedIconTint="@color/ic_media" />
+                        app:chipIcon="@drawable/ic_media_data"
+                        app:chipIconTint="@color/chip_icon_media" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -286,7 +287,9 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
+                        android:text="@string/radio_all"
+                        app:chipIcon="@drawable/ic_all"
+                        app:chipIconTint="@color/chip_icon_accent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialLaunchable"
@@ -294,8 +297,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_launchable"
-                        app:checkedIcon="@drawable/ic_launchable"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_launchable"
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNewUpdated"
@@ -303,8 +306,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated"
-                        app:checkedIcon="@drawable/ic_updated"
-                        app:checkedIconTint="@color/ic_updated" />
+                        app:chipIcon="@drawable/ic_updated"
+                        app:chipIconTint="@color/chip_icon_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
@@ -312,8 +315,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups"
-                        app:checkedIcon="@drawable/ic_old"
-                        app:checkedIconTint="@color/ic_exodus" />
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -351,9 +354,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_button_neutral_ripple"
-                    android:clickable="true"
-                    android:contextClickable="true"
-                    android:focusable="true"
                     android:text="@string/customListTitle"
                     android:textAppearance="@style/TextAppearance.Label"
                     app:chipIcon="@drawable/ic_customlist"
@@ -370,9 +370,6 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/cards_spacing"
                     android:background="@drawable/bg_button_neutral_ripple"
-                    android:clickable="true"
-                    android:contextClickable="true"
-                    android:focusable="true"
                     android:text="@string/sched_blocklist"
                     app:chipIcon="@drawable/ic_blocklist"
                     app:layout_constraintBottom_toBottomOf="@id/customListButton"
@@ -394,12 +391,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/removeButton"
+                    style="@style/ImageButton.Negative"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/cards_spacing"
-                    android:background="@drawable/bg_button_negative_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:src="@drawable/ic_delete"
                     app:layout_constraintBottom_toBottomOf="@id/enableCheckbox"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -410,10 +405,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_button_positive_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:elevation="8dp"
                     android:text="@string/sched_activateButton"
-                    android:textColor="?colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

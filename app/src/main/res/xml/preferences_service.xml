@@ -43,7 +43,7 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
-        android:icon="@drawable/ic_blocklist"
+        android:icon="@drawable/ic_exclude"
         android:key="excludeCache"
         android:summary="@string/prefs_excludecache_summary"
         android:title="@string/prefs_excludecache" />
@@ -90,7 +90,7 @@
         android:defaultValue="after"
         android:entries="@array/housekeepingMomentEntries"
         android:entryValues="@array/housekeepingMomentValues"
-        android:icon="@drawable/ic_wipe"
+        android:icon="@drawable/ic_delete"
         android:key="housekeepingMoment"
         android:summary="@string/prefs_housekeepingmoment_summary"
         android:title="@string/prefs_housekeepingmoment" />

@@ -22,7 +22,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.items.AppInfo
 
-abstract class NavigationFragment : Fragment() {
+abstract class NavigationFragment : Fragment(), ProgressViewController {
     protected var sheetSortFilter: SortFilterSheet? = null
     var appInfoList: MutableList<AppInfo>
         get() = requireMainActivity().viewModel.appInfoList.value
@@ -39,9 +39,19 @@ abstract class NavigationFragment : Fragment() {
     abstract fun setupViews()
     abstract fun setupOnClicks()
 
+    override fun onResume() {
+        super.onResume()
+        requireMainActivity().setProgressViewController(this)
+    }
+
     fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }
 
 interface RefreshViewController {
     fun refreshView()
+}
+
+interface ProgressViewController {
+    fun updateProgress(progress: Int, max: Int)
+    fun hideProgress()
 }

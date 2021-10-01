@@ -35,7 +35,7 @@ fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>
 fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>?, id: Int, title: String?, text: String?, bigText: String, autoCancel: Boolean) {
     val resultIntent = Intent(context, parentActivity)
     resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-    val resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     val notificationChannel = NotificationChannel(classAddress("NotificationHandler"), classAddress("NotificationHandler"), NotificationManager.IMPORTANCE_LOW)
     val notificationManager = NotificationManagerCompat.from(context!!)
     notificationManager.createNotificationChannel(notificationChannel)

@@ -2,7 +2,7 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](COC.md) [![Main CI Workflow](https://github.com/machiav3lli/oandbackupx/workflows/Main%20CI%20Workflow/badge.svg?branch=master)](https://github.com/machiav3lli/oandbackupx/actions?query=workflow%3A%22Main+CI+Workflow%22)
 
-OAndBackupX is a fork of the famous OAndBackup with the aim to bring OAndBackup to 2020. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device. Therefore all types of contribution are always welcome.
+OAndBackupX is a fork of the famous OAndBackup with the aim to bring OAndBackup to 202X. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device. Therefore all types of contribution are always welcome.
 
 Now on functionality of our App:
 
@@ -72,7 +72,7 @@ OAndBackupX is licensed under the [GNU's Affero GPL v3](LICENSE.md).
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
-Placeholders icon foreground made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com)
+Placeholders' icon foreground based on an icon found on [SVG Repo](https://www.svgrepo.com)
 
 ## Credits
 

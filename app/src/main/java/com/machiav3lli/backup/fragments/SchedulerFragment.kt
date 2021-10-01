@@ -148,4 +148,14 @@ class SchedulerFragment : NavigationFragment() {
             Thread(ScheduleSheet.UpdateRunnable(item.schedule, requireContext(), true)).start()
         }
     }
+
+    override fun updateProgress(progress: Int, max: Int) {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.max = max
+        binding.progressBar.progress = progress
+    }
+
+    override fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
+    }
 }

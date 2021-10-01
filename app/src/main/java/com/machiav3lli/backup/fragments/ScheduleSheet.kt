@@ -118,12 +118,16 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         }
         binding.timeOfDay.setOnClickListener {
             TimePickerDialog(
-                requireContext(), { _, hourOfDay, minute ->
+                requireContext(),
+                com.google.android.material.R.style.ThemeOverlay_Material3_MaterialTimePicker,
+                { _, hourOfDay, minute ->
                     viewModel.schedule.value?.timeHour = hourOfDay
                     viewModel.schedule.value?.timeMinute = minute
                     refresh(true)
-                }, viewModel.schedule.value?.timeHour ?: 0,
-                viewModel.schedule.value?.timeMinute ?: 0, true
+                },
+                viewModel.schedule.value?.timeHour ?: 0,
+                viewModel.schedule.value?.timeMinute ?: 0,
+                true
             )
                 .show()
         }

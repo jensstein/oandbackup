@@ -92,14 +92,16 @@ class HomeFragment : NavigationFragment(),
             binding.buttonUpdated.text =
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
+                binding.updatedBar.visibility = View.VISIBLE
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_arrow_up,
                     0,
                     0,
                     0
                 )
+                binding.buttonUpdateAll.visibility = View.VISIBLE
                 binding.buttonUpdated.setOnClickListener {
-                    binding.updatedBar.visibility = when (binding.updatedBar.visibility) {
+                    binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
                         View.VISIBLE -> {
                             binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
                                 R.drawable.ic_arrow_up,
@@ -122,6 +124,8 @@ class HomeFragment : NavigationFragment(),
                 }
             } else {
                 binding.updatedBar.visibility = View.GONE
+                binding.updatedRecycler.visibility = View.GONE
+                binding.buttonUpdateAll.visibility = View.GONE
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
@@ -145,6 +149,7 @@ class HomeFragment : NavigationFragment(),
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
             resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )
+        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
         homeFastAdapter = FastAdapter.with(homeItemAdapter)
         updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
@@ -176,11 +181,12 @@ class HomeFragment : NavigationFragment(),
             }.start()
         }
         binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+            if (sheetSortFilter != null && sheetSortFilter!!.isVisible) sheetSortFilter?.dismissAllowingStateLoss()
+            sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
                 getStats(appInfoList)
             )
-            sheetSortFilter?.show(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
+            sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
         homeFastAdapter?.onClickListener =
             { _: View?, _: IAdapter<HomeItemX>?, item: HomeItemX?, position: Int? ->
@@ -200,7 +206,7 @@ class HomeFragment : NavigationFragment(),
                 }
                 false
             }
-        binding.updateAllAction.setOnClickListener { onClickUpdateAllAction() }
+        binding.buttonUpdateAll.setOnClickListener { onClickUpdateAllAction() }
         /*binding.helpButton.setOnClickListener {
             if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
                 HelpSheet()
@@ -277,8 +283,6 @@ class HomeFragment : NavigationFragment(),
             }
             .filterNotNull()
 
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = selectedItems.size
         var errors = ""
         var resultsSuccess = true
         var counter = 0
@@ -293,7 +297,7 @@ class HomeFragment : NavigationFragment(),
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        binding.progressBar.progress = counter
+                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
@@ -334,7 +338,7 @@ class HomeFragment : NavigationFragment(),
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    binding.progressBar.visibility = View.GONE
+                    requireMainActivity().hideProgress()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
@@ -420,5 +424,15 @@ class HomeFragment : NavigationFragment(),
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
+    }
+
+    override fun updateProgress(progress: Int, max: Int) {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.max = max
+        binding.progressBar.progress = progress
+    }
+
+    override fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
     }
 }

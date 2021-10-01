@@ -26,25 +26,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="@dimen/small_spacing">
+        android:paddingTop="@dimen/buttons_spacing">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipChildren="false">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cards_spacing"
+                android:clipChildren="false"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/cardStoragePermission"
+                    style="@style/ItemLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:background="@drawable/bg_card_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
@@ -79,10 +81,10 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/cardStorageLocation"
+                    style="@style/ItemLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:background="@drawable/bg_card_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
@@ -124,10 +126,10 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/cardUsageAccess"
+                    style="@style/ItemLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/cards_spacing"
-                    android:background="@drawable/bg_card_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
@@ -162,9 +164,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/cardBatteryOptimization"
+                    style="@style/ItemLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card_ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"

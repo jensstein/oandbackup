@@ -16,6 +16,6 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="?colorOnPrimary" android:state_checked="true" />
-    <item android:color="?colorPrimaryDark" />
+    <item android:color="?colorPrimaryDark" android:state_checked="true" />
+    <item android:color="?colorControlNormal" />
 </selector>

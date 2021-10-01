@@ -106,9 +106,33 @@ val Context.colorAccent: Int
         return color
     }
 
+val Context.colorOnPrimary: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnPrimary))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
+val Context.colorPrimaryDark: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorPrimaryDark))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
 val Context.colorSecondary: Int
     get() {
         val tA = obtainStyledAttributes(intArrayOf(R.attr.colorSecondary))
+        val color = tA.getColor(0, 0)
+        tA.recycle()
+        return color
+    }
+
+val Context.colorOnSecondary: Int
+    get() {
+        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnSecondary))
         val color = tA.getColor(0, 0)
         tA.recycle()
         return color
@@ -128,6 +152,7 @@ fun getAccentStyle(accent: String) = when (accent.last().digitToInt()) {
     5 -> R.style.Accent5
     6 -> R.style.Accent6
     7 -> R.style.Accent7
+    8 -> R.style.Accent8
     else -> R.style.Accent0
 }
 
@@ -139,6 +164,7 @@ fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) 
     5 -> R.style.Secondary5
     6 -> R.style.Secondary6
     7 -> R.style.Secondary7
+    8 -> R.style.Secondary8
     else -> R.style.Secondary0
 }
 

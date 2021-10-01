@@ -48,8 +48,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("scheduleId", scheduleId)
-                val pendingIntent =
-                    PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, 0)
+                val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, PendingIntent.FLAG_IMMUTABLE)
                 val timeLeft = timeUntilNextEvent(schedule, System.currentTimeMillis())
                 if (rescheduleBoolean) {
                     schedule.timePlaced = System.currentTimeMillis()
@@ -75,7 +74,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
 fun cancelAlarm(context: Context, scheduleId: Int) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val alarmIntent = Intent(context, AlarmReceiver::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(context, scheduleId, alarmIntent, 0)
+    val pendingIntent = PendingIntent.getBroadcast(context, scheduleId, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
     Timber.i("canceled backup with id: $scheduleId")

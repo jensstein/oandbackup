@@ -25,13 +25,15 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/small_spacing">
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cards_spacing"
+            android:layout_marginHorizontal="@dimen/cards_spacing"
+            android:layout_marginVertical="@dimen/buttons_spacing"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -41,6 +43,7 @@
                 android:layout_marginTop="@dimen/cards_spacing"
                 android:background="@drawable/bg_card_ripple"
                 android:clickable="false"
+                android:elevation="8dp"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -55,7 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        app:srcCompat="@drawable/ic_update" />
+                        app:srcCompat="@drawable/ic_changelog" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"

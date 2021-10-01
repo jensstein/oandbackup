@@ -23,17 +23,21 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        style="@style/ItemLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/cards_spacing"
-        android:layout_marginVertical="4dp">
+        android:layout_marginVertical="@dimen/buttons_spacing"
+        android:background="@drawable/bg_card_static"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="8dp"
+        android:padding="@dimen/cards_spacing">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/schedName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PLACE HOLDER"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/icon_small"
+            android:text="@string/place_holder"
             android:textAppearance="@style/TextAppearance.Label"
             app:layout_constraintBottom_toTopOf="@id/timeLine"
             app:layout_constraintEnd_toStartOf="@id/schedFilter"
@@ -42,11 +46,10 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/schedFilter"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/timeLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/schedName"
             app:layout_constraintTop_toTopOf="parent">
@@ -92,13 +95,14 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/timeLine"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/icon_small"
+            android:layout_marginVertical="@dimen/buttons_spacing"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@id/schedMode"
+            app:layout_constraintBottom_toTopOf="@id/restore"
             app:layout_constraintEnd_toStartOf="@id/schedMode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/schedFilter">
+            app:layout_constraintTop_toBottomOf="@id/schedName">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/timeOfDay"
@@ -120,10 +124,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/delete"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/timeLine"
-            app:layout_constraintTop_toBottomOf="@id/schedFilter">
+            app:layout_constraintTop_toTopOf="@id/timeLine">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/blocklist"
@@ -186,31 +189,25 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/restore"
+            style="@style/ImageButton.Positive"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_button_positive_ripple"
-            android:clickable="true"
-            android:focusable="true"
             android:src="@drawable/ic_restore"
-            android:tint="?colorAccent"
             app:layout_constraintBottom_toBottomOf="@id/delete"
             app:layout_constraintEnd_toStartOf="@id/delete"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/delete" />
+            app:layout_constraintTop_toBottomOf="@id/timeLine" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/delete"
+            style="@style/ImageButton.Negative"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/cards_spacing"
             android:layout_marginTop="@dimen/cards_spacing"
-            android:background="@drawable/bg_button_negative_ripple"
-            android:clickable="true"
-            android:focusable="true"
             android:src="@drawable/ic_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/restore"
-            app:layout_constraintTop_toBottomOf="@id/schedMode" />
+            app:layout_constraintStart_toEndOf="@id/restore" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

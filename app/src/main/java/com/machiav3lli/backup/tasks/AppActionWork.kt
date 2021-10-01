@@ -132,7 +132,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     private fun createForegroundInfo(): ForegroundInfo {
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
-            Intent(context, MainActivityX::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+            Intent(context, MainActivityX::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val cancelIntent = WorkManager.getInstance(applicationContext)
@@ -154,7 +155,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .addAction(
-                com.machiav3lli.backup.R.drawable.ic_wipe,
+                com.machiav3lli.backup.R.drawable.ic_close,
                 context.getString(com.machiav3lli.backup.R.string.dialogCancel), cancelIntent
             )
             .build()

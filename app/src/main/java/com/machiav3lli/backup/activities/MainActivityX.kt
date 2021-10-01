@@ -20,7 +20,9 @@ package com.machiav3lli.backup.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +35,7 @@ import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
 import com.machiav3lli.backup.dbs.BlocklistDatabase
+import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.*
@@ -59,6 +62,7 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var refreshViewController: RefreshViewController
+    private lateinit var progressViewController: ProgressViewController
 
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
@@ -177,5 +181,42 @@ class MainActivityX : BaseActivity() {
         this.refreshViewController = refreshViewController
     }
 
-    fun refreshView() = refreshViewController.refreshView()
+    fun refreshView() {
+        if (::refreshViewController.isInitialized) refreshViewController.refreshView()
+    }
+
+    fun setProgressViewController(progressViewController: ProgressViewController) {
+        this.progressViewController = progressViewController
+    }
+
+    fun updateProgress(progress: Int, max: Int) {
+        if (::progressViewController.isInitialized)
+            this.progressViewController.updateProgress(progress, max)
+    }
+
+    fun hideProgress() {
+        if (::progressViewController.isInitialized)
+            this.progressViewController.hideProgress()
+    }
+
+    fun showSnackBar(message: String) {
+        snackBar = Snackbar.make(
+            binding.fragmentContainer,
+            message, Snackbar.LENGTH_INDEFINITE
+        )
+        val bottomMargin =
+            if (viewModel.appInfoList.value?.filter { it.isUpdated }?.size ?: 0 > 0) -128F else -80F
+        snackBar?.view?.translationY =
+            bottomMargin * resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        snackBar?.view?.backgroundTintList = ColorStateList.valueOf(colorPrimaryDark)
+        snackBar?.setTextColor(
+            resources.getColor(
+                R.color.app_primary_inverse,
+                theme
+            )
+        )
+        snackBar?.show()
+    }
+
+    fun dismissSnackBar() = snackBar?.dismiss()
 }

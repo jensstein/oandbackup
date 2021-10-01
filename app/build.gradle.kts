@@ -24,16 +24,17 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 6001
         versionName = "6.0.1"
 
         testApplicationId = "${applicationId}.tests"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -80,6 +81,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -87,16 +93,20 @@ android {
     lint {
         isAbortOnError = false
     }
+    packagingOptions {
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
+    }
 }
 
 
-val versions: java.util.Properties = System.getProperties()
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31")
+
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
     kapt("androidx.room:room-compiler:2.3.0")
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
@@ -107,32 +117,30 @@ dependencies {
     val libsu = "3.1.2"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
-    implementation("com.scottyab:rootbeer-lib:0.1.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.fragment:fragment-ktx:1.3.6")
-    implementation("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.material:material:1.5.0-alpha04")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
-    val fastadapter = "5.4.1"
+    val fastadapter = "5.5.1"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
-    // Tests
-    implementation("androidx.test:rules:1.4.0")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    val junitJupiter = "5.7.1"
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiter")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    // (Optional) If "Parameterized Tests" are needed
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiter")
+    //// Testing
+
+    val androidxTest = "1.4.0"
+
+    // junit4
+
+    implementation("androidx.test:rules:$androidxTest")
+    androidTestImplementation("androidx.test:runner:$androidxTest")
 }
 
 // using a task as a preBuild dependency instead of a function that takes some time insures that it runs
@@ -156,11 +164,8 @@ tasks.preBuild.dependsOn("detectAndroidLocals")
 
 // tells all test tasks to use Gradle's built-in JUnit 5 support
 tasks.withType<Test> {
-    useJUnitPlatform()
-
-    // tells the test runner to display results of all tests,
-    // not just failed ones
-    testLogging {
-        events("passed", "skipped", "failed")
-    }
+    useJUnit()
+    //useTestNG()
+    //useJUnitPlatform()
 }
+

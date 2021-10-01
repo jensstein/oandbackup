@@ -37,6 +37,7 @@
         <item>@string/prefs_accent_5</item>
         <item>@string/prefs_accent_6</item>
         <item>@string/prefs_accent_7</item>
+        <item>@string/prefs_accent_8</item>
     </string-array>
 
     <string-array name="accentEntryValues">
@@ -48,6 +49,7 @@
         <item>accent_5</item>
         <item>accent_6</item>
         <item>accent_7</item>
+        <item>accent_8</item>
     </string-array>
 
     <string-array name="secondaryEntries">
@@ -59,6 +61,7 @@
         <item>@string/prefs_secondary_5</item>
         <item>@string/prefs_secondary_6</item>
         <item>@string/prefs_secondary_7</item>
+        <item>@string/prefs_secondary_8</item>
     </string-array>
 
     <string-array name="secondaryEntryValues">
@@ -70,6 +73,7 @@
         <item>secondary_5</item>
         <item>secondary_6</item>
         <item>secondary_7</item>
+        <item>secondary_8</item>
     </string-array>
 
     <string-array name="housekeepingMomentEntries">

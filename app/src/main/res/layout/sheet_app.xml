@@ -36,6 +36,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:padding="@dimen/cards_spacing">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -44,6 +46,7 @@
                     android:layout_height="@dimen/icon_large"
                     android:layout_marginEnd="@dimen/cards_spacing"
                     android:contentDescription="@string/app_s_icon"
+                    android:elevation="8dp"
                     android:src="@drawable/ic_placeholder"
                     app:layout_constraintBottom_toTopOf="@id/manager"
                     app:layout_constraintEnd_toStartOf="@id/label"
@@ -94,7 +97,7 @@
                     android:layout_width="@dimen/icon_large"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/cards_spacing"
-                    android:background="@drawable/bg_ripple_click"
+                    android:background="@drawable/bg_ripple_click_negative"
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/ic_arrow_down"
@@ -107,6 +110,8 @@
                     android:id="@+id/manager"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@id/appTypeLine"
@@ -116,10 +121,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/exodusReport"
+                        style="@style/ImageButton.Exodus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_exodus_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_exodus"
                         android:tooltipText="@string/exodus_report"
@@ -130,10 +135,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/launchApp"
+                        style="@style/ImageButton.Launch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_launch_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_launchable"
                         android:tooltipText="@string/launch_app"
@@ -144,12 +149,12 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/enableDisable"
+                        style="@style/ImageButton.Neutral"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_neutral_ripple"
                         android:paddingVertical="@dimen/med_spacing"
-                        android:src="@drawable/ic_blocklist"
+                        android:src="@drawable/ic_exclude"
                         android:tooltipText="@string/disablePackage"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/uninstall"
@@ -158,10 +163,10 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/uninstall"
+                        style="@style/ImageButton.Negative"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_wipe_ripple"
                         android:paddingVertical="@dimen/med_spacing"
                         android:src="@drawable/ic_delete"
                         android:tooltipText="@string/uninstall"
@@ -172,12 +177,12 @@
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/addToBlocklist"
+                        style="@style/ImageButton.Blocklist"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/buttons_spacing"
-                        android:background="@drawable/bg_button_blocklist_ripple"
                         android:paddingVertical="@dimen/med_spacing"
-                        android:src="@drawable/ic_add_to_blocklist"
+                        android:src="@drawable/ic_blocklist"
                         android:tooltipText="@string/global_blocklist_add"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -213,13 +218,11 @@
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/divider"
                     android:layout_width="2dp"
                     android:layout_height="0dp"
                     android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:layout_marginBottom="@dimen/cards_spacing"
-                    android:background="@color/app_primary_base"
                     app:layout_constraintBottom_toTopOf="@id/tags"
                     app:layout_constraintEnd_toStartOf="@id/versionNameLine"
                     app:layout_constraintStart_toEndOf="@id/appTypeLine"
@@ -412,7 +415,7 @@
                         android:id="@+id/addTag"
                         android:layout_width="@dimen/icon_large"
                         android:layout_height="0dp"
-                        android:background="@drawable/bg_button_positive_ripple_no_stroke"
+                        android:background="@drawable/bg_ripple_click"
                         android:paddingHorizontal="@dimen/buttons_spacing"
                         android:src="@drawable/ic_add_tag"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -455,7 +458,7 @@
                         android:id="@+id/saveNote"
                         android:layout_width="@dimen/icon_large"
                         android:layout_height="0dp"
-                        android:background="@drawable/bg_button_positive_ripple_no_stroke"
+                        android:background="@drawable/bg_ripple_click"
                         android:src="@drawable/ic_save_note"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -467,6 +470,7 @@
                     android:id="@+id/actions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
                     app:layout_constraintBottom_toTopOf="@id/recyclerView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -530,10 +534,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_spacing"
+                    android:clipChildren="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/actions"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_backup_x" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

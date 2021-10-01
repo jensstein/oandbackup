@@ -35,6 +35,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="@dimen/cards_spacing">
 
@@ -43,8 +45,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_card_ripple"
+                    android:elevation="8dp"
                     android:orientation="horizontal"
-                    android:padding="@dimen/cards_spacing"
                     app:layout_constraintBottom_toTopOf="@+id/sortByTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +56,7 @@
                         android:id="@+id/appsNumCard"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/backupsNumCard"
@@ -81,6 +84,7 @@
                         android:id="@+id/backupsNumCard"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/updatedNumCard"
@@ -108,6 +112,7 @@
                         android:id="@+id/updatedNumCard"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/dismiss"
@@ -137,9 +142,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="end"
                         android:layout_marginStart="@dimen/cards_spacing"
-                        android:background="@drawable/bg_ripple_click"
-                        android:clickable="true"
-                        android:focusable="true"
+                        android:background="@drawable/bg_ripple_click_negative"
                         android:src="@drawable/ic_arrow_down"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +170,8 @@
                     app:layout_constraintBottom_toTopOf="@id/filtersTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sortBy" />
+                    app:layout_constraintTop_toBottomOf="@id/sortBy"
+                    app:trackTint="@color/switch_track" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/sortBy"
@@ -181,31 +185,39 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByLabel"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortLabel" />
+                        android:text="@string/sortLabel"
+                        app:chipIcon="@drawable/ic_label"
+                        app:chipIconTint="@color/chip_icon_accent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByPackageName"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortPackageName" />
+                        android:text="@string/sortPackageName"
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByDataSize"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortDataSize" />
+                        android:text="@string/sortDataSize"
+                        app:chipIcon="@drawable/ic_sizes"
+                        app:chipIconTint="@color/chip_icon_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/sortByBackupDate"
-                        style="@style/Chip.Filter"
+                        style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sortBackupDate" />
+                        android:text="@string/sortBackupDate"
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -229,6 +241,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/filtersTitle"
+                    app:selectionRequired="false"
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
@@ -237,8 +250,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_system"
-                        app:checkedIcon="@drawable/ic_system"
-                        app:checkedIconTint="@color/ic_system" />
+                        app:chipIcon="@drawable/ic_system"
+                        app:chipIconTint="@color/chip_icon_system" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterUser"
@@ -246,8 +259,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_user"
-                        app:checkedIcon="@drawable/ic_user"
-                        app:checkedIconTint="@color/ic_user" />
+                        app:chipIcon="@drawable/ic_user"
+                        app:chipIconTint="@color/chip_icon_user" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/filterSpecial"
@@ -255,8 +268,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_special"
-                        app:checkedIcon="@drawable/ic_special"
-                        app:checkedIconTint="@color/ic_special" />
+                        app:chipIcon="@drawable/ic_special"
+                        app:chipIconTint="@color/chip_icon_special" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -280,6 +293,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle"
+                    app:selectionRequired="false"
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
@@ -287,7 +301,9 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/showNotBackedup" />
+                        android:text="@string/showNotBackedup"
+                        app:chipIcon="@drawable/ic_empty"
+                        app:chipIconTint="@color/chip_icon_accent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupApk"
@@ -295,8 +311,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_apk"
-                        app:checkedIcon="@drawable/ic_apk"
-                        app:checkedIconTint="@color/ic_apk" />
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupData"
@@ -304,8 +320,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_data"
-                        app:checkedIcon="@drawable/ic_data"
-                        app:checkedIconTint="@color/ic_data" />
+                        app:chipIcon="@drawable/ic_data"
+                        app:chipIconTint="@color/chip_icon_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataDe"
@@ -313,8 +329,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_deviceprotecteddata"
-                        app:checkedIcon="@drawable/ic_de_data"
-                        app:checkedIconTint="@color/ic_de_data" />
+                        app:chipIcon="@drawable/ic_de_data"
+                        app:chipIconTint="@color/chip_icon_de_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataExt"
@@ -322,8 +338,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_externaldata"
-                        app:checkedIcon="@drawable/ic_external_data"
-                        app:checkedIconTint="@color/ic_ext_data" />
+                        app:chipIcon="@drawable/ic_external_data"
+                        app:chipIconTint="@color/chip_icon_ext_data" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataObb"
@@ -331,8 +347,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_obbdata"
-                        app:checkedIcon="@drawable/ic_obb_data"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_obb_data"
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/backupDataMedia"
@@ -340,8 +356,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_mediadata"
-                        app:checkedIcon="@drawable/ic_media_data"
-                        app:checkedIconTint="@color/ic_media" />
+                        app:chipIcon="@drawable/ic_media_data"
+                        app:chipIconTint="@color/chip_icon_media" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -371,7 +387,9 @@
                         style="@style/Chip.Mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/radio_all" />
+                        android:text="@string/radio_all"
+                        app:chipIcon="@drawable/ic_all"
+                        app:chipIconTint="@color/chip_icon_accent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialLaunchable"
@@ -379,8 +397,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_launchable"
-                        app:checkedIcon="@drawable/ic_launchable"
-                        app:checkedIconTint="@color/ic_obb" />
+                        app:chipIcon="@drawable/ic_launchable"
+                        app:chipIconTint="@color/chip_icon_obb" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNewUpdated"
@@ -388,8 +406,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNewAndUpdated"
-                        app:checkedIcon="@drawable/ic_updated"
-                        app:checkedIconTint="@color/ic_updated" />
+                        app:chipIcon="@drawable/ic_updated"
+                        app:chipIconTint="@color/chip_icon_updated" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialOld"
@@ -397,8 +415,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showOldBackups"
-                        app:checkedIcon="@drawable/ic_old"
-                        app:checkedIconTint="@color/ic_exodus" />
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/specialNotInstalled"
@@ -406,19 +424,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/showNotInstalled"
-                        app:checkedIcon="@drawable/ic_delete"
-                        app:checkedIconTint="?colorSecondary" />
+                        app:chipIcon="@drawable/ic_delete"
+                        app:chipIconTint="@color/chip_icon_secondary" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/reset"
+                    style="@style/ImageButton.Negative"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/cards_spacing"
-                    android:background="@drawable/bg_button_negative_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cards_spacing"
                     android:src="@drawable/ic_reset"
+                    android:tooltipText="@string/resetFilter"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/apply"
                     app:layout_constraintStart_toStartOf="parent"
@@ -426,13 +443,12 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/apply"
+                    style="@style/ImageButton.Positive"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/cards_spacing"
-                    android:background="@drawable/bg_button_positive_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:src="@drawable/ic_apply"
+                    android:tooltipText="@string/applyFilter"
                     app:layout_constraintBottom_toBottomOf="@id/reset"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/reset"
