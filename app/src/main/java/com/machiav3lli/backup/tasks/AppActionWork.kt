@@ -137,7 +137,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         )
 
         val cancelIntent = WorkManager.getInstance(applicationContext)
-            .createCancelPendingIntent(id)
+            .createCancelPendingIntent(id) // TODO causing crash on targetSDK 31 on A12, go back to targetSDK 30 for now and wait update on WorkManager's side
 
         createNotificationChannel()
 
