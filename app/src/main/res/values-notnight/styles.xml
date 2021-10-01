@@ -24,6 +24,7 @@
         <item name="colorOnPrimary">@color/accent_0_trans</item>
         <item name="colorSecondary">@color/secondary_0</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
+        <item name="android:navigationBarColor">?colorPrimaryDark</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:strokeColor">@android:color/black</item>
         <item name="android:windowBackground">@android:color/white</item>
