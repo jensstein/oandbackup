@@ -119,14 +119,6 @@ class SchedulerFragment : NavigationFragment() {
                 }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
-        /*binding.helpButton.setOnClickListener {
-            if (requireMainActivity().sheetHelp == null) requireMainActivity().sheetHelp =
-                HelpSheet()
-            requireMainActivity().sheetHelp!!.showNow(
-                requireActivity().supportFragmentManager,
-                "HELPSHEET"
-            )
-        }*/
         binding.addSchedule.setOnClickListener {
             viewModel.addSchedule()
         }
