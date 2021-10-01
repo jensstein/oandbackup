@@ -72,7 +72,7 @@ OAndBackupX is licensed under the [GNU's Affero GPL v3](LICENSE.md).
 
 App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
 
-Placeholders' icon foreground based on an icon found on [SVG Repo](https://www.svgrepo.com)
+All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrepo.com). A huge thanks for the project's maintainers.
 
 ## Credits
 
