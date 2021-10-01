@@ -567,7 +567,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
                     android:text="@string/usage_notes_title"
-                    android:textAppearance="@style/TextAppearance.Title"
+                    android:textAppearance="@style/TextAppearance.Headline"
                     app:layout_constraintBottom_toTopOf="@id/usage_notes_html"
                     app:layout_constraintEnd_toStartOf="@id/extend_shrink"
                     app:layout_constraintStart_toStartOf="parent"
