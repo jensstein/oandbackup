@@ -59,8 +59,7 @@ fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: B
                     ?: 0
             )
             dataSize.text = Formatter.formatFileSize(
-                context, app.storageStats?.dataBytes
-                    ?: 0
+                context, (app.storageStats?.dataBytes ?: 0) - (app.storageStats?.cacheBytes ?: 0)
             )
             cacheSize.text = Formatter.formatFileSize(
                 context, app.storageStats?.cacheBytes
