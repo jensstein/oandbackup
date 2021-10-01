@@ -167,6 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/cards_spacing"
+                    android:tooltipText="@string/all_apk"
                     app:chipIconEnabled="true" />
 
                 <com.google.android.material.chip.Chip
@@ -174,6 +175,7 @@
                     style="@style/Chip.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:tooltipText="@string/all_data"
                     app:chipIconEnabled="true" />
 
                 <androidx.appcompat.widget.AppCompatButton
