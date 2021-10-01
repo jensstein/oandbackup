@@ -282,7 +282,7 @@
     <string name="intro_permission_storage_location_warning">Не выбирайте каталог основного хранилища или папку Загрузок, создайте папку только для ваших резервных копий. Подробнее об этом в FAQ (Часто задаваемые вопросы)</string>
     <string name="forceKill">Закрыть принудительно</string>
     <string name="global_blocklist_add">Добавить в глобальный список блокировок</string>
-    <string name="sortAscDesc">По возрастанию, по убыванию</string>
+    <string name="sortAscDesc">Сортировать по убыванию</string>
     <string name="backup_all_updated">Обновить всё</string>
     <string name="prefs_accent_color">Акцент</string>
     <string name="error_encryptionpassword">Пароль шифрования либо не установлен, либо неверен!</string>
