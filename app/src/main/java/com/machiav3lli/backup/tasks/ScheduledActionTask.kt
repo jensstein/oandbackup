@@ -104,6 +104,9 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                         false
                 }
             }
+            SPECIAL_FILTER_DISABLED -> { appInfo: AppInfo ->
+                appInfo.isDisabled and inListed(appInfo.packageName)
+            }
             else -> { appInfo: AppInfo -> inListed(appInfo.packageName) }
         }
         val selectedItems = unfilteredList

@@ -84,6 +84,7 @@ private fun List<AppInfo>.applySpecialFilter(
         SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
             launchableAppsList.contains(appInfo.packageName)
         }
+        SPECIAL_FILTER_DISABLED -> AppInfo::isDisabled
         else -> { _: AppInfo -> true }
     }
     return filter(predicate)
@@ -117,6 +118,7 @@ fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
     SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewUpdated
     SPECIAL_FILTER_OLD -> R.id.specialOld
     SPECIAL_FILTER_NOT_INSTALLED -> R.id.specialNotInstalled
+    SPECIAL_FILTER_DISABLED -> R.id.specialDisabled
     else -> R.id.specialAll
 }
 
@@ -131,6 +133,7 @@ fun idToSpecialFilter(id: Int): Int = when (id) {
     R.id.specialNewUpdated -> SPECIAL_FILTER_NEW_UPDATED
     R.id.specialOld -> SPECIAL_FILTER_OLD
     R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
+    R.id.specialDisabled -> SPECIAL_FILTER_DISABLED
     else -> SPECIAL_FILTER_ALL
 }
 

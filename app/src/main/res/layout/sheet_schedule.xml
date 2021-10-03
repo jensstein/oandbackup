@@ -315,6 +315,15 @@
                     android:text="@string/showOldBackups"
                     app:chipIcon="@drawable/ic_old"
                     app:chipIconTint="@color/chip_icon_exodus" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/specialDisabled"
+                    style="@style/Chip.Mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/showDisabled"
+                    app:chipIcon="@drawable/ic_exclude"
+                    app:chipIconTint="@color/chip_icon_de_data" />
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.LinearLayoutCompat

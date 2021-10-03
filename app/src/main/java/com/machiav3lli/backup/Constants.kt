@@ -108,6 +108,7 @@ const val SPECIAL_FILTER_LAUNCHABLE = 1
 const val SPECIAL_FILTER_NEW_UPDATED = 2
 const val SPECIAL_FILTER_OLD = 3
 const val SPECIAL_FILTER_NOT_INSTALLED = 4
+const val SPECIAL_FILTER_DISABLED = 5
 
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"
