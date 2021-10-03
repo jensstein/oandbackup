@@ -93,17 +93,17 @@ private fun List<AppInfo>.applySpecialFilter(
 private fun List<AppInfo>.applySort(sort: Int, context: Context): List<AppInfo> =
     if (context.sortOrder) {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
+            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName.lowercase() }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
-            MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
-            else -> sortedByDescending { it.packageLabel }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel })
+            else -> sortedByDescending { it.packageLabel.lowercase() }
         }
     } else {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
+            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName.lowercase() }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
-            MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
-            else -> sortedBy { it.packageLabel }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel })
+            else -> sortedBy { it.packageLabel.lowercase() }
         }
     }
 
