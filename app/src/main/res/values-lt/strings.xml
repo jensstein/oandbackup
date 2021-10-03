@@ -57,4 +57,13 @@
     <string name="radio_updated">Atnaujinta</string>
     <string name="radio_data">Duomenys</string>
     <string name="radio_apk">APK</string>
+    <string name="radio_mediadata">Medijos duomenys</string>
+    <string name="radio_obbdata">OBB duomenys</string>
+    <string name="radio_deviceprotecteddata">Įrenginio apsaugoti duomenys</string>
+    <string name="radio_externaldata">Išoriniai duomenys</string>
+    <string name="radio_special">Specialios atsarginės kopijos</string>
+    <string name="radio_both">APK ir duomenys</string>
+    <string name="radio_system">Sistemos programėlės</string>
+    <string name="radio_user">Naudotojo programėlės</string>
+    <string name="radio_all">Visos programėlės</string>
 </resources>
