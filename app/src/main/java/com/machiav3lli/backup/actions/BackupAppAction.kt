@@ -193,7 +193,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                     ?: Uri.EMPTY, "w"
             )
         )
-        if (password.isNotEmpty()) {
+        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
         try {
