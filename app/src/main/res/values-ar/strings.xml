@@ -310,4 +310,9 @@
     <string name="prefs_mediadata">نسخ ملفات الوسائط احتياطيًا</string>
     <string name="radio_mediadata">بيانات الوسائط</string>
     <string name="help_changelog">سجل التغييرات</string>
+    <string name="all_apk">تحقق من جميع حزم APK</string>
+    <string name="all_data">التحقق من جميع البيانات</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="prefs_secondary_8">نعناع</string>
+    <string name="prefs_accent_8">اليقطين بيرانو</string>
 </resources>
