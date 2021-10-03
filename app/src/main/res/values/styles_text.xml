@@ -36,7 +36,7 @@
 
     <style name="TextAppearance.Label" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?colorControlNormal</item>
     </style>
 
     <style name="TextAppearance.Lines" parent="TextAppearance.AppCompat.Medium">
