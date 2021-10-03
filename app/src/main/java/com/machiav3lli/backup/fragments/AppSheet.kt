@@ -452,9 +452,13 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             text = message
             visibility = View.VISIBLE
         }
+        binding.backup.isEnabled = false
+        binding.deleteAll.isEnabled = false
     }
 
     fun dismissSnackBar() {
         binding.snackbarText.visibility = View.GONE
+        binding.backup.isEnabled = true
+        binding.deleteAll.isEnabled = true
     }
 }

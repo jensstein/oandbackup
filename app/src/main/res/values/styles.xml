@@ -192,12 +192,12 @@
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
         <item name="rippleColor">?colorPrimary</item>
-        <item name="chipBackgroundColor">?colorOnPrimary</item>
+        <item name="chipBackgroundColor">@color/chip_surface_positive</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
         <item name="rippleColor">?colorSecondary</item>
-        <item name="chipBackgroundColor">?colorOnSecondary</item>
+        <item name="chipBackgroundColor">@color/chip_surface_negative</item>
     </style>
 
     <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">
