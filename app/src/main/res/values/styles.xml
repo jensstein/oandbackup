@@ -65,7 +65,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="popupTheme">@style/AppTheme.PopupTheme</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:elevation">2dp</item>
+        <item name="android:elevation">4dp</item>
         <item name="android:clipToPadding">false</item>
     </style>
 
@@ -75,7 +75,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:padding">@dimen/cards_spacing</item>
         <item name="android:clipToPadding">false</item>
-        <item name="android:elevation">8dp</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Cursor.Drawable" parent="Widget.AppCompat.AutoCompleteTextView">
@@ -87,7 +87,7 @@
         <item name="android:tint">?colorControlNormal</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:textColor">?colorControlNormal</item>
-        <item name="android:elevation">8dp</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="ImageButton.Negative" parent="ImageButton.Positive">
@@ -112,7 +112,7 @@
 
     <style name="Button.Round" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/bg_button_round_accent</item>
-        <item name="android:elevation">8dp</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Button.Rectangular" parent="Widget.Material3.Button">
@@ -187,7 +187,7 @@
         <item name="chipStrokeWidth">0dp</item>
         <item name="rippleColor">?backgroundColor</item>
         <item name="android:textColor">?colorControlNormal</item>
-        <item name="android:elevation">8dp</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">

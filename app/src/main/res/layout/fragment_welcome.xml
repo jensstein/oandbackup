@@ -43,7 +43,7 @@
                 android:layout_marginTop="@dimen/cards_spacing"
                 android:background="@drawable/bg_card_ripple"
                 android:clickable="false"
-                android:elevation="8dp"
+                android:elevation="4dp"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat

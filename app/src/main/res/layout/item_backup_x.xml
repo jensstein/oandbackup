@@ -23,14 +23,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ItemLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/buttons_spacing"
-        android:background="@drawable/bg_card_ripple"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:elevation="8dp"
-        android:padding="@dimen/cards_spacing">
+        android:clipChildren="false">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/versionName"

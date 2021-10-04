@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_ripple"
-                android:elevation="8dp"
+                android:elevation="4dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/sortByTitle"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -57,7 +57,7 @@
                 android:layout_height="match_parent"
                 android:autofillHints="@string/searchHint"
                 android:background="@drawable/bg_bar_static_round_accent"
-                android:elevation="8dp"
+                android:elevation="4dp"
                 android:foregroundGravity="center_horizontal"
                 android:imeOptions="flagNoExtractUi|actionSearch"
                 android:inputType="text"
