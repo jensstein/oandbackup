@@ -46,7 +46,7 @@
                 android:contentDescription="@string/app_s_icon"
                 android:elevation="8dp"
                 android:src="@drawable/ic_placeholder"
-                app:layout_constraintBottom_toTopOf="@id/snackbar_text"
+                app:layout_constraintBottom_toTopOf="@id/manager"
                 app:layout_constraintEnd_toStartOf="@id/label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -104,20 +104,6 @@
                 app:layout_constraintStart_toEndOf="@id/appInfo"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/snackbar_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="8dp"
-                android:gravity="center_horizontal"
-                android:textAppearance="@style/TextAppearance.Title"
-                android:textColor="?colorAccent"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/manager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/icon" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/manager"
                 android:layout_width="0dp"
@@ -129,7 +115,7 @@
                 app:layout_constraintBottom_toTopOf="@id/appTypeLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/snackbar_text">
+                app:layout_constraintTop_toBottomOf="@id/icon">
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/exodusReport"
@@ -506,7 +492,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/snackbar_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/actionsTitle">
@@ -539,6 +525,20 @@
                         android:layout_height="wrap_content"
                         android:text="@string/clear_cache" />
                 </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/snackbar_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="8dp"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    android:textColor="?colorAccent"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/actionsGroup" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
