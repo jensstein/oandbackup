@@ -297,4 +297,10 @@
     <string name="prefs_mediadata_summary">Faz um backup e restaura os arquivos de mídia do aplicativo em um armazenamento externo (e.g./storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Backup de arquivos de mídia</string>
     <string name="radio_mediadata">Dados de mídia</string>
+    <string name="prefs_secondary_8">Menta</string>
+    <string name="all_data">Verificar todos os dados</string>
+    <string name="all_apk">Verificar todos arquivos APK</string>
+    <string name="prefs_accent_8">Abóbora</string>
+    <string name="help_changelog">Registro de Alterações</string>
+    <string name="home">Página Inicial</string>
 </resources>
