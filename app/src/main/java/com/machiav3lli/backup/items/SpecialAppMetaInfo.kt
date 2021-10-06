@@ -152,6 +152,12 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                             )
                         )
                     )
+                // Location of the WifiConfigStore had been moved with Android R
+                val wifiConfigLocation = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                    "/data/misc/wifi/WifiConfigStore.xml"
+                } else {
+                    "/data/misc/apexdata/com.android.wifi/WifiConfigStore.xml"
+                }
                 specialPackages
                     .add(
                         AppInfo(
@@ -160,7 +166,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                 specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                    "/data/misc/wifi/WifiConfigStore.xml"
+                                    wifiConfigLocation
                                 )
                             )
                         )
