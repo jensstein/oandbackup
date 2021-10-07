@@ -66,4 +66,14 @@
     <string name="radio_system">Sistemos programėlės</string>
     <string name="radio_user">Naudotojo programėlės</string>
     <string name="radio_all">Visos programėlės</string>
+    <string name="searchHint">Ieškoti programėlių</string>
+    <string name="showOnlySystem">Tik sistemos programėles</string>
+    <string name="showNotBackedup">Programėles be atsarginės kopijos</string>
+    <string name="showNotInstalled">Neįdiegtas programėles</string>
+    <string name="de_selectAll">Pasirinkti viską / nesirinkti nieko</string>
+    <string name="batchbackup">Paketo atsarginė kopija</string>
+    <string name="batchrestore">Paketo atkūrimas</string>
+    <string name="deleteBackup">Ištrinti atsarginę kopiją</string>
+    <string name="uninstall">Pašalinti programėlę</string>
+    <string name="showOnlyUser">Tik vartotojo programėles</string>
 </resources>
