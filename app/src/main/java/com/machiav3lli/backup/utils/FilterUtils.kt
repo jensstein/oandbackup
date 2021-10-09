@@ -84,6 +84,7 @@ private fun List<AppInfo>.applySpecialFilter(
         SPECIAL_FILTER_LAUNCHABLE -> { appInfo: AppInfo ->
             launchableAppsList.contains(appInfo.packageName)
         }
+        SPECIAL_FILTER_DISABLED -> AppInfo::isDisabled
         else -> { _: AppInfo -> true }
     }
     return filter(predicate)
@@ -92,17 +93,17 @@ private fun List<AppInfo>.applySpecialFilter(
 private fun List<AppInfo>.applySort(sort: Int, context: Context): List<AppInfo> =
     if (context.sortOrder) {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName }
+            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName.lowercase() }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
-            MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
-            else -> sortedByDescending { it.packageLabel }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel })
+            else -> sortedByDescending { it.packageLabel.lowercase() }
         }
     } else {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName }
+            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName.lowercase() }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
-            MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel } )
-            else -> sortedBy { it.packageLabel }
+            MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<AppInfo> { it.latestBackup?.backupProperties?.backupDate }.thenBy { it.packageLabel })
+            else -> sortedBy { it.packageLabel.lowercase() }
         }
     }
 
@@ -117,6 +118,7 @@ fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
     SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewUpdated
     SPECIAL_FILTER_OLD -> R.id.specialOld
     SPECIAL_FILTER_NOT_INSTALLED -> R.id.specialNotInstalled
+    SPECIAL_FILTER_DISABLED -> R.id.specialDisabled
     else -> R.id.specialAll
 }
 
@@ -131,6 +133,7 @@ fun idToSpecialFilter(id: Int): Int = when (id) {
     R.id.specialNewUpdated -> SPECIAL_FILTER_NEW_UPDATED
     R.id.specialOld -> SPECIAL_FILTER_OLD
     R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
+    R.id.specialDisabled -> SPECIAL_FILTER_DISABLED
     else -> SPECIAL_FILTER_ALL
 }
 

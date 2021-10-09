@@ -18,9 +18,7 @@
 package com.machiav3lli.backup.fragments
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -34,13 +32,7 @@ open class BaseSheet : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        sheet.setOnShowListener { d: DialogInterface ->
-            val bottomSheetDialog = d as BottomSheetDialog
-            val bottomSheet =
-                bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) BottomSheetBehavior.from(bottomSheet).state =
-                BottomSheetBehavior.STATE_EXPANDED
-        }
+        sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         sheet.context.theme.applyStyle(getAccentStyle(requireContext().accentStyle), true)
         sheet.context.theme.applyStyle(getSecondaryStyle(requireContext().secondaryStyle), true)
         return sheet

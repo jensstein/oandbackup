@@ -89,7 +89,7 @@ class HelpSheet : BaseSheet() {
             val htmlString = convertStreamToString(stream)
             stream.close()
             binding.usageNotesHtml.text =
-                HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY).dropLast(2)
             binding.usageNotesHtml.movementMethod = LinkMovementMethod.getInstance()
         } catch (e: IOException) {
             binding.usageNotesHtml.text = e.toString()

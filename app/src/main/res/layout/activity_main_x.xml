@@ -28,6 +28,19 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/snackbar_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.Title"
+            android:textColor="?colorAccent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainer"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -36,7 +49,7 @@
             app:layout_constraintBottom_toTopOf="@id/navigationBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/snackbar_text"
             app:navGraph="@navigation/navi_graph_main" />
 
         <androidx.appcompat.widget.LinearLayoutCompat

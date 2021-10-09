@@ -1,11 +1,54 @@
 CHANGELOG
 =========
+7.0.0 (09.10.2021) +300 Commits
+------------------
+BACKUPS HAS NEW VARIABLE: making new backups incompatible with old versions of OABX
+SCHEDULES REVAMPED: schedules will be deleted on update and old exports aren't usable
+#### UI
+* Add: Theming engine
+* Add: Transition animations
+* Add: Elevation/shadows to UI (viewable in light theme)
+* Add: PrimaryDark color to system's navigation bar
+* Update: Revamp UI (Material design 3 & new icons set)
+* Update: Replace the snackbar with a simple text on top of activity and appsheet
+* Fix: Crashing on changing theme
+* Fix: Sort/Filter and Blocklist buttons colliding with lower dpi
+#### Function
+* Add: Media files backup
+* Add: Randomized IV for the Cipher
+* Update: TargetSDK 30
+* Update: Exclude cache size from data size
+* Fix: Postpone chmod to do it after restore (@hg42)
+* Fix: Special characters in ls output and quoting(@hg42x)
+* Fix: Sorting by data size
+* Fix: Improved exception handling with TarUtils (@hg42)
+* Fix: Firefox restore (@hg42)
+* Fix: Including uninstalled apps in scheduled backups
+#### Usability/UX
+* Add: Extras [Note and Tags]
+* Add: Blocklist shortcut to all navigation fragments
+* Add: Animated placeholders while loading apps' list
+* Add: Schedule special filter for old apps
+* Add: Disabled apps filter
+* Add: Backup all updated apps button
+* Add: Support for countries' specific locales
+* Add languages: Chinese(traditional/Taiwan), Portuguese(Brazil), Lithuanian.
+* Update translations: Chinese(simplified), Vietnamese, Ukrainian, Russian, Arabic, German, French, Polish, Norwegian, Italian, Swedish.
+* Update: Automate locals generation
+* Update: Revamp app's navigation (Activities and Fragments)
+* Update: Revamp filters and modes
+* Update: Improve readability of app's info in app sheet
+* Update: More informative error messages
+* Update: Grey out encryption password preferences instead of hiding it
+* Remove: Main special filter split
+* Remove: Info shortcut from Main fragments
+* Fix: Hide Navigation Bar while in tools
 
 6.0.1 (03.06.2021)
 ------------------
 * Fixed: Exclude system apps checkbox in the schedule sheet
 * Fixed: Import the val of exclude system apps on schedules' import
-* Added: Vietnamese, Hindi & Ukranian
+* Added: Vietnamese, Hindi & Ukrainian
 * Updated translations:Arabic, Spanish, Italian, Portuguese, Russian, Catalan, Turkish, Indonesian
 
 6.0.0 (05.05.2021)

@@ -20,15 +20,13 @@ package com.machiav3lli.backup.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
-import com.google.android.material.snackbar.Snackbar
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
@@ -66,9 +64,6 @@ class MainActivityX : BaseActivity() {
 
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
-
-    // var sheetHelp: HelpSheet? = null
-    var snackBar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setCustomTheme()
@@ -200,23 +195,13 @@ class MainActivityX : BaseActivity() {
     }
 
     fun showSnackBar(message: String) {
-        snackBar = Snackbar.make(
-            binding.fragmentContainer,
-            message, Snackbar.LENGTH_INDEFINITE
-        )
-        val bottomMargin =
-            if (viewModel.appInfoList.value?.filter { it.isUpdated }?.size ?: 0 > 0) -128F else -80F
-        snackBar?.view?.translationY =
-            bottomMargin * resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT
-        snackBar?.view?.backgroundTintList = ColorStateList.valueOf(colorPrimaryDark)
-        snackBar?.setTextColor(
-            resources.getColor(
-                R.color.app_primary_inverse,
-                theme
-            )
-        )
-        snackBar?.show()
+        binding.snackbarText.apply {
+            text = message
+            visibility = View.VISIBLE
+        }
     }
 
-    fun dismissSnackBar() = snackBar?.dismiss()
+    fun dismissSnackBar() {
+        binding.snackbarText.visibility = View.GONE
+    }
 }

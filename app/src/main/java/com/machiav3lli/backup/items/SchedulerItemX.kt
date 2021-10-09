@@ -57,6 +57,7 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
         binding.updatedFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_LAUNCHABLE)
         binding.oldFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_OLD)
+        binding.disabledFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_DISABLED)
         modeToModes(schedule.mode).let {
             binding.apkMode.setExists(it.contains(MODE_APK))
             binding.dataMode.setExists(it.contains(MODE_DATA))

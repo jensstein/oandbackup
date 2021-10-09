@@ -29,9 +29,9 @@ android {
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
-        targetSdk = 31
-        versionCode = 6001
-        versionName = "6.0.1"
+        targetSdk = 30
+        versionCode = 7000
+        versionName = "7.0.0"
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,17 +55,20 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            isMinifyEnabled = true
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         named("debug") {
             applicationIdSuffix = ".debug"
+            isMinifyEnabled = false
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
             versionNameSuffix = "-neo"
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -106,12 +109,12 @@ dependencies {
     // Libs
     implementation("androidx.room:room-runtime:2.3.0")
     implementation("androidx.room:room-ktx:2.3.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-rc01")
     kapt("androidx.room:room-compiler:2.3.0")
     implementation("com.google.code.gson:gson:2.8.8")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-rc01")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
-    implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.biometric:biometric:1.2.0-alpha03")
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("commons-io:commons-io:2.11.0")
     val libsu = "3.1.2"
@@ -120,13 +123,13 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation("androidx.appcompat:appcompat:1.4.0-beta01")
+    implementation("androidx.fragment:fragment-ktx:1.4.0-alpha10")
     implementation("com.google.android.material:material:1.5.0-alpha04")
     implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-alpha10")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-alpha10")
     val fastadapter = "5.5.1"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")

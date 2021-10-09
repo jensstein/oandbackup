@@ -29,7 +29,6 @@
         android:layout_marginHorizontal="@dimen/cards_spacing"
         android:layout_marginVertical="@dimen/buttons_spacing"
         android:clipChildren="false"
-        android:clipToPadding="false"
         android:paddingHorizontal="@dimen/cards_spacing"
         android:paddingVertical="4dp">
 

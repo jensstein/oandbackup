@@ -388,10 +388,8 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             when {
                 actionType === ActionType.BACKUP -> {
                     BackupActionTask(
-                        it,
-                        requireMainActivity(),
-                        MainActivityX.shellHandlerInstance!!,
-                        mode
+                        it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                        this
                     ).execute()
                 }
                 actionType === ActionType.RESTORE -> {
@@ -403,7 +401,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                                     requireContext(),
                                     viewModel.appInfo.value?.backupDirUri ?: Uri.EMPTY
                                 )
-                            )
+                            ), this
                         ).execute()
                     }
                 }
@@ -447,5 +445,20 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
         } catch (e: ShellCommands.ShellActionFailedException) {
             requireActivity().showError(e.message)
         }
+    }
+
+    fun showSnackBar(message: String) {
+        binding.snackbarText.apply {
+            text = message
+            visibility = View.VISIBLE
+        }
+        binding.backup.isEnabled = false
+        binding.deleteAll.isEnabled = false
+    }
+
+    fun dismissSnackBar() {
+        binding.snackbarText.visibility = View.GONE
+        binding.backup.isEnabled = true
+        binding.deleteAll.isEnabled = true
     }
 }

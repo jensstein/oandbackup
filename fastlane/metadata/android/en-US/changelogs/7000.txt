@@ -1,0 +1,7 @@
+* Add: Theming engine
+* Add: Media files backup
+* Add: Extras [Note and Tags]
+* Add languages: Chinese(traditional/Taiwan), Portuguese(Brazil), Lithuanian.
+* Update: Revamp UI (Material design 3 & new icons set)
+* Fix: Firefox restore (@hg42)
+and more… read the full changelog

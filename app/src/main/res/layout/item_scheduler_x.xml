@@ -98,6 +98,14 @@
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_old" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/disabledFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/ic_de_data"
+                app:srcCompat="@drawable/ic_exclude" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
