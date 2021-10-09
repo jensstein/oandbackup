@@ -310,4 +310,9 @@
     <string name="prefs_mediadata">Резервное копирование медиа файлов</string>
     <string name="radio_mediadata">Медиа-данные</string>
     <string name="help_changelog">Список изменений</string>
+    <string name="prefs_accent_8">Перанский тыквенный</string>
+    <string name="prefs_secondary_8">Мятный</string>
+    <string name="home">Домашняя страница</string>
+    <string name="all_data">Проверить все данные</string>
+    <string name="all_apk">Проверить все APK</string>
 </resources>
