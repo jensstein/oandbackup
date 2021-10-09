@@ -1,6 +1,6 @@
 ## Possible Features
 
-- [ ] Rootless Backups: maybe [Shizuku](https://github.com/RikkaApps/Shizuku) could be useful in this matter.
+- [ ] Rootless Backups: Off the plan respecting the stats que.
 
 - [ ] More functionality for AppSheet:
 
@@ -26,7 +26,69 @@
 
 - [x] Columnize batch backup preference
 
+- [x] Revamp UI/UX:
+
+    - [x] Animations and elevation
+
+    - [x] MD3: All the already available components from MD-Android.
+
 ## Needed Fixes
+
+- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. (Next Version)
+
+- [x] Handle the error about disabling "verify apps over USB".
+
+- [x] Replace deprecated Classes/Methods:
+
+  - [x] AsyncTask
+
+  - [x] ProgressDialog
+
+- [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
+
+- [x] TargetSDK 30 & updated StorageManger
+
+- [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
+
+- [x] Enable encryption direct shortcut
+
+- [x] Not responding to clicks after long time in background
+
+- [x] Fix GSF push notifications' issue: seems to work on a set of apps only.
+
+## Planned Restructure
+
+- [x] Improve UI/UX (on anniversary release as co-op with @opepp)
+
+- [ ] Use DataBinding/BindingAdapter where useful
+
+- [x] Refactor Schedules handling
+
+- [x] Migrate to Kotlin
+
+- [x] Use Kotlin style explicitly
+
+- [x] ViewModel where useful
+
+  - [x] Scheduler
+
+  - [x] Main & Batch
+
+  - [x] AppSheet
+
+- [x] Rewrite Help text
+
+- [x] Theming engine (with accent/primary and secondary)
+
+- [x] Automatic languages integration/detection
+
+- [x] Full separation of concerns of Activities and Fragments
+
+- [x] Better management for filtering and modes
+
+## In next major Release
+
+- [ ] (re)integrate OpenGPG
 
 - [ ] Fully support for Special Backups:
 
@@ -40,56 +102,16 @@
 
   - [ ] and others…
 
-- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. (Next Version)
+- [ ] TargetSDK 31
 
-- [x] Handle the error about disabling "verify apps over USB".
+- [ ] Restore to chosen user
 
-- [x] Replace deprecated Classes/Methods:
-  
-  - [x] AsyncTask
+- [ ] Sort/filter based on changed data (last open after last backup - using 'UsageStatistics')
 
-  - [x] ProgressDialog
+## Low Priority(sorted)
 
-- [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
-
-- [ ] TargetSDK 30 & updated StorageManger on SDK29: on test
-
-- [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
-
-- [x] Enable encryption direct shortcut
-
-- [x] Not responding to clicks after long time in background
-
-- [x] Fix GSF push notifications' issue. NEEDS SOME TESTING
-
-## Planned Restructure
-
-- [x] Improve UI/UX (on anniversary release as co-op with @opepp)
-
-- [ ] Use DataBinding/BindingAdapter where useful
+- [ ] Legacy Backup mode
 
 - [ ] Migrate to Jetpack Compose instead of XML (where possible)
 
-- [x] Refactore Batch & Schedules handling
-
-- [x] Migrate to Kotlin
-
-- [x] Use Kotlin style explicitly: a process taking place with each class refactored
-
-- [x] ViewModel where useful
-  
-  - [x] Scheduler
-  
-  - [x] Main & Batch
-  
-  - [x] AppSheet
-
-- [x] Rewrite Help text
-
-## Low Priority
-
-- [ ] Add Flashable Zip feature
-
-- [ ] (re)integrate OpenGPG
-
-- [ ] Legacy Backup mode
+- [ ] Add flashable Zip feature
