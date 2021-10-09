@@ -30,8 +30,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 30
-        versionCode = 6001
-        versionName = "6.0.1"
+        versionCode = 7000
+        versionName = "7.0.0"
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,17 +55,20 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            isMinifyEnabled = true
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         named("debug") {
             applicationIdSuffix = ".debug"
+            isMinifyEnabled = false
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
             versionNameSuffix = "-neo"
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
