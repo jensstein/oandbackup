@@ -87,6 +87,9 @@ fun Context.getEncryptionPasswordConfirmation(): String =
 fun Context.setEncryptionPasswordConfirmation(value: String) =
     getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
+fun Context.getCompressionLevel() =
+    getDefaultSharedPreferences().getInt(PREFS_COMPRESSION_LEVEL, 5);
+
 fun Context.isDeviceLockEnabled(): Boolean =
     getDefaultSharedPreferences().getBoolean(PREFS_DEVICELOCK, false)
 

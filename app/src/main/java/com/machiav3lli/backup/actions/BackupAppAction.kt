@@ -30,6 +30,7 @@ import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
+import org.apache.commons.compress.compressors.gzip.GzipParameters
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.File
@@ -187,6 +188,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupFilename = getBackupArchiveFilename(what!!, context.isEncryptionEnabled())
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
         val password = context.getEncryptionPassword()
+        val gzipParams = GzipParameters();
+        gzipParams.compressionLevel = context.getCompressionLevel();
         var outStream: OutputStream = BufferedOutputStream(
             context.contentResolver.openOutputStream(
                 backupFile?.uri
@@ -197,7 +200,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
         try {
-            TarArchiveOutputStream(GzipCompressorOutputStream(outStream)).use { archive ->
+            TarArchiveOutputStream(
+                GzipCompressorOutputStream(
+                    outStream,
+                    gzipParams
+                )
+            ).use { archive ->
                 archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
                 archive.suAddFiles(allFilesToBackup)
             }

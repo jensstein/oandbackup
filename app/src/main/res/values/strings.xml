@@ -122,6 +122,8 @@
     <string name="prefs_numBackupRevisions_summary">The oldest revision will be deleted upon creation of a new backup if the number is exceeded. Set it to zero to keep all revisions.</string>
     <string name="prefs_housekeepingmoment">Revision cleanup time</string>
     <string name="prefs_housekeepingmoment_summary">Configures if the oldest revision is deleted before or after creating a new backup to free the disk space used by the backup.</string>
+    <string name="prefs_compression_level">Compression Level</string>
+    <string name="prefs_compression_level_summary">A lower value compresses faster but results in larger files. A higher value compresses better but takes more time.</string>
     <string name="prefs_acquirewakelock">Prevent sleep</string>
     <string name="prefs_acquirewakelock_summary">Acquire a wakelock during batch operations to prevent sleep. Speeds up backups and restorations considerably, but consumes more energy.</string>
     <string name="prefs_disableverification">Disable "Verify apps over USB"</string>
