@@ -46,7 +46,7 @@ Each backup basically consists of the two different parts:
 1. the software itself (stored in a so called APK file) and  
     
 2. its data (created while using an app, settings, etc.)
-   The data can be split again into:
+   The data can be split again into several data types:
    
    2.1. normal data
    
@@ -70,6 +70,15 @@ Each backup basically consists of the two different parts:
           It's usually data that is needed for the pre-start phase of your device. 
           E.g. a preference which decides if your app should start on device boot or not. 
         - Default is set to include it in the backup
+
+   2.5. media
+        
+        - this type is related to a controversial change that originally was slated for Android 10 
+          it becomes mandatory for all new apps in August 2020 and every app targeting Android 11 (SDK 30)
+        - it is called scoped storage
+        - Storage is then divieded into Shared Storage and Private Storage
+        - next to SAF it is part of Androids approach to secure the access to media files and limit it to the ones of each app individually
+        - e.g. if you 
     
    2.5. cache
    
