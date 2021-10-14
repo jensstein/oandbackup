@@ -305,4 +305,9 @@
     <string name="prefs_mediadata">Mediendateien sichern</string>
     <string name="radio_mediadata">Mediendaten</string>
     <string name="home">Startseite</string>
+    <string name="prefs_secondary_8">Mint</string>
+    <string name="prefs_accent_8">Kürbis Perano</string>
+    <string name="help_changelog">Änderungsprotokoll</string>
+    <string name="all_data">Alle Daten prüfen</string>
+    <string name="all_apk">Alle APKs prüfen</string>
 </resources>
