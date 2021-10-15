@@ -71,6 +71,8 @@ const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
+const val PREFS_INTERNAL_RETRIEVE_APP_META_ATTEMPTS = "retrieveAppMetaAttempts";
+const val PREFS_INTERNAL_RETRIEVE_APP_META_SLEEP_MS = "retrieveAppMetaSleepMs";
 
 const val ALT_MODE_UNSET = 0
 const val ALT_MODE_APK = 1
@@ -111,13 +113,16 @@ const val SPECIAL_FILTER_OLD = 3
 const val SPECIAL_FILTER_NOT_INSTALLED = 4
 const val SPECIAL_FILTER_DISABLED = 5
 
+const val DEFAULT_RETRIEVE_APP_META_ATTEMPTS = 5;
+const val DEFAULT_RETRIEVE_APP_META_SLEEP_MS = 200;
+
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"
 
 const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/OAndBackupX"
 const val HELP_ELEMENT =
-    "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
+        "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
 const val HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/machiav3lli/oandbackupx/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md"
