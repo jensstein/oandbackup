@@ -78,7 +78,7 @@ Each backup basically consists of the two different parts:
           it becomes mandatory for all new apps in August 2020 and every app targeting Android 11 (SDK 30)
         - it is called scoped storage
         - Storage is then divided into Shared Storage and Private Storage
-        - so as part of [SAF](#so-why-use-saf-then) this is Androids approach to secure the access to media files 
+        - so as part of SAF this is Androids approach to secure the access to media files 
           and limit it to the ones of each app individually
         - e.g. chat apps had to move their media data into data directories instead of generic folders 
           (e.g. WhatsApp's well known WhatsApp folder). 
@@ -150,7 +150,7 @@ In the next Android versions Google will (most probably) force apps more and mor
 
 ##### Some "performance" or time measuring infos from an older phone
 
-<ins>related to a lot of SAF comments in the chat</ins>
+*related to a lot of SAF comments in the chat*
 
 ###### General facts:
 - Device: Fairphone 2 (SoC: Qualcomm MSM8974AB-AB)
