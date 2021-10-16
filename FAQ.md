@@ -81,7 +81,7 @@ Each backup basically consists of the two different parts:
         - so as part of SAF this is Androids approach to secure the access to media files 
           and limit it to the ones of each app individually
         - e.g. chat apps had to move their media data into data directories instead of generic folders 
-          (e.g. WhatsApp's well known WhatsApp folder). 
+          (e.g. WhatsApp's well known WhatsApp folder) 
         - Android might wants to move all the data directories to /storage/emulated/0/Android. 
           Below it you can find the "data", "obb", "media" ... an in it a folder of each apps package name
     
