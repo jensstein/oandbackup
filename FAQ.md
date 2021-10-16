@@ -9,6 +9,7 @@
 * [Why is OABX so slow?](#why-is-oabx-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
+* [I do not see the app which is currently backed up in the notification during batch or scheduled backups](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
@@ -76,9 +77,13 @@ Each backup basically consists of the two different parts:
         - this type is related to a controversial change that originally was slated for Android 10 
           it becomes mandatory for all new apps in August 2020 and every app targeting Android 11 (SDK 30)
         - it is called scoped storage
-        - Storage is then divieded into Shared Storage and Private Storage
-        - next to SAF it is part of Androids approach to secure the access to media files and limit it to the ones of each app individually
-        - e.g. if you 
+        - Storage is then divided into Shared Storage and Private Storage
+        - so as part of [SAF](#so-why-use-saf-then) this is Androids approach to secure the access to media files 
+          and limit it to the ones of each app individually
+        - e.g. chat apps had to move their media data into data directories instead of generic folders 
+          (e.g. WhatsApp's well known WhatsApp folder). 
+        - Android might wants to move all the data directories to /storage/emulated/0/Android. 
+          Below it you can find the "data", "obb", "media" ... an in it a folder of each apps package name
     
    2.5. cache
    
@@ -143,6 +148,77 @@ In the next Android versions Google will (most probably) force apps more and mor
 - Performance, more of Performance and tons of Performance
 - obfuscation of the classical path structure
 
+##### Some "performance" or time measuring infos from an older phone
+
+<ins>related to a lot of SAF comments in the chat</ins>
+
+###### General facts:
+- Device: Fairphone 2 (SoC: Qualcomm MSM8974AB-AB)
+- SoC's CPU: Snapdragon 801 (quad-core) 2.26 GHz
+- OS: A10 / LOS17.1
+- 238 Apps - system + user apps
+- OABX - version used for the last test listed here: v7.0.0 stable
+- Backup folder on internal storage
+
+As this is a quite old SOC, it can be called low end benchmark. 😉
+
+OABX - Prefs ...
+(I list only the differences from default)
+Service:
+- Encryption configured;
+- Back up external data - enabled;
+- Back up obb - enabled;
+- Number of backup revisions = 1
+Advanced:
+- STOP/CONT - enabled; <- default now as well
+
+###### Test description:
+***Test 1***
+
+Initial refresh (load the app list after the first Start - no backup exists at that point in time)
+
+***Test 2***
+
+Backing up all apps (two Apps excluded as too big + have their own in app bkp possibility) apk + all enabled data types via scheduled backup or batch.
+
+Especially this test is a bit heat dependent with such an old device/SOC.
+Phone heats up during such longer running stuff.
+
+Also a second in this examples run takes longer, due to ensure the revision count (time is needed to delete the old backups).
+If you the default revision count=2 is used of course the first run which takes longer is the 3rd. ;-)
+
+***Test 3***
+
+Refresh after starting OABX with all those apps and their bkps created under Test 2
+
+###### Measured times:
+
+(they generally vary a lot - depending on what the device is doing in parallel)
+
+***Test 1:***
+
+11 Sek  
+
+Former versions tested:  
+5.0.0-beta1: 11 Sek  
+4.0.1-alpha4: 11 Sek  
+
+***Test 2:***
+
+First run: 16m 45s; Second run: 21m 40s  
+
+Former versions tested:  
+5.0.0-beta1 (around 200 Apps that time): first run: 14m 40s; Second run: ---  
+4.0.1-alpha4: first run: 17m 49s; Second run: ---  
+
+***Test 3:***
+
+20/21 Sek  
+
+Former versions tested:  
+5.0.0-beta1: 14 Sek  
+4.0.1-alpha4: 19,5 Sek  
+
 #### I do not see any apps in the list. What can be the reason?
 
 In most cases the you chose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
@@ -152,6 +228,10 @@ This is not supported by SAF. You find a full list which folders are not allowed
 Create a separate folder and choose it in oabx preferences (User preferences) as your "Backup folder".
 
 Another mistake which might happen is, that you set special filters which lead to an empty result.
+
+#### I do not see the app which is currently backed up in the notification during batch or scheduled backups
+
+To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores your SOC's CPU has. So notification always shows the last one which was started on whatever free core of your SOC's CPU.
 
 #### How can I backup SMS & Call log?
 
@@ -163,7 +243,7 @@ For contacts, calendar and todo-lists. We advice to use [DecSync](https://github
 
 No, Non, No, No, Nein, Nej, Niet, La... in seable future, maybe this would change in the far future...   
 Oldest supported version:  A8 - "Oreo" (A7 "Nougat" and older Android version support dropped in OABX v3.1.0)  
-Newest supported version: A11 - „Red Velvet Cake“ 
+Newest supported version: A12 - „Snow Cone“ 
 
 #### Why do I have to login/register to app x y z again after restore?
   
