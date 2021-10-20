@@ -1,6 +1,7 @@
 # Frequently Asked Questions:
 
 * [What is OAndBackupX?](#what-is-oandbackupx)
+* [Which Android Versions are supported?](#which-android-versions-are-supported)
 * [How do I use OABX?](#how-do-i-use-oabx)
 * [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
 * [What are Special Backups?](#what-are-special-backups)
@@ -21,6 +22,13 @@
 
 OAndBackupX (short OABX) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to bring it to 202x. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
 Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+
+#### Which Android Versions are supported?
+
+Oldest supported version: Android  8 - "Oreo"  
+Newest supported version: Android 12 - „Snow Cone“  
+
+See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 
 #### How do I use OABX?
 
@@ -57,12 +65,12 @@ Each backup basically consists of the two different parts:
    2.2. external data
    
        - Stored usually in /Android/data/ in the external storage (internal storage in android current terminology)
-       - Default is set to not include it in the backup
+       - Default is set to not include it in the backup (possibility to enable in prefs)
    
    2.3. obb files
    
         - Stored usually in /Android/obb/ in the external storage (internal storage in android current terminology)
-        - Default is set to not include it in the backup
+        - Default is set to not include it in the backup (possibility to enable in prefs)
     
    2.4. device protected data
    
@@ -75,15 +83,16 @@ Each backup basically consists of the two different parts:
    2.5. media
         
         - this type is related to a controversial change that originally was slated for Android 10 
-          it becomes mandatory for all new apps in August 2020 and every app targeting Android 11 (SDK 30)
-        - it is called scoped storage
+          it is mandatory for all new apps since August 2020 and/or every app targeting Android 11 (SDK 30)
+        - the main thing here is call "Scoped Storage"
         - Storage is then divided into Shared Storage and Private Storage
-        - so as part of SAF this is Androids approach to secure the access to media files 
+        - as part of SAF this is Androids approach to secure the access to media files 
           and limit it to the ones of each app individually
-        - e.g. chat apps had to move their media data into data directories instead of generic folders 
+        - e.g. chat apps have/had to move their media data into data directories instead of generic folders 
           (e.g. WhatsApp's well known WhatsApp folder) 
         - Android might wants to move all the data directories to /storage/emulated/0/Android. 
           Below it you can find the "data", "obb", "media" ... an in it a folder of each apps package name
+        - Default is set to include it in the backup (possibility to enable in prefs)
     
    2.5. cache
    
@@ -157,20 +166,26 @@ In the next Android versions Google will (most probably) force apps more and mor
 - SoC's CPU: Snapdragon 801 (quad-core) 2.26 GHz
 - OS: A10 / LOS17.1
 - 238 Apps - system + user apps
+- no gApps
+- root via Magisk
 - OABX - version used for the last test listed here: v7.0.0 stable
 - Backup folder on internal storage
 
 As this is a quite old SOC, it can be called low end benchmark. 😉
 
 OABX - Prefs ...
-(I list only the differences from default)
-Service:
-- Encryption configured;
-- Back up external data - enabled;
-- Back up obb - enabled;
-- Number of backup revisions = 1
-Advanced:
-- STOP/CONT - enabled; <- default now as well
+(I list only the differences from default)  
+Service-Prefs:
+- Encryption configured
+- Back up external data - enabled
+- Back up obb files - enabled
+- Back up media files - enabled
+- Number of backup revisions = 1  
+
+Advanced-Prefs:  
+- Restore with all permissions - enabled
+- Allow downgrading - enabled
+- STOP/CONT - enabled <- default now as well
 
 ###### Test description:
 ***Test 1***
@@ -185,7 +200,7 @@ Especially this test is a bit heat dependent with such an old device/SOC.
 Phone heats up during such longer running stuff.
 
 Also a second in this examples run takes longer, due to ensure the revision count (time is needed to delete the old backups).
-If you the default revision count=2 is used of course the first run which takes longer is the 3rd. ;-)
+If the default revision count (2) is used, of course, the first run, which takes longer, is the 3rd one. ;-)
 
 ***Test 3***
 
@@ -219,6 +234,17 @@ Former versions tested:
 5.0.0-beta1: 14 Sek  
 4.0.1-alpha4: 19,5 Sek  
 
+Side-Comment:  
+Full scheduled/batch backup with last SAF free release (v3.2.0.) took about 10 minutes (for 195 apps at that time)  
+--> so much faster
+The time difference (for most of the test-tasks shown here) is due to:
+- no SAF
+- no external data support
+- no obb files support
+- other folder structure
+- different encryption
+- (no external sd-card support )
+
 #### I do not see any apps in the list. What can be the reason?
 
 In most cases the you chose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
@@ -241,9 +267,9 @@ For contacts, calendar and todo-lists. We advice to use [DecSync](https://github
 
 #### Are you going to support older Android versions?  
 
-No, Non, No, No, Nein, Nej, Niet, La... in seable future, maybe this would change in the far future...   
-Oldest supported version:  A8 - "Oreo" (A7 "Nougat" and older Android version support dropped in OABX v3.1.0)  
-Newest supported version: A12 - „Snow Cone“ 
+No, Non, No, No, Nein, Nej, Niet, La... in seable future, maybe this would change in the far future... 
+Android 7 "Nougat" and older Android version support dropped in OABX v3.1.0.
+See also - [Which Android Versions are supported?](#which-android-versions-are-supported)
 
 #### Why do I have to login/register to app x y z again after restore?
   
@@ -273,7 +299,7 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
 | encrypted backup | yes (optional) | yes |
 | automatic backup | yes (individual schedules) | yes (daily) |
-| usable For | [A8-A11](#are-you-going-to-support-older-android-versions) | A11 only (but [integrated into LOS now](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) ) |
+| usable For | [A8-A11](#which-android-versions-are-supported) | A11; but branches for from A9 to A12; also integrated into known Custom ROMs CalyxOS, GrapheneOS, [LOS](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) |
 | Considers 'allowbackup' flag of apps? | no | yes |
 | OS-/Rom intergrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |
