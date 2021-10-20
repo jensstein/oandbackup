@@ -305,4 +305,6 @@
     <string name="prefs_mediadata">Mediendateien sichern</string>
     <string name="radio_mediadata">Mediendaten</string>
     <string name="help_changelog">Änderungsprotokoll</string>
+    <string name="prefs_compression_level">Kompressionslevel</string>
+    <string name="prefs_compression_level_summary">Ein niedriger Wert komprimiert schneller aber erzeugt größere Dateien. Ein hoher Wert komprimiert stärker aber benötigt mehr Zeit.</string>
 </resources>

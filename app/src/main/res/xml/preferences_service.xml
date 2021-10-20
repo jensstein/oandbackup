@@ -94,4 +94,14 @@
         android:key="housekeepingMoment"
         android:summary="@string/prefs_housekeepingmoment_summary"
         android:title="@string/prefs_housekeepingmoment" />
+
+    <androidx.preference.SeekBarPreference
+        android:defaultValue="5"
+        android:icon="@drawable/ic_compression_level"
+        android:key="compressionLevel"
+        android:max="9"
+        android:summary="@string/prefs_compression_level_summary"
+        android:title="@string/prefs_compression_level"
+        app:min="1"
+        app:showSeekBarValue="true" />
 </androidx.preference.PreferenceScreen>
