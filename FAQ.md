@@ -16,6 +16,7 @@
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
+* [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 
 #### What is OAndBackupX?
@@ -84,15 +85,16 @@ Each backup basically consists of the two different parts:
         
         - this type is related to a controversial change that originally was slated for Android 10 
           it is mandatory for all new apps since August 2020 and/or every app targeting Android 11 (SDK 30)
-        - the main thing here is call "Scoped Storage"
+        - the main thing here is called "Scoped Storage"
         - Storage is then divided into Shared Storage and Private Storage
         - as part of SAF this is Androids approach to secure the access to media files 
           and limit it to the ones of each app individually
-        - e.g. chat apps have/had to move their media data into data directories instead of generic folders 
+        - e.g. chat apps have/had to move their media data into data directories, instead of generic folders 
           (e.g. WhatsApp's well known WhatsApp folder) 
         - Android might wants to move all the data directories to /storage/emulated/0/Android. 
-          Below it you can find the "data", "obb", "media" ... an in it a folder of each apps package name
-        - Default is set to include it in the backup (possibility to enable in prefs)
+          Below this folder you could find folders for "data", "obb", "media"
+          ... an in them, a folder of each app's package name
+        - Default is set to not include it in the backup (possibility to enable in prefs)
     
    2.5. cache
    
@@ -238,7 +240,7 @@ Side-Comment:
 Full scheduled/batch backup with last SAF free release (v3.2.0.) took about 10 minutes (for 195 apps at that time)  
 --> so much faster
 The time difference (for most of the test-tasks shown here) is due to:
-- no SAF
+- no [SAF](#why-is-oabx-so-slow)
 - no external data support
 - no obb files support
 - other folder structure
@@ -247,13 +249,13 @@ The time difference (for most of the test-tasks shown here) is due to:
 
 #### I do not see any apps in the list. What can be the reason?
 
-In most cases the you chose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
-This is not supported by SAF. You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
+In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
+This is not supported by [SAF](#why-is-oabx-so-slow). You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
 
 <ins>Solution:</ins><br/>
-Create a separate folder and choose it in oabx preferences (User preferences) as your "Backup folder".
+Create a separate/dedicated sub-folder and choose it in oabx preferences (User preferences) as your "Backup folder".
 
-Another mistake which might happen is, that you set special filters which lead to an empty result.
+Another mistake, which might happen is, that you set a filters, which lead to an empty result.
 
 #### I do not see the app which is currently backed up in the notification during batch or scheduled backups
 
@@ -303,6 +305,14 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | Considers 'allowbackup' flag of apps? | no | yes |
 | OS-/Rom intergrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |
+
+#### What is the difference to the famous Titanium Backup?
+
+Users tend to compare OABX and Titanium Backup (TB). There are a lot of comments in the chat.
+All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html 
+  
+Feel free to share your thoughts and edit this FAQ to provide a comparison which is more on-point.
+Main points to mention: TB did not get an update for same years now (it does not use [SAF](#why-is-oabx-so-slow) and so is probably faster as long as google does not improve it) and it is not Open-Source.
 
 #### How can I open encrypted backups on my computer?  
   
