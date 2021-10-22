@@ -10,7 +10,7 @@
 * [Why is OABX so slow?](#why-is-oabx-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
-* [I do not see the app which is currently backed up in the notification during batch or scheduled backups](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
+* [I do not see the app which is currently backed up in the notification during batch or scheduled backups.](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
@@ -257,9 +257,10 @@ Create a separate/dedicated sub-folder and choose it in oabx preferences (User p
 
 Another mistake, which might happen is, that you set a filters, which lead to an empty result.
 
-#### I do not see the app which is currently backed up in the notification during batch or scheduled backups
+#### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
-To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores your SOC's CPU has. So notification always shows the last one which was started on whatever free core of your SOC's CPU.
+To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
+So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
 
 #### How can I backup SMS & Call log?
 
