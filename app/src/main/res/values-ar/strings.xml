@@ -315,4 +315,8 @@
     <string name="home">الصفحة الرئيسية</string>
     <string name="prefs_secondary_8">نعناع</string>
     <string name="prefs_accent_8">اليقطين بيرانو</string>
+    <string name="prefs_compression_level">مستوى الضغط</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">لم تتم استعادة بيانات التطبيق.</string>
+    <string name="prefs_compression_level_summary">يتم ضغط القيمة الأقل بشكل أسرع ولكن ينتج عنها ملفات أكبر. تضغط القيمة الأعلى بشكل أفضل ولكنها تستغرق وقتًا أطول.</string>
+    <string name="showDisabled">التطبيقات المعطلة</string>
 </resources>
