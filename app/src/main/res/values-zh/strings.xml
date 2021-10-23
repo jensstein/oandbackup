@@ -300,4 +300,9 @@
     <string name="prefs_mediadata">备份媒体文件</string>
     <string name="radio_mediadata">媒体数据</string>
     <string name="help_changelog">变更日志</string>
+    <string name="all_apk">检查所有 APK</string>
+    <string name="all_data">检查所有数据</string>
+    <string name="home">主页</string>
+    <string name="prefs_secondary_8">薄荷</string>
+    <string name="prefs_accent_8">南瓜佩拉诺</string>
 </resources>
