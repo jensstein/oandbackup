@@ -88,7 +88,7 @@ fun Context.setEncryptionPasswordConfirmation(value: String) =
     getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
 fun Context.getCompressionLevel() =
-    getDefaultSharedPreferences().getInt(PREFS_COMPRESSION_LEVEL, 5);
+    getDefaultSharedPreferences().getInt(PREFS_COMPRESSION_LEVEL, 5)
 
 fun Context.isDeviceLockEnabled(): Boolean =
     getDefaultSharedPreferences().getBoolean(PREFS_DEVICELOCK, false)
@@ -222,7 +222,7 @@ private fun Activity.requireWriteStoragePermission() {
 val Context.canAccessExternalStorage: Boolean
     get() {
         val externalStorage = FileUtils.getExternalStorageDirectory(this)
-        return externalStorage.canRead() && externalStorage.canWrite()
+        return externalStorage?.let { it.canRead() && it.canWrite() } ?: false
     }
 
 val Context.checkUsageStatsPermission: Boolean

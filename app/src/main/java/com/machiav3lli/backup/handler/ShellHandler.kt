@@ -42,7 +42,7 @@ class ShellHandler {
         )
     }
 
-    val UTILBOX_NAMES = listOf("toybox", "busybox")
+    private val UTILBOX_NAMES = listOf("toybox", "busybox")
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
@@ -56,13 +56,6 @@ class ShellHandler {
         recursive: Boolean,
         parent: String? = null
     ): List<FileInfo> {
-        // was incomplete time, without seconds and without time zone:
-        //// -Al : "drwxrwx--x 3 u0_a74 u0_a74       4096 2020-08-14 13:54 files"
-        //// -Al : "lrwxrwxrwx 1 root   root           60 2020-08-13 23:28 lib -> /data/app/org.mozilla.fenix-ddea_jq2cVLmYxBKu0ummg==/lib/x86"
-        // Expecting something like this (with whitespace)
-        // "drwxrwx--x 4 u0_a627 u0_a627 4096 2020-11-26 04:35:21.543772855 +0100 files"
-        // Special case:
-        // "lrwxrwxrwx 1 root    root      64 2020-11-24 19:41:09.569333987 +0100 lib -> /data/app/com.almalence.opencam-SekQMXi3UuGHZ_CVtPxhCA==/lib/arm"
         val shellResult = runAsRoot("$utilBoxQuoted ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
@@ -105,7 +98,7 @@ class ShellHandler {
             shellResult = runAsRoot(command)
             return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
-            throw UnexpectedCommandResult("'\$command' failed", shellResult!!)
+            throw UnexpectedCommandResult("'\$command' failed", shellResult)
         }
     }
 
@@ -131,7 +124,7 @@ class ShellHandler {
 
     class ShellCommandFailedException(@field:Transient val shellResult: Shell.Result) : Exception()
 
-    class UnexpectedCommandResult(message: String?, val shellResult: Shell.Result) :
+    class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
         Exception(message)
 
     class UtilboxNotAvailableException(val triedBinaries: String, cause: Throwable?) :
@@ -202,7 +195,7 @@ class ShellHandler {
                 return str.replace(
                             is_escaped
                         ) { match: MatchResult ->
-                            val matched = match.groups[1]!!.value
+                            val matched = match.groups[1]?.value ?: "?" // "?" cannot happen because it matched
                             when (matched) {
                                 """\""" -> """\"""
                                 "a" -> "\u0007"
@@ -230,7 +223,12 @@ class ShellHandler {
                 parentPath: String?,
                 absoluteParent: String
             ): FileInfo {
-                // Format
+                // Expecting something like this (with whitespace) from
+                // ls -bAll /data/data/com.shazam.android/
+                // field   0     1    2       3            4       5            6             7     8
+                //   "drwxrwx--x 5 u0_a441 u0_a441       4096 2021-10-19 01:54:32.029625295 +0200 files"
+                // links have 2 additional fields:
+                //   "lrwxrwxrwx 1 root    root            61 2021-08-25 16:44:49.757000571 +0200 lib -> /data/app/com.shazam.android-I4tzgPt3Ay6mFgz4Jnb4dg==/lib/arm"
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
@@ -255,7 +253,7 @@ class ShellHandler {
                     if (parentPath == null || parentPath.isEmpty()) {
                         fileName
                     } else {
-                        parentPath + '/' + fileName
+                        "${parentPath}/${fileName}"
                     }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {

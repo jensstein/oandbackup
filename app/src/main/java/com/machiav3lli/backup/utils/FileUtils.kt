@@ -28,8 +28,8 @@ object FileUtils {
     private var backupLocation: Uri? = null
 
     // TODO Change to StorageFile-based
-    fun getExternalStorageDirectory(context: Context): File {
-        return context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.parentFile!!.parentFile!!
+    fun getExternalStorageDirectory(context: Context): File? {
+        return context.getExternalFilesDir(null)?.parentFile?.parentFile?.parentFile?.parentFile
     }
 
     /**

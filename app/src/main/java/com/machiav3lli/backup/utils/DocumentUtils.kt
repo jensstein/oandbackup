@@ -106,11 +106,11 @@ fun suCopyFileToDocument(
     targetDir: StorageFile
 ) {
     val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)
-    if (newFile != null)
-        resolver.openOutputStream(newFile.uri).use { outputFile ->
-            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!)
-        }
-    else
+    if (newFile != null) {
+        resolver.openOutputStream(newFile.uri)?.use { outputFile ->
+            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile)
+        } ?: throw IOException()
+    } else
         throw IOException()
 }
 
@@ -119,12 +119,12 @@ fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri, targetPath
     val resolver = context.contentResolver
     val rootDir = StorageFile.fromUri(context, sourceDir)
     for (sourceDoc in rootDir.listFiles()) {
-        if (sourceDoc.isDirectory) {
-            runAsRoot("mkdir -p ${quote(File(targetPath, sourceDoc.name!!))}")
-        } else if (sourceDoc.isFile) {
-            suCopyFileFromDocument(
-                resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath
-            )
+        sourceDoc.name?.also {
+            if (sourceDoc.isDirectory) {
+                runAsRoot("mkdir -p ${quote(File(targetPath, it))}")
+            } else if (sourceDoc.isFile) {
+                suCopyFileFromDocument(resolver, sourceDoc.uri, File(targetPath, it).absolutePath)
+            }
         }
     }
 }
