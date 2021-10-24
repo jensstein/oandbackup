@@ -180,14 +180,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class, CryptoSetupException::class)
     protected fun createBackupArchive(
-        backupInstanceDir: Uri?,
-        what: String?,
+        backupInstanceDir: Uri,
+        what: String,
         allFilesToBackup: List<ShellHandler.FileInfo>,
         iv: ByteArray?
     ) {
         Timber.i("Creating $what backup")
-        val backupDir = StorageFile.fromUri(context, backupInstanceDir!!)
-        val backupFilename = getBackupArchiveFilename(what!!, context.isEncryptionEnabled())
+        val backupDir = StorageFile.fromUri(context, backupInstanceDir)
+        val backupFilename = getBackupArchiveFilename(what, context.isEncryptionEnabled())
         val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
         val password = context.getEncryptionPassword()
         val gzipParams = GzipParameters()
@@ -219,12 +219,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class)
     protected fun copyToBackupArchive(
-        backupInstanceDir: Uri?,
-        what: String?,
+        backupInstanceDir: Uri,
+        what: String,
         allFilesToBackup: List<ShellHandler.FileInfo>
     ) {
-        val backupInstance = StorageFile.fromUri(context, backupInstanceDir!!)
-        val backupDir = backupInstance.createDirectory(what!!)
+        val backupInstance = StorageFile.fromUri(context, backupInstanceDir)
+        val backupDir = backupInstance.createDirectory(what)
         suRecursiveCopyFileToDocument(context, allFilesToBackup, backupDir?.uri ?: Uri.EMPTY)
     }
 
@@ -258,8 +258,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected fun genericBackupData(
-        backupType: String?,
-        backupInstanceDir: Uri?,
+        backupType: String,
+        backupInstanceDir: Uri,
         filesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
         iv: ByteArray?
