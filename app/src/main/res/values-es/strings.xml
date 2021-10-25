@@ -310,4 +310,6 @@
     <string name="all_data">Verificar todos los datos</string>
     <string name="home">Página principal</string>
     <string name="prefs_secondary_8">Menta</string>
+    <string name="prefs_compression_level">Nivel de compresión</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Los datos de aplicación no han sido restaurados.</string>
 </resources>
