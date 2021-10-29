@@ -306,4 +306,9 @@
     <string name="radio_mediadata">Datos de medios</string>
     <string name="prefs_mediadata">Respaldar archivos de medios</string>
     <string name="help_changelog">Registro de cambios</string>
+    <string name="prefs_accent_8">Calabaza Perano</string>
+    <string name="all_apk">Verificar todas las APK</string>
+    <string name="all_data">Verificar todos los datos</string>
+    <string name="home">Página principal</string>
+    <string name="prefs_secondary_8">Menta</string>
 </resources>

@@ -292,7 +292,12 @@
     <string name="title_tags">Thẻ:</string>
     <string name="title_note">Lưu ý:</string>
     <string name="help_changelog">Nhật ký thay đổi</string>
-    <string name="prefs_mediadata_summary">Sao lưu và khôi phục các tệp phương tiện của ứng dụng được đặt trong bộ nhớ ngoài (vd: /storage/emulated/0/Android/media/)</string>
-    <string name="prefs_mediadata">Sao lưu các tệp phương tiện</string>
+    <string name="prefs_mediadata">Sao lưu tệp dữ liệu phương tiện</string>
+    <string name="prefs_mediadata_summary">Sao lưu và khôi phục các tệp phương tiện của ứng dụng được đặt ở bộ nhớ ngoài (vd: /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_accent_8">Bí ngô</string>
+    <string name="home">Trang chủ</string>
     <string name="radio_mediadata">Dữ liệu phương tiện</string>
+    <string name="all_apk">Kiểm tra tất cả tệp APK</string>
+    <string name="prefs_secondary_8">Bạc hà</string>
+    <string name="all_data">Kiểm tra tất cả dữ liệu</string>
 </resources>

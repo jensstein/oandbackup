@@ -57,10 +57,17 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         try {
             if (backupMode and MODE_APK == MODE_APK) {
                 restorePackage(backupLocation, backupProperties)
-                app.refreshFromPackageManager(context)
+                refreshAppInfo(context, app)
             }
             if (backupMode != MODE_APK)
                 restoreAllData(app, backupProperties, backupLocation, backupMode)
+        } catch (e: PackageManagerDataIncompleteException) {
+            return ActionResult(
+                    app,
+                    null,
+                    "${e.javaClass.simpleName}: ${e.message}. ${context.getString(R.string.error_pmDataIncompleteException_dataRestoreFailed)}",
+                    false
+            )
         } catch (e: RestoreFailedException) {
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } catch (e: CryptoSetupException) {
@@ -560,17 +567,47 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         apkPath: File, /*profilId: Int,*/
         basePackageName: String? = null
     ): String =
-        String.format(
-            "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}", // TODO add --user $profilId
-            if (basePackageName != null) " -p $basePackageName" else "",
-            if (context.isRestoreAllPermissions) " -g" else "",
-            if (context.isAllowDowngrade) " -d" else ""
-        )
+            String.format(
+                    "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}", // TODO add --user $profilId
+                    if (basePackageName != null) " -p $basePackageName" else "",
+                    if (context.isRestoreAllPermissions) " -g" else "",
+                    if (context.isAllowDowngrade) " -d" else ""
+            )
+
+    @Throws(PackageManagerDataIncompleteException::class)
+    private fun refreshAppInfo(context: Context, app: AppInfo) {
+        // Try it multiple times with some waiting time in between to give PackageManager some time to
+        // properly initialize the package and populate the paths.
+        // It seems, that this
+        val maxAttempts = context.getDefaultSharedPreferences().getInt(PREFS_INTERNAL_RETRIEVE_APP_META_ATTEMPTS, DEFAULT_RETRIEVE_APP_META_ATTEMPTS)
+        val sleepTimeMs = context.getDefaultSharedPreferences().getInt(PREFS_INTERNAL_RETRIEVE_APP_META_SLEEP_MS, DEFAULT_RETRIEVE_APP_META_SLEEP_MS).toLong()
+        var attemptNo = 0;
+        do {
+            if (attemptNo >= maxAttempts) {
+                throw PackageManagerDataIncompleteException(maxAttempts);
+            }
+            if (attemptNo > 0) {
+                Timber.d("[${app.packageName}] paths were missing after data fetching data from PackageManager; attempt $attemptNo of $maxAttempts")
+                Thread.sleep(sleepTimeMs);
+            }
+            app.refreshFromPackageManager(context)
+            attemptNo++
+        } while (!this.isPlausiblePackageInfo(app))
+    }
+
+    private fun isPlausiblePackageInfo(app: AppInfo): Boolean {
+        return app.dataPath.isNotBlank()
+                && app.apkPath.isNotBlank()
+                && app.devicesProtectedDataPath.isNotBlank()
+    }
 
     class RestoreFailedException : AppActionFailedException {
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
+
+    class PackageManagerDataIncompleteException(var attempts: Int)
+        : Exception("PackageManager returned invalid data paths after $attempts attempts to retrieve them")
 
     companion object {
         protected val PACKAGE_STAGING_DIRECTORY = File("/data/local/tmp")
