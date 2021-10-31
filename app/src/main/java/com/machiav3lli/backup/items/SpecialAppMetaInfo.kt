@@ -15,14 +15,14 @@ import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
  */
 open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
     @SerializedName("specialFiles")
-    var fileList: Array<String?>
+    var fileList: Array<String>
 
     constructor(
         packageName: String?,
         label: String?,
         versionName: String?,
         versionCode: Int,
-        fileList: Array<String?>
+        fileList: Array<String>
     )
             : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
         this.fileList = fileList
@@ -32,8 +32,17 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
         get() = true
 
     protected constructor(source: Parcel) : super(source) {
-        fileList = arrayOfNulls(source.readInt())
-        source.readStringArray(fileList)
+        val expectedItems = source.readInt()
+        val temporaryFileList: Array<String?> = arrayOfNulls(expectedItems)
+        fileList = Array(expectedItems) { "" }
+        source.readStringArray(temporaryFileList)
+        temporaryFileList.forEachIndexed { index, value ->
+            if (value != null) {
+                fileList[index] = value
+            } else {
+                throw IllegalArgumentException("SpecialAppMetaInfo parcel contained a null value")
+            }
+        };
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -41,20 +50,16 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
         parcel.writeStringArray(fileList)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<SpecialAppMetaInfo?> =
             object : Parcelable.Creator<SpecialAppMetaInfo?> {
-                override fun createFromParcel(source: Parcel): SpecialAppMetaInfo? {
-                    return SpecialAppMetaInfo(source)
-                }
+                override fun createFromParcel(source: Parcel): SpecialAppMetaInfo? =
+                    SpecialAppMetaInfo(source)
 
-                override fun newArray(size: Int): Array<SpecialAppMetaInfo?> {
-                    return arrayOfNulls(size)
-                }
+                override fun newArray(size: Int): Array<SpecialAppMetaInfo?> = arrayOfNulls(size)
             }
         private val specialPackages: MutableList<AppInfo> = mutableListOf()
 

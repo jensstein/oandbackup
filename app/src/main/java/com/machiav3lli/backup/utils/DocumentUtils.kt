@@ -24,8 +24,17 @@ import java.io.IOException
 fun Context.getBackupDir(): StorageFile =
     StorageFile.fromUri(this, getBackupDirUri(this))
 
-fun StorageFile.ensureDirectory(dirName: String): StorageFile? = findFile(dirName)
-    ?: createDirectory(dirName)
+@Throws(IOException::class)
+fun StorageFile.ensureDirectory(dirName: String): StorageFile {
+    var dir = findFile(dirName)
+    if (dir == null) {
+        dir = createDirectory(dirName)
+        if (dir == null) {
+            throw IOException("Could not ensure directory: $dirName")
+        }
+    }
+    return dir;
+}
 
 fun Uri.deleteRecursive(context: Context): Boolean =
     StorageFile.fromUri(context, this).deleteRecursive()
