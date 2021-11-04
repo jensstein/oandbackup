@@ -26,14 +26,9 @@ fun Context.getBackupDir(): StorageFile =
 
 @Throws(IOException::class)
 fun StorageFile.ensureDirectory(dirName: String): StorageFile {
-    var dir = findFile(dirName)
-    if (dir == null) {
-        dir = createDirectory(dirName)
-        if (dir == null) {
-            throw IOException("Could not ensure directory: $dirName")
-        }
-    }
-    return dir;
+    return findFile(dirName)
+        ?: createDirectory(dirName)
+        ?: throw IOException("Could not ensure directory: $dirName")
 }
 
 fun Uri.deleteRecursive(context: Context): Boolean =
@@ -55,7 +50,7 @@ private fun StorageFile.deleteRecursive(): Boolean = when {
     } catch (e: FileNotFoundException) {
         false
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, this.uri)
+        LogsHandler.unhandledException(e, uri)
         false
     }
     else -> false
