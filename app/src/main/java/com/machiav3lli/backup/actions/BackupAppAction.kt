@@ -127,7 +127,17 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         } catch (e: BackupFailedException) {
             Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+
+            // Unwrap issues with shell commands so users know what command ran and what was the issue
+            val message: String = if (e.cause != null && e.cause is ShellCommandFailedException) {
+                val commandList = e.cause.commands.joinToString("; ")
+                "Shell command failed: ${commandList}\n${
+                    extractErrorMessage(e.cause.shellResult)
+                }"
+            } else {
+                "${e.javaClass.simpleName}: ${e.message}"
+            }
+            return ActionResult(app, null, message, false)
         } catch (e: CryptoSetupException) {
             Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
             Timber.d("Backup deleted: ${backupBuilder.backupPath?.delete()}")

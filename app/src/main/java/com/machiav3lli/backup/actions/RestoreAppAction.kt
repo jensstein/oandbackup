@@ -69,7 +69,16 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     false
             )
         } catch (e: RestoreFailedException) {
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            // Unwrap issues with shell commands so users know what command ran and what was the issue
+            val message: String = if (e.cause != null && e.cause is ShellCommandFailedException) {
+                val commandList = e.cause.commands.joinToString("; ")
+                "Shell command failed: ${commandList}\n${
+                    extractErrorMessage(e.cause.shellResult)
+                }"
+            } else {
+                "${e.javaClass.simpleName}: ${e.message}"
+            }
+            return ActionResult(app, null, message, false)
         } catch (e: CryptoSetupException) {
             return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
@@ -257,7 +266,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             success = true
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
-            val error = e.shellResult.err.joinToString("\n")
+            val error = extractErrorMessage(e.shellResult)
             Timber.e("Restore APKs failed: $error")
             throw RestoreFailedException(error, e)
         } catch (e: IOException) {
@@ -312,7 +321,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Could not restore a file due to a failed root command: $error",
+                "Shell command failed: ${e.commands.joinToString { "; " }}\n$error",
                 e
             )
         }
