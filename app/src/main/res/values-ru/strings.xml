@@ -315,4 +315,8 @@
     <string name="home">Домашняя страница</string>
     <string name="all_data">Проверить все данные</string>
     <string name="all_apk">Проверить все APK</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Данные приложения не были восстановлены.</string>
+    <string name="prefs_compression_level">Степень сжатия</string>
+    <string name="prefs_compression_level_summary">При меньших значениях — сжатие быстрее, но файлы весят больше. При больших значениях — сжатие лучше, но оно занимает больше времени.</string>
+    <string name="showDisabled">Отключённые приложения</string>
 </resources>
