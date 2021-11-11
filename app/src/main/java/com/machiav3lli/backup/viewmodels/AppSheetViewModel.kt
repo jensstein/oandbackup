@@ -23,17 +23,17 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.handler.LogsHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private val appContext: Application)
+class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands, private val appContext: Application)
     : AndroidViewModel(appContext) {
 
     var appInfo = MediatorLiveData<AppInfo>()
@@ -59,7 +59,7 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private
             appInfo.value?.let {
                 Timber.i("uninstalling: ${appInfo.value?.packageLabel}")
                 try {
-                    shellCommands?.uninstall(appInfo.value?.packageName, appInfo.value?.apkPath,
+                    shellCommands.uninstall(appInfo.value?.packageName, appInfo.value?.apkPath,
                             appInfo.value?.dataPath, appInfo.value?.isSystem == true)
                     showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
                             appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess), true)
@@ -83,12 +83,12 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands?, private
     @Throws(ShellCommands.ShellActionFailedException::class)
     private suspend fun enableDisable(users: MutableList<String>, enable: Boolean) {
         withContext(Dispatchers.IO) {
-            shellCommands!!.enableDisablePackage(appInfo.value?.packageName, users, enable)
+            shellCommands.enableDisablePackage(appInfo.value?.packageName, users, enable)
         }
     }
 
     fun getUsers(): Array<String> {
-        return shellCommands?.getUsers()?.toTypedArray() ?: arrayOf()
+        return shellCommands.getUsers()?.toTypedArray() ?: arrayOf()
     }
 
     fun deleteBackup(backup: BackupItem) {

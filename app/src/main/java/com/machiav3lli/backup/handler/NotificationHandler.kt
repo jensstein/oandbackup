@@ -44,7 +44,7 @@ fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>
             .setSmallIcon(R.drawable.ic_app)
             .setContentTitle(title)
             .setStyle(if (bigText.isEmpty()) null
-            else NotificationCompat.BigTextStyle().bigText(bigText))
+                      else NotificationCompat.BigTextStyle().bigText(bigText))
             .setContentText(if (text.isNullOrEmpty()) null else text)
             .setAutoCancel(autoCancel)
             .setContentIntent(resultPendingIntent)

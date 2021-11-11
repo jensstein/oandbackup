@@ -41,47 +41,49 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
     override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
         val backupDir = fromUri(context, backupLocation)
         val apkTargetPath = File(backupProperties.sourceDir ?: "")
-        val apkLocation = backupDir.findFile(apkTargetPath.name)
-        // Writing the apk to a temporary location to get it out of the magic storage to a local location
-        // that can be accessed with shell commands.
-        val tempPath = File(context.cacheDir, apkTargetPath.name)
-        try {
-            val inputStream = context.contentResolver.openInputStream(apkLocation!!.uri)
-            FileOutputStream(tempPath).use { outputStream ->
-                IOUtils.copy(
-                    inputStream,
-                    outputStream
-                )
-            }
-        } catch (e: FileNotFoundException) {
-            throw RestoreFailedException("Could not find main apk in backup", e)
-        } catch (e: IOException) {
-            throw RestoreFailedException("Could extract main apk file to temporary location", e)
-        }
-        var mountPoint = "/"
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) { //TODO hg42: is this a sufficient condition? can we test for it at runtime?
-            // Android versions prior Android 10 use /system
-            mountPoint = "/system"
-        }
-        apkTargetPath.parentFile?.absoluteFile?.let { appDir ->
-            val command = "(mount -o remount,rw ${quote(mountPoint)} && " +
-                    "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
-                    "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
-                    "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
-                    "$utilBoxQuoted mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
-                    "$utilBoxQuoted chmod 644 ${quote(apkTargetPath)}" +
-                    ")" +
-                    "); mount -o remount,ro $mountPoint"
+        backupDir.findFile(apkTargetPath.name)?.let { apkLocation ->
+            // Writing the apk to a temporary location to get it out of the magic storage to a local location
+            // that can be accessed with shell commands.
+            val tempPath = File(context.cacheDir, apkTargetPath.name)
             try {
-                runAsRoot(command)
-            } catch (e: ShellCommandFailedException) {
-                val error = extractErrorMessage(e.shellResult)
-                Timber.e("Restore System apk failed: $error")
-                throw RestoreFailedException(error, e)
-            } finally {
-                tempPath.delete()
+                val inputStream = context.contentResolver.openInputStream(apkLocation.uri)
+                FileOutputStream(tempPath).use { outputStream ->
+                    IOUtils.copy(
+                        inputStream,
+                        outputStream
+                    )
+                }
+            } catch (e: FileNotFoundException) {
+                throw RestoreFailedException("Could not find main apk in backup", e)
+            } catch (e: IOException) {
+                throw RestoreFailedException("Could extract main apk file to temporary location", e)
             }
-        }
+            var mountPoint = "/"
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) { //TODO hg42: is this a sufficient condition? can we test for it at runtime?
+                // Android versions prior Android 10 use /system
+                mountPoint = "/system"
+            }
+            apkTargetPath.parentFile?.absoluteFile?.let { appDir ->
+                val command =
+                    "(mount -o remount,rw ${quote(mountPoint)} && " +
+                        "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
+                            "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
+                            "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
+                            "$utilBoxQuoted mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
+                            "$utilBoxQuoted chmod 644 ${quote(apkTargetPath)}" +
+                        ")" +
+                    "); mount -o remount,ro $mountPoint"
+                try {
+                    runAsRoot(command)
+                } catch (e: ShellCommandFailedException) {
+                    val error = extractErrorMessage(e.shellResult)
+                    Timber.e("Restore System apk failed: $error")
+                    throw RestoreFailedException(error, e)
+                } finally {
+                    tempPath.delete()
+                }
+            }
+        } ?: throw RestoreFailedException("Could not find apk location in backup")
     }
 
     override fun preprocessPackage(packageName: String) {
