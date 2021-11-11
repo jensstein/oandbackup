@@ -122,7 +122,10 @@ class ShellHandler {
         utilBoxQuoted = ""
     }
 
-    class ShellCommandFailedException(@field:Transient val shellResult: Shell.Result) : Exception()
+    class ShellCommandFailedException(
+        @field:Transient val shellResult: Shell.Result,
+        val commands: Array<out String>
+    ) : Exception()
 
     class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
         Exception(message)
@@ -365,7 +368,7 @@ class ShellHandler {
             val result = shell.runCommand(*commands).to(stdout, stderr).exec()
             Timber.d("Command(s) ${commands.joinToString(" ; ")} ended with ${result.code}")
             if (!result.isSuccess)
-                throw ShellCommandFailedException(result)
+                throw ShellCommandFailedException(result, commands)
             return result
         }
 
