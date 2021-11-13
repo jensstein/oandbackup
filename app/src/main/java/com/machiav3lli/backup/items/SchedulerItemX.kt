@@ -23,9 +23,9 @@ import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
 import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.utils.calculateTimeToRun
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists
-import com.machiav3lli.backup.utils.timeUntilNextEvent
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 import com.mikepenz.fastadapter.diff.DiffCallback
 import java.time.LocalTime
@@ -80,7 +80,8 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.INVISIBLE
         } else {
-            val timeDiff = abs(timeUntilNextEvent(schedule, System.currentTimeMillis()))
+            val now = System.currentTimeMillis()
+            val timeDiff = abs(calculateTimeToRun(schedule, now) - now)
             val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
             if (days == 0) {
                 binding.daysLeft.visibility = View.GONE

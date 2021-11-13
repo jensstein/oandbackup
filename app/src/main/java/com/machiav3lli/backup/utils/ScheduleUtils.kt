@@ -28,7 +28,7 @@ import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-fun timeUntilNextEvent(schedule: Schedule, now: Long): Long {
+fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     val c = Calendar.getInstance()
     c.timeInMillis = schedule.timePlaced
     c[Calendar.HOUR_OF_DAY] = schedule.timeHour
@@ -36,7 +36,7 @@ fun timeUntilNextEvent(schedule: Schedule, now: Long): Long {
     c[Calendar.SECOND] = 0
     if (now >= c.timeInMillis)
         c.add(Calendar.DAY_OF_MONTH, schedule.interval)
-    return c.timeInMillis - now
+    return c.timeInMillis
 }
 
 fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
@@ -48,21 +48,26 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("scheduleId", scheduleId)
-                val pendingIntent = PendingIntent.getBroadcast(context, scheduleId.toInt(), alarmIntent, PendingIntent.FLAG_IMMUTABLE)
-                val timeLeft = timeUntilNextEvent(schedule, System.currentTimeMillis())
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    scheduleId.toInt(),
+                    alarmIntent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+                val timeLeft = calculateTimeToRun(schedule, System.currentTimeMillis())
                 if (rescheduleBoolean) {
                     schedule.timePlaced = System.currentTimeMillis()
-                    schedule.timeUntilNextEvent =
-                        timeUntilNextEvent(schedule, System.currentTimeMillis())
+                    schedule.timeToRun =
+                        calculateTimeToRun(schedule, System.currentTimeMillis())
                 } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) // give it a minute to finish what it could be handling e.g. on reboot
-                    schedule.timeUntilNextEvent = TimeUnit.MINUTES.toMillis(1)
+                    schedule.timeToRun = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
                 // TODO get more precision
                 alarmManager.setAlarmClock(
                     AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
                     pendingIntent
                 )
-                Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeUntilNextEvent)} minutes")
+                Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())} minutes")
             } else
                 Timber.i("schedule is disabled. Nothing to schedule!")
         }.start()

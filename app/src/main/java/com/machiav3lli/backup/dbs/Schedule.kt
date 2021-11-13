@@ -18,10 +18,8 @@
 package com.machiav3lli.backup.dbs
 
 import android.content.Context
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.*
@@ -75,7 +73,7 @@ open class Schedule() {
     @Expose
     var specialFilter: Int = SPECIAL_FILTER_ALL
 
-    var timeUntilNextEvent: Long = 0
+    var timeToRun: Long = 0
 
     @SerializedName("customList")
     @Expose
@@ -222,5 +220,12 @@ open class Schedule() {
         fun fromGson(gson: String?): Schedule {
             return GsonUtils.instance!!.fromJson(gson, Schedule::class.java)
         }
+
+        @RenameColumn(
+            tableName = "Schedule",
+            fromColumnName = "timeUntilNextEvent",
+            toColumnName = "timeToRun"
+        )
+        class AutoMigration: AutoMigrationSpec {}
     }
 }
