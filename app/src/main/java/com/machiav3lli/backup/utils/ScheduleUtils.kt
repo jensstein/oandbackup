@@ -54,15 +54,14 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     alarmIntent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
-                val timeLeft = calculateTimeToRun(schedule, System.currentTimeMillis())
+                val now = System.currentTimeMillis()
+                val timeLeft = calculateTimeToRun(schedule, now) - now
                 if (rescheduleBoolean) {
-                    schedule.timePlaced = System.currentTimeMillis()
-                    schedule.timeToRun =
-                        calculateTimeToRun(schedule, System.currentTimeMillis())
+                    schedule.timePlaced = now
+                    schedule.timeToRun = calculateTimeToRun(schedule, now)
                 } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) // give it a minute to finish what it could be handling e.g. on reboot
-                    schedule.timeToRun = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1)
+                    schedule.timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
-                // TODO get more precision
                 alarmManager.setAlarmClock(
                     AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
                     pendingIntent
