@@ -298,4 +298,19 @@
     <string name="forceKill">Forcer l\'arrêt</string>
     <string name="no_file_manager_message">Il n\'y a pas de gestionnaire de fichiers pour gérer SAF. Vous avez peut-être désactivé le gestionnaire de fichiers intégré. Veuillez le restaurer ou le réactiver.</string>
     <string name="error_encryptionpassword">Le mot de passe de chiffrement n\'est pas défini ou est incorrect !</string>
+    <string name="radio_mediadata">Données media</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Les données de l\'application n\'ont pas été restaurées.</string>
+    <string name="prefs_mediadata">Sauvegarder les fichiers media</string>
+    <string name="prefs_mediadata_summary">Sauvegarde et restaure les fichiers médias de l\'application qui sont placés sur un stockage externe (par ex. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_compression_level">Niveau de compression</string>
+    <string name="prefs_compression_level_summary">Une valeur inférieure compresse plus rapidement mais il en résulte des fichiers plus volumineux. Une valeur plus élevée compresse mieux mais prend plus de temps.</string>
+    <string name="title_note">Note :</string>
+    <string name="title_tags">Tags :</string>
+    <string name="home">Page d\'accueil</string>
+    <string name="all_data">Vérifier toutes les données</string>
+    <string name="all_apk">Vérifier tous les fichiers APK</string>
+    <string name="showDisabled">Applications désactivées</string>
+    <string name="prefs_secondary_8">Menthe</string>
+    <string name="help_changelog">Liste des modifications</string>
+    <string name="sortBackupDate">Date de la sauvegarde</string>
 </resources>
