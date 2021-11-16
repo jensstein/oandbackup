@@ -27,7 +27,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.*
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 
@@ -111,11 +110,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
     }
 
     private fun onPrefChangeLanguage(oldLang: String, newLang: String): Boolean {
-        if (oldLang != newLang) {
-            val refresh = Intent(requireActivity(), MainActivityX::class.java)
-            requireActivity().finish()
-            startActivity(refresh)
-        }
+        if (oldLang != newLang) requireContext().restartApp()
         return true
     }
 
@@ -128,9 +123,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         if (accent.isNotEmpty()) requireContext().accentStyle = accent
         if (secondary.isNotEmpty()) requireContext().secondaryStyle = secondary
         requireContext().setCustomTheme()
-        val refresh = Intent(requireActivity(), MainActivityX::class.java)
-        requireActivity().finish()
-        startActivity(refresh)
+        requireContext().restartApp()
         return true
     }
 

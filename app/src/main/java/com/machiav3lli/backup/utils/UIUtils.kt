@@ -18,8 +18,10 @@
 package com.machiav3lli.backup.utils
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
 import java.util.*
@@ -186,4 +189,10 @@ fun NavController.navigateLeft(itemId: Int) = this.navigate(
         .setExitAnim(R.anim.slide_out_right)
         .setEnterAnim(R.anim.slide_in_left)
         .build()
+)
+
+fun Context.restartApp() = startActivity(
+    Intent.makeRestartActivityTask(
+        ComponentName(this, MainActivityX::class.java)
+    )
 )
