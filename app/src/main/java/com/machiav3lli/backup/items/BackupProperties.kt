@@ -184,7 +184,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         var hash = 7
         hash = 31 * hash + backupDate.hashCode()
         hash = 31 * hash + if (hasApk) 1 else 0
-        hash = 31 * hash + if (hasAppData) 1 else 0
+        hash = 31 * hash + if (hasAppData) 1 else 0                 
         hash = 31 * hash + if (hasDevicesProtectedData) 1 else 0
         hash = 31 * hash + if (hasExternalData) 1 else 0
         hash = 31 * hash + if (hasObbData) 1 else 0

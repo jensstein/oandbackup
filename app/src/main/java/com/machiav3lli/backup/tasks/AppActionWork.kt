@@ -79,22 +79,22 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         try {
             appInfo?.let { ai ->
                 try {
-                    result = when {
-                        backupBoolean -> {
-                            BackupRestoreHelper.backup(
-                                context,
-                                MainActivityX.shellHandlerInstance!!,
-                                ai,
-                                selectedMode
-                            )
-                        }
-                        else -> {
-                            // Latest backup for now
-                            ai.latestBackup?.let {
-                                BackupRestoreHelper.restore(
-                                    context, MainActivityX.shellHandlerInstance!!, ai, selectedMode,
-                                    it.backupProperties, it.backupInstanceDirUri
-                                )
+                    MainActivityX.shellHandlerInstance?.let { instance ->
+                        result = when {
+                            backupBoolean ->
+                                {
+                                    BackupRestoreHelper.backup(
+                                        context, instance, ai, selectedMode
+                                    )
+                                }
+                            else -> {
+                                // Latest backup for now
+                                ai.latestBackup?.let {
+                                    BackupRestoreHelper.restore(
+                                        context, instance, ai, selectedMode,
+                                        it.backupProperties, it.backupInstanceDirUri
+                                    )
+                                }
                             }
                         }
                     }

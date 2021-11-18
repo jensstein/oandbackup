@@ -18,12 +18,22 @@
 package com.machiav3lli.backup.dbs
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.SCHEDULES_DB_NAME
 
-@Database(entities = [Schedule::class], version = 6)
+@Database(
+    entities = [Schedule::class],
+    version = 7,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(
+        from = 6,
+        to = 7,
+        spec = Schedule.Companion.AutoMigration::class
+    )]
+)
 abstract class ScheduleDatabase : RoomDatabase() {
     abstract val scheduleDao: ScheduleDao
 
@@ -35,10 +45,12 @@ abstract class ScheduleDatabase : RoomDatabase() {
             synchronized(this) {
                 if (INSTANCE == null) {
                     INSTANCE = Room
-                            .databaseBuilder(context.applicationContext, ScheduleDatabase::class.java,
-                                    SCHEDULES_DB_NAME)
-                            .fallbackToDestructiveMigration()
-                            .build()
+                        .databaseBuilder(
+                            context.applicationContext, ScheduleDatabase::class.java,
+                            SCHEDULES_DB_NAME
+                        )
+                        .fallbackToDestructiveMigration()
+                        .build()
                 }
                 return INSTANCE!!
             }

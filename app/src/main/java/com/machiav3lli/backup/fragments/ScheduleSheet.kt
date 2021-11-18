@@ -174,7 +174,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             binding.timeLeft.text = ""
             binding.timeLeftLine.visibility = View.GONE
         } else {
-            val timeDiff = abs(timeUntilNextEvent(schedule, now))
+            val timeDiff = abs(calculateTimeToRun(schedule, now) - now)
             val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
             if (days == 0) {
                 binding.daysLeft.visibility = View.GONE

@@ -46,7 +46,7 @@ class BackupBuilder(
     private val cpuArch: String = Build.SUPPORTED_ABIS[0]
     val backupPath = ensureBackupPath(backupRoot)
 
-    private fun ensureBackupPath(backupRoot: Uri): StorageFile? {
+    private fun ensureBackupPath(backupRoot: Uri): StorageFile {
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
         return StorageFile.fromUri(context, backupRoot)

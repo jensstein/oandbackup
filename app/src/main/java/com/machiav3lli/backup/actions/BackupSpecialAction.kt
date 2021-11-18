@@ -51,7 +51,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     override fun backupData(
         app: AppInfo,
-        backupInstanceDir: StorageFile?,
+        backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
         Timber.i("$app: Backup special data")
@@ -64,7 +64,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
         val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
         try {
             for (filePath in appInfo.fileList) {
-                val file = File(filePath!!)
+                val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
                 var fileInfos: List<ShellHandler.FileInfo>
@@ -108,7 +108,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir?.uri, filesToBackup, true, iv)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir.uri, filesToBackup, true, iv)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")
@@ -121,36 +121,30 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
     }
 
     // Stubbing some functions, to avoid executing them with potentially dangerous results
-    override fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile?) {
+    override fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile) {
         // stub
     }
 
     override fun backupDeviceProtectedData(
         app: AppInfo,
-        backupInstanceDir: StorageFile?,
+        backupInstanceDir: StorageFile,
         iv: ByteArray?
-    ): Boolean {
-        // stub
-        return false
-    }
+    ): Boolean = // stub
+        false
 
     override fun backupExternalData(
         app: AppInfo,
-        backupInstanceDir: StorageFile?,
+        backupInstanceDir: StorageFile,
         iv: ByteArray?
-    ): Boolean {
-        // stub
-        return false
-    }
+    ): Boolean = // stub
+        false
 
     override fun backupObbData(
         app: AppInfo,
-        backupInstanceDir: StorageFile?,
+        backupInstanceDir: StorageFile,
         iv: ByteArray?
-    ): Boolean {
-        // stub
-        return false
-    }
+    ): Boolean = // stub
+        false
 
     override fun preprocessPackage(packageName: String) {
         // stub

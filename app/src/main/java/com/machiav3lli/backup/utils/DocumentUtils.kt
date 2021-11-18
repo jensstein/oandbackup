@@ -24,8 +24,12 @@ import java.io.IOException
 fun Context.getBackupDir(): StorageFile =
     StorageFile.fromUri(this, getBackupDirUri(this))
 
-fun StorageFile.ensureDirectory(dirName: String): StorageFile? = findFile(dirName)
-    ?: createDirectory(dirName)
+@Throws(IOException::class)
+fun StorageFile.ensureDirectory(dirName: String): StorageFile {
+    return findFile(dirName)
+        ?: createDirectory(dirName)
+        ?: throw IOException("Could not ensure directory: $dirName")
+}
 
 fun Uri.deleteRecursive(context: Context): Boolean =
     StorageFile.fromUri(context, this).deleteRecursive()
@@ -46,7 +50,7 @@ private fun StorageFile.deleteRecursive(): Boolean = when {
     } catch (e: FileNotFoundException) {
         false
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, this.uri)
+        LogsHandler.unhandledException(e, uri)
         false
     }
     else -> false
@@ -106,11 +110,11 @@ fun suCopyFileToDocument(
     targetDir: StorageFile
 ) {
     val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)
-    if (newFile != null)
-        resolver.openOutputStream(newFile.uri).use { outputFile ->
-            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile!!)
-        }
-    else
+    if (newFile != null) {
+        resolver.openOutputStream(newFile.uri)?.use { outputFile ->
+            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile)
+        } ?: throw IOException()
+    } else
         throw IOException()
 }
 
@@ -119,12 +123,12 @@ fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri, targetPath
     val resolver = context.contentResolver
     val rootDir = StorageFile.fromUri(context, sourceDir)
     for (sourceDoc in rootDir.listFiles()) {
-        if (sourceDoc.isDirectory) {
-            runAsRoot("mkdir -p ${quote(File(targetPath, sourceDoc.name!!))}")
-        } else if (sourceDoc.isFile) {
-            suCopyFileFromDocument(
-                resolver, sourceDoc.uri, File(targetPath, sourceDoc.name!!).absolutePath
-            )
+        sourceDoc.name?.also {
+            if (sourceDoc.isDirectory) {
+                runAsRoot("mkdir -p ${quote(File(targetPath, it))}")
+            } else if (sourceDoc.isFile) {
+                suCopyFileFromDocument(resolver, sourceDoc.uri, File(targetPath, it).absolutePath)
+            }
         }
     }
 }

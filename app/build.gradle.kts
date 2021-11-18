@@ -102,17 +102,16 @@ android {
     }
 }
 
-
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31")
 
     // Libs
-    implementation("androidx.room:room-runtime:2.3.0")
-    implementation("androidx.room:room-ktx:2.3.0")
-    implementation("androidx.work:work-runtime-ktx:2.7.0-rc01")
-    kapt("androidx.room:room-compiler:2.3.0")
-    implementation("com.google.code.gson:gson:2.8.8")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-rc01")
+    implementation("androidx.room:room-runtime:2.4.0-beta01")
+    implementation("androidx.room:room-ktx:2.4.0-beta01")
+    implementation("androidx.work:work-runtime-ktx:2.7.0")
+    kapt("androidx.room:room-compiler:2.4.0-beta01")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha03")
     implementation("org.apache.commons:commons-compress:1.21")
@@ -123,13 +122,13 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
-    implementation("androidx.appcompat:appcompat:1.4.0-beta01")
-    implementation("androidx.fragment:fragment-ktx:1.4.0-alpha10")
-    implementation("com.google.android.material:material:1.5.0-alpha04")
+    implementation("androidx.appcompat:appcompat:1.4.0-rc01")
+    implementation("androidx.fragment:fragment-ktx:1.4.0-rc01")
+    implementation("com.google.android.material:material:1.5.0-alpha05")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-alpha10")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-alpha10")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-beta02")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-beta02")
     val fastadapter = "5.5.1"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
