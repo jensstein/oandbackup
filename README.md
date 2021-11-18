@@ -47,7 +47,7 @@ Till the version 0.9.3 there's been no structural change in how the app handles 
 
 ## Changes & TODOs
 
-#### [Changelog](changelog.md)  &  [Known Issues](ISSUES.md)
+#### [Changelog](CHANGELOG.md)  &  [Known Issues](ISSUES.md)
 
 if you have some kotlin and android knowledge and like to contribute to the project, see the following **[development document](DEVDOC.md)** to see what is still need to be done, where a help could be needed or if you'd like to take on one of the fixes.
 
