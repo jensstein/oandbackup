@@ -300,4 +300,8 @@
     <string name="all_apk">Kiểm tra tất cả tệp APK</string>
     <string name="prefs_secondary_8">Bạc hà</string>
     <string name="all_data">Kiểm tra tất cả dữ liệu</string>
+    <string name="prefs_compression_level">Cấp độ nén</string>
+    <string name="showDisabled">Ứng dụng bị tắt</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Dữ liệu ứng dụng chưa được khôi phục.</string>
+    <string name="prefs_compression_level_summary">Giá trị thấp sẽ nén nhanh hơn nhưng làm tăng kích thước tệp. Giá trị cao sẽ nén tốt hơn nhưng tốn nhiều thời gian hơn.</string>
 </resources>
