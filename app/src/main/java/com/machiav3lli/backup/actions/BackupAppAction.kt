@@ -300,9 +300,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
             // Excludes cache and libs, when we don't want to backup'em
             // TODO maybe remove the option and force the exclusion?
+            dirsInSource = dirsInSource
+                .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
+                .toList()
             if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
                 dirsInSource = dirsInSource
-                    .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
+                    .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_CACHE_DIRS.contains(dir.filename) }
                     .toList()
             }
 

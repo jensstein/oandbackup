@@ -104,7 +104,8 @@ abstract class BaseAppAction protected constructor(
          @machiav3lli libs are generally created while installing the app. Backing them up
           would result a compatibility problem between devices with different cpu_arch
          */
-        val DATA_EXCLUDED_DIRS = listOf("cache", "code_cache", "lib")
+        val DATA_EXCLUDED_CACHE_DIRS = listOf("cache", "code_cache")
+        val DATA_EXCLUDED_DIRS = listOf("lib")
         private val doNotStop = listOf(
             "com.android.shell",  // don't remove this
             BuildConfig.APPLICATION_ID, // ignore own package
