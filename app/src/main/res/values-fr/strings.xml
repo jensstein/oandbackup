@@ -313,4 +313,5 @@
     <string name="prefs_secondary_8">Menthe</string>
     <string name="help_changelog">Liste des modifications</string>
     <string name="sortBackupDate">Date de la sauvegarde</string>
+    <string name="prefs_accent_8">Citrouille Perano</string>
 </resources>
