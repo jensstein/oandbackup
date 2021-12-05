@@ -58,7 +58,10 @@ if [[ $command == "pre" ]]; then
       done
   fi
 
-elif [[ $command == "post" ]]; then
+  exit
+fi
+
+if [[ $command == "post" ]]; then
 
   package=$1
   shift
@@ -72,4 +75,5 @@ elif [[ $command == "post" ]]; then
     pm unsuspend $package
   fi
 
+  exit
 fi

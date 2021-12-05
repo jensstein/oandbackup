@@ -157,9 +157,10 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             } ?: throw IOException("No parent folder for ${targetPath.absolutePath}")
             var doChmod = true
             var postponeChmod = false
+            var relPath = targetPath.relativeTo(targetPath.parentFile)
             when {
                 tarEntry.isDirectory -> {
-                    if (!targetPath.mkdirs()) {
+                    if (! (targetPath.exists() || targetPath.mkdirs())) {
                         throw IOException("Unable to create folder ${targetPath.absolutePath}")
                     }
                     // write protection would prevent creating files inside, so chmod at end

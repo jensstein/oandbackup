@@ -388,7 +388,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Could not restore a file due to a failed root command: $error",
+                "Could not restore a file due to a failed root command for $targetDir: $error",
                 e
             )
         } catch (e: Throwable) {

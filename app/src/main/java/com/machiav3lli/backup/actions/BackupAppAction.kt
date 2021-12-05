@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.actions
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.*
@@ -24,10 +25,12 @@ import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.topjohnwu.superuser.ShellUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipParameters
@@ -37,6 +40,9 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
+
+
+class ScriptException(text: String) : Exception(text) {}
 
 open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
 
@@ -304,7 +310,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupData(
+    protected fun genericBackupData_API(
         backupType: String,
         backupInstanceDir: Uri,
         filesToBackup: List<ShellHandler.FileInfo>,
@@ -339,7 +345,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupData(
+    protected fun genericBackupData_API(
         backupType: String,
         backupInstanceDir: Uri,
         sourceDirectory: String,
@@ -347,8 +353,109 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         iv: ByteArray?
     ): Boolean {
         val filesToBackup = assembleFileList(sourceDirectory)
-        return genericBackupData(backupType, backupInstanceDir, filesToBackup, true, iv)
+        return genericBackupData(backupType, backupInstanceDir, filesToBackup, compress, iv)
     }
+
+    @SuppressLint("RestrictedApi")
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData_Tar(
+        backupType: String,
+        backupInstanceDir: Uri,
+        sourceDirectory: String,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        if(!ShellUtils.fastCmdResult("test -d ${quote(sourceDirectory)}"))
+            return false
+        Timber.i("Creating $backupType backup")
+        val backupDir = StorageFile.fromUri(context, backupInstanceDir)
+        val backupFilename = getBackupArchiveFilename(backupType, context.isEncryptionEnabled())
+        val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
+        val password = context.getEncryptionPassword()
+        val gzipParams = GzipParameters()
+        gzipParams.compressionLevel = context.getCompressionLevel()
+        var outStream: OutputStream = BufferedOutputStream(
+            context.contentResolver.openOutputStream(
+                backupFile?.uri
+                    ?: Uri.EMPTY, "w"
+            )
+        )
+        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+            outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
+        }
+        if(compress) {
+            outStream = GzipCompressorOutputStream(
+                outStream,
+                gzipParams
+            )
+        }
+        var result = false
+        try {
+            var tarScript = "tar.sh"
+            tarScript = ShellHandler.findScript(tarScript).toString()
+            var exclude = ShellHandler.EXCLUDE_FILE
+            exclude = ShellHandler.findScript(exclude).toString()
+            var excludeCache = ShellHandler.EXCLUDE_CACHE_FILE
+            excludeCache = ShellHandler.findScript(excludeCache).toString()
+
+            var options = ""
+            options += " --exclude " + quote(exclude)
+            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+                options += " --exclude " + quote(excludeCache)
+            }
+
+            var cmd = "su -c sh ${quote(tarScript)} create ${options} ${quote(sourceDirectory)}"
+            Timber.i("SHELL: $cmd")
+
+            val process = Runtime.getRuntime().exec(cmd)
+            val shellIn  = process.getOutputStream()
+            val shellOut = process.getInputStream()
+            val shellErr = process.getErrorStream()
+
+            shellOut.copyTo(outStream, 65536)
+
+            outStream.flush()
+
+            val err = shellErr.readBytes().decodeToString()
+            if(!err.isNullOrEmpty()) {
+                Timber.i(err)
+                throw ScriptException(err)
+            }
+            result = true
+        } catch (e: Throwable) {
+            val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
+            LogsHandler.unhandledException(e, message)
+            throw BackupFailedException(message, e)
+        } finally {
+            Timber.d("Done compressing. Closing $backupFilename")
+            outStream.close()
+        }
+        return result
+    }
+
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData(
+        backupType: String,
+        backupInstanceDir: Uri,
+        filesToBackup: List<ShellHandler.FileInfo>,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        return genericBackupData_API(backupType, backupInstanceDir, filesToBackup, compress, iv)
+    }
+
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData(
+        backupType: String,
+        backupInstanceDir: Uri,
+        sourceDirectory: String,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        //return genericBackupData_API(backupType, backupInstanceDir, sourceDirectory, compress, iv)
+        return genericBackupData_Tar(backupType, backupInstanceDir, sourceDirectory, compress, iv)
+    }
+
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupData(

@@ -342,6 +342,8 @@ class ShellHandler {
             private set
         private val UTILBOX_NAMES = listOf("toybox", "busybox")
         val SCRIPTS_SUBDIR = "scripts"
+        val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
+        val EXCLUDE_FILE = "tar_EXCLUDE"
 
         interface RunnableShellCommand {
             fun runCommand(vararg commands: String?): Shell.Job
