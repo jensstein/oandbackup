@@ -17,7 +17,10 @@
  */
 package com.machiav3lli.backup.handler
 
+import android.content.res.AssetManager
+import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -25,6 +28,7 @@ import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
@@ -43,6 +47,9 @@ class ShellHandler {
     }
 
     private val UTILBOX_NAMES = listOf("toybox", "busybox")
+    private val SCRIPTS_SUBDIR = "scripts"
+    private val APP_SUBDIR = "OAndBackupX"
+    private val VERSION_FILE = "__version__"
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
@@ -335,6 +342,10 @@ class ShellHandler {
             private set
         var utilBoxQuoted = ""
             private set
+        lateinit var scriptDir : File
+            private set
+        var scriptUserDir : File? = null
+            private set
 
         interface RunnableShellCommand {
             fun runCommand(vararg commands: String?): Shell.Job
@@ -467,6 +478,16 @@ class ShellHandler {
                 retriesLeft = maxRetries.toInt()
             }
         }
+
+        fun findScript(script : String) : File? {
+            var found : File? = null
+            scriptUserDir?.let {
+                found = File(it, script)
+            }
+            if( ! (found?.isFile ?: false) )
+                found = File(scriptDir, script)
+            return found
+        }
     }
 
     init {
@@ -483,6 +504,43 @@ class ShellHandler {
         if (utilBoxQuoted.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
+        }
+
+        // copy scripts to file storage
+        val context = MainActivityX.context
+        scriptUserDir = File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), APP_SUBDIR + "/" + SCRIPTS_SUBDIR)
+        scriptDir = File(context.filesDir, SCRIPTS_SUBDIR)
+        // don't copy if the files exist and are from the current app version
+        val appVersion = BuildConfig.VERSION_NAME
+        val version = try { File(scriptDir, VERSION_FILE).readText() } catch(e : Throwable) { "" }
+        if(version != appVersion) {
+            try {
+                context.assets.copyRecursively("scripts", scriptDir)
+                File(scriptDir, VERSION_FILE).writeText(appVersion)
+            } catch(e: Throwable) {
+                Timber.w("cannot copy scripts to ${scriptDir}")
+            }
+        }
+    }
+}
+
+fun AssetManager.copyRecursively(assetPath: String, targetFile: File) {
+    list(assetPath)?.let { list ->
+        if (list.isEmpty()) { // assetPath is file
+            open(assetPath).use { input ->
+                FileOutputStream(targetFile.absolutePath).use { output ->
+                    input.copyTo(output)
+                    output.flush()
+                }
+            }
+
+        } else { // assetPath is folder
+            targetFile.deleteRecursively()
+            targetFile.mkdir()
+
+            list.forEach {
+                copyRecursively("$assetPath/$it", File(targetFile, it))
+            }
         }
     }
 }

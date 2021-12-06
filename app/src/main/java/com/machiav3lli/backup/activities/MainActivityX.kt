@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.activities
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -48,7 +49,7 @@ class MainActivityX : BaseActivity() {
         var shellHandlerInstance: ShellHandler? = null
             private set
 
-        fun initShellHandler(): Boolean {
+        fun initShellHandler() : Boolean {
             return try {
                 shellHandlerInstance = ShellHandler()
                 true
@@ -56,6 +57,8 @@ class MainActivityX : BaseActivity() {
                 false
             }
         }
+
+        lateinit var context : Context
     }
 
     private lateinit var prefs: SharedPreferences
@@ -65,7 +68,9 @@ class MainActivityX : BaseActivity() {
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        context = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell()

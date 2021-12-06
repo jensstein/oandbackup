@@ -44,31 +44,29 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
+    val prepostOptions = "--suspend"
+
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            Timber.i("package %s uid %d", packageName, applicationInfo.uid)
+            var script = "package.sh"
+            script = ShellHandler.findScript(script).toString()
+            Timber.w("---------------------------------------- Preprocess package ${packageName} uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Requested to kill processes of UID < 10000. Refusing to kill system's processes!")
+                Timber.w("Ignore processes of system user UID < 10000")
                 return
             }
             if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist
-                // pause corresponding processes (but files may still be in the middle and buffers contain unwritten data)
-                //   also pauses essential processes (because some uids are shared between apps and essential services)
-                //ShellHandler.runAsRoot(String.format("ps -o PID -u %d | grep -v PID | xargs kill -STOP", applicationInfo.uid));
-                //   try to exclude essential services android.* via grep
-                runAsRoot(
-                    "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
-                            + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                            + " while read pid user name;"
-                            + " do kill -STOP \$pid ;"
-                            + " done"
-                )
+                val shellResult = runAsRoot("sh ${script} pre ${prepostOptions} ${packageName} ${applicationInfo.uid}")
+                stopped[packageName] = shellResult.out.asSequence()
+                    .filter { line: String -> line.isNotEmpty() }
+                    .toMutableList()
+                Timber.w("${packageName} pids: ${stopped[packageName]?.joinToString(" ")}")
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$packageName does not exist. Cannot preprocess!")
+            Timber.w("${packageName} does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not stop package $packageName: ${e.shellResult.err.joinToString(" ")}")
+            Timber.w("Could not stop package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
@@ -77,17 +75,25 @@ abstract class BaseAppAction protected constructor(
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            runAsRoot(
-                "ps -o PID,USER,NAME -u ${applicationInfo.uid} |"
-                        + " grep -v -E ' PID | android\\.|\\.providers\\.|systemui' |"
-                        + " while read pid user name;"
-                        + " do kill -CONT \$pid ;"
-                        + " done"
-            )
+            var script = "package.sh"
+            script = ShellHandler.findScript(script).toString()
+            Timber.w("........................................ Postprocess package ${packageName} uid ${applicationInfo.uid}")
+            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
+                Timber.w("Ignore processes of system user UID < 10000")
+                return
+            }
+            stopped[packageName]?.let { pids ->
+                Timber.w("Continue stopped PIDs for package ${packageName}: ${pids.joinToString(" ")}")
+                runAsRoot("sh ${script} post ${prepostOptions} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
+                stopped.remove(packageName)
+            } ?: run {
+                Timber.w("No stopped PIDs for package ${packageName}")
+                runAsRoot("sh ${script} ${packageName} ${applicationInfo.uid}")
+            }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$packageName does not exist. Cannot post-process!")
+            Timber.w("${packageName} does not exist. Cannot post-process!")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not continue package $packageName: ${e.shellResult.err.joinToString(" ")}")
+            Timber.w("Could not continue package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
@@ -111,10 +117,14 @@ abstract class BaseAppAction protected constructor(
             BuildConfig.APPLICATION_ID, // ignore own package
             "com.android.systemui",
             "com.android.externalstorage",
+            "com.android.mtp",
             "com.android.providers.media",
+            "com.android.providers.downloads.ui",
             "com.google.android.gms",
             "com.google.android.gsf"
         )
+
+        private val stopped = mutableMapOf<String, List<String>>()
 
         fun extractErrorMessage(shellResult: Shell.Result): String {
             // if stderr does not say anything, try stdout
