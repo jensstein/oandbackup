@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.AssetManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -30,6 +31,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
@@ -42,11 +44,20 @@ import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModelFactory
 import com.topjohnwu.superuser.Shell
+import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivityX : BaseActivity() {
 
     companion object {
+        private val VERSION_FILE = "__version__"
+        val ASSETS_SUBDIR = "assets"
+
         var shellHandlerInstance: ShellHandler? = null
+            private set
+
+        lateinit var assetDir : File
             private set
 
         fun initShellHandler() : Boolean {
@@ -91,6 +102,7 @@ class MainActivityX : BaseActivity() {
         viewModel.refreshNow.observe(this, {
             if (it) refreshView()
         })
+        initAssetFiles()
         initShell()
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
@@ -158,6 +170,36 @@ class MainActivityX : BaseActivity() {
         }
     }
 
+    private fun initAssetFiles() {
+
+        // copy scripts to file storage
+        val context = MainActivityX.context
+        assetDir = File(context.filesDir, ASSETS_SUBDIR)
+        assetDir.mkdirs()
+        // don't copy if the files exist and are from the current app version
+        val appVersion = BuildConfig.VERSION_NAME
+        val version = try {
+            File(assetDir, VERSION_FILE).readText()
+        } catch (e: Throwable) {
+            ""
+        }
+        if (version != appVersion) {
+            try {
+                // cleans assetDir and copiers asset files
+                context.assets.copyRecursively("files", assetDir)
+                // additional generated files
+                File(assetDir, ShellHandler.EXCLUDE_FILE)
+                    .writeText(BaseAppAction.DATA_EXCLUDED_DIRS.map { it + "\n" }.joinToString(""))
+                File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
+                    .writeText(BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { it + "\n" }.joinToString(""))
+                // validate with version file if completed
+                File(assetDir, VERSION_FILE).writeText(appVersion)
+            } catch (e: Throwable) {
+                Timber.w("cannot copy scripts to ${assetDir}")
+            }
+        }
+    }
+
     private fun initShell() {
         // Initialize the ShellHandler for further root checks
         if (!initShellHandler()) {
@@ -208,5 +250,27 @@ class MainActivityX : BaseActivity() {
 
     fun dismissSnackBar() {
         binding.snackbarText.visibility = View.GONE
+    }
+}
+
+
+fun AssetManager.copyRecursively(assetPath: String, targetFile: File) {
+    list(assetPath)?.let { list ->
+        if (list.isEmpty()) { // assetPath is file
+            open(assetPath).use { input ->
+                FileOutputStream(targetFile.absolutePath).use { output ->
+                    input.copyTo(output)
+                    output.flush()
+                }
+            }
+
+        } else { // assetPath is folder
+            targetFile.deleteRecursively()
+            targetFile.mkdir()
+
+            list.forEach {
+                copyRecursively("$assetPath/$it", File(targetFile, it))
+            }
+        }
     }
 }
