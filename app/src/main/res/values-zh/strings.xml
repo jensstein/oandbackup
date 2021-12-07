@@ -305,4 +305,8 @@
     <string name="home">主页</string>
     <string name="prefs_secondary_8">薄荷</string>
     <string name="prefs_accent_8">南瓜佩拉诺</string>
+    <string name="showDisabled">禁用的应用</string>
+    <string name="prefs_compression_level">压缩级别</string>
+    <string name="prefs_compression_level_summary">值越低，压缩速度越快，但文件越大。值越高，压缩效果越好，但是会花费更多的时间。</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">尚未恢复应用数据。</string>
 </resources>
