@@ -414,7 +414,8 @@ class HomeFragment : NavigationFragment(),
             } else
                 appSheet?.dismissAllowingStateLoss()
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            appSheet?.dismissAllowingStateLoss()
+            //LogsHandler.unhandledException(e)
         }
     }
 
