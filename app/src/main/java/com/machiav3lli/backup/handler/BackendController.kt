@@ -73,7 +73,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     val packageList = packageInfoList
             .filterNotNull()
             .filter { !ignoredPackages.contains(it.packageName) && !blocklist.contains(it.packageName) }
-            .map { AppInfo(this, it, backupRoot.uri) }
+            .map { AppInfo(this, it, backupRoot) }
             .toMutableList()
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
@@ -95,7 +95,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                         .filter { !installedPackageNames.contains(it.name) && !blocklist.contains(it.name) }
                         .mapNotNull {
                             try {
-                                AppInfo(this, it.uri, it.name)
+                                AppInfo(this, it.name, it)
                             } catch (e: AssertionError) {
                                 Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                                 null

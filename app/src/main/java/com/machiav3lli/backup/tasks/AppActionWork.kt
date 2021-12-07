@@ -61,7 +61,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 .find { it.name == packageName }
             backupDir?.let {
                 try {
-                    appInfo = AppInfo(context, it.uri, it.name)
+                    appInfo = AppInfo(context, it.name, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     result = ActionResult(

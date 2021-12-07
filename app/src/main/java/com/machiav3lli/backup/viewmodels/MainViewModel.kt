@@ -85,7 +85,7 @@ class MainViewModel(
             var appInfo = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+                appInfo = AppInfo(appContext, packageName, appInfo?.backupDir)
                 dataList?.add(appInfo)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

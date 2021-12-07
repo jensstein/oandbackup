@@ -35,7 +35,7 @@ class AppInfo {
 
     var appMetaInfo: AppMetaInfo
 
-    var backupDirUri: Uri = Uri.EMPTY
+    var backupDir: StorageFile?
 
     var storageStats: StorageStats? = null
 
@@ -66,7 +66,7 @@ class AppInfo {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
         val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDirUri = backupDoc?.uri ?: Uri.EMPTY
+        backupDir = backupDoc
         refreshBackupHistory(context)
     }
 
@@ -75,14 +75,14 @@ class AppInfo {
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
         val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDirUri = backupDoc?.uri ?: Uri.EMPTY
+        backupDir = backupDoc
         refreshBackupHistory(context)
         refreshStorageStats(context)
     }
 
-    constructor(context: Context, backupRoot: Uri, packageName: String?) {
-        this.backupDirUri = backupRoot
-        this.packageName = packageName ?: StorageFile.fromUri(context, backupRoot).name!!
+    constructor(context: Context, packageName: String?, backupRoot: StorageFile?) {
+        this.backupDir = backupRoot
+        this.packageName = packageName ?: backupRoot?.name!!
         refreshBackupHistory(context)
         try {
             val pi = context.packageManager.getPackageInfo(this.packageName, 0)
@@ -108,13 +108,13 @@ class AppInfo {
         }
     }
 
-    constructor(context: Context, packageInfo: PackageInfo, backupRoot: Uri) {
+    constructor(context: Context, packageInfo: PackageInfo, backupRoot: StorageFile?) {
         this.packageName = packageInfo.packageName
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
         this.packageInfo = PackageInfo(packageInfo)
-        val appBackupRoot = StorageFile.fromUri(context, backupRoot).findFile(packageName)
+        val appBackupRoot = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        this.backupDirUri = appBackupRoot?.uri ?: Uri.EMPTY
+        this.backupDir = appBackupRoot
         refreshBackupHistory(context)
     }
 
@@ -149,15 +149,15 @@ class AppInfo {
     }
 
     fun refreshBackupHistory(context: Context) {
-        backupDirUri.let { backupDir ->
+        backupDir.let { backupDir ->
             historyCollectorThread?.interrupt()
             historyCollectorThread = Thread {
-                val appBackupDir = StorageFile.fromUri(context, backupDir)
+                val appBackupDir = backupDir
                 val backups: MutableList<BackupItem> = mutableListOf()
                 try {
-                    appBackupDir.listFiles()
-                        .filter { it.isPropertyFile }
-                        .forEach {
+                    appBackupDir?.listFiles()
+                        ?.filter { it.isPropertyFile }
+                        ?.forEach {
                             try {
                                 backups.add(BackupItem(context, it))
                             } catch (e: BackupItem.BrokenBackupException) {
@@ -179,7 +179,7 @@ class AppInfo {
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, backupDir.encodedPath)
+                    LogsHandler.unhandledException(e, backupDir?.uri?.encodedPath)
                 }
                 backupHistoryCache = Pair(backups, context)
                 historyCollectorThread = null
@@ -193,17 +193,17 @@ class AppInfo {
         StorageLocationNotConfiguredException::class
     )
     fun getAppUri(context: Context, create: Boolean): Uri {
-        if (create && backupDirUri == Uri.EMPTY) {
-            backupDirUri = context.getBackupDir().ensureDirectory(packageName)!!.uri
+        if (create && backupDir == null) {
+            backupDir = context.getBackupDir().ensureDirectory(packageName)
         }
-        return backupDirUri
+        return backupDir?.uri ?: Uri.EMPTY
     }
 
     fun deleteAllBackups(context: Context) {
         Timber.i("Deleting ${backupHistory.size} backups of $this")
-        StorageFile.fromUri(context, backupDirUri).delete()
+        backupDir?.delete()
         backupHistory.clear()
-        backupDirUri = Uri.EMPTY
+        backupDir = null
     }
 
     fun delete(context: Context, backupItem: BackupItem, directBoolean: Boolean = true) {
@@ -218,7 +218,7 @@ class AppInfo {
         )
         try {
             backupItem.backupInstanceDirUri.deleteRecursive(context)
-            StorageFile.fromUri(context, backupDirUri).findFile(propertiesFileName)!!.delete()
+            backupDir?.findFile(propertiesFileName)?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)
         }
@@ -343,7 +343,7 @@ class AppInfo {
         val appInfo = other as AppInfo
         return packageName == appInfo.packageName
                 && appMetaInfo == appInfo.appMetaInfo
-                && backupDirUri == appInfo.backupDirUri
+                && backupDir == appInfo.backupDir
                 && storageStats == appInfo.storageStats
                 && packageInfo == appInfo.packageInfo
                 && backupHistory == appInfo.backupHistory
@@ -353,7 +353,7 @@ class AppInfo {
         var hash = 7
         hash = 31 * hash + packageName.hashCode()
         hash = 31 * hash + appMetaInfo.hashCode()
-        hash = 31 * hash + backupDirUri.hashCode()
+        hash = 31 * hash + backupDir.hashCode()
         hash = 31 * hash + storageStats.hashCode()
         hash = 31 * hash + packageInfo.hashCode()
         hash = 31 * hash + backupHistory.hashCode()
@@ -364,7 +364,7 @@ class AppInfo {
         return "Schedule{" +
                 "packageName=" + packageName +
                 ", appMetaInfo=" + appMetaInfo +
-                ", appUri=" + backupDirUri +
+                ", appUri=" + backupDir +
                 ", storageStats=" + storageStats +
                 ", packageInfo=" + packageInfo +
                 ", backupHistory=" + backupHistory +

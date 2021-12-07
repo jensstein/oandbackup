@@ -400,7 +400,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                             backupProps, backupProps.getBackupLocation(
                                 StorageFile.fromUri(
                                     requireContext(),
-                                    viewModel.appInfo.value?.backupDirUri ?: Uri.EMPTY
+                                    viewModel.appInfo.value?.backupDir?.uri ?: Uri.EMPTY
                                 )
                             ), this
                         ).execute()
