@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.utils
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.machiav3lli.backup.handler.LogsHandler
@@ -19,6 +18,8 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+
+const val binaryMimeType = "application/octet-stream"
 
 @Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getBackupDir(): StorageFile =
@@ -62,7 +63,6 @@ fun suRecursiveCopyFileToDocument(
     filesToBackup: List<ShellHandler.FileInfo>,
     targetUri: Uri
 ) {
-    val resolver = context.contentResolver
     for (file in filesToBackup) {
         try {
             val parentUri = targetUri
@@ -72,7 +72,7 @@ fun suRecursiveCopyFileToDocument(
             val parentFile = StorageFile.fromUri(context, parentUri)
             when (file.fileType) {
                 FileType.REGULAR_FILE ->
-                    suCopyFileToDocument(resolver, file, StorageFile.fromUri(context, parentUri))
+                    suCopyFileToDocument(file, parentFile)
                 FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
                 else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
@@ -92,50 +92,46 @@ fun suRecursiveCopyFileToDocument(
  * @throws IOException on I/O related errors or FileNotFoundException
  */
 @Throws(IOException::class)
-fun suCopyFileToDocument(resolver: ContentResolver, sourcePath: String, targetDir: StorageFile) {
+fun suCopyFileToDocument(sourcePath: String, targetDir: StorageFile) {
     SuFileInputStream.open(sourcePath).use { inputFile ->
-        val newFile = targetDir.createFile("application/octet-stream", File(sourcePath).name)
-        if (newFile != null)
-            resolver.openOutputStream(newFile.uri)
-                .use { outputFile -> IOUtils.copy(inputFile, outputFile) }
-        else
-            throw IOException()
-    }
-}
-
-@Throws(IOException::class)
-fun suCopyFileToDocument(
-    resolver: ContentResolver,
-    sourceFile: ShellHandler.FileInfo,
-    targetDir: StorageFile
-) {
-    val newFile = targetDir.createFile("application/octet-stream", sourceFile.filename)
-    if (newFile != null) {
-        resolver.openOutputStream(newFile.uri)?.use { outputFile ->
-            ShellHandler.quirkLibsuReadFileWorkaround(sourceFile, outputFile)
-        } ?: throw IOException()
-    } else
-        throw IOException()
-}
-
-@Throws(IOException::class, ShellCommandFailedException::class)
-fun suRecursiveCopyFileFromDocument(context: Context, sourceDir: Uri, targetPath: String?) {
-    val resolver = context.contentResolver
-    val rootDir = StorageFile.fromUri(context, sourceDir)
-    for (sourceDoc in rootDir.listFiles()) {
-        sourceDoc.name?.also {
-            if (sourceDoc.isDirectory) {
-                runAsRoot("mkdir -p ${quote(File(targetPath, it))}")
-            } else if (sourceDoc.isFile) {
-                suCopyFileFromDocument(resolver, sourceDoc.uri, File(targetPath, it).absolutePath)
+        targetDir.createFile(binaryMimeType, File(sourcePath).name)?.let { newFile ->
+            newFile.outputStream!!.use { outputFile ->
+                IOUtils.copy(inputFile, outputFile)
             }
         }
     }
 }
 
 @Throws(IOException::class)
-fun suCopyFileFromDocument(resolver: ContentResolver, sourceUri: Uri, targetPath: String) {
-    SuFileOutputStream.open(targetPath).use { outputFile ->
-        resolver.openInputStream(sourceUri).use { inputFile -> IOUtils.copy(inputFile, outputFile) }
+fun suCopyFileToDocument(
+    sourceFileInfo: ShellHandler.FileInfo,
+    targetDir: StorageFile
+) {
+    targetDir.createFile(binaryMimeType, sourceFileInfo.filename)?.let { newFile ->
+        newFile.outputStream!!.use { outputStream ->
+            ShellHandler.quirkLibsuReadFileWorkaround(sourceFileInfo, outputStream)
+        }
+    } ?: throw Exception()
+}
+
+@Throws(IOException::class, ShellCommandFailedException::class)
+fun suRecursiveCopyFileFromDocument(sourceDir: StorageFile, targetPath: String?) {
+    for (sourceFile in sourceDir.listFiles()) {
+        sourceFile.name?.also { name ->
+            if (sourceFile.isDirectory) {
+                runAsRoot("mkdir -p ${quote(File(targetPath, name))}")
+            } else if (sourceFile.isFile) {
+                suCopyFileFromDocument(sourceFile, File(targetPath, name).absolutePath)
+            }
+        }
+    }
+}
+
+@Throws(IOException::class)
+fun suCopyFileFromDocument(sourceFile: StorageFile, targetPath: String) {
+    SuFileOutputStream.open(targetPath).use { outputStream ->
+        sourceFile.inputStream!!.use { inputStream ->
+            IOUtils.copy(inputStream, outputStream)
+        }
     }
 }

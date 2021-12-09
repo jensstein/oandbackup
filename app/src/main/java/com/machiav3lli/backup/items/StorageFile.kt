@@ -5,25 +5,30 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.utils.exists
-import com.machiav3lli.backup.utils.getName
-import com.machiav3lli.backup.utils.isDirectory
-import com.machiav3lli.backup.utils.isFile
+import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.utils.*
+import com.topjohnwu.superuser.io.SuFile
 import java.io.FileNotFoundException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
+const val bufferSize = 65536
+
 // TODO MAYBE migrate at some point to FuckSAF
-open class StorageFile protected constructor(
+open class StorageFile(
     val parentFile: StorageFile?,
     private val context: Context,
     var uri: Uri
 ) {
+
+    var file: SuFile? = null
+
     var name: String? = null
         get() {
             if (field == null) field = uri.getName(context)
             return field
         }
-        private set
 
     val isFile: Boolean
         get() = uri.isFile(context)
@@ -33,6 +38,19 @@ open class StorageFile protected constructor(
 
     val isDirectory: Boolean
         get() = uri.isDirectory(context)
+
+    val exists: Boolean
+        get() = uri.exists(context)
+
+    val inputStream: InputStream?
+        get() {
+            return context.contentResolver.openInputStream(uri)
+        }
+
+    val outputStream: OutputStream?
+        get() {
+            return context.contentResolver.openOutputStream(uri, "w")
+        }
 
     fun createDirectory(displayName: String): StorageFile? {
         val result = createFile(context, uri, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
@@ -55,6 +73,23 @@ open class StorageFile protected constructor(
         }
     }
 
+    fun renameTo(displayName: String): Boolean {
+        // noinspection OverlyBroadCatchBlock
+        return try {
+            val result = DocumentsContract.renameDocument(
+                context.contentResolver, uri, displayName
+            )
+            if (result != null) {
+                uri = result
+                return true
+            }
+            false
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, uri)
+            false
+        }
+    }
+
     fun findFile(displayName: String): StorageFile? {
         try {
             for (doc in listFiles()) {
@@ -69,10 +104,14 @@ open class StorageFile protected constructor(
         return null
     }
 
+    fun recursiveCopyFiles(files: List<ShellHandler.FileInfo>) {
+        suRecursiveCopyFileToDocument(context, files, uri)
+    }
+
     @Throws(FileNotFoundException::class)
     fun listFiles(): Array<StorageFile> {
         try {
-            exists()
+            exists
         } catch (e: Throwable) {
             throw FileNotFoundException("File $uri does not exist")
         }
@@ -114,27 +153,6 @@ open class StorageFile protected constructor(
             }.toTypedArray()
         }
         return cache[uriString] ?: arrayOf()
-    }
-
-    fun renameTo(displayName: String): Boolean {
-        // noinspection OverlyBroadCatchBlock
-        return try {
-            val result = DocumentsContract.renameDocument(
-                context.contentResolver, uri, displayName
-            )
-            if (result != null) {
-                uri = result
-                return true
-            }
-            false
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
-            false
-        }
-    }
-
-    fun exists(): Boolean {
-        return uri.exists(context)
     }
 
     override fun toString(): String {

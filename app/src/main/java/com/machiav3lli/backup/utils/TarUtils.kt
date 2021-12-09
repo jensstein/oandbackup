@@ -121,7 +121,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun TarArchiveInputStream.suUncompressTo(targetDir: File?) {
+fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
     targetDir?.let {
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val file = File(it, tarEntry.name)

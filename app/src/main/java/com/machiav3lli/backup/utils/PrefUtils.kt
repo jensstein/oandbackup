@@ -137,7 +137,7 @@ val Context.isStorageDirSetAndOk: Boolean
                 return false
             }
             val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
-            storageDir.exists()
+            storageDir.exists
         } catch (e: StorageLocationNotConfiguredException) {
             false
         }

@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
@@ -38,8 +37,7 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
     RestoreAppAction(context, shell) {
 
     @Throws(RestoreFailedException::class)
-    override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
-        val backupDir = StorageFile.fromUri(context, backupLocation)
+    override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
         val apkTargetPath = File(backupProperties.sourceDir ?: "")
         backupDir.findFile(apkTargetPath.name)?.let { apkLocation ->
             // Writing the apk to a temporary location to get it out of the magic storage to a local location

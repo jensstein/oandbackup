@@ -108,7 +108,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir.uri, filesToBackup, true, iv)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir, filesToBackup, true, iv)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")

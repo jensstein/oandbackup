@@ -19,15 +19,11 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -72,13 +68,14 @@ object BackupRestoreHelper {
     }
 
     fun restore(context: Context, shellHandler: ShellHandler, app: AppInfo, mode: Int,
-                backupProperties: BackupProperties, backupLocation: Uri): ActionResult {
+                backupProperties: BackupProperties, backupDir: StorageFile
+    ): ActionResult {
         val restoreAction: RestoreAppAction = when {
             app.isSpecial -> RestoreSpecialAction(context, shellHandler)
             app.isSystem -> RestoreSystemAppAction(context, shellHandler)
             else -> RestoreAppAction(context, shellHandler)
         }
-        val result = restoreAction.run(app, backupProperties, backupLocation, mode)
+        val result = restoreAction.run(app, backupProperties, backupDir, mode)
         Timber.i("$app: Restore succeeded: ${result.succeeded}")
         return result
     }
@@ -96,7 +93,7 @@ object BackupRestoreHelper {
                 if (fileInfos.size != 1) {
                     throw FileNotFoundException("Could not find OAndBackupX's own apk file")
                 }
-                suCopyFileToDocument(context.contentResolver, fileInfos[0], backupRoot)
+                suCopyFileToDocument(fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail
                 // Can cost a lot time, but this function won't be run that often
                 invalidateCache()
@@ -148,9 +145,9 @@ object BackupRestoreHelper {
                         }
                         .toMutableList()
                 (0 until revisionsToDelete).forEach {
-                    val deleteTarget = backups[it]
-                    Timber.i("[${app.packageName}] Deleting backup revision $deleteTarget")
-                    app.delete(context, deleteTarget)
+                    val deleteInfo = backups[it]
+                    Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")
+                    app.delete(context, deleteInfo)
                 }
             }
         }

@@ -27,7 +27,7 @@ import java.io.IOException
 
 open class BackupItem {
     val backupProperties: BackupProperties
-    private val backupInstance: StorageFile
+    val backupInstance: StorageFile
     val backupInstanceDirUri: Uri
         get() = backupInstance.uri
 
