@@ -19,6 +19,8 @@ package com.machiav3lli.backup.utils
 
 import android.system.ErrnoException
 import android.system.Os
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_DIRS
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
@@ -33,6 +35,7 @@ import org.apache.commons.compress.utils.IOUtils
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 const val BUFFER_SIZE = 8 * 1024 * 1024
@@ -123,21 +126,67 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 @Throws(IOException::class, ShellCommandFailedException::class)
 fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
     targetDir?.let {
+        val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
-            val file = File(it, tarEntry.name)
+            val targetPath = SuFile(it, tarEntry.name)
             Timber.d("Extracting ${tarEntry.name}")
-            if (tarEntry.isDirectory) {
-                ShellHandler.runAsRoot("mkdir -p ${quote(file)}")
-                suUncompressTo(it)
-            } else if (tarEntry.isFile) {
-                SuFileOutputStream.open(SuFile.open(it, tarEntry.name))
-                    .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
-            } else if (tarEntry.isLink || tarEntry.isSymbolicLink) {
-                ShellHandler.runAsRoot("cd ${quote(it)} && ln -s ${quote(file)} ${quote(tarEntry.linkName)}; cd -")
-            } else if (tarEntry.isFIFO) {
-                ShellHandler.runAsRoot("cd ${quote(it)} && mkfifo ${quote(file)}; cd -")
-            } else {
-                Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
+            var doChmod = true
+            var postponeChmod = false
+            var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
+            when {
+                relPath.isEmpty() -> return@forEach
+                relPath in DATA_EXCLUDED_DIRS -> return@forEach
+                relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
+                tarEntry.isDirectory -> {
+                    if (!targetPath.exists()) {
+                        ShellHandler.runAsRoot("mkdir -p ${quote(targetPath)}")
+                        //suUncompressTo(it)
+                        // write protection would prevent creating files inside, so chmod at end
+                        postponeChmod = true
+                    }
+                }
+                tarEntry.isLink or tarEntry.isSymbolicLink -> {
+                    ShellHandler.runAsRoot(
+                        "ln -s ${quote(targetPath)} ${quote(tarEntry.linkName)}"
+                    )
+                }
+                tarEntry.isFIFO -> {
+                    ShellHandler.runAsRoot("mkfifo ${quote(targetPath)}")
+                }
+                else -> {
+                    SuFileOutputStream.open(SuFile.open(it, tarEntry.name))
+                        .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
+                    //Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
+                }
+            }
+            if (doChmod) {
+                if (postponeChmod) {
+                    postponeModes[targetPath.absolutePath] = tarEntry.mode
+                } else {
+                    try {
+                        ShellHandler.runAsRoot("chmod ${String.format("%3o", tarEntry.mode)} ${quote(targetPath.absolutePath)}")
+                    } catch (e: ErrnoException) {
+                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${tarEntry.mode}: $e")
+                    }
+                }
+
+            }
+            try {
+                //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
+                ShellHandler.runAsRoot(
+                    "touch -m -d ${
+                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS").format(tarEntry.modTime.time)
+                    } ${quote(targetPath)}"
+                )
+            } catch (e: ErrnoException) {
+                throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+            }
+        }
+        postponeModes.forEach { fileMode ->
+            try {
+                ShellHandler.runAsRoot("chmod ${String.format("%3o", fileMode.value)} ${quote(fileMode.key)}")
+            } catch (e: ErrnoException) {
+                throw IOException("Unable to chmod ${fileMode.key} to ${fileMode.value}: $e")
             }
         }
     }
@@ -157,8 +206,11 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             } ?: throw IOException("No parent folder for ${targetPath.absolutePath}")
             var doChmod = true
             var postponeChmod = false
-            var relPath = targetPath.relativeTo(targetPath.parentFile)
+            var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
             when {
+                relPath.isEmpty() -> return@forEach
+                relPath in DATA_EXCLUDED_DIRS -> return@forEach
+                relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
                     if (! (targetPath.exists() || targetPath.mkdirs())) {
                         throw IOException("Unable to create folder ${targetPath.absolutePath}")

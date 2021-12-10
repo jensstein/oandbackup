@@ -327,20 +327,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         isEncrypted: Boolean,
         iv: ByteArray?
     ): TarArchiveInputStream {
-        archive.inputStream!!.also { inputStream ->
-            if (isEncrypted) {
-                val password = context.getEncryptionPassword()
-                if (password.isNotEmpty() && context.isEncryptionEnabled()) {
-                    Timber.d("Decryption enabled")
-                    return TarArchiveInputStream(
-                        GzipCompressorInputStream(
-                            inputStream.decryptStream(password, context.getCryptoSalt(), iv)
-                        )
+        //val inputStream = archive.inputStream!!
+        val inputStream = BufferedInputStream(archive.inputStream!!)
+        if (isEncrypted) {
+            val password = context.getEncryptionPassword()
+            if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+                Timber.d("Decryption enabled")
+                return TarArchiveInputStream(
+                    GzipCompressorInputStream(
+                        inputStream.decryptStream(password, context.getCryptoSalt(), iv)
                     )
-                }
+                )
             }
-            return TarArchiveInputStream(GzipCompressorInputStream(inputStream))
         }
+        return TarArchiveInputStream(GzipCompressorInputStream(inputStream))
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
@@ -367,9 +367,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     inputStream.suUncompressTo(SuFile(targetDir))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                    tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
-                    tempDir?.let {
-                        inputStream.uncompressTo(it.toFile())
+                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let { tempDir ->
+                        inputStream.uncompressTo(tempDir.toFile())
                         // clear the data from the final directory
                         wipeDirectory(
                             targetDir,
@@ -377,7 +376,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                         )
                         // Move all the extracted data into the target directory
                         val command =
-                            "$utilBoxQuoted mv -f ${quote(it.toString())}/* ${quote(targetDir)}/"
+                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetDir)}/"
                         runAsRoot(command)
                     }
                 }
