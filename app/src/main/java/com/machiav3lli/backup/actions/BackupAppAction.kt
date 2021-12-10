@@ -20,7 +20,9 @@ package com.machiav3lli.backup.actions
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -440,10 +442,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-        //return genericBackupData_API(backupType, backupInstanceDir, sourceDirectory, compress, iv)
-        return genericBackupData_Tar(backupType, backupInstanceDir, sourceDirectory, compress, iv)
+        if(PreferenceManager.getDefaultSharedPreferences(MainActivityX.context).getBoolean("backupUseTarCommand", true))
+            return genericBackupData_Tar(backupType, backupInstanceDir, sourceDirectory, compress, iv)
+        else
+            return genericBackupData_API(backupType, backupInstanceDir, sourceDirectory, compress, iv)
     }
-
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupData(

@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
@@ -358,7 +360,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         var tempDir: Path? = null
         try {
             openArchiveFile(archive, isEncrypted, iv).use { inputStream ->
-                if(true) {
+                if(getDefaultSharedPreferences(MainActivityX.context).getBoolean("restoreAvoidTemporaryCopy", true)) {
                     // clear the data from the final directory
                     wipeDirectory(
                         targetDir,
