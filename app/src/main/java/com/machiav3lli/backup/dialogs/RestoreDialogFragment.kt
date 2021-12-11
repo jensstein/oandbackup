@@ -36,7 +36,7 @@ class RestoreDialogFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val labels = mutableListOf<String>()
         var selectedMode = MODE_UNSET
-        val possibleModes = possibleSchedModes
+        val possibleModes = possibleSchedModes.toMutableList()
 
         if (properties.hasApk) {
             labels.add(getString(R.string.radio_apk))

@@ -45,16 +45,18 @@ object BackupRestoreHelper {
             housekeepingPackageBackups(context, appInfo, true)
         }
         // Select and prepare the action to use
-        val action: BackupAppAction
-        if (appInfo.isSpecial) {
-            if (reBackupMode and MODE_APK == MODE_APK) {
-                Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                reBackupMode = reBackupMode and MODE_DATA
-                Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
+        val action: BackupAppAction = when {
+            appInfo.isSpecial -> {
+                if (reBackupMode and MODE_APK == MODE_APK) {
+                    Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                    reBackupMode = reBackupMode and MODE_DATA
+                    Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
+                }
+                BackupSpecialAction(context, shell)
             }
-            action = BackupSpecialAction(context, shell)
-        } else {
-            action = BackupAppAction(context, shell)
+            else -> {
+                BackupAppAction(context, shell)
+            }
         }
         Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
 
@@ -67,16 +69,16 @@ object BackupRestoreHelper {
         return result
     }
 
-    fun restore(context: Context, shellHandler: ShellHandler, app: AppInfo, mode: Int,
+    fun restore(context: Context, shellHandler: ShellHandler, appInfo: AppInfo, mode: Int,
                 backupProperties: BackupProperties, backupDir: StorageFile
     ): ActionResult {
-        val restoreAction: RestoreAppAction = when {
-            app.isSpecial -> RestoreSpecialAction(context, shellHandler)
-            app.isSystem -> RestoreSystemAppAction(context, shellHandler)
+        val action: RestoreAppAction = when {
+            appInfo.isSpecial -> RestoreSpecialAction(context, shellHandler)
+            appInfo.isSystem -> RestoreSystemAppAction(context, shellHandler)
             else -> RestoreAppAction(context, shellHandler)
         }
-        val result = restoreAction.run(app, backupProperties, backupDir, mode)
-        Timber.i("$app: Restore succeeded: ${result.succeeded}")
+        val result = action.run(appInfo, backupProperties, backupDir, mode)
+        Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")
         return result
     }
 
