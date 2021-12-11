@@ -442,10 +442,36 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-        if(PreferenceManager.getDefaultSharedPreferences(MainActivityX.context).getBoolean("backupUseTarCommand", true))
-            return genericBackupData_Tar(backupType, backupInstanceDir, sourceDirectory, compress, iv)
-        else
-            return genericBackupData_API(backupType, backupInstanceDir, sourceDirectory, compress, iv)
+            if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.context)
+                    .getBoolean("backupUseTarCommand", true)
+            ) {
+                try {
+                    return genericBackupData_Tar(
+                        backupType,
+                        backupInstanceDir,
+                        sourceDirectory,
+                        compress,
+                        iv
+                    )
+                } catch (ex: BackupFailedException) {
+                    Timber.w("tar command failed, retrying with API method")
+                    return genericBackupData_API(
+                        backupType,
+                        backupInstanceDir,
+                        sourceDirectory,
+                        compress,
+                        iv
+                    )
+                }
+            } else {
+                return genericBackupData_API(
+                    backupType,
+                    backupInstanceDir,
+                    sourceDirectory,
+                    compress,
+                    iv
+                )
+            }
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
