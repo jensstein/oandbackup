@@ -394,7 +394,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 options += " --exclude " + quote(excludeCache)
             }
 
-            val cmd = "su -c sh ${quote(tarScript)} create ${options} ${quote(sourceDirectory)}"
+            val cmd = "su --mount-master -c sh ${quote(tarScript)} create ${options} ${quote(sourceDirectory)}"
             Timber.i("SHELL: $cmd")
 
             val process = Runtime.getRuntime().exec(cmd)
