@@ -59,7 +59,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         try {
             if (backupMode and MODE_APK == MODE_APK) {
                 restorePackage(backupDir, backupProperties)
-                refreshAppInfo(context, app)
+                refreshAppInfo(context, app)    // also waits for valid paths
             }
             if (backupMode != MODE_APK)
                 restoreAllData(app, backupProperties, backupDir, backupMode)
@@ -466,16 +466,21 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     backupFilename
                 )
             )
+        val extractTo = app.dataPath
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreFromArchive(
             backupArchive,
-            app.dataPath,
+            extractTo,
             backupProperties.isEncrypted,
             context.cacheDir,
             backupProperties.iv
         )
         genericRestorePermissions(
             BACKUP_DIR_DATA,
-            File(app.dataPath)
+            File(extractTo)
         )
     }
 
@@ -497,16 +502,21 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     backupFilename
                 )
             )
+        val extractTo = app.devicesProtectedDataPath
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreFromArchive(
             backupArchive,
-            app.devicesProtectedDataPath,
+            extractTo,
             backupProperties.isEncrypted,
             deviceProtectedStorageContext.cacheDir,
             backupProperties.iv
         )
         genericRestorePermissions(
             BACKUP_DIR_DEVICE_PROTECTED_FILES,
-            File(app.devicesProtectedDataPath)
+            File(extractTo)
         )
     }
 
@@ -526,7 +536,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     backupFilename
                 )
             )
-        val externalDataDir = File(app.getExternalDataPath(context))
+        val extractTo = app.getExternalDataPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
         // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
         //  if (!externalDataDir.exists()) {
         //      val mkdirResult = externalDataDir.mkdir()
@@ -534,12 +548,13 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         //          throw RestoreFailedException("Could not create external data directory at $externalDataDir")
         //      }
         //  }
-        runAsRoot("$utilBoxQuoted mkdir -p ${quote(externalDataDir)}")
-        if (!externalDataDir.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
-            throw RestoreFailedException("Could not create external data directory at $externalDataDir")
+        runAsRoot("$utilBoxQuoted mkdir -p ${quote(extractTo)}")
+        // a failed command should already throw an exception
+        //if (!extractTo.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
+        //    throw RestoreFailedException("Could not create external data directory at $extractTo")
         genericRestoreFromArchive(
             backupArchive,
-            externalDataDir.absolutePath,
+            extractTo,
             backupProperties.isEncrypted,
             context.externalCacheDir,
             backupProperties.iv
@@ -551,24 +566,36 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         app: AppInfo,
         backupProperties: BackupProperties?,
         backupDir: StorageFile
-    ) =
+    ) {
+        val extractTo = app.getObbFilesPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+            "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreDataByCopying(
-            app.getObbFilesPath(context),
+            extractTo,
             backupDir,
             BACKUP_DIR_OBB_FILES
         )
+    }
 
     @Throws(RestoreFailedException::class)
     open fun restoreMediaData(
         app: AppInfo,
         backupProperties: BackupProperties?,
         backupDir: StorageFile
-    ) =
+    ) {
+        val extractTo = app.getMediaFilesPath(context)
+        if (!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreDataByCopying(
-            app.getMediaFilesPath(context),
+            extractTo,
             backupDir,
             BACKUP_DIR_MEDIA_FILES
         )
+    }
 
     /**
      * Returns an installation command for adb/shell installation.
@@ -614,6 +641,10 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         return app.dataPath.isNotBlank()
                 && app.apkPath.isNotBlank()
                 && app.devicesProtectedDataPath.isNotBlank()
+    }
+
+    private fun isPlausiblePath(path: String, packageName: String): Boolean {
+        return path.contains(packageName)
     }
 
     class RestoreFailedException : AppActionFailedException {
