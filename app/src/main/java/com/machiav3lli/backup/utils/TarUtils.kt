@@ -133,6 +133,7 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
             var doChmod = true
             var postponeChmod = false
             var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
+            val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
                 relPath in DATA_EXCLUDED_DIRS -> return@forEach
@@ -161,12 +162,12 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
             }
             if (doChmod) {
                 if (postponeChmod) {
-                    postponeModes[targetPath.absolutePath] = tarEntry.mode
+                    postponeModes[targetPath.absolutePath] = mode
                 } else {
                     try {
-                        ShellHandler.runAsRoot("chmod ${String.format("%3o", tarEntry.mode)} ${quote(targetPath.absolutePath)}")
+                        ShellHandler.runAsRoot("chmod ${String.format("%03o", mode)} ${quote(targetPath.absolutePath)}")
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${tarEntry.mode}: $e")
+                        throw IOException("Unable to chmod ${targetPath.absolutePath} to  ${String.format("%03o", mode)}: $e")
                     }
                 }
 
@@ -184,9 +185,9 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
         }
         postponeModes.forEach { fileMode ->
             try {
-                ShellHandler.runAsRoot("chmod ${String.format("%3o", fileMode.value)} ${quote(fileMode.key)}")
+                ShellHandler.runAsRoot("chmod ${String.format("%03o", fileMode.value)} ${quote(fileMode.key)}")
             } catch (e: ErrnoException) {
-                throw IOException("Unable to chmod ${fileMode.key} to ${fileMode.value}: $e")
+                throw IOException("Unable to chmod ${fileMode.key} to ${String.format("%03o", fileMode.value)}: $e")
             }
         }
     }
@@ -207,6 +208,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             var doChmod = true
             var postponeChmod = false
             var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
+            val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
                 relPath in DATA_EXCLUDED_DIRS -> return@forEach
@@ -243,12 +245,12 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             }
             if (doChmod) {
                 if (postponeChmod) {
-                    postponeModes[targetPath.absolutePath] = tarEntry.mode
+                    postponeModes[targetPath.absolutePath] = mode
                 } else {
                     try {
-                        Os.chmod(targetPath.absolutePath, tarEntry.mode)
+                        Os.chmod(targetPath.absolutePath, mode)
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${tarEntry.mode}: $e")
+                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${String.format("%03o", mode)}: $e")
                     }
                 }
 
@@ -263,7 +265,7 @@ fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
             try {
                 Os.chmod(fileMode.key, fileMode.value)
             } catch (e: ErrnoException) {
-                throw IOException("Unable to chmod ${fileMode.key} to ${fileMode.value}: $e")
+                throw IOException("Unable to chmod ${fileMode.key} to ${String.format("%03o", fileMode.value)}: $e")
             }
         }
     }
