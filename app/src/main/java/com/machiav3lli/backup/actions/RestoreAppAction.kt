@@ -369,8 +369,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     inputStream.suUncompressTo(SuFile(targetDir))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let { tempDir ->
-                        inputStream.uncompressTo(tempDir.toFile())
+                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
+                        tempDir = it
+                        inputStream.uncompressTo(tempDir?.toFile())
                         // clear the data from the final directory
                         wipeDirectory(
                             targetDir,
@@ -401,11 +402,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException("Could not restore a file due to a failed root command", e)
         } finally {
             // Clean up the temporary directory if it was initialized
-            if (tempDir != null) {
+            tempDir?.let {
                 try {
-                    FileUtils.forceDelete(tempDir?.toFile())
+                    FileUtils.forceDelete(it.toFile())
                 } catch (e: IOException) {
-                    Timber.e("Could not delete temporary directory. Cache Size might be growing. Reason: $e")
+                    Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
                 }
             }
         }
