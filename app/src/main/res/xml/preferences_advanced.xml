@@ -53,6 +53,13 @@
         android:title="@string/prefs_stopcont" />
 
     <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/ic_prefs_advanced"
+        android:key="usePmSuspend"
+        android:summary=""
+        android:title="use pm suspend" />
+
+    <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:icon="@drawable/ic_prefs_advanced"
         android:key="backupUseTarCommand"

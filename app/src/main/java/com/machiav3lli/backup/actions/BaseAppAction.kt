@@ -44,7 +44,11 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    val prepostOptions = "--suspend"
+    private fun prepostOptions() : String {
+        return if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.context)
+                    .getBoolean("usePmSuspend", true)
+                  ) { "--suspend" } else { "" }
+    }
 
     open fun preprocessPackage(packageName: String) {
         try {
@@ -57,7 +61,7 @@ abstract class BaseAppAction protected constructor(
                 return
             }
             if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist
-                val shellResult = runAsRoot("sh ${script} pre ${prepostOptions} ${packageName} ${applicationInfo.uid}")
+                val shellResult = runAsRoot("sh ${script} pre ${prepostOptions()} ${packageName} ${applicationInfo.uid}")
                 stopped[packageName] = shellResult.out.asSequence()
                     .filter { line: String -> line.isNotEmpty() }
                     .toMutableList()
@@ -84,7 +88,7 @@ abstract class BaseAppAction protected constructor(
             }
             stopped[packageName]?.let { pids ->
                 Timber.w("Continue stopped PIDs for package ${packageName}: ${pids.joinToString(" ")}")
-                runAsRoot("sh ${script} post ${prepostOptions} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
+                runAsRoot("sh ${script} post ${prepostOptions()} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
                 stopped.remove(packageName)
             } ?: run {
                 Timber.w("No stopped PIDs for package ${packageName}")
