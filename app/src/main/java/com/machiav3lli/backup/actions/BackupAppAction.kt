@@ -407,9 +407,16 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             outStream.flush()
 
             val err = shellErr.readBytes().decodeToString()
-            if(!err.isEmpty()) {
-                Timber.i(err)
-                throw ScriptException(err)
+            val errLines = err
+                .split("\n")
+                .filterNot { line ->
+                       line.isBlank()
+                    || line.contains("tar: unknown file type") // e.g. socket 140000
+                }
+            if(errLines.isNotEmpty()) {
+                val errFiltered = errLines.joinToString("\n")
+                Timber.i(errFiltered)
+                throw ScriptException(errFiltered)
             }
             result = true
         } catch (e: Throwable) {
@@ -445,24 +452,13 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.context)
                     .getBoolean("backupUseTarCommand", true)
             ) {
-                try {
-                    return genericBackupData_Tar(
-                        backupType,
-                        backupInstanceDir,
-                        sourceDirectory,
-                        compress,
-                        iv
-                    )
-                } catch (ex: BackupFailedException) {
-                    Timber.w("tar command failed, retrying with API method")
-                    return genericBackupData_API(
-                        backupType,
-                        backupInstanceDir,
-                        sourceDirectory,
-                        compress,
-                        iv
-                    )
-                }
+                return genericBackupData_Tar(
+                    backupType,
+                    backupInstanceDir,
+                    sourceDirectory,
+                    compress,
+                    iv
+                )
             } else {
                 return genericBackupData_API(
                     backupType,
