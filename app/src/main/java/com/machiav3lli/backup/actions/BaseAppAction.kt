@@ -19,11 +19,13 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.machiav3lli.backup.BuildConfig
+import androidx.preference.PreferenceManager
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.handler.ignoredPackages
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 
@@ -60,7 +62,7 @@ abstract class BaseAppAction protected constructor(
                 Timber.w("Ignore processes of system user UID < 10000")
                 return
             }
-            if (!doNotStop.contains(packageName)) { // will stop most activity, needs a good blacklist
+            if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
                 val shellResult = runAsRoot("sh ${script} pre ${prepostOptions()} ${packageName} ${applicationInfo.uid}")
                 stopped[packageName] = shellResult.out.asSequence()
                     .filter { line: String -> line.isNotEmpty() }
@@ -110,23 +112,13 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_OBB_FILES = "obb_files"
         const val BACKUP_DIR_MEDIA_FILES = "media_files"
 
-        /* TODO @hg42 why exclude lib? how is it restored?
-         @machiav3lli libs are generally created while installing the app. Backing them up
-          would result a compatibility problem between devices with different cpu_arch
+        /* @hg42 why exclude lib? how is it restored?
+           @machiav3lli libs are generally created while installing the app. Backing them up
+           would result a compatibility problem between devices with different cpu_arch
          */
         val DATA_EXCLUDED_CACHE_DIRS = listOf("cache", "code_cache")
         val DATA_EXCLUDED_DIRS = listOf("lib")
-        private val doNotStop = listOf(
-            "com.android.shell",  // don't remove this
-            BuildConfig.APPLICATION_ID, // ignore own package
-            "com.android.systemui",
-            "com.android.externalstorage",
-            "com.android.mtp",
-            "com.android.providers.media",
-            "com.android.providers.downloads.ui",
-            "com.google.android.gms",
-            "com.google.android.gsf"
-        )
+        val doNotStop = ignoredPackages
 
         private val stopped = mutableMapOf<String, List<String>>()
 

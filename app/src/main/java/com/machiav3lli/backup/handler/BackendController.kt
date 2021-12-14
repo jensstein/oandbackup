@@ -41,25 +41,33 @@ import java.util.*
 /*
 List of packages to be ignored for said reasons
  */
-val ignoredPackages = listOf(
-        "android",  // virtual package. Data directory is /data -> not a good idea to backup
-        BuildConfig.APPLICATION_ID, // ignore own package
-        "com.android.shell",
-        "com.android.systemui",
-        "com.android.externalstorage",
-        "com.android.providers.media",
-        "com.google.android.gms",
-        "com.google.android.gsf"
-)
+
+val ignoredPackages = ("""(?x)
+    # complete matches
+      ^android$
+    | ^com\.android\.shell$
+    | ^com\.android\.systemui$
+    | ^com\.android\.externalstorage$
+    | ^com\.android\.mtp$
+    | ^com\.android\.providers\.downloads\.ui$
+    | ^com\.google\.android\.gms$
+    | ^com\.google\.android\.gsf$
+    # wildcard matches
+    | ^com\.android\.providers\.media\b
+    # program values
+    | ^""" + Regex.escape(BuildConfig.APPLICATION_ID) + """$
+    """).toRegex()
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     packageManager.getInstalledPackages(0)
         .filter { packageInfo: PackageInfo ->
             val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-            val isNotIgnored = !ignoredPackages.contains(packageInfo.packageName)
-            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && isNotIgnored else false)
-                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && isNotIgnored else false)
+            val isIgnored = packageInfo.packageName.matches(ignoredPackages)
+            if(isIgnored)
+                Timber.i("ignored package: ${packageInfo.packageName}")
+            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && ! isIgnored else false)
+                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && ! isIgnored else false)
         }
         .toList()
 
@@ -72,7 +80,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     val packageInfoList = pm.getInstalledPackages(0)
     val packageList = packageInfoList
             .filterNotNull()
-            .filter { !ignoredPackages.contains(it.packageName) && !blocklist.contains(it.packageName) }
+            .filter { !it.packageName.matches(ignoredPackages) && !blocklist.contains(it.packageName) }
             .map { AppInfo(this, it, backupRoot) }
             .toMutableList()
     // Special Backups must added before the uninstalled packages, because otherwise it would
