@@ -80,7 +80,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     val packageInfoList = pm.getInstalledPackages(0)
     val packageList = packageInfoList
             .filterNotNull()
-            .filter { !it.packageName.matches(ignoredPackages) && !blocklist.contains(it.packageName) }
+            .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
             .map { AppInfo(this, it, backupRoot) }
             .toMutableList()
     // Special Backups must added before the uninstalled packages, because otherwise it would
@@ -100,7 +100,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
         // if it fails, null the object for filtering in the next step to avoid crashes
                 // filter out previously failed backups
                 directoriesInBackupRoot
-                        .filter { !installedPackageNames.contains(it.name) && !blocklist.contains(it.name) }
+                        .filterNot { installedPackageNames.contains(it.name) || blocklist.contains(it.name) }
                         .mapNotNull {
                             try {
                                 AppInfo(this, it.name, it)
@@ -120,7 +120,7 @@ fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
     val backupRoot = getBackupDir()
     try {
         return backupRoot.listFiles()
-                .filter { it.isDirectory && it.name != LOG_FOLDER_NAME }
+                .filter { it.isDirectory && it.name != LOG_FOLDER_NAME && !(it.name?.startsWith('.') ?: false)}
                 .toList()
     } catch (e: FileNotFoundException) {
         Timber.e("${e.javaClass.simpleName}: ${e.message}")
