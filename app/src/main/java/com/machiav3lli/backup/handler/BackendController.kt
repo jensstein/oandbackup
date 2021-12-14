@@ -44,18 +44,18 @@ List of packages to be ignored for said reasons
 
 val ignoredPackages = ("""(?x)
     # complete matches
-      ^android$
-    | ^com\.android\.shell$
-    | ^com\.android\.systemui$
-    | ^com\.android\.externalstorage$
-    | ^com\.android\.mtp$
-    | ^com\.android\.providers\.downloads\.ui$
-    | ^com\.google\.android\.gms$
-    | ^com\.google\.android\.gsf$
+      android
+    | com\.android\.shell
+    | com\.android\.systemui
+    | com\.android\.externalstorage
+    | com\.android\.mtp
+    | com\.android\.providers\.downloads\.ui
+    | com\.google\.android\.gms
+    | com\.google\.android\.gsf
     # wildcard matches
-    | ^com\.android\.providers\.media\b
+    | com\.android\.providers\.media\b.*
     # program values
-    | ^""" + Regex.escape(BuildConfig.APPLICATION_ID) + """$
+    | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
     """).toRegex()
 
 // TODO respect special filter
