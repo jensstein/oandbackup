@@ -366,7 +366,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         var tempDir: Path? = null
         try {
             openArchiveFile(archive, compressed, isEncrypted, iv).use { inputStream ->
-                if(getDefaultSharedPreferences(MainActivityX.context).getBoolean("restoreAvoidTemporaryCopy", true)) {
+                if(getDefaultSharedPreferences(MainActivityX.activity).getBoolean("restoreAvoidTemporaryCopy", true)) {
                     // clear the data from the final directory
                     wipeDirectory(
                         targetDir,

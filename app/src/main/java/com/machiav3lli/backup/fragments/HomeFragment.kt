@@ -259,13 +259,13 @@ class HomeFragment : NavigationFragment(),
         selectedPackages: List<String?>,
         selectedModes: List<Int>
     ) {
-        val notificationId = System.currentTimeMillis()
+        val notificationId = System.currentTimeMillis().toInt()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(R.string.backup)
         )
         showNotification(
-            requireContext(), MainActivityX::class.java, notificationId.toInt(),
+            requireContext(), MainActivityX::class.java, notificationId,
             notificationMessage, "", true
         )
         val selectedItems = selectedPackages
@@ -281,7 +281,7 @@ class HomeFragment : NavigationFragment(),
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, true, notificationId.toInt())
+                AppActionWork.Request(packageName, mode, true, notificationId)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -323,7 +323,7 @@ class HomeFragment : NavigationFragment(),
                     val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
-                        notificationId.toInt(), title, message, true
+                        notificationId, title, message, true
                     )
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                     requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->

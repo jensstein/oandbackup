@@ -20,7 +20,7 @@ package com.machiav3lli.backup.handler
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.activities.MainActivityX.Companion.context
+import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -506,7 +506,7 @@ class ShellHandler {
 
         scriptDir = MainActivityX.assetDir
         scriptUserDir = File(
-            context.getExternalFilesDir(DIRECTORY_DOCUMENTS),
+            activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
             SCRIPTS_SUBDIR
         )
         scriptUserDir?.mkdirs()

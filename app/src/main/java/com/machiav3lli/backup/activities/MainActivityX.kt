@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.activities
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -53,6 +52,7 @@ import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.ref.WeakReference
 
 
 class MainActivityX : BaseActivity() {
@@ -76,7 +76,18 @@ class MainActivityX : BaseActivity() {
             }
         }
 
-        lateinit var context : Context
+        var activityRef : WeakReference<MainActivityX> = WeakReference(null)
+        var activity : MainActivityX?
+            get() {
+                return activityRef.get()
+            }
+            set(activity) {
+                activityRef = WeakReference(activity)
+            }
+
+        var appsSuspendedChecked = false
+
+        var runningOperations : MutableMap<String, String> = mutableMapOf()
     }
 
     private lateinit var prefs: SharedPreferences
@@ -88,7 +99,9 @@ class MainActivityX : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        context = this
+        val context = this
+        activity = this
+
         setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell()
@@ -200,29 +213,32 @@ class MainActivityX : BaseActivity() {
     private fun initAssetFiles() {
 
         // copy scripts to file storage
-        val context = MainActivityX.context
-        assetDir = File(context.filesDir, ASSETS_SUBDIR)
-        assetDir.mkdirs()
-        // don't copy if the files exist and are from the current app version
-        val appVersion = BuildConfig.VERSION_NAME
-        val version = try {
-            File(assetDir, VERSION_FILE).readText()
-        } catch (e: Throwable) {
-            ""
-        }
-        if (version != appVersion) {
-            try {
-                // cleans assetDir and copiers asset files
-                context.assets.copyRecursively("files", assetDir)
-                // additional generated files
-                File(assetDir, ShellHandler.EXCLUDE_FILE)
-                    .writeText(BaseAppAction.DATA_EXCLUDED_DIRS.map { it + "\n" }.joinToString(""))
-                File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
-                    .writeText(BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { it + "\n" }.joinToString(""))
-                // validate with version file if completed
-                File(assetDir, VERSION_FILE).writeText(appVersion)
+        MainActivityX.activity?.let { context ->
+            assetDir = File(context.filesDir, ASSETS_SUBDIR)
+            assetDir.mkdirs()
+            // don't copy if the files exist and are from the current app version
+            val appVersion = BuildConfig.VERSION_NAME
+            val version = try {
+                File(assetDir, VERSION_FILE).readText()
             } catch (e: Throwable) {
-                Timber.w("cannot copy scripts to ${assetDir}")
+                ""
+            }
+            if (version != appVersion) {
+                try {
+                    // cleans assetDir and copiers asset files
+                    context.assets.copyRecursively("files", assetDir)
+                    // additional generated files
+                    File(assetDir, ShellHandler.EXCLUDE_FILE)
+                        .writeText(BaseAppAction.DATA_EXCLUDED_DIRS.map { it + "\n" }
+                            .joinToString(""))
+                    File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
+                        .writeText(BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { it + "\n" }
+                            .joinToString(""))
+                    // validate with version file if completed
+                    File(assetDir, VERSION_FILE).writeText(appVersion)
+                } catch (e: Throwable) {
+                    Timber.w("cannot copy scripts to ${assetDir}")
+                }
             }
         }
     }

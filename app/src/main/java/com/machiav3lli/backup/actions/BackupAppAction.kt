@@ -454,7 +454,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-            if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.context)
+            if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
                     .getBoolean("backupUseTarCommand", true)
             ) {
                 return genericBackupDataTarCmd(

@@ -317,7 +317,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        val notificationId = System.currentTimeMillis()
+        val notificationId = System.currentTimeMillis().toInt()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(if (backupBoolean) R.string.backup else R.string.restore)
@@ -339,7 +339,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         selectedItems.forEach { (packageName, mode) ->
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -356,7 +356,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress)
                         } ($counter/${selectedItems.size})"
                         showNotification(
-                            requireContext(), MainActivityX::class.java, notificationId.toInt(),
+                            requireContext(), MainActivityX::class.java, notificationId,
                             message, packageLabel, false
                         )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
