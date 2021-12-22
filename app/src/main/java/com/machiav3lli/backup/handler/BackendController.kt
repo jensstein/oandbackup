@@ -26,14 +26,12 @@ import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupDir
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -84,6 +82,19 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
             .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
             .map { AppInfo(this, it, backupRoot) }
             .toMutableList()
+
+    if(!MainActivityX.appsSuspendedChecked) {
+        MainActivityX.activity?.showToast("cleanup any left over suspended apps") // TODO: hg42: use ui message area?
+        // cleanup suspended package if lock file found
+        packageList.forEach { appInfo ->
+            appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)?.let { markerFile ->
+                BaseAppAction.cleanupSuspended(appInfo.packageName)
+                markerFile.delete()
+            }
+        }
+        MainActivityX.appsSuspendedChecked = true
+    }
+
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
     // This would mean, that no package info is available – neither from backup.properties
@@ -91,6 +102,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     if (includeSpecial) {
         packageList.addAll(getSpecialPackages(this))
     }
+
     if (includeUninstalled) {
         val installedPackageNames = packageList
                 .map(AppInfo::packageName)
@@ -112,14 +124,6 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                         }
                         .toList()
         packageList.addAll(missingAppsWithBackup)
-    }
-
-    // cleanup suspended package if lock file found TODO: hg42: find a better place
-    packageList.forEach { appInfo ->
-        appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)?.let { markerFile ->
-            BaseAppAction.cleanupSuspended(appInfo.packageName)
-            markerFile.delete()
-        }
     }
 
     return packageList

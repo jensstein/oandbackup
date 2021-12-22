@@ -102,6 +102,8 @@ class MainActivityX : BaseActivity() {
         val context = this
         activity = this
 
+        appsSuspendedChecked = false
+
         setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell()
