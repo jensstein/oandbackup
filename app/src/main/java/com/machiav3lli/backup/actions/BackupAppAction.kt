@@ -83,8 +83,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val stopProcess = context.isKillBeforeActionEnabled
         val backupItem: BackupItem
         var markerFile: StorageFile? = null
-        if(BaseAppAction.isSuspended(app.packageName))
-            markerFile = appBackupRoot.createFile(binaryMimeType, BaseAppAction.SUSPENDED_MARKER_FILE)
+        if(isSuspended(app.packageName))
+            markerFile = appBackupRoot.createFile(binaryMimeType, SUSPENDED_MARKER_FILE)
         if (stopProcess) {
             Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
             preprocessPackage(app.packageName)

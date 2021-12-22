@@ -34,6 +34,7 @@ import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.utils.scheduleAlarm
+import com.machiav3lli.backup.utils.showRunningNotification
 import timber.log.Timber
 
 open class ScheduleService : Service() {
@@ -99,6 +100,10 @@ open class ScheduleService : Service() {
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
+                    this@ScheduleService.showRunningNotification(
+                        getString(R.string.backupProgress),
+                        notificationId, counter, selectedItems.size
+                    )
                     selectedItems.forEach { packageName ->
                         val oneTimeWorkRequest =
                             OneTimeWorkRequest.Builder(AppActionWork::class.java)
@@ -125,11 +130,9 @@ open class ScheduleService : Service() {
                                         ?: ""
                                     val error = t.outputData.getString("error")
                                         ?: ""
-                                    val message =
-                                        "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
-                                    showNotification(
-                                        this@ScheduleService, MainActivityX::class.java,
-                                        notificationId, message, packageLabel, false
+                                    this@ScheduleService.showRunningNotification(
+                                        getString(R.string.backupProgress),
+                                        notificationId, counter, selectedItems.size
                                     )
                                     if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                                         LogsHandler.handleErrorMessages(

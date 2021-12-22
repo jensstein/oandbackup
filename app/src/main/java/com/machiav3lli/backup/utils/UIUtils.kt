@@ -18,6 +18,9 @@
 package com.machiav3lli.backup.utils
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
@@ -26,11 +29,14 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
 import java.util.*
@@ -55,6 +61,26 @@ fun Context.setLanguage(): Configuration {
         config.setLocale(newLocale)
     }
     return config
+}
+
+fun Context.showRunningNotification(text: String, notificationId: Int, counter: Int, max: Int) {
+    val context = this
+    val title = "${text} ($counter/${max})"
+    val resultIntent = Intent(context, MainActivityX::class.java)
+    resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+    val resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    val notificationChannel = NotificationChannel(classAddress("NotificationHandler"), classAddress("NotificationHandler"), NotificationManager.IMPORTANCE_LOW)
+    val notificationManager = NotificationManagerCompat.from(context)
+    notificationManager.createNotificationChannel(notificationChannel)
+    val notification = NotificationCompat.Builder(context, classAddress("NotificationHandler"))
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setSmallIcon(R.drawable.ic_app)
+        .setContentTitle(title)
+        .setProgress(max, counter, false)
+        .setAutoCancel(true)
+        .setContentIntent(resultPendingIntent)
+        .build()
+    notificationManager.notify(notificationId, notification)
 }
 
 fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.OnClickListener) =

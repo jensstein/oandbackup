@@ -337,6 +337,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        requireContext().showRunningNotification(
+            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
+            notificationId, counter, selectedItems.size
+        )
         selectedItems.forEach { (packageName, mode) ->
             val oneTimeWorkRequest =
                 AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
@@ -344,6 +348,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            requireMainActivity().updateProgress(counter, selectedItems.size)
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
@@ -352,12 +357,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        val message = "${
-                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress)
-                        } ($counter/${selectedItems.size})"
-                        showNotification(
-                            requireContext(), MainActivityX::class.java, notificationId,
-                            message, packageLabel, false
+                        requireContext().showRunningNotification(
+                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
+                            notificationId, counter, selectedItems.size
                         )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(
