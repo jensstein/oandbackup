@@ -48,7 +48,7 @@ class ShellHandler {
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
         val shellResult = runAsRoot("$utilBoxQuoted ls -bA1 ${quote(path)}")
-        return shellResult.out.toTypedArray()
+        return shellResult.out.map { FileInfo.unescapeLsOutput(it) }.toTypedArray()
     }
 
     @Throws(ShellCommandFailedException::class)
