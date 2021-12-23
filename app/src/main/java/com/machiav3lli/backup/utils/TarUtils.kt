@@ -176,7 +176,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
                 //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
                 ShellHandler.runAsRoot(
                     "touch -m -d ${
-                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS").format(tarEntry.modTime.time)
+                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS", Locale.getDefault(Locale.Category.FORMAT)).format(tarEntry.modTime.time)
                     } ${quote(targetPath)}"
                 )
             } catch (e: ErrnoException) {

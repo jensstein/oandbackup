@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
@@ -29,12 +30,8 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.*
-import com.topjohnwu.superuser.io.SuFile
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
@@ -138,7 +135,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(ShellCommandFailedException::class)
     protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        if (targetDirectory != "/" && targetDirectory.isNotEmpty() && SuFile(targetDirectory).exists()) {
+        if (targetDirectory != "/" && targetDirectory.isNotEmpty() && RootFile(targetDirectory).exists()) {
             val targetContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
             targetContents.removeAll(excludeDirs)
@@ -330,7 +327,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, IOException::class)
-    protected fun openArchiveFile(
+    protected fun openArchiveFileTarApi(
         archive: StorageFile,
         compressed: Boolean,
         isEncrypted: Boolean,
@@ -350,8 +347,79 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         return TarArchiveInputStream(inputStream)
     }
 
+    /*
+    @Throws(CryptoSetupException::class, IOException::class)
+    protected fun openArchiveFileTarCmd(
+        archive: StorageFile,
+        compressed: Boolean,
+        isEncrypted: Boolean,
+        iv: ByteArray?
+    ): TarArchiveInputStream {
+        var inputStream: InputStream = BufferedInputStream(archive.inputStream!!)
+        if (isEncrypted) {
+            val password = context.getEncryptionPassword()
+            if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+                Timber.d("Decryption enabled")
+                inputStream = inputStream.decryptStream(password, context.getCryptoSalt(), iv)
+            }
+        }
+        if(compressed) {
+            inputStream = GzipCompressorInputStream(inputStream)
+        }
+
+        var result = false
+        try {
+            val tarScript = ShellHandler.findScript("tar.sh").toString()
+            val exclude = ShellHandler.findScript(ShellHandler.EXCLUDE_FILE).toString()
+            val excludeCache = ShellHandler.findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+
+            var options = ""
+            options += " --exclude " + quote(exclude)
+            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+                options += " --exclude " + quote(excludeCache)
+            }
+
+            val cmd = "su --mount-master -c sh ${quote(tarScript)} extract ${options} ${quote(archive)}"
+            Timber.i("SHELL: $cmd")
+
+            val process = Runtime.getRuntime().exec(cmd)
+            val shellIn  = process.getOutputStream()
+            val shellOut = process.getInputStream()
+            val shellErr = process.getErrorStream()
+
+            inputStream.copyTo(shellIn, 65536)
+
+            shellIn.flush()
+
+            val err = shellErr.readBytes().decodeToString()
+            val errLines = err
+                .split("\n")
+                .filterNot { line ->
+                    line.isBlank()
+                            || line.contains("tar: unknown file type") // e.g. socket 140000
+                }
+            if(errLines.isNotEmpty()) {
+                val errFiltered = errLines.joinToString("\n")
+                Timber.i(errFiltered)
+                throw ScriptException(errFiltered)
+            }
+            result = true
+        } catch (e: Throwable) {
+            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
+            LogsHandler.unhandledException(e, message)
+            throw BackupAppAction.BackupFailedException(message, e)
+        } finally {
+            Timber.d("Done compressing. Closing $backupFilename")
+            outStream.close()
+        }
+
+    return inputStream
+    }
+    */
+
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     private fun genericRestoreFromArchiveTarApi(
+        dataType: String,
         archive: StorageFile,
         targetDir: String,
         compressed: Boolean,
@@ -365,14 +433,14 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         }
         var tempDir: Path? = null
         try {
-            openArchiveFile(archive, compressed, isEncrypted, iv).use { inputStream ->
+            openArchiveFileTarApi(archive, compressed, isEncrypted, iv).use { inputStream ->
                 if(getDefaultSharedPreferences(MainActivityX.activity).getBoolean("restoreAvoidTemporaryCopy", true)) {
                     // clear the data from the final directory
                     wipeDirectory(
                         targetDir,
                         DATA_EXCLUDED_DIRS
                     )
-                    inputStream.suUnpackTo(SuFile(targetDir))
+                    inputStream.suUnpackTo(RootFile(targetDir))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
                     Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
@@ -418,8 +486,116 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         }
     }
 
+    @Throws(RestoreFailedException::class, CryptoSetupException::class,NotImplementedError::class)
+    private fun genericRestoreFromArchiveTarCmd(
+        dataType: String,
+        archive: StorageFile,
+        targetDir: String,
+        compressed: Boolean,
+        isEncrypted: Boolean,
+        iv: ByteArray?,
+        cachePath: File?
+    ) {
+        throw NotImplementedError("tar command method not implemented for restore, yet")
+
+        /*
+        // Check if the archive exists, uncompressTo can also throw FileNotFoundException
+        if (!archive.exists()) {
+            throw RestoreFailedException("Backup archive at $archive is missing")
+        }
+        var tempDir: Path? = null
+        try {
+            openArchiveFileTarApi(archive, compressed, isEncrypted, iv).use { inputStream ->
+                if(getDefaultSharedPreferences(MainActivityX.activity).getBoolean("restoreAvoidTemporaryCopy", true)) {
+                    // clear the data from the final directory
+                    wipeDirectory(
+                        targetDir,
+                        DATA_EXCLUDED_DIRS
+                    )
+                    inputStream.suUnpackTo(RootFile(targetDir))
+                } else {
+                    // Create a temporary directory in OABX's cache directory and uncompress the data into it
+                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
+                        tempDir = it
+                        inputStream.unpackTo(tempDir?.toFile())
+                        // clear the data from the final directory
+                        wipeDirectory(
+                            targetDir,
+                            DATA_EXCLUDED_DIRS
+                        )
+                        // Move all the extracted data into the target directory
+                        val command =
+                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetDir)}/"            // */
+                        runAsRoot(command)
+                    }
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            throw RestoreFailedException("Backup archive at $archive is missing", e)
+        } catch (e: IOException) {
+            throw RestoreFailedException(
+                "Could not read the input file or write an output file due to IOException: $e",
+                e
+            )
+        } catch (e: ShellCommandFailedException) {
+            val error = extractErrorMessage(e.shellResult)
+            throw RestoreFailedException(
+                "Could not restore a file due to a failed root command for $targetDir: $error",
+                e
+            )
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
+            throw RestoreFailedException("Could not restore a file due to a failed root command", e)
+        } finally {
+            // Clean up the temporary directory if it was initialized
+            tempDir?.let {
+                try {
+                    FileUtils.forceDelete(it.toFile())
+                } catch (e: IOException) {
+                    Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
+                }
+            }
+        }
+        */
+    }
+
+    @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    private fun genericRestoreFromArchive(
+        dataType: String,
+        archive: StorageFile,
+        targetDir: String,
+        compressed: Boolean,
+        isEncrypted: Boolean,
+        iv: ByteArray?,
+        cachePath: File?
+    ) {
+        if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
+                .getBoolean("restoreUseTarCommand", false)
+        ) {
+            return genericRestoreFromArchiveTarCmd(
+                dataType,
+                archive,
+                targetDir,
+                compressed,
+                isEncrypted,
+                iv,
+                cachePath
+            )
+        } else {
+            return genericRestoreFromArchiveTarApi(
+                dataType,
+                archive,
+                targetDir,
+                compressed,
+                isEncrypted,
+                iv,
+                cachePath
+            )
+        }
+    }
+
     @Throws(RestoreFailedException::class)
-    private fun genericRestorePermissions(type: String, targetDir: File) {
+    private fun genericRestorePermissions(dataType: String, targetDir: File) {
         try {
             Timber.i("Getting user/group info and apply it recursively on $targetDir")
             // retrieve the assigned uid and gid from the data directory Android created
@@ -434,7 +610,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             val chownTargets = dataContents.map { s -> File(targetDir, s).absolutePath }
             if (chownTargets.isEmpty()) {
                 // surprise. No data?
-                Timber.i("No chown targets. Is this an app without any $type ? Doing nothing.")
+                Timber.i("No chown targets. Is this an app without any $dataType ? Doing nothing.")
                 return
             }
             Timber.d("Changing owner and group of '$targetDir' to ${uidgidcon[0]}:${uidgidcon[1]} and selinux context to ${uidgidcon[2]}")
@@ -448,11 +624,11 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 " ; chcon -R -h -v '${uidgidcon[2]}' ${quote(targetDir)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
-            val errorMessage = "Could not update permissions for $type"
+            val errorMessage = "Could not update permissions for $dataType"
             Timber.e(errorMessage)
             throw RestoreFailedException(errorMessage, e)
         } catch (e: UnexpectedCommandResult) {
-            val errorMessage = "Could not extract user and group information from $type directory"
+            val errorMessage = "Could not extract user and group information from $dataType directory"
             Timber.e(errorMessage)
             throw RestoreFailedException(errorMessage, e)
         }
@@ -465,8 +641,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         backupDir: StorageFile,
         compressed: Boolean
     ) {
+        val dataType = BACKUP_DIR_DATA
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_DATA,
+            dataType,
             compressed,
             backupProperties.isEncrypted
         )
@@ -483,7 +660,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreFromArchiveTarApi(
+        genericRestoreFromArchive(
+            dataType,
             backupArchive,
             extractTo,
             compressed,
@@ -492,7 +670,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             context.cacheDir
         )
         genericRestorePermissions(
-            BACKUP_DIR_DATA,
+            dataType,
             File(extractTo)
         )
     }
@@ -504,8 +682,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         backupDir: StorageFile,
         compressed: Boolean
     ) {
+        val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_DEVICE_PROTECTED_FILES,
+            dataType,
             compressed,
             backupProperties.isEncrypted
         )
@@ -522,7 +701,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreFromArchiveTarApi(
+        genericRestoreFromArchive(
+            dataType,
             backupArchive,
             extractTo,
             compressed,
@@ -531,7 +711,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             deviceProtectedStorageContext.cacheDir
         )
         genericRestorePermissions(
-            BACKUP_DIR_DEVICE_PROTECTED_FILES,
+            dataType,
             File(extractTo)
         )
     }
@@ -543,8 +723,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         backupDir: StorageFile,
         compressed: Boolean
     ) {
+        val dataType = BACKUP_DIR_EXTERNAL_FILES
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_EXTERNAL_FILES,
+            dataType,
             compressed,
             backupProperties.isEncrypted
         )
@@ -561,18 +742,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
-        //  if (!externalDataDir.exists()) {
-        //      val mkdirResult = externalDataDir.mkdir()
-        //      if (!mkdirResult) {
-        //          throw RestoreFailedException("Could not create external data directory at $externalDataDir")
-        //      }
-        //  }
-        //runAsRoot("$utilBoxQuoted mkdir -p ${quote(extractTo)}")
-        // a failed command should already throw an exception
-        //if (!extractTo.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
-        //    throw RestoreFailedException("Could not create external data directory at $extractTo")
-        genericRestoreFromArchiveTarApi(
+
+        genericRestoreFromArchive(
+            dataType,
             backupArchive,
             extractTo,
             compressed,
@@ -601,8 +773,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             BACKUP_DIR_OBB_FILES
         )
         */
+        val dataType = BACKUP_DIR_OBB_FILES
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_OBB_FILES,
+            dataType,
             compressed,
             backupProperties.isEncrypted
         )
@@ -619,7 +792,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreFromArchiveTarApi(
+        genericRestoreFromArchive(
+            dataType,
             backupArchive,
             extractTo,
             compressed,
@@ -648,8 +822,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             BACKUP_DIR_MEDIA_FILES
         )
         */
+        val dataType = BACKUP_DIR_MEDIA_FILES
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_MEDIA_FILES,
+            dataType,
             compressed,
             backupProperties.isEncrypted
         )
@@ -666,7 +841,8 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreFromArchiveTarApi(
+        genericRestoreFromArchive(
+            dataType,
             backupArchive,
             extractTo,
             compressed,

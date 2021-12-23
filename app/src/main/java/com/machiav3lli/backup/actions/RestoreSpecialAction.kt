@@ -64,7 +64,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
             ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
-            openArchiveFile(
+            openArchiveFileTarApi(
                 backupArchiveFile,
                 compressed,
                 isEncrypted,
