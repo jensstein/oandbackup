@@ -31,7 +31,10 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -84,15 +87,17 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
             .toMutableList()
 
     if(!MainActivityX.appsSuspendedChecked) {
-        MainActivityX.activity?.showToast("cleanup any left over suspended apps") // TODO: hg42: use ui message area?
-        // cleanup suspended package if lock file found
-        packageList.forEach { appInfo ->
-            appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)?.let { markerFile ->
-                BaseAppAction.cleanupSuspended(appInfo.packageName)
-                markerFile.delete()
+        MainActivityX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+            // cleanup suspended package if lock file found
+            packageList.forEach { appInfo ->
+                appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)
+                    ?.let { markerFile ->
+                        BaseAppAction.cleanupSuspended(appInfo.packageName)
+                        markerFile.delete()
+                    }
             }
+            MainActivityX.appsSuspendedChecked = true
         }
-        MainActivityX.appsSuspendedChecked = true
     }
 
     // Special Backups must added before the uninstalled packages, because otherwise it would
