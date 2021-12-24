@@ -3,14 +3,14 @@ shift
 
 utilbox=$(which toybox busybox | (read line ; echo "$line"))
 
-to=-
+archive=-
 exclude=
 
 while [[ $1 == --* ]]; do
 
-  if [[ $1 == --to ]]; then
+  if [[ $1 == --archive ]]; then
     shift
-    to=$1
+    archive=$1
     shift
     continue
   fi
@@ -32,7 +32,16 @@ if [[ $command == "create" ]]; then
   dir=$1
   shift
 
-  $utilbox tar -c -f "$to" -C "$dir" $exclude .
+  $utilbox tar -c -f "$archive" -C "$dir" $exclude .
+
+  exit $?
+
+elif [[ $command == "extract" ]]; then
+
+  dir=$1
+  shift
+
+  $utilbox tar -x -f "$archive" -C "$dir" $exclude
 
   exit $?
 fi

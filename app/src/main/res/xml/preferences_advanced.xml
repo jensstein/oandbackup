@@ -47,37 +47,44 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
-        android:icon="@drawable/ic_force_kill"
+        android:icon="@drawable/ic_prefs_advanced"
         android:key="killBeforeAction"
-        android:summary="@string/prefs_stopcont_summary"
-        android:title="@string/prefs_stopcont" />
+        android:summary="pause apps during backups and restores to avoid inconsistent backups caused by ongoing file changes or other conflicts"
+        android:title="killBeforeAction" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
         android:icon="@drawable/ic_prefs_advanced"
-        android:key="usePmSuspend"
-        android:summary=""
-        android:title="use pm suspend" />
+        android:key="pmSuspend"
+        android:summary="additionally use pm suspend command to pause apps"
+        android:title="pmSuspend" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:icon="@drawable/ic_prefs_advanced"
-        android:key="backupUseTarCommand"
-        android:summary=""
-        android:title="use tar command for backups" />
+        android:key="backupTarCmd"
+        android:summary="use tar shell command for backup"
+        android:title="backupTarCmd" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_prefs_advanced"
+        android:key="restoreTarCmd"
+        android:summary="use tar shell command for restore"
+        android:title="restoreTarCmd" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:icon="@drawable/ic_prefs_advanced"
         android:key="restoreAvoidTemporaryCopy"
-        android:summary=""
-        android:title="restore: avoid temporary directory" />
+        android:summary="for API tar only: avoid using a temporary directory to extract files"
+        android:title="restoreAvoidTemporaryCopy" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:icon="@drawable/ic_prefs_advanced"
-        android:key="replaceSAFbySuAccessIfPossible"
-        android:summary=""
-        android:title="use superuser access instead of SAF if possible" />
+        android:key="shadowRootFileForSAF"
+        android:summary="use superuser file system access instead of SAF if the real file system can be found"
+        android:title="shadowRootFileForSAF" />
 
 </androidx.preference.PreferenceScreen>

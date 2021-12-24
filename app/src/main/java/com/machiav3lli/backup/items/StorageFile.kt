@@ -18,8 +18,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 
-const val bufferSize = 65536
-
 // TODO MAYBE migrate at some point to FuckSAF
 
 open class StorageFile {
@@ -36,7 +34,7 @@ open class StorageFile {
         this.context = context
         this.uri = uri
         if (PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("replaceSAFbySuAccessIfPossible", true)
+                .getBoolean("shadowRootFileForSAF", true)
         ) {
             parent ?: run {
                 file ?: run {
@@ -160,7 +158,12 @@ open class StorageFile {
     }
 
     fun renameTo(displayName: String): Boolean {
-        return /* file?.renameTo(displayName) ?: */ try {
+        var ok = false
+        file?.let { oldFile ->
+            val newFile = RootFile(oldFile.parent, displayName)
+            ok = oldFile.renameTo(newFile)
+            file = newFile
+        } ?: try {
             val result =
                 context?.let { context ->
                     uri?.let { uri ->
@@ -171,13 +174,13 @@ open class StorageFile {
                 }
             if (result != null) {
                 uri = result
-                true
-            } else
-                false
+                ok = true
+            }
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, uri)
-            false
+            ok = false
         }
+        return ok
     }
 
     fun findFile(displayName: String): StorageFile? {

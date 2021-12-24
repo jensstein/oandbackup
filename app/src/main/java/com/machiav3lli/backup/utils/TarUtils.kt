@@ -23,6 +23,7 @@ import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACH
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_DIRS
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.RootFile
@@ -125,6 +126,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 
 @Throws(IOException::class, ShellCommandFailedException::class)
 fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
+    val qUtilBox = ShellHandler.utilBoxQuoted
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
@@ -139,25 +141,22 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
                 relPath in DATA_EXCLUDED_DIRS -> return@forEach
                 relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
-                    if (!targetPath.exists()) {
-                        ShellHandler.runAsRoot("mkdir -p ${quote(targetPath)}")
-                        //suUncompressTo(it)
-                        // write protection would prevent creating files inside, so chmod at end
-                        postponeChmod = true
-                    }
+                    runAsRoot("$qUtilBox mkdir -p ${quote(targetPath)}")
+                    // write protection would prevent creating files inside, so chmod at end
+                    postponeChmod = true
                 }
                 tarEntry.isLink or tarEntry.isSymbolicLink -> {
-                    ShellHandler.runAsRoot(
-                        "ln -s ${quote(targetPath)} ${quote(tarEntry.linkName)}"
+                    runAsRoot(
+                        "$qUtilBox ln -s ${quote(targetPath)} ${quote(tarEntry.linkName)}"
                     )
+                    doChmod = false
                 }
                 tarEntry.isFIFO -> {
-                    ShellHandler.runAsRoot("mkfifo ${quote(targetPath)}")
+                    runAsRoot("$qUtilBox mkfifo ${quote(targetPath)}")
                 }
                 else -> {
                     SuFileOutputStream.open(RootFile.open(it, tarEntry.name))
                         .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
-                    //Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
                 }
             }
             if (doChmod) {
@@ -165,18 +164,29 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
                     postponeModes[targetPath.absolutePath] = mode
                 } else {
                     try {
-                        ShellHandler.runAsRoot("chmod ${String.format("%03o", mode)} ${quote(targetPath.absolutePath)}")
+                        runAsRoot(
+                            "$qUtilBox chmod ${
+                                String.format("%03o", mode)
+                            } ${quote(targetPath.absolutePath)}"
+                        )
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to chmod ${targetPath.absolutePath} to  ${String.format("%03o", mode)}: $e")
+                        throw IOException(
+                            "Unable to chmod ${targetPath.absolutePath} to  ${
+                                String.format("%03o", mode)
+                            }: $e"
+                        )
                     }
                 }
-
             }
+
             try {
                 //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
-                ShellHandler.runAsRoot(
-                    "touch -m -d ${
-                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS", Locale.getDefault(Locale.Category.FORMAT)).format(tarEntry.modTime.time)
+                runAsRoot(
+                    "$qUtilBox touch -m -d ${
+                        SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:SS",
+                            Locale.getDefault(Locale.Category.FORMAT)
+                        ).format(tarEntry.modTime.time)
                     } ${quote(targetPath)}"
                 )
             } catch (e: ErrnoException) {
@@ -185,7 +195,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
         }
         postponeModes.forEach { fileMode ->
             try {
-                ShellHandler.runAsRoot("chmod ${String.format("%03o", fileMode.value)} ${quote(fileMode.key)}")
+                runAsRoot("$qUtilBox chmod ${String.format("%03o", fileMode.value)} ${quote(fileMode.key)}")
             } catch (e: ErrnoException) {
                 throw IOException("Unable to chmod ${fileMode.key} to ${String.format("%03o", fileMode.value)}: $e")
             }
@@ -198,67 +208,67 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
-            val targetPath = File(it, tarEntry.name)
+            val targetFile = File(it, tarEntry.name)
             Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
-            targetPath.parentFile?.let {
+            targetFile.parentFile?.let {
                 if (!it.exists() and !it.mkdirs()) {
                     throw IOException("Unable to create parent folder ${it.absolutePath}")
                 }
-            } ?: throw IOException("No parent folder for ${targetPath.absolutePath}")
+            } ?: throw IOException("No parent folder for ${targetFile.absolutePath}")
             var doChmod = true
             var postponeChmod = false
-            var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
+            var relPath = targetFile.relativeTo(targetFile.parentFile!!).toString()
             val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
                 relPath in DATA_EXCLUDED_DIRS -> return@forEach
                 relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
-                    if (! (targetPath.exists() || targetPath.mkdirs())) {
-                        throw IOException("Unable to create folder ${targetPath.absolutePath}")
+                    if (!targetFile.mkdirs()) {
+                        throw IOException("Unable to create folder ${targetFile.absolutePath}")
                     }
                     // write protection would prevent creating files inside, so chmod at end
                     postponeChmod = true
                 }
                 tarEntry.isLink or tarEntry.isSymbolicLink -> {
                     try {
-                        Os.symlink(tarEntry.linkName, targetPath.absolutePath)
+                        Os.symlink(tarEntry.linkName, targetFile.absolutePath)
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetPath.absolutePath} : $e")
+                        throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
                     }
                     doChmod = false
                 }
                 tarEntry.isFIFO -> {
                     try {
-                        Os.mkfifo(targetPath.absolutePath, tarEntry.mode)
+                        Os.mkfifo(targetFile.absolutePath, tarEntry.mode)
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to create fifo ${targetPath.absolutePath}: $e")
+                        throw IOException("Unable to create fifo ${targetFile.absolutePath}: $e")
                     }
                 }
                 else -> {
                     try {
-                        FileOutputStream(targetPath).use { fos -> IOUtils.copy(this, fos) }
+                        FileOutputStream(targetFile).use { fos -> IOUtils.copy(this, fos) }
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to create file ${targetPath.absolutePath}: $e")
+                        throw IOException("Unable to create file ${targetFile.absolutePath}: $e")
                     }
                 }
             }
             if (doChmod) {
                 if (postponeChmod) {
-                    postponeModes[targetPath.absolutePath] = mode
+                    postponeModes[targetFile.absolutePath] = mode
                 } else {
                     try {
-                        Os.chmod(targetPath.absolutePath, mode)
+                        Os.chmod(targetFile.absolutePath, mode)
                     } catch (e: ErrnoException) {
-                        throw IOException("Unable to chmod ${targetPath.absolutePath} to ${String.format("%03o", mode)}: $e")
+                        throw IOException("Unable to chmod ${targetFile.absolutePath} to ${String.format("%03o", mode)}: $e")
                     }
                 }
 
             }
             try {
-                targetPath.setLastModified(tarEntry.modTime.time)
+                targetFile.setLastModified(tarEntry.modTime.time)
             } catch (e: ErrnoException) {
-                throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+                throw IOException("Unable to set modification time on $targetFile to ${tarEntry.modTime}: $e")
             }
         }
         postponeModes.forEach { fileMode ->

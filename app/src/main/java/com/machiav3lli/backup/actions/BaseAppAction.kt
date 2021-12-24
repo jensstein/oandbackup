@@ -49,7 +49,7 @@ abstract class BaseAppAction protected constructor(
 
     private fun prepostOptions() : String {
         return if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
-                    .getBoolean("usePmSuspend", true)
+                    .getBoolean("pmSuspend", true)
                   ) { "--suspend" } else { "" }
     }
 

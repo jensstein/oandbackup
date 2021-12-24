@@ -24,6 +24,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.findScript
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -134,18 +135,18 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(ShellCommandFailedException::class)
-    protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        if (targetDirectory != "/" && targetDirectory.isNotEmpty() && RootFile(targetDirectory).exists()) {
+    protected fun wipeDirectory(targetPath: String, excludeDirs: List<String>) {
+        if (targetPath != "/" && targetPath.isNotEmpty() && RootFile(targetPath).exists()) {
             val targetContents: MutableList<String> =
-                mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
+                mutableListOf(*shell.suGetDirectoryContents(File(targetPath)))
             targetContents.removeAll(excludeDirs)
             if (targetContents.isEmpty()) {
-                Timber.i("Nothing to remove in $targetDirectory")
+                Timber.i("Nothing to remove in $targetPath")
                 return
             }
             val removeTargets = targetContents
-                .map { s -> File(targetDirectory, s).absolutePath }
-            Timber.d("Removing existing files in $targetDirectory")
+                .map { s -> File(targetPath, s).absolutePath }
+            Timber.d("Removing existing files in $targetPath")
             val command = "$utilBoxQuoted rm -rf ${quoteMultiple(removeTargets)}"
             runAsRoot(command)
         }
@@ -327,12 +328,12 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(CryptoSetupException::class, IOException::class)
-    protected fun openArchiveFileTarApi(
+    protected fun openArchiveFile(
         archive: StorageFile,
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?
-    ): TarArchiveInputStream {
+    ): InputStream {
         var inputStream: InputStream = BufferedInputStream(archive.inputStream!!)
         if (isEncrypted) {
             val password = context.getEncryptionPassword()
@@ -344,84 +345,14 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         if(compressed) {
             inputStream = GzipCompressorInputStream(inputStream)
         }
-        return TarArchiveInputStream(inputStream)
+        return inputStream
     }
-
-    /*
-    @Throws(CryptoSetupException::class, IOException::class)
-    protected fun openArchiveFileTarCmd(
-        archive: StorageFile,
-        compressed: Boolean,
-        isEncrypted: Boolean,
-        iv: ByteArray?
-    ): TarArchiveInputStream {
-        var inputStream: InputStream = BufferedInputStream(archive.inputStream!!)
-        if (isEncrypted) {
-            val password = context.getEncryptionPassword()
-            if (password.isNotEmpty() && context.isEncryptionEnabled()) {
-                Timber.d("Decryption enabled")
-                inputStream = inputStream.decryptStream(password, context.getCryptoSalt(), iv)
-            }
-        }
-        if(compressed) {
-            inputStream = GzipCompressorInputStream(inputStream)
-        }
-
-        var result = false
-        try {
-            val tarScript = ShellHandler.findScript("tar.sh").toString()
-            val exclude = ShellHandler.findScript(ShellHandler.EXCLUDE_FILE).toString()
-            val excludeCache = ShellHandler.findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
-
-            var options = ""
-            options += " --exclude " + quote(exclude)
-            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
-                options += " --exclude " + quote(excludeCache)
-            }
-
-            val cmd = "su --mount-master -c sh ${quote(tarScript)} extract ${options} ${quote(archive)}"
-            Timber.i("SHELL: $cmd")
-
-            val process = Runtime.getRuntime().exec(cmd)
-            val shellIn  = process.getOutputStream()
-            val shellOut = process.getInputStream()
-            val shellErr = process.getErrorStream()
-
-            inputStream.copyTo(shellIn, 65536)
-
-            shellIn.flush()
-
-            val err = shellErr.readBytes().decodeToString()
-            val errLines = err
-                .split("\n")
-                .filterNot { line ->
-                    line.isBlank()
-                            || line.contains("tar: unknown file type") // e.g. socket 140000
-                }
-            if(errLines.isNotEmpty()) {
-                val errFiltered = errLines.joinToString("\n")
-                Timber.i(errFiltered)
-                throw ScriptException(errFiltered)
-            }
-            result = true
-        } catch (e: Throwable) {
-            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
-            LogsHandler.unhandledException(e, message)
-            throw BackupAppAction.BackupFailedException(message, e)
-        } finally {
-            Timber.d("Done compressing. Closing $backupFilename")
-            outStream.close()
-        }
-
-    return inputStream
-    }
-    */
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     private fun genericRestoreFromArchiveTarApi(
         dataType: String,
         archive: StorageFile,
-        targetDir: String,
+        targetPath: String,
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
@@ -433,27 +364,31 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         }
         var tempDir: Path? = null
         try {
-            openArchiveFileTarApi(archive, compressed, isEncrypted, iv).use { inputStream ->
-                if(getDefaultSharedPreferences(MainActivityX.activity).getBoolean("restoreAvoidTemporaryCopy", true)) {
+            TarArchiveInputStream(
+                openArchiveFile(archive, compressed, isEncrypted, iv)
+            ).use { archiveStream ->
+                if(getDefaultSharedPreferences(MainActivityX.activity)
+                        .getBoolean("restoreAvoidTemporaryCopy", true)
+                ) {
                     // clear the data from the final directory
                     wipeDirectory(
-                        targetDir,
+                        targetPath,
                         DATA_EXCLUDED_DIRS
                     )
-                    inputStream.suUnpackTo(RootFile(targetDir))
+                    archiveStream.suUnpackTo(RootFile(targetPath))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
                     Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
                         tempDir = it
-                        inputStream.unpackTo(tempDir?.toFile())
+                        archiveStream.unpackTo(tempDir?.toFile())
                         // clear the data from the final directory
                         wipeDirectory(
-                            targetDir,
+                            targetPath,
                             DATA_EXCLUDED_DIRS
                         )
                         // Move all the extracted data into the target directory
                         val command =
-                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetDir)}/"
+                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetPath)}/"
                         runAsRoot(command)
                     }
                 }
@@ -468,7 +403,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Could not restore a file due to a failed root command for $targetDir: $error",
+                "Could not restore a file due to a failed root command for $targetPath: $error",
                 e
             )
         } catch (e: Throwable) {
@@ -490,92 +425,107 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     private fun genericRestoreFromArchiveTarCmd(
         dataType: String,
         archive: StorageFile,
-        targetDir: String,
+        targetPath: String,
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
         cachePath: File?
     ) {
-        throw NotImplementedError("tar command method not implemented for restore, yet")
+        RootFile(targetPath).let { targetDir ->
+            // Check if the archive exists, uncompressTo can also throw FileNotFoundException
+            if (!archive.exists()) {
+                throw RestoreFailedException("Backup archive at $archive is missing")
+            }
+            try {
+                openArchiveFile(archive, compressed, isEncrypted, iv).use { archiveStream ->
 
-        /*
-        // Check if the archive exists, uncompressTo can also throw FileNotFoundException
-        if (!archive.exists()) {
-            throw RestoreFailedException("Backup archive at $archive is missing")
-        }
-        var tempDir: Path? = null
-        try {
-            openArchiveFileTarApi(archive, compressed, isEncrypted, iv).use { inputStream ->
-                if(getDefaultSharedPreferences(MainActivityX.activity).getBoolean("restoreAvoidTemporaryCopy", true)) {
-                    // clear the data from the final directory
+                    targetDir.mkdirs()  // in case it doesn't exist
+
                     wipeDirectory(
-                        targetDir,
+                        targetDir.absolutePath,
                         DATA_EXCLUDED_DIRS
                     )
-                    inputStream.suUnpackTo(RootFile(targetDir))
-                } else {
-                    // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
-                        tempDir = it
-                        inputStream.unpackTo(tempDir?.toFile())
-                        // clear the data from the final directory
-                        wipeDirectory(
-                            targetDir,
-                            DATA_EXCLUDED_DIRS
-                        )
-                        // Move all the extracted data into the target directory
-                        val command =
-                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetDir)}/"            // */
-                        runAsRoot(command)
+
+                    val tarScript = findScript("tar.sh").toString()
+                    val qTarScript = quote(tarScript)
+                    val exclude = findScript(ShellHandler.EXCLUDE_FILE).toString()
+                    val excludeCache = findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+
+                    var options = ""
+                    options += " --exclude " + quote(exclude)
+                    if (context.getDefaultSharedPreferences()
+                            .getBoolean(PREFS_EXCLUDECACHE, true)
+                    ) {
+                        options += " --exclude " + quote(excludeCache)
+                    }
+
+                    val cmd =
+                        "su --mount-master -c sh $qTarScript extract ${options} ${quote(targetDir)}"
+                    Timber.i("SHELL: $cmd")
+
+                    val process = Runtime.getRuntime().exec(cmd)
+
+                    val shellIn = process.getOutputStream()
+                    val shellOut = process.getInputStream()
+                    val shellErr = process.getErrorStream()
+
+                    archiveStream.copyTo(shellIn, 65536)
+
+                    shellIn.close()
+
+                    val err = shellErr.readBytes().decodeToString()
+                    val errLines = err
+                        .split("\n")
+                        .filterNot { line ->
+                            line.isBlank()
+                                    || line.contains("tar: unknown file type") // e.g. socket 140000
+                        }
+                    if (errLines.isNotEmpty()) {
+                        val errFiltered = errLines.joinToString("\n")
+                        Timber.i(errFiltered)
+                        throw ScriptException(errFiltered)
                     }
                 }
-            }
-        } catch (e: FileNotFoundException) {
-            throw RestoreFailedException("Backup archive at $archive is missing", e)
-        } catch (e: IOException) {
-            throw RestoreFailedException(
-                "Could not read the input file or write an output file due to IOException: $e",
-                e
-            )
-        } catch (e: ShellCommandFailedException) {
-            val error = extractErrorMessage(e.shellResult)
-            throw RestoreFailedException(
-                "Could not restore a file due to a failed root command for $targetDir: $error",
-                e
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
-            throw RestoreFailedException("Could not restore a file due to a failed root command", e)
-        } finally {
-            // Clean up the temporary directory if it was initialized
-            tempDir?.let {
-                try {
-                    FileUtils.forceDelete(it.toFile())
-                } catch (e: IOException) {
-                    Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
-                }
+            } catch (e: FileNotFoundException) {
+                throw RestoreFailedException("Backup archive at $archive is missing", e)
+            } catch (e: IOException) {
+                throw RestoreFailedException(
+                    "Could not read the input file or write an output file due to IOException: $e",
+                    e
+                )
+            } catch (e: ShellCommandFailedException) {
+                val error = extractErrorMessage(e.shellResult)
+                throw RestoreFailedException(
+                    "Could not restore a file due to a failed root command for $targetDir: $error",
+                    e
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
+                throw RestoreFailedException(
+                    "Could not restore a file due to a failed root command",
+                    e
+                )
             }
         }
-        */
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     private fun genericRestoreFromArchive(
         dataType: String,
         archive: StorageFile,
-        targetDir: String,
+        targetPath: String,
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
         cachePath: File?
     ) {
         if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
-                .getBoolean("restoreUseTarCommand", false)
+                .getBoolean("restoreTarCmd", true)
         ) {
             return genericRestoreFromArchiveTarCmd(
                 dataType,
                 archive,
-                targetDir,
+                targetPath,
                 compressed,
                 isEncrypted,
                 iv,
@@ -585,7 +535,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             return genericRestoreFromArchiveTarApi(
                 dataType,
                 archive,
-                targetDir,
+                targetPath,
                 compressed,
                 isEncrypted,
                 iv,

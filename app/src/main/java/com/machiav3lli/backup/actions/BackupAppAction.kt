@@ -259,11 +259,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class)
-    private fun assembleFileList(sourceDirectory: String): List<ShellHandler.FileInfo> {
+    private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         return try {
             // Get a list of directories in the directory to backup
-            var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
+            var dirsInSource = shell.suGetDetailedDirectoryContents(sourcePath, false, null)
                 .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
 
             // Excludes cache and libs, when we don't want to backup'em
@@ -299,10 +299,10 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, sourceDirectory)
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+            LogsHandler.unhandledException(e, sourcePath)
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
         }
     }
 
@@ -348,11 +348,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     protected fun genericBackupDataTarApi(
         dataType: String,
         backupInstanceDir: StorageFile,
-        sourceDirectory: String,
+        sourcePath: String,
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-        val filesToBackup = assembleFileList(sourceDirectory)
+        val filesToBackup = assembleFileList(sourcePath)
         return genericBackupData(dataType, backupInstanceDir, filesToBackup, compress, iv)
     }
 
@@ -361,11 +361,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     protected fun genericBackupDataTarCmd(
         dataType: String,
         backupInstanceDir: StorageFile,
-        sourceDirectory: String,
+        sourcePath: String,
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-        if(!ShellUtils.fastCmdResult("test -d ${quote(sourceDirectory)}"))
+        if(!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
         Timber.i("Creating $dataType backup via tar")
         val backupFilename = getBackupArchiveFilename(dataType, compress, context.isEncryptionEnabled())
@@ -399,10 +399,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 options += " --exclude " + quote(excludeCache)
             }
 
-            val cmd = "su --mount-master -c sh ${quote(tarScript)} create ${options} ${quote(sourceDirectory)}"
+            val cmd = "su --mount-master -c sh ${quote(tarScript)} create ${options} ${quote(sourcePath)}"
             Timber.i("SHELL: $cmd")
 
             val process = Runtime.getRuntime().exec(cmd)
+
             val shellIn  = process.getOutputStream()
             val shellOut = process.getInputStream()
             val shellErr = process.getErrorStream()
@@ -450,17 +451,17 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     protected fun genericBackupData(
         dataType: String,
         backupInstanceDir: StorageFile,
-        sourceDirectory: String,
+        sourcePath: String,
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
             if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
-                    .getBoolean("backupUseTarCommand", true)
+                    .getBoolean("backupTarCmd", true)
             ) {
                 return genericBackupDataTarCmd(
                     dataType,
                     backupInstanceDir,
-                    sourceDirectory,
+                    sourcePath,
                     compress,
                     iv
                 )
@@ -468,7 +469,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 return genericBackupDataTarApi(
                     dataType,
                     backupInstanceDir,
-                    sourceDirectory,
+                    sourcePath,
                     compress,
                     iv
                 )
