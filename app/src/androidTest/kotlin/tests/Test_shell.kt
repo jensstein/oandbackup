@@ -13,6 +13,10 @@ class Test_shell {
 
     companion object {
 
+        val ext = ".test"
+        val dir = "/data/local/tmp"
+        //val dir = "/cache"
+
         const val safeCommandLength = 130_000
 
         //@TestOnly
@@ -48,9 +52,6 @@ class Test_shell {
         )
     }
 
-    val ext = ".test"
-    val dir = "/data/local/tmp"
-    //val dir = "/cache"
     var count = 0
 
     @TestOnly
