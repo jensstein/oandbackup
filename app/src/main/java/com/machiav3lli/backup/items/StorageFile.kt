@@ -10,9 +10,9 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.utils.*
 import com.topjohnwu.superuser.ShellUtils
-import com.topjohnwu.superuser.io.SuFile
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
+import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
@@ -28,8 +28,8 @@ open class StorageFile {
     var context: Context? = null
     var uri: Uri? = null
 
-    var parentFile: SuFile? = null
-    var file: SuFile? = null
+    var parentFile: RootFile? = null
+    var file: RootFile? = null
 
     constructor(parent: StorageFile?, context: Context?, uri: Uri?) {
         this.parent = parent
@@ -42,13 +42,16 @@ open class StorageFile {
                 file ?: run {
                     uri?.let { uri ->
                         try {
-                            val last = uri.lastPathSegment
-                            if (last?.startsWith('/') ?: false) {
-                                file = SuFile(last)
-                            } else {
-                                val (storage, path) = last!!.split(":")
-                                file = SuFile(SuFile("/storage", storage), path)
-                                //file = SuFile(SuFile("/mnt/media_rw", storage), path)
+                            uri.lastPathSegment?.let { last ->
+                                if (last.startsWith('/') ?: false) {
+                                    file = RootFile(last)
+                                    Timber.i("using RootFile shadow tree at $file for SAF $last")
+                                } else {
+                                    val (storage, path) = last.split(":")
+                                    file = RootFile(RootFile("/storage", storage), path)
+                                    //file = RootFile(RootFile("/mnt/media_rw", storage), path)
+                                    Timber.i("using RootFile shadow tree at $file for SAF $last")
+                                }
                             }
                         } catch (e: Throwable) {
                             file = null
@@ -59,14 +62,14 @@ open class StorageFile {
         }
     }
 
-    constructor(parent: StorageFile, file: SuFile) {
+    constructor(parent: StorageFile, file: RootFile) {
         this.parent = parent
         this.file = file
     }
 
     constructor(parent: StorageFile, path: String) {
         this.parent = parent
-        file = SuFile(parent.file, path)
+        file = RootFile(parent.file, path)
     }
 
     var name: String? = null
@@ -118,7 +121,7 @@ open class StorageFile {
 
     fun createDirectory(displayName: String): StorageFile {
         return file?.let {
-            val newDir = SuFile(it, displayName)
+            val newDir = RootFile(it, displayName)
             newDir.mkdirs()
             return StorageFile(this, newDir)
         } ?: run {
@@ -129,11 +132,11 @@ open class StorageFile {
     fun createFile(mimeType: String, displayName: String): StorageFile {
         return file?.let {
             if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                val newDir = SuFile(it, displayName)
+                val newDir = RootFile(it, displayName)
                 newDir.mkdirs()
                 return StorageFile(this, newDir)
             } else {
-                val newFile = SuFile(it, displayName)
+                val newFile = RootFile(it, displayName)
                 newFile.createNewFile()
                 return StorageFile(this, newFile)
             }

@@ -25,7 +25,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.topjohnwu.superuser.io.SuFile
+import com.machiav3lli.backup.items.RootFile
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
@@ -124,15 +124,15 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun TarArchiveInputStream.suUnpackTo(targetDir: SuFile?) {
+fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
-            val targetPath = SuFile(it, tarEntry.name)
+            val targetPath = RootFile(it, tarEntry.name)
             Timber.d("Extracting ${tarEntry.name}")
             var doChmod = true
             var postponeChmod = false
-            var relPath = targetPath.relativeTo(targetPath.parentFile).toString()
+            var relPath = targetPath.relativeTo(it).toString()
             val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
@@ -155,7 +155,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: SuFile?) {
                     ShellHandler.runAsRoot("mkfifo ${quote(targetPath)}")
                 }
                 else -> {
-                    SuFileOutputStream.open(SuFile.open(it, tarEntry.name))
+                    SuFileOutputStream.open(RootFile.open(it, tarEntry.name))
                         .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
                     //Timber.w("this should not be in archive, cannot restore file type: {${tarEntry.name}}") //TODO hg42: add to errors?
                 }
