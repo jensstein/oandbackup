@@ -40,8 +40,29 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 const val BUFFER_SIZE = 8 * 1024 * 1024
-private const val FILE_MODE_OR_MASK = 32768
-private const val DIR_MODE_OR_MASK = 16384
+
+// octal
+
+// #define	__S_IFDIR	0040000	// Directory
+// #define	__S_IFCHR	0020000	// Character device
+// #define	__S_IFBLK	0060000	// Block device
+// #define	__S_IFREG	0100000	// Regular file
+// #define	__S_IFIFO	0010000	// FIFO
+// #define	__S_IFLNK	0120000	// Symbolic link
+// #define	__S_IFSOCK	0140000	// Socket
+
+// #define	__S_ISUID	04000	// Set user ID on execution
+// #define	__S_ISGID	02000	// Set group ID on execution
+// #define	__S_ISVTX	01000	// Save swapped text after use (sticky)
+// #define	__S_IREAD	0400	// Read by owner
+// #define	__S_IWRITE	0200	// Write by owner
+// #define	__S_IEXEC	0100	// Execute by owner
+
+// NOTE: underscores separate octal digits not hex digits!
+private const val DIR_MODE_OR_MASK     = 0b0_000_100_000_000_000_000
+private const val FILE_MODE_OR_MASK    = 0b0_001_000_000_000_000_000
+private const val FIFO_MODE_OR_MASK    = 0b0_000_001_000_000_000_000
+private const val SYMLINK_MODE_OR_MASK = 0b0_001_010_000_000_000_000
 
 /**
  * Adds a filepath to the given archive.
@@ -103,17 +124,17 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
                 closeArchiveEntry()
             }
             FileType.SYMBOLIC_LINK -> {
-                entry = TarArchiveEntry(file.filePath, TarConstants.LF_LINK)
+                entry = TarArchiveEntry(file.filePath, TarConstants.LF_SYMLINK)
                 entry.linkName = file.linkName
                 entry.setNames(file.owner, file.group)
-                entry.mode = FILE_MODE_OR_MASK or file.fileMode
+                entry.mode = SYMLINK_MODE_OR_MASK or file.fileMode
                 putArchiveEntry(entry)
                 closeArchiveEntry()
             }
             FileType.NAMED_PIPE -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_FIFO)
                 entry.setNames(file.owner, file.group)
-                entry.mode = FILE_MODE_OR_MASK or file.fileMode
+                entry.mode = FIFO_MODE_OR_MASK or file.fileMode
                 putArchiveEntry(entry)
                 closeArchiveEntry()
             }
@@ -135,7 +156,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
             var doChmod = true
             var postponeChmod = false
             var relPath = targetPath.relativeTo(it).toString()
-            val mode = tarEntry.mode and 0b111_111_111_111
+            val mode = tarEntry.mode and 0b0_111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
                 relPath in DATA_EXCLUDED_DIRS -> return@forEach
@@ -145,9 +166,15 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
                     // write protection would prevent creating files inside, so chmod at end
                     postponeChmod = true
                 }
-                tarEntry.isLink or tarEntry.isSymbolicLink -> {
+                tarEntry.isLink -> {
                     runAsRoot(
-                        "$qUtilBox ln -s ${quote(targetPath)} ${quote(tarEntry.linkName)}"
+                        "$qUtilBox ln ${quote(tarEntry.linkName)} ${quote(targetPath)}"
+                    )
+                    doChmod = false
+                }
+                tarEntry.isSymbolicLink -> {
+                    runAsRoot(
+                        "$qUtilBox ln -s ${quote(tarEntry.linkName)} ${quote(targetPath)}"
                     )
                     doChmod = false
                 }
