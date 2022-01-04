@@ -231,11 +231,15 @@ class MainActivityX : BaseActivity() {
                     context.assets.copyRecursively("files", assetDir)
                     // additional generated files
                     File(assetDir, ShellHandler.EXCLUDE_FILE)
-                        .writeText(BaseAppAction.DATA_EXCLUDED_DIRS.map { it + "\n" }
-                            .joinToString(""))
+                        .writeText(
+                            (BaseAppAction.DATA_EXCLUDED_DIRS + BaseAppAction.DATA_EXCLUDED_FILES)
+                                .map { it + "\n" }.joinToString("")
+                        )
                     File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
-                        .writeText(BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { it + "\n" }
-                            .joinToString(""))
+                        .writeText(
+                            BaseAppAction.DATA_EXCLUDED_CACHE_DIRS
+                                .map { it + "\n" }.joinToString("")
+                        )
                     // validate with version file if completed
                     File(assetDir, VERSION_FILE).writeText(appVersion)
                 } catch (e: Throwable) {

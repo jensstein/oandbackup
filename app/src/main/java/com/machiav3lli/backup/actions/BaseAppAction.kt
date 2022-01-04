@@ -118,6 +118,7 @@ abstract class BaseAppAction protected constructor(
          */
         val DATA_EXCLUDED_CACHE_DIRS = listOf("cache", "code_cache")
         val DATA_EXCLUDED_DIRS = listOf("lib")
+        val DATA_EXCLUDED_FILES = listOf("com.google.android.gms.appid.xml")
         val doNotStop = ignoredPackages
 
         private val stopped = mutableMapOf<String, List<String>>()
