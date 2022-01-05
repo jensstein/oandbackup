@@ -137,7 +137,9 @@ abstract class BaseAppAction protected constructor(
 
         fun cleanupSuspended(packageName: String) {
             Timber.i("cleanup ${packageName}")
-            runAsRoot("pm dump ${packageName} | grep suspended=true && pm unsuspend ${packageName}")
+            try {
+                runAsRoot("pm dump ${packageName} | grep suspended=true && pm unsuspend ${packageName}")
+            } catch(e : Throwable) {}
         }
     }
 }
