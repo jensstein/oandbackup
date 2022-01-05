@@ -34,7 +34,6 @@ import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.utils.scheduleAlarm
-import com.machiav3lli.backup.utils.showRunningNotification
 import timber.log.Timber
 
 open class ScheduleService : Service() {
@@ -52,13 +51,8 @@ open class ScheduleService : Service() {
         this.notificationId = System.currentTimeMillis().toInt()
         if (MainActivityX.initShellHandler()) {
             createNotificationChannel()
-            showNotification(
-                this,
-                MainActivityX::class.java,
-                notificationId,
-                String.format(getString(R.string.fetching_action_list), getString(R.string.backup)),
-                "",
-                true
+            MainActivityX.showRunningStatus(
+                String.format(getString(R.string.fetching_action_list), getString(R.string.backup))
             )
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
@@ -100,9 +94,9 @@ open class ScheduleService : Service() {
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
-                    this@ScheduleService.showRunningNotification(
+                    MainActivityX.showRunningStatus(
                         getString(R.string.backupProgress),
-                        notificationId, counter, selectedItems.size
+                        counter, selectedItems.size
                     )
                     selectedItems.forEach { packageName ->
                         val oneTimeWorkRequest =
@@ -130,9 +124,9 @@ open class ScheduleService : Service() {
                                         ?: ""
                                     val error = t.outputData.getString("error")
                                         ?: ""
-                                    this@ScheduleService.showRunningNotification(
+                                    MainActivityX.showRunningStatus(
                                         getString(R.string.backupProgress),
-                                        notificationId, counter, selectedItems.size
+                                        counter, selectedItems.size
                                     )
                                     if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                                         LogsHandler.handleErrorMessages(

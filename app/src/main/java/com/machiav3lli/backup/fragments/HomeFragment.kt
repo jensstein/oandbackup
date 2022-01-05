@@ -264,9 +264,8 @@ class HomeFragment : NavigationFragment(),
             getString(R.string.fetching_action_list),
             getString(R.string.backup)
         )
-        showNotification(
-            requireContext(), MainActivityX::class.java, notificationId,
-            notificationMessage, "", true
+        MainActivityX.showRunningStatus(
+            notificationMessage
         )
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
@@ -279,9 +278,9 @@ class HomeFragment : NavigationFragment(),
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        requireMainActivity().showRunningNotification(
+        MainActivityX.showRunningStatus(
             getString(R.string.backupProgress),
-            notificationId, counter, selectedItems.size
+            counter, selectedItems.size
         )
         selectedItems.forEach { (packageName, mode) ->
             val oneTimeWorkRequest =
@@ -298,9 +297,9 @@ class HomeFragment : NavigationFragment(),
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        requireMainActivity().showRunningNotification(
+                        MainActivityX.showRunningStatus(
                             getString(R.string.backupProgress),
-                            notificationId, counter, selectedItems.size
+                            counter, selectedItems.size
                         )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(

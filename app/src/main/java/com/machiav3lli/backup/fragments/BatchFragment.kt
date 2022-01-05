@@ -37,6 +37,7 @@ import androidx.work.WorkManager
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.activities.MainActivityX.Companion.showRunningStatus
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -322,9 +323,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             getString(R.string.fetching_action_list),
             getString(if (backupBoolean) R.string.backup else R.string.restore)
         )
-        showNotification(
-            requireContext(), MainActivityX::class.java, notificationId.toInt(),
-            notificationMessage, "", true
+        showRunningStatus(
+            notificationMessage
         )
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
@@ -337,9 +337,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        requireContext().showRunningNotification(
+        showRunningStatus(
             getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
-            notificationId, counter, selectedItems.size
+            counter, selectedItems.size
         )
         selectedItems.forEach { (packageName, mode) ->
             val oneTimeWorkRequest =
@@ -348,18 +348,20 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            requireMainActivity().updateProgress(counter, selectedItems.size)
+            showRunningStatus(
+                getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
+                counter, selectedItems.size
+            )
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         binding.progressBar.progress = counter
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        requireContext().showRunningNotification(
+                        showRunningStatus(
                             getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
-                            notificationId, counter, selectedItems.size
+                            counter, selectedItems.size
                         )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(

@@ -17,6 +17,9 @@
  */
 package com.machiav3lli.backup.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,6 +32,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
@@ -88,7 +93,94 @@ class MainActivityX : BaseActivity() {
 
         var appsSuspendedChecked = false
 
+        var statusNotificationId = 0
+        var counter : Int = 0
+        var maxCount : Int = 0
+        var action : String = ""
+        var actionRunning = false
         var runningOperations : MutableMap<String, String> = mutableMapOf()
+
+        fun setOperation(packageName: String, operation: String = "") : Boolean {
+            synchronized(runningOperations) {
+                if (operation.isEmpty())
+                    runningOperations.remove(packageName)
+                else
+                    runningOperations[packageName] = operation
+            }
+            showRunningStatus()
+            return true
+        }
+
+        fun showRunningStatus(actionText: String = "", counter: Int = -1, maxCount: Int = -1) {
+            if (actionText.isNotEmpty())
+                action = actionText
+            if (counter >= 0)
+                MainActivityX.counter = counter
+            if (maxCount >= 0)
+                MainActivityX.maxCount = maxCount
+            val title = "${action} (${MainActivityX.counter}/${MainActivityX.maxCount})"
+            var running = 0
+            var shortText = ""
+            var bigText = ""
+            synchronized(runningOperations) {
+                running = runningOperations.keys.count()
+                shortText = "${running} running"
+                bigText = shortText +
+                    "\n" +
+                    runningOperations.map {
+                        "${it.value}: ${it.key}"
+                    }.joinToString("\n")
+            }
+            if (action.isNotEmpty()) {
+                if (running > 0)
+                    actionRunning = true
+            }
+            if (statusNotificationId == 0)
+                statusNotificationId = System.currentTimeMillis().toInt()
+            activity?.let { activity ->
+                activity.runOnUiThread {
+                    val context = activity.applicationContext
+                    val notificationManager = NotificationManagerCompat.from(context)
+                    if (running > 0) {
+                        val notificationChannel = NotificationChannel(
+                            classAddress("NotificationHandler"),
+                            classAddress("NotificationHandler"),
+                            NotificationManager.IMPORTANCE_LOW
+                        )
+                        notificationManager.createNotificationChannel(notificationChannel)
+                        val resultIntent = Intent(context, MainActivityX::class.java)
+                        resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        val resultPendingIntent = PendingIntent.getActivity(
+                            context,
+                            0,
+                            resultIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                        )
+                        val notification =
+                            NotificationCompat.Builder(context, classAddress("NotificationHandler"))
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setSmallIcon(R.drawable.ic_app)
+                                .setContentTitle(title)
+                                .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
+                                .setContentText(shortText)
+                                .setProgress(MainActivityX.maxCount, MainActivityX.counter, false)
+                                .setAutoCancel(true)
+                                .setContentIntent(resultPendingIntent)
+                                .build()
+                        notificationManager.notify(statusNotificationId, notification)
+                        activity.updateProgress(counter, maxCount)
+                    } else {
+                        if (actionRunning || action.isEmpty()) {
+                            activity.hideProgress()
+                            notificationManager.cancel(statusNotificationId)
+                            statusNotificationId = 0
+                            action = ""
+                            actionRunning = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private lateinit var prefs: SharedPreferences
@@ -248,7 +340,7 @@ class MainActivityX : BaseActivity() {
     fun initAssetFiles() {
 
         // copy scripts to file storage
-        MainActivityX.activity?.let { context ->
+        activity?.let { context ->
             assetDir = File(context.filesDir, ASSETS_SUBDIR)
             assetDir.mkdirs()
             // don't copy if the files exist and are from the current app version
@@ -335,12 +427,12 @@ class MainActivityX : BaseActivity() {
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
-        MainActivityX.activity?.runOnUiThread {
-            MainActivityX.activity?.showSnackBar("cleanup any left over suspended apps")
+        activity?.runOnUiThread {
+            activity?.showSnackBar("cleanup any left over suspended apps")
         }
         todo()
-        MainActivityX.activity?.runOnUiThread {
-            MainActivityX.activity?.dismissSnackBar()
+        activity?.runOnUiThread {
+            activity?.dismissSnackBar()
         }
     }
 }
