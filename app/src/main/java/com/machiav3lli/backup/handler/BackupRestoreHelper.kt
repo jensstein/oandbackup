@@ -25,7 +25,7 @@ import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -115,7 +115,7 @@ object BackupRestoreHelper {
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("${e.javaClass.simpleName}: $e")
             return false
-        } catch (e: BackupLocationIsAccessibleException) {
+        } catch (e: BackupLocationInAccessibleException) {
             Timber.e("${e.javaClass.simpleName}: $e")
             return false
         }

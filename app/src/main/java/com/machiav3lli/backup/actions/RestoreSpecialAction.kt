@@ -29,7 +29,7 @@ import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.uncompressTo
+import com.machiav3lli.backup.utils.unpackTo
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
@@ -46,32 +46,34 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
         backupDir: StorageFile,
         backupMode: Int
     ) {
-        restoreData(app, backupProperties, backupDir)
+        restoreData(app, backupProperties, backupDir, true)
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupDir: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = context.isEncryptionEnabled()
-        val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, isEncrypted)
+        val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
             ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
             openArchiveFile(
                 backupArchiveFile,
+                compressed,
                 isEncrypted,
                 backupProperties.iv
             ).use { archive ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
                 //archive.suUncompressTo(tempPath)
-                archive.uncompressTo(tempPath)
+                archive.unpackTo(tempPath)
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
@@ -126,7 +128,8 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
     override fun restoreDeviceProtectedData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupDir: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
         // stub
     }
@@ -134,15 +137,17 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
     override fun restoreExternalData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupDir: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
         // stub
     }
 
     override fun restoreObbData(
         app: AppInfo,
-        backupProperties: BackupProperties?,
-        backupDir: StorageFile
+        backupProperties: BackupProperties,
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
         // stub
     }

@@ -25,6 +25,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
@@ -71,7 +72,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-@Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+@Throws(FileUtils.BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
     invalidateCache()
     val includeSpecial = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
@@ -96,7 +97,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                 .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
         val missingAppsWithBackup: List<AppInfo> =
-        // Try to create AppInfoX objects
+        // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
                 // filter out previously failed backups
                 directoriesInBackupRoot
@@ -112,10 +113,19 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                         .toList()
         packageList.addAll(missingAppsWithBackup)
     }
+
+    // cleanup suspended package if lock file found TODO: hg42: find a better place
+    packageList.forEach { appInfo ->
+        appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)?.let { markerFile ->
+            BaseAppAction.cleanupSuspended(appInfo.packageName)
+            markerFile.delete()
+        }
+    }
+
     return packageList
 }
 
-@Throws(FileUtils.BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+@Throws(FileUtils.BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
     val backupRoot = getBackupDir()
     try {

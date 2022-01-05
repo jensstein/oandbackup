@@ -357,7 +357,7 @@ class HomeFragment : NavigationFragment(),
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshMain(filteredList, appSheet != null)
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")

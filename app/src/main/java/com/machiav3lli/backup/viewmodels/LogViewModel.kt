@@ -77,7 +77,7 @@ class LogViewModel(private val appContext: Application)
         withContext(Dispatchers.IO) {
             val shareFileIntent: Intent
             LogsHandler(appContext).getLogFile(log.logDate)?.let {
-                if (it.exists) {
+                if (it.exists()) {
                     shareFileIntent = Intent().apply {
                         action = Intent.ACTION_SEND
                         putExtra(Intent.EXTRA_STREAM, it.uri)

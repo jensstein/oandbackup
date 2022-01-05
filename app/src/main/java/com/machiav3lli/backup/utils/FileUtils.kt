@@ -37,16 +37,16 @@ object FileUtils {
      *
      * @return URI to OABX storage directory
      */
-    @Throws(StorageLocationNotConfiguredException::class, BackupLocationIsAccessibleException::class)
+    @Throws(StorageLocationNotConfiguredException::class, BackupLocationInAccessibleException::class)
     fun getBackupDirUri(context: Context): Uri {
         if (backupLocation == null) {
-            val storageRoot = context.backupDirPath
+            val storageRoot = context.backupDirConfigured
             if (storageRoot.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
             }
             val storageRootDoc = DocumentFile.fromTreeUri(context, Uri.parse(storageRoot))
             if (storageRootDoc == null || !storageRootDoc.exists()) {
-                throw BackupLocationIsAccessibleException("Cannot access the root location.")
+                throw BackupLocationInAccessibleException("Cannot access the root location.")
             }
             backupLocation = storageRootDoc.uri
         }
@@ -84,7 +84,7 @@ object FileUtils {
         return mode
     }
 
-    class BackupLocationIsAccessibleException : Exception {
+    class BackupLocationInAccessibleException : Exception {
         constructor() : super()
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)

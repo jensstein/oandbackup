@@ -124,7 +124,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
+fun TarArchiveInputStream.suUnpackTo(targetDir: SuFile?) {
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
@@ -194,7 +194,7 @@ fun TarArchiveInputStream.suUncompressTo(targetDir: SuFile?) {
 }
 
 @Throws(IOException::class)
-fun TarArchiveInputStream.uncompressTo(targetDir: File?) {
+fun TarArchiveInputStream.unpackTo(targetDir: File?) {
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->

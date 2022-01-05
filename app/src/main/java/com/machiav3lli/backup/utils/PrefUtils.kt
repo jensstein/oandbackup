@@ -110,7 +110,7 @@ fun Context.isBiometricLockAvailable(): Boolean =
  * @return user configured location
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
-val Context.backupDirPath: String
+val Context.backupDirConfigured: String
     @Throws(StorageLocationNotConfiguredException::class)
     get() {
         val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
@@ -132,12 +132,12 @@ fun Context.setBackupDir(value: Uri) {
 val Context.isStorageDirSetAndOk: Boolean
     get() {
         return try {
-            val storageDirPath = backupDirPath
+            val storageDirPath = backupDirConfigured
             if (storageDirPath.isEmpty()) {
                 return false
             }
             val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
-            storageDir.exists
+            storageDir.exists()
         } catch (e: StorageLocationNotConfiguredException) {
             false
         }

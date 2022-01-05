@@ -413,7 +413,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshBatch(filteredList)
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")

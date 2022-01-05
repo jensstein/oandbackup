@@ -21,7 +21,6 @@ import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
@@ -65,8 +64,7 @@ class AppInfo {
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
-        val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDir = backupDoc
+        backupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
     }
 
@@ -74,15 +72,14 @@ class AppInfo {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
-        val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDir = backupDoc
+        backupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
         refreshStorageStats(context)
     }
 
-    constructor(context: Context, packageName: String?, backupRoot: StorageFile?) {
-        this.backupDir = backupRoot
-        this.packageName = packageName ?: backupRoot?.name!!
+    constructor(context: Context, packageName: String?, backupDir: StorageFile?) {
+        this.backupDir = backupDir
+        this.packageName = packageName ?: backupDir?.name!!
         refreshBackupHistory(context)
         try {
             val pi = context.packageManager.getPackageInfo(this.packageName, 0)
@@ -112,9 +109,8 @@ class AppInfo {
         this.packageName = packageInfo.packageName
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
         this.packageInfo = PackageInfo(packageInfo)
-        val appBackupRoot = backupRoot?.findFile(packageName)
+        this.backupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        this.backupDir = appBackupRoot
         refreshBackupHistory(context)
     }
 
@@ -162,15 +158,15 @@ class AppInfo {
                                 backups.add(BackupItem(context, it))
                             } catch (e: BackupItem.BrokenBackupException) {
                                 val message =
-                                    "Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "Incomplete backup or wrong structure found in $it"
                                 Timber.w(message)
                             } catch (e: NullPointerException) {
                                 val message =
-                                    "(Null) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "(Null) Incomplete backup or wrong structure found in $it"
                                 Timber.w(message)
                             } catch (e: Throwable) {
                                 val message =
-                                    "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "(catchall) Incomplete backup or wrong structure found in $it"
                                 LogsHandler.unhandledException(e, message)
                             }
                         }
@@ -179,7 +175,7 @@ class AppInfo {
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, backupDir?.uri?.encodedPath)
+                    LogsHandler.unhandledException(e, backupDir)
                 }
                 backupHistoryCache = Pair(backups, context)
                 historyCollectorThread = null
@@ -189,14 +185,14 @@ class AppInfo {
     }
 
     @Throws(
-        FileUtils.BackupLocationIsAccessibleException::class,
+        FileUtils.BackupLocationInAccessibleException::class,
         StorageLocationNotConfiguredException::class
     )
-    fun getAppUri(context: Context, create: Boolean): Uri {
+    fun getAppBackupRoot(context: Context, create: Boolean): StorageFile {
         if (create && backupDir == null) {
             backupDir = context.getBackupDir().ensureDirectory(packageName)
         }
-        return backupDir?.uri ?: Uri.EMPTY
+        return backupDir!!
     }
 
     fun deleteAllBackups(context: Context) {
@@ -217,7 +213,7 @@ class AppInfo {
             backupItem.backupProperties.profileId
         )
         try {
-            backupItem.backupInstanceDirUri.deleteRecursive(context)
+            backupItem.backupInstanceDir.deleteRecursive()
             backupDir?.findFile(propertiesFileName)?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)

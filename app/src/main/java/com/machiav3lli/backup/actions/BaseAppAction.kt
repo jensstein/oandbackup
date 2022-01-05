@@ -27,6 +27,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ignoredPackages
 import com.topjohnwu.superuser.Shell
+import com.topjohnwu.superuser.ShellUtils
 import timber.log.Timber
 
 abstract class BaseAppAction protected constructor(
@@ -37,8 +38,8 @@ abstract class BaseAppAction protected constructor(
     protected val deviceProtectedStorageContext: Context =
         context.createDeviceProtectedStorageContext()
 
-    fun getBackupArchiveFilename(what: String, isEncrypted: Boolean): String {
-        return "$what.tar.gz${if (isEncrypted) ".enc" else ""}"
+    fun getBackupArchiveFilename(what: String, isCompressed: Boolean, isEncrypted: Boolean): String {
+        return "$what.tar${if (isCompressed) ".gz" else ""}${if (isEncrypted) ".enc" else ""}"
     }
 
     abstract class AppActionFailedException : Exception {
@@ -55,8 +56,7 @@ abstract class BaseAppAction protected constructor(
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            var script = "package.sh"
-            script = ShellHandler.findScript(script).toString()
+            val script = ShellHandler.findScript("package.sh").toString()
             Timber.w("---------------------------------------- Preprocess package ${packageName} uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
@@ -81,8 +81,7 @@ abstract class BaseAppAction protected constructor(
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            var script = "package.sh"
-            script = ShellHandler.findScript(script).toString()
+            val script = ShellHandler.findScript("package.sh").toString()
             Timber.w("........................................ Postprocess package ${packageName} uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
@@ -111,6 +110,7 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_EXTERNAL_FILES = "external_files"
         const val BACKUP_DIR_OBB_FILES = "obb_files"
         const val BACKUP_DIR_MEDIA_FILES = "media_files"
+        const val SUSPENDED_MARKER_FILE = ".locked"
 
         /* @hg42 why exclude lib? how is it restored?
            @machiav3lli libs are generally created while installing the app. Backing them up
@@ -128,6 +128,15 @@ abstract class BaseAppAction protected constructor(
             return if (err.isEmpty()) {
                 "Unknown Error"
             } else err[err.size - 1]
+        }
+
+        fun isSuspended(packageName: String): Boolean {
+            return ShellUtils.fastCmdResult("pm dump ${packageName} | grep suspended=true")
+        }
+
+        fun cleanupSuspended(packageName: String) {
+            Timber.i("cleanup ${packageName}")
+            runAsRoot("pm dump ${packageName} | grep suspended=true && pm unsuspend ${packageName}")
         }
     }
 }

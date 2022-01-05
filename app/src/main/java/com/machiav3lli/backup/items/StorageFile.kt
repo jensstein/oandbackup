@@ -4,10 +4,15 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.utils.*
+import com.topjohnwu.superuser.ShellUtils
 import com.topjohnwu.superuser.io.SuFile
+import com.topjohnwu.superuser.io.SuFileInputStream
+import com.topjohnwu.superuser.io.SuFileOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
@@ -16,55 +21,133 @@ import java.util.*
 const val bufferSize = 65536
 
 // TODO MAYBE migrate at some point to FuckSAF
-open class StorageFile(
-    val parentFile: StorageFile?,
-    private val context: Context,
-    var uri: Uri
-) {
 
+open class StorageFile {
+
+    var parent: StorageFile? = null
+    var context: Context? = null
+    var uri: Uri? = null
+
+    var parentFile: SuFile? = null
     var file: SuFile? = null
+
+    constructor(parent: StorageFile?, context: Context?, uri: Uri?) {
+        this.parent = parent
+        this.context = context
+        this.uri = uri
+        if (PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("replaceSAFbySuAccessIfPossible", true)
+        ) {
+            parent ?: run {
+                file ?: run {
+                    uri?.let { uri ->
+                        try {
+                            val last = uri.lastPathSegment
+                            if (last?.startsWith('/') ?: false) {
+                                file = SuFile(last)
+                            } else {
+                                val (storage, path) = last!!.split(":")
+                                file = SuFile(SuFile("/storage", storage), path)
+                                //file = SuFile(SuFile("/mnt/media_rw", storage), path)
+                            }
+                        } catch (e: Throwable) {
+                            file = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    constructor(parent: StorageFile, file: SuFile) {
+        this.parent = parent
+        this.file = file
+    }
+
+    constructor(parent: StorageFile, path: String) {
+        this.parent = parent
+        file = SuFile(parent.file, path)
+    }
 
     var name: String? = null
         get() {
-            if (field == null) field = uri.getName(context)
+            if (field == null) {
+                field = file?.name ?: let {
+                    context?.let { context -> uri?.getName(context) }
+                }
+            }
             return field
         }
 
-    val isFile: Boolean
-        get() = uri.isFile(context)
+    val path: String?
+        get() = file?.path ?: uri?.path
 
-    val isPropertyFile: Boolean
-        get() = uri.isFile(context)
+    override fun toString(): String {
+        return path ?: "null"
+    }
+
+    val isFile: Boolean
+        get() = file?.isFile ?: context?.let { context -> uri?.isFile(context) } ?: false
 
     val isDirectory: Boolean
-        get() = uri.isDirectory(context)
+        get() = file?.isDirectory ?: context?.let { context -> uri?.isDirectory(context) } ?: false
 
-    val exists: Boolean
-        get() = uri.exists(context)
+    fun exists(): Boolean =
+        file?.exists() ?: context?.let { context -> uri?.exists(context) } ?: false
+
+    val isPropertyFile: Boolean
+        get() = isFile && name?.endsWith(".properties") ?: false
 
     val inputStream: InputStream?
         get() {
-            return context.contentResolver.openInputStream(uri)
+            return file?.let { file ->
+                SuFileInputStream.open(file)
+            } ?: uri?.let { uri ->
+                context?.contentResolver?.openInputStream(uri)
+            }
         }
 
     val outputStream: OutputStream?
         get() {
-            return context.contentResolver.openOutputStream(uri, "w")
+            return file?.let { file ->
+                SuFileOutputStream.open(file)
+            } ?: uri?.let { uri ->
+                context?.contentResolver?.openOutputStream(uri, "w")
+            }
         }
 
-    fun createDirectory(displayName: String): StorageFile? {
-        val result = createFile(context, uri, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
-        return if (result != null) StorageFile(this, context, result) else null
+    fun createDirectory(displayName: String): StorageFile {
+        return file?.let {
+            val newDir = SuFile(it, displayName)
+            newDir.mkdirs()
+            return StorageFile(this, newDir)
+        } ?: run {
+            return StorageFile(this, context!!, createFile(context!!, uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName))
+        }
     }
 
-    fun createFile(mimeType: String, displayName: String): StorageFile? {
-        val result = createFile(context, uri, mimeType, displayName)
-        return if (result != null) StorageFile(this, context, result) else null
+    fun createFile(mimeType: String, displayName: String): StorageFile {
+        return file?.let {
+            if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                val newDir = SuFile(it, displayName)
+                newDir.mkdirs()
+                return StorageFile(this, newDir)
+            } else {
+                val newFile = SuFile(it, displayName)
+                newFile.createNewFile()
+                return StorageFile(this, newFile)
+            }
+        } ?: run {
+            StorageFile(this, context, createFile(context!!, uri!!, mimeType, displayName))
+        }
     }
 
     fun delete(): Boolean {
         return try {
-            DocumentsContract.deleteDocument(context.contentResolver, uri)
+            file?.let {
+                //it.delete()  does not work, becaujse using "rmdir -f"
+                ShellUtils.fastCmdResult("rm -f ${quote(it)} || rmdir ${quote(it)}")
+            } ?: DocumentsContract.deleteDocument(context!!.contentResolver, uri!!)
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
@@ -74,16 +157,20 @@ open class StorageFile(
     }
 
     fun renameTo(displayName: String): Boolean {
-        // noinspection OverlyBroadCatchBlock
-        return try {
-            val result = DocumentsContract.renameDocument(
-                context.contentResolver, uri, displayName
-            )
+        return /* file?.renameTo(displayName) ?: */ try {
+            val result =
+                context?.let { context ->
+                    uri?.let { uri ->
+                        DocumentsContract.renameDocument(
+                            context.contentResolver, uri, displayName
+                        )
+                    }
+                }
             if (result != null) {
                 uri = result
-                return true
-            }
-            false
+                true
+            } else
+                false
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, uri)
             false
@@ -92,9 +179,13 @@ open class StorageFile(
 
     fun findFile(displayName: String): StorageFile? {
         try {
-            for (doc in listFiles()) {
-                if (displayName == doc.name) {
-                    return doc
+            file?.let {
+                var found = StorageFile(this, displayName)
+                return if (found.exists()) found else null
+            }
+            for (file in listFiles()) {
+                if (displayName == file.name) {
+                    return file
                 }
             }
         } catch (e: FileNotFoundException) {
@@ -105,68 +196,108 @@ open class StorageFile(
     }
 
     fun recursiveCopyFiles(files: List<ShellHandler.FileInfo>) {
-        suRecursiveCopyFileToDocument(context, files, uri)
+        suRecursiveCopyFilesToDocument(context!!, files, uri!!)
     }
 
     @Throws(FileNotFoundException::class)
-    fun listFiles(): Array<StorageFile> {
+    fun listFiles(): List<StorageFile> {
         try {
-            exists
+            exists()
         } catch (e: Throwable) {
             throw FileNotFoundException("File $uri does not exist")
         }
-        val uriString = this.uri.toString()
-        if (cacheDirty) {
-            cacheDirty = false
-            cache.clear()
-        }
-        if (cache[uriString].isNullOrEmpty()) {
-            val resolver = context.contentResolver
-            val childrenUri = try {
-                DocumentsContract.buildChildDocumentsUriUsingTree(
-                    this.uri,
-                    DocumentsContract.getDocumentId(this.uri)
-                )
-            } catch (e: IllegalArgumentException) {
-                return arrayOf()
-            }
-            val results = ArrayList<Uri>()
-            var cursor: Cursor? = null
-            try {
-                cursor = resolver.query(
-                    childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                    null, null, null
-                )
-                var documentUri: Uri
-                while (cursor?.moveToNext() == true) {
-                    documentUri =
-                        DocumentsContract.buildDocumentUriUsingTree(this.uri, cursor.getString(0))
-                    results.add(documentUri)
+        checkCache()
+        val id = path
+        id ?: return listOf()
+
+        fileListCache[id] ?: run {
+            file?.let { dir ->
+                fileListCache[id] = dir.listFiles()?.map { child ->
+                    StorageFile(this, child)
+                }?.toList()
+            } ?: run {
+                context?.contentResolver?.let { resolver ->
+                    val childrenUri = try {
+                        DocumentsContract.buildChildDocumentsUriUsingTree(
+                            this.uri,
+                            DocumentsContract.getDocumentId(this.uri)
+                        )
+                    } catch (e: IllegalArgumentException) {
+                        return listOf()
+                    }
+                    val results = ArrayList<Uri>()
+                    var cursor: Cursor? = null
+                    try {
+                        cursor = resolver.query(
+                            childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                            null, null, null
+                        )
+                        var documentUri: Uri
+                        while (cursor?.moveToNext() == true) {
+                            documentUri =
+                                DocumentsContract.buildDocumentUriUsingTree(
+                                    this.uri,
+                                    cursor.getString(0)
+                                )
+                            results.add(documentUri)
+                        }
+                    } catch (e: Throwable) {
+                        LogsHandler.unhandledException(e, uri)
+                    } finally {
+                        closeQuietly(cursor)
+                    }
+                    fileListCache[id] = results.map { uri ->
+                        StorageFile(this, context, uri)
+                    }
                 }
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, uri)
-            } finally {
-                closeQuietly(cursor)
             }
-            cache[uriString] = results.map { uri ->
-                StorageFile(this, context, uri)
-            }.toTypedArray()
         }
-        return cache[uriString] ?: arrayOf()
+        return fileListCache[id] ?: listOf()
     }
 
-    override fun toString(): String {
-        return DocumentsContract.getDocumentId(uri)
+    fun ensureDirectory(dirName: String): StorageFile {
+        return findFile(dirName)
+            ?: createDirectory(dirName)
+    }
+
+    fun deleteRecursive(): Boolean = when {
+        isFile ->
+            delete()
+        isDirectory -> try {
+            val contents = listFiles()
+            var result = true
+            contents.forEach { file ->
+                result = result && file.deleteRecursive()
+            }
+            if (result)
+                delete()
+            else
+                result
+        } catch (e: FileNotFoundException) {
+            false
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, uri)
+            false
+        }
+        else -> false
     }
 
     companion object {
-        val cache: MutableMap<String, Array<StorageFile>> = mutableMapOf()
+        val fileListCache: MutableMap<String, List<StorageFile>?> = mutableMapOf()
+        val uriStorageFileCache: MutableMap<String, StorageFile> = mutableMapOf()
         var cacheDirty = true
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            return StorageFile(null, context, uri)
+            checkCache()
+            val id = uri.toString()
+            return uriStorageFileCache[id] ?:
+                StorageFile(
+                    null,
+                    context,
+                    uri
+                ).also { uriStorageFileCache[id] = it }
         }
 
         fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
@@ -187,6 +318,14 @@ open class StorageFile(
 
         fun invalidateCache() {
             cacheDirty = true
+        }
+
+        fun checkCache() {
+            if (cacheDirty) {
+                fileListCache.clear()
+                uriStorageFileCache.clear()
+                cacheDirty = false
+            }
         }
 
         private fun closeQuietly(closeable: AutoCloseable?) {

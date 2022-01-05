@@ -92,7 +92,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                 ai.latestBackup?.let {
                                     BackupRestoreHelper.restore(
                                         context, instance, ai, selectedMode,
-                                        it.backupProperties, it.backupInstance
+                                        it.backupProperties, it.backupInstanceDir
                                     )
                                 }
                             }

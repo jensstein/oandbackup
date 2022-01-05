@@ -73,4 +73,11 @@
         android:summary=""
         android:title="restore: avoid temporary directory" />
 
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_prefs_advanced"
+        android:key="replaceSAFbySuAccessIfPossible"
+        android:summary=""
+        android:title="use superuser access instead of SAF if possible" />
+
 </androidx.preference.PreferenceScreen>

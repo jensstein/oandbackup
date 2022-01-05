@@ -9,61 +9,28 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.FileUtils.getBackupDirUri
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.io.IOUtils
 import timber.log.Timber
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 
 const val binaryMimeType = "application/octet-stream"
 
-@Throws(BackupLocationIsAccessibleException::class, StorageLocationNotConfiguredException::class)
+@Throws(BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getBackupDir(): StorageFile =
     StorageFile.fromUri(this, getBackupDirUri(this))
 
 @Throws(IOException::class)
-fun StorageFile.ensureDirectory(dirName: String): StorageFile {
-    return findFile(dirName)
-        ?: createDirectory(dirName)
-        ?: throw IOException("Could not ensure directory: $dirName")
-}
-
-fun Uri.deleteRecursive(context: Context): Boolean =
-    StorageFile.fromUri(context, this).deleteRecursive()
-
-private fun StorageFile.deleteRecursive(): Boolean = when {
-    isFile ->
-        delete()
-    isDirectory -> try {
-        val contents = listFiles()
-        var result = true
-        contents.forEach { file ->
-            result = result && file.deleteRecursive()
-        }
-        if (result)
-            delete()
-        else
-            result
-    } catch (e: FileNotFoundException) {
-        false
-    } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, uri)
-        false
-    }
-    else -> false
-}
-
-@Throws(IOException::class)
-fun suRecursiveCopyFileToDocument(
+fun suRecursiveCopyFilesToDocument(
     context: Context,
-    filesToBackup: List<ShellHandler.FileInfo>,
+    filesToCopy: List<ShellHandler.FileInfo>,
     targetUri: Uri
 ) {
-    for (file in filesToBackup) {
+    for (file in filesToCopy) {
         try {
             val parentUri = targetUri
                 .buildUpon()
@@ -93,10 +60,10 @@ fun suRecursiveCopyFileToDocument(
  */
 @Throws(IOException::class)
 fun suCopyFileToDocument(sourcePath: String, targetDir: StorageFile) {
-    SuFileInputStream.open(sourcePath).use { inputFile ->
-        targetDir.createFile(binaryMimeType, File(sourcePath).name)?.let { newFile ->
-            newFile.outputStream!!.use { outputFile ->
-                IOUtils.copy(inputFile, outputFile)
+    SuFileInputStream.open(sourcePath).use { inputStream ->
+        targetDir.createFile(binaryMimeType, File(sourcePath).name).let { newFile ->
+            newFile.outputStream!!.use { outputStream ->
+                IOUtils.copy(inputStream, outputStream)
             }
         }
     }
@@ -107,11 +74,11 @@ fun suCopyFileToDocument(
     sourceFileInfo: ShellHandler.FileInfo,
     targetDir: StorageFile
 ) {
-    targetDir.createFile(binaryMimeType, sourceFileInfo.filename)?.let { newFile ->
+    targetDir.createFile(binaryMimeType, sourceFileInfo.filename).let { newFile ->
         newFile.outputStream!!.use { outputStream ->
             ShellHandler.quirkLibsuReadFileWorkaround(sourceFileInfo, outputStream)
         }
-    } ?: throw Exception()
+    }
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)

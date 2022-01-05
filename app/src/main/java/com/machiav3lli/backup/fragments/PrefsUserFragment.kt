@@ -40,7 +40,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
                 result.data?.let {
                     val uri = it.data ?: return@registerForActivityResult
                     val oldDir = try {
-                        requireContext().backupDirPath
+                        requireContext().backupDirConfigured
                     } catch (e: StorageLocationNotConfiguredException) {
                         // Can be ignored, this is about to set the path
                         ""
@@ -94,7 +94,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
         }
         findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.apply {
             summary = try {
-                requireContext().backupDirPath
+                requireContext().backupDirConfigured
             } catch (e: StorageLocationNotConfiguredException) {
                 getString(R.string.prefs_unset)
             }
