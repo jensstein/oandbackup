@@ -2,7 +2,8 @@ package tests
 
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.ignoredPackages
-import org.junit.Assert
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 
@@ -16,7 +17,7 @@ class Test_ignoredPackages {
             com.google.android.gm
             """.trimIndent().split("""\n+""".toRegex()).map { it.trim() }
         ) {
-            Assert.assertFalse(
+            assertFalse(
                 "wrong match: $packageName",
                 packageName.matches(ignoredPackages)
             )
@@ -26,7 +27,7 @@ class Test_ignoredPackages {
     @Test
     fun test_matchesOwnPackage() {
         val packageName = BuildConfig.APPLICATION_ID
-        Assert.assertTrue(
+        assertTrue(
             "does not match: $packageName",
             packageName.matches(ignoredPackages)
         )
@@ -49,7 +50,7 @@ class Test_ignoredPackages {
             com.android.systemui
             """.trimIndent().split("""\n+""".toRegex()).map { it.trim() }
         ) {
-            Assert.assertTrue(
+            assertTrue(
                 "does not match: $packageName",
                 packageName.matches(ignoredPackages)
             )

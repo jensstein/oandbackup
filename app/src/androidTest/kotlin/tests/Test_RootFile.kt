@@ -4,7 +4,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.items.RootFile
 import com.topjohnwu.superuser.ShellUtils.fastCmd
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
@@ -72,7 +72,7 @@ class Test_RootFile {
             val resultJ = fastCmd("$utilBox stat -c '%a' ${quote(fileJ)}")
             val resultX = fastCmd("$utilBox stat -c '%a' ${quote(fileX)}")
             //println("${if(resultJ==resultX) "ok  " else "FAIL"} $resultJ $resultX")
-            Assert.assertEquals(resultJ, resultX)
+            assertEquals(resultJ, resultX)
         }
 
         fileJ.delete()

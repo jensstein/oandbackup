@@ -212,7 +212,7 @@ class MainActivityX : BaseActivity() {
         }
     }
 
-    private fun initAssetFiles() {
+    fun initAssetFiles() {
 
         // copy scripts to file storage
         MainActivityX.activity?.let { context ->

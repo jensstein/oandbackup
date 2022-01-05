@@ -103,23 +103,25 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
 
     // Libs
-    implementation("androidx.room:room-runtime:2.4.0-rc01")
-    implementation("androidx.room:room-ktx:2.4.0-rc01")
+    implementation("androidx.room:room-runtime:2.4.0")
+    implementation("androidx.room:room-ktx:2.4.0")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
-    kapt("androidx.room:room-compiler:2.4.0-rc01")
+    implementation("androidx.test.ext:junit-ktx:1.1.3")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    kapt("androidx.room:room-compiler:2.4.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("commons-io:commons-io:2.11.0")
+    implementation("com.jakewharton.timber:timber:5.0.1")
     val libsu = "3.1.2"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
-    implementation("com.jakewharton.timber:timber:5.0.1")
 
     // UI
     implementation("androidx.appcompat:appcompat:1.4.0")
@@ -127,9 +129,9 @@ dependencies {
     implementation("com.google.android.material:material:1.6.0-alpha01")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-beta02")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-beta02")
-    val fastadapter = "5.5.1"
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-rc01")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-rc01")
+    val fastadapter = "5.6.0"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
@@ -170,4 +172,3 @@ tasks.withType<Test> {
     //useTestNG()
     //useJUnitPlatform()
 }
-

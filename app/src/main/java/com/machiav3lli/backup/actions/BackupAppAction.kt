@@ -345,7 +345,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupDataTarApi(
+    fun genericBackupDataTarApi(
         dataType: String,
         backupInstanceDir: StorageFile,
         sourcePath: String,
@@ -358,7 +358,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @SuppressLint("RestrictedApi")
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupDataTarCmd(
+    fun genericBackupDataTarCmd(
         dataType: String,
         backupInstanceDir: StorageFile,
         sourcePath: String,

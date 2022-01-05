@@ -3,7 +3,7 @@ package research
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.topjohnwu.superuser.ShellUtils.fastCmd
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
@@ -22,35 +22,35 @@ class Try_File {
         // set writable
 
         fastCmd("chmod 0 ${file.absolutePath}")
-        Assert.assertEquals(
+        assertEquals(
             "0",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
         file.setWritable(false, true)
-        Assert.assertEquals(
+        assertEquals(
             "0",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
         file.setWritable(false, false)
-        Assert.assertEquals(
+        assertEquals(
             "0",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
         file.setWritable(true, true)
-        Assert.assertEquals(
+        assertEquals(
             "200",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
         file.setWritable(true, false)
-        Assert.assertEquals(
+        assertEquals(
             "222",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
@@ -58,21 +58,21 @@ class Try_File {
         // reset writable
 
         fastCmd("chmod 777 ${file.absolutePath}")
-        Assert.assertEquals(
+        assertEquals(
             "777",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 777 ${file.absolutePath}")
         file.setWritable(false, true)
-        Assert.assertEquals(
+        assertEquals(
             "577",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 777 ${file.absolutePath}")
         file.setWritable(false, false)
-        Assert.assertEquals(
+        assertEquals(
             "555",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
@@ -86,27 +86,27 @@ class Try_File {
         fastCmd("touch ${file.absolutePath}")
 
         fastCmd("chmod 0 ${file.absolutePath}")
-        Assert.assertEquals(
+        assertEquals(
             "0",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 0 ${file.absolutePath}")
         file.setReadOnly()
-        Assert.assertEquals(
+        assertEquals(
             "0",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 777 ${file.absolutePath}")
-        Assert.assertEquals(
+        assertEquals(
             "777",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )
 
         fastCmd("chmod 777 ${file.absolutePath}")
         file.setReadOnly()
-        Assert.assertEquals(
+        assertEquals(
             "555",
             fastCmd("$utilBox stat -c '%a' ${quote(file)}")
         )

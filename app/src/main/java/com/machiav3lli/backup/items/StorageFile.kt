@@ -13,6 +13,7 @@ import com.topjohnwu.superuser.ShellUtils
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import timber.log.Timber
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
@@ -58,6 +59,14 @@ open class StorageFile {
                 }
             }
         }
+    }
+
+    constructor(file: RootFile) {
+        this.file = file
+    }
+
+    constructor(file: File) {
+        this.file = RootFile(file)
     }
 
     constructor(parent: StorageFile, file: RootFile) {

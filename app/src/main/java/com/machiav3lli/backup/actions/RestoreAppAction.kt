@@ -335,7 +335,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    private fun genericRestoreFromArchiveTarApi(
+    fun genericRestoreFromArchiveTarApi(
         dataType: String,
         archive: StorageFile,
         targetPath: String,
@@ -408,7 +408,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class,NotImplementedError::class)
-    private fun genericRestoreFromArchiveTarCmd(
+    fun genericRestoreFromArchiveTarCmd(
         dataType: String,
         archive: StorageFile,
         targetPath: String,
