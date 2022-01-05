@@ -65,14 +65,11 @@ const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
-const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
-const val PREFS_INTERNAL_RETRIEVE_APP_META_ATTEMPTS = "retrieveAppMetaAttempts";
-const val PREFS_INTERNAL_RETRIEVE_APP_META_SLEEP_MS = "retrieveAppMetaSleepMs";
 
 const val ALT_MODE_UNSET = 0
 const val ALT_MODE_APK = 1
