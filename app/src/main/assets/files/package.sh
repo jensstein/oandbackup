@@ -69,6 +69,8 @@ if [[ $command == "post" ]]; then
   userid=$1
   shift
 
+  am kill $package
+
   if [[ -n $* ]]; then $utilbox kill -CONT "$@"; fi
 
   if $suspend; then
