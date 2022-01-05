@@ -36,7 +36,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipParameters
 import timber.log.Timber
-import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
@@ -243,7 +242,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             "[%s] Backing up package (%d apks: %s)",
             app.packageName,
             apksToBackup.size,
-            apksToBackup.joinToString(" ") { s: String -> File(s).name }
+            apksToBackup.joinToString(" ") { s: String -> RootFile(s).name }
         )
         try {
             for (apk in apksToBackup) {
