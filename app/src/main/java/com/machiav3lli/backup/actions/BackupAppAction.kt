@@ -263,8 +263,8 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         return try {
             // Get a list of directories in the directory to backup
             var dirsInSource = shell.suGetDetailedDirectoryContents(sourcePath, false, null)
-                //.filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
-                .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains("com.google.android.gms.appid") } // probably the only one to be excluded
+                // a try to exclude google's push notifications id (hg42it's not a directory???)
+                //.filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") }
 
             // Excludes cache and libs, when we don't want to backup'em
             // TODO maybe remove the option and force the exclusion?
@@ -288,6 +288,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 if (dir.fileType === ShellHandler.FileInfo.FileType.DIRECTORY) try {
                     allFilesToBackup.addAll(
                         shell.suGetDetailedDirectoryContents(dir.absolutePath, true, dir.filename)
+                            .filterNot { file: ShellHandler.FileInfo ->
+                                file.filename in DATA_EXCLUDED_FILES
+                            }
                     )
                 } catch (e: ShellCommandFailedException) {
                     if (isFileNotFoundException(e)) {
