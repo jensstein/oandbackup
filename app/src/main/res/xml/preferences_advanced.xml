@@ -90,6 +90,12 @@
         android:summary="use superuser file system access instead of SAF if the real file system can be found"
         android:title="shadowRootFileForSAF" />
 
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="true"
+        android:key="catchUncaughtException"
+        android:summary="unexpected exceptions are caught and output to logcat and app is restarted (needs restart when toggling)"
+        android:title="catchUncaughtException" />
+
     <androidx.preference.SeekBarPreference
         android:defaultValue="0"
         android:inputType="number"

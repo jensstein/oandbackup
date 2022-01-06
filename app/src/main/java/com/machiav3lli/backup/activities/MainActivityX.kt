@@ -31,6 +31,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
@@ -106,6 +107,38 @@ class MainActivityX : BaseActivity() {
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
+        if(PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("catchUncaughtException", true)) {
+            Thread.setDefaultUncaughtExceptionHandler { thread, e ->
+                try {
+                    LogsHandler.unhandledException(e)
+                    LogsHandler(context).writeToLogFile(
+                        "uncaught exception happened:\n\n" +
+                                "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+                                runAsRoot("logcat --pid=${Process.myPid()}").out.joinToString("\n")
+                    )
+                    val message = LogsHandler.message(e)
+                    object : Thread() {
+                        override fun run() {
+                            Looper.prepare()
+                            repeat(5) {
+                                Toast.makeText(
+                                    MainActivityX.activity,
+                                    "Uncaught Exception\n${e.message}\nrestarting application...",
+                                    Toast.LENGTH_LONG
+                                ).show();
+                            }
+                            Looper.loop()
+                        }
+                    }.start()
+                    Thread.sleep(5000)
+                } finally {
+                    System.exit(2)
+                }
+            }
+        }
+
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
