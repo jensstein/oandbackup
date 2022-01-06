@@ -535,6 +535,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         uidgidcon: Array<String>
     ) {
         try {
+            val (uid, gid, con) = uidgidcon
             Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
             val dataContents: MutableList<String> =
@@ -549,17 +550,17 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 Timber.i("No chown targets. Is this an app without any $dataType ? Doing nothing.")
                 return
             }
-            Timber.d("Changing owner and group of '$targetPath' to ${uidgidcon[0]}:${uidgidcon[1]} and selinux context to ${uidgidcon[2]}")
+            Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
             var command =
-                "$utilBoxQuoted chown ${uidgidcon[0]}:${uidgidcon[1]} ${
+                "$utilBoxQuoted chown $uid:$gid ${
                     quote(RootFile(targetPath).absolutePath)
-                } ; $utilBoxQuoted chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${
+                } ; $utilBoxQuoted chown -R $uid:$gid ${
                     quoteMultiple(chownTargets)
                 }"
-            command += if (uidgidcon[2] == "?") //TODO hg42: when does it happen?
+            command += if (con == "?") //TODO hg42: when does it happen?
                 " ; restorecon -RF -v ${quote(targetPath)}"
             else
-                " ; chcon -R -h -v '${uidgidcon[2]}' ${quote(targetPath)}"
+                " ; chcon -R -h -v '$con' ${quote(targetPath)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $dataType"
