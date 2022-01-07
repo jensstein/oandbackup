@@ -397,9 +397,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             val excludeCache = ShellHandler.findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
 
             var options = ""
-            options += " --exclude " + quote(exclude)
+            options += " --exclude ${quote(exclude)}"
             if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
-                options += " --exclude " + quote(excludeCache)
+                options += " --exclude ${quote(excludeCache)}"
             }
 
             val cmd = "su --mount-master -c sh ${quote(tarScript)} create ${options} ${quote(sourcePath)}"

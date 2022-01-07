@@ -17,7 +17,7 @@ while [[ $1 == --* ]]; do
 
   if [[ $1 == --exclude ]]; then
     shift
-    exclude=" -X $1"
+    exclude="$exclude -X $1"
     shift
     continue
   fi
