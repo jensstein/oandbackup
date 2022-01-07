@@ -24,8 +24,12 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.LOG_FOLDER_NAME
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
@@ -43,22 +47,6 @@ import java.util.*
 /*
 List of packages to be ignored for said reasons
  */
-
-val ignoredPackages = ("""(?x)
-    # complete matches
-      android
-    | com\.android\.shell
-    | com\.android\.systemui
-    | com\.android\.externalstorage
-    | com\.android\.mtp
-    | com\.android\.providers\.downloads\.ui
-    | com\.google\.android\.gms
-    | com\.google\.android\.gsf
-    # wildcard matches
-    | com\.android\.providers\.media\b.*
-    # program values
-    | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
-    """).toRegex()
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =

@@ -20,13 +20,13 @@ package com.machiav3lli.backup.actions
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.handler.ignoredPackages
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
 import timber.log.Timber
@@ -120,7 +120,36 @@ abstract class BaseAppAction protected constructor(
         val DATA_EXCLUDED_CACHE_DIRS = listOf("cache", "code_cache")
         val DATA_EXCLUDED_DIRS = listOf("lib", "no_backup")
         val DATA_EXCLUDED_FILES = listOf("com.google.android.gms.appid.xml")
-        val doNotStop = ignoredPackages
+
+        val ignoredPackages = ("""(?x)
+            # complete matches
+              android
+            | com\.android\.shell
+            | com\.android\.systemui
+            | com\.android\.externalstorage
+            | com\.android\.mtp
+            | com\.android\.providers\.downloads\.ui
+            | com\.google\.android\.gms
+            | com\.google\.android\.gsf
+            # wildcard matches
+            | com\.android\.providers\.media\b.*
+            """).toRegex()
+
+        val doNotStop = ("""(?x)
+            # complete matches
+              android
+            | com\.android\.shell
+            | com\.android\.systemui
+            | com\.android\.externalstorage
+            | com\.android\.mtp
+            | com\.android\.providers\.downloads\.ui
+            | com\.google\.android\.gms
+            | com\.google\.android\.gsf
+            # wildcard matches
+            | com\.android\.providers\.media\b.*
+            # program values
+            | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
+            """).toRegex()
 
         private val stopped = mutableMapOf<String, List<String>>()
 
