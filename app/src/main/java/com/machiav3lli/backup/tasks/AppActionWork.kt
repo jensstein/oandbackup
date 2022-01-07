@@ -107,9 +107,10 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 } finally {
                     result?.let {
                         if (!it.succeeded) {
+                            val message = "${ai.packageName}\n${it.message}"
                             showNotification(
                                 context, MainActivityX::class.java,
-                                result.hashCode(), ai.packageLabel, it.message, it.message, false
+                                result.hashCode(), ai.packageLabel, it.message, message, false
                             )
                         }
                     }
