@@ -49,7 +49,7 @@ class ExportsHandler(var context: Context) {
         scheds.forEach {
             val fileName = String.format(EXPORTS_INSTANCE, it.name)
             exportsDirectory?.createFile("application/octet-stream", fileName)?.let { exportFile ->
-                BufferedOutputStream(exportFile.outputStream)
+                BufferedOutputStream(exportFile.outputStream())
                     .use { exportOut ->
                         exportOut.write(
                             it.toGson().toByteArray(StandardCharsets.UTF_8)

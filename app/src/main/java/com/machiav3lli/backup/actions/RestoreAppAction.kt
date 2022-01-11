@@ -24,11 +24,11 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.ShellHandler.Companion.findScript
+import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
 import com.machiav3lli.backup.items.*
@@ -151,7 +151,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             val removeTargets = targetContents
                 .map { s -> RootFile(targetPath, s).absolutePath }
             Timber.d("Removing existing files in $targetPath")
-            val command = "$utilBoxQuoted rm -rf ${quoteMultiple(removeTargets)}"
+            val command = "$utilBoxQ rm -rf ${quoteMultiple(removeTargets)}"
             runAsRoot(command)
         }
     }
@@ -264,7 +264,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             if (!success)
                 Timber.i("[$packageName] Restore unsuccessful")
             val command =
-                "$utilBoxQuoted rm ${
+                "$utilBoxQ rm ${
                     quoteMultiple(
                         apksToRestore.map {
                             RootFile(
@@ -321,7 +321,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         isEncrypted: Boolean,
         iv: ByteArray?
     ): InputStream {
-        var inputStream: InputStream = BufferedInputStream(archive.inputStream!!)
+        var inputStream: InputStream = BufferedInputStream(archive.inputStream()!!)
         if (isEncrypted) {
             val password = context.getEncryptionPassword()
             if (password.isNotEmpty() && context.isEncryptionEnabled()) {
@@ -375,7 +375,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                         )
                         // Move all the extracted data into the target directory
                         val command =
-                            "$utilBoxQuoted mv -f ${quote(tempDir.toString())}/* ${quote(targetPath)}/"
+                            "$utilBoxQ mv -f ${quote(tempDir.toString())}/* ${quote(targetPath)}/"
                         runAsRoot(command)
                     }
                 }
@@ -432,10 +432,10 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                         DATA_EXCLUDED_DIRS
                     )
 
-                    val tarScript = findScript("tar.sh").toString()
+                    val tarScript = findAssetFile("tar.sh").toString()
                     val qTarScript = quote(tarScript)
-                    val exclude = findScript(ShellHandler.EXCLUDE_FILE).toString()
-                    val excludeCache = findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+                    val exclude = findAssetFile(ShellHandler.EXCLUDE_FILE).toString()
+                    val excludeCache = findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
 
                     var options = ""
                     options += " --exclude " + quote(exclude)
@@ -446,7 +446,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     }
 
                     val cmd =
-                        "su --mount-master -c sh $qTarScript extract ${options} ${quote(targetDir)}"
+                        "su --mount-master -c sh $qTarScript extract $utilBoxQ ${options} ${quote(targetDir)}"
                     Timber.i("SHELL: $cmd")
 
                     val process = Runtime.getRuntime().exec(cmd)
@@ -553,9 +553,9 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             }
             Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
             var command =
-                "$utilBoxQuoted chown $uid:$gid ${
+                "$utilBoxQ chown $uid:$gid ${
                     quote(RootFile(targetPath).absolutePath)
-                } ; $utilBoxQuoted chown -R $uid:$gid ${
+                } ; $utilBoxQ chown -R $uid:$gid ${
                     quoteMultiple(chownTargets)
                 }"
             command += if (con == "?") //TODO hg42: when does it happen?

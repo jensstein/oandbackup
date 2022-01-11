@@ -1,7 +1,8 @@
 package tests
 
-import com.machiav3lli.backup.handler.ShellHandler
+import androidx.test.platform.app.InstrumentationRegistry
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.topjohnwu.superuser.ShellUtils.fastCmd
 import org.junit.Assert.assertEquals
@@ -10,11 +11,12 @@ import java.io.File
 
 class Test_RootFile {
 
-    val utilBox
-        get() = ShellHandler.utilBoxQuoted
-
-    val fileJ = File.createTempFile("Try_File", ".test")
-    val fileX = RootFile("/cache/Test_RootFile.test")
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    //val context = Utils.getDeContext(Utils.getContext())
+    //val context = Utils.getContext()
+    val baseDir = context.cacheDir.absolutePath
+    val fileJ = File.createTempFile("Test_RootFile", ".test")
+    val fileX = RootFile(baseDir, "Test_RootFile.test")
 
     @Test
     fun test_RootFile() {
@@ -69,8 +71,8 @@ class Test_RootFile {
         ).forEach { todo ->
             todo(fileJ)
             todo(fileX)
-            val resultJ = fastCmd("$utilBox stat -c '%a' ${quote(fileJ)}")
-            val resultX = fastCmd("$utilBox stat -c '%a' ${quote(fileX)}")
+            val resultJ = fastCmd("$utilBoxQ stat -c '%a' ${quote(fileJ)}")
+            val resultX = fastCmd("$utilBoxQ stat -c '%a' ${quote(fileX)}")
             //println("${if(resultJ==resultX) "ok  " else "FAIL"} $resultJ $resultX")
             assertEquals(resultJ, resultX)
         }

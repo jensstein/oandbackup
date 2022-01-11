@@ -21,7 +21,7 @@ import android.content.Context
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
@@ -90,7 +90,7 @@ class RestoreSpecialAction(context: Context, shell: ShellHandler) :
                 val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
                     commands.add(
-                        "$utilBoxQuoted mv -f ${
+                        "$utilBoxQ mv -f ${
                             quote(
                                 File(
                                     tempPath,

@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
-import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.handler.LogsHandler
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -34,7 +33,7 @@ open class BackupItem {
 
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            propertiesFile.inputStream.let { inputStream ->
+            propertiesFile.inputStream().let { inputStream ->
                 backupProperties = BackupProperties.fromGson(inputStream!!.reader().readText())
                 backupInstanceDir = backupProperties.getBackupDir(propertiesFile.parent)!!
             }

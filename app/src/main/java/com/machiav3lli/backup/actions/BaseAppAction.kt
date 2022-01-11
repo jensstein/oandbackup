@@ -24,6 +24,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ignoredPackages
 import com.topjohnwu.superuser.Shell
@@ -56,14 +57,14 @@ abstract class BaseAppAction protected constructor(
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            val script = ShellHandler.findScript("package.sh").toString()
+            val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("---------------------------------------- Preprocess package ${packageName} uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
                 return
             }
             if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
-                val shellResult = runAsRoot("sh ${script} pre ${prepostOptions()} ${packageName} ${applicationInfo.uid}")
+                val shellResult = runAsRoot("sh ${script} pre $utilBoxQ ${prepostOptions()} ${packageName} ${applicationInfo.uid}")
                 stopped[packageName] = shellResult.out.asSequence()
                     .filter { line: String -> line.isNotEmpty() }
                     .toMutableList()
@@ -81,7 +82,7 @@ abstract class BaseAppAction protected constructor(
     open fun postprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            val script = ShellHandler.findScript("package.sh").toString()
+            val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("........................................ Postprocess package ${packageName} uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
@@ -89,7 +90,7 @@ abstract class BaseAppAction protected constructor(
             }
             stopped[packageName]?.let { pids ->
                 Timber.w("Continue stopped PIDs for package ${packageName}: ${pids.joinToString(" ")}")
-                runAsRoot("sh ${script} post ${prepostOptions()} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
+                runAsRoot("sh ${script} post $utilBoxQ ${prepostOptions()} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
                 stopped.remove(packageName)
             } ?: run {
                 Timber.w("No stopped PIDs for package ${packageName}")

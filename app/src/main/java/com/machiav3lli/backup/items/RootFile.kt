@@ -2,11 +2,12 @@ package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
-import java.io.File
-import java.io.FileFilter
-import java.io.FilenameFilter
+import com.topjohnwu.superuser.io.SuFileInputStream
+import com.topjohnwu.superuser.io.SuFileOutputStream
+import java.io.*
 import java.net.URI
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -52,7 +53,7 @@ import java.util.*
  * instances. These factory methods will return a normal [File] instance if the main
  * shell does not have root access, or else return a [RootFile] instance.
  */
-class RootFile internal constructor(file: File) : File(file.absolutePath) {
+class RootFile internal constructor(file: File) : File(file.absolutePath) { // SuFile(file.absolutePath) {
     /**
      * Converts this abstract pathname into a pathname string suitable
      * for shell commands.
@@ -61,37 +62,23 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     val quoted: String
         get() = ShellHandler.quote(this.absolutePath)
 
-    val utilBox: String
-        get() = ShellHandler.utilBoxQuoted
-
     constructor(pathname: String) : this(File(pathname)) {}
     constructor(parent: String?, child: String) : this(File(parent, child)) {}
     constructor(parent: File?, child: String) : this(parent?.absolutePath, child) {}
     constructor(uri: URI) : this(File(uri)) {}
 
-    private fun cmd(c: String): String {
-        return ShellUtils.fastCmd(c)
-    }
+    private fun cmd(c: String): String = ShellUtils.fastCmd(c)
 
-    private fun cmdBool(c: String): Boolean {
-        return ShellUtils.fastCmdResult(c)
-    }
+    private fun cmdBool(c: String): Boolean = ShellUtils.fastCmdResult(c)
 
-    override fun canExecute(): Boolean {
-        return cmdBool("[ -x $quoted ]")
-    }
+    override fun canExecute(): Boolean = cmdBool("[ -x $quoted ]")
 
-    override fun canRead(): Boolean {
-        return cmdBool("[ -r $quoted ]")
-    }
+    override fun canRead(): Boolean = cmdBool("[ -r $quoted ]")
 
-    override fun canWrite(): Boolean {
-        return cmdBool("[ -w $quoted ]")
-    }
+    override fun canWrite(): Boolean = cmdBool("[ -w $quoted ]")
 
-    override fun createNewFile(): Boolean {
-        return cmdBool("[ ! -e $quoted ] && $utilBox echo -n > $quoted")
-    }
+    override fun createNewFile(): Boolean =
+        cmdBool("[ ! -e $quoted ] && $utilBoxQ echo -n > $quoted")
 
     /**
      * Deletes the file or directory denoted by this abstract pathname. If
@@ -102,9 +89,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `rm` for files, and `rmdir` for directories.
      * @see File.delete
      */
-    override fun delete(): Boolean {
-        return cmdBool("$utilBox rm -f $quoted || $utilBox rmdir $quoted")
-    }
+    override fun delete(): Boolean = cmdBool("$utilBoxQ rm -f $quoted || $utilBoxQ rmdir $quoted")
 
     /**
      * Deletes the file or directory denoted by this abstract pathname. If
@@ -115,18 +100,14 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `rm`.
      * @see File.delete
      */
-    fun deleteRecursive(): Boolean {
-        return cmdBool("$utilBox rm -rf $quoted")
-    }
+    fun deleteRecursive(): Boolean = cmdBool("$utilBoxQ rm -rf $quoted")
 
     /**
      * Clear the content of the file denoted by this abstract pathname.
      * Creates a new file if it does not already exist.
      * @return true if the operation succeeded
      */
-    fun clear(): Boolean {
-        return cmdBool("$utilBox echo -n > $quoted")
-    }
+    fun clear(): Boolean = cmdBool("$utilBoxQ echo -n > $quoted")
 
     /**
      * Unsupported
@@ -135,18 +116,12 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         throw UnsupportedOperationException("Unsupported RootFile operation")
     }
 
-    override fun exists(): Boolean {
-        return cmdBool("[ -e $quoted ]")
-    }
+    override fun exists(): Boolean = cmdBool("[ -e $quoted ]")
 
-    override fun getAbsolutePath(): String {
-        // We are constructed with an absolute path, no need to re-resolve again
-        return path
-    }
+    // We are constructed with an absolute path, no need to re-resolve again
+    override fun getAbsolutePath(): String = path
 
-    override fun getAbsoluteFile(): RootFile {
-        return this
-    }
+    override fun getAbsoluteFile(): RootFile = this
 
     /**
      * Returns the canonical pathname string of this abstract pathname.
@@ -156,7 +131,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.getCanonicalPath
      */
     override fun getCanonicalPath(): String {
-        val path = cmd("$utilBox readlink -e $quoted")
+        val path = cmd("$utilBoxQ readlink -e $quoted")
         return if (path.isEmpty()) getPath() else path
     }
 
@@ -176,7 +151,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     }
 
     private fun statFS(fmt: String): Long {
-        val res = cmd("$utilBox stat -fc '%S $fmt' $quoted").split(" ".toRegex()).toTypedArray()
+        val res = cmd("$utilBoxQ stat -fc '%S $fmt' $quoted").split(" ".toRegex()).toTypedArray()
         return if (res.size != 2) Long.MAX_VALUE else try {
             res[0].toLong() * res[1].toLong()
         } catch (e: NumberFormatException) {
@@ -191,9 +166,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `stat`.
      * @see File.getFreeSpace
      */
-    override fun getFreeSpace(): Long {
-        return statFS("%f")
-    }
+    override fun getFreeSpace(): Long = statFS("%f")
 
     /**
      * Returns the size of the partition.
@@ -202,9 +175,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `stat`.
      * @see File.getTotalSpace
      */
-    override fun getTotalSpace(): Long {
-        return statFS("%b")
-    }
+    override fun getTotalSpace(): Long = statFS("%b")
 
     /**
      * Returns the number of bytes available to this process on the partition.
@@ -213,35 +184,26 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `stat`.
      * @see File.getUsableSpace
      */
-    override fun getUsableSpace(): Long {
-        return statFS("%a")
-    }
+    override fun getUsableSpace(): Long = statFS("%a")
 
-    override fun isDirectory(): Boolean {
-        return cmdBool("[ -d $quoted ]")
-    }
+    override fun isDirectory(): Boolean = cmdBool("[ -d $quoted ]")
 
-    override fun isFile(): Boolean {
-        return cmdBool("[ -f $quoted ]")
-    }
+    override fun isFile(): Boolean = cmdBool("[ -f $quoted ]")
 
     /**
      * @return true if the abstract pathname denotes a block device.
      */
-    val isBlock: Boolean
-        get() = cmdBool("[ -b $quoted ]")
+    fun isBlock(): Boolean = cmdBool("[ -b $quoted ]")
 
     /**
      * @return true if the abstract pathname denotes a character device.
      */
-    val isCharacter: Boolean
-        get() = cmdBool("[ -c $quoted ]")
+    fun isCharacter(): Boolean = cmdBool("[ -c $quoted ]")
 
     /**
      * @return true if the abstract pathname denotes a symbolic link file.
      */
-    val isSymlink: Boolean
-        get() = cmdBool("[ -L $quoted ]")
+    fun isSymlink(): Boolean = cmdBool("[ -L $quoted ]")
 
     /**
      * Returns the time that the file denoted by this abstract pathname was
@@ -253,7 +215,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      */
     override fun lastModified(): Long {
         return try {
-            cmd("$utilBox stat -c '%Y' $quoted").toLong() * 1000
+            cmd("$utilBoxQ stat -c '%Y' $quoted").toLong() * 1000
         } catch (e: NumberFormatException) {
             0L
         }
@@ -268,7 +230,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      */
     override fun length(): Long {
         try {
-            return cmd("$utilBox stat -c '%s' $quoted").toLong()
+            return cmd("$utilBoxQ stat -c '%s' $quoted").toLong()
         } catch (ignored: NumberFormatException) {
         }
         return 0L
@@ -282,7 +244,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.mkdir
      */
     override fun mkdir(): Boolean {
-        return cmdBool("$utilBox mkdir $quoted")
+        return cmdBool("$utilBoxQ mkdir $quoted")
     }
 
     /**
@@ -294,7 +256,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.mkdirs
      */
     override fun mkdirs(): Boolean {
-        return cmdBool("$utilBox mkdir -p $quoted")
+        return cmdBool("$utilBoxQ mkdir -p $quoted")
     }
 
     /**
@@ -305,11 +267,11 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.renameTo
      */
     override fun renameTo(dest: File): Boolean {
-        return cmdBool("$utilBox mv -f $quoted ${ShellHandler.quote(dest.absolutePath)}")
+        return cmdBool("$utilBoxQ mv -f $quoted ${ShellHandler.quote(dest.absolutePath)}")
     }
 
     fun setPerms(set: Boolean, ownerOnly: Boolean, b: Int): Boolean {
-        var perms = cmd("$utilBox stat -c '%a' $quoted")
+        var perms = cmd("$utilBoxQ stat -c '%a' $quoted")
         if (perms.length > 4) return false  //TODO what about special permissions (suid, ...) ???
         while (perms.length < 3)
             perms = "0" + perms
@@ -325,7 +287,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
                 chars[ri] = (perm + '0'.code).toChar()
             }
         }
-        return cmdBool("$utilBox chmod " + String(chars) + " $quoted")
+        return cmdBool("$utilBoxQ chmod " + String(chars) + " $quoted")
     }
 
     /**
@@ -392,7 +354,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     override fun setLastModified(time: Long): Boolean {
         val df: DateFormat = SimpleDateFormat("yyyyMMddHHmm", Locale.US)
         val date = df.format(Date(time))
-        return cmdBool("[ -e $quoted ] && $utilBox touch -t $date $quoted")
+        return cmdBool("[ -e $quoted ] && $utilBoxQ touch -t $date $quoted")
     }
 
     /**
@@ -417,7 +379,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      */
     override fun list(filenameFilter: FilenameFilter?): Array<String>? {
         if (!isDirectory) return null
-        val files = runAsRoot("$utilBox ls -bA1 $quoted").out.map {
+        val files = runAsRoot("$utilBoxQ ls -bA1 $quoted").out.map {
             ShellHandler.FileInfo.unescapeLsOutput(it)
         }.filter {
             filenameFilter?.accept(this, name) ?: true
@@ -475,6 +437,10 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         }
         return files?.toTypedArray()
     }
+
+    fun inputStream(): InputStream  = SuFileInputStream.open(this)
+
+    fun outputStream(): OutputStream = SuFileOutputStream.open(this)
 
     companion object {
         fun open(pathname: String): File {

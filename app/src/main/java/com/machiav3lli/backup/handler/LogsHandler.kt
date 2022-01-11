@@ -50,7 +50,7 @@ class LogsHandler(var context: Context) {
             BACKUP_DATE_TIME_FORMATTER.format(date)
         )
         logsDirectory?.createFile("application/octet-stream", logFileName)?.let { logFile ->
-            BufferedOutputStream(logFile.outputStream).use { logOut ->
+            BufferedOutputStream(logFile.outputStream()).use { logOut ->
                 logOut.write(
                     logItem.toGson().toByteArray(StandardCharsets.UTF_8)
                 )

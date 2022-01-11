@@ -114,10 +114,6 @@ class Try_shell {
         )
     }
 
-    val ext = ".nonExistingExt_${Thread.currentThread().id}"
-    val dir = "/data/local/tmp"
-    //val dir = "/cache"
-
     @Test
     fun test_shell_stdout_stderr_are_separate() {
         val result = runAsRoot("toybox echo stdout ; toybox echo stderr 1>&2")

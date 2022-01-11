@@ -22,7 +22,7 @@ import android.os.Build
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
@@ -65,10 +65,10 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
                 val command =
                     "(mount -o remount,rw ${quote(mountPoint)} && " +
                         "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
-                            "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
-                            "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
-                            "$utilBoxQuoted mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
-                            "$utilBoxQuoted chmod 644 ${quote(apkTargetPath)}" +
+                            "$utilBoxQ chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
+                            "$utilBoxQ touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
+                            "$utilBoxQ mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
+                            "$utilBoxQ chmod 644 ${quote(apkTargetPath)}" +
                         ")" +
                     "); mount -o remount,ro $mountPoint"
                 try {

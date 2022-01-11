@@ -223,7 +223,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
         val listFile =
             requireContext().getBackupDir().createFile("application/octet-stream", fileName)
-        BufferedOutputStream(listFile.outputStream)
+        BufferedOutputStream(listFile.outputStream())
             .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
         showNotification(
             requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),

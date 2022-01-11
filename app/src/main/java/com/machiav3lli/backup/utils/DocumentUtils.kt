@@ -8,10 +8,10 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.FileUtils.getBackupDirUri
-import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.io.IOUtils
 import timber.log.Timber
@@ -60,9 +60,10 @@ fun suRecursiveCopyFilesToDocument(
  */
 @Throws(IOException::class)
 fun suCopyFileToDocument(sourcePath: String, targetDir: StorageFile) {
-    SuFileInputStream.open(sourcePath).use { inputStream ->
-        targetDir.createFile(binaryMimeType, File(sourcePath).name).let { newFile ->
-            newFile.outputStream!!.use { outputStream ->
+    val sourceFile = RootFile(sourcePath)
+    sourceFile.inputStream().use { inputStream ->
+        targetDir.createFile(binaryMimeType, sourceFile.name).let { newFile ->
+            newFile.outputStream().use { outputStream ->
                 IOUtils.copy(inputStream, outputStream)
             }
         }
@@ -75,7 +76,7 @@ fun suCopyFileToDocument(
     targetDir: StorageFile
 ) {
     targetDir.createFile(binaryMimeType, sourceFileInfo.filename).let { newFile ->
-        newFile.outputStream!!.use { outputStream ->
+        newFile.outputStream()!!.use { outputStream ->
             ShellHandler.quirkLibsuReadFileWorkaround(sourceFileInfo, outputStream)
         }
     }
@@ -97,7 +98,7 @@ fun suRecursiveCopyFileFromDocument(sourceDir: StorageFile, targetPath: String?)
 @Throws(IOException::class)
 fun suCopyFileFromDocument(sourceFile: StorageFile, targetPath: String) {
     SuFileOutputStream.open(targetPath).use { outputStream ->
-        sourceFile.inputStream!!.use { inputStream ->
+        sourceFile.inputStream().use { inputStream ->
             IOUtils.copy(inputStream, outputStream)
         }
     }

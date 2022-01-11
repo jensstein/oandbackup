@@ -37,9 +37,11 @@ import java.util.regex.Pattern
 class ShellHandler {
 
     init {
+        // TODO: hg42: duplicate to SplashActivity?
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(
             Shell.Builder.create()
+                //.setInitializers(BusyBoxInstaller::class.java)
                 .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
         )
@@ -47,7 +49,7 @@ class ShellHandler {
 
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
-        val shellResult = runAsRoot("$utilBoxQuoted ls -bA1 ${quote(path)}")
+        val shellResult = runAsRoot("$utilBoxQ ls -bA1 ${quote(path)}")
         return shellResult.out.map { FileInfo.unescapeLsOutput(it) }.toTypedArray()
     }
 
@@ -57,7 +59,7 @@ class ShellHandler {
         recursive: Boolean,
         parent: String? = null
     ): List<FileInfo> {
-        val shellResult = runAsRoot("$utilBoxQuoted ls -bAll ${quote(path)}")
+        val shellResult = runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
             .filter { line: String -> line.isNotEmpty() }
@@ -95,7 +97,7 @@ class ShellHandler {
         // apparently uid/gid is less tested than names
         var shellResult: Shell.Result? = null
         try {
-            val command = "$utilBoxQuoted ls -bdAlZ ${quote(filepath)}"
+            val command = "$utilBoxQ ls -bdAlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
             return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
@@ -109,18 +111,18 @@ class ShellHandler {
         if (shellResult.out.isNotEmpty()) {
             utilBoxPath = shellResult.out.joinToString("")
             if (utilBoxPath.isNotEmpty()) {
-                utilBoxQuoted = quote(utilBoxPath)
-                shellResult = runAsRoot("$utilBoxQuoted --version")
+                utilBoxQ = quote(utilBoxPath)
+                shellResult = runAsRoot("$utilBoxQ --version")
                 if (shellResult.out.isNotEmpty()) {
                     val utilBoxVersion = shellResult.out.joinToString("")
-                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQuoted : $utilBoxVersion")
+                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
                 }
                 return
             }
         }
         // not found => try bare executables (no utilbox prefixed)
         utilBoxPath = ""
-        utilBoxQuoted = ""
+        utilBoxQ = ""
     }
 
     class ShellCommandFailedException(
@@ -334,13 +336,14 @@ class ShellHandler {
 
         var utilBoxPath = ""
             private set
-        var utilBoxQuoted = ""
+        var utilBoxQ = ""
             private set
         lateinit var scriptDir : File
             private set
         var scriptUserDir : File? = null
             private set
-        private val UTILBOX_NAMES = listOf("toybox", "busybox")
+        //private val UTILBOX_NAMES = listOf("busybox", "/sbin/.magisk/busybox/busybox", "toybox")
+        private val UTILBOX_NAMES = listOf("toybox")    // only toybox will work currently
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
         val EXCLUDE_FILE = "tar_EXCLUDE"
@@ -477,13 +480,13 @@ class ShellHandler {
             }
         }
 
-        fun findScript(script : String) : File? {
+        fun findAssetFile(assetFileName : String) : File? {
             var found : File? = null
             scriptUserDir?.let {
-                found = File(it, script)
+                found = File(it, assetFileName)
             }
             if( ! (found?.isFile ?: false) )
-                found = File(scriptDir, script)
+                found = File(scriptDir, assetFileName)
             return found
         }
     }
@@ -499,7 +502,7 @@ class ShellHandler {
                 false
             }
         }
-        if (utilBoxQuoted.isEmpty()) {
+        if (utilBoxQ.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }
@@ -512,4 +515,3 @@ class ShellHandler {
         scriptUserDir?.mkdirs()
     }
 }
-

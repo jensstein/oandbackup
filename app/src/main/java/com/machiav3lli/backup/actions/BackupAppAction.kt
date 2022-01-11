@@ -27,6 +27,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.utils.*
@@ -171,7 +172,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         )
         val propertiesFile =
             packageBackupDir.createFile("application/octet-stream", propertiesFileName)
-        propertiesFile.outputStream?.use { propertiesOut ->
+        propertiesFile.outputStream()?.use { propertiesOut ->
             propertiesOut.write(
                 properties.toGson().toByteArray(StandardCharsets.UTF_8)
             )
@@ -195,7 +196,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val gzipParams = GzipParameters()
         gzipParams.compressionLevel = context.getCompressionLevel()
 
-        var outStream: OutputStream = backupFile.outputStream!!
+        var outStream: OutputStream = backupFile.outputStream()!!
 
         if (password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
@@ -378,7 +379,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val gzipParams = GzipParameters()
         gzipParams.compressionLevel = context.getCompressionLevel()
 
-        var outStream: OutputStream = backupFile.outputStream!!
+        var outStream: OutputStream = backupFile.outputStream()!!
 
         if (password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
@@ -392,9 +393,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
         var result = false
         try {
-            val tarScript = ShellHandler.findScript("tar.sh").toString()
-            val exclude = ShellHandler.findScript(ShellHandler.EXCLUDE_FILE).toString()
-            val excludeCache = ShellHandler.findScript(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+            val tarScript = ShellHandler.findAssetFile("tar.sh").toString()
+            val exclude = ShellHandler.findAssetFile(ShellHandler.EXCLUDE_FILE).toString()
+            val excludeCache = ShellHandler.findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
 
             var options = ""
             options += " --exclude ${quote(exclude)}"
@@ -402,7 +403,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 options += " --exclude ${quote(excludeCache)}"
             }
 
-            val cmd = "su --mount-master -c sh ${quote(tarScript)} create ${options} ${quote(sourcePath)}"
+            val cmd = "su --mount-master -c sh ${quote(tarScript)} create $utilBoxQ ${options} ${quote(sourcePath)}"
             Timber.i("SHELL: $cmd")
 
             val process = Runtime.getRuntime().exec(cmd)

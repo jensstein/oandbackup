@@ -10,8 +10,6 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.utils.*
 import com.topjohnwu.superuser.ShellUtils
-import com.topjohnwu.superuser.io.SuFileInputStream
-import com.topjohnwu.superuser.io.SuFileOutputStream
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -108,23 +106,23 @@ open class StorageFile {
     val isPropertyFile: Boolean
         get() = isFile && name?.endsWith(".properties") ?: false
 
-    val inputStream: InputStream?
-        get() {
-            return file?.let { file ->
-                SuFileInputStream.open(file)
-            } ?: uri?.let { uri ->
-                context?.contentResolver?.openInputStream(uri)
-            }
+    fun inputStream(): InputStream? {
+        return file?.let { file ->
+            //SuFileInputStream.open(file)
+            file.inputStream()
+        } ?: uri?.let { uri ->
+            context?.contentResolver?.openInputStream(uri)
         }
+    }
 
-    val outputStream: OutputStream?
-        get() {
-            return file?.let { file ->
-                SuFileOutputStream.open(file)
-            } ?: uri?.let { uri ->
-                context?.contentResolver?.openOutputStream(uri, "w")
-            }
+    fun outputStream(): OutputStream? {
+        return file?.let { file ->
+            //SuFileOutputStream.open(file)
+            file.outputStream()
+        } ?: uri?.let { uri ->
+            context?.contentResolver?.openOutputStream(uri, "w")
         }
+    }
 
     fun createDirectory(displayName: String): StorageFile {
         return file?.let {

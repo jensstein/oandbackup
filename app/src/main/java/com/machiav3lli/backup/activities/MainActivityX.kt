@@ -58,7 +58,7 @@ import java.lang.ref.WeakReference
 class MainActivityX : BaseActivity() {
 
     companion object {
-        private val VERSION_FILE = "__version__"
+        val VERSION_FILE = "__version__"
         val ASSETS_SUBDIR = "assets"
 
         var shellHandlerInstance: ShellHandler? = null

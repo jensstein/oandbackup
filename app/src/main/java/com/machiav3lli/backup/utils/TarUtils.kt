@@ -147,7 +147,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 
 @Throws(IOException::class, ShellCommandFailedException::class)
 fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
-    val qUtilBox = ShellHandler.utilBoxQuoted
+    val qUtilBox = ShellHandler.utilBoxQ
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->

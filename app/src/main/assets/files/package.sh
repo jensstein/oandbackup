@@ -1,7 +1,8 @@
 command=$1
 shift
 
-utilbox=$(which toybox busybox | (read line ; echo "$line"))
+utilbox=$1
+shift
 
 suspend=false
 

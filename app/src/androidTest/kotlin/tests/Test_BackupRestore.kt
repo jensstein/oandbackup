@@ -8,6 +8,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.topjohnwu.superuser.ShellUtils.fastCmd
@@ -18,8 +19,9 @@ import timber.log.Timber
 class Test_BackupRestore {
 
     companion object {
-        private val qUtilBox = ShellHandler.utilBoxQuoted
         val context = InstrumentationRegistry.getInstrumentation().targetContext
+        //val context = Utils.getDeContext(Utils.getContext())
+        //val context = Utils.getContext()
 
         lateinit var tempDir: RootFile
         lateinit var testDir: RootFile
@@ -31,9 +33,9 @@ class Test_BackupRestore {
         fun setupClass() {
             //tempDir = RootFile(context.cacheDir, "test_backup_restore")
             tempDir = RootFile(context.dataDir, "test_backup_restore")
+            //tempDir = RootFile("/data/local/tmp/test_backup_restore")
             tempDir.deleteRecursive()
             tempDir.mkdirs()
-            //tempDir = RootFile("/data/local/tmp/test_backup_restore")
             testDir = prepareDirectory()
         }
 
@@ -54,14 +56,17 @@ class Test_BackupRestore {
             val files = RootFile(dir, "files")
             files.mkdirs()
 
+            val regular = RootFile(dir, "regular")
+            fastCmd("$utilBoxQ echo TEST >${regular.quoted}")
+
             val fifo = RootFile(dir, "fifo")
-            fastCmd("$qUtilBox mkfifo ${fifo.quoted}")
+            fastCmd("$utilBoxQ mkfifo ${fifo.quoted}")
 
             val symLinkDirRel = RootFile(dir, "link_sym_dir_rel")
-            fastCmd("cd ${dir.quoted} && $qUtilBox ln -s ${files.name} ${symLinkDirRel.name}")
+            fastCmd("cd ${dir.quoted} && $utilBoxQ ln -s ${files.name} ${symLinkDirRel.name}")
 
             val symLinkDirAbs = RootFile(dir, "link_sym_dir_abs")
-            fastCmd("$qUtilBox ln -s ${files.absolutePath} ${symLinkDirAbs.quoted}")
+            fastCmd("$utilBoxQ ln -s ${files.absolutePath} ${symLinkDirAbs.quoted}")
 
             contentLs = listContent(dir)
             Timber.i(contentLs)
@@ -139,6 +144,7 @@ class Test_BackupRestore {
             lrwxrwxrwx root/root 0 link_sym_dir_abs -> <ABSLINK>
             lrwxrwxrwx root/root 0 link_sym_dir_rel -> files
             prw-r--r-- root/root 0 fifo
+            -rw-r--r-- root/root 0 regular
             """.trimIndent().replace("<ABSLINK>", RootFile(testDir, "files").absolutePath)
         assertEquals(
             expected,
