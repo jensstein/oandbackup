@@ -5,6 +5,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
+import com.topjohnwu.superuser.io.SuFile
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import java.io.*
@@ -32,28 +33,9 @@ import java.util.*
 */
 
 /**
- * A [File] implementation using root shell.
- *
- *
- * All methods of this class are implemented by executing commands via the main shell.
- *
- *
- * This class has the same behavior as a normal [File], however none of the operations
- * are atomic. This is a limitation for using shell commands.
- *
- *
- * Each method description in this class will list out its required commands.
- * The following commands exist on all Android versions: `rm`, `rmdir`,
- * `mv`, `ls`, and `mkdir`.
- * The following commands require `toybox` on Android 6.0 and higher, or `busybox`
- * to support legacy devices: `readlink`, `touch`, and `stat`.
- *
- *
- * This class has handy factory methods `RootFile.open(...)` for obtaining [File]
- * instances. These factory methods will return a normal [File] instance if the main
- * shell does not have root access, or else return a [RootFile] instance.
+ * A [SuFile] implementation using OAndBackupX standards (utilBox, quoting, etc.)
  */
-class RootFile internal constructor(file: File) : File(file.absolutePath) { // SuFile(file.absolutePath) {
+class RootFile internal constructor(file: File) : File(file.absolutePath) {
     /**
      * Converts this abstract pathname into a pathname string suitable
      * for shell commands.
@@ -147,7 +129,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) { // S
     }
 
     override fun getParentFile(): RootFile? {
-        return if (parent == null) null else RootFile(parent)
+        return parent?.let { RootFile(it) }
     }
 
     private fun statFS(fmt: String): Long {
@@ -438,9 +420,9 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) { // S
         return files?.toTypedArray()
     }
 
-    fun inputStream(): InputStream  = SuFileInputStream.open(this)
+    fun inputStream(): InputStream  = SuFileInputStream.open(SuFile(this.absolutePath))
 
-    fun outputStream(): OutputStream = SuFileOutputStream.open(this)
+    fun outputStream(): OutputStream = SuFileOutputStream.open(SuFile(this.absolutePath))
 
     companion object {
         fun open(pathname: String): File {
