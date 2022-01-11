@@ -30,8 +30,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 31
-        versionCode = 7000
-        versionName = "7.0.0"
+        versionCode = 8000
+        versionName = "8.0.0"
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
