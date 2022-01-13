@@ -255,7 +255,7 @@
     <string name="backup">Резервне копіювання</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">щодня</item>
-        <item quantity="few">кожні %d днів</item>
+        <item quantity="few">кожні %d дні</item>
         <item quantity="many">кожні %d днів</item>
         <item quantity="other">кожні %d днів</item>
     </plurals>
@@ -304,4 +304,13 @@
     <string name="prefs_mediadata_summary">Резервне копіювання та відновлення медіафайлів застосунку, які розміщуються на зовнішньому сховищі (наприклад /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Резервне копіювання медіафайлів</string>
     <string name="radio_mediadata">Медіадані</string>
+    <string name="prefs_compression_level">Рівень стиснення</string>
+    <string name="prefs_compression_level_summary">Нижче значення стискає швидше, але файли тоді більші. Вище значення стискає краще, але повільніше.</string>
+    <string name="home">Домівка</string>
+    <string name="all_data">Перевірити всі дані</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Не вдалося відновити дані додатку.</string>
+    <string name="all_apk">Перевірити всі APK</string>
+    <string name="showDisabled">Вимкнені додатки</string>
+    <string name="prefs_accent_8">Перанський гарбуз</string>
+    <string name="prefs_secondary_8">М\'ята</string>
 </resources>
