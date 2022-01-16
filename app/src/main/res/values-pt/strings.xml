@@ -312,4 +312,5 @@
     <string name="showDisabled">Apps desativados</string>
     <string name="prefs_compression_level_summary">Um valor baixo comprime mais rápido mas gera ficheiros maiores. Um valor alto comprime melhor mas demora mais.</string>
     <string name="all_data">Verificar todos os dados</string>
+    <string name="prefs_accent_8">Pumpkin Perano</string>
 </resources>
