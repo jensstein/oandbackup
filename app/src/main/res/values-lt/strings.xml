@@ -306,4 +306,8 @@
     <string name="prefs_secondary_0">Arkties žydrumo</string>
     <string name="prefs_secondary_5">Flamingo rožinė</string>
     <string name="prefs_secondary_6">Šiferio spalva</string>
+    <string name="showDisabled">Išjungtos programėlės</string>
+    <string name="prefs_compression_level">Glaudinimo lygis</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Programėlės duomenys nebuvo atkurti.</string>
+    <string name="prefs_compression_level_summary">Mažesnė reikšmė glaudina greičiau, bet padaro failus didesniais. Didesnė vertė suglaudina geriau, bet tai užima daugiau laiko.</string>
 </resources>

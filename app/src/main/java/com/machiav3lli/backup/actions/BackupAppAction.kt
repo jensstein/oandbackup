@@ -255,6 +255,54 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         }
     }
 
+    @Throws(BackupFailedException::class)
+    private fun assembleFileList(sourceDirectory: String): List<ShellHandler.FileInfo> {
+        // Check what are the contents to backup. No need to start working, if the directory does not exist
+        return try {
+            // Get a list of directories in the directory to backup
+            var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
+                .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
+
+            // Excludes cache and libs, when we don't want to backup'em
+            // TODO maybe remove the option and force the exclusion?
+            dirsInSource = dirsInSource
+                .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
+                .toList()
+            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+                dirsInSource = dirsInSource
+                    .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_CACHE_DIRS.contains(dir.filename) }
+                    .toList()
+            }
+
+            // if the list is empty, there is nothing to do
+            val allFilesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList()
+            if (dirsInSource.isEmpty()) {
+                return allFilesToBackup
+            }
+            dirsInSource.forEach { dir ->
+                allFilesToBackup.add(dir)
+                // Do not process files in the "root" directory of the app's data
+                if (dir.fileType === ShellHandler.FileInfo.FileType.DIRECTORY) try {
+                    allFilesToBackup.addAll(
+                        shell.suGetDetailedDirectoryContents(dir.absolutePath, true, dir.filename)
+                    )
+                } catch (e: ShellCommandFailedException) {
+                    if (isFileNotFoundException(e)) {
+                        Timber.w("Directory has been deleted during processing: $dir")
+                    }
+                } catch (e: Throwable) {
+                    LogsHandler.unhandledException(e, dir)
+                }
+            }
+            allFilesToBackup
+        } catch (e: ShellCommandFailedException) {
+            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, sourceDirectory)
+            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+        }
+    }
+
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected fun genericBackupData(
         backupType: String,
@@ -290,49 +338,16 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         return true
     }
 
-    @Throws(BackupFailedException::class)
-    private fun assembleFileList(sourceDirectory: String): List<ShellHandler.FileInfo> {
-        // Check what are the contents to backup. No need to start working, if the directory does not exist
-        return try {
-            // Get a list of directories in the directory to backup
-            var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
-                .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
-
-            // Excludes cache and libs, when we don't want to backup'em
-            // TODO maybe remove the option and force the exclusion?
-            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
-                dirsInSource = dirsInSource
-                    .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_DIRS.contains(dir.filename) }
-                    .toList()
-            }
-
-            // if the list is empty, there is nothing to do
-            val allFilesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList()
-            if (dirsInSource.isEmpty()) {
-                return allFilesToBackup
-            }
-            dirsInSource.forEach { dir ->
-                allFilesToBackup.add(dir)
-                // Do not process files in the "root" directory of the app's data
-                if (dir.fileType === ShellHandler.FileInfo.FileType.DIRECTORY) try {
-                    allFilesToBackup.addAll(
-                        shell.suGetDetailedDirectoryContents(dir.absolutePath, true, dir.filename)
-                    )
-                } catch (e: ShellCommandFailedException) {
-                    if (isFileNotFoundException(e)) {
-                        Timber.w("Directory has been deleted during processing: $dir")
-                    }
-                } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, dir)
-                }
-            }
-            allFilesToBackup
-        } catch (e: ShellCommandFailedException) {
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, sourceDirectory)
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
-        }
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData(
+        backupType: String,
+        backupInstanceDir: Uri,
+        sourceDirectory: String,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        val filesToBackup = assembleFileList(sourceDirectory)
+        return genericBackupData(backupType, backupInstanceDir, filesToBackup, true, iv)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -343,8 +358,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     ): Boolean {
         val backupType = BACKUP_DIR_DATA
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
-        val filesToBackup = assembleFileList(app.dataPath)
-        return genericBackupData(backupType, backupInstanceDir.uri, filesToBackup, true, iv)
+        return genericBackupData(backupType, backupInstanceDir.uri, app.dataPath, true, iv)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -356,8 +370,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupType = BACKUP_DIR_EXTERNAL_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
         return try {
-            val filesToBackup = assembleFileList(app.getExternalDataPath(context))
-            genericBackupData(backupType, backupInstanceDir.uri, filesToBackup, true, iv)
+            genericBackupData(backupType, backupInstanceDir.uri, app.getExternalDataPath(context), true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
@@ -377,8 +390,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupType = BACKUP_DIR_OBB_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
         return try {
-            val filesToBackup = assembleFileList(app.getObbFilesPath(context))
-            genericBackupData(backupType, backupInstanceDir.uri, filesToBackup, false, iv)
+            genericBackupData(backupType, backupInstanceDir.uri, app.getObbFilesPath(context), false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
@@ -398,8 +410,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupType = BACKUP_DIR_MEDIA_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
         return try {
-            val filesToBackup = assembleFileList(app.getMediaFilesPath(context))
-            genericBackupData(backupType, backupInstanceDir.uri, filesToBackup, false, iv)
+            genericBackupData(backupType, backupInstanceDir.uri, app.getMediaFilesPath(context), false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
@@ -419,8 +430,7 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         val backupType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, backupType)
         return try {
-            val filesToBackup = assembleFileList(app.devicesProtectedDataPath)
-            genericBackupData(backupType, backupInstanceDir.uri, filesToBackup, true, iv)
+            genericBackupData(backupType, backupInstanceDir.uri, app.devicesProtectedDataPath, true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found

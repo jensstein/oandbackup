@@ -371,7 +371,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                     wipeDirectory(
                         targetDir,
                         DATA_EXCLUDED_DIRS
-                    ) //TODO hg: isn't it inconsistent, if we keep cache*? and what about "lib", why isn't it in the backup?
+                    )
                     // Move all the extracted data into the target directory
                     val command =
                         "$utilBoxQuoted mv -f ${quote(it.toString())}/* ${quote(targetDir)}/"
@@ -417,6 +417,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 mutableListOf(*shell.suGetDirectoryContents(targetDir))
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
             dataContents.removeAll(DATA_EXCLUDED_DIRS)
+            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
             // calculate a list what must be updated
             val chownTargets = dataContents.map { s -> File(targetDir, s).absolutePath }
             if (chownTargets.isEmpty()) {

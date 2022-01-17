@@ -155,8 +155,8 @@
     <string name="ignore_battery_optimization_not_supported">Αυτή η συσκευή δεν υποστηρίζει παράβλεψη βελτιστοποίησης μπαταρίας δυστυχώς!</string>
     <string name="failed_unzipping">Σφάλμα κατά την αποσυμπίεση των δεδομένων, ελέγξτε τον κωδικό κρυπτογράφησης!</string>
     <string name="help_license">Άδεια</string>
-    <string name="split_apks">Split APKs:</string>
-    <string name="showSplitAPKs">Split-APK</string>
+    <string name="split_apks">Διαχωρισμός APKs:</string>
+    <string name="showSplitAPKs">Διαχωρισμός-APK</string>
     <string name="intro_welcome_message">Το OAndBackupX είναι ένα fork του περιβόητου OAndBackup με τον στόχο να το φέρει στο 2020 κι έπειτα. Για την ώρα το μεγαλύτερο μέρος της λειτουργικότητας και του περιβάλλοντος χρήστη είναι ξαναγραμμένα και μερικά έχουν προστεθεί.
 \n Η εφαρμογή είναι ακόμα στα στάδια beta και αρκετή αλλαγή της βάσης γίνεται συχνά. Οπότε παρακαλώ διαβάστε τον κατάλογο αλλαγών προσεκτικά με κάθε νέα κυκλοφορία.
 \n Κάθε είδος συνεισφοράς είναι καλοδεχούμενο είτε αυτό είναι μετάφραση, ιδέες, αναφορά προβλημάτων ή δουλειά στον κώδικα.
@@ -308,4 +308,8 @@
     <string name="prefs_accent_1">Ωραίο Μωβ</string>
     <string name="prefs_accent_0">Κόκκινος Κομήτης</string>
     <string name="backup_all_updated">Δημιουργία αντιγράφου όλων των ενημερωμένων εφαρμογών</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Δεν έγινε επαναφορά των δεδομένων της εφαρμογής.</string>
+    <string name="prefs_compression_level">Επίπεδο συμπίεσης</string>
+    <string name="prefs_compression_level_summary">Ένας γρηγορότερος αλλά χαμηλότερος λόγος συμπίεσης έχει σαν αποτέλεσμα μεγαλύτερα αρχεία. Ένας υψηλότερος λόγος συμπίεσης απαιτεί περισσότερο χρόνο.</string>
+    <string name="showDisabled">Απενεργοποιημένες εφαρμογές</string>
 </resources>

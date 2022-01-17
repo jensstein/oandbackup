@@ -310,4 +310,8 @@
     <string name="all_data">Verificar todos los datos</string>
     <string name="home">Página principal</string>
     <string name="prefs_secondary_8">Menta</string>
+    <string name="prefs_compression_level">Nivel de compresión</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Los datos de aplicación no han sido restaurados.</string>
+    <string name="prefs_compression_level_summary">Un valor bajo comprime más rápido pero produce archivos grandes. Un valor grande comprime mejor pero demora más tiempo.</string>
+    <string name="showDisabled">Aplicaciones deshabilitadas</string>
 </resources>
