@@ -1,0 +1,7 @@
+**OAndBackupX 1.1.1**
+* 新增： Exodus report shortcut to AppSheet
+* 修复： not launching if there's an app with icon dimensions <= 0
+* 更改：默认将OAndBackupX复制到备份父文件夹
+* 新增：希腊语（感谢 @tsiflimagas）
+* 更新：Capitalisation and English Strings (Credits: @atrate)
+* 更新：generalize Chinese, Dutch, Polish and Swedish

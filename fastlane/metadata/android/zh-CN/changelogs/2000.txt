@@ -1,0 +1,9 @@
+**OAndBackupX 2.0.0**
+* Switched to sulib (Credits @Tiefkuehlpizze)
+* 终于移除了oab-utils（感谢@Tiefkuehlpizze）
+* New UI elments for App-, Filter- & ScheduleSheet
+* 修复定时应用数据备份（alone）
+* Fixed zipping external/deData/obb according to Prefs
+* Fixed: zipping empty external/deData/obb folders
+* 更新清除缓存功能
+* 一些界面和性能调整

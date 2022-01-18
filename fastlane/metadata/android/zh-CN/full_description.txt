@@ -1,5 +1,5 @@
 <p>对设备上的应用程序进行备份和恢复，并将应用程序数据保存到用户可访问的位置。支持备份和恢复单个或多个应用程序。</p>
 <p>OAndBackup 的分叉，支持新的安卓系统版本和更新的外观。</p>
 <p><br><b> 在 Weblate 上帮忙翻译: </b> https://hosted.weblate.org/engage/oandbackupx/.</p>
-<p><br><b>需要 root:</b> 因为它从 /data/data/, data/app 和 /system/app 复制文件。</p>
+<p><br><b>需要 root:</b> 因为它从 /data/data/, /data/app 和 /system/app 复制文件。</p>
 <p>状态：公测</p>
