@@ -26,6 +26,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.tasks.AppActionWork
 import org.apache.commons.io.IOUtils
 import timber.log.Timber
 import java.io.File
@@ -33,8 +34,8 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
-class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
-    RestoreAppAction(context, shell) {
+class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
+    RestoreAppAction(context, work, shell) {
 
     @Throws(RestoreFailedException::class)
     override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {

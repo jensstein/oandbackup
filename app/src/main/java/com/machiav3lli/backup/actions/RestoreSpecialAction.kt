@@ -27,6 +27,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.unpackTo
@@ -37,16 +38,18 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class RestoreSpecialAction(context: Context, shell: ShellHandler) :
-    RestoreAppAction(context, shell) {
+class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
+    RestoreAppAction(context, work, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     override fun restoreAllData(
+        work: AppActionWork?,
         app: AppInfo,
         backupProperties: BackupProperties,
         backupDir: StorageFile,
         backupMode: Int
     ) {
+        work?.setOperation("dat")
         restoreData(app, backupProperties, backupDir, true)
     }
 

@@ -25,6 +25,7 @@ import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -36,7 +37,13 @@ import java.io.IOException
 
 object BackupRestoreHelper {
 
-    fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
+    fun backup(
+        context: Context,
+        work: AppActionWork?,
+        shell: ShellHandler,
+        appInfo: AppInfo,
+        backupMode: Int
+    ): ActionResult {
         var reBackupMode = backupMode
         val housekeepingWhen = fromString(context.getDefaultSharedPreferences()
                 .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
@@ -52,10 +59,10 @@ object BackupRestoreHelper {
                     reBackupMode = reBackupMode and MODE_DATA
                     Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
                 }
-                BackupSpecialAction(context, shell)
+                BackupSpecialAction(context, work, shell)
             }
             else -> {
-                BackupAppAction(context, shell)
+                BackupAppAction(context, work, shell)
             }
         }
         Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
@@ -69,13 +76,14 @@ object BackupRestoreHelper {
         return result
     }
 
-    fun restore(context: Context, shellHandler: ShellHandler, appInfo: AppInfo, mode: Int,
-                backupProperties: BackupProperties, backupDir: StorageFile
+    fun restore(
+        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: AppInfo,
+        mode: Int, backupProperties: BackupProperties, backupDir: StorageFile
     ): ActionResult {
         val action: RestoreAppAction = when {
-            appInfo.isSpecial -> RestoreSpecialAction(context, shellHandler)
-            appInfo.isSystem -> RestoreSystemAppAction(context, shellHandler)
-            else -> RestoreAppAction(context, shellHandler)
+            appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
+            appInfo.isSystem -> RestoreSystemAppAction(context, work, shellHandler)
+            else -> RestoreAppAction(context, work, shellHandler)
         }
         val result = action.run(appInfo, backupProperties, backupDir, mode)
         Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")

@@ -32,6 +32,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
 import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
@@ -44,7 +45,7 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
+open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) : BaseAppAction(context, work, shell) {
     fun run(
         app: AppInfo,
         backupProperties: BackupProperties,
@@ -53,23 +54,23 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     ): ActionResult {
         try {
             Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
-            MainActivityX.setOperation(app.packageName, "R pre")
+            work?.setOperation("pre")
             val pauseApp = context.isPauseApps
-            var markerFile: StorageFile? = null
-            if (isSuspended(app.packageName))
-                markerFile = backupDir.createFile(binaryMimeType, SUSPENDED_MARKER_FILE)
+            //var markerFile: StorageFile? = null
+            //if (isSuspended(app.packageName))
+            //    markerFile = backupDir.createFile(binaryMimeType, SUSPENDED_MARKER_FILE)
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
                 preprocessPackage(app.packageName)
             }
             try {
                 if (backupMode and MODE_APK == MODE_APK) {
-                    MainActivityX.setOperation(app.packageName, "R apk")
+                    work?.setOperation("apk")
                     restorePackage(backupDir, backupProperties)
                     refreshAppInfo(context, app)    // also waits for valid paths
                 }
                 if (backupMode != MODE_APK)
-                    restoreAllData(app, backupProperties, backupDir, backupMode)
+                    restoreAllData(work, app, backupProperties, backupDir, backupMode)
             } catch (e: PackageManagerDataIncompleteException) {
                 return ActionResult(
                     app,
@@ -94,13 +95,13 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             } finally {
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    MainActivityX.setOperation(app.packageName, "R fin")
+                    work?.setOperation("fin")
                     postprocessPackage(app.packageName)
-                    markerFile?.delete()
+                    //markerFile?.delete()
                 }
             }
         } finally {
-            MainActivityX.setOperation(app.packageName)
+            work?.setOperation()
             Timber.i("$app: Restore done: $backupProperties")
         }
         return ActionResult(app, backupProperties, "", true)
@@ -108,6 +109,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     protected open fun restoreAllData(
+        work: AppActionWork?,
         app: AppInfo,
         backupProperties: BackupProperties,
         backupDir: StorageFile,
@@ -115,35 +117,35 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     ) {
         if (backupProperties.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's data")
-            MainActivityX.setOperation(app.packageName, "R dat")
+            work?.setOperation("dat")
             restoreData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backupProperties.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
             Timber.i("[${backupProperties.packageName}] Restoring app's protected data")
-            MainActivityX.setOperation(app.packageName, "R prt")
+            work?.setOperation("prt")
             restoreDeviceProtectedData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
         }
         if (backupProperties.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
             Timber.i("[${backupProperties.packageName}] Restoring app's external data")
-            MainActivityX.setOperation(app.packageName, "R ext")
+            work?.setOperation("ext")
             restoreExternalData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
         }
         if (backupProperties.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
             Timber.i("[${backupProperties.packageName}] Restoring app's obb files")
-            MainActivityX.setOperation(app.packageName, "R obb")
+            work?.setOperation("obb")
             restoreObbData(app, backupProperties, backupDir, false)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
         if (backupProperties.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's media files")
-            MainActivityX.setOperation(app.packageName, "R med")
+            work?.setOperation("med")
             restoreMediaData(app, backupProperties, backupDir, false)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's media files; not part of the backup or restore mode")

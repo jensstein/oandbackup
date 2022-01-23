@@ -40,14 +40,14 @@ open class StorageFile {
                     uri?.let { uri ->
                         try {
                             uri.lastPathSegment?.let { last ->
-                                if (last.startsWith('/') ?: false) {
+                                if (last.startsWith('/')) {
                                     file = RootFile(last)
-                                    Timber.i("using RootFile shadow tree at $file for SAF $last")
+                                    Timber.i("direct RootFile shadow tree at $file for SAF $last")
                                 } else {
                                     val (storage, path) = last.split(":")
                                     file = RootFile(RootFile("/storage", storage), path)
                                     //file = RootFile(RootFile("/mnt/media_rw", storage), path)
-                                    Timber.i("using RootFile shadow tree at $file for SAF $last")
+                                    Timber.i("found RootFile shadow tree at $file for SAF $last")
                                 }
                             }
                         } catch (e: Throwable) {

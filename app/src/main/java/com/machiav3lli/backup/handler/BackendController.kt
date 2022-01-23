@@ -28,9 +28,9 @@ import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.actions.BaseAppAction
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
@@ -78,11 +78,20 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
         MainActivityX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
             // cleanup suspended package if lock file found
             packageList.forEach { appInfo ->
-                appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)
-                    ?.let { markerFile ->
-                        BaseAppAction.cleanupSuspended(appInfo.packageName)
-                        markerFile.delete()
-                    }
+                if(0 != (MainActivityX.activity?.packageManager
+                    ?.getPackageInfo(appInfo.packageName, 0)
+                    ?.applicationInfo
+                    ?.flags
+                    ?: 0
+                        ) and ApplicationInfo.FLAG_SUSPENDED
+                ){
+                    runAsRoot("pm unsuspend ${appInfo.packageName}")
+                    //appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)
+                    //    ?.let { markerFile ->
+                    //BaseAppAction.cleanupSuspended(appInfo.packageName)
+                    //        markerFile.delete()
+                    //    }
+                }
             }
             MainActivityX.appsSuspendedChecked = true
         }

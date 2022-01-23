@@ -27,12 +27,14 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
 import timber.log.Timber
 
 abstract class BaseAppAction protected constructor(
     protected val context: Context,
+    protected val work: AppActionWork?,
     protected val shell: ShellHandler
 ) {
 
@@ -131,7 +133,7 @@ abstract class BaseAppAction protected constructor(
             | com\.android\.providers\.downloads\.ui
             | com\.google\.android\.gms
             | com\.google\.android\.gsf
-            # wildcard matches
+            # pattern matches
             | com\.android\.providers\.media\b.*
             """).toRegex()
 
@@ -145,7 +147,7 @@ abstract class BaseAppAction protected constructor(
             | com\.android\.providers\.downloads\.ui
             | com\.google\.android\.gms
             | com\.google\.android\.gsf
-            # wildcard matches
+            # pattern matches
             | com\.android\.providers\.media\b.*
             # program values
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """

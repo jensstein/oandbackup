@@ -87,6 +87,8 @@
 
         <receiver android:name=".services.AlarmReceiver" />
 
+        <receiver android:name=".activities.MainActivityX$Companion$ActionReceiver" />
+
         <service
             android:name=".services.ScheduleService"
             android:foregroundServiceType="dataSync" />

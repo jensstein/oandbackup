@@ -20,9 +20,7 @@ package com.machiav3lli.backup.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.AssetManager
 import android.os.Bundle
 import android.os.Looper
@@ -38,9 +36,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import androidx.work.*
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
@@ -51,6 +51,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModelFactory
@@ -98,49 +99,85 @@ class MainActivityX : BaseActivity() {
         var maxCount : Int = 0
         var action : String = ""
         var actionRunning = false
-        var runningOperations : MutableMap<String, String> = mutableMapOf()
+        var runningOperations : MutableMap<String, MutableMap<String, String>> = mutableMapOf()
+        var cancelAllWork = false
 
-        fun setOperation(packageName: String, operation: String = "") : Boolean {
-            synchronized(runningOperations) {
-                if (operation.isEmpty())
-                    runningOperations.remove(packageName)
-                else
-                    runningOperations[packageName] = operation
+        val use_workInfos = false
+
+        fun setOperation(packageName: String, action: String = "", operation: String = "") {
+            if(!use_workInfos) {
+                synchronized(runningOperations) {
+                    if (action.isEmpty()) {
+                        runningOperations = mutableMapOf()
+                    } else {
+                        if (operation.isEmpty()) {
+                            runningOperations[action]?.let { runningAction ->
+                                runningAction.remove(packageName)
+                                if (runningAction.isEmpty()) {
+                                    runningOperations.remove(action)
+                                }
+                            }
+                        } else {
+                            if (runningOperations[action] == null)
+                                runningOperations[action] = mutableMapOf()
+                            runningOperations[action]!![packageName] = operation
+                        }
+                    }
+                }
             }
             showRunningStatus()
-            return true
         }
 
-        fun showRunningStatus(actionText: String = "", counter: Int = -1, maxCount: Int = -1) {
-            if (actionText.isNotEmpty())
-                action = actionText
-            if (counter >= 0)
-                MainActivityX.counter = counter
-            if (maxCount >= 0)
-                MainActivityX.maxCount = maxCount
-            val title = "${action} (${MainActivityX.counter}/${MainActivityX.maxCount})"
+        fun showRunningStatus() {
             var running = 0
+            var queued = 0
             var shortText = ""
             var bigText = ""
-            synchronized(runningOperations) {
-                running = runningOperations.keys.count()
-                shortText = "${running} running"
-                bigText = shortText +
-                    "\n" +
-                    runningOperations.map {
-                        "${it.value}: ${it.key}"
-                    }.joinToString("\n")
-            }
-            if (action.isNotEmpty()) {
-                if (running > 0)
-                    actionRunning = true
+
+            if(!use_workInfos) {
+                synchronized(runningOperations) {
+                    runningOperations.forEach { action ->
+                        action.value.forEach { operation ->
+                            when (operation.value) {
+                                "QQQ" -> queued++
+                                else -> {
+                                    running++
+                                    bigText += "${action.key} ${operation.value} ${operation.key}\n"
+                                }
+                            }
+                        }
+                    }
+                }
             }
             if (statusNotificationId == 0)
                 statusNotificationId = System.currentTimeMillis().toInt()
             activity?.let { activity ->
                 activity.runOnUiThread {
-                    val context = activity.applicationContext
-                    val notificationManager = NotificationManagerCompat.from(context)
+                    val appContext = activity.applicationContext
+                    val workInfos = WorkManager.getInstance(appContext).getWorkInfosByTag(
+                        AppActionWork::class.qualifiedName!!
+                    )
+                    val workCount = workInfos.get().size
+                    if(use_workInfos) {
+                        workInfos.get().forEach { workInfo ->
+                            val progress = workInfo.progress
+                            val operation = progress.getString("operation")
+                            when(operation) {
+                                "QQQ" -> queued++
+                                else -> {
+                                    running++
+                                    val packageName = progress.getString("packageName")
+                                    val backupBoolean = progress.getBoolean("backupBoolean", true)
+                                    bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
+                                }
+                            }
+                        }
+                    }
+                    if(maxCount < running + queued)
+                        maxCount = running + queued
+                    counter = maxCount - running - queued
+                    val title = "${counter}/${maxCount} ($workCount) $queued -> $running"
+                    val notificationManager = NotificationManagerCompat.from(appContext)
                     if (running > 0) {
                         val notificationChannel = NotificationChannel(
                             classAddress("NotificationHandler"),
@@ -148,39 +185,81 @@ class MainActivityX : BaseActivity() {
                             NotificationManager.IMPORTANCE_LOW
                         )
                         notificationManager.createNotificationChannel(notificationChannel)
-                        val resultIntent = Intent(context, MainActivityX::class.java)
+                        val resultIntent = Intent(appContext, MainActivityX::class.java)
                         resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                         val resultPendingIntent = PendingIntent.getActivity(
-                            context,
+                            appContext,
                             0,
                             resultIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
+                        val cancelIntent = PendingIntent.getBroadcast(
+                            appContext,
+                            0,
+                            Intent(appContext, actionReceiver.javaClass).setAction("ACTION_CANCELWORKQUEUE"),
+                            PendingIntent.FLAG_IMMUTABLE
+                        )
                         val notification =
-                            NotificationCompat.Builder(context, classAddress("NotificationHandler"))
+                            NotificationCompat.Builder(appContext, classAddress("NotificationHandler"))
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                 .setSmallIcon(R.drawable.ic_app)
                                 .setContentTitle(title)
                                 .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
                                 .setContentText(shortText)
-                                .setProgress(MainActivityX.maxCount, MainActivityX.counter, false)
+                                .setProgress(maxCount, counter, false)
                                 .setAutoCancel(true)
                                 .setContentIntent(resultPendingIntent)
+                                .addAction(R.drawable.ic_close, appContext.getString(R.string.dialogCancel), cancelIntent)
                                 .build()
                         notificationManager.notify(statusNotificationId, notification)
                         activity.updateProgress(counter, maxCount)
                     } else {
-                        if (actionRunning || action.isEmpty()) {
+                        if (running + queued == 0) {
                             activity.hideProgress()
                             notificationManager.cancel(statusNotificationId)
                             statusNotificationId = 0
                             action = ""
                             actionRunning = false
+                            maxCount = 0
+                            counter = 0
                         }
                     }
                 }
             }
         }
+
+        fun showRunningStatus(actionText: String = "", counter: Int = -1, maxCount: Int = -1) {
+            if (actionText.isNotEmpty())
+                MainActivityX.action = actionText
+            if (counter >= 0)
+                MainActivityX.counter = counter
+            if (maxCount >= 0)
+                MainActivityX.maxCount = maxCount
+            showRunningStatus()
+        }
+
+        fun cancelWorkQueue(context: Context) {
+            activity?.showToast("cancel work queue")
+            cancelAllWork = true
+            //val workManager = WorkManager.getInstance(context)
+            //Timber.i("WorkManager: ${workManager}")
+            //AppActionWork::class.qualifiedName?.let {
+            //    workManager.cancelAllWorkByTag(it)
+            //} ?: workManager.cancelAllWork()
+            activity?.refreshView()
+        }
+
+        class ActionReceiver : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                when(intent?.action) {
+                        //"ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(activity!!.applicationContext)
+                        "ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(context.applicationContext)
+                        "ACTION_CANCELWORKQUEUE_SERVICE" -> cancelWorkQueue(context.applicationContext)
+                }
+            }
+        }
+
+        val actionReceiver = ActionReceiver()
     }
 
     private lateinit var prefs: SharedPreferences
@@ -210,16 +289,16 @@ class MainActivityX : BaseActivity() {
                                 "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
                                 runAsRoot("logcat --pid=${Process.myPid()}").out.joinToString("\n")
                     )
-                    val message = LogsHandler.message(e)
+                    //val message = LogsHandler.message(e)
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
                             repeat(5) {
                                 Toast.makeText(
-                                    MainActivityX.activity,
+                                    activity,
                                     "Uncaught Exception\n${e.message}\nrestarting application...",
                                     Toast.LENGTH_LONG
-                                ).show();
+                                ).show()
                             }
                             Looper.loop()
                         }
@@ -255,10 +334,20 @@ class MainActivityX : BaseActivity() {
         setContentView(binding.root)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onStart() {
         super.onStart()
         setupOnClicks()
         setupNavigation()
+        registerReceiver(actionReceiver, IntentFilter(/*"ACTION_CANCELWORKQUEUE"*/))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(actionReceiver)
     }
 
     override fun onResume() {
@@ -269,28 +358,30 @@ class MainActivityX : BaseActivity() {
         }
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onPause() {
+        super.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onRestart() {
+        super.onRestart()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
     override fun onBackPressed() {
         finishAffinity()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        if (intent != null) {
+            val action = intent.action
+            when (action) {
+                "ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(this)
+            }
+        }
+        super.onNewIntent(intent)
     }
 
     private fun setupNavigation() {
@@ -428,7 +519,7 @@ class MainActivityX : BaseActivity() {
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
         activity?.runOnUiThread {
-            activity?.showSnackBar("cleanup any left over suspended apps")
+            activity?.showSnackBar(message)
         }
         todo()
         activity?.runOnUiThread {

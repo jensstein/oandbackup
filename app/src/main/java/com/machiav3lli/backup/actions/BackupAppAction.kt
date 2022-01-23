@@ -30,6 +30,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.topjohnwu.superuser.ShellUtils
@@ -44,13 +45,13 @@ import java.nio.charset.StandardCharsets
 
 class ScriptException(text: String) : Exception(text)
 
-open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
+open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) : BaseAppAction(context, work, shell) {
 
     open fun run(app: AppInfo, backupMode: Int): ActionResult {
         var backupItem: BackupItem? = null
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-            MainActivityX.setOperation(app.packageName, "B pre")
+            work?.setOperation("pre")
             val appBackupRoot: StorageFile = try {
                 app.getAppBackupRoot(context, true)
             } catch (e: BackupLocationInAccessibleException) {
@@ -99,38 +100,38 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             try {
                 if (backupMode and MODE_APK == MODE_APK) {
                     Timber.i("$app: Backing up package")
-                    MainActivityX.setOperation(app.packageName, "B apk")
+                    work?.setOperation("apk")
                     backupPackage(app, backupInstanceDir)
                     backupBuilder.setHasApk(true)
                 }
                 var backupCreated: Boolean
                 if (backupMode and MODE_DATA == MODE_DATA) {
                     Timber.i("$app: Backing up data")
-                    MainActivityX.setOperation(app.packageName, "B dat")
+                    work?.setOperation("dat")
                     backupCreated = backupData(app, backupInstanceDir, iv)
                     backupBuilder.setHasAppData(backupCreated)
                 }
                 if (backupMode and MODE_DATA_DE == MODE_DATA_DE) {
                     Timber.i("$app: Backing up device's protected data")
-                    MainActivityX.setOperation(app.packageName, "B prt")
+                    work?.setOperation("prt")
                     backupCreated = backupDeviceProtectedData(app, backupInstanceDir, iv)
                     backupBuilder.setHasDevicesProtectedData(backupCreated)
                 }
                 if (backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
                     Timber.i("$app: Backing up external data")
-                    MainActivityX.setOperation(app.packageName, "B ext")
+                    work?.setOperation("ext")
                     backupCreated = backupExternalData(app, backupInstanceDir, iv)
                     backupBuilder.setHasExternalData(backupCreated)
                 }
                 if (backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
                     Timber.i("$app: Backing up obb files")
-                    MainActivityX.setOperation(app.packageName, "B obb")
+                    work?.setOperation("obb")
                     backupCreated = backupObbData(app, backupInstanceDir, iv)
                     backupBuilder.setHasObbData(backupCreated)
                 }
                 if (backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
                     Timber.i("$app: Backing up media files")
-                    MainActivityX.setOperation(app.packageName, "B med")
+                    work?.setOperation("med")
                     backupCreated = backupMediaData(app, backupInstanceDir, iv)
                     backupBuilder.setHasMediaData(backupCreated)
                 }
@@ -164,13 +165,13 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             } finally {
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    MainActivityX.setOperation(app.packageName, "B fin")
+                    work?.setOperation("fin")
                     postprocessPackage(app.packageName)
                     markerFile?.delete()
                 }
             }
         } finally {
-            MainActivityX.setOperation(app.packageName)
+            work?.setOperation()
             Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
         }
         return ActionResult(app, backupItem?.backupProperties, "", true)

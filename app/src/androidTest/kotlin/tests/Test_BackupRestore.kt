@@ -111,7 +111,7 @@ class Test_BackupRestore {
 
     fun backup() {
         if(!backupCreated) {
-            val backupAction = BackupAppAction(context, shellHandler)
+            val backupAction = BackupAppAction(context, null, shellHandler)
             val fromDir = StorageFile(testDir)
             backupAction.genericBackupDataTarApi(
                 "data", backupDirTarApi, fromDir.toString(),
@@ -162,7 +162,7 @@ class Test_BackupRestore {
                             archiveTarApi
                         else
                             archiveTarCmd
-        val restoreAction = RestoreAppAction(context, shellHandler)
+        val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
         restoreDir.mkdirs()
         if(toType == "tarapi")

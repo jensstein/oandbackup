@@ -414,7 +414,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         }
         fileFilter?.let { filter ->
             files = files?.filter {
-                filter.accept(it) ?: true
+                filter.accept(it)
             }
         }
         return files?.toTypedArray()

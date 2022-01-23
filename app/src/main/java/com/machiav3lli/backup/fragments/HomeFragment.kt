@@ -260,6 +260,7 @@ class HomeFragment : NavigationFragment(),
         selectedModes: List<Int>
     ) {
         val notificationId = System.currentTimeMillis().toInt()
+        /*
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(R.string.backup)
@@ -267,6 +268,7 @@ class HomeFragment : NavigationFragment(),
         MainActivityX.showRunningStatus(
             notificationMessage
         )
+        */
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -278,29 +280,34 @@ class HomeFragment : NavigationFragment(),
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        /*
         MainActivityX.showRunningStatus(
             getString(R.string.backupProgress),
             counter, selectedItems.size
         )
+        */
         selectedItems.forEach { (packageName, mode) ->
+
             val oneTimeWorkRequest =
                 AppActionWork.Request(packageName, mode, true, notificationId)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            requireMainActivity().updateProgress(counter, selectedItems.size)
+            //requireMainActivity().updateProgress(selectedItems.size, counter)
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        requireMainActivity().updateProgress(counter, selectedItems.size)
+                        //requireMainActivity().updateProgress(selectedItems.size, counter)
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        /*
                         MainActivityX.showRunningStatus(
                             getString(R.string.backupProgress),
                             counter, selectedItems.size
                         )
+                        */
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(
                                 requireContext(),
@@ -340,6 +347,7 @@ class HomeFragment : NavigationFragment(),
         })
 
         if (worksList.isNotEmpty()) {
+            MainActivityX.cancelAllWork = false
             WorkManager.getInstance(requireContext())
                 .beginWith(worksList)
                 .then(finishWorkRequest)
